@@ -285,6 +285,7 @@ export default function Edit({
                             <option value="classic">Classic</option>
                             <option value="modern">Modern</option>
                             <option value="minimal">Minimal</option>
+                            <option value="minimal-ruled">Minimal Ruled</option>
                         </select>
                         <span className="text-xs text-gray-400">
                             {saving ? 'Saving…' : savedAt ? `Saved at ${savedAt}` : 'Saves on field change'}
@@ -596,7 +597,7 @@ export default function Edit({
                     <div
                         ref={previewRef}
                         id="resume-preview"
-                        className={`mx-auto w-full max-w-[8.5in] bg-white shadow-lg ${template === 'modern' ? 'font-sans' : template === 'minimal' ? 'font-mono' : ''}`}
+                        className={`mx-auto w-full max-w-[8.5in] bg-white shadow-lg ${template === 'modern' ? 'font-sans' : template === 'minimal' ? 'font-mono' : 'font-sans'}`}
                         style={{ minHeight: '11in', padding: '0.75in', position: 'relative' }}
                     >
                         {/* Page break indicator */}
@@ -609,86 +610,182 @@ export default function Edit({
                             </div>
                         )}
 
-                        {/* Header — style varies by template */}
-                        <div className={`mb-4 pb-3 text-center ${template === 'modern' ? 'bg-indigo-700 text-white -mx-[0.75in] -mt-[0.75in] px-[0.75in] pt-8 pb-6 mb-6' : 'border-b-2 border-gray-800'}`}>
-                            <h1 className={`font-bold tracking-wide ${template === 'modern' ? 'text-2xl text-white' : 'text-2xl text-gray-900'}`}>
-                                {contact.full_name || 'Your Name'}
-                            </h1>
-                            <div className={`mt-1 flex flex-wrap justify-center gap-x-3 gap-y-0.5 text-xs ${template === 'modern' ? 'text-indigo-200' : 'text-gray-600'}`}>
-                                {contact.email && <span>{contact.email}</span>}
-                                {contact.phone && <span>• {contact.phone}</span>}
-                                {contact.location && <span>• {contact.location}</span>}
-                                {contact.linkedin && <span>• {contact.linkedin}</span>}
-                                {contact.website && <span>• {contact.website}</span>}
-                            </div>
-                        </div>
+                        {template === 'minimal-ruled' ? (
+                            <>
+                                {/* Minimal Ruled Header */}
+                                <div className="mb-10 pb-6 border-b border-gray-200">
+                                    <h1 className="text-3xl font-light tracking-widest uppercase text-gray-900">
+                                        {contact.full_name || 'Your Name'}
+                                    </h1>
+                                    {(experience.find(e => e.title)?.title || experience.find(e => e.company)?.company) && (
+                                        <p className="mt-1 text-xs font-semibold tracking-widest uppercase text-gray-400">
+                                            {[experience.find(e => e.title)?.title, experience.find(e => e.company)?.company].filter(Boolean).join(' · ')}
+                                        </p>
+                                    )}
+                                    <div className="mt-2 flex flex-wrap gap-x-3 text-xs text-gray-500">
+                                        {contact.email && <span>{contact.email}</span>}
+                                        {contact.phone && <span>· {contact.phone}</span>}
+                                        {contact.location && <span>· {contact.location}</span>}
+                                        {contact.linkedin && <span>· {contact.linkedin}</span>}
+                                        {contact.website && <span>· {contact.website}</span>}
+                                    </div>
+                                </div>
 
-                        {/* Summary */}
-                        {summary && (
-                            <section className="mb-4">
-                                <h2 className={`mb-1 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Summary</h2>
-                                <p className="text-sm leading-relaxed text-gray-700">{summary}</p>
-                            </section>
-                        )}
+                                {/* Minimal Ruled Summary */}
+                                {summary && (
+                                    <section className="mb-8">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Summary</div>
+                                        <p className="text-sm leading-relaxed text-gray-700">{summary}</p>
+                                    </section>
+                                )}
 
-                        {/* Experience */}
-                        {experience.some(e => e.company || e.title) && (
-                            <section className="mb-4">
-                                <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Work Experience</h2>
-                                {experience.filter(e => e.company || e.title).map(exp => (
-                                    <div key={exp.id} className="mb-3">
-                                        <div className="flex items-baseline justify-between">
-                                            <span className="font-semibold text-sm text-gray-900">{exp.title || 'Job Title'}</span>
-                                            <span className="text-xs text-gray-500">
-                                                {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
-                                            </span>
+                                {/* Minimal Ruled Experience */}
+                                {experience.some(e => e.company || e.title) && (
+                                    <section className="mb-8">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Experience</div>
+                                        {experience.filter(e => e.company || e.title).map(exp => (
+                                            <div key={exp.id} className="flex gap-6 mb-5">
+                                                <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5 leading-relaxed">
+                                                    {exp.start_date && <div>{exp.start_date}</div>}
+                                                    <div>{exp.current ? 'Present' : exp.end_date}</div>
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="text-sm font-semibold text-gray-900">{exp.title || 'Job Title'}</div>
+                                                    <div className="text-xs text-gray-500 mb-1">{exp.company}</div>
+                                                    {exp.bullets && (
+                                                        <ul className="list-disc pl-4 text-xs text-gray-700 space-y-0.5">
+                                                            {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
+                                                        </ul>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+
+                                {/* Minimal Ruled Education */}
+                                {education.some(e => e.school) && (
+                                    <section className="mb-8">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Education</div>
+                                        {education.filter(e => e.school).map(edu => (
+                                            <div key={edu.id} className="flex gap-6 mb-3">
+                                                <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5">{edu.grad_year}</div>
+                                                <div className="flex-1">
+                                                    <div className="text-sm font-semibold text-gray-900">{edu.school}</div>
+                                                    <div className="text-xs text-gray-500">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+
+                                {/* Minimal Ruled Skills */}
+                                {skills.length > 0 && (
+                                    <section className="mb-8">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Skills</div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {skills.map((skill, i) => (
+                                                <span key={i} className="bg-gray-100 text-gray-600 text-xs px-2.5 py-0.5 rounded-full">{skill}</span>
+                                            ))}
                                         </div>
-                                        <div className="text-xs font-medium text-gray-600">{exp.company}</div>
-                                        {exp.bullets && (
-                                            <ul className="mt-1 list-disc pl-4 text-xs text-gray-700 space-y-0.5">
-                                                {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
-                                            </ul>
-                                        )}
-                                    </div>
-                                ))}
-                            </section>
-                        )}
+                                    </section>
+                                )}
 
-                        {/* Education */}
-                        {education.some(e => e.school) && (
-                            <section className="mb-4">
-                                <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Education</h2>
-                                {education.filter(e => e.school).map(edu => (
-                                    <div key={edu.id} className="mb-2 flex items-baseline justify-between">
-                                        <div>
-                                            <span className="font-semibold text-sm text-gray-900">{edu.school}</span>
-                                            <span className="ml-2 text-xs text-gray-600">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
-                                        </div>
-                                        {edu.grad_year && <span className="text-xs text-gray-500">{edu.grad_year}</span>}
+                                {/* Minimal Ruled Certifications */}
+                                {certifications.some(c => c.name) && (
+                                    <section className="mb-8">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Certifications</div>
+                                        {certifications.filter(c => c.name).map(cert => (
+                                            <div key={cert.id} className="flex gap-6 mb-2">
+                                                <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5">{cert.date}</div>
+                                                <div className="flex-1">
+                                                    <div className="text-sm font-medium text-gray-900">{cert.name}</div>
+                                                    {cert.issuer && <div className="text-xs text-gray-500">{cert.issuer}</div>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                {/* Header — classic / modern / minimal */}
+                                <div className={`mb-4 pb-3 text-center ${template === 'modern' ? 'bg-indigo-700 text-white -mx-[0.75in] -mt-[0.75in] px-[0.75in] pt-8 pb-6 mb-6' : 'border-b-2 border-gray-800'}`}>
+                                    <h1 className={`font-bold tracking-wide ${template === 'modern' ? 'text-2xl text-white' : 'text-2xl text-gray-900'}`}>
+                                        {contact.full_name || 'Your Name'}
+                                    </h1>
+                                    <div className={`mt-1 flex flex-wrap justify-center gap-x-3 gap-y-0.5 text-xs ${template === 'modern' ? 'text-indigo-200' : 'text-gray-600'}`}>
+                                        {contact.email && <span>{contact.email}</span>}
+                                        {contact.phone && <span>• {contact.phone}</span>}
+                                        {contact.location && <span>• {contact.location}</span>}
+                                        {contact.linkedin && <span>• {contact.linkedin}</span>}
+                                        {contact.website && <span>• {contact.website}</span>}
                                     </div>
-                                ))}
-                            </section>
-                        )}
+                                </div>
 
-                        {/* Skills */}
-                        {skills.length > 0 && (
-                            <section className="mb-4">
-                                <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Skills</h2>
-                                <p className="text-sm text-gray-700">{skills.join(' • ')}</p>
-                            </section>
-                        )}
+                                {summary && (
+                                    <section className="mb-4">
+                                        <h2 className={`mb-1 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Summary</h2>
+                                        <p className="text-sm leading-relaxed text-gray-700">{summary}</p>
+                                    </section>
+                                )}
 
-                        {/* Certifications */}
-                        {certifications.some(c => c.name) && (
-                            <section className="mb-4">
-                                <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Certifications</h2>
-                                {certifications.filter(c => c.name).map(cert => (
-                                    <div key={cert.id} className="mb-1 flex items-baseline justify-between">
-                                        <span className="text-sm font-medium text-gray-900">{cert.name}</span>
-                                        <span className="text-xs text-gray-500">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
-                                    </div>
-                                ))}
-                            </section>
+                                {experience.some(e => e.company || e.title) && (
+                                    <section className="mb-4">
+                                        <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Work Experience</h2>
+                                        {experience.filter(e => e.company || e.title).map(exp => (
+                                            <div key={exp.id} className="mb-3">
+                                                <div className="flex items-baseline justify-between">
+                                                    <span className="font-semibold text-sm text-gray-900">{exp.title || 'Job Title'}</span>
+                                                    <span className="text-xs text-gray-500">
+                                                        {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
+                                                    </span>
+                                                </div>
+                                                <div className="text-xs font-medium text-gray-600">{exp.company}</div>
+                                                {exp.bullets && (
+                                                    <ul className="mt-1 list-disc pl-4 text-xs text-gray-700 space-y-0.5">
+                                                        {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
+                                                    </ul>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+
+                                {education.some(e => e.school) && (
+                                    <section className="mb-4">
+                                        <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Education</h2>
+                                        {education.filter(e => e.school).map(edu => (
+                                            <div key={edu.id} className="mb-2 flex items-baseline justify-between">
+                                                <div>
+                                                    <span className="font-semibold text-sm text-gray-900">{edu.school}</span>
+                                                    <span className="ml-2 text-xs text-gray-600">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
+                                                </div>
+                                                {edu.grad_year && <span className="text-xs text-gray-500">{edu.grad_year}</span>}
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+
+                                {skills.length > 0 && (
+                                    <section className="mb-4">
+                                        <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Skills</h2>
+                                        <p className="text-sm text-gray-700">{skills.join(' • ')}</p>
+                                    </section>
+                                )}
+
+                                {certifications.some(c => c.name) && (
+                                    <section className="mb-4">
+                                        <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Certifications</h2>
+                                        {certifications.filter(c => c.name).map(cert => (
+                                            <div key={cert.id} className="mb-1 flex items-baseline justify-between">
+                                                <span className="text-sm font-medium text-gray-900">{cert.name}</span>
+                                                <span className="text-xs text-gray-500">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
