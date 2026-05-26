@@ -16,6 +16,10 @@ export default function PublicView({ resume, token }: Props) {
     const education = resume.education ?? [];
     const certifications = resume.certifications ?? [];
 
+    const firstTitle = experience.find(e => e.title)?.title ?? '';
+    const firstCompany = experience.find(e => e.company)?.company ?? '';
+    const subtitle = [firstTitle, firstCompany].filter(Boolean).join(' · ');
+
     const form = useForm({
         sender_name: '',
         sender_email: '',
@@ -32,159 +36,174 @@ export default function PublicView({ resume, token }: Props) {
         <PublicLayout>
             <Head title={`${resume.name} — Resume`} />
 
-            <div className="mx-auto max-w-[8.5in] my-8 bg-white shadow-lg px-[0.75in] py-[0.75in] min-h-[11in]">
+            <div className="min-h-screen bg-gray-50 py-10">
+                <div className="mx-auto max-w-[8.5in] bg-white shadow-lg px-[0.75in] py-[0.75in]" style={{ minHeight: '11in' }}>
 
-                {/* Header */}
-                <div className="mb-4 border-b-2 border-gray-800 pb-3 text-center">
-                    <h1 className="text-2xl font-bold tracking-wide text-gray-900">
-                        {contact?.full_name || resume.name}
-                    </h1>
-                    <div className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-0.5 text-xs text-gray-600">
-                        {contact?.email && <span>{contact.email}</span>}
-                        {contact?.phone && <span>• {contact.phone}</span>}
-                        {contact?.location && <span>• {contact.location}</span>}
-                        {contact?.linkedin && <span>• {contact.linkedin}</span>}
-                        {contact?.website && <span>• {contact.website}</span>}
-                    </div>
-                </div>
-
-                {/* Summary */}
-                {resume.summary && (
-                    <section className="mb-4">
-                        <h2 className="mb-1 border-b border-gray-300 pb-0.5 text-xs font-bold uppercase tracking-widest text-gray-700">Summary</h2>
-                        <p className="text-sm leading-relaxed text-gray-700">{resume.summary}</p>
-                    </section>
-                )}
-
-                {/* Experience */}
-                {experience.some(e => e.company || e.title) && (
-                    <section className="mb-4">
-                        <h2 className="mb-2 border-b border-gray-300 pb-0.5 text-xs font-bold uppercase tracking-widest text-gray-700">Work Experience</h2>
-                        {experience.filter(e => e.company || e.title).map(exp => (
-                            <div key={exp.id} className="mb-3">
-                                <div className="flex items-baseline justify-between">
-                                    <span className="font-semibold text-sm text-gray-900">{exp.title || 'Job Title'}</span>
-                                    <span className="text-xs text-gray-500">
-                                        {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
-                                    </span>
-                                </div>
-                                <div className="text-xs font-medium text-gray-600">{exp.company}</div>
-                                {exp.bullets && (
-                                    <ul className="mt-1 list-disc pl-4 text-xs text-gray-700 space-y-0.5">
-                                        {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
-                                    </ul>
-                                )}
-                            </div>
-                        ))}
-                    </section>
-                )}
-
-                {/* Education */}
-                {education.some(e => e.school) && (
-                    <section className="mb-4">
-                        <h2 className="mb-2 border-b border-gray-300 pb-0.5 text-xs font-bold uppercase tracking-widest text-gray-700">Education</h2>
-                        {education.filter(e => e.school).map(edu => (
-                            <div key={edu.id} className="mb-2 flex items-baseline justify-between">
-                                <div>
-                                    <span className="font-semibold text-sm text-gray-900">{edu.school}</span>
-                                    <span className="ml-2 text-xs text-gray-600">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
-                                </div>
-                                {edu.grad_year && <span className="text-xs text-gray-500">{edu.grad_year}</span>}
-                            </div>
-                        ))}
-                    </section>
-                )}
-
-                {/* Skills */}
-                {skills.length > 0 && (
-                    <section className="mb-4">
-                        <h2 className="mb-2 border-b border-gray-300 pb-0.5 text-xs font-bold uppercase tracking-widest text-gray-700">Skills</h2>
-                        <p className="text-sm text-gray-700">{skills.join(' • ')}</p>
-                    </section>
-                )}
-
-                {/* Certifications */}
-                {certifications.some(c => c.name) && (
-                    <section className="mb-4">
-                        <h2 className="mb-2 border-b border-gray-300 pb-0.5 text-xs font-bold uppercase tracking-widest text-gray-700">Certifications</h2>
-                        {certifications.filter(c => c.name).map(cert => (
-                            <div key={cert.id} className="mb-1 flex items-baseline justify-between">
-                                <span className="text-sm font-medium text-gray-900">{cert.name}</span>
-                                <span className="text-xs text-gray-500">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
-                            </div>
-                        ))}
-                    </section>
-                )}
-
-                {/* Question form */}
-                <div className="mt-12 border-t-2 border-gray-200 pt-8">
-                    <h3 className="mb-4 text-sm font-semibold text-gray-700">Send a question to the resume owner</h3>
-
-                    {props.flash?.questionSubmitted ? (
-                        <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
-                            Your question was submitted successfully. Thank you!
+                    {/* Header */}
+                    <div className="mb-10 pb-6 border-b border-gray-200">
+                        <h1 className="text-3xl font-light tracking-widest uppercase text-gray-900">
+                            {contact?.full_name || resume.name}
+                        </h1>
+                        {subtitle && (
+                            <p className="mt-1 text-xs font-semibold tracking-widest uppercase text-gray-400">{subtitle}</p>
+                        )}
+                        <div className="mt-2 flex flex-wrap gap-x-3 text-xs text-gray-500">
+                            {contact?.email && <span>{contact.email}</span>}
+                            {contact?.phone && <span>· {contact.phone}</span>}
+                            {contact?.location && <span>· {contact.location}</span>}
+                            {contact?.linkedin && <span>· {contact.linkedin}</span>}
+                            {contact?.website && <span>· {contact.website}</span>}
                         </div>
-                    ) : (
-                        <form onSubmit={submit} className="grid grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-1">
-                                <label htmlFor="sender_name" className="text-xs font-medium text-gray-500">Full Name *</label>
-                                <input
-                                    id="sender_name"
-                                    type="text"
-                                    title="Full Name"
-                                    value={form.data.sender_name}
-                                    onChange={e => form.setData('sender_name', e.target.value)}
-                                    className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                />
-                                {form.errors.sender_name && <p className="text-xs text-red-500">{form.errors.sender_name}</p>}
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <label htmlFor="sender_email" className="text-xs font-medium text-gray-500">Email *</label>
-                                <input
-                                    id="sender_email"
-                                    type="email"
-                                    title="Email"
-                                    value={form.data.sender_email}
-                                    onChange={e => form.setData('sender_email', e.target.value)}
-                                    className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                />
-                                {form.errors.sender_email && <p className="text-xs text-red-500">{form.errors.sender_email}</p>}
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <label htmlFor="sender_phone" className="text-xs font-medium text-gray-500">Phone *</label>
-                                <input
-                                    id="sender_phone"
-                                    type="tel"
-                                    title="Phone"
-                                    value={form.data.sender_phone}
-                                    onChange={e => form.setData('sender_phone', e.target.value)}
-                                    className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                />
-                                {form.errors.sender_phone && <p className="text-xs text-red-500">{form.errors.sender_phone}</p>}
-                            </div>
-                            <div className="col-span-2 flex flex-col gap-1">
-                                <label htmlFor="message" className="text-xs font-medium text-gray-500">Message *</label>
-                                <textarea
-                                    id="message"
-                                    rows={4}
-                                    title="Message"
-                                    value={form.data.message}
-                                    onChange={e => form.setData('message', e.target.value)}
-                                    className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                />
-                                {form.errors.message && <p className="text-xs text-red-500">{form.errors.message}</p>}
-                            </div>
-                            <div className="col-span-2">
-                                <button
-                                    type="submit"
-                                    disabled={form.processing}
-                                    className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
-                                >
-                                    {form.processing ? 'Sending…' : 'Send Question'}
-                                </button>
-                            </div>
-                        </form>
+                    </div>
+
+                    {/* Summary */}
+                    {resume.summary && (
+                        <section className="mb-8">
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Summary</div>
+                            <p className="text-sm leading-relaxed text-gray-700">{resume.summary}</p>
+                        </section>
                     )}
+
+                    {/* Experience */}
+                    {experience.some(e => e.company || e.title) && (
+                        <section className="mb-8">
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Experience</div>
+                            {experience.filter(e => e.company || e.title).map(exp => (
+                                <div key={exp.id} className="flex gap-6 mb-5">
+                                    <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5 leading-relaxed">
+                                        {exp.start_date && <div>{exp.start_date}</div>}
+                                        <div>{exp.current ? 'Present' : exp.end_date}</div>
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="text-sm font-semibold text-gray-900">{exp.title || 'Job Title'}</div>
+                                        <div className="text-xs text-gray-500 mb-1">{exp.company}</div>
+                                        {exp.bullets && (
+                                            <ul className="list-disc pl-4 text-xs text-gray-700 space-y-0.5">
+                                                {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
+                                            </ul>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </section>
+                    )}
+
+                    {/* Education */}
+                    {education.some(e => e.school) && (
+                        <section className="mb-8">
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Education</div>
+                            {education.filter(e => e.school).map(edu => (
+                                <div key={edu.id} className="flex gap-6 mb-3">
+                                    <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5">
+                                        {edu.grad_year}
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="text-sm font-semibold text-gray-900">{edu.school}</div>
+                                        <div className="text-xs text-gray-500">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </section>
+                    )}
+
+                    {/* Skills */}
+                    {skills.length > 0 && (
+                        <section className="mb-8">
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Skills</div>
+                            <div className="flex flex-wrap gap-2">
+                                {skills.map((skill, i) => (
+                                    <span key={i} className="bg-gray-100 text-gray-600 text-xs px-2.5 py-0.5 rounded-full">{skill}</span>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Certifications */}
+                    {certifications.some(c => c.name) && (
+                        <section className="mb-8">
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Certifications</div>
+                            {certifications.filter(c => c.name).map(cert => (
+                                <div key={cert.id} className="flex gap-6 mb-2">
+                                    <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5">{cert.date}</div>
+                                    <div className="flex-1">
+                                        <div className="text-sm font-medium text-gray-900">{cert.name}</div>
+                                        {cert.issuer && <div className="text-xs text-gray-500">{cert.issuer}</div>}
+                                    </div>
+                                </div>
+                            ))}
+                        </section>
+                    )}
+
+                    {/* Contact form */}
+                    <div className="mt-12 border-l-4 border-indigo-400 bg-indigo-50 rounded-r-lg p-6">
+                        <h3 className="mb-4 text-sm font-semibold text-gray-800">Interested in this candidate? Reach out directly.</h3>
+
+                        {props.flash?.questionSubmitted ? (
+                            <div className="flex items-center gap-3 rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+                                <svg className="h-5 w-5 text-green-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                                Your message was submitted successfully. Thank you!
+                            </div>
+                        ) : (
+                            <form onSubmit={submit} className="grid grid-cols-2 gap-4">
+                                <div className="flex flex-col gap-1">
+                                    <label htmlFor="sender_name" className="text-xs font-medium text-gray-600">Full Name *</label>
+                                    <input
+                                        id="sender_name"
+                                        type="text"
+                                        value={form.data.sender_name}
+                                        onChange={e => form.setData('sender_name', e.target.value)}
+                                        className="rounded-md border-gray-200 bg-white text-sm shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
+                                    />
+                                    {form.errors.sender_name && <p className="text-xs text-red-500">{form.errors.sender_name}</p>}
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <label htmlFor="sender_email" className="text-xs font-medium text-gray-600">Email *</label>
+                                    <input
+                                        id="sender_email"
+                                        type="email"
+                                        value={form.data.sender_email}
+                                        onChange={e => form.setData('sender_email', e.target.value)}
+                                        className="rounded-md border-gray-200 bg-white text-sm shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
+                                    />
+                                    {form.errors.sender_email && <p className="text-xs text-red-500">{form.errors.sender_email}</p>}
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <label htmlFor="sender_phone" className="text-xs font-medium text-gray-600">Phone *</label>
+                                    <input
+                                        id="sender_phone"
+                                        type="tel"
+                                        value={form.data.sender_phone}
+                                        onChange={e => form.setData('sender_phone', e.target.value)}
+                                        className="rounded-md border-gray-200 bg-white text-sm shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
+                                    />
+                                    {form.errors.sender_phone && <p className="text-xs text-red-500">{form.errors.sender_phone}</p>}
+                                </div>
+                                <div className="col-span-2 flex flex-col gap-1">
+                                    <label htmlFor="message" className="text-xs font-medium text-gray-600">Message *</label>
+                                    <textarea
+                                        id="message"
+                                        rows={4}
+                                        value={form.data.message}
+                                        onChange={e => form.setData('message', e.target.value)}
+                                        className="rounded-md border-gray-200 bg-white text-sm shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
+                                    />
+                                    {form.errors.message && <p className="text-xs text-red-500">{form.errors.message}</p>}
+                                </div>
+                                <div className="col-span-2">
+                                    <button
+                                        type="submit"
+                                        disabled={form.processing}
+                                        className="rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50"
+                                    >
+                                        {form.processing ? 'Sending…' : 'Send Message'}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                    </div>
+
                 </div>
             </div>
         </PublicLayout>
