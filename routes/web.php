@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
@@ -33,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
     Route::get('/builder/{resume}/pdf', [ResumeBuilderController::class, 'downloadPdf'])->name('builder.pdf');
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
+    Route::post('/builder/{resume}/ai-suggest', [AiSuggestController::class, 'suggest'])
+        ->middleware('throttle:10,1')
+        ->name('builder.ai-suggest');
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
