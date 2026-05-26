@@ -59,7 +59,7 @@ function SectionHeader({ title, open, onToggle }: { title: string; open: boolean
         <button
             type="button"
             onClick={onToggle}
-            className="flex w-full items-center justify-between rounded-md bg-gray-50 px-4 py-3 text-left text-sm font-semibold text-gray-700 hover:bg-gray-100 focus:outline-none"
+            className="flex w-full items-center justify-between border-l-2 border-indigo-300 bg-white px-4 py-3 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none"
         >
             {title}
             <span className="ml-2 text-gray-400">{open ? '▲' : '▼'}</span>
@@ -98,9 +98,15 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
             <div
                 {...attributes}
                 {...listeners}
-                className="absolute -left-4 top-3 cursor-grab text-gray-300 hover:text-gray-500 select-none"
+                className="absolute -left-5 top-3 cursor-grab text-gray-300 hover:text-gray-500 select-none"
                 title="Drag to reorder"
-            >⠿</div>
+            >
+                <svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor">
+                    <circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/>
+                    <circle cx="3" cy="8" r="1.5"/><circle cx="9" cy="8" r="1.5"/>
+                    <circle cx="3" cy="13" r="1.5"/><circle cx="9" cy="13" r="1.5"/>
+                </svg>
+            </div>
             {children}
         </div>
     );
@@ -287,8 +293,20 @@ export default function Edit({
                             <option value="minimal">Minimal</option>
                             <option value="minimal-ruled">Minimal Ruled</option>
                         </select>
-                        <span className="text-xs text-gray-400">
-                            {saving ? 'Saving…' : savedAt ? `Saved at ${savedAt}` : 'Saves on field change'}
+                        <span className="flex items-center gap-1.5 text-xs">
+                            {saving ? (
+                                <>
+                                    <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                                    <span className="text-amber-600">Saving…</span>
+                                </>
+                            ) : savedAt ? (
+                                <>
+                                    <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
+                                    <span className="text-green-600">Saved {savedAt}</span>
+                                </>
+                            ) : (
+                                <span className="text-gray-400">Saves on field change</span>
+                            )}
                         </span>
                         <a
                             href={route('builder.pdf', resume.id)}
@@ -311,7 +329,7 @@ export default function Edit({
             <div className="flex h-[calc(100vh-8rem)] overflow-hidden">
 
                 {/* LEFT: Form */}
-                <div className="w-[45%] shrink-0 overflow-y-auto border-r border-gray-200 bg-white p-6">
+                <div className="w-[45%] shrink-0 overflow-y-auto border-r border-gray-200 bg-gray-50 p-6">
 
                     {/* Resume Name */}
                     <div className="mb-5 flex flex-col gap-1">
@@ -406,7 +424,7 @@ export default function Edit({
                                             ))}
                                         </SortableContext>
                                     </DndContext>
-                                    <button type="button" onClick={addExp} className="mt-1 rounded-md border border-dashed border-indigo-300 px-3 py-2 text-sm text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50">
+                                    <button type="button" onClick={addExp} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                         + Add Position
                                     </button>
                                 </div>
@@ -442,7 +460,7 @@ export default function Edit({
                                             ))}
                                         </SortableContext>
                                     </DndContext>
-                                    <button type="button" onClick={addEdu} className="mt-1 rounded-md border border-dashed border-indigo-300 px-3 py-2 text-sm text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50">
+                                    <button type="button" onClick={addEdu} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                         + Add School
                                     </button>
                                 </div>
@@ -480,7 +498,7 @@ export default function Edit({
                                             </div>
                                         </div>
                                     ))}
-                                    <button type="button" onClick={addCert} className="mt-1 rounded-md border border-dashed border-indigo-300 px-3 py-2 text-sm text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50">
+                                    <button type="button" onClick={addCert} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                         + Add Certification
                                     </button>
                                 </div>
