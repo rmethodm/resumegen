@@ -39,7 +39,7 @@ export interface CertEntry {
     date: string;
 }
 
-export type ResumeTemplate = 'classic' | 'modern' | 'minimal';
+export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled';
 
 export interface ResumeData {
     id: number;

@@ -66,7 +66,7 @@ class ResumeBuilderController extends Controller
 
         $validated = $request->validate([
             'name'           => ['sometimes', 'required', 'string', 'max:255'],
-            'template'       => ['sometimes', 'required', 'in:classic,modern,minimal'],
+            'template'       => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled'],
             'summary'        => ['nullable', 'string'],
             'contact'        => ['nullable', 'array'],
             'experience'     => ['nullable', 'array'],
@@ -105,7 +105,7 @@ class ResumeBuilderController extends Controller
 
         $validated = validator($data, [
             'name'           => ['sometimes', 'required', 'string', 'max:255'],
-            'template'       => ['sometimes', 'required', 'in:classic,modern,minimal'],
+            'template'       => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled'],
             'summary'        => ['nullable', 'string'],
             'contact'        => ['nullable', 'array'],
             'experience'     => ['nullable', 'array'],
