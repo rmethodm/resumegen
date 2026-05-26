@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+    /* Hide everything except the resume preview panel */
+    body > * { display: none !important; }
+    #app > * { display: none !important; }
+
+    #resume-preview,
+    #resume-preview * {
+        display: revert !important;
+        visibility: visible !important;
+    }
+
+    #resume-preview {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 100% !important;
+        margin: 0 !important;
+        padding: 0.75in !important;
+        box-shadow: none !important;
+        background: white !important;
+    }
+
+    @page {
+        size: letter;
+        margin: 0;
+    }
+}
