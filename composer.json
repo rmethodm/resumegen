@@ -12,6 +12,7 @@
         "laravel/framework": "^13.8",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
+        "openai-php/client": "^0.19.2",
         "spatie/laravel-medialibrary": "^11.22",
         "tightenco/ziggy": "^2.0"
     },
