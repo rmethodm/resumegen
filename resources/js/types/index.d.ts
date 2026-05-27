@@ -80,3 +80,16 @@ export type PageProps<
         user: User;
     };
 };
+
+export interface AiCapabilities {
+    claude: boolean;
+    openai: boolean;
+}
+
+export interface AISuggestContext {
+    summary?: string;
+    title?: string;
+    company?: string;
+    bullets?: string;
+    skills?: string[];
+}

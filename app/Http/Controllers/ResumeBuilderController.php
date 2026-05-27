@@ -54,9 +54,13 @@ class ResumeBuilderController extends Controller
         ]);
 
         return Inertia::render('ResumeBuilder/Edit', [
-            'resume'     => $resume,
-            'shareLinks' => $resume->shareLinks,
-            'questions'  => $questions,
+            'resume'         => $resume,
+            'shareLinks'     => $resume->shareLinks,
+            'questions'      => $questions,
+            'aiCapabilities' => [
+                'claude' => !empty(config('services.anthropic.key')),
+                'openai' => !empty(env('OPENAI_API_KEY')),
+            ],
         ]);
     }
 
