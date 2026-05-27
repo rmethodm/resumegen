@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
+import AISuggestButton from '@/Components/AISuggestButton';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
     DndContext, closestCenter, PointerSensor, useSensor, useSensors,
@@ -14,7 +15,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ResumeData, ShareLink, ResumeQuestion, ResumeTemplate,
-    ExperienceEntry, EducationEntry, CertEntry, Contact,
+    ExperienceEntry, EducationEntry, CertEntry, Contact, AiCapabilities,
 } from '@/types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -118,10 +119,12 @@ export default function Edit({
     resume,
     shareLinks: initialLinks,
     questions: initialQuestions,
+    aiCapabilities,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
     questions: ResumeQuestion[];
+    aiCapabilities: AiCapabilities;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -134,6 +137,16 @@ export default function Edit({
     const [savedAt, setSavedAt] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const pendingSave = useRef(false);
+
+    const [aiProvider, setAiProvider] = useState<'claude' | 'openai'>(() => {
+        const stored = localStorage.getItem('resumegen_ai_provider');
+        if (stored === 'openai' && aiCapabilities.openai) return 'openai';
+        if (aiCapabilities.claude) return 'claude';
+        if (aiCapabilities.openai) return 'openai';
+        return 'claude';
+    });
+
+    const aiEnabled = aiCapabilities.claude || aiCapabilities.openai;
 
     const [openSections, setOpenSections] = useState({
         contact: true, summary: true, experience: true,
@@ -308,6 +321,30 @@ export default function Edit({
                                 <span className="text-gray-400">Saves on field change</span>
                             )}
                         </span>
+                        {aiEnabled ? (
+                            <div className="flex items-center rounded-md border border-gray-200 overflow-hidden text-xs">
+                                {aiCapabilities.claude && (
+                                    <button
+                                        type="button"
+                                        onClick={() => { setAiProvider('claude'); localStorage.setItem('resumegen_ai_provider', 'claude'); }}
+                                        className={`px-2.5 py-1.5 font-medium transition-colors ${aiProvider === 'claude' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                                    >
+                                        Claude
+                                    </button>
+                                )}
+                                {aiCapabilities.openai && (
+                                    <button
+                                        type="button"
+                                        onClick={() => { setAiProvider('openai'); localStorage.setItem('resumegen_ai_provider', 'openai'); }}
+                                        className={`px-2.5 py-1.5 font-medium transition-colors ${aiProvider === 'openai' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                                    >
+                                        ChatGPT
+                                    </button>
+                                )}
+                            </div>
+                        ) : (
+                            <span className="text-xs text-gray-300" title="Add ANTHROPIC_API_KEY or OPENAI_API_KEY to .env to enable AI suggestions">✦ AI off</span>
+                        )}
                         <a
                             href={route('builder.pdf', resume.id)}
                             className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
@@ -371,14 +408,27 @@ export default function Edit({
                             <SectionHeader title="Professional Summary" open={openSections.summary} onToggle={() => toggleSection('summary')} />
                             {openSections.summary && (
                                 <div className="p-4">
-                                    <textarea
-                                        value={summary}
-                                        onChange={e => setSummary(e.target.value)}
-                                        onBlur={save}
-                                        rows={4}
-                                        placeholder="A brief summary of your professional background and goals…"
-                                        className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    />
+                                    <div className="relative">
+                                        <textarea
+                                            value={summary}
+                                            onChange={e => setSummary(e.target.value)}
+                                            onBlur={save}
+                                            rows={4}
+                                            placeholder="A brief summary of your professional background and goals…"
+                                            className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        />
+                                        {aiEnabled && (
+                                            <div className="absolute top-1.5 right-1.5">
+                                                <AISuggestButton
+                                                    field="summary"
+                                                    context={{ summary }}
+                                                    resumeId={resume.id}
+                                                    provider={aiProvider}
+                                                    onAccept={v => { setSummary(v); save(); }}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -401,7 +451,29 @@ export default function Edit({
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-3">
                                                             <Field label="Company" value={exp.company} onChange={v => updateExp(exp.id, 'company', v)} onBlur={save} placeholder="Acme Corp" />
-                                                            <Field label="Job Title" value={exp.title} onChange={v => updateExp(exp.id, 'title', v)} onBlur={save} placeholder="Software Engineer" />
+                                                            <div className="flex flex-col gap-1">
+                                                                <div className="flex items-center justify-between">
+                                                                    <label className="text-xs font-medium text-gray-600">Job Title</label>
+                                                                    {aiEnabled && (
+                                                                        <AISuggestButton
+                                                                            field="title"
+                                                                            context={{ title: exp.title, company: exp.company }}
+                                                                            resumeId={resume.id}
+                                                                            provider={aiProvider}
+                                                                            buttonLabel="✦"
+                                                                            onAccept={v => { updateExp(exp.id, 'title', v); save(); }}
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                                <input
+                                                                    type="text"
+                                                                    value={exp.title}
+                                                                    onChange={e => updateExp(exp.id, 'title', e.target.value)}
+                                                                    onBlur={save}
+                                                                    placeholder="Software Engineer"
+                                                                    className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                />
+                                                            </div>
                                                             <Field label="Start Date" value={exp.start_date} onChange={v => updateExp(exp.id, 'start_date', v)} onBlur={save} placeholder="Jan 2022" />
                                                             <div className="flex flex-col gap-1">
                                                                 <Field label="End Date" value={exp.end_date} onChange={v => updateExp(exp.id, 'end_date', v)} onBlur={save} placeholder="Present" />
@@ -411,7 +483,19 @@ export default function Edit({
                                                                 </label>
                                                             </div>
                                                             <div className="col-span-2 flex flex-col gap-1">
-                                                                <label className="text-xs font-medium text-gray-500">Bullet Points</label>
+                                                                <div className="flex items-center justify-between">
+                                                                    <label className="text-xs font-medium text-gray-600">Bullet Points</label>
+                                                                    {aiEnabled && (
+                                                                        <AISuggestButton
+                                                                            field="bullets"
+                                                                            context={{ title: exp.title, company: exp.company, bullets: exp.bullets }}
+                                                                            resumeId={resume.id}
+                                                                            provider={aiProvider}
+                                                                            buttonLabel="✦ Improve"
+                                                                            onAccept={v => { updateExp(exp.id, 'bullets', v); save(); }}
+                                                                        />
+                                                                    )}
+                                                                </div>
                                                                 <BulletEditor
                                                                     bullets={exp.bullets ? exp.bullets.split('\n') : []}
                                                                     onChange={lines => updateExp(exp.id, 'bullets', lines.join('\n'))}
@@ -471,9 +555,27 @@ export default function Edit({
                         <div className="rounded-lg border border-gray-200 overflow-hidden">
                             <SectionHeader title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')} />
                             {openSections.skills && (
-                                <div className="p-4">
-                                    <label className="mb-1 block text-xs font-medium text-gray-500">Press Enter or comma to add</label>
+                                <div className="p-4 flex flex-col gap-2">
+                                    <label className="text-xs font-medium text-gray-600">Press Enter or comma to add</label>
                                     <TagInput tags={skills} onChange={setSkills} onBlur={save} />
+                                    {aiEnabled && (
+                                        <AISuggestButton
+                                            field="skills"
+                                            context={{
+                                                title: experience[0]?.title,
+                                                company: experience[0]?.company,
+                                                skills,
+                                            }}
+                                            resumeId={resume.id}
+                                            provider={aiProvider}
+                                            buttonLabel="✦ Suggest skills"
+                                            onAccept={v => {
+                                                const newSkills = v.split(',').map((s: string) => s.trim()).filter((s: string) => s && !skills.includes(s));
+                                                setSkills(prev => [...prev, ...newSkills]);
+                                                save();
+                                            }}
+                                        />
+                                    )}
                                 </div>
                             )}
                         </div>
