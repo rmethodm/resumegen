@@ -138,4 +138,16 @@ class AdminUserControllerTest extends TestCase
 
         $this->assertDatabaseHas('users', ['id' => $target->id]);
     }
+
+    public function test_regular_user_cannot_toggle_pro(): void
+    {
+        $user   = User::factory()->create(['is_master_admin' => false]);
+        $target = User::factory()->create();
+
+        $this->actingAs($user)
+            ->patch(route('admin.users.toggle-pro', $target))
+            ->assertForbidden();
+
+        $this->assertFalse($target->fresh()->is_pro);
+    }
 }

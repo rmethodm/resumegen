@@ -14,8 +14,10 @@ class AdminUserController extends Controller
     public function index(): Response
     {
         $users = User::query()
+            ->with('subscriptions')
             ->withCount('resumes')
             ->orderBy('created_at')
+            ->orderBy('id')
             ->paginate(15)
             ->through(fn (User $user) => [
                 'id'              => $user->id,
@@ -56,6 +58,7 @@ class AdminUserController extends Controller
             return back()->with('error', 'Cannot delete a master admin.');
         }
 
+        $user->subscription('default')?->cancelNow();
         $user->delete();
 
         return back()->with('success', "{$user->name} has been deleted.");

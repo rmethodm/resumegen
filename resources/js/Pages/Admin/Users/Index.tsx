@@ -94,7 +94,6 @@ export default function AdminUsersIndex({ users, flash }: Props) {
                             <tbody className="divide-y divide-gray-200 bg-white">
                                 {users.data.map((user) => {
                                     const isProtected = user.is_master_admin;
-                                    const isPro = user.is_pro || user.subscribed;
 
                                     return (
                                         <tr key={user.id} className={user.is_master_admin ? 'bg-gray-50' : ''}>
@@ -112,19 +111,26 @@ export default function AdminUsersIndex({ users, flash }: Props) {
                                             <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{user.created_at}</td>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                 <div className="flex gap-2">
-                                                    <button
-                                                        disabled={isProtected}
-                                                        onClick={() => handleTogglePro(user)}
-                                                        className={`rounded px-3 py-1 text-xs font-medium transition ${
-                                                            isProtected
-                                                                ? 'cursor-not-allowed bg-gray-100 text-gray-400'
-                                                                : isPro
-                                                                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                                                : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                                                        }`}
-                                                    >
-                                                        {isPro ? 'Downgrade to Free' : 'Upgrade to Pro'}
-                                                    </button>
+                                                    {user.subscribed && !user.is_pro ? (
+                                                        <span className="rounded px-3 py-1 text-xs text-gray-400">
+                                                            Stripe Pro
+                                                        </span>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            disabled={isProtected}
+                                                            onClick={() => handleTogglePro(user)}
+                                                            className={`rounded px-3 py-1 text-xs font-medium transition ${
+                                                                isProtected
+                                                                    ? 'cursor-not-allowed bg-gray-100 text-gray-400'
+                                                                    : user.is_pro
+                                                                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                                    : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                                                            }`}
+                                                        >
+                                                            {user.is_pro ? 'Revoke Admin Pro' : 'Grant Admin Pro'}
+                                                        </button>
+                                                    )}
                                                     <button
                                                         disabled={isProtected}
                                                         onClick={() => setConfirmDelete(user)}
