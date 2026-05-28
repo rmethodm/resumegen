@@ -27,8 +27,9 @@ class ShareLinkController extends Controller
         abort_if($link->resume_id !== $resume->id, 403);
 
         $validated = $request->validate([
-            'label'     => ['nullable', 'string', 'max:100'],
-            'is_active' => ['required', 'boolean'],
+            'label'      => ['nullable', 'string', 'max:100'],
+            'is_active'  => ['required', 'boolean'],
+            'expires_at' => ['nullable', 'date'],
         ]);
 
         $link->update($validated);

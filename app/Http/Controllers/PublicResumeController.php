@@ -10,11 +10,15 @@ use Inertia\Response;
 
 class PublicResumeController extends Controller
 {
-    public function show(Request $request, string $token): Response
+    public function show(Request $request, string $token)
     {
         $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
 
-        abort_if(! $link->is_active, 403, 'This link has been deactivated.');
+        if (! $link->is_active || ($link->expires_at && $link->expires_at->isPast())) {
+            return Inertia::render('ResumeBuilder/LinkExpired', [
+                'reason' => ! $link->is_active ? 'deactivated' : 'expired',
+            ])->toResponse($request)->setStatusCode(410);
+        }
 
         ResumeShareEvent::log($request, $link, 'page_view');
 
@@ -28,7 +32,11 @@ class PublicResumeController extends Controller
     {
         $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
 
-        abort_if(! $link->is_active, 403, 'This link has been deactivated.');
+        abort_if(
+            ! $link->is_active || ($link->expires_at && $link->expires_at->isPast()),
+            410,
+            'This link is no longer active.'
+        );
 
         $resume = $link->resume;
         $pdf = Pdf::loadView('resume-pdf', ['resume' => $resume])->setPaper('letter', 'portrait');
@@ -47,7 +55,7 @@ class PublicResumeController extends Controller
         $validated = $request->validate([
             'sender_name'  => ['required', 'string', 'max:150'],
             'sender_email' => ['required', 'email', 'max:150'],
-            'sender_phone' => ['required', 'string', 'max:30'],
+            'sender_phone' => ['nullable', 'string', 'max:30'],
             'message'      => ['required', 'string', 'max:2000'],
         ]);
 
