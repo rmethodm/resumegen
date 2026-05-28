@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->foreignId('resume_id')->constrained()->cascadeOnDelete();
             $table->string('event', 32); // page_view | pdf_download | question_submitted
             $table->string('ip_hash', 64)->nullable();  // SHA-256 of IP
-            $table->string('user_agent')->nullable();
+            $table->string('user_agent', 500)->nullable();
             $table->string('referrer')->nullable();
             $table->timestamp('created_at')->useCurrent();
             // no updated_at — append-only

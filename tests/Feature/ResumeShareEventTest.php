@@ -21,8 +21,9 @@ class ResumeShareEventTest extends TestCase
         $this->get(route('public.resume', $link->token));
 
         $this->assertDatabaseHas('resume_share_events', [
-            'resume_id' => $resume->id,
-            'event'     => 'page_view',
+            'resume_share_link_id' => $link->id,
+            'resume_id'            => $resume->id,
+            'event'                => 'page_view',
         ]);
     }
 
@@ -35,8 +36,9 @@ class ResumeShareEventTest extends TestCase
         $this->get(route('public.pdf', $link->token));
 
         $this->assertDatabaseHas('resume_share_events', [
-            'resume_id' => $resume->id,
-            'event'     => 'pdf_download',
+            'resume_share_link_id' => $link->id,
+            'resume_id'            => $resume->id,
+            'event'                => 'pdf_download',
         ]);
     }
 
@@ -54,8 +56,9 @@ class ResumeShareEventTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('resume_share_events', [
-            'resume_id' => $resume->id,
-            'event'     => 'question_submitted',
+            'resume_share_link_id' => $link->id,
+            'resume_id'            => $resume->id,
+            'event'                => 'question_submitted',
         ]);
     }
 }

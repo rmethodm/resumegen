@@ -40,7 +40,7 @@ class ResumeShareEvent extends Model
             'resume_id'            => $link->resume_id,
             'event'                => $event,
             'ip_hash'              => $ip ? hash('sha256', $ip) : null,
-            'user_agent'           => substr((string) $request->userAgent(), 0, 500),
+            'user_agent'           => substr((string) $request->userAgent(), 0, 500) ?: null,
             'referrer'             => substr((string) $request->header('referer', ''), 0, 500) ?: null,
         ]);
     }
