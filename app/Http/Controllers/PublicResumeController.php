@@ -1,23 +1,41 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PublicResumeController extends Controller
 {
-    public function show(string $token): Response
+    public function show(Request $request, string $token): Response
     {
         $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
 
         abort_if(! $link->is_active, 403, 'This link has been deactivated.');
 
+        ResumeShareEvent::log($request, $link, 'page_view');
+
         return Inertia::render('ResumeBuilder/PublicView', [
             'resume' => $link->resume,
             'token'  => $token,
         ]);
+    }
+
+    public function downloadPdf(Request $request, string $token)
+    {
+        $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
+
+        abort_if(! $link->is_active, 403, 'This link has been deactivated.');
+
+        ResumeShareEvent::log($request, $link, 'pdf_download');
+
+        $resume = $link->resume;
+        $pdf = Pdf::loadView('resume-pdf', ['resume' => $resume])->setPaper('letter', 'portrait');
+
+        return $pdf->download($resume->pdf_filename ?? ($resume->id . '.pdf'));
     }
 
     public function storeQuestion(Request $request, string $token)
@@ -37,6 +55,8 @@ class PublicResumeController extends Controller
             ...$validated,
             'resume_id' => $link->resume_id,
         ]);
+
+        ResumeShareEvent::log($request, $link, 'question_submitted');
 
         return back()->with('questionSubmitted', true);
     }
