@@ -3,6 +3,8 @@ export interface User {
     name: string;
     email: string;
     email_verified_at?: string;
+    is_master_admin: boolean;
+    is_pro: boolean;
 }
 
 export interface Contact {
