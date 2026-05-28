@@ -70,7 +70,9 @@ class ResumeBuilderController extends Controller
 
         $validated = $request->validate([
             'name'           => ['sometimes', 'required', 'string', 'max:255'],
-            'template'       => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled'],
+            'template'       => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats'],
+            'accent_color'   => ['sometimes', 'nullable', 'in:#4f46e5,#1e3a5f,#475569,#166534,#7f1d1d,#1f2937,#0f766e,#78716c'],
+            'font_family'    => ['sometimes', 'nullable', 'in:sans,serif,mono'],
             'summary'        => ['nullable', 'string'],
             'contact'        => ['nullable', 'array'],
             'experience'     => ['nullable', 'array'],
@@ -110,7 +112,9 @@ class ResumeBuilderController extends Controller
 
         $validated = validator($data, [
             'name'           => ['sometimes', 'required', 'string', 'max:255'],
-            'template'       => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled'],
+            'template'       => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats'],
+            'accent_color'   => ['sometimes', 'nullable', 'in:#4f46e5,#1e3a5f,#475569,#166534,#7f1d1d,#1f2937,#0f766e,#78716c'],
+            'font_family'    => ['sometimes', 'nullable', 'in:sans,serif,mono'],
             'summary'        => ['nullable', 'string'],
             'contact'        => ['nullable', 'array'],
             'experience'     => ['nullable', 'array'],
@@ -133,6 +137,8 @@ class ResumeBuilderController extends Controller
             'name'           => 'Copy of ' . $resume->name,
             'pdf_filename'   => Str::uuid() . '.pdf',
             'template'       => $resume->template,
+            'accent_color'   => $resume->accent_color,
+            'font_family'    => $resume->font_family,
             'summary'        => $resume->summary,
             'contact'        => $resume->contact,
             'experience'     => $resume->experience,

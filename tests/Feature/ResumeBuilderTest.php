@@ -108,4 +108,89 @@ class ResumeBuilderTest extends TestCase
         $this->assertEquals('#166534', $resume->fresh()->accent_color);
         $this->assertEquals('serif', $resume->fresh()->font_family);
     }
+
+    public function test_new_templates_are_accepted(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        foreach (['sidebar', 'creative', 'executive', 'ats'] as $template) {
+            $this->actingAs($user)->put(route('builder.update', $resume->id), [
+                'name'     => 'Test',
+                'template' => $template,
+            ])->assertRedirect();
+
+            $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => $template]);
+        }
+    }
+
+    public function test_valid_accent_color_is_accepted(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $this->actingAs($user)->put(route('builder.update', $resume->id), [
+            'name'         => 'Test',
+            'accent_color' => '#1e3a5f',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'accent_color' => '#1e3a5f']);
+    }
+
+    public function test_invalid_accent_color_is_rejected(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $this->actingAs($user)->put(route('builder.update', $resume->id), [
+            'name'         => 'Test',
+            'accent_color' => '#ff00ff',
+        ])->assertSessionHasErrors('accent_color');
+    }
+
+    public function test_valid_font_family_is_accepted(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        foreach (['sans', 'serif', 'mono'] as $family) {
+            $this->actingAs($user)->put(route('builder.update', $resume->id), [
+                'name'        => 'Test',
+                'font_family' => $family,
+            ])->assertRedirect();
+
+            $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'font_family' => $family]);
+        }
+    }
+
+    public function test_invalid_font_family_is_rejected(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $this->actingAs($user)->put(route('builder.update', $resume->id), [
+            'name'        => 'Test',
+            'font_family' => 'comic-sans',
+        ])->assertSessionHasErrors('font_family');
+    }
+
+    public function test_duplicate_copies_new_style_fields(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create([
+            'name'         => 'Orig',
+            'pdf_filename' => 'orig.pdf',
+            'template'     => 'creative',
+            'accent_color' => '#7f1d1d',
+            'font_family'  => 'serif',
+        ]);
+
+        $this->actingAs($user)->post(route('builder.duplicate', $resume->id));
+
+        $copy = \App\Models\Resume::where('name', 'Copy of Orig')->first();
+        $this->assertNotNull($copy);
+        $this->assertEquals('creative', $copy->template);
+        $this->assertEquals('#7f1d1d', $copy->accent_color);
+        $this->assertEquals('serif', $copy->font_family);
+    }
 }
