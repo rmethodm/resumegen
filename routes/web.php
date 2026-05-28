@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\AtsScoreController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
@@ -39,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/builder/{resume}/ai-suggest', [AiSuggestController::class, 'suggest'])
         ->middleware('throttle:10,1')
         ->name('builder.ai-suggest');
+    Route::get('/builder/{resume}/ats-score', [AtsScoreController::class, 'show'])
+        ->middleware('throttle:10,1')
+        ->name('builder.ats-score');
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
