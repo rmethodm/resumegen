@@ -45,6 +45,12 @@ export default function Authenticated({
                                 >
                                     Cover Letters
                                 </NavLink>
+                                <NavLink
+                                    href={route('jobs.index')}
+                                    active={route().current('jobs.*')}
+                                >
+                                    Jobs
+                                </NavLink>
                             </div>
                         </div>
 
@@ -162,6 +168,12 @@ export default function Authenticated({
                             active={route().current('cover-letters.*')}
                         >
                             Cover Letters
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('jobs.index')}
+                            active={route().current('jobs.*')}
+                        >
+                            Jobs
                         </ResponsiveNavLink>
                     </div>
 
