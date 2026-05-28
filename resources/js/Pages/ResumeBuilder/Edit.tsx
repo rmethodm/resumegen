@@ -136,6 +136,107 @@ const FONT_FAMILY_CSS: Record<'sans' | 'serif' | 'mono', string> = {
 
 const TEMPLATES_WITHOUT_ACCENT: ResumeTemplate[] = ['executive', 'ats'];
 
+type TemplateProps = {
+    contact: Contact;
+    summary: string;
+    experience: ExperienceEntry[];
+    education: EducationEntry[];
+    skills: string[];
+    certifications: CertEntry[];
+    fontSizes: FontSizes;
+    accentColor: string;
+};
+
+function SidebarTemplate({ contact, summary, experience, education, skills, certifications, fontSizes, accentColor }: TemplateProps) {
+    return (
+        <div className="flex -m-[0.75in] min-h-[10in]">
+            <aside
+                className="w-[35%] p-6 text-white"
+                style={{ backgroundColor: accentColor }}
+            >
+                <div className="mx-auto mb-4 h-24 w-24 rounded-full bg-white/20 border border-white/40" aria-hidden="true" />
+                <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="text-center font-bold leading-tight">
+                    {contact.full_name || 'Your Name'}
+                </h1>
+                {(experience.find(e => e.title)?.title) && (
+                    <p style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-1 text-center opacity-80">
+                        {experience.find(e => e.title)?.title}
+                    </p>
+                )}
+                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-6 space-y-1 opacity-90">
+                    {contact.email && <div>{contact.email}</div>}
+                    {contact.phone && <div>{contact.phone}</div>}
+                    {contact.location && <div>{contact.location}</div>}
+                    {contact.linkedin && <div>{contact.linkedin}</div>}
+                    {contact.website && <div>{contact.website}</div>}
+                </div>
+                {skills.length > 0 && (
+                    <div className="mt-6">
+                        <div style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-widest">Skills</div>
+                        <ul style={{ fontSize: `${fontSizes.body}pt` }} className="space-y-1 opacity-90">
+                            {skills.map((s, i) => <li key={i}>{s}</li>)}
+                        </ul>
+                    </div>
+                )}
+            </aside>
+            <main className="w-[65%] p-6">
+                {summary && (
+                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                        <h2 style={{ fontSize: `${fontSizes.heading}pt`, color: accentColor }} className="mb-1 font-bold uppercase tracking-widest">Summary</h2>
+                        <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-relaxed text-gray-700">{summary}</p>
+                    </section>
+                )}
+                {experience.some(e => e.company || e.title) && (
+                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                        <h2 style={{ fontSize: `${fontSizes.heading}pt`, color: accentColor }} className="mb-2 font-bold uppercase tracking-widest">Experience</h2>
+                        {experience.filter(e => e.company || e.title).map(exp => (
+                            <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }}>
+                                <div className="flex items-baseline justify-between">
+                                    <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{exp.title || 'Job Title'}</span>
+                                    <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">
+                                        {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
+                                    </span>
+                                </div>
+                                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="font-medium text-gray-600">{exp.company}</div>
+                                {exp.bullets && (
+                                    <ul style={{ fontSize: `${fontSizes.body}pt` }} className="mt-1 list-disc pl-4 text-gray-700 space-y-0.5">
+                                        {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
+                                    </ul>
+                                )}
+                            </div>
+                        ))}
+                    </section>
+                )}
+                {education.some(e => e.school) && (
+                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                        <h2 style={{ fontSize: `${fontSizes.heading}pt`, color: accentColor }} className="mb-2 font-bold uppercase tracking-widest">Education</h2>
+                        {education.filter(e => e.school).map(edu => (
+                            <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex items-baseline justify-between">
+                                <div>
+                                    <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{edu.school}</span>
+                                    <span style={{ fontSize: `${fontSizes.contact}pt` }} className="ml-2 text-gray-600">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
+                                </div>
+                                {edu.grad_year && <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{edu.grad_year}</span>}
+                            </div>
+                        ))}
+                    </section>
+                )}
+                {certifications.some(c => c.name) && (
+                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                        <h2 style={{ fontSize: `${fontSizes.heading}pt`, color: accentColor }} className="mb-2 font-bold uppercase tracking-widest">Certifications</h2>
+                        {certifications.filter(c => c.name).map(cert => (
+                            <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex items-baseline justify-between">
+                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{cert.name}</span>
+                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
+                            </div>
+                        ))}
+                    </section>
+                )}
+            </main>
+        </div>
+    );
+}
+
 const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, body: 10, sectionSpacing: 9, entrySpacing: 3 };
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -890,7 +991,18 @@ export default function Edit({
                             </div>
                         ))}
 
-                        {template === 'minimal-ruled' ? (
+                        {template === 'sidebar' ? (
+                            <SidebarTemplate
+                                contact={contact}
+                                summary={summary}
+                                experience={experience}
+                                education={education}
+                                skills={skills}
+                                certifications={certifications}
+                                fontSizes={fontSizes}
+                                accentColor={accentColor}
+                            />
+                        ) : template === 'minimal-ruled' ? (
                             <>
                                 {/* Minimal Ruled Header */}
                                 <div className="mb-10 pb-6 border-b border-gray-200">
