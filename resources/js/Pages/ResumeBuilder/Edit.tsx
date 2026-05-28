@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
 import AISuggestButton from '@/Components/AISuggestButton';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { TagIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
     DndContext, closestCenter, PointerSensor, useSensor, useSensors,
@@ -546,6 +546,15 @@ export default function Edit({
         setOpenSections(s => ({ ...s, [key]: !s[key] }));
 
     const linkForm = useForm({ label: '' });
+    const [editingLinkId, setEditingLinkId] = useState<number | null>(null);
+    const [editingLinkLabel, setEditingLinkLabel] = useState('');
+    const saveLabel = useCallback((linkId: number) => {
+        router.patch(
+            route('share.update', [resume.id, linkId]),
+            { label: editingLinkLabel } as any,
+            { preserveScroll: true, preserveState: true, onSuccess: () => setEditingLinkId(null) }
+        );
+    }, [resume.id, editingLinkLabel]);
 
     const previewRef = useRef<HTMLDivElement>(null);
     const PAGE_HEIGHT_PX = 1056; // 11in at 96dpi
@@ -1288,7 +1297,43 @@ export default function Edit({
                                                         {link.is_active ? 'Active' : 'Revoked'}
                                                     </span>
                                                     <span className="text-gray-500 truncate">/r/{link.token.slice(0, 12)}…</span>
-                                                    {link.label && <span className="text-gray-400 truncate">— {link.label}</span>}
+                                                    {editingLinkId === link.id ? (
+                                                        <div className="flex items-center gap-1 min-w-0">
+                                                            <input
+                                                                autoFocus
+                                                                type="text"
+                                                                value={editingLinkLabel}
+                                                                onChange={e => setEditingLinkLabel(e.target.value)}
+                                                                onKeyDown={e => {
+                                                                    if (e.key === 'Enter') saveLabel(link.id);
+                                                                    if (e.key === 'Escape') setEditingLinkId(null);
+                                                                }}
+                                                                className="rounded border-gray-300 text-xs py-0.5 px-1.5 w-32 focus:border-indigo-400 focus:ring-indigo-400"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => saveLabel(link.id)}
+                                                                className="rounded bg-indigo-600 px-2 py-0.5 text-[10px] font-medium text-white hover:bg-indigo-700"
+                                                            >Save</button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setEditingLinkId(null)}
+                                                                className="rounded border border-gray-200 bg-white px-2 py-0.5 text-[10px] text-gray-500 hover:bg-gray-50"
+                                                            >✕</button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-1">
+                                                            {link.label && <span className="text-gray-400 truncate">— {link.label}</span>}
+                                                            <button
+                                                                type="button"
+                                                                title="Edit label"
+                                                                onClick={() => { setEditingLinkId(link.id); setEditingLinkLabel(link.label ?? ''); }}
+                                                                className="text-gray-300 hover:text-gray-500"
+                                                            >
+                                                                <TagIcon className="h-3.5 w-3.5" />
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center gap-2 shrink-0">
                                                     <button
