@@ -10,9 +10,12 @@ use Illuminate\Support\Str;
 class ResumeShareLink extends Model
 {
     use HasFactory;
-    protected $fillable = ['resume_id', 'token', 'label', 'is_active'];
+    protected $fillable = ['resume_id', 'token', 'label', 'is_active', 'expires_at'];
 
-    protected $casts = ['is_active' => 'boolean'];
+    protected $casts = [
+        'is_active'  => 'boolean',
+        'expires_at' => 'datetime',
+    ];
 
     protected $attributes = [
         'is_active' => true,
