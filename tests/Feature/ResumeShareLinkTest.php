@@ -1,8 +1,7 @@
 <?php
+
 namespace Tests\Feature;
 
-use App\Models\Resume;
-use App\Models\ResumeShareLink;
 use App\Models\ResumeQuestion;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -1,0 +1,141 @@
+<h2>Two-Column Sidebar Layout</h2>
+<p class="subtitle">How should the sidebar be structured? This is the most popular alternative to single-column resumes.</p>
+
+<div class="cards">
+  <div class="card" data-choice="left-sidebar-contact" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;gap:0;height:220px;font-size:11px;background:#fff;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
+        <!-- Left sidebar -->
+        <div style="width:35%;background:#4f46e5;color:#fff;padding:12px 10px;display:flex;flex-direction:column;gap:8px;">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.3);margin:0 auto 4px;"></div>
+          <div style="height:6px;background:rgba(255,255,255,0.7);border-radius:3px;width:80%;margin:0 auto;"></div>
+          <div style="height:4px;background:rgba(255,255,255,0.4);border-radius:3px;width:60%;margin:0 auto;"></div>
+          <div style="margin-top:6px;">
+            <div style="height:3px;background:rgba(255,255,255,0.5);border-radius:2px;width:50%;margin-bottom:4px;"></div>
+            <div style="height:3px;background:rgba(255,255,255,0.3);border-radius:2px;width:80%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:rgba(255,255,255,0.3);border-radius:2px;width:70%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:rgba(255,255,255,0.3);border-radius:2px;width:75%;"></div>
+          </div>
+          <div style="margin-top:4px;">
+            <div style="height:3px;background:rgba(255,255,255,0.5);border-radius:2px;width:50%;margin-bottom:4px;"></div>
+            <div style="height:3px;background:rgba(255,255,255,0.3);border-radius:2px;width:70%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:rgba(255,255,255,0.3);border-radius:2px;width:60%;"></div>
+          </div>
+        </div>
+        <!-- Right main -->
+        <div style="flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:8px;">
+          <div>
+            <div style="height:3px;background:#6366f1;border-radius:2px;width:40%;margin-bottom:5px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:90%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:80%;"></div>
+          </div>
+          <div>
+            <div style="height:3px;background:#6366f1;border-radius:2px;width:40%;margin-bottom:5px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:85%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:75%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:80%;"></div>
+          </div>
+          <div>
+            <div style="height:3px;background:#6366f1;border-radius:2px;width:40%;margin-bottom:5px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:90%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:70%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Colored sidebar, contact + skills left</h3>
+      <p>Accent-colored left column (35%) holds photo placeholder, contact info, and skills. Experience and education on the right. Bold, modern feel.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="right-sidebar" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;gap:0;height:220px;font-size:11px;background:#fff;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
+        <!-- Left main -->
+        <div style="flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:8px;">
+          <div>
+            <div style="height:6px;background:#111;border-radius:2px;width:60%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#9ca3af;border-radius:2px;width:45%;margin-bottom:8px;"></div>
+            <div style="height:3px;background:#374151;border-radius:2px;width:35%;margin-bottom:5px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:90%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:80%;"></div>
+          </div>
+          <div>
+            <div style="height:3px;background:#374151;border-radius:2px;width:35%;margin-bottom:5px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:85%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:75%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:80%;"></div>
+          </div>
+        </div>
+        <!-- Right sidebar -->
+        <div style="width:32%;background:#f9fafb;border-left:1px solid #e5e7eb;padding:12px 10px;display:flex;flex-direction:column;gap:8px;">
+          <div>
+            <div style="height:3px;background:#374151;border-radius:2px;width:60%;margin-bottom:4px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:80%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:70%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:75%;"></div>
+          </div>
+          <div>
+            <div style="height:3px;background:#374151;border-radius:2px;width:60%;margin-bottom:4px;"></div>
+            <div style="height:6px;background:#6366f1;border-radius:3px;width:90%;margin-bottom:3px;"></div>
+            <div style="height:6px;background:#6366f1;border-radius:3px;width:70%;margin-bottom:3px;"></div>
+            <div style="height:6px;background:#6366f1;border-radius:3px;width:80%;"></div>
+          </div>
+          <div>
+            <div style="height:3px;background:#374151;border-radius:2px;width:60%;margin-bottom:4px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:80%;margin-bottom:3px;"></div>
+            <div style="height:3px;background:#e5e7eb;border-radius:2px;width:60%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Light sidebar right, experience left</h3>
+      <p>Experience and summary dominate the left (main) column. Light gray right sidebar (32%) holds contact, skills with bar indicators, and education. Professional and ATS-friendly.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="top-banner-two-col" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="height:220px;font-size:11px;background:#fff;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;display:flex;flex-direction:column;">
+        <!-- Top banner header -->
+        <div style="background:#111;color:#fff;padding:10px 12px;">
+          <div style="height:7px;background:rgba(255,255,255,0.9);border-radius:3px;width:45%;margin-bottom:4px;"></div>
+          <div style="height:3px;background:rgba(255,255,255,0.5);border-radius:2px;width:60%;"></div>
+        </div>
+        <!-- Two columns below header -->
+        <div style="display:flex;flex:1;gap:0;">
+          <div style="flex:1;padding:10px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid #e5e7eb;">
+            <div>
+              <div style="height:3px;background:#111;border-radius:2px;width:40%;margin-bottom:4px;"></div>
+              <div style="height:3px;background:#e5e7eb;border-radius:2px;width:90%;margin-bottom:3px;"></div>
+              <div style="height:3px;background:#e5e7eb;border-radius:2px;width:80%;"></div>
+            </div>
+            <div>
+              <div style="height:3px;background:#111;border-radius:2px;width:40%;margin-bottom:4px;"></div>
+              <div style="height:3px;background:#e5e7eb;border-radius:2px;width:85%;margin-bottom:3px;"></div>
+              <div style="height:3px;background:#e5e7eb;border-radius:2px;width:75%;"></div>
+            </div>
+          </div>
+          <div style="width:38%;padding:10px 10px;display:flex;flex-direction:column;gap:7px;">
+            <div>
+              <div style="height:3px;background:#111;border-radius:2px;width:50%;margin-bottom:4px;"></div>
+              <div style="height:3px;background:#e5e7eb;border-radius:2px;width:80%;margin-bottom:3px;"></div>
+              <div style="height:3px;background:#e5e7eb;border-radius:2px;width:70%;"></div>
+            </div>
+            <div>
+              <div style="height:3px;background:#111;border-radius:2px;width:50%;margin-bottom:4px;"></div>
+              <div style="height:3px;background:#e5e7eb;border-radius:2px;width:75%;margin-bottom:3px;"></div>
+              <div style="height:3px;background:#e5e7eb;border-radius:2px;width:65%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Full-width header banner + two columns below</h3>
+      <p>Bold dark header spans full width with name and title. Two equal-ish columns below split experience/summary (left) from education/skills/contact (right). Dramatic and clean.</p>
+    </div>
+  </div>
+</div>

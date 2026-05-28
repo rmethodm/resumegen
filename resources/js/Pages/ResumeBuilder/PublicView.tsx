@@ -37,6 +37,14 @@ export default function PublicView({ resume, token }: Props) {
             <Head title={`${resume.name} — Resume`} />
 
             <div className="min-h-screen bg-gray-50 py-10">
+                <div className="mx-auto max-w-[8.5in] mb-3 flex justify-end">
+                    <a
+                        href={route('public.pdf', token)}
+                        className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
+                    >
+                        Download PDF
+                    </a>
+                </div>
                 <div className="mx-auto max-w-[8.5in] bg-white shadow-lg px-[0.75in] py-[0.75in]" style={{ minHeight: '11in' }}>
 
                     {/* Header */}
@@ -170,7 +178,7 @@ export default function PublicView({ resume, token }: Props) {
                                     {form.errors.sender_email && <p className="text-xs text-red-500">{form.errors.sender_email}</p>}
                                 </div>
                                 <div className="flex flex-col gap-1">
-                                    <label htmlFor="sender_phone" className="text-xs font-medium text-gray-600">Phone *</label>
+                                    <label htmlFor="sender_phone" className="text-xs font-medium text-gray-600">Phone</label>
                                     <input
                                         id="sender_phone"
                                         type="tel"

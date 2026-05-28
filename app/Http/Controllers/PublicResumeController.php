@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Mail\NewQuestionReceived;
@@ -8,7 +9,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class PublicResumeController extends Controller
 {
@@ -26,7 +26,7 @@ class PublicResumeController extends Controller
 
         return Inertia::render('ResumeBuilder/PublicView', [
             'resume' => $link->resume,
-            'token'  => $token,
+            'token' => $token,
         ]);
     }
 
@@ -45,7 +45,7 @@ class PublicResumeController extends Controller
 
         ResumeShareEvent::log($request, $link, 'pdf_download');
 
-        return $pdf->download($resume->pdf_filename ?? ($resume->id . '.pdf'));
+        return $pdf->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
     }
 
     public function storeQuestion(Request $request, string $token)
@@ -59,10 +59,10 @@ class PublicResumeController extends Controller
         );
 
         $validated = $request->validate([
-            'sender_name'  => ['required', 'string', 'max:150'],
+            'sender_name' => ['required', 'string', 'max:150'],
             'sender_email' => ['required', 'email', 'max:150'],
             'sender_phone' => ['nullable', 'string', 'max:30'],
-            'message'      => ['required', 'string', 'max:2000'],
+            'message' => ['required', 'string', 'max:2000'],
         ]);
 
         $question = $link->questions()->create([

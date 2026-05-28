@@ -1,8 +1,9 @@
 <?php
+
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Resume;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,7 +17,7 @@ class ResumeBuilderTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $response = $this->actingAs($user)->put(route('builder.update', $resume->id), [
-            'name'     => 'Test',
+            'name' => 'Test',
             'template' => 'minimal-ruled',
         ]);
 
@@ -30,7 +31,7 @@ class ResumeBuilderTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $response = $this->actingAs($user)->put(route('builder.update', $resume->id), [
-            'name'     => 'Test',
+            'name' => 'Test',
             'template' => 'not-a-real-template',
         ]);
 
@@ -41,10 +42,10 @@ class ResumeBuilderTest extends TestCase
     {
         $user = User::factory()->create();
         $resume = $user->resumes()->create([
-            'name'         => 'My CV',
+            'name' => 'My CV',
             'pdf_filename' => 'my-cv.pdf',
-            'summary'      => 'A great developer.',
-            'skills'       => ['PHP', 'React'],
+            'summary' => 'A great developer.',
+            'skills' => ['PHP', 'React'],
         ]);
 
         $response = $this->actingAs($user)
@@ -99,10 +100,10 @@ class ResumeBuilderTest extends TestCase
     {
         $user = User::factory()->create();
         $resume = $user->resumes()->create([
-            'name'         => 'Test',
+            'name' => 'Test',
             'pdf_filename' => 'test.pdf',
             'accent_color' => '#166534',
-            'font_family'  => 'serif',
+            'font_family' => 'serif',
         ]);
 
         $this->assertEquals('#166534', $resume->fresh()->accent_color);
@@ -116,7 +117,7 @@ class ResumeBuilderTest extends TestCase
 
         foreach (['sidebar', 'creative', 'executive', 'ats'] as $template) {
             $this->actingAs($user)->put(route('builder.update', $resume->id), [
-                'name'     => 'Test',
+                'name' => 'Test',
                 'template' => $template,
             ])->assertRedirect();
 
@@ -130,7 +131,7 @@ class ResumeBuilderTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $this->actingAs($user)->put(route('builder.update', $resume->id), [
-            'name'         => 'Test',
+            'name' => 'Test',
             'accent_color' => '#1e3a5f',
         ])->assertRedirect();
 
@@ -143,7 +144,7 @@ class ResumeBuilderTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $this->actingAs($user)->put(route('builder.update', $resume->id), [
-            'name'         => 'Test',
+            'name' => 'Test',
             'accent_color' => '#ff00ff',
         ])->assertSessionHasErrors('accent_color');
     }
@@ -155,7 +156,7 @@ class ResumeBuilderTest extends TestCase
 
         foreach (['sans', 'serif', 'mono'] as $family) {
             $this->actingAs($user)->put(route('builder.update', $resume->id), [
-                'name'        => 'Test',
+                'name' => 'Test',
                 'font_family' => $family,
             ])->assertRedirect();
 
@@ -169,7 +170,7 @@ class ResumeBuilderTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $this->actingAs($user)->put(route('builder.update', $resume->id), [
-            'name'        => 'Test',
+            'name' => 'Test',
             'font_family' => 'comic-sans',
         ])->assertSessionHasErrors('font_family');
     }
@@ -178,16 +179,16 @@ class ResumeBuilderTest extends TestCase
     {
         $user = User::factory()->create();
         $resume = $user->resumes()->create([
-            'name'         => 'Orig',
+            'name' => 'Orig',
             'pdf_filename' => 'orig.pdf',
-            'template'     => 'creative',
+            'template' => 'creative',
             'accent_color' => '#7f1d1d',
-            'font_family'  => 'serif',
+            'font_family' => 'serif',
         ]);
 
         $this->actingAs($user)->post(route('builder.duplicate', $resume->id));
 
-        $copy = \App\Models\Resume::where('name', 'Copy of Orig')->first();
+        $copy = Resume::where('name', 'Copy of Orig')->first();
         $this->assertNotNull($copy);
         $this->assertEquals('creative', $copy->template);
         $this->assertEquals('#7f1d1d', $copy->accent_color);

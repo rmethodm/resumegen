@@ -1,0 +1,77 @@
+<h2>AI Suggestion UX — Where does it appear?</h2>
+<p class="subtitle">How should AI writing help surface in the editor?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="inline-popover" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f9fafb;padding:14px;font-family:sans-serif;font-size:11px">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:8px;margin-bottom:8px">
+        <div style="font-size:9px;color:#6b7280;margin-bottom:4px">Professional Summary</div>
+        <div style="border:1px solid #6366f1;border-radius:4px;padding:6px;font-size:10px;color:#374151;background:#fff">Results-driven engineer with 8 years…</div>
+        <div style="margin-top:6px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:6px;padding:8px">
+          <div style="font-size:9px;font-weight:600;color:#4f46e5;margin-bottom:4px">✦ AI Suggestion</div>
+          <div style="font-size:9px;color:#374151;line-height:1.5;margin-bottom:6px">"Seasoned software engineer with 8+ years delivering high-impact solutions across fintech and SaaS platforms, known for translating complex requirements into clean, scalable code."</div>
+          <div style="display:flex;gap:6px">
+            <button style="background:#4f46e5;color:white;border:none;border-radius:4px;padding:3px 8px;font-size:9px;cursor:pointer">Use this</button>
+            <button style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:3px 8px;font-size:9px;cursor:pointer">Try again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Inline Popover</h3>
+      <p>A "✦ Suggest" button appears next to each AI-enabled field. Click it, suggestion pops up directly below the field. Accept or regenerate.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="side-panel" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f9fafb;padding:0;font-family:sans-serif;font-size:11px;display:flex;height:160px;overflow:hidden">
+      <div style="flex:1;padding:10px;border-right:1px solid #e5e7eb">
+        <div style="font-size:9px;color:#6b7280;margin-bottom:3px">Professional Summary</div>
+        <div style="border:1px solid #d1d5db;border-radius:4px;padding:5px;font-size:9px;color:#374151;height:40px">Results-driven engineer…</div>
+        <div style="font-size:9px;color:#6b7280;margin-top:8px;margin-bottom:3px">Skills</div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px">
+          <span style="background:#ede9fe;color:#5b21b6;border-radius:10px;padding:2px 7px;font-size:8px">React</span>
+          <span style="background:#ede9fe;color:#5b21b6;border-radius:10px;padding:2px 7px;font-size:8px">Node.js</span>
+          <span style="background:#ede9fe;color:#5b21b6;border-radius:10px;padding:2px 7px;font-size:8px">+ Add</span>
+        </div>
+      </div>
+      <div style="width:130px;background:#1e1b4b;padding:10px;overflow:hidden">
+        <div style="font-size:9px;color:#a5b4fc;font-weight:600;margin-bottom:6px">✦ AI Assistant</div>
+        <div style="font-size:8px;color:#c7d2fe;margin-bottom:6px">Suggested summary rewrites:</div>
+        <div style="background:#312e81;border-radius:4px;padding:5px;font-size:8px;color:#e0e7ff;margin-bottom:4px;cursor:pointer">→ "Seasoned engineer with…"</div>
+        <div style="background:#312e81;border-radius:4px;padding:5px;font-size:8px;color:#e0e7ff;margin-bottom:6px;cursor:pointer">→ "Analytical problem-solver…"</div>
+        <div style="font-size:8px;color:#a5b4fc;margin-bottom:4px">Suggested skills to add:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:2px">
+          <span style="background:#3730a3;color:#c7d2fe;border-radius:8px;padding:2px 5px;font-size:7px">+ TypeScript</span>
+          <span style="background:#3730a3;color:#c7d2fe;border-radius:8px;padding:2px 5px;font-size:7px">+ Docker</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Persistent Side Panel</h3>
+      <p>A collapsible AI panel lives on the right edge of the form. Always available, shows context-aware suggestions as you edit each section.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="floating-button" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f9fafb;padding:14px;font-family:sans-serif;font-size:11px;position:relative">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:8px;margin-bottom:8px">
+        <div style="font-size:9px;color:#6b7280;margin-bottom:4px">Professional Summary</div>
+        <div style="border:1px solid #d1d5db;border-radius:4px;padding:6px;font-size:10px;color:#374151;background:#fff">Results-driven engineer with 8 years building…</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:8px">
+        <div style="font-size:9px;color:#6b7280;margin-bottom:4px">Skills</div>
+        <div style="font-size:9px;color:#9ca3af">React, TypeScript, Node.js…</div>
+      </div>
+      <div style="position:absolute;bottom:14px;right:14px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-radius:20px;padding:6px 12px;font-size:9px;font-weight:600;box-shadow:0 4px 12px rgba(79,70,229,0.4);cursor:pointer">
+        ✦ Improve with AI
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Floating "Improve" Button</h3>
+      <p>A floating action button in the form panel. Click it to open a modal that shows AI suggestions for whichever section you last edited.</p>
+    </div>
+  </div>
+
+</div>

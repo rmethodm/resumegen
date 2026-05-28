@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Feature;
 
 use App\Models\Resume;
@@ -20,15 +21,15 @@ class AnalyticsControllerTest extends TestCase
 
         ResumeShareEvent::create([
             'resume_share_link_id' => $link->id,
-            'resume_id'            => $resume->id,
-            'event'                => 'page_view',
-            'ip_hash'              => hash('sha256', '1.2.3.4'),
+            'resume_id' => $resume->id,
+            'event' => 'page_view',
+            'ip_hash' => hash('sha256', '1.2.3.4'),
         ]);
         ResumeShareEvent::create([
             'resume_share_link_id' => $link->id,
-            'resume_id'            => $resume->id,
-            'event'                => 'pdf_download',
-            'ip_hash'              => hash('sha256', '1.2.3.4'),
+            'resume_id' => $resume->id,
+            'event' => 'pdf_download',
+            'ip_hash' => hash('sha256', '1.2.3.4'),
         ]);
 
         $response = $this->actingAs($user)->get(route('dashboard'));
@@ -52,9 +53,9 @@ class AnalyticsControllerTest extends TestCase
 
         ResumeShareEvent::create([
             'resume_share_link_id' => $link->id,
-            'resume_id'            => $otherResume->id,
-            'event'                => 'page_view',
-            'ip_hash'              => hash('sha256', '9.9.9.9'),
+            'resume_id' => $otherResume->id,
+            'event' => 'page_view',
+            'ip_hash' => hash('sha256', '9.9.9.9'),
         ]);
 
         $response = $this->actingAs($user)->get(route('dashboard'));

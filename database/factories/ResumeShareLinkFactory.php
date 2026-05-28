@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Factories;
 
 use App\Models\Resume;
@@ -11,8 +12,8 @@ class ResumeShareLinkFactory extends Factory
     {
         return [
             'resume_id' => Resume::factory(),
-            'token'     => Str::random(48),
-            'label'     => null,
+            'token' => Str::random(48),
+            'label' => null,
             'is_active' => true,
         ];
     }

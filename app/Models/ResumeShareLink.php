@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,10 +11,11 @@ use Illuminate\Support\Str;
 class ResumeShareLink extends Model
 {
     use HasFactory;
+
     protected $fillable = ['resume_id', 'token', 'label', 'is_active', 'expires_at'];
 
     protected $casts = [
-        'is_active'  => 'boolean',
+        'is_active' => 'boolean',
         'expires_at' => 'datetime',
     ];
 

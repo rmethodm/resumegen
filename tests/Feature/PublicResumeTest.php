@@ -1,7 +1,7 @@
 <?php
+
 namespace Tests\Feature;
 
-use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,6 +16,7 @@ class PublicResumeTest extends TestCase
     {
         $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'My CV', 'pdf_filename' => 'cv.pdf']);
+
         return $resume->shareLinks()->create(['is_active' => $active]);
     }
 
@@ -35,15 +36,15 @@ class PublicResumeTest extends TestCase
     {
         $link = $this->makeLink(true);
         $this->post(route('public.question', $link->token), [
-            'sender_name'  => 'Bob',
+            'sender_name' => 'Bob',
             'sender_email' => 'bob@example.com',
             'sender_phone' => '555-9999',
-            'message'      => 'Are you available to start next week?',
+            'message' => 'Are you available to start next week?',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('resume_questions', [
             'sender_name' => 'Bob',
-            'resume_id'   => $link->resume_id,
+            'resume_id' => $link->resume_id,
         ]);
     }
 
@@ -59,15 +60,15 @@ class PublicResumeTest extends TestCase
     {
         $link = $this->makeLink(true);
         $this->post(route('public.question', $link->token), [
-            'sender_name'  => 'Alice',
+            'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
-            'message'      => 'Hello, I am interested.',
+            'message' => 'Hello, I am interested.',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('resume_questions', [
-            'sender_name'  => 'Alice',
+            'sender_name' => 'Alice',
             'sender_phone' => null,
-            'resume_id'    => $link->resume_id,
+            'resume_id' => $link->resume_id,
         ]);
     }
 
@@ -101,9 +102,9 @@ class PublicResumeTest extends TestCase
         $link->update(['expires_at' => now()->subDay()]);
 
         $this->post(route('public.question', $link->token), [
-            'sender_name'  => 'Alice',
+            'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
-            'message'      => 'Hi',
+            'message' => 'Hi',
         ])->assertStatus(410);
     }
 
@@ -113,9 +114,9 @@ class PublicResumeTest extends TestCase
 
         $link = $this->makeLink(true);
         $payload = [
-            'sender_name'  => 'Spammer',
+            'sender_name' => 'Spammer',
             'sender_email' => 'spam@example.com',
-            'message'      => 'Buy my stuff',
+            'message' => 'Buy my stuff',
         ];
 
         for ($i = 0; $i < 5; $i++) {

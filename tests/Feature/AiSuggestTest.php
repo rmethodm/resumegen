@@ -1,7 +1,7 @@
 <?php
+
 namespace Tests\Feature;
 
-use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -17,8 +17,8 @@ class AiSuggestTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $response = $this->postJson(route('builder.ai-suggest', $resume->id), [
-            'field'    => 'summary',
-            'context'  => ['summary' => 'I am a developer'],
+            'field' => 'summary',
+            'context' => ['summary' => 'I am a developer'],
             'provider' => 'claude',
         ]);
 
@@ -33,8 +33,8 @@ class AiSuggestTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $response = $this->actingAs($user)->postJson(route('builder.ai-suggest', $resume->id), [
-            'field'    => 'summary',
-            'context'  => ['summary' => 'I am a developer'],
+            'field' => 'summary',
+            'context' => ['summary' => 'I am a developer'],
             'provider' => 'claude',
         ]);
 
@@ -59,8 +59,8 @@ class AiSuggestTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $response = $this->actingAs($user)->postJson(route('builder.ai-suggest', $resume->id), [
-            'field'    => 'summary',
-            'context'  => ['summary' => 'I am a developer'],
+            'field' => 'summary',
+            'context' => ['summary' => 'I am a developer'],
             'provider' => 'claude',
         ]);
 
@@ -77,11 +77,28 @@ class AiSuggestTest extends TestCase
         $resume = $owner->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $response = $this->actingAs($other)->postJson(route('builder.ai-suggest', $resume->id), [
-            'field'    => 'summary',
-            'context'  => ['summary' => 'hi'],
+            'field' => 'summary',
+            'context' => ['summary' => 'hi'],
             'provider' => 'claude',
         ]);
 
         $response->assertStatus(403);
+    }
+
+    public function test_openai_missing_api_key_returns_422(): void
+    {
+        config(['services.openai.key' => null]);
+
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $response = $this->actingAs($user)->postJson(route('builder.ai-suggest', $resume->id), [
+            'field' => 'summary',
+            'context' => ['summary' => 'I am a developer'],
+            'provider' => 'openai',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJson(['error' => 'API key not configured']);
     }
 }

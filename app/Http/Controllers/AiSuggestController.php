@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
@@ -14,14 +15,14 @@ class AiSuggestController extends Controller
         $this->authorize('update', $resume);
 
         $validated = $request->validate([
-            'field'              => ['required', 'in:summary,bullets,skills,title'],
-            'context'            => ['required', 'array'],
-            'context.summary'    => ['nullable', 'string'],
-            'context.title'      => ['nullable', 'string'],
-            'context.company'    => ['nullable', 'string'],
-            'context.bullets'    => ['nullable', 'string'],
-            'context.skills'     => ['nullable', 'array'],
-            'provider'           => ['required', 'in:claude,openai'],
+            'field' => ['required', 'in:summary,bullets,skills,title'],
+            'context' => ['required', 'array'],
+            'context.summary' => ['nullable', 'string'],
+            'context.title' => ['nullable', 'string'],
+            'context.company' => ['nullable', 'string'],
+            'context.bullets' => ['nullable', 'string'],
+            'context.skills' => ['nullable', 'array'],
+            'provider' => ['required', 'in:claude,openai'],
         ]);
 
         if ($validated['provider'] === 'claude') {
@@ -34,17 +35,27 @@ class AiSuggestController extends Controller
     private function buildPrompt(string $field, array $context): string
     {
         $contextStr = '';
-        if (!empty($context['title']))   $contextStr .= "Job title: {$context['title']}\n";
-        if (!empty($context['company'])) $contextStr .= "Company: {$context['company']}\n";
-        if (!empty($context['summary'])) $contextStr .= "Current summary: {$context['summary']}\n";
-        if (!empty($context['bullets'])) $contextStr .= "Current bullets:\n{$context['bullets']}\n";
-        if (!empty($context['skills']))  $contextStr .= "Current skills: " . implode(', ', $context['skills']) . "\n";
+        if (! empty($context['title'])) {
+            $contextStr .= "Job title: {$context['title']}\n";
+        }
+        if (! empty($context['company'])) {
+            $contextStr .= "Company: {$context['company']}\n";
+        }
+        if (! empty($context['summary'])) {
+            $contextStr .= "Current summary: {$context['summary']}\n";
+        }
+        if (! empty($context['bullets'])) {
+            $contextStr .= "Current bullets:\n{$context['bullets']}\n";
+        }
+        if (! empty($context['skills'])) {
+            $contextStr .= 'Current skills: '.implode(', ', $context['skills'])."\n";
+        }
 
-        $instructions = match($field) {
+        $instructions = match ($field) {
             'summary' => 'Rewrite the professional summary to be more compelling and achievement-focused. Return exactly 3 alternative versions.',
             'bullets' => 'Rewrite each bullet point to start with a strong action verb and include measurable impact where possible. Return exactly 3 alternative full bullet sets, each as a single string with bullets separated by newlines.',
-            'skills'  => 'Suggest 5 additional relevant skills based on the job title, company, and existing skills. Return exactly 5 short skill names.',
-            'title'   => 'Suggest 3 alternative job title phrasings that sound more impactful and senior. Return exactly 3 short titles.',
+            'skills' => 'Suggest 5 additional relevant skills based on the job title, company, and existing skills. Return exactly 5 short skill names.',
+            'title' => 'Suggest 3 alternative job title phrasings that sound more impactful and senior. Return exactly 3 short titles.',
         };
 
         return "You are a professional resume writer. {$instructions}\n\n{$contextStr}\nRespond with a JSON array of strings only. No markdown, no explanation.";
@@ -53,24 +64,24 @@ class AiSuggestController extends Controller
     private function suggestWithClaude(string $field, array $context): JsonResponse
     {
         $apiKey = config('services.anthropic.key');
-        if (!$apiKey) {
+        if (! $apiKey) {
             return response()->json(['error' => 'API key not configured'], 422);
         }
 
         $response = Http::withHeaders([
-            'x-api-key'         => $apiKey,
+            'x-api-key' => $apiKey,
             'anthropic-version' => '2023-06-01',
-            'content-type'      => 'application/json',
+            'content-type' => 'application/json',
         ])->post('https://api.anthropic.com/v1/messages', [
-            'model'      => 'claude-sonnet-4-6',
+            'model' => 'claude-sonnet-4-6',
             'max_tokens' => 400,
-            'messages'   => [[
-                'role'    => 'user',
+            'messages' => [[
+                'role' => 'user',
                 'content' => $this->buildPrompt($field, $context),
             ]],
         ]);
 
-        if (!$response->ok()) {
+        if (! $response->ok()) {
             return response()->json(['error' => 'AI request failed'], 502);
         }
 
@@ -82,18 +93,18 @@ class AiSuggestController extends Controller
 
     private function suggestWithOpenAI(string $field, array $context): JsonResponse
     {
-        $apiKey = env('OPENAI_API_KEY');
-        if (!$apiKey) {
+        $apiKey = config('services.openai.key');
+        if (! $apiKey) {
             return response()->json(['error' => 'API key not configured'], 422);
         }
 
         $client = OpenAI::client($apiKey);
 
         $result = $client->chat()->create([
-            'model'      => 'gpt-4o',
+            'model' => 'gpt-4o',
             'max_tokens' => 400,
-            'messages'   => [[
-                'role'    => 'user',
+            'messages' => [[
+                'role' => 'user',
                 'content' => $this->buildPrompt($field, $context),
             ]],
         ]);

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
@@ -41,11 +42,11 @@ class AnalyticsController extends Controller
             $byType = $events->pluck('total', 'event');
 
             return [
-                'resume_id'           => $resume->id,
-                'resume_name'         => $resume->name,
-                'page_views'          => (int) ($byType['page_view'] ?? 0),
-                'unique_visitors'     => (int) ($uniqueVisitors[$resume->id] ?? 0),
-                'pdf_downloads'       => (int) ($byType['pdf_download'] ?? 0),
+                'resume_id' => $resume->id,
+                'resume_name' => $resume->name,
+                'page_views' => (int) ($byType['page_view'] ?? 0),
+                'unique_visitors' => (int) ($uniqueVisitors[$resume->id] ?? 0),
+                'pdf_downloads' => (int) ($byType['pdf_download'] ?? 0),
                 'questions_submitted' => (int) ($byType['question_submitted'] ?? 0),
             ];
         });

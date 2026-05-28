@@ -10,6 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **PDF:** `barryvdh/laravel-dompdf` — route `GET /builder/{resume}/pdf` triggers server-side generation via `resources/views/resume-pdf.blade.php`
 - **Media:** `spatie/laravel-medialibrary` (installed, migration exists, not yet used)
 - **Routing on the frontend:** Ziggy (`route()` helper available globally in React via `resources/js/types/global.d.ts`)
+- **AI suggestions:** `openai-php/client` for OpenAI; raw `Http::post` for Anthropic Claude — keys in `config/services.php` (`services.anthropic.key`, `services.openai.key`). Never call `env()` directly in app code; always use `config()`.
 
 ## Commands
 
@@ -49,7 +50,7 @@ php artisan migrate:fresh --seed
 All routes return Inertia responses — there are no Blade views beyond the single `resources/views/app.blade.php` root template. Laravel serialises props as JSON, Inertia hydrates the matching React page component.
 
 ### Resume data model
-All resume content is stored as JSON columns on a single `resumes` table (no separate section tables). The `Resume` model casts `contact`, `experience`, `education`, `skills`, and `certifications` to arrays automatically. The frontend owns the shape of these JSON blobs; the backend validates them as `nullable array`.
+All resume content is stored as JSON columns on a single `resumes` table (no separate section tables). The `Resume` model casts `contact`, `experience`, `education`, `skills`, `certifications`, and `font_sizes` to arrays automatically. The frontend owns the shape of these JSON blobs; the backend validates them as `nullable array`.
 
 ### Authorization
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses the `AuthorizesRequests` trait so `$this->authorize()` is available everywhere.
@@ -67,10 +68,23 @@ Use Ziggy's `route('named.route', params)` helper — it's globally typed in `re
 `npm run build` runs `tsc` (type-check) then `vite build`. Output lands in `public/build/`. Always rebuild after editing frontend files when not running `npm run dev`.
 
 ### Share links and public view
-`ResumeShareLink` stores a 48-char random token (auto-generated in `booted()`). The public route `/r/{token}` is unauthenticated and renders `ResumeBuilder/PublicView.tsx` via `PublicLayout`. Questions submitted via the public view are stored in `resume_questions` and shown in the collapsible "Questions" panel on the Edit page.
+`ResumeShareLink` stores a 48-char random token (auto-generated in `booted()`). The public route `/r/{token}` is unauthenticated and renders `ResumeBuilder/PublicView.tsx` via `PublicLayout`. Questions submitted via the public view are stored in `resume_questions` and shown in the collapsible "Questions" panel on the Edit page. `sender_phone` is optional on the question form.
+
+### Analytics
+`ResumeShareEvent` is an append-only table (no `updated_at`) that logs `page_view`, `pdf_download`, and `question_submitted` events. Logging is best-effort (wrapped in try/catch) so it never crashes a public request. `AnalyticsController` aggregates per-resume stats and drives the Dashboard. Unique visitor count uses `COUNT(DISTINCT ip_hash || DATE(created_at))`.
 
 ### Beacon save endpoint
 `POST /builder/{resume}/beacon` accepts a raw JSON body from the `beforeunload` `navigator.sendBeacon` call in `Edit.tsx`. The `_token` field in the JSON body satisfies CSRF verification (Laravel reads it from the request body regardless of content-type). The `app.blade.php` root template includes `<meta name="csrf-token">` for this purpose.
 
 ### Templates
-Three templates (`classic`, `modern`, `minimal`) are stored as a string column on `resumes`. The live preview panel in `Edit.tsx` conditionally applies Tailwind classes based on the selected template. The PDF Blade view (`resources/views/resume-pdf.blade.php`) uses a single style for all templates.
+Four templates (`classic`, `modern`, `minimal`, `minimal-ruled`) are stored as a string column on `resumes`. The live preview panel in `Edit.tsx` conditionally applies Tailwind classes based on the selected template. The PDF Blade view (`resources/views/resume-pdf.blade.php`) uses a single style for all templates.
+
+### Font sizes
+`font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor update the live preview but the PDF Blade view currently uses hardcoded sizes.
+
+### AI suggestions
+`AiSuggestController` handles `POST /builder/{resume}/ai-suggest` (throttled to 10 requests/minute). Supports `field` values: `summary`, `bullets`, `skills`, `title`. Provider is selected per-request (`claude` or `openai`); the active provider is persisted in `localStorage` under `resumegen_ai_provider`. Both keys are checked via `config('services.anthropic.key')` and `config('services.openai.key')` — never `env()` directly.
+
+### Rate limiting
+- AI suggest endpoint: `throttle:10,1` (10 req/min)
+- Public question form (`POST /r/{token}/questions`): `throttle:5,1` (5 req/min)

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
@@ -27,8 +28,8 @@ class ShareLinkController extends Controller
         abort_if($link->resume_id !== $resume->id, 403);
 
         $validated = $request->validate([
-            'label'      => ['nullable', 'string', 'max:100'],
-            'is_active'  => ['required', 'boolean'],
+            'label' => ['nullable', 'string', 'max:100'],
+            'is_active' => ['required', 'boolean'],
             'expires_at' => ['nullable', 'date'],
         ]);
 
@@ -42,6 +43,7 @@ class ShareLinkController extends Controller
         $this->authorize('update', $resume);
         abort_if($link->resume_id !== $resume->id, 403);
         $link->delete();
+
         return back();
     }
 
@@ -50,6 +52,7 @@ class ShareLinkController extends Controller
         $this->authorize('update', $resume);
         abort_if($question->resume_id !== $resume->id, 403);
         $question->update(['is_read' => true]);
+
         return back();
     }
 

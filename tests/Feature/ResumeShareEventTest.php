@@ -1,8 +1,8 @@
 <?php
+
 namespace Tests\Feature;
 
 use App\Models\Resume;
-use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,8 +22,8 @@ class ResumeShareEventTest extends TestCase
 
         $this->assertDatabaseHas('resume_share_events', [
             'resume_share_link_id' => $link->id,
-            'resume_id'            => $resume->id,
-            'event'                => 'page_view',
+            'resume_id' => $resume->id,
+            'event' => 'page_view',
         ]);
     }
 
@@ -37,8 +37,8 @@ class ResumeShareEventTest extends TestCase
 
         $this->assertDatabaseHas('resume_share_events', [
             'resume_share_link_id' => $link->id,
-            'resume_id'            => $resume->id,
-            'event'                => 'pdf_download',
+            'resume_id' => $resume->id,
+            'event' => 'pdf_download',
         ]);
     }
 
@@ -49,16 +49,16 @@ class ResumeShareEventTest extends TestCase
         $link = ResumeShareLink::factory()->create(['resume_id' => $resume->id]);
 
         $this->post(route('public.question', $link->token), [
-            'sender_name'  => 'Alice',
+            'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
             'sender_phone' => '555-1234',
-            'message'      => 'Hello!',
+            'message' => 'Hello!',
         ]);
 
         $this->assertDatabaseHas('resume_share_events', [
             'resume_share_link_id' => $link->id,
-            'resume_id'            => $resume->id,
-            'event'                => 'question_submitted',
+            'resume_id' => $resume->id,
+            'event' => 'question_submitted',
         ]);
     }
 }

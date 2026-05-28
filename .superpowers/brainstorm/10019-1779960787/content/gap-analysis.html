@@ -1,0 +1,119 @@
+<h2>Current App — Gap Analysis</h2>
+<p class="subtitle">What's built, what's missing, and what would make this competitive as a SaaS product</p>
+
+<div class="section">
+  <h3>What's Already Strong ✓</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px;">
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Editor</div>
+      <ul style="font-size:12px;color:#166534;margin:0;padding-left:16px;line-height:1.7;">
+        <li>Split-panel live preview</li>
+        <li>onBlur auto-save + beacon</li>
+        <li>Drag-and-drop section reorder</li>
+        <li>AI suggest (Claude + OpenAI)</li>
+        <li>Font size controls</li>
+      </ul>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Sharing</div>
+      <ul style="font-size:12px;color:#166534;margin:0;padding-left:16px;line-height:1.7;">
+        <li>Public share links w/ tokens</li>
+        <li>PDF download (public + auth)</li>
+        <li>Contact form on public view</li>
+        <li>Analytics (views, DLs, msgs)</li>
+      </ul>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Templates</div>
+      <ul style="font-size:12px;color:#166534;margin:0;padding-left:16px;line-height:1.7;">
+        <li>4 templates (classic, modern, minimal, minimal-ruled)</li>
+        <li>Single-column layouts</li>
+        <li>Tailwind-powered preview</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Priority Gaps — Templates &amp; Visual Polish</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+    <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#a16207;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Missing Layouts</div>
+      <ul style="font-size:12px;color:#713f12;margin:0;padding-left:16px;line-height:1.8;">
+        <li><strong>Two-column with sidebar</strong> — contact/skills on left, content right (very popular)</li>
+        <li><strong>Creative/bold header</strong> — large name, accent color band</li>
+        <li><strong>Executive style</strong> — formal, serif-heavy</li>
+        <li><strong>ATS-safe plain</strong> — no frills, maximum parsability</li>
+      </ul>
+    </div>
+    <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#a16207;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Missing Customization</div>
+      <ul style="font-size:12px;color:#713f12;margin:0;padding-left:16px;line-height:1.8;">
+        <li><strong>Accent color picker</strong> — 6–10 preset palette swatches per template</li>
+        <li><strong>Font family selector</strong> — 3–5 typeface options (Inter, Georgia, Merriweather…)</li>
+        <li><strong>PDF matches preview</strong> — currently PDF uses hardcoded sizes</li>
+        <li><strong>Section visibility toggles</strong> — hide/show sections without deleting</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>High-Value Functional Gaps (SaaS differentiators)</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px;">
+    <div style="background:#fdf2f8;border:1px solid #f0abfc;border-radius:8px;padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:#7e22ce;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Productivity</div>
+      <ul style="font-size:12px;color:#4c1d95;margin:0;padding-left:16px;line-height:1.8;">
+        <li>ATS keyword scoring</li>
+        <li>Cover letter builder</li>
+        <li>Job application tracker</li>
+        <li>LinkedIn/PDF import</li>
+        <li>Duplicate resume</li>
+      </ul>
+    </div>
+    <div style="background:#fdf2f8;border:1px solid #f0abfc;border-radius:8px;padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:#7e22ce;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">UX &amp; Onboarding</div>
+      <ul style="font-size:12px;color:#4c1d95;margin:0;padding-left:16px;line-height:1.8;">
+        <li>Guided first-run wizard</li>
+        <li>Completeness score / tips</li>
+        <li>Mobile responsive editor</li>
+        <li>Undo/redo</li>
+        <li>Version history</li>
+      </ul>
+    </div>
+    <div style="background:#fdf2f8;border:1px solid #f0abfc;border-radius:8px;padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:#7e22ce;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">SaaS Infra</div>
+      <ul style="font-size:12px;color:#4c1d95;margin:0;padding-left:16px;line-height:1.8;">
+        <li>Subscription / billing (Stripe)</li>
+        <li>Free tier limits</li>
+        <li>Email notifications (new msg)</li>
+        <li>Custom domain for public link</li>
+        <li>Privacy / expiry on share links</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Quick Wins (low effort, high polish)</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px;">
+      <ul style="font-size:12px;color:#0c4a6e;margin:0;padding-left:16px;line-height:1.9;">
+        <li>Rename resume inline (click-to-edit)</li>
+        <li>Duplicate resume button</li>
+        <li>Preview thumbnail on resume list</li>
+        <li>Dashboard: link directly to each resume editor</li>
+        <li>Share link label editing in-place</li>
+      </ul>
+    </div>
+    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px;">
+      <ul style="font-size:12px;color:#0c4a6e;margin:0;padding-left:16px;line-height:1.9;">
+        <li>Email notification when someone submits a question</li>
+        <li>Mark all questions read button</li>
+        <li>Public view: better mobile layout</li>
+        <li>PDF: sync font sizes from editor settings</li>
+        <li>Welcome page redesign (currently shows Laravel defaults)</li>
+      </ul>
+    </div>
+  </div>
+</div>

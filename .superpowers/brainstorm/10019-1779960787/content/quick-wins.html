@@ -1,0 +1,75 @@
+<h2>Quick Wins</h2>
+<p class="subtitle">Select everything you want to include — these are all low-effort, high-polish improvements</p>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="rename" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Inline resume rename</h3>
+      <p>Click the resume name to edit it in place — no separate form or page. Works on both the list and the editor header.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="duplicate" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Duplicate resume</h3>
+      <p>One-click copy of any resume. Useful for tailoring the same base resume to different jobs. Shows up in the resume list.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="thumbnail" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Preview thumbnail on resume list</h3>
+      <p>Show a small visual preview of each resume on the list page so users can tell their resumes apart at a glance.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="dashboard-links" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Dashboard → editor links</h3>
+      <p>Each resume row in the Analytics table on the Dashboard links directly to the editor for that resume. Currently there's no navigation from Dashboard to a specific resume.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="email-notify" onclick="toggleSelect(this)">
+    <div class="letter">E</div>
+    <div class="content">
+      <h3>Email notification for new questions</h3>
+      <p>When someone submits a question via a public share link, send the resume owner an email. Currently questions land silently in the editor — easy to miss.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="mark-all-read" onclick="toggleSelect(this)">
+    <div class="letter">F</div>
+    <div class="content">
+      <h3>Mark all questions read</h3>
+      <p>A single "Mark all read" button in the Questions panel so users don't have to click each message individually.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="pdf-font-sync" onclick="toggleSelect(this)">
+    <div class="letter">G</div>
+    <div class="content">
+      <h3>PDF syncs font sizes from editor</h3>
+      <p>The PDF currently uses hardcoded sizes. Threading the font_sizes settings through to the Blade PDF view means what you see in the live preview is what you get in the PDF.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="welcome-page" onclick="toggleSelect(this)">
+    <div class="letter">H</div>
+    <div class="content">
+      <h3>Welcome page redesign</h3>
+      <p>The current welcome page shows generic Laravel scaffolding. Replace it with a proper landing page that explains the product and drives sign-ups.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="public-mobile" onclick="toggleSelect(this)">
+    <div class="letter">I</div>
+    <div class="content">
+      <h3>Public view mobile layout</h3>
+      <p>The public resume page uses a fixed 8.5in paper width that overflows on phones. Responsive layout so it reads well when a recruiter opens it on mobile.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="share-expiry" onclick="toggleSelect(this)">
+    <div class="letter">J</div>
+    <div class="content">
+      <h3>Share link expiry / deactivation</h3>
+      <p>Let users set an optional expiry date on share links, or toggle them active/inactive. Currently a link is live forever once created.</p>
+    </div>
+  </div>
+</div>

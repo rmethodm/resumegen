@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Resume extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id', 'name', 'pdf_filename', 'template',
         'accent_color', 'font_family',
@@ -17,12 +19,12 @@ class Resume extends Model
     ];
 
     protected $casts = [
-        'contact'        => 'array',
-        'experience'     => 'array',
-        'education'      => 'array',
-        'skills'         => 'array',
+        'contact' => 'array',
+        'experience' => 'array',
+        'education' => 'array',
+        'skills' => 'array',
         'certifications' => 'array',
-        'font_sizes'     => 'array',
+        'font_sizes' => 'array',
     ];
 
     public function user(): BelongsTo
