@@ -324,6 +324,82 @@ function CreativeTemplate({ contact, summary, experience, education, skills, cer
     );
 }
 
+function ExecutiveTemplate({ contact, summary, experience, education, skills, certifications, fontSizes }: TemplateProps) {
+    return (
+        <div style={{ fontFamily: 'DejaVu Serif, serif', padding: '0.25in' }}>
+            <div className="text-center">
+                <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-bold tracking-wide uppercase text-gray-900">
+                    {contact.full_name || 'Your Name'}
+                </h1>
+                <hr className="my-2 border-gray-800" />
+                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-700">
+                    {[contact.email, contact.phone, contact.location, contact.linkedin, contact.website].filter(Boolean).join(' • ')}
+                </div>
+                <hr className="mt-2 border-gray-800" />
+            </div>
+
+            {summary && (
+                <section className="mt-6" style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-1 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Summary</h2>
+                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-relaxed text-gray-800 mt-2">{summary}</p>
+                </section>
+            )}
+            {experience.some(e => e.company || e.title) && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Professional Experience</h2>
+                    {experience.filter(e => e.company || e.title).map(exp => (
+                        <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="mt-2">
+                            <div className="flex items-baseline justify-between">
+                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-bold text-gray-900">{exp.title || 'Job Title'}</span>
+                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="italic text-gray-700">
+                                    {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
+                                </span>
+                            </div>
+                            <div style={{ fontSize: `${fontSizes.contact}pt` }} className="italic text-gray-700">{exp.company}</div>
+                            {exp.bullets && (
+                                <ul style={{ fontSize: `${fontSizes.body}pt` }} className="mt-1 list-disc pl-5 text-gray-800 space-y-0.5">
+                                    {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
+                                </ul>
+                            )}
+                        </div>
+                    ))}
+                </section>
+            )}
+            {education.some(e => e.school) && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Education</h2>
+                    {education.filter(e => e.school).map(edu => (
+                        <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="mt-2 flex items-baseline justify-between">
+                            <div>
+                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-bold text-gray-900">{edu.school}</span>
+                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="ml-2 italic text-gray-700">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
+                            </div>
+                            {edu.grad_year && <span style={{ fontSize: `${fontSizes.contact}pt` }} className="italic text-gray-700">{edu.grad_year}</span>}
+                        </div>
+                    ))}
+                </section>
+            )}
+            {skills.length > 0 && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Core Competencies</h2>
+                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="text-gray-800 mt-2 text-center">{skills.join(' • ')}</p>
+                </section>
+            )}
+            {certifications.some(c => c.name) && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Certifications</h2>
+                    {certifications.filter(c => c.name).map(cert => (
+                        <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="mt-2 flex items-baseline justify-between">
+                            <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{cert.name}</span>
+                            <span style={{ fontSize: `${fontSizes.contact}pt` }} className="italic text-gray-700">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
+                        </div>
+                    ))}
+                </section>
+            )}
+        </div>
+    );
+}
+
 const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, body: 10, sectionSpacing: 9, entrySpacing: 3 };
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -1078,7 +1154,9 @@ export default function Edit({
                             </div>
                         ))}
 
-                        {template === 'creative' ? (
+                        {template === 'executive' ? (
+                            <ExecutiveTemplate contact={contact} summary={summary} experience={experience} education={education} skills={skills} certifications={certifications} fontSizes={fontSizes} accentColor={accentColor} />
+                        ) : template === 'creative' ? (
                             <CreativeTemplate contact={contact} summary={summary} experience={experience} education={education} skills={skills} certifications={certifications} fontSizes={fontSizes} accentColor={accentColor} />
                         ) : template === 'sidebar' ? (
                             <SidebarTemplate
