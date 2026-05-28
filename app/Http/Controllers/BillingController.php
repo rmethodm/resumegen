@@ -12,7 +12,7 @@ class BillingController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $subscribed = $user->subscribed('default');
+        $subscribed = $user->isPro();
 
         return Inertia::render('Billing/Index', [
             'plan'        => $subscribed ? 'pro' : 'free',

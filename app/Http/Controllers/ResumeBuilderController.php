@@ -18,7 +18,7 @@ class ResumeBuilderController extends Controller
             ->orderByDesc('updated_at')
             ->get(['id', 'name', 'pdf_filename', 'updated_at']);
 
-        $atLimit = !$user->subscribed('default') && $resumes->count() >= 5;
+        $atLimit = !$user->isPro() && $resumes->count() >= 5;
 
         return Inertia::render('ResumeBuilder/Index', [
             'resumes' => $resumes,
@@ -30,7 +30,7 @@ class ResumeBuilderController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->subscribed('default') && $user->resumes()->count() >= 5) {
+        if (!$user->isPro() && $user->resumes()->count() >= 5) {
             return redirect()->route('billing.index')->with('limitReached', true);
         }
 
