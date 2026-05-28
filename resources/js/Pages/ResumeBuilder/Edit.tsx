@@ -656,6 +656,19 @@ export default function Edit({
         });
     }, [resume.id, saving, currentSnapshot, history, fetchAts]);
 
+    // ─── First-run wizard ────────────────────────────────────────────────
+    // 0 = welcome, 1 = contact, 2 = experience, 3 = skills, 4 = done (hidden)
+    const [wizardStep, setWizardStep] = useState<0 | 1 | 2 | 3 | 4>(isFirstResume ? 0 : 4);
+
+    const finishWizard = useCallback(() => {
+        save();
+        router.patch(route('onboarding.complete'), {}, {
+            preserveScroll: true,
+            preserveState: true,
+        });
+        setWizardStep(4);
+    }, [save]);
+
     const handleUndo = useCallback(() => {
         const snap = history.undo(currentSnapshot());
         if (snap) {
@@ -1610,6 +1623,143 @@ export default function Edit({
                     </div>
                 </div>
             </div>
+            {wizardStep < 4 && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                    <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
+                        <div className="mb-6 flex justify-center gap-2">
+                            {([0, 1, 2, 3] as const).map(i => (
+                                <span
+                                    key={i}
+                                    className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-indigo-600' : i < wizardStep ? 'bg-indigo-300' : 'bg-gray-200'}`}
+                                />
+                            ))}
+                        </div>
+
+                        {wizardStep === 0 && (
+                            <div className="space-y-4 text-center">
+                                <h2 className="text-2xl font-semibold text-gray-900">Let's build your resume</h2>
+                                <p className="text-sm text-gray-600">It takes about 5 minutes. We'll walk you through the key sections.</p>
+                                <button
+                                    type="button"
+                                    onClick={() => setWizardStep(1)}
+                                    className="mt-4 w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                                >
+                                    Get started →
+                                </button>
+                            </div>
+                        )}
+
+                        {wizardStep === 1 && (
+                            <div className="space-y-4">
+                                <h2 className="text-xl font-semibold text-gray-900">First, your contact details</h2>
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                    {(['full_name', 'email', 'phone', 'location'] as const).map(field => (
+                                        <div key={field}>
+                                            <label htmlFor={`wiz-contact-${field}`} className="block text-xs font-medium text-gray-700 mb-1">
+                                                {field === 'full_name' ? 'Full Name' : field.charAt(0).toUpperCase() + field.slice(1)}
+                                            </label>
+                                            <input
+                                                id={`wiz-contact-${field}`}
+                                                type={field === 'email' ? 'email' : 'text'}
+                                                value={contact[field] ?? ''}
+                                                onChange={e => setContact(c => ({ ...c, [field]: e.target.value }))}
+                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-4 flex items-center justify-between">
+                                    <button type="button" onClick={() => setWizardStep(2)} className="text-sm text-gray-500 hover:text-gray-700">Skip</button>
+                                    <button type="button" onClick={() => { save(); setWizardStep(2); }} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">Next →</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {wizardStep === 2 && (
+                            <div className="space-y-4">
+                                <h2 className="text-xl font-semibold text-gray-900">Your most recent job</h2>
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                    {(['company', 'title'] as const).map(field => (
+                                        <div key={field}>
+                                            <label htmlFor={`wiz-exp-${field}`} className="block text-xs font-medium text-gray-700 mb-1">
+                                                {field === 'company' ? 'Company' : 'Job Title'}
+                                            </label>
+                                            <input
+                                                id={`wiz-exp-${field}`}
+                                                type="text"
+                                                value={experience[0]?.[field] ?? ''}
+                                                onChange={e => {
+                                                    const val = e.target.value;
+                                                    setExperience(prev => {
+                                                        const next = prev.length ? [...prev] : [emptyExp()];
+                                                        next[0] = { ...next[0], [field]: val };
+                                                        return next;
+                                                    });
+                                                }}
+                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                            />
+                                        </div>
+                                    ))}
+                                    {(['start_date', 'end_date'] as const).map(field => (
+                                        <div key={field}>
+                                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                {field === 'start_date' ? 'Start Date' : 'End Date'}
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={experience[0]?.[field] ?? ''}
+                                                placeholder={field === 'end_date' ? 'Present' : 'Jan 2024'}
+                                                onChange={e => {
+                                                    const val = e.target.value;
+                                                    setExperience(prev => {
+                                                        const next = prev.length ? [...prev] : [emptyExp()];
+                                                        next[0] = { ...next[0], [field]: val };
+                                                        return next;
+                                                    });
+                                                }}
+                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                <label className="flex items-center gap-2 text-sm text-gray-700">
+                                    <input
+                                        type="checkbox"
+                                        checked={experience[0]?.current ?? false}
+                                        onChange={e => setExperience(prev => {
+                                            const next = prev.length ? [...prev] : [emptyExp()];
+                                            next[0] = { ...next[0], current: e.target.checked };
+                                            return next;
+                                        })}
+                                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    />
+                                    I currently work here
+                                </label>
+                                <div className="mt-4 flex items-center justify-between">
+                                    <button type="button" onClick={() => setWizardStep(3)} className="text-sm text-gray-500 hover:text-gray-700">Skip</button>
+                                    <button type="button" onClick={() => { save(); setWizardStep(3); }} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">Next →</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {wizardStep === 3 && (
+                            <div className="space-y-4">
+                                <h2 className="text-xl font-semibold text-gray-900">A few of your skills</h2>
+                                <p className="text-sm text-gray-600">Add 3–5 skills to get started</p>
+                                <TagInput
+                                    tags={skills}
+                                    onChange={setSkills}
+                                    placeholder="e.g. TypeScript"
+                                />
+                                <div className="mt-4 flex items-center justify-between">
+                                    <button type="button" onClick={finishWizard} className="text-sm text-gray-500 hover:text-gray-700">Skip</button>
+                                    <button type="button" onClick={finishWizard} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">Finish →</button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }
