@@ -117,6 +117,25 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
     );
 }
 
+const ACCENT_COLORS = [
+    '#4f46e5', // indigo
+    '#1e3a5f', // navy
+    '#475569', // slate
+    '#166534', // green
+    '#7f1d1d', // burgundy
+    '#1f2937', // charcoal
+    '#0f766e', // teal
+    '#78716c', // warm gray
+] as const;
+
+const FONT_FAMILY_CSS: Record<'sans' | 'serif' | 'mono', string> = {
+    sans:  'DejaVu Sans, sans-serif',
+    serif: 'DejaVu Serif, serif',
+    mono:  'DejaVu Sans Mono, monospace',
+};
+
+const TEMPLATES_WITHOUT_ACCENT: ResumeTemplate[] = ['executive', 'ats'];
+
 const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, body: 10, sectionSpacing: 9, entrySpacing: 3 };
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -142,6 +161,8 @@ export default function Edit({
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
 
     const [fontSizes, setFontSizes] = useState<FontSizes>({ ...DEFAULT_FONT_SIZES, ...(resume.font_sizes ?? {}) });
+    const [accentColor, setAccentColor] = useState<string>(resume.accent_color ?? '#4f46e5');
+    const [fontFamily, setFontFamily] = useState<'sans' | 'serif' | 'mono'>(resume.font_family ?? 'sans');
 
     const [savedAt, setSavedAt] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
@@ -192,6 +213,8 @@ export default function Edit({
     const skillsRef = useRef(skills);
     const certificationsRef = useRef(certifications);
     const fontSizesRef = useRef(fontSizes);
+    const accentColorRef = useRef(accentColor);
+    const fontFamilyRef = useRef(fontFamily);
 
     nameRef.current = name;
     templateRef.current = template;
@@ -202,6 +225,8 @@ export default function Edit({
     skillsRef.current = skills;
     certificationsRef.current = certifications;
     fontSizesRef.current = fontSizes;
+    accentColorRef.current = accentColor;
+    fontFamilyRef.current = fontFamily;
 
     const save = useCallback(() => {
         if (saving) { pendingSave.current = true; return; }
@@ -217,6 +242,8 @@ export default function Edit({
             skills: skillsRef.current,
             certifications: certificationsRef.current as any,
             font_sizes: fontSizesRef.current as any,
+            accent_color: accentColorRef.current,
+            font_family: fontFamilyRef.current,
         }, {
             preserveScroll: true,
             onFinish: () => {
@@ -243,6 +270,8 @@ export default function Edit({
                     skills: skillsRef.current,
                     certifications: certificationsRef.current,
                     font_sizes: fontSizesRef.current,
+                    accent_color: accentColorRef.current,
+                    font_family: fontFamilyRef.current,
                     _token: csrfToken,
                 })], { type: 'application/json' })
             );
@@ -317,7 +346,37 @@ export default function Edit({
                             <option value="modern">Modern</option>
                             <option value="minimal">Minimal</option>
                             <option value="minimal-ruled">Minimal Ruled</option>
+                            <option value="sidebar">Sidebar</option>
+                            <option value="creative">Creative</option>
+                            <option value="executive">Executive</option>
+                            <option value="ats">ATS</option>
                         </select>
+                        {!TEMPLATES_WITHOUT_ACCENT.includes(template) && (
+                            <div className="flex items-center gap-1" aria-label="Accent color">
+                                {ACCENT_COLORS.map(c => (
+                                    <button
+                                        key={c}
+                                        type="button"
+                                        aria-label={`Accent ${c}`}
+                                        onClick={() => { setAccentColor(c); save(); }}
+                                        className={`h-5 w-5 rounded-full border transition ${accentColor === c ? 'ring-2 ring-offset-1 ring-gray-700 border-white' : 'border-gray-300 hover:scale-110'}`}
+                                        style={{ backgroundColor: c }}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                        <div className="flex items-center rounded-md border border-gray-200 overflow-hidden text-xs" aria-label="Font family">
+                            {(['sans', 'serif', 'mono'] as const).map(f => (
+                                <button
+                                    key={f}
+                                    type="button"
+                                    onClick={() => { setFontFamily(f); save(); }}
+                                    className={`px-2.5 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-gray-800 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                                >
+                                    {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                </button>
+                            ))}
+                        </div>
                         <span className="flex items-center gap-1.5 text-xs">
                             {saving ? (
                                 <>
@@ -817,8 +876,8 @@ export default function Edit({
                     <div
                         ref={previewRef}
                         id="resume-preview"
-                        className={`mx-auto w-full max-w-[8.5in] bg-white shadow-lg ${template === 'modern' ? 'font-sans' : template === 'minimal' ? 'font-mono' : 'font-sans'}`}
-                        style={{ padding: '0.75in', position: 'relative' }}
+                        className="mx-auto w-full max-w-[8.5in] bg-white shadow-lg"
+                        style={{ padding: '0.75in', position: 'relative', fontFamily: FONT_FAMILY_CSS[fontFamily] }}
                     >
                         {/* Page break indicators — one per page boundary */}
                         {Array.from({ length: pageCount - 1 }, (_, i) => (
