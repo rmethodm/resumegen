@@ -158,3 +158,31 @@ export interface CoverLetter {
     created_at: string;
     updated_at: string;
 }
+
+export type JobStatus = 'saved' | 'applied' | 'interviewing' | 'offered' | 'rejected' | 'closed';
+
+export interface JobApplicationRow {
+    id: number;
+    company: string;
+    role: string;
+    status: JobStatus;
+    resume_id: number | null;
+    resume?: { id: number; name: string } | null;
+    applied_at: string | null;
+    job_url: string | null;
+    updated_at: string;
+}
+
+export interface JobApplication {
+    id: number;
+    user_id: number;
+    resume_id: number | null;
+    company: string;
+    role: string;
+    status: JobStatus;
+    applied_at: string | null;
+    notes: string | null;
+    job_url: string | null;
+    created_at: string;
+    updated_at: string;
+}
