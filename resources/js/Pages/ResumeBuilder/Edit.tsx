@@ -686,35 +686,54 @@ export default function Edit({
                                         <p className="text-xs text-gray-400">No share links yet. Create one below.</p>
                                     )}
                                     {initialLinks.map(link => (
-                                        <div key={link.id} className="flex items-center justify-between rounded-md bg-gray-50 border border-gray-100 px-3 py-2">
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="text-xs font-medium text-gray-700">{link.label ?? '(unlabelled)'}</span>
-                                                <span className="font-mono text-[10px] text-gray-400 truncate max-w-[200px]">
-                                                    {window.location.origin}/r/{link.token}
-                                                </span>
-                                                <span className={`text-[10px] font-medium ${link.is_active ? 'text-green-600' : 'text-red-500'}`}>
-                                                    {link.is_active ? 'Active' : 'Revoked'}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        const url = `${window.location.origin}/r/${link.token}`;
-                                                        if (navigator.clipboard) {
-                                                            navigator.clipboard.writeText(url).catch(() => fallbackCopy(url));
-                                                        } else {
-                                                            fallbackCopy(url);
-                                                        }
-                                                    }}
-                                                    className="text-xs text-indigo-600 hover:text-indigo-800"
-                                                >Copy</button>
-                                                {link.is_active && (
+                                        <div key={link.id} className="flex flex-col gap-1.5 rounded-md border border-gray-200 bg-white p-3 text-xs">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <div className="flex items-center gap-2 min-w-0">
+                                                    <span className={`text-[10px] font-medium ${link.is_active ? 'text-green-600' : 'text-red-500'}`}>
+                                                        {link.is_active ? 'Active' : 'Revoked'}
+                                                    </span>
+                                                    <span className="text-gray-500 truncate">/r/{link.token.slice(0, 12)}…</span>
+                                                    {link.label && <span className="text-gray-400 truncate">— {link.label}</span>}
+                                                </div>
+                                                <div className="flex items-center gap-2 shrink-0">
                                                     <button
                                                         type="button"
-                                                        onClick={() => router.patch(route('share.update', [resume.id, link.id]), { label: link.label, is_active: false } as any)}
-                                                        className="text-xs text-red-500 hover:text-red-700"
-                                                    >Revoke</button>
+                                                        onClick={() => {
+                                                            const url = `${window.location.origin}/r/${link.token}`;
+                                                            if (navigator.clipboard) {
+                                                                navigator.clipboard.writeText(url).catch(() => fallbackCopy(url));
+                                                            } else {
+                                                                fallbackCopy(url);
+                                                            }
+                                                        }}
+                                                        className="text-xs text-indigo-600 hover:text-indigo-800"
+                                                    >Copy</button>
+                                                    {link.is_active && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => router.patch(route('share.update', [resume.id, link.id]), { label: link.label, is_active: false, expires_at: link.expires_at } as any)}
+                                                            className="text-xs text-red-500 hover:text-red-700"
+                                                        >Revoke</button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <label className="text-[10px] text-gray-400 shrink-0">Expires</label>
+                                                <input
+                                                    type="date"
+                                                    title="Expiry date"
+                                                    defaultValue={link.expires_at ? link.expires_at.split('T')[0] : ''}
+                                                    onBlur={e => router.patch(
+                                                        route('share.update', [resume.id, link.id]),
+                                                        { label: link.label, is_active: link.is_active, expires_at: e.target.value || null } as any,
+                                                        { preserveScroll: true }
+                                                    )}
+                                                    className="rounded border-gray-200 text-[10px] py-0.5 px-1.5 text-gray-600 focus:border-indigo-400 focus:ring-indigo-400"
+                                                />
+                                                {link.expires_at && (
+                                                    <span className="text-[10px] text-amber-600">
+                                                        Expires {new Date(link.expires_at).toLocaleDateString()}
+                                                    </span>
                                                 )}
                                             </div>
                                         </div>

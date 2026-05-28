@@ -69,6 +69,7 @@ export interface ShareLink {
     token: string;
     label: string | null;
     is_active: boolean;
+    expires_at: string | null;
     created_at: string;
 }
 
