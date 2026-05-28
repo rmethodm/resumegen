@@ -17,6 +17,21 @@ export default function Index({ resumes }: Props) {
     const [creating, setCreating] = useState(false);
     const form = useForm({ name: '' });
 
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingName, setEditingName] = useState('');
+
+    const startRename = (id: number, currentName: string) => {
+        setEditingId(id);
+        setEditingName(currentName);
+    };
+
+    const commitRename = (id: number) => {
+        if (editingName.trim() && editingName.trim() !== resumes.find(r => r.id === id)?.name) {
+            form.patch(route('builder.update', id), { data: { name: editingName.trim() } } as any);
+        }
+        setEditingId(null);
+    };
+
     const submit = (e: FormEvent) => {
         e.preventDefault();
         form.post(route('builder.store'), {
@@ -100,7 +115,29 @@ export default function Index({ resumes }: Props) {
                             {resumes.map(r => (
                                 <li key={r.id} className="flex items-center justify-between px-5 py-4 hover:bg-gray-50">
                                     <div>
-                                        <p className="font-medium text-gray-900">{r.name}</p>
+                                        {editingId === r.id ? (
+                                            <input
+                                                autoFocus
+                                                type="text"
+                                                value={editingName}
+                                                onChange={e => setEditingName(e.target.value)}
+                                                onBlur={() => commitRename(r.id)}
+                                                onKeyDown={e => {
+                                                    if (e.key === 'Enter') commitRename(r.id);
+                                                    if (e.key === 'Escape') setEditingId(null);
+                                                }}
+                                                placeholder="Resume name"
+                                                className="rounded border-gray-300 text-sm font-medium shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                            />
+                                        ) : (
+                                            <p
+                                                className="font-medium text-gray-900 cursor-pointer hover:text-indigo-600"
+                                                title="Click to rename"
+                                                onClick={() => startRename(r.id, r.name)}
+                                            >
+                                                {r.name}
+                                            </p>
+                                        )}
                                         <p className="mt-0.5 text-xs text-gray-400">Last edited {fmt(r.updated_at)}</p>
                                     </div>
                                     <div className="flex items-center gap-3">
