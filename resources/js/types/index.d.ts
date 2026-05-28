@@ -39,7 +39,7 @@ export interface CertEntry {
     date: string;
 }
 
-export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled';
+export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled' | 'sidebar' | 'creative' | 'executive' | 'ats';
 
 export interface FontSizes {
     name: number;
@@ -55,6 +55,8 @@ export interface ResumeData {
     name: string;
     pdf_filename: string | null;
     template: ResumeTemplate;
+    accent_color: string | null;
+    font_family: 'sans' | 'serif' | 'mono' | null;
     contact: Contact | null;
     summary: string | null;
     experience: ExperienceEntry[] | null;
