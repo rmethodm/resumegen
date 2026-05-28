@@ -18,36 +18,38 @@ class AnalyticsController extends Controller
         // Get all resume IDs belonging to this user
         $resumeIds = Resume::where('user_id', $userId)->pluck('id');
 
-        // Raw event totals per resume per event type
-        $totals = ResumeShareEvent::whereIn('resume_id', $resumeIds)
-            ->select('resume_id', 'event', DB::raw('COUNT(*) as total'))
-            ->groupBy('resume_id', 'event')
+        // Single query: fetch the minimal columns needed for all aggregations
+        $rawEvents = ResumeShareEvent::whereIn('resume_id', $resumeIds)
+            ->select('resume_id', 'event', 'ip_hash', DB::raw('DATE(created_at) as event_date'))
             ->get()
             ->groupBy('resume_id');
 
-        // Unique visitors per resume: distinct ip_hash+date combinations
-        $uniqueVisitors = ResumeShareEvent::whereIn('resume_id', $resumeIds)
-            ->where('event', 'page_view')
-            ->whereNotNull('ip_hash')
-            ->select('resume_id', DB::raw('COUNT(DISTINCT ip_hash || DATE(created_at)) as unique_visitors'))
-            ->groupBy('resume_id')
-            ->pluck('unique_visitors', 'resume_id');
+        // Compute both event-type totals and unique-visitor counts from the one result set
+        $totals = $rawEvents->map(fn ($rows) => $rows->groupBy('event'));
+
+        $uniqueVisitors = $rawEvents->map(
+            fn ($rows) => $rows
+                ->where('event', 'page_view')
+                ->whereNotNull('ip_hash')
+                ->map(fn ($r) => $r->ip_hash . $r->event_date)
+                ->unique()
+                ->count()
+        );
 
         $resumes = Resume::whereIn('id', $resumeIds)
             ->orderByDesc('updated_at')
             ->get(['id', 'name']);
 
         $stats = $resumes->map(function (Resume $resume) use ($totals, $uniqueVisitors) {
-            $events = $totals->get($resume->id, collect());
-            $byType = $events->pluck('total', 'event');
+            $byType = $totals->get($resume->id, collect());
 
             return [
                 'resume_id' => $resume->id,
                 'resume_name' => $resume->name,
-                'page_views' => (int) ($byType['page_view'] ?? 0),
-                'unique_visitors' => (int) ($uniqueVisitors[$resume->id] ?? 0),
-                'pdf_downloads' => (int) ($byType['pdf_download'] ?? 0),
-                'questions_submitted' => (int) ($byType['question_submitted'] ?? 0),
+                'page_views' => (int) ($byType->get('page_view', collect())->count()),
+                'unique_visitors' => (int) ($uniqueVisitors->get($resume->id, 0)),
+                'pdf_downloads' => (int) ($byType->get('pdf_download', collect())->count()),
+                'questions_submitted' => (int) ($byType->get('question_submitted', collect())->count()),
             ];
         });
 

@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 type ResumeRow = {
@@ -27,7 +27,7 @@ export default function Index({ resumes }: Props) {
 
     const commitRename = (id: number) => {
         if (editingName.trim() && editingName.trim() !== resumes.find(r => r.id === id)?.name) {
-            form.patch(route('builder.update', id), { data: { name: editingName.trim() } } as any);
+            router.patch(route('builder.update', id), { name: editingName.trim() }, { preserveScroll: true });
         }
         setEditingId(null);
     };

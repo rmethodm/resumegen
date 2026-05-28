@@ -77,7 +77,7 @@ Use Ziggy's `route('named.route', params)` helper — it's globally typed in `re
 `POST /builder/{resume}/beacon` accepts a raw JSON body from the `beforeunload` `navigator.sendBeacon` call in `Edit.tsx`. The `_token` field in the JSON body satisfies CSRF verification (Laravel reads it from the request body regardless of content-type). The `app.blade.php` root template includes `<meta name="csrf-token">` for this purpose.
 
 ### Templates
-Four templates (`classic`, `modern`, `minimal`, `minimal-ruled`) are stored as a string column on `resumes`. The live preview panel in `Edit.tsx` conditionally applies Tailwind classes based on the selected template. The PDF Blade view (`resources/views/resume-pdf.blade.php`) uses a single style for all templates.
+Eight templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `creative`, `executive`, `ats`) are stored as a string column on `resumes`. The live preview panel in `Edit.tsx` conditionally applies Tailwind classes based on the selected template. The PDF Blade view (`resources/views/resume-pdf.blade.php`) uses a single style for all templates.
 
 ### Font sizes
 `font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor update the live preview but the PDF Blade view currently uses hardcoded sizes.

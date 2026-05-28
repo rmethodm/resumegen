@@ -101,4 +101,27 @@ class AiSuggestTest extends TestCase
         $response->assertStatus(422);
         $response->assertJson(['error' => 'API key not configured']);
     }
+
+    public function test_claude_model_is_configurable_via_services_config(): void
+    {
+        Http::fake([
+            'https://api.anthropic.com/*' => Http::response(json_encode([
+                'content' => [['type' => 'text', 'text' => '["A","B","C"]']],
+            ]), 200),
+        ]);
+
+        config(['services.anthropic.key' => 'test-key']);
+        config(['services.anthropic.model' => 'claude-custom-model']);
+
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $this->actingAs($user)->postJson(route('builder.ai-suggest', $resume->id), [
+            'field' => 'summary',
+            'context' => ['summary' => 'test'],
+            'provider' => 'claude',
+        ]);
+
+        Http::assertSent(fn ($req) => $req['model'] === 'claude-custom-model');
+    }
 }

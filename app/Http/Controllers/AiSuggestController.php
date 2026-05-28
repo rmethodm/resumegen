@@ -73,7 +73,7 @@ class AiSuggestController extends Controller
             'anthropic-version' => '2023-06-01',
             'content-type' => 'application/json',
         ])->post('https://api.anthropic.com/v1/messages', [
-            'model' => 'claude-sonnet-4-6',
+            'model' => config('services.anthropic.model', 'claude-sonnet-4-6'),
             'max_tokens' => 400,
             'messages' => [[
                 'role' => 'user',
