@@ -57,6 +57,14 @@ export default function Authenticated({
                                 >
                                     Billing
                                 </NavLink>
+                                {user.is_master_admin && (
+                                    <NavLink
+                                        href={route('admin.users.index')}
+                                        active={route().current('admin.*')}
+                                    >
+                                        Admin
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -187,6 +195,14 @@ export default function Authenticated({
                         >
                             Billing
                         </ResponsiveNavLink>
+                        {user.is_master_admin && (
+                            <ResponsiveNavLink
+                                href={route('admin.users.index')}
+                                active={route().current('admin.*')}
+                            >
+                                Admin
+                            </ResponsiveNavLink>
+                        )}
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
