@@ -115,3 +115,21 @@ export interface ResumeStat {
     pdf_downloads: number;
     questions_submitted: number;
 }
+
+export interface AtsScoreCategory {
+    action_verbs: string[];
+    technical: string[];
+    soft_skills: string[];
+}
+
+export interface AtsScore {
+    score: number;
+    found: AtsScoreCategory;
+    missing: AtsScoreCategory;
+    breakdown: {
+        action_verbs: number;
+        technical: number;
+        soft_skills: number;
+        format_signals: number;
+    };
+}

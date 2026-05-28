@@ -17,7 +17,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ResumeData, ShareLink, ResumeQuestion, ResumeTemplate,
     ExperienceEntry, EducationEntry, CertEntry, Contact, AiCapabilities,
-    FontSizes,
+    FontSizes, AtsScore,
 } from '@/types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -497,6 +497,32 @@ export default function Edit({
     const [saving, setSaving] = useState(false);
     const pendingSave = useRef(false);
 
+    const [ats, setAts] = useState<AtsScore | null>(null);
+    const [atsLoading, setAtsLoading] = useState(false);
+    const [atsOpen, setAtsOpen] = useState(false);
+
+    const fetchAts = useCallback(async () => {
+        setAtsLoading(true);
+        try {
+            const res = await fetch(route('builder.ats-score', resume.id), {
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            });
+            if (res.ok) {
+                const data: AtsScore = await res.json();
+                setAts(data);
+            }
+        } catch {
+            // best-effort
+        } finally {
+            setAtsLoading(false);
+        }
+    }, [resume.id]);
+
+    useEffect(() => {
+        fetchAts();
+    }, [fetchAts]);
+
     const [aiProvider, setAiProvider] = useState<'claude' | 'openai'>(() => {
         const stored = localStorage.getItem('resumegen_ai_provider');
         if (stored === 'openai' && aiCapabilities.openai) return 'openai';
@@ -579,9 +605,10 @@ export default function Edit({
                 setSaving(false);
                 setSavedAt(new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(new Date()));
                 if (pendingSave.current) { pendingSave.current = false; save(); }
+                fetchAts();
             },
         });
-    }, [resume.id, saving]);
+    }, [resume.id, saving, fetchAts]);
 
     // Save on tab close via beacon
     useEffect(() => {
@@ -706,6 +733,24 @@ export default function Edit({
                                 </button>
                             ))}
                         </div>
+                        {ats && (
+                            <span
+                                className={
+                                    'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold cursor-default ' +
+                                    (ats.score < 50
+                                        ? 'bg-red-100 text-red-700'
+                                        : ats.score < 75
+                                            ? 'bg-amber-100 text-amber-800'
+                                            : 'bg-green-100 text-green-800')
+                                }
+                                title="ATS keyword score"
+                            >
+                                {ats.score} ATS
+                            </span>
+                        )}
+                        {atsLoading && !ats && (
+                            <span className="text-xs text-gray-400">scoring…</span>
+                        )}
                         <span className="flex items-center gap-1.5 text-xs">
                             {saving ? (
                                 <>
@@ -821,6 +866,55 @@ export default function Edit({
                                             >+</button>
                                         </div>
                                     </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ATS Score */}
+                    <div className="mb-5 rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                        <button
+                            type="button"
+                            onClick={() => setAtsOpen(o => !o)}
+                            className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-gray-800 hover:bg-gray-50 focus:outline-none"
+                        >
+                            <span>ATS Score{ats ? ` · ${ats.score}/100` : ''}</span>
+                            <span className="text-gray-400 text-xs">{atsOpen ? '−' : '+'}</span>
+                        </button>
+
+                        {atsOpen && ats && (
+                            <div className="border-t border-gray-100 bg-white px-4 py-3 text-sm">
+                                <ul className="mb-3 space-y-1 text-xs text-gray-600">
+                                    <li>Action verbs: {ats.breakdown.action_verbs}/30</li>
+                                    <li>Technical: {ats.breakdown.technical}/40</li>
+                                    <li>Soft skills: {ats.breakdown.soft_skills}/15</li>
+                                    <li>Format signals: {ats.breakdown.format_signals}/15</li>
+                                </ul>
+
+                                {(['technical', 'action_verbs', 'soft_skills'] as const).map(cat => (
+                                    ats.missing[cat].length > 0 ? (
+                                        <div key={cat} className="mb-3">
+                                            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                Missing {cat.replace('_', ' ')}
+                                            </p>
+                                            <div className="flex flex-wrap gap-1">
+                                                {ats.missing[cat].slice(0, 10).map(kw => (
+                                                    <button
+                                                        key={kw}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setSkills(prev => Array.from(new Set([...(prev ?? []), kw])));
+                                                            setTimeout(() => save(), 0);
+                                                        }}
+                                                        className="rounded border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs text-gray-700 hover:border-indigo-400 hover:bg-indigo-50"
+                                                        title="Add to skills"
+                                                    >
+                                                        + {kw}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : null
                                 ))}
                             </div>
                         )}
