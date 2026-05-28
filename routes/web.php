@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AiSuggestController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
@@ -18,9 +19,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [AnalyticsController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -42,10 +43,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
     Route::patch('/builder/{resume}/questions/{question}/read', [ShareLinkController::class, 'markRead'])->name('questions.read');
+
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 });
 
 // Public (unauthenticated) share link routes
 Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
+Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
 Route::post('/r/{token}/questions', [PublicResumeController::class, 'storeQuestion'])->name('public.question');
 
 require __DIR__.'/auth.php';
