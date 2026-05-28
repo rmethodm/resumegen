@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { PageProps, ResumeStat } from '@/types';
 
 type Props = PageProps<{ resumeStats?: ResumeStat[] }>;
@@ -45,7 +45,14 @@ export default function Dashboard() {
                                     <tbody className="divide-y divide-gray-100">
                                         {resumeStats.map((stat) => (
                                             <tr key={stat.resume_id} className="hover:bg-gray-50 transition-colors">
-                                                <td className="px-6 py-4 font-medium text-gray-800">{stat.resume_name}</td>
+                                                <td className="px-6 py-4 font-medium">
+                                                    <Link
+                                                        href={route('builder.edit', stat.resume_id)}
+                                                        className="text-indigo-600 hover:text-indigo-800 hover:underline"
+                                                    >
+                                                        {stat.resume_name}
+                                                    </Link>
+                                                </td>
                                                 <td className="px-6 py-4 text-right tabular-nums text-gray-700">{stat.page_views.toLocaleString()}</td>
                                                 <td className="px-6 py-4 text-right tabular-nums text-gray-700">{stat.unique_visitors.toLocaleString()}</td>
                                                 <td className="px-6 py-4 text-right tabular-nums text-gray-700">{stat.pdf_downloads.toLocaleString()}</td>
