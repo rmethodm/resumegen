@@ -194,4 +194,44 @@ class ResumeBuilderTest extends TestCase
         $this->assertEquals('#7f1d1d', $copy->accent_color);
         $this->assertEquals('serif', $copy->font_family);
     }
+
+    public function test_edit_passes_is_first_resume_true_for_first_resume_of_new_user(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+        $resume = $user->resumes()->create([
+            'name'         => 'My CV',
+            'pdf_filename' => 'a.pdf',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('builder.edit', $resume->id))
+            ->assertInertia(fn ($page) => $page
+                ->component('ResumeBuilder/Edit')
+                ->where('isFirstResume', true)
+            );
+    }
+
+    public function test_edit_passes_is_first_resume_false_when_onboarding_completed(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => true]);
+        $resume = $user->resumes()->create([
+            'name'         => 'My CV',
+            'pdf_filename' => 'a.pdf',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('builder.edit', $resume->id))
+            ->assertInertia(fn ($page) => $page->where('isFirstResume', false));
+    }
+
+    public function test_edit_passes_is_first_resume_false_when_user_has_multiple_resumes(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+        $first = $user->resumes()->create(['name' => 'A', 'pdf_filename' => 'a.pdf']);
+        $user->resumes()->create(['name' => 'B', 'pdf_filename' => 'b.pdf']);
+
+        $this->actingAs($user)
+            ->get(route('builder.edit', $first->id))
+            ->assertInertia(fn ($page) => $page->where('isFirstResume', false));
+    }
 }
