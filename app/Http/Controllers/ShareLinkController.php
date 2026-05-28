@@ -51,4 +51,15 @@ class ShareLinkController extends Controller
         $question->update(['is_read' => true]);
         return back();
     }
+
+    public function markAllRead(Resume $resume)
+    {
+        $this->authorize('update', $resume);
+
+        ResumeQuestion::where('resume_id', $resume->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return back();
+    }
 }
