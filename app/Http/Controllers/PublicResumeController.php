@@ -50,7 +50,11 @@ class PublicResumeController extends Controller
     {
         $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
 
-        abort_if(! $link->is_active, 403, 'This link has been deactivated.');
+        abort_if(
+            ! $link->is_active || ($link->expires_at && $link->expires_at->isPast()),
+            410,
+            'This link is no longer active.'
+        );
 
         $validated = $request->validate([
             'sender_name'  => ['required', 'string', 'max:150'],

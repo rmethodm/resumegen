@@ -95,6 +95,18 @@ class PublicResumeTest extends TestCase
         $this->get(route('public.resume', $link->token))->assertOk();
     }
 
+    public function test_expired_link_rejects_question_submission(): void
+    {
+        $link = $this->makeLink(true);
+        $link->update(['expires_at' => now()->subDay()]);
+
+        $this->post(route('public.question', $link->token), [
+            'sender_name'  => 'Alice',
+            'sender_email' => 'alice@example.com',
+            'message'      => 'Hi',
+        ])->assertStatus(410);
+    }
+
     public function test_public_question_form_is_rate_limited(): void
     {
         RateLimiter::clear('public-question');
