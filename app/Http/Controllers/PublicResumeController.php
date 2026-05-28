@@ -1,10 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Mail\NewQuestionReceived;
 use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -48,7 +50,7 @@ class PublicResumeController extends Controller
 
     public function storeQuestion(Request $request, string $token)
     {
-        $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
+        $link = ResumeShareLink::with('resume.user')->where('token', $token)->firstOrFail();
 
         abort_if(
             ! $link->is_active || ($link->expires_at && $link->expires_at->isPast()),
@@ -63,12 +65,18 @@ class PublicResumeController extends Controller
             'message'      => ['required', 'string', 'max:2000'],
         ]);
 
-        $link->questions()->create([
+        $question = $link->questions()->create([
             ...$validated,
             'resume_id' => $link->resume_id,
         ]);
 
         ResumeShareEvent::log($request, $link, 'question_submitted');
+
+        try {
+            Mail::to($link->resume->user->email)->queue(new NewQuestionReceived($question, $link->resume));
+        } catch (\Throwable) {
+            // Mail failure must never break the public form
+        }
 
         return back()->with('questionSubmitted', true);
     }
