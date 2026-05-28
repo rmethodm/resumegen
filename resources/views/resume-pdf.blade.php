@@ -3,19 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <style>
-  body { font-family: DejaVu Sans, sans-serif; font-size: 11pt; color: #1a1a1a; margin: 0; padding: 0; }
+  @php
+    $fs = $resume->font_sizes ?? [];
+    $sizeName       = $fs['name']          ?? 16;
+    $sizeContact    = $fs['contact']       ?? 9.5;
+    $sizeHeading    = $fs['heading']       ?? 10.5;
+    $sizeBody       = $fs['body']          ?? 10;
+    $spacingSection = $fs['sectionSpacing'] ?? 9;
+    $spacingEntry   = $fs['entrySpacing']   ?? 3;
+  @endphp
+  body { font-family: DejaVu Sans, sans-serif; font-size: {{ $sizeBody }}pt; color: #1a1a1a; margin: 0; padding: 0; }
   .page { padding: 0.75in; }
-  h1 { font-size: 20pt; margin: 0 0 4px; }
-  .contact-line { font-size: 9pt; color: #555; margin-bottom: 16px; }
-  h2 { font-size: 9pt; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 12px 0 6px; color: #444; }
-  .entry { margin-bottom: 10px; }
+  h1 { font-size: {{ $sizeName }}pt; margin: 0 0 4px; }
+  .contact-line { font-size: {{ $sizeContact }}pt; color: #555; margin-bottom: 16px; }
+  h2 { font-size: {{ $sizeHeading }}pt; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: {{ $spacingSection }}pt 0 6px; color: #444; }
+  .entry { margin-bottom: {{ $spacingEntry }}pt; }
   .row { display: flex; justify-content: space-between; }
-  .title { font-weight: bold; font-size: 11pt; }
-  .sub { font-size: 9.5pt; color: #555; }
-  .date { font-size: 9pt; color: #777; }
+  .title { font-weight: bold; font-size: {{ $sizeBody }}pt; }
+  .sub { font-size: {{ $sizeContact }}pt; color: #555; }
+  .date { font-size: {{ $sizeContact }}pt; color: #777; }
   ul { margin: 4px 0 0 16px; padding: 0; }
-  li { font-size: 10pt; margin-bottom: 2px; }
-  p { margin: 0; font-size: 10.5pt; line-height: 1.5; }
+  li { font-size: {{ $sizeBody }}pt; margin-bottom: 2px; }
+  p { margin: 0; font-size: {{ $sizeBody }}pt; line-height: 1.5; }
 </style>
 </head>
 <body>
