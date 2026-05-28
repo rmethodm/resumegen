@@ -133,3 +133,28 @@ export interface AtsScore {
         format_signals: number;
     };
 }
+
+export interface CoverLetterRow {
+    id: number;
+    name: string;
+    template_key: string;
+    resume_id: number | null;
+    updated_at: string;
+}
+
+export interface CoverLetterTemplateOption {
+    key: string;
+    label: string;
+    description: string;
+}
+
+export interface CoverLetter {
+    id: number;
+    user_id: number;
+    resume_id: number | null;
+    name: string;
+    template_key: string;
+    body: string;
+    created_at: string;
+    updated_at: string;
+}
