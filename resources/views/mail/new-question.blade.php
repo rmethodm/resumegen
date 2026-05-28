@@ -1,5 +1,5 @@
 <x-mail::message>
-# New message on "{{ $question->resume->name }}"
+# New message on "{{ $resume->name }}"
 
 **{{ $question->sender_name }}** ({{ $question->sender_email }}) sent you a message via your shared resume link:
 
@@ -7,7 +7,7 @@
 {{ $question->message }}
 </x-mail::panel>
 
-<x-mail::button :url="url('/builder/' . $question->resume_id)">
+<x-mail::button :url="route('builder.edit', $resume->id)">
 View in Editor
 </x-mail::button>
 
