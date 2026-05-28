@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AiSuggestController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AtsScoreController;
 use App\Http\Controllers\CoverLetterController;
@@ -63,6 +64,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/jobs/{application}', [JobApplicationController::class, 'edit'])->name('jobs.edit');
     Route::put('/jobs/{application}', [JobApplicationController::class, 'update'])->name('jobs.update');
     Route::delete('/jobs/{application}', [JobApplicationController::class, 'destroy'])->name('jobs.destroy');
+
+    Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
+    Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
+    Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
 });
 
 // Public (unauthenticated) share link routes
