@@ -50,10 +50,9 @@ class ResumeBuilderTest extends TestCase
         $response = $this->actingAs($user)
             ->post(route('builder.duplicate', $resume->id));
 
-        $response->assertRedirect();
-
         $copy = Resume::where('name', 'Copy of My CV')->first();
         $this->assertNotNull($copy);
+        $response->assertRedirect(route('builder.edit', $copy->id));
         $this->assertEquals('A great developer.', $copy->summary);
         $this->assertEquals(['PHP', 'React'], $copy->skills);
         $this->assertNotEquals($resume->id, $copy->id);
