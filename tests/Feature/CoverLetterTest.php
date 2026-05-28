@@ -31,14 +31,14 @@ class CoverLetterTest extends TestCase
         $this->actingAs($user)
             ->post(route('cover-letters.store'), [
                 'template_key' => 'standard',
-                'name'         => 'My Cover Letter',
+                'name' => 'My Cover Letter',
             ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('cover_letters', [
-            'user_id'      => $user->id,
+            'user_id' => $user->id,
             'template_key' => 'standard',
-            'name'         => 'My Cover Letter',
+            'name' => 'My Cover Letter',
         ]);
         $letter = CoverLetter::first();
         $this->assertNotEmpty($letter->body);
@@ -52,7 +52,7 @@ class CoverLetterTest extends TestCase
         $this->actingAs($user)
             ->post(route('cover-letters.store'), [
                 'template_key' => 'bogus',
-                'name'         => 'X',
+                'name' => 'X',
             ])
             ->assertSessionHasErrors('template_key');
     }

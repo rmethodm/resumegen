@@ -13,8 +13,8 @@ class JobApplicationFactory extends Factory
         return [
             'user_id' => User::factory(),
             'company' => $this->faker->company(),
-            'role'    => $this->faker->jobTitle(),
-            'status'  => $this->faker->randomElement(JobApplication::STATUSES),
+            'role' => $this->faker->jobTitle(),
+            'status' => $this->faker->randomElement(JobApplication::STATUSES),
         ];
     }
 }

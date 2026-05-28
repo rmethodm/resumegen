@@ -18,10 +18,10 @@ class CoverLetterController extends Controller
             ->get(['id', 'name', 'template_key', 'resume_id', 'updated_at']);
 
         return Inertia::render('CoverLetter/Index', [
-            'letters'   => $letters,
+            'letters' => $letters,
             'templates' => collect(CoverLetterTemplates::TEMPLATES)->map(fn ($t, $k) => [
-                'key'         => $k,
-                'label'       => $t['label'],
+                'key' => $k,
+                'label' => $t['label'],
                 'description' => $t['description'],
             ])->values(),
         ]);
@@ -31,13 +31,13 @@ class CoverLetterController extends Controller
     {
         $validated = $request->validate([
             'template_key' => ['required', 'in:'.implode(',', CoverLetterTemplates::keys())],
-            'name'         => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
         $letter = $request->user()->coverLetters()->create([
-            'name'         => $validated['name'],
+            'name' => $validated['name'],
             'template_key' => $validated['template_key'],
-            'body'         => CoverLetterTemplates::render($validated['template_key'], [
+            'body' => CoverLetterTemplates::render($validated['template_key'], [
                 'name' => $request->user()->name,
             ]),
         ]);
@@ -52,7 +52,7 @@ class CoverLetterController extends Controller
         $resumes = $request->user()->resumes()->orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('CoverLetter/Edit', [
-            'letter'  => $letter,
+            'letter' => $letter,
             'resumes' => $resumes,
         ]);
     }
@@ -62,8 +62,8 @@ class CoverLetterController extends Controller
         $this->authorize('update', $letter);
 
         $validated = $request->validate([
-            'name'      => ['sometimes', 'required', 'string', 'max:255'],
-            'body'      => ['sometimes', 'string'],
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'body' => ['sometimes', 'string'],
             'resume_id' => ['sometimes', 'nullable', 'integer', 'exists:resumes,id'],
         ]);
 

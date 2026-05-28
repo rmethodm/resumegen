@@ -31,16 +31,16 @@ class JobApplicationTest extends TestCase
         $this->actingAs($user)
             ->post(route('jobs.store'), [
                 'company' => 'Acme',
-                'role'    => 'Engineer',
-                'status'  => 'applied',
+                'role' => 'Engineer',
+                'status' => 'applied',
             ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('job_applications', [
             'user_id' => $user->id,
             'company' => 'Acme',
-            'role'    => 'Engineer',
-            'status'  => 'applied',
+            'role' => 'Engineer',
+            'status' => 'applied',
         ]);
     }
 
@@ -51,8 +51,8 @@ class JobApplicationTest extends TestCase
         $this->actingAs($user)
             ->post(route('jobs.store'), [
                 'company' => 'Acme',
-                'role'    => 'Engineer',
-                'status'  => 'bogus',
+                'role' => 'Engineer',
+                'status' => 'bogus',
             ])
             ->assertSessionHasErrors('status');
     }
@@ -65,16 +65,16 @@ class JobApplicationTest extends TestCase
         $this->actingAs($user)
             ->put(route('jobs.update', $app->id), [
                 'company' => 'Acme',
-                'role'    => 'Engineer',
-                'status'  => 'interviewing',
-                'notes'   => 'Phone screen Friday',
+                'role' => 'Engineer',
+                'status' => 'interviewing',
+                'notes' => 'Phone screen Friday',
             ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('job_applications', [
-            'id'     => $app->id,
+            'id' => $app->id,
             'status' => 'interviewing',
-            'notes'  => 'Phone screen Friday',
+            'notes' => 'Phone screen Friday',
         ]);
     }
 
@@ -87,8 +87,8 @@ class JobApplicationTest extends TestCase
         $this->actingAs($other)
             ->put(route('jobs.update', $app->id), [
                 'company' => 'X',
-                'role'    => 'Y',
-                'status'  => 'saved',
+                'role' => 'Y',
+                'status' => 'saved',
             ])
             ->assertForbidden();
     }

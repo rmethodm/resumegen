@@ -10,11 +10,11 @@ class CoverLetterFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'      => User::factory(),
-            'resume_id'    => null,
-            'name'         => 'My Cover Letter',
+            'user_id' => User::factory(),
+            'resume_id' => null,
+            'name' => 'My Cover Letter',
             'template_key' => 'standard',
-            'body'         => 'Dear Hiring Manager, ...',
+            'body' => 'Dear Hiring Manager, ...',
         ];
     }
 }

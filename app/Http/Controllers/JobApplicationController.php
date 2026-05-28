@@ -24,8 +24,8 @@ class JobApplicationController extends Controller
 
         return Inertia::render('Jobs/Index', [
             'applications' => $applications,
-            'resumes'      => $resumes,
-            'statuses'     => JobApplication::STATUSES,
+            'resumes' => $resumes,
+            'statuses' => JobApplication::STATUSES,
         ]);
     }
 
@@ -44,8 +44,8 @@ class JobApplicationController extends Controller
 
         return Inertia::render('Jobs/Edit', [
             'application' => $application,
-            'resumes'     => $resumes,
-            'statuses'    => JobApplication::STATUSES,
+            'resumes' => $resumes,
+            'statuses' => JobApplication::STATUSES,
         ]);
     }
 
@@ -79,13 +79,13 @@ class JobApplicationController extends Controller
         $req = $creating ? 'required' : 'sometimes';
 
         return $request->validate([
-            'company'    => [$req, 'string', 'max:255'],
-            'role'       => [$req, 'string', 'max:255'],
-            'status'     => [$req, 'in:'.implode(',', JobApplication::STATUSES)],
-            'resume_id'  => ['sometimes', 'nullable', 'integer', 'exists:resumes,id'],
+            'company' => [$req, 'string', 'max:255'],
+            'role' => [$req, 'string', 'max:255'],
+            'status' => [$req, 'in:'.implode(',', JobApplication::STATUSES)],
+            'resume_id' => ['sometimes', 'nullable', 'integer', 'exists:resumes,id'],
             'applied_at' => ['sometimes', 'nullable', 'date'],
-            'notes'      => ['sometimes', 'nullable', 'string'],
-            'job_url'    => ['sometimes', 'nullable', 'url', 'max:500'],
+            'notes' => ['sometimes', 'nullable', 'string'],
+            'job_url' => ['sometimes', 'nullable', 'url', 'max:500'],
         ]);
     }
 }

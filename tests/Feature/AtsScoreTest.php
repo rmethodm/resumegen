@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -23,15 +22,15 @@ class AtsScoreTest extends TestCase
     {
         $user = User::factory()->create();
         $resume = $user->resumes()->create([
-            'name'         => 'r',
+            'name' => 'r',
             'pdf_filename' => 'r.pdf',
-            'summary'      => 'Senior engineer who led teams and shipped scalable systems.',
-            'experience'   => [[
+            'summary' => 'Senior engineer who led teams and shipped scalable systems.',
+            'experience' => [[
                 'id' => '1', 'company' => 'X', 'title' => 'Engineer',
                 'start_date' => '2020', 'end_date' => '2024', 'current' => false,
                 'bullets' => "- Built and deployed React apps\n- Reduced costs by 30%",
             ]],
-            'skills'       => ['PHP', 'Laravel', 'React', 'TypeScript', 'AWS'],
+            'skills' => ['PHP', 'Laravel', 'React', 'TypeScript', 'AWS'],
         ]);
 
         $response = $this->actingAs($user)
