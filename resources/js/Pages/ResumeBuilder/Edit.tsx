@@ -400,6 +400,68 @@ function ExecutiveTemplate({ contact, summary, experience, education, skills, ce
     );
 }
 
+function AtsTemplate({ contact, summary, experience, education, skills, certifications, fontSizes }: TemplateProps) {
+    const contactLine = [contact.email, contact.phone, contact.location, contact.linkedin, contact.website].filter(Boolean).join(' | ');
+    return (
+        <div className="text-black">
+            <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-bold">{contact.full_name || 'Your Name'}</h1>
+            {contactLine && (
+                <p style={{ fontSize: `${fontSizes.contact}pt` }} className="mb-4">{contactLine}</p>
+            )}
+
+            {summary && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Summary</h2>
+                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-normal">{summary}</p>
+                </section>
+            )}
+            {experience.some(e => e.company || e.title) && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Work Experience</h2>
+                    {experience.filter(e => e.company || e.title).map(exp => (
+                        <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }}>
+                            <div style={{ fontSize: `${fontSizes.body}pt` }} className="font-bold">{exp.title || 'Job Title'}</div>
+                            <div style={{ fontSize: `${fontSizes.body}pt` }}>{exp.company}{exp.company && (exp.start_date || exp.end_date) ? ' | ' : ''}{exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}</div>
+                            {exp.bullets && (
+                                <ul style={{ fontSize: `${fontSizes.body}pt` }} className="mt-1 list-disc pl-5">
+                                    {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
+                                </ul>
+                            )}
+                        </div>
+                    ))}
+                </section>
+            )}
+            {education.some(e => e.school) && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Education</h2>
+                    {education.filter(e => e.school).map(edu => (
+                        <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt`, fontSize: `${fontSizes.body}pt` }}>
+                            <div className="font-bold">{edu.school}</div>
+                            <div>{[edu.degree, edu.field].filter(Boolean).join(' in ')}{edu.grad_year ? ` | ${edu.grad_year}` : ''}</div>
+                        </div>
+                    ))}
+                </section>
+            )}
+            {skills.length > 0 && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Skills</h2>
+                    <p style={{ fontSize: `${fontSizes.body}pt` }}>{skills.join(', ')}</p>
+                </section>
+            )}
+            {certifications.some(c => c.name) && (
+                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Certifications</h2>
+                    {certifications.filter(c => c.name).map(cert => (
+                        <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt`, fontSize: `${fontSizes.body}pt` }}>
+                            <span className="font-bold">{cert.name}</span>{cert.issuer || cert.date ? ` | ${[cert.issuer, cert.date].filter(Boolean).join(', ')}` : ''}
+                        </div>
+                    ))}
+                </section>
+            )}
+        </div>
+    );
+}
+
 const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, body: 10, sectionSpacing: 9, entrySpacing: 3 };
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -1154,7 +1216,9 @@ export default function Edit({
                             </div>
                         ))}
 
-                        {template === 'executive' ? (
+                        {template === 'ats' ? (
+                            <AtsTemplate contact={contact} summary={summary} experience={experience} education={education} skills={skills} certifications={certifications} fontSizes={fontSizes} accentColor={accentColor} />
+                        ) : template === 'executive' ? (
                             <ExecutiveTemplate contact={contact} summary={summary} experience={experience} education={education} skills={skills} certifications={certifications} fontSizes={fontSizes} accentColor={accentColor} />
                         ) : template === 'creative' ? (
                             <CreativeTemplate contact={contact} summary={summary} experience={experience} education={education} skills={skills} certifications={certifications} fontSizes={fontSizes} accentColor={accentColor} />
