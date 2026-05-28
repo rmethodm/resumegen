@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
     Route::get('/builder/{resume}/pdf', [ResumeBuilderController::class, 'downloadPdf'])->name('builder.pdf');
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
+    Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
     Route::post('/builder/{resume}/ai-suggest', [AiSuggestController::class, 'suggest'])
         ->middleware('throttle:10,1')
         ->name('builder.ai-suggest');
@@ -49,6 +50,6 @@ Route::middleware('auth')->group(function () {
 // Public (unauthenticated) share link routes
 Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
 Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
-Route::post('/r/{token}/questions', [PublicResumeController::class, 'storeQuestion'])->name('public.question');
+Route::post('/r/{token}/questions', [PublicResumeController::class, 'storeQuestion'])->middleware('throttle:5,1')->name('public.question');
 
 require __DIR__.'/auth.php';

@@ -59,7 +59,7 @@ class ResumeBuilderController extends Controller
             'questions'      => $questions,
             'aiCapabilities' => [
                 'claude' => !empty(config('services.anthropic.key')),
-                'openai' => !empty(env('OPENAI_API_KEY')),
+                'openai' => !empty(config('services.openai.key')),
             ],
         ]);
     }
@@ -77,6 +77,7 @@ class ResumeBuilderController extends Controller
             'education'      => ['nullable', 'array'],
             'skills'         => ['nullable', 'array'],
             'certifications' => ['nullable', 'array'],
+            'font_sizes'     => ['nullable', 'array'],
         ]);
 
         $resume->update($validated);
@@ -116,10 +117,31 @@ class ResumeBuilderController extends Controller
             'education'      => ['nullable', 'array'],
             'skills'         => ['nullable', 'array'],
             'certifications' => ['nullable', 'array'],
+            'font_sizes'     => ['nullable', 'array'],
         ])->validate();
 
         $resume->update($validated);
 
         return response()->noContent();
+    }
+
+    public function duplicate(Resume $resume)
+    {
+        $this->authorize('update', $resume);
+
+        $copy = $resume->user->resumes()->create([
+            'name'           => 'Copy of ' . $resume->name,
+            'pdf_filename'   => Str::uuid() . '.pdf',
+            'template'       => $resume->template,
+            'summary'        => $resume->summary,
+            'contact'        => $resume->contact,
+            'experience'     => $resume->experience,
+            'education'      => $resume->education,
+            'skills'         => $resume->skills,
+            'certifications' => $resume->certifications,
+            'font_sizes'     => $resume->font_sizes,
+        ]);
+
+        return redirect()->route('builder.edit', $copy->id);
     }
 }
