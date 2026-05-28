@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\AnalyticsController;
@@ -74,5 +75,11 @@ Route::middleware('auth')->group(function () {
 Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
 Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
 Route::post('/r/{token}/questions', [PublicResumeController::class, 'storeQuestion'])->middleware('throttle:5,1')->name('public.question');
+
+Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+});
 
 require __DIR__.'/auth.php';

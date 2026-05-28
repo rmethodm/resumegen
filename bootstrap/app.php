@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        $middleware->alias([
+            'master_admin' => \App\Http\Middleware\EnsureMasterAdmin::class,
+        ]);
+
         $middleware->validateCsrfTokens(except: [
             'stripe/webhook',
         ]);
