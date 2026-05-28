@@ -30,10 +30,10 @@ class PublicResumeController extends Controller
 
         abort_if(! $link->is_active, 403, 'This link has been deactivated.');
 
-        ResumeShareEvent::log($request, $link, 'pdf_download');
-
         $resume = $link->resume;
         $pdf = Pdf::loadView('resume-pdf', ['resume' => $resume])->setPaper('letter', 'portrait');
+
+        ResumeShareEvent::log($request, $link, 'pdf_download');
 
         return $pdf->download($resume->pdf_filename ?? ($resume->id . '.pdf'));
     }

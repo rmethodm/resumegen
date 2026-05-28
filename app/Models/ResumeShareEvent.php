@@ -35,13 +35,17 @@ class ResumeShareEvent extends Model
     {
         $ip = $request->ip();
 
-        self::create([
-            'resume_share_link_id' => $link->id,
-            'resume_id'            => $link->resume_id,
-            'event'                => $event,
-            'ip_hash'              => $ip ? hash('sha256', $ip) : null,
-            'user_agent'           => substr((string) $request->userAgent(), 0, 500) ?: null,
-            'referrer'             => substr((string) $request->header('referer', ''), 0, 500) ?: null,
-        ]);
+        try {
+            self::create([
+                'resume_share_link_id' => $link->id,
+                'resume_id'            => $link->resume_id,
+                'event'                => $event,
+                'ip_hash'              => $ip ? hash('sha256', $ip) : null,
+                'user_agent'           => substr((string) $request->userAgent(), 0, 500) ?: null,
+                'referrer'             => substr((string) $request->header('referer', ''), 0, 500) ?: null,
+            ]);
+        } catch (\Throwable) {
+            // Analytics logging is best-effort; never crash a public request
+        }
     }
 }
