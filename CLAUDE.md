@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Stack
 
-- **Backend:** Laravel 13, PHP 8.3, SQLite (default), Inertia.js v2
+- **Backend:** Laravel 13, PHP 8.4, SQLite (default), Inertia.js v2
 - **Frontend:** React 18, TypeScript, Tailwind CSS v3, Vite 8
 - **Auth:** Laravel Breeze (session-based)
 - **PDF:** `barryvdh/laravel-dompdf` — route `GET /builder/{resume}/pdf` triggers server-side generation via `resources/views/resume-pdf.blade.php`
 - **Media:** `spatie/laravel-medialibrary` (installed, migration exists, not yet used)
 - **Routing on the frontend:** Ziggy (`route()` helper available globally in React via `resources/js/types/global.d.ts`)
 - **AI suggestions:** `openai-php/client` for OpenAI; raw `Http::post` for Anthropic Claude — keys in `config/services.php` (`services.anthropic.key`, `services.openai.key`). Never call `env()` directly in app code; always use `config()`.
+- **Billing:** `laravel/cashier-stripe` — `User` uses `Billable` trait. Stripe price IDs in `config/services.php` (`services.stripe.monthly_price_id`, `services.stripe.yearly_price_id`). Subscription name is `'default'`.
 
 ## Commands
 
@@ -50,7 +51,7 @@ php artisan migrate:fresh --seed
 All routes return Inertia responses — there are no Blade views beyond the single `resources/views/app.blade.php` root template. Laravel serialises props as JSON, Inertia hydrates the matching React page component.
 
 ### Resume data model
-All resume content is stored as JSON columns on a single `resumes` table (no separate section tables). The `Resume` model casts `contact`, `experience`, `education`, `skills`, `certifications`, and `font_sizes` to arrays automatically. The frontend owns the shape of these JSON blobs; the backend validates them as `nullable array`.
+All resume content is stored as JSON columns on a single `resumes` table (no separate section tables). The `Resume` model casts `contact`, `experience`, `education`, `skills`, `certifications`, and `font_sizes` to arrays automatically. The frontend owns the shape of these JSON blobs; the backend validates them as `nullable array`. `accent_color` (hex string) and `font_family` (string) are plain string columns added in migration `2026_05_28_120000`.
 
 ### Authorization
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses the `AuthorizesRequests` trait so `$this->authorize()` is available everywhere.
@@ -81,6 +82,24 @@ Eight templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `cr
 
 ### Font sizes
 `font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor update the live preview but the PDF Blade view currently uses hardcoded sizes.
+
+### ATS score
+`GET /builder/{resume}/ats-score` (throttled 10 req/min) returns a JSON score via `AtsScoreController` → `AtsScorer` service. Requires resume ownership (`authorize('update', $resume)`).
+
+### Resume duplicate
+`POST /builder/{resume}/duplicate` creates a copy of a resume (owned by the current user). Handled by `ResumeBuilderController@duplicate`.
+
+### Billing and free-tier limits
+`BillingController` drives `Billing/Index.tsx`. Free users are capped at 5 resumes (`resumeLimit: 5`; Pro gets `null`). When the limit is hit, `limitReached` is flashed in the session and the builder redirects to the billing page. The `checkout` action creates a Stripe Checkout session; `portal` redirects to the Stripe customer portal.
+
+### Cover letters
+Full CRUD at `/cover-letters` → `CoverLetterController` → `CoverLetter/Index.tsx` + `CoverLetter/Edit.tsx`. Letters are created from pre-built templates via `App\Data\CoverLetterTemplates`. Each letter has a `template_key`, `name`, `body` (raw text), and optional `resume_id` foreign key.
+
+### Job applications
+Full CRUD at `/jobs` → `JobApplicationController` → `Jobs/Index.tsx` + `Jobs/Edit.tsx`. Columns: `company`, `role`, `status` (enum via `JobApplication::STATUSES`), `resume_id`, `applied_at`, `notes`, `job_url`. Policy-gated on ownership.
+
+### Onboarding
+`PATCH /user/onboarding` → `OnboardingController@complete` flips `has_completed_onboarding` to `true` on the user. Used for first-run UX flow; field is a boolean column on `users`.
 
 ### AI suggestions
 `AiSuggestController` handles `POST /builder/{resume}/ai-suggest` (throttled to 10 requests/minute). Supports `field` values: `summary`, `bullets`, `skills`, `title`. Provider is selected per-request (`claude` or `openai`); the active provider is persisted in `localStorage` under `resumegen_ai_provider`. Both keys are checked via `config('services.anthropic.key')` and `config('services.openai.key')` — never `env()` directly.
