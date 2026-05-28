@@ -27,6 +27,10 @@ export default function Index({ resumes }: Props) {
         });
     };
 
+    const duplicate = (id: number) => {
+        form.post(route('builder.duplicate', id));
+    };
+
     const destroy = (id: number, name: string) => {
         if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
         form.delete(route('builder.destroy', id));
@@ -106,6 +110,12 @@ export default function Index({ resumes }: Props) {
                                         >
                                             Edit
                                         </Link>
+                                        <button
+                                            onClick={() => duplicate(r.id)}
+                                            className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100"
+                                        >
+                                            Duplicate
+                                        </button>
                                         <button
                                             onClick={() => destroy(r.id, r.name)}
                                             className="rounded-md px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
