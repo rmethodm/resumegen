@@ -14,6 +14,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useHistory, ResumeSnapshot } from '@/hooks/useHistory';
 import {
     ResumeData, ShareLink, ResumeQuestion, ResumeTemplate,
     ExperienceEntry, EducationEntry, CertEntry, Contact, AiCapabilities,
@@ -474,11 +475,13 @@ export default function Edit({
     shareLinks: initialLinks,
     questions: initialQuestions,
     aiCapabilities,
+    isFirstResume,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
     questions: ResumeQuestion[];
     aiCapabilities: AiCapabilities;
+    isFirstResume: boolean;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -583,8 +586,51 @@ export default function Edit({
     accentColorRef.current = accentColor;
     fontFamilyRef.current = fontFamily;
 
+    // ─── Undo / redo history ──────────────────────────────────────────────
+    const currentSnapshot = useCallback((): ResumeSnapshot => ({
+        name: nameRef.current,
+        template: templateRef.current,
+        contact: contactRef.current,
+        summary: summaryRef.current,
+        experience: experienceRef.current,
+        education: educationRef.current,
+        skills: skillsRef.current,
+        certifications: certificationsRef.current,
+        font_sizes: fontSizesRef.current,
+    }), []);
+
+    const history = useHistory(currentSnapshot());
+
+    const applySnapshot = useCallback((snap: ResumeSnapshot) => {
+        setName(snap.name);
+        setTemplate(snap.template as ResumeTemplate);
+        setContact(snap.contact as Contact);
+        setSummary(snap.summary);
+        setExperience(snap.experience as ExperienceEntry[]);
+        setEducation(snap.education as EducationEntry[]);
+        setSkills(snap.skills);
+        setCertifications(snap.certifications as CertEntry[]);
+        setFontSizes(snap.font_sizes as FontSizes);
+    }, []);
+
+    const lastPushedRef = useRef<string>('');
+
+    useEffect(() => {
+        lastPushedRef.current = JSON.stringify(currentSnapshot());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const save = useCallback(() => {
         if (saving) { pendingSave.current = true; return; }
+        const snap = currentSnapshot();
+        const serialized = JSON.stringify(snap);
+        if (lastPushedRef.current && lastPushedRef.current !== serialized) {
+            try {
+                history.pushSnapshot(JSON.parse(lastPushedRef.current));
+            } catch { /* ignore parse errors */ }
+        }
+        lastPushedRef.current = serialized;
+
         setSaving(true);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         router.put(route('builder.update', resume.id), {
@@ -608,7 +654,41 @@ export default function Edit({
                 fetchAts();
             },
         });
-    }, [resume.id, saving, fetchAts]);
+    }, [resume.id, saving, currentSnapshot, history, fetchAts]);
+
+    const handleUndo = useCallback(() => {
+        const snap = history.undo(currentSnapshot());
+        if (snap) {
+            applySnapshot(snap);
+            lastPushedRef.current = JSON.stringify(snap);
+            save();
+        }
+    }, [history, currentSnapshot, applySnapshot, save]);
+
+    const handleRedo = useCallback(() => {
+        const snap = history.redo(currentSnapshot());
+        if (snap) {
+            applySnapshot(snap);
+            lastPushedRef.current = JSON.stringify(snap);
+            save();
+        }
+    }, [history, currentSnapshot, applySnapshot, save]);
+
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            const mod = e.metaKey || e.ctrlKey;
+            if (!mod) return;
+            if (e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                handleUndo();
+            } else if ((e.key === 'z' && e.shiftKey) || e.key === 'y') {
+                e.preventDefault();
+                handleRedo();
+            }
+        };
+        window.addEventListener('keydown', handler);
+        return () => window.removeEventListener('keydown', handler);
+    }, [handleUndo, handleRedo]);
 
     // Save on tab close via beacon
     useEffect(() => {
@@ -751,6 +831,26 @@ export default function Edit({
                         {atsLoading && !ats && (
                             <span className="text-xs text-gray-400">scoring…</span>
                         )}
+                        <div className="flex items-center gap-1">
+                            <button
+                                type="button"
+                                onClick={handleUndo}
+                                disabled={!history.canUndo}
+                                title="Undo (⌘Z)"
+                                className={`rounded-md px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 ${history.canUndo ? '' : 'opacity-40 cursor-not-allowed'}`}
+                            >
+                                ↩
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleRedo}
+                                disabled={!history.canRedo}
+                                title="Redo (⌘⇧Z)"
+                                className={`rounded-md px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 ${history.canRedo ? '' : 'opacity-40 cursor-not-allowed'}`}
+                            >
+                                ↪
+                            </button>
+                        </div>
                         <span className="flex items-center gap-1.5 text-xs">
                             {saving ? (
                                 <>
