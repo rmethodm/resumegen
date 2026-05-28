@@ -25,12 +25,18 @@ class ResumeBuilderController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
+
+        if (!$user->subscribed('default') && $user->resumes()->count() >= 5) {
+            return redirect()->route('billing.index')->with('limitReached', true);
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $resume = $request->user()->resumes()->create([
-            'name' => $validated['name'],
+        $resume = $user->resumes()->create([
+            'name'         => $validated['name'],
             'pdf_filename' => Str::uuid().'.pdf',
         ]);
 
