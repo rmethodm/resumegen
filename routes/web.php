@@ -4,6 +4,7 @@ use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AtsScoreController;
 use App\Http\Controllers\CoverLetterController;
+use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
@@ -56,6 +57,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/cover-letters/{letter}', [CoverLetterController::class, 'edit'])->name('cover-letters.edit');
     Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
     Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
+
+    Route::get('/jobs', [JobApplicationController::class, 'index'])->name('jobs.index');
+    Route::post('/jobs', [JobApplicationController::class, 'store'])->name('jobs.store');
+    Route::get('/jobs/{application}', [JobApplicationController::class, 'edit'])->name('jobs.edit');
+    Route::put('/jobs/{application}', [JobApplicationController::class, 'update'])->name('jobs.update');
+    Route::delete('/jobs/{application}', [JobApplicationController::class, 'destroy'])->name('jobs.destroy');
 });
 
 // Public (unauthenticated) share link routes
