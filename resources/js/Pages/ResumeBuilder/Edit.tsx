@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
 import AISuggestButton from '@/Components/AISuggestButton';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
     DndContext, closestCenter, PointerSensor, useSensor, useSensors,
@@ -16,6 +17,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ResumeData, ShareLink, ResumeQuestion, ResumeTemplate,
     ExperienceEntry, EducationEntry, CertEntry, Contact, AiCapabilities,
+    FontSizes,
 } from '@/types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -60,10 +62,12 @@ function SectionHeader({ title, open, onToggle }: { title: string; open: boolean
         <button
             type="button"
             onClick={onToggle}
-            className="flex w-full items-center justify-between border-l-2 border-indigo-300 bg-white px-4 py-3 text-left text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none"
+            className="flex w-full items-center justify-between border-l-4 border-indigo-400 bg-indigo-50 px-4 py-3 text-left text-sm font-semibold text-indigo-700 hover:bg-indigo-100 focus:outline-none transition-colors"
         >
             {title}
-            <span className="ml-2 text-gray-400">{open ? '▲' : '▼'}</span>
+            <svg className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
         </button>
     );
 }
@@ -113,6 +117,8 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
     );
 }
 
+const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, body: 10, sectionSpacing: 9, entrySpacing: 3 };
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function Edit({
@@ -134,6 +140,9 @@ export default function Edit({
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? [emptyEdu()]);
     const [skills, setSkills] = useState<string[]>(resume.skills ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
+
+    const [fontSizes, setFontSizes] = useState<FontSizes>({ ...DEFAULT_FONT_SIZES, ...(resume.font_sizes ?? {}) });
+
     const [savedAt, setSavedAt] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const pendingSave = useRef(false);
@@ -149,7 +158,7 @@ export default function Edit({
     const aiEnabled = aiCapabilities.claude || aiCapabilities.openai;
 
     const [openSections, setOpenSections] = useState({
-        contact: true, summary: true, experience: true,
+        fontSizes: false, contact: true, summary: true, experience: true,
         education: true, skills: true, certifications: false,
         share: false, questions: false,
     });
@@ -159,16 +168,15 @@ export default function Edit({
 
     const linkForm = useForm({ label: '' });
 
-    // Overflow detection
     const previewRef = useRef<HTMLDivElement>(null);
-    const [overflowing, setOverflowing] = useState(false);
     const PAGE_HEIGHT_PX = 1056; // 11in at 96dpi
+    const [pageCount, setPageCount] = useState(1);
 
     useEffect(() => {
         const el = previewRef.current;
         if (!el) return;
         const observer = new ResizeObserver(() => {
-            setOverflowing(el.scrollHeight > PAGE_HEIGHT_PX);
+            setPageCount(Math.max(1, Math.ceil(el.scrollHeight / PAGE_HEIGHT_PX)));
         });
         observer.observe(el);
         return () => observer.disconnect();
@@ -183,6 +191,7 @@ export default function Edit({
     const educationRef = useRef(education);
     const skillsRef = useRef(skills);
     const certificationsRef = useRef(certifications);
+    const fontSizesRef = useRef(fontSizes);
 
     nameRef.current = name;
     templateRef.current = template;
@@ -192,6 +201,7 @@ export default function Edit({
     educationRef.current = education;
     skillsRef.current = skills;
     certificationsRef.current = certifications;
+    fontSizesRef.current = fontSizes;
 
     const save = useCallback(() => {
         if (saving) { pendingSave.current = true; return; }
@@ -206,6 +216,7 @@ export default function Edit({
             education: educationRef.current as any,
             skills: skillsRef.current,
             certifications: certificationsRef.current as any,
+            font_sizes: fontSizesRef.current as any,
         }, {
             preserveScroll: true,
             onFinish: () => {
@@ -231,6 +242,7 @@ export default function Edit({
                     education: educationRef.current,
                     skills: skillsRef.current,
                     certifications: certificationsRef.current,
+                    font_sizes: fontSizesRef.current,
                     _token: csrfToken,
                 })], { type: 'application/json' })
             );
@@ -357,16 +369,74 @@ export default function Edit({
         >
             <Head title={`Editing: ${name}`} />
 
-            {overflowing && (
-                <div className="bg-amber-50 border-b border-amber-200 px-6 py-2 text-xs text-amber-700 text-center">
-                    ⚠ Content exceeds one page. Consider trimming or reducing font sizes.
-                </div>
-            )}
-
             <div className="flex h-[calc(100vh-8rem)] overflow-hidden">
 
                 {/* LEFT: Form */}
                 <div className="w-[45%] shrink-0 overflow-y-auto border-r border-gray-200 bg-gray-50 p-6">
+
+                    {/* Font Sizes */}
+                    <div className="mb-5 rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                        <button
+                            type="button"
+                            onClick={() => toggleSection('fontSizes')}
+                            className="flex w-full items-center justify-between border-l-4 border-indigo-400 bg-indigo-50 px-4 py-3 text-left text-sm font-semibold text-indigo-700 hover:bg-indigo-100 focus:outline-none transition-colors"
+                        >
+                            <span>Font Sizes</span>
+                            <svg className={`h-4 w-4 transition-transform ${openSections.fontSizes ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        {openSections.fontSizes && (
+                            <div className="bg-white p-4 space-y-3">
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => { setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }}
+                                        className="text-xs text-gray-400 hover:text-indigo-600 transition-colors"
+                                    >
+                                        Reset to defaults
+                                    </button>
+                                </div>
+                                {([
+                                    { label: 'Name',             key: 'name',           min: 12, max: 36 },
+                                    { label: 'Contact Info',     key: 'contact',        min: 6,  max: 16 },
+                                    { label: 'Section Headings', key: 'heading',        min: 8,  max: 20 },
+                                    { label: 'Body Text',        key: 'body',           min: 8,  max: 16 },
+                                    { label: 'Section Spacing',  key: 'sectionSpacing', min: 0,  max: 20 },
+                                    { label: 'Entry Spacing',    key: 'entrySpacing',   min: 0,  max: 20 },
+                                ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                    <div key={key} className="flex items-center justify-between gap-2">
+                                        <span className="text-sm text-gray-600 shrink-0">
+                                            {label} <span className="text-gray-400 text-xs">({min}–{max})</span>
+                                        </span>
+                                        <div className="flex items-center gap-1 shrink-0">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const next = { ...fontSizesRef.current, [key]: Math.max(min, +(fontSizesRef.current[key] - 0.5).toFixed(1)) };
+                                                    fontSizesRef.current = next;
+                                                    setFontSizes(next);
+                                                    save();
+                                                }}
+                                                className="w-7 h-7 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 flex items-center justify-center text-sm leading-none transition-colors"
+                                            >−</button>
+                                            <span className="w-10 text-center text-sm tabular-nums font-medium text-indigo-700">{fontSizes[key]}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const next = { ...fontSizesRef.current, [key]: Math.min(max, +(fontSizesRef.current[key] + 0.5).toFixed(1)) };
+                                                    fontSizesRef.current = next;
+                                                    setFontSizes(next);
+                                                    save();
+                                                }}
+                                                className="w-7 h-7 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 flex items-center justify-center text-sm leading-none transition-colors"
+                                            >+</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
                     {/* Resume Name */}
                     <div className="mb-5 flex flex-col gap-1">
@@ -385,7 +455,7 @@ export default function Edit({
                     <div className="flex flex-col gap-4">
 
                         {/* Contact */}
-                        <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader title="Contact Information" open={openSections.contact} onToggle={() => toggleSection('contact')} />
                             {openSections.contact && (
                                 <div className="grid grid-cols-2 gap-3 p-4">
@@ -404,7 +474,7 @@ export default function Edit({
                         </div>
 
                         {/* Summary */}
-                        <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader title="Professional Summary" open={openSections.summary} onToggle={() => toggleSection('summary')} />
                             {openSections.summary && (
                                 <div className="p-4">
@@ -434,7 +504,7 @@ export default function Edit({
                         </div>
 
                         {/* Experience */}
-                        <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader title={`Work Experience (${experience.length})`} open={openSections.experience} onToggle={() => toggleSection('experience')} />
                             {openSections.experience && (
                                 <div className="flex flex-col gap-4 p-4 pl-8">
@@ -446,7 +516,7 @@ export default function Edit({
                                                         <div className="mb-2 flex items-center justify-between">
                                                             <span className="text-xs font-semibold text-gray-400">Position {idx + 1}</span>
                                                             {experience.length > 1 && (
-                                                                <button type="button" onClick={() => { removeExp(exp.id); save(); }} className="text-xs text-red-500 hover:text-red-700">Remove</button>
+                                                                <button type="button" onClick={() => { removeExp(exp.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
                                                             )}
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-3">
@@ -516,7 +586,7 @@ export default function Edit({
                         </div>
 
                         {/* Education */}
-                        <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader title={`Education (${education.length})`} open={openSections.education} onToggle={() => toggleSection('education')} />
                             {openSections.education && (
                                 <div className="flex flex-col gap-4 p-4 pl-8">
@@ -528,7 +598,7 @@ export default function Edit({
                                                         <div className="mb-2 flex items-center justify-between">
                                                             <span className="text-xs font-semibold text-gray-400">School {idx + 1}</span>
                                                             {education.length > 1 && (
-                                                                <button type="button" onClick={() => { removeEdu(edu.id); save(); }} className="text-xs text-red-500 hover:text-red-700">Remove</button>
+                                                                <button type="button" onClick={() => { removeEdu(edu.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
                                                             )}
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-3">
@@ -552,7 +622,7 @@ export default function Edit({
                         </div>
 
                         {/* Skills */}
-                        <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')} />
                             {openSections.skills && (
                                 <div className="p-4 flex flex-col gap-2">
@@ -581,7 +651,7 @@ export default function Edit({
                         </div>
 
                         {/* Certifications */}
-                        <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader title={`Certifications (${certifications.length})`} open={openSections.certifications} onToggle={() => toggleSection('certifications')} />
                             {openSections.certifications && (
                                 <div className="flex flex-col gap-4 p-4">
@@ -589,7 +659,7 @@ export default function Edit({
                                         <div key={cert.id} className="rounded-md border border-gray-100 bg-gray-50 p-3">
                                             <div className="mb-2 flex items-center justify-between">
                                                 <span className="text-xs font-semibold text-gray-400">Cert {idx + 1}</span>
-                                                <button type="button" onClick={() => { removeCert(cert.id); save(); }} className="text-xs text-red-500 hover:text-red-700">Remove</button>
+                                                <button type="button" onClick={() => { removeCert(cert.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
                                             </div>
                                             <div className="grid grid-cols-2 gap-3">
                                                 <div className="col-span-2">
@@ -608,7 +678,7 @@ export default function Edit({
                         </div>
 
                         {/* Share Links */}
-                        <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader title="Share Links" open={openSections.share} onToggle={() => toggleSection('share')} />
                             {openSections.share && (
                                 <div className="p-4 flex flex-col gap-3">
@@ -677,7 +747,7 @@ export default function Edit({
                         </div>
 
                         {/* Questions Inbox */}
-                        <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader
                                 title={`Questions${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
                                 open={openSections.questions}
@@ -685,6 +755,17 @@ export default function Edit({
                             />
                             {openSections.questions && (
                                 <div className="p-4 flex flex-col gap-3">
+                                    {unreadCount > 0 && (
+                                        <div className="flex justify-end">
+                                            <button
+                                                type="button"
+                                                onClick={() => router.patch(route('questions.read-all', resume.id), {}, { preserveScroll: true })}
+                                                className="text-xs text-indigo-600 hover:text-indigo-800"
+                                            >
+                                                Mark all read
+                                            </button>
+                                        </div>
+                                    )}
                                     {initialQuestions.length === 0 && (
                                         <p className="text-xs text-gray-400">No questions yet.</p>
                                     )}
@@ -718,31 +799,32 @@ export default function Edit({
                         ref={previewRef}
                         id="resume-preview"
                         className={`mx-auto w-full max-w-[8.5in] bg-white shadow-lg ${template === 'modern' ? 'font-sans' : template === 'minimal' ? 'font-mono' : 'font-sans'}`}
-                        style={{ minHeight: '11in', padding: '0.75in', position: 'relative' }}
+                        style={{ padding: '0.75in', position: 'relative' }}
                     >
-                        {/* Page break indicator */}
-                        {overflowing && (
+                        {/* Page break indicators — one per page boundary */}
+                        {Array.from({ length: pageCount - 1 }, (_, i) => (
                             <div
-                                style={{ position: 'absolute', top: `${PAGE_HEIGHT_PX - 48}px`, left: 0, right: 0 }}
-                                className="border-t-2 border-dashed border-red-400 pointer-events-none"
+                                key={i}
+                                style={{ position: 'absolute', top: `${PAGE_HEIGHT_PX * (i + 1)}px`, left: 0, right: 0 }}
+                                className="border-t border-dashed border-gray-300 pointer-events-none"
                             >
-                                <span className="absolute right-0 -top-4 text-[10px] text-red-400 bg-white px-1">page break</span>
+                                <span className="absolute right-2 -top-3.5 text-[9px] text-gray-400 bg-white px-1">p.{i + 2}</span>
                             </div>
-                        )}
+                        ))}
 
                         {template === 'minimal-ruled' ? (
                             <>
                                 {/* Minimal Ruled Header */}
                                 <div className="mb-10 pb-6 border-b border-gray-200">
-                                    <h1 className="text-3xl font-light tracking-widest uppercase text-gray-900">
+                                    <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-light tracking-widest uppercase text-gray-900">
                                         {contact.full_name || 'Your Name'}
                                     </h1>
                                     {(experience.find(e => e.title)?.title || experience.find(e => e.company)?.company) && (
-                                        <p className="mt-1 text-xs font-semibold tracking-widest uppercase text-gray-400">
+                                        <p style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-1 font-semibold tracking-widest uppercase text-gray-400">
                                             {[experience.find(e => e.title)?.title, experience.find(e => e.company)?.company].filter(Boolean).join(' · ')}
                                         </p>
                                     )}
-                                    <div className="mt-2 flex flex-wrap gap-x-3 text-xs text-gray-500">
+                                    <div style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-2 flex flex-wrap gap-x-3 text-gray-500">
                                         {contact.email && <span>{contact.email}</span>}
                                         {contact.phone && <span>· {contact.phone}</span>}
                                         {contact.location && <span>· {contact.location}</span>}
@@ -753,27 +835,27 @@ export default function Edit({
 
                                 {/* Minimal Ruled Summary */}
                                 {summary && (
-                                    <section className="mb-8">
-                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Summary</div>
-                                        <p className="text-sm leading-relaxed text-gray-700">{summary}</p>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Summary</div>
+                                        <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-relaxed text-gray-700">{summary}</p>
                                     </section>
                                 )}
 
                                 {/* Minimal Ruled Experience */}
                                 {experience.some(e => e.company || e.title) && (
-                                    <section className="mb-8">
-                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Experience</div>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Experience</div>
                                         {experience.filter(e => e.company || e.title).map(exp => (
-                                            <div key={exp.id} className="flex gap-6 mb-5">
-                                                <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5 leading-relaxed">
+                                            <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex gap-6">
+                                                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="w-16 shrink-0 text-right text-gray-400 pt-0.5 leading-relaxed">
                                                     {exp.start_date && <div>{exp.start_date}</div>}
                                                     <div>{exp.current ? 'Present' : exp.end_date}</div>
                                                 </div>
                                                 <div className="flex-1">
-                                                    <div className="text-sm font-semibold text-gray-900">{exp.title || 'Job Title'}</div>
-                                                    <div className="text-xs text-gray-500 mb-1">{exp.company}</div>
+                                                    <div style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{exp.title || 'Job Title'}</div>
+                                                    <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500 mb-1">{exp.company}</div>
                                                     {exp.bullets && (
-                                                        <ul className="list-disc pl-4 text-xs text-gray-700 space-y-0.5">
+                                                        <ul style={{ fontSize: `${fontSizes.body}pt` }} className="list-disc pl-4 text-gray-700 space-y-0.5">
                                                             {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
                                                         </ul>
                                                     )}
@@ -785,14 +867,14 @@ export default function Edit({
 
                                 {/* Minimal Ruled Education */}
                                 {education.some(e => e.school) && (
-                                    <section className="mb-8">
-                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Education</div>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Education</div>
                                         {education.filter(e => e.school).map(edu => (
-                                            <div key={edu.id} className="flex gap-6 mb-3">
-                                                <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5">{edu.grad_year}</div>
+                                            <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex gap-6">
+                                                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="w-16 shrink-0 text-right text-gray-400 pt-0.5">{edu.grad_year}</div>
                                                 <div className="flex-1">
-                                                    <div className="text-sm font-semibold text-gray-900">{edu.school}</div>
-                                                    <div className="text-xs text-gray-500">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</div>
+                                                    <div style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{edu.school}</div>
+                                                    <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</div>
                                                 </div>
                                             </div>
                                         ))}
@@ -801,11 +883,11 @@ export default function Edit({
 
                                 {/* Minimal Ruled Skills */}
                                 {skills.length > 0 && (
-                                    <section className="mb-8">
-                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Skills</div>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Skills</div>
                                         <div className="flex flex-wrap gap-2">
                                             {skills.map((skill, i) => (
-                                                <span key={i} className="bg-gray-100 text-gray-600 text-xs px-2.5 py-0.5 rounded-full">{skill}</span>
+                                                <span key={i} style={{ fontSize: `${fontSizes.body}pt` }} className="bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full">{skill}</span>
                                             ))}
                                         </div>
                                     </section>
@@ -813,14 +895,14 @@ export default function Edit({
 
                                 {/* Minimal Ruled Certifications */}
                                 {certifications.some(c => c.name) && (
-                                    <section className="mb-8">
-                                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Certifications</div>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Certifications</div>
                                         {certifications.filter(c => c.name).map(cert => (
-                                            <div key={cert.id} className="flex gap-6 mb-2">
-                                                <div className="w-16 shrink-0 text-right text-xs text-gray-400 pt-0.5">{cert.date}</div>
+                                            <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex gap-6">
+                                                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="w-16 shrink-0 text-right text-gray-400 pt-0.5">{cert.date}</div>
                                                 <div className="flex-1">
-                                                    <div className="text-sm font-medium text-gray-900">{cert.name}</div>
-                                                    {cert.issuer && <div className="text-xs text-gray-500">{cert.issuer}</div>}
+                                                    <div style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{cert.name}</div>
+                                                    {cert.issuer && <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{cert.issuer}</div>}
                                                 </div>
                                             </div>
                                         ))}
@@ -831,10 +913,10 @@ export default function Edit({
                             <>
                                 {/* Header — classic / modern / minimal */}
                                 <div className={`mb-4 pb-3 text-center ${template === 'modern' ? 'bg-indigo-700 text-white -mx-[0.75in] -mt-[0.75in] px-[0.75in] pt-8 pb-6 mb-6' : 'border-b-2 border-gray-800'}`}>
-                                    <h1 className={`font-bold tracking-wide ${template === 'modern' ? 'text-2xl text-white' : 'text-2xl text-gray-900'}`}>
+                                    <h1 style={{ fontSize: `${fontSizes.name}pt` }} className={`font-bold tracking-wide ${template === 'modern' ? 'text-white' : 'text-gray-900'}`}>
                                         {contact.full_name || 'Your Name'}
                                     </h1>
-                                    <div className={`mt-1 flex flex-wrap justify-center gap-x-3 gap-y-0.5 text-xs ${template === 'modern' ? 'text-indigo-200' : 'text-gray-600'}`}>
+                                    <div style={{ fontSize: `${fontSizes.contact}pt` }} className={`mt-1 flex flex-wrap justify-center gap-x-3 gap-y-0.5 ${template === 'modern' ? 'text-indigo-200' : 'text-gray-600'}`}>
                                         {contact.email && <span>{contact.email}</span>}
                                         {contact.phone && <span>• {contact.phone}</span>}
                                         {contact.location && <span>• {contact.location}</span>}
@@ -844,26 +926,26 @@ export default function Edit({
                                 </div>
 
                                 {summary && (
-                                    <section className="mb-4">
-                                        <h2 className={`mb-1 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Summary</h2>
-                                        <p className="text-sm leading-relaxed text-gray-700">{summary}</p>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className={`mb-1 pb-0.5 font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Summary</h2>
+                                        <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-relaxed text-gray-700">{summary}</p>
                                     </section>
                                 )}
 
                                 {experience.some(e => e.company || e.title) && (
-                                    <section className="mb-4">
-                                        <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Work Experience</h2>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className={`mb-2 pb-0.5 font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Work Experience</h2>
                                         {experience.filter(e => e.company || e.title).map(exp => (
-                                            <div key={exp.id} className="mb-3">
+                                            <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }}>
                                                 <div className="flex items-baseline justify-between">
-                                                    <span className="font-semibold text-sm text-gray-900">{exp.title || 'Job Title'}</span>
-                                                    <span className="text-xs text-gray-500">
+                                                    <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{exp.title || 'Job Title'}</span>
+                                                    <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">
                                                         {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
                                                     </span>
                                                 </div>
-                                                <div className="text-xs font-medium text-gray-600">{exp.company}</div>
+                                                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="font-medium text-gray-600">{exp.company}</div>
                                                 {exp.bullets && (
-                                                    <ul className="mt-1 list-disc pl-4 text-xs text-gray-700 space-y-0.5">
+                                                    <ul style={{ fontSize: `${fontSizes.body}pt` }} className="mt-1 list-disc pl-4 text-gray-700 space-y-0.5">
                                                         {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
                                                     </ul>
                                                 )}
@@ -873,34 +955,34 @@ export default function Edit({
                                 )}
 
                                 {education.some(e => e.school) && (
-                                    <section className="mb-4">
-                                        <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Education</h2>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className={`mb-2 pb-0.5 font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Education</h2>
                                         {education.filter(e => e.school).map(edu => (
-                                            <div key={edu.id} className="mb-2 flex items-baseline justify-between">
+                                            <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex items-baseline justify-between">
                                                 <div>
-                                                    <span className="font-semibold text-sm text-gray-900">{edu.school}</span>
-                                                    <span className="ml-2 text-xs text-gray-600">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
+                                                    <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{edu.school}</span>
+                                                    <span style={{ fontSize: `${fontSizes.contact}pt` }} className="ml-2 text-gray-600">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
                                                 </div>
-                                                {edu.grad_year && <span className="text-xs text-gray-500">{edu.grad_year}</span>}
+                                                {edu.grad_year && <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{edu.grad_year}</span>}
                                             </div>
                                         ))}
                                     </section>
                                 )}
 
                                 {skills.length > 0 && (
-                                    <section className="mb-4">
-                                        <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Skills</h2>
-                                        <p className="text-sm text-gray-700">{skills.join(' • ')}</p>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className={`mb-2 pb-0.5 font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Skills</h2>
+                                        <p style={{ fontSize: `${fontSizes.body}pt` }} className="text-gray-700">{skills.join(' • ')}</p>
                                     </section>
                                 )}
 
                                 {certifications.some(c => c.name) && (
-                                    <section className="mb-4">
-                                        <h2 className={`mb-2 pb-0.5 text-xs font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Certifications</h2>
+                                    <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
+                                        <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className={`mb-2 pb-0.5 font-bold uppercase tracking-widest ${template === 'modern' ? 'text-indigo-700 border-b border-indigo-200' : 'text-gray-700 border-b border-gray-300'}`}>Certifications</h2>
                                         {certifications.filter(c => c.name).map(cert => (
-                                            <div key={cert.id} className="mb-1 flex items-baseline justify-between">
-                                                <span className="text-sm font-medium text-gray-900">{cert.name}</span>
-                                                <span className="text-xs text-gray-500">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
+                                            <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex items-baseline justify-between">
+                                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{cert.name}</span>
+                                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
                                             </div>
                                         ))}
                                     </section>
