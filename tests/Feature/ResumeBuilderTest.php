@@ -94,4 +94,18 @@ class ResumeBuilderTest extends TestCase
         $this->assertEquals('#4f46e5', $resume->fresh()->accent_color);
         $this->assertEquals('sans', $resume->fresh()->font_family);
     }
+
+    public function test_accent_color_and_font_family_are_mass_assignable(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create([
+            'name'         => 'Test',
+            'pdf_filename' => 'test.pdf',
+            'accent_color' => '#166534',
+            'font_family'  => 'serif',
+        ]);
+
+        $this->assertEquals('#166534', $resume->fresh()->accent_color);
+        $this->assertEquals('serif', $resume->fresh()->font_family);
+    }
 }

@@ -11,6 +11,7 @@ class Resume extends Model
     use HasFactory;
     protected $fillable = [
         'user_id', 'name', 'pdf_filename', 'template',
+        'accent_color', 'font_family',
         'contact', 'summary', 'experience', 'education',
         'skills', 'certifications', 'font_sizes',
     ];
