@@ -85,4 +85,13 @@ class ResumeBuilderTest extends TestCase
 
         $this->assertDatabaseMissing('resume_questions', ['resume_id' => $resume->id, 'is_read' => false]);
     }
+
+    public function test_new_style_columns_have_expected_defaults(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $this->assertEquals('#4f46e5', $resume->fresh()->accent_color);
+        $this->assertEquals('sans', $resume->fresh()->font_family);
+    }
 }
