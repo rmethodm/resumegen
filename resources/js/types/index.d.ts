@@ -41,6 +41,15 @@ export interface CertEntry {
 
 export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled';
 
+export interface FontSizes {
+    name: number;
+    contact: number;
+    heading: number;
+    body: number;
+    sectionSpacing: number;
+    entrySpacing: number;
+}
+
 export interface ResumeData {
     id: number;
     name: string;
@@ -52,6 +61,7 @@ export interface ResumeData {
     education: EducationEntry[] | null;
     skills: string[] | null;
     certifications: CertEntry[] | null;
+    font_sizes: FontSizes | null;
 }
 
 export interface ShareLink {
@@ -92,4 +102,13 @@ export interface AISuggestContext {
     company?: string;
     bullets?: string;
     skills?: string[];
+}
+
+export interface ResumeStat {
+    resume_id: number;
+    resume_name: string;
+    page_views: number;
+    unique_visitors: number;
+    pdf_downloads: number;
+    questions_submitted: number;
 }
