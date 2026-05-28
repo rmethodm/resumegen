@@ -44,7 +44,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
     Route::patch('/builder/{resume}/questions/{question}/read', [ShareLinkController::class, 'markRead'])->name('questions.read');
 
-    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 });
 
 // Public (unauthenticated) share link routes

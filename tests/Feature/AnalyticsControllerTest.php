@@ -31,7 +31,7 @@ class AnalyticsControllerTest extends TestCase
             'ip_hash'              => hash('sha256', '1.2.3.4'),
         ]);
 
-        $response = $this->actingAs($user)->get(route('analytics'));
+        $response = $this->actingAs($user)->get(route('dashboard'));
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
@@ -57,7 +57,7 @@ class AnalyticsControllerTest extends TestCase
             'ip_hash'              => hash('sha256', '9.9.9.9'),
         ]);
 
-        $response = $this->actingAs($user)->get(route('analytics'));
+        $response = $this->actingAs($user)->get(route('dashboard'));
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
@@ -76,7 +76,7 @@ class AnalyticsControllerTest extends TestCase
         ResumeShareEvent::create(['resume_share_link_id' => $link->id, 'resume_id' => $resume->id, 'event' => 'page_view', 'ip_hash' => $ipHash]);
         ResumeShareEvent::create(['resume_share_link_id' => $link->id, 'resume_id' => $resume->id, 'event' => 'page_view', 'ip_hash' => $ipHash]);
 
-        $response = $this->actingAs($user)->get(route('analytics'));
+        $response = $this->actingAs($user)->get(route('dashboard'));
 
         $response->assertInertia(fn ($page) => $page
             ->where('resumeStats.0.page_views', 2)
