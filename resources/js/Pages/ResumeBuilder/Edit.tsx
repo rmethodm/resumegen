@@ -158,11 +158,14 @@ function SidebarTemplate({ contact, summary, experience, education, skills, cert
                 <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="text-center font-bold leading-tight">
                     {contact.full_name || 'Your Name'}
                 </h1>
-                {(experience.find(e => e.title)?.title) && (
-                    <p style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-1 text-center opacity-80">
-                        {experience.find(e => e.title)?.title}
-                    </p>
-                )}
+                {(() => {
+                    const title = experience.find(e => e.title)?.title;
+                    return title ? (
+                        <p style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-1 text-center opacity-80">
+                            {title}
+                        </p>
+                    ) : null;
+                })()}
                 <div style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-6 space-y-1 opacity-90">
                     {contact.email && <div>{contact.email}</div>}
                     {contact.phone && <div>{contact.phone}</div>}
@@ -326,7 +329,7 @@ function CreativeTemplate({ contact, summary, experience, education, skills, cer
 
 function ExecutiveTemplate({ contact, summary, experience, education, skills, certifications, fontSizes }: TemplateProps) {
     return (
-        <div style={{ fontFamily: 'DejaVu Serif, serif', padding: '0.25in' }}>
+        <div style={{ fontFamily: 'DejaVu Serif, serif' }}>
             <div className="text-center">
                 <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-bold tracking-wide uppercase text-gray-900">
                     {contact.full_name || 'Your Name'}
@@ -684,7 +687,7 @@ export default function Edit({
                                         key={c}
                                         type="button"
                                         aria-label={`Accent ${c}`}
-                                        onClick={() => { setAccentColor(c); save(); }}
+                                        onClick={() => { accentColorRef.current = c; setAccentColor(c); save(); }}
                                         className={`h-5 w-5 rounded-full border transition ${accentColor === c ? 'ring-2 ring-offset-1 ring-gray-700 border-white' : 'border-gray-300 hover:scale-110'}`}
                                         style={{ backgroundColor: c }}
                                     />
@@ -696,7 +699,7 @@ export default function Edit({
                                 <button
                                     key={f}
                                     type="button"
-                                    onClick={() => { setFontFamily(f); save(); }}
+                                    onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
                                     className={`px-2.5 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-gray-800 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
                                 >
                                     {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
