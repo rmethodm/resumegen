@@ -5,6 +5,7 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AtsScoreController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
@@ -30,6 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
 
     Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
     Route::post('/builder', [ResumeBuilderController::class, 'store'])->name('builder.store');
