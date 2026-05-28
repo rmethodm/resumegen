@@ -51,6 +51,12 @@ export default function Authenticated({
                                 >
                                     Jobs
                                 </NavLink>
+                                <NavLink
+                                    href={route('billing.index')}
+                                    active={route().current('billing.*')}
+                                >
+                                    Billing
+                                </NavLink>
                             </div>
                         </div>
 
@@ -174,6 +180,12 @@ export default function Authenticated({
                             active={route().current('jobs.*')}
                         >
                             Jobs
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('billing.index')}
+                            active={route().current('billing.*')}
+                        >
+                            Billing
                         </ResponsiveNavLink>
                     </div>
 

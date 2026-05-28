@@ -11,9 +11,10 @@ type ResumeRow = {
 
 type Props = {
     resumes: ResumeRow[];
+    atLimit: boolean;
 };
 
-export default function Index({ resumes }: Props) {
+export default function Index({ resumes, atLimit }: Props) {
     const [creating, setCreating] = useState(false);
     const form = useForm({ name: '' });
 
@@ -72,10 +73,11 @@ export default function Index({ resumes }: Props) {
                         <p className="text-sm text-gray-500">{resumes.length} resume{resumes.length !== 1 ? 's' : ''}</p>
                         {!creating ? (
                             <button
-                                onClick={() => setCreating(true)}
-                                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                onClick={() => atLimit ? window.location.href = route('billing.index') : setCreating(true)}
+                                className={`rounded-md px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 ${atLimit ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-500'}`}
+                                title={atLimit ? 'Upgrade to Pro for unlimited resumes' : undefined}
                             >
-                                + New Resume
+                                {atLimit ? '+ New Resume (limit reached)' : '+ New Resume'}
                             </button>
                         ) : (
                             <form onSubmit={submit} className="flex items-center gap-2">

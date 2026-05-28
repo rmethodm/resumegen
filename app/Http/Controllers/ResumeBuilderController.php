@@ -13,13 +13,16 @@ class ResumeBuilderController extends Controller
 {
     public function index(Request $request): Response
     {
-        $resumes = $request->user()
-            ->resumes()
+        $user = $request->user();
+        $resumes = $user->resumes()
             ->orderByDesc('updated_at')
             ->get(['id', 'name', 'pdf_filename', 'updated_at']);
 
+        $atLimit = !$user->subscribed('default') && $resumes->count() >= 5;
+
         return Inertia::render('ResumeBuilder/Index', [
             'resumes' => $resumes,
+            'atLimit' => $atLimit,
         ]);
     }
 
