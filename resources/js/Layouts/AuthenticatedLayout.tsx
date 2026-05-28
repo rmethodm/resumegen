@@ -39,6 +39,12 @@ export default function Authenticated({
                                 >
                                     Resume Builder
                                 </NavLink>
+                                <NavLink
+                                    href={route('cover-letters.index')}
+                                    active={route().current('cover-letters.*')}
+                                >
+                                    Cover Letters
+                                </NavLink>
                             </div>
                         </div>
 
@@ -150,6 +156,12 @@ export default function Authenticated({
                             active={route().current('builder.*')}
                         >
                             Resume Builder
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('cover-letters.index')}
+                            active={route().current('cover-letters.*')}
+                        >
+                            Cover Letters
                         </ResponsiveNavLink>
                     </div>
 
