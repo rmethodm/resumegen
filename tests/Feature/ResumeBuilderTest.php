@@ -234,4 +234,31 @@ class ResumeBuilderTest extends TestCase
             ->get(route('builder.edit', $first->id))
             ->assertInertia(fn ($page) => $page->where('isFirstResume', false));
     }
+
+    public function test_beacon_accepts_all_same_fields_as_update(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $payload = json_encode([
+            'name' => 'Beacon Save',
+            'template' => 'modern',
+            'accent_color' => '#166534',
+            'font_family' => 'serif',
+            'summary' => 'Updated via beacon',
+            '_token' => csrf_token(),
+        ]);
+
+        $response = $this->actingAs($user)
+            ->withHeaders(['Content-Type' => 'application/json'])
+            ->call('POST', route('builder.beacon', $resume->id), [], [], [], [], $payload);
+
+        $response->assertNoContent();
+        $this->assertDatabaseHas('resumes', [
+            'id' => $resume->id,
+            'name' => 'Beacon Save',
+            'template' => 'modern',
+            'summary' => 'Updated via beacon',
+        ]);
+    }
 }
