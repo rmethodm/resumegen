@@ -89,7 +89,11 @@ class AtsScorer
         $out = [];
         foreach (($resume->experience ?? []) as $entry) {
             if (! empty($entry['bullets'])) {
-                $out[] = (string) $entry['bullets'];
+                if (is_array($entry['bullets'])) {
+                    $out[] = implode(' ', $entry['bullets']);
+                } else {
+                    $out[] = (string) $entry['bullets'];
+                }
             }
         }
 
