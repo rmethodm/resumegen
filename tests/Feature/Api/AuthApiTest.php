@@ -42,6 +42,11 @@ class AuthApiTest extends ApiTestCase
             ->assertJsonPath('id', $user->id);
     }
 
+    public function test_me_requires_authentication(): void
+    {
+        $this->getJson('/api/auth/me')->assertUnauthorized();
+    }
+
     public function test_user_can_logout_and_token_is_revoked(): void
     {
         $user = User::factory()->create();
