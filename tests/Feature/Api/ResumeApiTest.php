@@ -1,0 +1,111 @@
+<?php
+
+namespace Tests\Feature\Api;
+
+use App\Models\Resume;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class ResumeApiTest extends ApiTestCase
+{
+    use RefreshDatabase;
+
+    private function token(User $user): string
+    {
+        return $user->createToken('test')->plainTextToken;
+    }
+
+    public function test_can_list_resumes(): void
+    {
+        $user = User::factory()->create();
+        $user->resumes()->createMany([
+            ['name' => 'Resume A', 'pdf_filename' => 'a.pdf'],
+            ['name' => 'Resume B', 'pdf_filename' => 'b.pdf'],
+        ]);
+
+        $this->withToken($this->token($user))
+            ->getJson('/api/resumes')
+            ->assertOk()
+            ->assertJsonCount(2, 'data');
+    }
+
+    public function test_can_create_resume(): void
+    {
+        $user = User::factory()->create();
+
+        $this->withToken($this->token($user))
+            ->postJson('/api/resumes', ['name' => 'My New Resume'])
+            ->assertCreated()
+            ->assertJsonPath('name', 'My New Resume');
+    }
+
+    public function test_cannot_create_resume_past_free_limit(): void
+    {
+        $user = User::factory()->create(['is_pro' => false]);
+        $user->resumes()->createMany(array_fill(0, 5, ['name' => 'R', 'pdf_filename' => 'r.pdf']));
+
+        $this->withToken($this->token($user))
+            ->postJson('/api/resumes', ['name' => 'One Too Many'])
+            ->assertForbidden();
+    }
+
+    public function test_can_show_own_resume(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->withToken($this->token($user))
+            ->getJson("/api/resumes/{$resume->id}")
+            ->assertOk()
+            ->assertJsonPath('id', $resume->id);
+    }
+
+    public function test_cannot_show_other_users_resume(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $resume = $owner->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->withToken($this->token($other))
+            ->getJson("/api/resumes/{$resume->id}")
+            ->assertForbidden();
+    }
+
+    public function test_can_update_resume(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Old', 'pdf_filename' => 'old.pdf']);
+
+        $this->withToken($this->token($user))
+            ->putJson("/api/resumes/{$resume->id}", ['name' => 'New Name'])
+            ->assertOk()
+            ->assertJsonPath('name', 'New Name');
+    }
+
+    public function test_can_delete_resume(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Gone', 'pdf_filename' => 'g.pdf']);
+
+        $this->withToken($this->token($user))
+            ->deleteJson("/api/resumes/{$resume->id}")
+            ->assertNoContent();
+
+        $this->assertModelMissing($resume);
+    }
+
+    public function test_can_duplicate_resume(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create([
+            'name' => 'Original', 'pdf_filename' => 'o.pdf', 'summary' => 'Senior dev',
+        ]);
+
+        $response = $this->withToken($this->token($user))
+            ->postJson("/api/resumes/{$resume->id}/duplicate")
+            ->assertCreated();
+
+        $this->assertEquals('Copy of Original', $response->json('name'));
+        $this->assertEquals('Senior dev', $response->json('summary'));
+    }
+}
