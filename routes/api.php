@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AiSuggestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ResumeController;
 use Illuminate\Support\Facades\Route;
@@ -15,4 +16,6 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('resumes', ResumeController::class);
     Route::post('resumes/{resume}/duplicate', [ResumeController::class, 'duplicate']);
+    Route::post('resumes/{resume}/ai-suggest', [AiSuggestController::class, 'suggest'])
+        ->middleware('throttle:10,1');
 });
