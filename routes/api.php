@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AiSuggestController;
 use App\Http\Controllers\Api\AtsScoreController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CoverLetterController;
 use App\Http\Controllers\Api\ResumeController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,4 +22,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('throttle:10,1');
     Route::get('resumes/{resume}/ats-score', [AtsScoreController::class, 'show'])
         ->middleware('throttle:10,1');
+    Route::apiResource('cover-letters', CoverLetterController::class)
+        ->names('api.cover-letters');
 });
