@@ -106,7 +106,7 @@ class JobApplicationApiTest extends ApiTestCase
         ]);
 
         $this->withToken($this->token($other))
-            ->putJson("/api/jobs/{$job->id}", ['status' => 'offer'])
+            ->putJson("/api/jobs/{$job->id}", ['status' => 'offered'])
             ->assertForbidden();
     }
 
