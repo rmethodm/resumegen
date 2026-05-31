@@ -40,7 +40,7 @@ class CoverLetterController extends Controller
 
     public function show(CoverLetter $coverLetter): JsonResponse
     {
-        $this->authorize('update', $coverLetter);
+        $this->authorize('view', $coverLetter);
 
         return response()->json($coverLetter);
     }
@@ -51,7 +51,7 @@ class CoverLetterController extends Controller
 
         $validated = $request->validate([
             'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'body' => ['sometimes', 'string'],
+            'body' => ['sometimes', 'string', 'max:50000'],
             'resume_id' => ['sometimes', 'nullable', 'integer', 'exists:resumes,id'],
         ]);
 

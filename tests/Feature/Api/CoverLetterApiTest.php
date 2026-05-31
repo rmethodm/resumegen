@@ -41,6 +41,38 @@ class CoverLetterApiTest extends ApiTestCase
             ->assertJsonPath('name', 'My Letter');
     }
 
+    public function test_unauthenticated_request_is_rejected(): void
+    {
+        $this->getJson('/api/cover-letters')->assertUnauthorized();
+    }
+
+    public function test_can_show_own_cover_letter(): void
+    {
+        $user = User::factory()->create();
+        $letter = $user->coverLetters()->create([
+            'name' => 'My Letter', 'template_key' => 'standard', 'body' => 'Hello world',
+        ]);
+
+        $this->withToken($this->token($user))
+            ->getJson("/api/cover-letters/{$letter->id}")
+            ->assertOk()
+            ->assertJsonPath('id', $letter->id)
+            ->assertJsonPath('name', 'My Letter');
+    }
+
+    public function test_cannot_show_other_users_cover_letter(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $letter = $owner->coverLetters()->create([
+            'name' => 'Private', 'template_key' => 'standard', 'body' => 'Secret',
+        ]);
+
+        $this->withToken($this->token($other))
+            ->getJson("/api/cover-letters/{$letter->id}")
+            ->assertForbidden();
+    }
+
     public function test_can_update_cover_letter(): void
     {
         $user = User::factory()->create();
