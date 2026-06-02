@@ -9,6 +9,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\UsageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
@@ -72,6 +73,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
+
+    Route::get('/usage', [UsageController::class, 'index'])->name('usage.index');
 });
 
 // Public (unauthenticated) share link routes
