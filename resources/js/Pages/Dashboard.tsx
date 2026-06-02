@@ -10,6 +10,7 @@ export default function Dashboard() {
     const totalViews     = resumeStats.reduce((s, r) => s + r.page_views, 0);
     const totalDownloads = resumeStats.reduce((s, r) => s + r.pdf_downloads, 0);
     const totalMessages  = resumeStats.reduce((s, r) => s + r.questions_submitted, 0);
+    const totalVisitors  = resumeStats.reduce((s, r) => s + r.unique_visitors, 0);
 
     return (
         <AuthenticatedLayout>
@@ -79,7 +80,7 @@ export default function Dashboard() {
                                         <tr className="border-t border-[#eeeef5] bg-[#fafafe]">
                                             <td className="px-5 py-3 text-[10px] font-bold uppercase tracking-wide text-[#c4c4d0]">Totals</td>
                                             <td className="px-5 py-3 text-right tabular-nums text-[10px] font-bold text-[#c4c4d0]">{totalViews.toLocaleString()}</td>
-                                            <td className="px-5 py-3 text-right tabular-nums text-[10px] font-bold text-[#c4c4d0]">{resumeStats.reduce((s, r) => s + r.unique_visitors, 0).toLocaleString()}</td>
+                                            <td className="px-5 py-3 text-right tabular-nums text-[10px] font-bold text-[#c4c4d0]">{totalVisitors.toLocaleString()}</td>
                                             <td className="px-5 py-3 text-right tabular-nums text-[10px] font-bold text-[#c4c4d0]">{totalDownloads.toLocaleString()}</td>
                                             <td className="px-5 py-3 text-right tabular-nums text-[10px] font-bold text-[#c4c4d0]">{totalMessages.toLocaleString()}</td>
                                         </tr>
