@@ -80,7 +80,7 @@ Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->na
 Route::post('/r/{token}/questions', [PublicResumeController::class, 'storeQuestion'])->middleware('throttle:5,1')->name('public.question');
 
 Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/usage', [AdminUsageController::class, 'index'])->name('admin.usage');
+    Route::get('/usage', [AdminUsageController::class, 'index'])->name('usage');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
