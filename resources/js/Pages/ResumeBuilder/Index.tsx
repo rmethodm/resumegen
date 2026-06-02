@@ -63,7 +63,7 @@ export default function Index({ resumes, atLimit }: Props) {
                                     value={form.data.name}
                                     onChange={e => form.setData('name', e.target.value)}
                                     placeholder="Resume name…"
-                                    className="rounded-lg border-[#eeeef5] text-sm shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                    className="rounded-lg border border-[#eeeef5] text-sm shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]"
                                 />
                                 <button type="submit" disabled={form.processing || !form.data.name.trim()} className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">Create</button>
                                 <button type="button" onClick={() => { setCreating(false); form.reset(); }} className="rounded-lg px-3 py-2 text-sm text-[#71717a] hover:text-[#0f0f1a]">Cancel</button>
@@ -90,7 +90,7 @@ export default function Index({ resumes, atLimit }: Props) {
                                                     onChange={e => setEditingName(e.target.value)}
                                                     onBlur={() => commitRename(r.id)}
                                                     onKeyDown={e => { if (e.key === 'Enter') commitRename(r.id); if (e.key === 'Escape') setEditingId(null); }}
-                                                    className="rounded-lg border-[#eeeef5] text-sm font-semibold focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                                    className="rounded-lg border border-[#eeeef5] text-sm font-semibold focus:border-[#4f46e5] focus:ring-[#4f46e5]"
                                                 />
                                             ) : (
                                                 <p className="cursor-pointer font-semibold text-[#0f0f1a] hover:text-[#4f46e5]" title="Click to rename" onClick={() => startRename(r.id, r.name)}>
