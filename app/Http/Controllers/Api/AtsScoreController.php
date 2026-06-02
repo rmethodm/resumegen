@@ -13,6 +13,17 @@ class AtsScoreController extends Controller
     {
         $this->authorize('update', $resume);
 
-        return response()->json(AtsScorer::score($resume));
+        if ($resume->ats_cache !== null) {
+            return response()->json($resume->ats_cache);
+        }
+
+        $result = AtsScorer::score($resume);
+
+        $resume->update([
+            'ats_cache'     => $result,
+            'ats_cached_at' => now(),
+        ]);
+
+        return response()->json($result);
     }
 }

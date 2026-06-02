@@ -78,4 +78,62 @@ class AtsScoreTest extends TestCase
         $this->assertEquals(77, $fresh->ats_cache['score']);
         $this->assertNotNull($fresh->ats_cached_at);
     }
+
+    public function test_score_is_cached_on_first_fetch(): void
+    {
+        $user   = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'r', 'pdf_filename' => 'r.pdf']);
+
+        $this->assertNull($resume->ats_cache);
+
+        $this->actingAs($user)->getJson(route('builder.ats-score', $resume->id))->assertOk();
+
+        $this->assertNotNull($resume->fresh()->ats_cache);
+        $this->assertNotNull($resume->fresh()->ats_cached_at);
+    }
+
+    public function test_cached_score_is_returned_without_recomputing(): void
+    {
+        $user   = User::factory()->create();
+        $resume = $user->resumes()->create([
+            'name'          => 'r',
+            'pdf_filename'  => 'r.pdf',
+            'ats_cache'     => ['score' => 99, 'found' => [], 'missing' => [], 'breakdown' => ['action_verbs' => 29, 'technical' => 40, 'soft_skills' => 15, 'format_signals' => 15]],
+            'ats_cached_at' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->getJson(route('builder.ats-score', $resume->id));
+
+        $response->assertOk()->assertJsonPath('score', 99);
+    }
+
+    public function test_cache_bust_clears_ats_cache(): void
+    {
+        $user   = User::factory()->create();
+        $resume = $user->resumes()->create([
+            'name'          => 'r',
+            'pdf_filename'  => 'r.pdf',
+            'ats_cache'     => ['score' => 88, 'found' => [], 'missing' => [], 'breakdown' => []],
+            'ats_cached_at' => now(),
+        ]);
+
+        $this->actingAs($user)
+            ->deleteJson(route('builder.ats-score.destroy', $resume->id))
+            ->assertNoContent();
+
+        $fresh = $resume->fresh();
+        $this->assertNull($fresh->ats_cache);
+        $this->assertNull($fresh->ats_cached_at);
+    }
+
+    public function test_cache_bust_requires_ownership(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $resume = $owner->resumes()->create(['name' => 'r', 'pdf_filename' => 'r.pdf']);
+
+        $this->actingAs($other)
+            ->deleteJson(route('builder.ats-score.destroy', $resume->id))
+            ->assertForbidden();
+    }
 }

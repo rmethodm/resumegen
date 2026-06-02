@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/builder/{resume}/ats-score', [AtsScoreController::class, 'show'])
         ->middleware('throttle:10,1')
         ->name('builder.ats-score');
+    Route::delete('/builder/{resume}/ats-score', [AtsScoreController::class, 'destroy'])
+        ->name('builder.ats-score.destroy');
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
