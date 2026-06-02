@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
+use App\Services\AiUsageLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -68,24 +69,32 @@ class AiSuggestController extends Controller
             return response()->json(['error' => 'API key not configured'], 422);
         }
 
+        $model = config('services.anthropic.model', 'claude-sonnet-4-6');
+
         $response = Http::withHeaders([
-            'x-api-key' => $apiKey,
+            'x-api-key'         => $apiKey,
             'anthropic-version' => '2023-06-01',
-            'content-type' => 'application/json',
+            'content-type'      => 'application/json',
         ])->post('https://api.anthropic.com/v1/messages', [
-            'model' => config('services.anthropic.model', 'claude-sonnet-4-6'),
+            'model'      => $model,
             'max_tokens' => 400,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $this->buildPrompt($field, $context),
-            ]],
+            'messages'   => [['role' => 'user', 'content' => $this->buildPrompt($field, $context)]],
         ]);
 
         if (! $response->ok()) {
             return response()->json(['error' => 'AI request failed'], 502);
         }
 
-        $text = $response->json('content.0.text', '[]');
+        AiUsageLogger::log(
+            user: auth()->user(),
+            provider: 'anthropic',
+            model: $model,
+            feature: 'ai_suggest',
+            inputTokens: $response->json('usage.input_tokens', 0),
+            outputTokens: $response->json('usage.output_tokens', 0),
+        );
+
+        $text        = $response->json('content.0.text', '[]');
         $suggestions = json_decode($text, true) ?? [];
 
         return response()->json(['suggestions' => array_slice($suggestions, 0, 3)]);
@@ -98,18 +107,25 @@ class AiSuggestController extends Controller
             return response()->json(['error' => 'API key not configured'], 422);
         }
 
+        $model  = config('services.openai.suggest_model', 'gpt-4o');
         $client = OpenAI::client($apiKey);
 
         $result = $client->chat()->create([
-            'model' => 'gpt-4o',
+            'model'      => $model,
             'max_tokens' => 400,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $this->buildPrompt($field, $context),
-            ]],
+            'messages'   => [['role' => 'user', 'content' => $this->buildPrompt($field, $context)]],
         ]);
 
-        $text = $result->choices[0]->message->content ?? '[]';
+        AiUsageLogger::log(
+            user: auth()->user(),
+            provider: 'openai',
+            model: $model,
+            feature: 'ai_suggest',
+            inputTokens: $result->usage->promptTokens,
+            outputTokens: $result->usage->completionTokens,
+        );
+
+        $text        = $result->choices[0]->message->content ?? '[]';
         $suggestions = json_decode($text, true) ?? [];
 
         return response()->json(['suggestions' => array_slice($suggestions, 0, 3)]);
