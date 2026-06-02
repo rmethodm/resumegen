@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        $this->call(AiModelRatesSeeder::class);
         $this->call(TestResumesSeeder::class);
         $this->call(TestShareLinksAndQuestionsSeeder::class);
         $this->call(TestAnalyticsDataSeeder::class);
