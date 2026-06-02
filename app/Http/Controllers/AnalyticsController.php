@@ -55,6 +55,7 @@ class AnalyticsController extends Controller
 
         return Inertia::render('Dashboard', [
             'resumeStats' => $stats,
+            'resumeCount' => Resume::where('user_id', $userId)->count(),
         ]);
     }
 }
