@@ -16,6 +16,7 @@ class Resume extends Model
         'accent_color', 'font_family',
         'contact', 'summary', 'experience', 'education',
         'skills', 'certifications', 'font_sizes',
+        'ats_cache', 'ats_cached_at',
     ];
 
     protected $casts = [
@@ -25,6 +26,8 @@ class Resume extends Model
         'skills' => 'array',
         'certifications' => 'array',
         'font_sizes' => 'array',
+        'ats_cache' => 'array',
+        'ats_cached_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

@@ -66,4 +66,16 @@ class AtsScoreTest extends TestCase
 
         $this->assertLessThan(20, $score);
     }
+
+    public function test_ats_cache_columns_exist(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'r', 'pdf_filename' => 'r.pdf']);
+
+        $resume->update(['ats_cache' => ['score' => 77], 'ats_cached_at' => now()]);
+
+        $fresh = $resume->fresh();
+        $this->assertEquals(77, $fresh->ats_cache['score']);
+        $this->assertNotNull($fresh->ats_cached_at);
+    }
 }
