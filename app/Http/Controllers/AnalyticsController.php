@@ -31,7 +31,7 @@ class AnalyticsController extends Controller
             fn ($rows) => $rows
                 ->where('event', 'page_view')
                 ->whereNotNull('ip_hash')
-                ->map(fn ($r) => $r->ip_hash . $r->event_date)
+                ->map(fn ($r) => $r->ip_hash.$r->event_date)
                 ->unique()
                 ->count()
         );

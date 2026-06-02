@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureMasterAdmin;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'master_admin' => \App\Http\Middleware\EnsureMasterAdmin::class,
+            'master_admin' => EnsureMasterAdmin::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [

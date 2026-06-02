@@ -57,7 +57,7 @@ class AdminUserControllerTest extends TestCase
     public function test_admin_can_upgrade_user_to_pro(): void
     {
         $admin = User::factory()->create(['is_master_admin' => true]);
-        $user  = User::factory()->create(['is_pro' => false]);
+        $user = User::factory()->create(['is_pro' => false]);
 
         $this->actingAs($admin)
             ->patch(route('admin.users.toggle-pro', $user))
@@ -69,7 +69,7 @@ class AdminUserControllerTest extends TestCase
     public function test_admin_can_downgrade_pro_user(): void
     {
         $admin = User::factory()->create(['is_master_admin' => true]);
-        $user  = User::factory()->create(['is_pro' => true]);
+        $user = User::factory()->create(['is_pro' => true]);
 
         $this->actingAs($admin)
             ->patch(route('admin.users.toggle-pro', $user))
@@ -80,8 +80,8 @@ class AdminUserControllerTest extends TestCase
 
     public function test_admin_cannot_toggle_pro_on_another_admin(): void
     {
-        $admin       = User::factory()->create(['is_master_admin' => true]);
-        $otherAdmin  = User::factory()->create(['is_master_admin' => true, 'is_pro' => false]);
+        $admin = User::factory()->create(['is_master_admin' => true]);
+        $otherAdmin = User::factory()->create(['is_master_admin' => true, 'is_pro' => false]);
 
         $this->actingAs($admin)
             ->patch(route('admin.users.toggle-pro', $otherAdmin))
@@ -95,7 +95,7 @@ class AdminUserControllerTest extends TestCase
     public function test_admin_can_delete_regular_user(): void
     {
         $admin = User::factory()->create(['is_master_admin' => true]);
-        $user  = User::factory()->create();
+        $user = User::factory()->create();
 
         $this->actingAs($admin)
             ->delete(route('admin.users.destroy', $user))
@@ -117,7 +117,7 @@ class AdminUserControllerTest extends TestCase
 
     public function test_admin_cannot_delete_another_admin(): void
     {
-        $admin      = User::factory()->create(['is_master_admin' => true]);
+        $admin = User::factory()->create(['is_master_admin' => true]);
         $otherAdmin = User::factory()->create(['is_master_admin' => true]);
 
         $this->actingAs($admin)
@@ -129,7 +129,7 @@ class AdminUserControllerTest extends TestCase
 
     public function test_regular_user_cannot_delete_anyone(): void
     {
-        $user   = User::factory()->create(['is_master_admin' => false]);
+        $user = User::factory()->create(['is_master_admin' => false]);
         $target = User::factory()->create();
 
         $this->actingAs($user)
@@ -141,7 +141,7 @@ class AdminUserControllerTest extends TestCase
 
     public function test_regular_user_cannot_toggle_pro(): void
     {
-        $user   = User::factory()->create(['is_master_admin' => false]);
+        $user = User::factory()->create(['is_master_admin' => false]);
         $target = User::factory()->create();
 
         $this->actingAs($user)

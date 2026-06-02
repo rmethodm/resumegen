@@ -20,14 +20,14 @@ class AdminUserController extends Controller
             ->orderBy('id')
             ->paginate(15)
             ->through(fn (User $user) => [
-                'id'              => $user->id,
-                'name'            => $user->name,
-                'email'           => $user->email,
-                'is_pro'          => $user->is_pro,
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_pro' => $user->is_pro,
                 'is_master_admin' => $user->is_master_admin,
-                'subscribed'      => $user->subscribed('default'),
-                'resumes_count'   => $user->resumes_count,
-                'created_at'      => $user->created_at->toDateString(),
+                'subscribed' => $user->subscribed('default'),
+                'resumes_count' => $user->resumes_count,
+                'created_at' => $user->created_at->toDateString(),
             ]);
 
         return Inertia::render('Admin/Users/Index', [

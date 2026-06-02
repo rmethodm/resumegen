@@ -199,7 +199,7 @@ class ResumeBuilderTest extends TestCase
     {
         $user = User::factory()->create(['has_completed_onboarding' => false]);
         $resume = $user->resumes()->create([
-            'name'         => 'My CV',
+            'name' => 'My CV',
             'pdf_filename' => 'a.pdf',
         ]);
 
@@ -215,7 +215,7 @@ class ResumeBuilderTest extends TestCase
     {
         $user = User::factory()->create(['has_completed_onboarding' => true]);
         $resume = $user->resumes()->create([
-            'name'         => 'My CV',
+            'name' => 'My CV',
             'pdf_filename' => 'a.pdf',
         ]);
 

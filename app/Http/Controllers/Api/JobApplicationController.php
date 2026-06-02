@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class JobApplicationController extends Controller
 {
@@ -53,7 +54,7 @@ class JobApplicationController extends Controller
         return response()->json($job->fresh());
     }
 
-    public function destroy(JobApplication $job): \Illuminate\Http\Response
+    public function destroy(JobApplication $job): Response
     {
         $this->authorize('delete', $job);
         $job->delete();
@@ -66,13 +67,13 @@ class JobApplicationController extends Controller
         $req = $creating ? 'required' : 'sometimes';
 
         return $request->validate([
-            'company'    => [$req, 'string', 'max:255'],
-            'role'       => [$req, 'string', 'max:255'],
-            'status'     => [$req, 'in:'.implode(',', JobApplication::STATUSES)],
-            'resume_id'  => ['sometimes', 'nullable', 'integer', 'exists:resumes,id'],
+            'company' => [$req, 'string', 'max:255'],
+            'role' => [$req, 'string', 'max:255'],
+            'status' => [$req, 'in:'.implode(',', JobApplication::STATUSES)],
+            'resume_id' => ['sometimes', 'nullable', 'integer', 'exists:resumes,id'],
             'applied_at' => ['sometimes', 'nullable', 'date'],
-            'notes'      => ['sometimes', 'nullable', 'string', 'max:10000'],
-            'job_url'    => ['sometimes', 'nullable', 'url', 'max:500'],
+            'notes' => ['sometimes', 'nullable', 'string', 'max:10000'],
+            'job_url' => ['sometimes', 'nullable', 'url', 'max:500'],
         ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CoverLetter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CoverLetterController extends Controller
 {
@@ -67,7 +68,7 @@ class CoverLetterController extends Controller
         return response()->json($coverLetter->fresh());
     }
 
-    public function destroy(CoverLetter $coverLetter): \Illuminate\Http\Response
+    public function destroy(CoverLetter $coverLetter): Response
     {
         $this->authorize('delete', $coverLetter);
         $coverLetter->delete();

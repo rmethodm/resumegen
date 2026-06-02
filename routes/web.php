@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AiSuggestController;
-use App\Http\Controllers\BillingController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AtsScoreController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\OnboardingController;

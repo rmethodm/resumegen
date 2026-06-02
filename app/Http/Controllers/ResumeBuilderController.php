@@ -18,7 +18,7 @@ class ResumeBuilderController extends Controller
             ->orderByDesc('updated_at')
             ->get(['id', 'name', 'pdf_filename', 'updated_at']);
 
-        $atLimit = !$user->isPro() && $resumes->count() >= 5;
+        $atLimit = ! $user->isPro() && $resumes->count() >= 5;
 
         return Inertia::render('ResumeBuilder/Index', [
             'resumes' => $resumes,
@@ -30,7 +30,7 @@ class ResumeBuilderController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->isPro() && $user->resumes()->count() >= 5) {
+        if (! $user->isPro() && $user->resumes()->count() >= 5) {
             return redirect()->route('billing.index')->with('limitReached', true);
         }
 
@@ -39,7 +39,7 @@ class ResumeBuilderController extends Controller
         ]);
 
         $resume = $user->resumes()->create([
-            'name'         => $validated['name'],
+            'name' => $validated['name'],
             'pdf_filename' => Str::uuid().'.pdf',
         ]);
 
@@ -53,25 +53,25 @@ class ResumeBuilderController extends Controller
         $resume->load(['shareLinks', 'questions.shareLink']);
 
         $questions = $resume->questions->map(fn ($q) => [
-            'id'           => $q->id,
-            'sender_name'  => $q->sender_name,
+            'id' => $q->id,
+            'sender_name' => $q->sender_name,
             'sender_email' => $q->sender_email,
             'sender_phone' => $q->sender_phone,
-            'message'      => $q->message,
-            'is_read'      => $q->is_read,
-            'link_label'   => $q->shareLink?->label ?? '(unlabelled)',
-            'created_at'   => $q->created_at->toDateTimeString(),
+            'message' => $q->message,
+            'is_read' => $q->is_read,
+            'link_label' => $q->shareLink?->label ?? '(unlabelled)',
+            'created_at' => $q->created_at->toDateTimeString(),
         ]);
 
         $user = $request->user();
-        $isFirstResume = !$user->has_completed_onboarding
+        $isFirstResume = ! $user->has_completed_onboarding
             && $user->resumes()->count() === 1;
 
         return Inertia::render('ResumeBuilder/Edit', [
-            'resume'         => $resume,
-            'shareLinks'     => $resume->shareLinks,
-            'questions'      => $questions,
-            'isFirstResume'  => $isFirstResume,
+            'resume' => $resume,
+            'shareLinks' => $resume->shareLinks,
+            'questions' => $questions,
+            'isFirstResume' => $isFirstResume,
             'aiCapabilities' => [
                 'claude' => ! empty(config('services.anthropic.key')),
                 'openai' => ! empty(config('services.openai.key')),

@@ -15,7 +15,7 @@ class BillingController extends Controller
         $subscribed = $user->isPro();
 
         return Inertia::render('Billing/Index', [
-            'plan'        => $subscribed ? 'pro' : 'free',
+            'plan' => $subscribed ? 'pro' : 'free',
             'resumeCount' => $user->resumes()->count(),
             'resumeLimit' => $subscribed ? null : 5,
             'limitReached' => session('limitReached', false),
@@ -33,7 +33,7 @@ class BillingController extends Controller
         $checkout = $request->user()->newSubscription('default', $priceId)
             ->checkout([
                 'success_url' => route('builder.index'),
-                'cancel_url'  => route('billing.index'),
+                'cancel_url' => route('billing.index'),
             ]);
 
         return redirect($checkout->url);

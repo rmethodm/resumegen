@@ -17,16 +17,16 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, Billable, HasApiTokens;
+    use Billable, HasApiTokens, HasFactory, Notifiable;
 
     protected function casts(): array
     {
         return [
-            'email_verified_at'         => 'datetime',
-            'password'                  => 'hashed',
-            'has_completed_onboarding'  => 'boolean',
-            'is_master_admin'           => 'boolean',
-            'is_pro'                    => 'boolean',
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'has_completed_onboarding' => 'boolean',
+            'is_master_admin' => 'boolean',
+            'is_pro' => 'boolean',
         ];
     }
 
