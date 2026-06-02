@@ -69,7 +69,7 @@ Use Ziggy's `route('named.route', params)` helper — it's globally typed in `re
 `npm run build` runs `tsc` (type-check) then `vite build`. Output lands in `public/build/`. Always rebuild after editing frontend files when not running `npm run dev`.
 
 ### Share links and public view
-`ResumeShareLink` stores a 48-char random token (auto-generated in `booted()`). The public route `/r/{token}` is unauthenticated and renders `ResumeBuilder/PublicView.tsx` via `PublicLayout`. Questions submitted via the public view are stored in `resume_questions` and shown in the collapsible "Questions" panel on the Edit page. `sender_phone` is optional on the question form.
+`ResumeShareLink` stores a 48-char random token (auto-generated in `booted()`). The public route `/r/{token}` is unauthenticated and renders `ResumeBuilder/PublicView.tsx` via `PublicLayout`. `GET /r/{token}/pdf` serves a public PDF download. If the share link is expired or disabled, `ResumeBuilder/LinkExpired.tsx` is rendered. Questions submitted via the public view are stored in `resume_questions` and shown in the collapsible "Questions" panel on the Edit page. `sender_phone` is optional on the question form. When a question is submitted, `NewQuestionReceived` mailable is sent to the resume owner. Share link management routes: `PATCH /builder/{resume}/share/{link}` (update, e.g. toggle active), `DELETE /builder/{resume}/share/{link}` (delete). Question read-state routes: `PATCH /builder/{resume}/questions/{question}/read` and `PATCH /builder/{resume}/questions/read-all`.
 
 ### Analytics
 `ResumeShareEvent` is an append-only table (no `updated_at`) that logs `page_view`, `pdf_download`, and `question_submitted` events. Logging is best-effort (wrapped in try/catch) so it never crashes a public request. `AnalyticsController` aggregates per-resume stats and drives the Dashboard. Unique visitor count uses `COUNT(DISTINCT ip_hash || DATE(created_at))`.
@@ -84,13 +84,15 @@ Eight templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `cr
 `font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor update the live preview but the PDF Blade view currently uses hardcoded sizes.
 
 ### ATS score
-`GET /builder/{resume}/ats-score` (throttled 10 req/min) returns a JSON score via `AtsScoreController` → `AtsScorer` service. Requires resume ownership (`authorize('update', $resume)`).
+`GET /builder/{resume}/ats-score` (throttled 10 req/min) returns a JSON score via `AtsScoreController` → `AtsScorer` service. Requires resume ownership (`authorize('update', $resume)`). `DELETE /builder/{resume}/ats-score` clears the cached score.
 
 ### Resume duplicate
 `POST /builder/{resume}/duplicate` creates a copy of a resume (owned by the current user). Handled by `ResumeBuilderController@duplicate`.
 
 ### Billing and free-tier limits
 `BillingController` drives `Billing/Index.tsx`. Free users are capped at 5 resumes (`resumeLimit: 5`; Pro gets `null`). When the limit is hit, `limitReached` is flashed in the session and the builder redirects to the billing page. The `checkout` action creates a Stripe Checkout session; `portal` redirects to the Stripe customer portal.
+
+Pro access is determined by `User::isPro()`: returns `true` if `is_master_admin`, `is_pro`, or `subscribed('default')`. `is_pro` is a boolean column on `users` that admins can toggle directly (bypassing Stripe) via the admin panel.
 
 ### Cover letters
 Full CRUD at `/cover-letters` → `CoverLetterController` → `CoverLetter/Index.tsx` + `CoverLetter/Edit.tsx`. Letters are created from pre-built templates via `App\Data\CoverLetterTemplates`. Each letter has a `template_key`, `name`, `body` (raw text), and optional `resume_id` foreign key.
@@ -103,6 +105,17 @@ Full CRUD at `/jobs` → `JobApplicationController` → `Jobs/Index.tsx` + `Jobs
 
 ### AI suggestions
 `AiSuggestController` handles `POST /builder/{resume}/ai-suggest` (throttled to 10 requests/minute). Supports `field` values: `summary`, `bullets`, `skills`, `title`. Provider is selected per-request (`claude` or `openai`); the active provider is persisted in `localStorage` under `resumegen_ai_provider`. Both keys are checked via `config('services.anthropic.key')` and `config('services.openai.key')` — never `env()` directly.
+
+### AI usage tracking
+Every AI suggest call (web and API) logs to `ai_usage_logs` via `AiUsageLogger::log()`. The logger looks up cost rates from `ai_model_rates` (keyed by `provider` + `model` + `effective_from` date) and stores `input_tokens`, `output_tokens`, and `cost_usd`. Both models are append-only with no `updated_at`. `GET /usage` → `UsageController` → `Usage/Index.tsx` shows per-user totals and a 30-day activity log. The admin panel has its own aggregated view across all users (see Admin panel section).
+
+### Admin panel
+Routes under `/admin` are guarded by `auth` + `master_admin` middleware (`EnsureMasterAdmin` — aborts 403 if `User::is_master_admin` is false). `is_master_admin` is a non-editable boolean on `users`; it must be set directly in the database or via seeder.
+
+- `GET /admin/usage` → `AdminUsageController@index` → `Admin/Usage.tsx` — AI cost dashboard aggregated across all users, filterable by date range (`30days`, `month`, `all`). Breaks down by provider, model, feature, and per-user.
+- `GET /admin/users` → `AdminUserController@index` → `Admin/Users/Index.tsx` — paginated user list with subscription status and resume count.
+- `PATCH /admin/users/{user}/toggle-pro` — flips `is_pro` on a user (blocked for master admins).
+- `DELETE /admin/users/{user}` — deletes a user and cancels their Stripe subscription immediately (blocked for master admins and self).
 
 ### Rate limiting
 - AI suggest endpoint: `throttle:10,1` (10 req/min)
