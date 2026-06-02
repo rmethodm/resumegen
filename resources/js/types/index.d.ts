@@ -41,7 +41,7 @@ export interface CertEntry {
     date: string;
 }
 
-export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled' | 'sidebar' | 'creative' | 'executive' | 'ats';
+export type ResumeTemplate = 'classic' | 'minimal' | 'minimal-ruled' | 'executive' | 'ats';
 
 export interface FontSizes {
     name: number;

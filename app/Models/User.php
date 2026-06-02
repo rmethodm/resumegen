@@ -32,7 +32,7 @@ class User extends Authenticatable
 
     public function isPro(): bool
     {
-        return $this->is_pro || $this->subscribed('default');
+        return $this->is_master_admin || $this->is_pro || $this->subscribed('default');
     }
 
     public function resumes(): HasMany
