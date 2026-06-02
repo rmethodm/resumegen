@@ -6,14 +6,15 @@
 ## Problem
 
 The current ATS scorer is a local keyword-matching algorithm (`AtsScorer`). It has no persistence — every call re-runs the algorithm. The goals are:
-1. Replace the scoring engine with GPT-4o and cache the result in the database
+1. Replace the scoring engine with GPT-powered scoring and cache the result in the database
 2. Track all AI API costs (OpenAI + Anthropic) across the app, per-user and overall, with configurable pricing and dashboards
+3. Minimize API cost while maximizing user value — use the right model for each task, keep model names configurable, and avoid unnecessary token spend
 
 ## Part 1: GPT ATS Score with DB Cache
 
 ### Requirements
 
-- Score is computed by GPT-4o, not local keyword matching
+- Score is computed by `gpt-4o-mini` (configurable via `config('services.openai.ats_model')`), not local keyword matching
 - Full response blob (score + found/missing/breakdown) is cached in the `resumes` table
 - Cache is returned immediately on subsequent requests (no API call)
 - Cache is invalidated on demand via a new `DELETE` endpoint
@@ -35,9 +36,13 @@ The current ATS scorer is a local keyword-matching algorithm (`AtsScorer`). It h
 
 ### Scoring (`AtsScorer`)
 
-`AtsScorer::score(Resume $resume): array` is rewritten to call GPT-4o via `openai-php/client`.
+`AtsScorer::score(Resume $resume): array` is rewritten to call OpenAI via `openai-php/client`.
 
-**Prompt strategy:** Pass the resume's summary, bullet points, and skills as plain text. Instruct GPT to score on the same four axes using the same keyword lists from `AtsKeywords`, and return a JSON object matching the existing response shape exactly.
+**Model:** `gpt-4o-mini` (default) — configurable via `config('services.openai.ats_model')`. GPT-4o-mini is ~16x cheaper than GPT-4o and handles structured JSON scoring equally well. Can be upgraded to `gpt-4o` via config with no code change.
+
+**Prompt strategy:** Send only the resume content (summary, bullet points, skills) as plain text. Do NOT send the `AtsKeywords` lists — instead, instruct GPT to use its own broader ATS knowledge to evaluate the four axes. This reduces input tokens by ~40% and produces better scoring than a hardcoded keyword list.
+
+The prompt instructs GPT to score on four axes with specific point weights (action verbs 30pts, technical skills 40pts, soft skills 15pts, format signals 15pts) and return a JSON object matching the existing response shape exactly.
 
 **Response shape (unchanged):**
 ```json
@@ -49,9 +54,9 @@ The current ATS scorer is a local keyword-matching algorithm (`AtsScorer`). It h
 }
 ```
 
-**Config:** `gpt-4o`, `response_format: { type: "json_object" }`, max_tokens ~600.
+**Config:** `response_format: { type: "json_object" }`, max_tokens ~600.
 
-**Fallback:** If the OpenAI API call fails or returns unparseable JSON, fall back to the existing local keyword-matching logic so the endpoint never returns an error.
+**Fallback:** If the OpenAI API call fails or returns unparseable JSON, fall back to the existing local keyword-matching logic so the endpoint never returns an error. `AtsKeywords` is retained for this fallback path only.
 
 ### Controller & Cache Logic
 
@@ -117,7 +122,9 @@ DELETE /builder/{resume}/ats-score  → AtsScoreController@destroy
 
 Seeded with known rates:
 - `gpt-4o`: $2.50 input / $10.00 output per 1M tokens
+- `gpt-4o-mini`: $0.15 input / $0.60 output per 1M tokens
 - `claude-sonnet-4-6`: $3.00 input / $15.00 output per 1M tokens
+- `claude-haiku-4-5`: $0.80 input / $4.00 output per 1M tokens
 
 **`ai_usage_logs` table** — append-only log of every API call:
 
@@ -153,7 +160,7 @@ AiUsageLogger::log(
 Internally: look up active rate, calculate `cost_usd`, insert into `ai_usage_logs`. Wrapped in try/catch — logging failure never breaks the calling feature.
 
 **Integration points:**
-- `AtsScorer::score()` — after GPT-4o response (covers both web and API)
+- `AtsScorer::score()` — after GPT response (covers both web and API controllers since scorer is shared)
 - `AiSuggestController::suggestWithOpenAI()` — after `$client->chat()->create()`
 - `AiSuggestController::suggestWithClaude()` — after `Http::post()` response
 - `Api/AiSuggestController` — same two methods in the API mirror class
@@ -161,6 +168,14 @@ Internally: look up active rate, calculate `cost_usd`, insert into `ai_usage_log
 Token extraction:
 - OpenAI (`openai-php/client`): `$result->usage->promptTokens` / `$result->usage->completionTokens`
 - Anthropic (raw HTTP): `$response->json('usage.input_tokens')` / `$response->json('usage.output_tokens')`
+
+### Config Keys (new additions to `config/services.php`)
+
+| Key | Default | Notes |
+|---|---|---|
+| `services.openai.ats_model` | `'gpt-4o-mini'` | Model used for ATS scoring |
+| `services.openai.suggest_model` | `'gpt-4o'` | Model used for AI suggestions |
+| `services.admin_email` | `env('ADMIN_EMAIL')` | Hardcoded to `rmethodm@outlook.com` in `.env` |
 
 ### Admin Middleware
 
@@ -208,6 +223,16 @@ GET /admin/usage   → AdminUsageController@index   (EnsureAdmin middleware)
 - `AdminUsageTest`: admin email can access, other emails get 403
 - `UsageTest`: user sees only their own logs
 - Mock OpenAI client in tests — no live API calls
+
+## Cost Optimisation Decisions
+
+| Decision | Rationale |
+|---|---|
+| `gpt-4o-mini` for ATS scoring (not `gpt-4o`) | ~16x cheaper; structured JSON scoring doesn't need frontier model quality |
+| No keyword lists in ATS prompt | Saves ~40% input tokens; GPT's broader knowledge produces better results |
+| Model names in `config/services.php` | Swap models without a code deploy; easy to tune as pricing changes |
+| DB cache for ATS score | Each resume only pays for one GPT call until user explicitly refreshes |
+| AI suggestions still use `gpt-4o` / `claude-sonnet-4-6` | Quality is user-visible here; acceptable cost for a feature users directly benefit from |
 
 ## Out of Scope
 
