@@ -5,133 +5,102 @@ import { PageProps } from '@/types';
 type FeatureStat  = { feature: string; calls: number; cost: number };
 type ProviderStat = { provider: string; calls: number; cost: number };
 type LogEntry     = { feature: string; provider: string; model: string; cost_usd: number; created_at: string };
-
-type Props = PageProps<{
-    totalCost: number;
-    totalCalls: number;
-    byFeature: FeatureStat[];
-    byProvider: ProviderStat[];
-    recentLogs: LogEntry[];
-}>;
+type Props = PageProps<{ totalCost: number; totalCalls: number; byFeature: FeatureStat[]; byProvider: ProviderStat[]; recentLogs: LogEntry[] }>;
 
 const fmtShort = (n: number) => `$${n.toFixed(4)}`;
 const fmt      = (n: number) => `$${n.toFixed(6)}`;
+
+const TableCard = ({ title, cols, rows, emptyMsg }: { title: string; cols: string[]; rows: (string | number)[][]; emptyMsg: string }) => (
+    <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+        <div className="border-b border-[#eeeef5] px-5 py-4">
+            <h3 className="text-sm font-bold text-[#0f0f1a]">{title}</h3>
+        </div>
+        <table className="w-full text-sm">
+            <thead>
+                <tr className="border-b border-[#eeeef5] bg-[#fafafe]">
+                    {cols.map((c, i) => <th key={c} className={`px-5 py-3 text-[10px] font-bold uppercase tracking-wide text-[#c4c4d0] ${i > 0 ? 'text-right' : 'text-left'}`}>{c}</th>)}
+                </tr>
+            </thead>
+            <tbody className="divide-y divide-[#f5f5fb]">
+                {rows.length === 0
+                    ? <tr><td colSpan={cols.length} className="px-5 py-8 text-center text-sm text-[#a0a0b0]">{emptyMsg}</td></tr>
+                    : rows.map((row, i) => (
+                        <tr key={i} className="hover:bg-[#fafafe] transition-colors">
+                            {row.map((cell, j) => <td key={j} className={`px-5 py-3 ${j === 0 ? 'font-semibold text-[#0f0f1a]' : 'text-right tabular-nums text-[#71717a]'}`}>{cell}</td>)}
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </div>
+);
 
 export default function UsageIndex() {
     const { totalCost, totalCalls, byFeature, byProvider, recentLogs } = usePage<Props>().props;
 
     return (
-        <AuthenticatedLayout
-            header={<h2 className="text-xl font-semibold leading-tight text-gray-800">My AI Usage</h2>}
-        >
-            <Head title="My Usage" />
+        <AuthenticatedLayout>
+            <Head title="My AI Usage" />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-4xl sm:px-6 lg:px-8 space-y-6">
+            <div className="py-8">
+                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6">
 
-                    {/* Summary cards */}
+                    <div>
+                        <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">My AI Usage</h1>
+                        <p className="mt-1 text-sm text-[#a0a0b0]">AI suggestions and ATS scoring usage</p>
+                    </div>
+
+                    {/* Summary */}
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-white shadow-sm sm:rounded-lg p-6">
-                            <p className="text-sm text-gray-500">Total Calls</p>
-                            <p className="text-3xl font-bold text-gray-900 mt-1">{totalCalls.toLocaleString()}</p>
-                        </div>
-                        <div className="bg-white shadow-sm sm:rounded-lg p-6">
-                            <p className="text-sm text-gray-500">Total Cost</p>
-                            <p className="text-3xl font-bold text-gray-900 mt-1">{fmtShort(totalCost)}</p>
-                        </div>
+                        {[{ label: 'Total Calls', value: totalCalls.toLocaleString() }, { label: 'Total Cost', value: fmtShort(totalCost) }].map(({ label, value }) => (
+                            <div key={label} className="rounded-xl border border-[#eeeef5] bg-white p-5 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                                <p className="text-3xl font-extrabold tracking-tight text-[#0f0f1a]">{value}</p>
+                                <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#a0a0b0]">{label}</p>
+                            </div>
+                        ))}
                     </div>
 
-                    {/* By feature + by provider */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-white shadow-sm sm:rounded-lg overflow-hidden">
-                            <div className="px-6 py-4 border-b border-gray-100">
-                                <h3 className="text-base font-semibold text-gray-900">By Feature</h3>
-                            </div>
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="border-b border-gray-100 bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        <th className="px-6 py-3 text-left">Feature</th>
-                                        <th className="px-6 py-3 text-right">Calls</th>
-                                        <th className="px-6 py-3 text-right">Cost</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {byFeature.map((r) => (
-                                        <tr key={r.feature} className="hover:bg-gray-50">
-                                            <td className="px-6 py-3 font-medium">{r.feature}</td>
-                                            <td className="px-6 py-3 text-right tabular-nums">{r.calls}</td>
-                                            <td className="px-6 py-3 text-right tabular-nums">{fmtShort(r.cost)}</td>
-                                        </tr>
-                                    ))}
-                                    {byFeature.length === 0 && (
-                                        <tr><td colSpan={3} className="px-6 py-6 text-center text-gray-400 text-xs">No usage yet</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div className="bg-white shadow-sm sm:rounded-lg overflow-hidden">
-                            <div className="px-6 py-4 border-b border-gray-100">
-                                <h3 className="text-base font-semibold text-gray-900">By Provider</h3>
-                            </div>
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="border-b border-gray-100 bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        <th className="px-6 py-3 text-left">Provider</th>
-                                        <th className="px-6 py-3 text-right">Calls</th>
-                                        <th className="px-6 py-3 text-right">Cost</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {byProvider.map((r) => (
-                                        <tr key={r.provider} className="hover:bg-gray-50">
-                                            <td className="px-6 py-3 font-medium capitalize">{r.provider}</td>
-                                            <td className="px-6 py-3 text-right tabular-nums">{r.calls}</td>
-                                            <td className="px-6 py-3 text-right tabular-nums">{fmtShort(r.cost)}</td>
-                                        </tr>
-                                    ))}
-                                    {byProvider.length === 0 && (
-                                        <tr><td colSpan={3} className="px-6 py-6 text-center text-gray-400 text-xs">No usage yet</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                    {/* By feature + provider */}
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <TableCard title="By Feature" cols={['Feature', 'Calls', 'Cost']}
+                            rows={byFeature.map(r => [r.feature, r.calls, fmtShort(r.cost)])}
+                            emptyMsg="No usage yet" />
+                        <TableCard title="By Provider" cols={['Provider', 'Calls', 'Cost']}
+                            rows={byProvider.map(r => [r.provider, r.calls, fmtShort(r.cost)])}
+                            emptyMsg="No usage yet" />
                     </div>
 
-                    {/* Recent call history */}
-                    <div className="bg-white shadow-sm sm:rounded-lg overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100">
-                            <h3 className="text-base font-semibold text-gray-900">Last 30 Days — Call History</h3>
+                    {/* Recent logs */}
+                    <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                        <div className="border-b border-[#eeeef5] px-5 py-4">
+                            <h3 className="text-sm font-bold text-[#0f0f1a]">Last 30 Days — Call History</h3>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="border-b border-gray-100 bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        <th className="px-6 py-3 text-left">Date</th>
-                                        <th className="px-6 py-3 text-left">Feature</th>
-                                        <th className="px-6 py-3 text-left">Provider</th>
-                                        <th className="px-6 py-3 text-left">Model</th>
-                                        <th className="px-6 py-3 text-right">Cost</th>
+                                    <tr className="border-b border-[#eeeef5] bg-[#fafafe]">
+                                        {['Date', 'Feature', 'Provider', 'Model', 'Cost'].map((h, i) => (
+                                            <th key={h} className={`px-5 py-3 text-[10px] font-bold uppercase tracking-wide text-[#c4c4d0] ${i === 4 ? 'text-right' : 'text-left'}`}>{h}</th>
+                                        ))}
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {recentLogs.map((r, i) => (
-                                        <tr key={i} className="hover:bg-gray-50">
-                                            <td className="px-6 py-3 text-gray-500 text-xs">{new Date(r.created_at).toLocaleDateString()}</td>
-                                            <td className="px-6 py-3">{r.feature}</td>
-                                            <td className="px-6 py-3 capitalize text-gray-500">{r.provider}</td>
-                                            <td className="px-6 py-3 font-mono text-xs text-gray-500">{r.model}</td>
-                                            <td className="px-6 py-3 text-right tabular-nums">{fmt(r.cost_usd)}</td>
-                                        </tr>
-                                    ))}
-                                    {recentLogs.length === 0 && (
-                                        <tr><td colSpan={5} className="px-6 py-6 text-center text-gray-400 text-xs">No calls in the last 30 days</td></tr>
-                                    )}
+                                <tbody className="divide-y divide-[#f5f5fb]">
+                                    {recentLogs.length === 0
+                                        ? <tr><td colSpan={5} className="px-5 py-8 text-center text-sm text-[#a0a0b0]">No calls in the last 30 days</td></tr>
+                                        : recentLogs.map((r, i) => (
+                                            <tr key={i} className="hover:bg-[#fafafe] transition-colors">
+                                                <td className="px-5 py-3 text-xs text-[#a0a0b0]">{new Date(r.created_at).toLocaleDateString()}</td>
+                                                <td className="px-5 py-3 font-semibold text-[#0f0f1a]">{r.feature}</td>
+                                                <td className="px-5 py-3 capitalize text-[#71717a]">{r.provider}</td>
+                                                <td className="px-5 py-3 font-mono text-xs text-[#a0a0b0]">{r.model}</td>
+                                                <td className="px-5 py-3 text-right tabular-nums text-[#71717a]">{fmt(r.cost_usd)}</td>
+                                            </tr>
+                                        ))
+                                    }
                                 </tbody>
                             </table>
                         </div>
                     </div>
-
                 </div>
             </div>
         </AuthenticatedLayout>
