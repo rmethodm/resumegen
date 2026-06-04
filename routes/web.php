@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminUsageController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AiSuggestController;
+use App\Http\Controllers\TailorController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AtsScoreController;
 use App\Http\Controllers\BillingController;
@@ -51,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/builder/{resume}/ai-suggest', [AiSuggestController::class, 'suggest'])
         ->middleware('throttle:10,1')
         ->name('builder.ai-suggest');
+    Route::post('/builder/{resume}/tailor', [TailorController::class, 'tailor'])
+        ->middleware('throttle:5,1')
+        ->name('builder.tailor');
     Route::get('/builder/{resume}/ats-score', [AtsScoreController::class, 'show'])
         ->middleware('throttle:10,1')
         ->name('builder.ats-score');
