@@ -24,6 +24,18 @@ class JobApplicationController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $this->validateData($request, true);
+
+        if (!empty($validated['job_url'])) {
+            $exists = $request->user()
+                ->jobApplications()
+                ->where('job_url', $validated['job_url'])
+                ->exists();
+
+            if ($exists) {
+                return response()->json(['message' => 'A job with this URL already exists.'], 409);
+            }
+        }
+
         $application = $request->user()->jobApplications()->create($validated);
 
         return response()->json($application, 201);
