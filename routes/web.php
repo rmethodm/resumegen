@@ -9,6 +9,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/profile/tokens', [PersonalTokenController::class, 'store'])->name('profile.tokens.store');
+    Route::delete('/profile/tokens/{tokenId}', [PersonalTokenController::class, 'destroy'])->name('profile.tokens.destroy');
 
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
 
