@@ -466,6 +466,12 @@ export default function Edit({
                             <span className="text-xs text-gray-300" title="Add ANTHROPIC_API_KEY or OPENAI_API_KEY to .env to enable AI suggestions">✦ AI off</span>
                         )}
                         <a
+                            href={route('builder.docx', resume.id)}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb]"
+                        >
+                            DOCX
+                        </a>
+                        <a
                             href={route('builder.pdf', resume.id)}
                             className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
                         >
