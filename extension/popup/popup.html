@@ -1,13 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Save Job to Resumegen</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <div id="app">
-    <!-- TODO: Build popup UI -->
+  <div id="setup-view" class="view hidden">
+    <div class="logo">Resumegen</div>
+    <p class="setup-msg">Paste your API token to get started.</p>
+    <button id="open-options" class="btn-primary full">Open Settings</button>
+  </div>
+  <div id="form-view" class="view hidden">
+    <div class="header">
+      <span class="logo-sm">Resumegen</span>
+      <span id="extracting-label" class="label-extracting hidden">Extracting…</span>
+    </div>
+    <div class="field">
+      <label>Role</label>
+      <input type="text" id="role">
+    </div>
+    <div class="field">
+      <label>Company</label>
+      <input type="text" id="company">
+    </div>
+    <div class="field">
+      <label>Salary <span class="opt">optional</span></label>
+      <input type="text" id="salary">
+    </div>
+    <div class="field">
+      <label>Status</label>
+      <select id="status">
+        <option value="saved">Saved</option>
+        <option value="applied">Applied</option>
+        <option value="interviewing">Interviewing</option>
+        <option value="offered">Offered</option>
+        <option value="rejected">Rejected</option>
+        <option value="closed">Closed</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Notes <span class="opt">optional</span></label>
+      <textarea id="notes" rows="3"></textarea>
+    </div>
+    <input type="hidden" id="job-url">
+    <p class="error-msg hidden" id="error-msg"></p>
+    <button id="save-btn" class="btn-primary full">Save Job</button>
+  </div>
+  <div id="success-view" class="view hidden">
+    <div class="success-icon">✓</div>
+    <p class="success-msg">Job saved!</p>
+    <a id="view-link" href="#" target="_blank" class="btn-secondary full">View in Resumegen →</a>
   </div>
   <script src="popup.js"></script>
 </body>
