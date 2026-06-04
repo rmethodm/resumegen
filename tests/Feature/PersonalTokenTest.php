@@ -38,6 +38,7 @@ class PersonalTokenTest extends TestCase
         $other = User::factory()->create();
         $token = $other->createToken('Browser Extension');
         $tokenId = $token->accessToken->id;
+        // Silent no-op: returns 204 without deleting — avoids revealing token existence via 404
         $this->actingAs($user)->deleteJson("/profile/tokens/{$tokenId}")->assertNoContent();
         $this->assertDatabaseHas('personal_access_tokens', ['id' => $tokenId]);
     }
