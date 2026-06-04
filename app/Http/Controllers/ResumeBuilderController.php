@@ -119,10 +119,20 @@ class ResumeBuilderController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $pdf = Pdf::loadView('resume-pdf', ['resume' => $resume])
-            ->setPaper('letter', 'portrait');
+        return $this->buildPdf($resume)->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
+    }
 
-        return $pdf->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
+    public function previewPdf(Resume $resume)
+    {
+        $this->authorize('update', $resume);
+
+        return $this->buildPdf($resume)->stream('preview.pdf');
+    }
+
+    private function buildPdf(Resume $resume): \Barryvdh\DomPDF\PDF
+    {
+        return Pdf::loadView('resume-pdf', ['resume' => $resume])
+            ->setPaper('letter', 'portrait');
     }
 
     public function beacon(Request $request, Resume $resume)

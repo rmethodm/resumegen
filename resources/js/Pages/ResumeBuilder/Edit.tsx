@@ -14,7 +14,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useHistory, ResumeSnapshot } from '@/hooks/useHistory';
 import {
     ResumeData, ShareLink, ResumeQuestion, ResumeTemplate,
     ExperienceEntry, EducationEntry, CertEntry, Contact, AiCapabilities,
@@ -118,431 +117,12 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
     );
 }
 
-const FONT_FAMILY_CSS: Record<'sans' | 'serif' | 'mono', string> = {
-    sans:  'DejaVu Sans, sans-serif',
-    serif: 'DejaVu Serif, serif',
-    mono:  'DejaVu Sans Mono, monospace',
-};
 
-
-type TemplateProps = {
-    contact: Contact;
-    summary: string;
-    experience: ExperienceEntry[];
-    education: EducationEntry[];
-    skills: string[];
-    certifications: CertEntry[];
-    fontSizes: FontSizes;
-};
-
-function MinimalTemplate({ contact, summary, experience, education, skills, certifications, fontSizes }: TemplateProps) {
-    return (
-        <>
-            <div className="mb-5">
-                <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-light tracking-wide text-gray-900">
-                    {contact.full_name || 'Your Name'}
-                </h1>
-                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-gray-400">
-                    {contact.email && <span>{contact.email}</span>}
-                    {contact.phone && <span>{contact.phone}</span>}
-                    {contact.location && <span>{contact.location}</span>}
-                    {contact.linkedin && <span>{contact.linkedin}</span>}
-                    {contact.website && <span>{contact.website}</span>}
-                </div>
-            </div>
-
-            {summary && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-1 text-xs font-semibold uppercase tracking-widest text-gray-400">Summary</h2>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-relaxed text-gray-700">{summary}</p>
-                </section>
-            )}
-            {experience.some(e => e.company || e.title) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 text-xs font-semibold uppercase tracking-widest text-gray-400">Experience</h2>
-                    {experience.filter(e => e.company || e.title).map(exp => (
-                        <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }}>
-                            <div className="flex items-baseline justify-between">
-                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{exp.title || 'Job Title'}</span>
-                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-400">
-                                    {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
-                                </span>
-                            </div>
-                            <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{exp.company}</div>
-                            {exp.bullets && (
-                                <ul style={{ fontSize: `${fontSizes.body}pt` }} className="mt-1 list-disc pl-4 text-gray-600 space-y-0.5">
-                                    {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
-                                </ul>
-                            )}
-                        </div>
-                    ))}
-                </section>
-            )}
-            {education.some(e => e.school) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 text-xs font-semibold uppercase tracking-widest text-gray-400">Education</h2>
-                    {education.filter(e => e.school).map(edu => (
-                        <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex items-baseline justify-between">
-                            <div>
-                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{edu.school}</span>
-                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="ml-2 text-gray-500">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
-                            </div>
-                            {edu.grad_year && <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-400">{edu.grad_year}</span>}
-                        </div>
-                    ))}
-                </section>
-            )}
-            {skills.length > 0 && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 text-xs font-semibold uppercase tracking-widest text-gray-400">Skills</h2>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="text-gray-600">{skills.join(' · ')}</p>
-                </section>
-            )}
-            {certifications.some(c => c.name) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 text-xs font-semibold uppercase tracking-widest text-gray-400">Certifications</h2>
-                    {certifications.filter(c => c.name).map(cert => (
-                        <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex items-baseline justify-between">
-                            <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{cert.name}</span>
-                            <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-400">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
-                        </div>
-                    ))}
-                </section>
-            )}
-        </>
-    );
-}
-
-function ExecutiveTemplate({ contact, summary, experience, education, skills, certifications, fontSizes }: TemplateProps) {
-    return (
-        <div style={{ fontFamily: 'DejaVu Serif, serif' }}>
-            <div className="text-center">
-                <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-bold tracking-wide uppercase text-gray-900">
-                    {contact.full_name || 'Your Name'}
-                </h1>
-                <hr className="my-2 border-gray-800" />
-                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-700">
-                    {[contact.email, contact.phone, contact.location, contact.linkedin, contact.website].filter(Boolean).join(' • ')}
-                </div>
-                <hr className="mt-2 border-gray-800" />
-            </div>
-
-            {summary && (
-                <section className="mt-6" style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-1 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Summary</h2>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-relaxed text-gray-800 mt-2">{summary}</p>
-                </section>
-            )}
-            {experience.some(e => e.company || e.title) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Professional Experience</h2>
-                    {experience.filter(e => e.company || e.title).map(exp => (
-                        <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="mt-2">
-                            <div className="flex items-baseline justify-between">
-                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-bold text-gray-900">{exp.title || 'Job Title'}</span>
-                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="italic text-gray-700">
-                                    {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
-                                </span>
-                            </div>
-                            <div style={{ fontSize: `${fontSizes.contact}pt` }} className="italic text-gray-700">{exp.company}</div>
-                            {exp.bullets && (
-                                <ul style={{ fontSize: `${fontSizes.body}pt` }} className="mt-1 list-disc pl-5 text-gray-800 space-y-0.5">
-                                    {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
-                                </ul>
-                            )}
-                        </div>
-                    ))}
-                </section>
-            )}
-            {education.some(e => e.school) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Education</h2>
-                    {education.filter(e => e.school).map(edu => (
-                        <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="mt-2 flex items-baseline justify-between">
-                            <div>
-                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-bold text-gray-900">{edu.school}</span>
-                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="ml-2 italic text-gray-700">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
-                            </div>
-                            {edu.grad_year && <span style={{ fontSize: `${fontSizes.contact}pt` }} className="italic text-gray-700">{edu.grad_year}</span>}
-                        </div>
-                    ))}
-                </section>
-            )}
-            {skills.length > 0 && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Core Competencies</h2>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="text-gray-800 mt-2 text-center">{skills.join(' • ')}</p>
-                </section>
-            )}
-            {certifications.some(c => c.name) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 font-bold uppercase tracking-[0.2em] text-gray-900 text-center border-y-2 border-double border-gray-800 py-1">Certifications</h2>
-                    {certifications.filter(c => c.name).map(cert => (
-                        <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="mt-2 flex items-baseline justify-between">
-                            <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{cert.name}</span>
-                            <span style={{ fontSize: `${fontSizes.contact}pt` }} className="italic text-gray-700">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
-                        </div>
-                    ))}
-                </section>
-            )}
-        </div>
-    );
-}
-
-function AtsTemplate({ contact, summary, experience, education, skills, certifications, fontSizes }: TemplateProps) {
-    const contactLine = [contact.email, contact.phone, contact.location, contact.linkedin, contact.website].filter(Boolean).join(' | ');
-    return (
-        <div className="text-black">
-            <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-bold">{contact.full_name || 'Your Name'}</h1>
-            {contactLine && (
-                <p style={{ fontSize: `${fontSizes.contact}pt` }} className="mb-4">{contactLine}</p>
-            )}
-
-            {summary && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Summary</h2>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-normal">{summary}</p>
-                </section>
-            )}
-            {experience.some(e => e.company || e.title) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Work Experience</h2>
-                    {experience.filter(e => e.company || e.title).map(exp => (
-                        <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }}>
-                            <div style={{ fontSize: `${fontSizes.body}pt` }} className="font-bold">{exp.title || 'Job Title'}</div>
-                            <div style={{ fontSize: `${fontSizes.body}pt` }}>{exp.company}{exp.company && (exp.start_date || exp.end_date) ? ' | ' : ''}{exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}</div>
-                            {exp.bullets && (
-                                <ul style={{ fontSize: `${fontSizes.body}pt` }} className="mt-1 list-disc pl-5">
-                                    {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
-                                </ul>
-                            )}
-                        </div>
-                    ))}
-                </section>
-            )}
-            {education.some(e => e.school) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Education</h2>
-                    {education.filter(e => e.school).map(edu => (
-                        <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt`, fontSize: `${fontSizes.body}pt` }}>
-                            <div className="font-bold">{edu.school}</div>
-                            <div>{[edu.degree, edu.field].filter(Boolean).join(' in ')}{edu.grad_year ? ` | ${edu.grad_year}` : ''}</div>
-                        </div>
-                    ))}
-                </section>
-            )}
-            {skills.length > 0 && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Skills</h2>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }}>{skills.join(', ')}</p>
-                </section>
-            )}
-            {certifications.some(c => c.name) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold mb-1">Certifications</h2>
-                    {certifications.filter(c => c.name).map(cert => (
-                        <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt`, fontSize: `${fontSizes.body}pt` }}>
-                            <span className="font-bold">{cert.name}</span>{cert.issuer || cert.date ? ` | ${[cert.issuer, cert.date].filter(Boolean).join(', ')}` : ''}
-                        </div>
-                    ))}
-                </section>
-            )}
-        </div>
-    );
-}
-
-function MinimalRuledTemplate({ contact, summary, experience, education, skills, certifications, fontSizes }: TemplateProps) {
-    return (
-        <>
-            {/* Minimal Ruled Header */}
-            <div className="mb-10 pb-6 border-b border-gray-200">
-                <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-light tracking-widest uppercase text-gray-900">
-                    {contact.full_name || 'Your Name'}
-                </h1>
-                {(experience.find(e => e.title)?.title || experience.find(e => e.company)?.company) && (
-                    <p style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-1 font-semibold tracking-widest uppercase text-gray-400">
-                        {[experience.find(e => e.title)?.title, experience.find(e => e.company)?.company].filter(Boolean).join(' · ')}
-                    </p>
-                )}
-                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-2 flex flex-wrap gap-x-3 text-gray-500">
-                    {contact.email && <span>{contact.email}</span>}
-                    {contact.phone && <span>· {contact.phone}</span>}
-                    {contact.location && <span>· {contact.location}</span>}
-                    {contact.linkedin && <span>· {contact.linkedin}</span>}
-                    {contact.website && <span>· {contact.website}</span>}
-                </div>
-            </div>
-
-            {/* Minimal Ruled Summary */}
-            {summary && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Summary</div>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-relaxed text-gray-700">{summary}</p>
-                </section>
-            )}
-
-            {/* Minimal Ruled Experience */}
-            {experience.some(e => e.company || e.title) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Experience</div>
-                    {experience.filter(e => e.company || e.title).map(exp => (
-                        <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex gap-6">
-                            <div style={{ fontSize: `${fontSizes.contact}pt` }} className="w-16 shrink-0 text-right text-gray-400 pt-0.5 leading-relaxed">
-                                {exp.start_date && <div>{exp.start_date}</div>}
-                                <div>{exp.current ? 'Present' : exp.end_date}</div>
-                            </div>
-                            <div className="flex-1">
-                                <div style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{exp.title || 'Job Title'}</div>
-                                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500 mb-1">{exp.company}</div>
-                                {exp.bullets && (
-                                    <ul style={{ fontSize: `${fontSizes.body}pt` }} className="list-disc pl-4 text-gray-700 space-y-0.5">
-                                        {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
-                                    </ul>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </section>
-            )}
-
-            {/* Minimal Ruled Education */}
-            {education.some(e => e.school) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Education</div>
-                    {education.filter(e => e.school).map(edu => (
-                        <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex gap-6">
-                            <div style={{ fontSize: `${fontSizes.contact}pt` }} className="w-16 shrink-0 text-right text-gray-400 pt-0.5">{edu.grad_year}</div>
-                            <div className="flex-1">
-                                <div style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{edu.school}</div>
-                                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</div>
-                            </div>
-                        </div>
-                    ))}
-                </section>
-            )}
-
-            {/* Minimal Ruled Skills */}
-            {skills.length > 0 && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Skills</div>
-                    <div className="flex flex-wrap gap-2">
-                        {skills.map((skill, i) => (
-                            <span key={i} style={{ fontSize: `${fontSizes.body}pt` }} className="bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full">{skill}</span>
-                        ))}
-                    </div>
-                </section>
-            )}
-
-            {/* Minimal Ruled Certifications */}
-            {certifications.some(c => c.name) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <div style={{ fontSize: `${fontSizes.heading}pt` }} className="font-bold uppercase tracking-widest text-gray-400 mb-3">Certifications</div>
-                    {certifications.filter(c => c.name).map(cert => (
-                        <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex gap-6">
-                            <div style={{ fontSize: `${fontSizes.contact}pt` }} className="w-16 shrink-0 text-right text-gray-400 pt-0.5">{cert.date}</div>
-                            <div className="flex-1">
-                                <div style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{cert.name}</div>
-                                {cert.issuer && <div style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{cert.issuer}</div>}
-                            </div>
-                        </div>
-                    ))}
-                </section>
-            )}
-        </>
-    );
-}
-
-function ClassicTemplate({ contact, summary, experience, education, skills, certifications, fontSizes }: TemplateProps) {
-    return (
-        <>
-            <div className="mb-4 pb-3 text-center border-b-2 border-gray-800">
-                <h1 style={{ fontSize: `${fontSizes.name}pt` }} className="font-bold tracking-wide text-gray-900">
-                    {contact.full_name || 'Your Name'}
-                </h1>
-                <div style={{ fontSize: `${fontSizes.contact}pt` }} className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-0.5 text-gray-600">
-                    {contact.email && <span>{contact.email}</span>}
-                    {contact.phone && <span>• {contact.phone}</span>}
-                    {contact.location && <span>• {contact.location}</span>}
-                    {contact.linkedin && <span>• {contact.linkedin}</span>}
-                    {contact.website && <span>• {contact.website}</span>}
-                </div>
-            </div>
-
-            {summary && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-1 pb-0.5 font-bold uppercase tracking-widest text-gray-700 border-b border-gray-300">Summary</h2>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="leading-relaxed text-gray-700">{summary}</p>
-                </section>
-            )}
-
-            {experience.some(e => e.company || e.title) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 pb-0.5 font-bold uppercase tracking-widest text-gray-700 border-b border-gray-300">Work Experience</h2>
-                    {experience.filter(e => e.company || e.title).map(exp => (
-                        <div key={exp.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }}>
-                            <div className="flex items-baseline justify-between">
-                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{exp.title || 'Job Title'}</span>
-                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">
-                                    {exp.start_date}{(exp.start_date || exp.end_date) ? ' – ' : ''}{exp.current ? 'Present' : exp.end_date}
-                                </span>
-                            </div>
-                            <div style={{ fontSize: `${fontSizes.contact}pt` }} className="font-medium text-gray-600">{exp.company}</div>
-                            {exp.bullets && (
-                                <ul style={{ fontSize: `${fontSizes.body}pt` }} className="mt-1 list-disc pl-4 text-gray-700 space-y-0.5">
-                                    {exp.bullets.split('\n').filter(Boolean).map((b, i) => <li key={i}>{b}</li>)}
-                                </ul>
-                            )}
-                        </div>
-                    ))}
-                </section>
-            )}
-
-            {education.some(e => e.school) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 pb-0.5 font-bold uppercase tracking-widest text-gray-700 border-b border-gray-300">Education</h2>
-                    {education.filter(e => e.school).map(edu => (
-                        <div key={edu.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex items-baseline justify-between">
-                            <div>
-                                <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-semibold text-gray-900">{edu.school}</span>
-                                <span style={{ fontSize: `${fontSizes.contact}pt` }} className="ml-2 text-gray-600">{[edu.degree, edu.field].filter(Boolean).join(' in ')}</span>
-                            </div>
-                            {edu.grad_year && <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{edu.grad_year}</span>}
-                        </div>
-                    ))}
-                </section>
-            )}
-
-            {skills.length > 0 && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 pb-0.5 font-bold uppercase tracking-widest text-gray-700 border-b border-gray-300">Skills</h2>
-                    <p style={{ fontSize: `${fontSizes.body}pt` }} className="text-gray-700">{skills.join(' • ')}</p>
-                </section>
-            )}
-
-            {certifications.some(c => c.name) && (
-                <section style={{ marginBottom: `${fontSizes.sectionSpacing}pt` }}>
-                    <h2 style={{ fontSize: `${fontSizes.heading}pt` }} className="mb-2 pb-0.5 font-bold uppercase tracking-widest text-gray-700 border-b border-gray-300">Certifications</h2>
-                    {certifications.filter(c => c.name).map(cert => (
-                        <div key={cert.id} style={{ marginBottom: `${fontSizes.entrySpacing}pt` }} className="flex items-baseline justify-between">
-                            <span style={{ fontSize: `${fontSizes.body}pt` }} className="font-medium text-gray-900">{cert.name}</span>
-                            <span style={{ fontSize: `${fontSizes.contact}pt` }} className="text-gray-500">{cert.issuer}{cert.issuer && cert.date ? ', ' : ''}{cert.date}</span>
-                        </div>
-                    ))}
-                </section>
-            )}
-        </>
-    );
-}
 
 const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, body: 10, sectionSpacing: 9, entrySpacing: 3 };
 
-const TEMPLATE_MAP: Record<ResumeTemplate, React.ComponentType<TemplateProps>> = {
-    classic:       ClassicTemplate,
-    minimal:       MinimalTemplate,
-    'minimal-ruled': MinimalRuledTemplate,
-    executive:     ExecutiveTemplate,
-    ats:           AtsTemplate,
-};
+const freshPdfSrc = (resumeId: number) => route('builder.preview', resumeId) + '?t=' + Date.now();
+
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -632,18 +212,31 @@ export default function Edit({
         );
     }, [resume.id, editingLinkLabel]);
 
-    const previewRef = useRef<HTMLDivElement>(null);
-    const PAGE_HEIGHT_PX = 1056; // 11in at 96dpi
-    const [pageCount, setPageCount] = useState(1);
+    const [pdfSrc, setPdfSrc] = useState(() => freshPdfSrc(resume.id));
 
-    useEffect(() => {
-        const el = previewRef.current;
-        if (!el) return;
-        const observer = new ResizeObserver(() => {
-            setPageCount(Math.max(1, Math.ceil(el.scrollHeight / PAGE_HEIGHT_PX)));
-        });
-        observer.observe(el);
-        return () => observer.disconnect();
+    const [leftWidth, setLeftWidth] = useState(45);
+    const [resizing, setResizing] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const handleDividerMouseDown = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
+        setResizing(true);
+
+        const onMouseMove = (ev: MouseEvent) => {
+            if (!containerRef.current) return;
+            const rect = containerRef.current.getBoundingClientRect();
+            const pct = ((ev.clientX - rect.left) / rect.width) * 100;
+            setLeftWidth(Math.min(80, Math.max(20, pct)));
+        };
+
+        const onMouseUp = () => {
+            setResizing(false);
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+        };
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
     }, []);
 
     // Refs mirror state so save callback never captures stale values
@@ -669,50 +262,8 @@ export default function Edit({
     fontSizesRef.current = fontSizes;
     fontFamilyRef.current = fontFamily;
 
-    // ─── Undo / redo history ──────────────────────────────────────────────
-    const currentSnapshot = useCallback((): ResumeSnapshot => ({
-        name: nameRef.current,
-        template: templateRef.current,
-        contact: contactRef.current,
-        summary: summaryRef.current,
-        experience: experienceRef.current,
-        education: educationRef.current,
-        skills: skillsRef.current,
-        certifications: certificationsRef.current,
-        font_sizes: fontSizesRef.current,
-    }), []);
-
-    const history = useHistory(currentSnapshot());
-
-    const applySnapshot = useCallback((snap: ResumeSnapshot) => {
-        setName(snap.name);
-        setTemplate(snap.template as ResumeTemplate);
-        setContact(snap.contact as Contact);
-        setSummary(snap.summary);
-        setExperience(snap.experience as ExperienceEntry[]);
-        setEducation(snap.education as EducationEntry[]);
-        setSkills(snap.skills);
-        setCertifications(snap.certifications as CertEntry[]);
-        setFontSizes(snap.font_sizes as FontSizes);
-    }, []);
-
-    const lastPushedRef = useRef<string>('');
-
-    useEffect(() => {
-        lastPushedRef.current = JSON.stringify(currentSnapshot());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     const save = useCallback(() => {
         if (saving) { pendingSave.current = true; return; }
-        const snap = currentSnapshot();
-        const serialized = JSON.stringify(snap);
-        if (lastPushedRef.current && lastPushedRef.current !== serialized) {
-            try {
-                history.pushSnapshot(JSON.parse(lastPushedRef.current));
-            } catch { /* ignore parse errors */ }
-        }
-        lastPushedRef.current = serialized;
 
         setSaving(true);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -732,11 +283,12 @@ export default function Edit({
             onFinish: () => {
                 setSaving(false);
                 setSavedAt(new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(new Date()));
+                setPdfSrc(freshPdfSrc(resume.id));
                 if (pendingSave.current) { pendingSave.current = false; save(); }
                 fetchAts();
             },
         });
-    }, [resume.id, saving, currentSnapshot, history, fetchAts]);
+    }, [resume.id, saving, fetchAts]);
 
     // ─── First-run wizard ────────────────────────────────────────────────
     // 0 = welcome, 1 = contact, 2 = experience, 3 = skills, 4 = done (hidden)
@@ -750,40 +302,6 @@ export default function Edit({
         });
         setWizardStep(4);
     }, [save]);
-
-    const handleUndo = useCallback(() => {
-        const snap = history.undo(currentSnapshot());
-        if (snap) {
-            applySnapshot(snap);
-            lastPushedRef.current = JSON.stringify(snap);
-            save();
-        }
-    }, [history, currentSnapshot, applySnapshot, save]);
-
-    const handleRedo = useCallback(() => {
-        const snap = history.redo(currentSnapshot());
-        if (snap) {
-            applySnapshot(snap);
-            lastPushedRef.current = JSON.stringify(snap);
-            save();
-        }
-    }, [history, currentSnapshot, applySnapshot, save]);
-
-    useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            const mod = e.metaKey || e.ctrlKey;
-            if (!mod) return;
-            if (e.key === 'z' && !e.shiftKey) {
-                e.preventDefault();
-                handleUndo();
-            } else if ((e.key === 'z' && e.shiftKey) || e.key === 'y') {
-                e.preventDefault();
-                handleRedo();
-            }
-        };
-        window.addEventListener('keydown', handler);
-        return () => window.removeEventListener('keydown', handler);
-    }, [handleUndo, handleRedo]);
 
     // Save on tab close via beacon
     useEffect(() => {
@@ -908,26 +426,6 @@ export default function Edit({
                         {atsLoading && !ats && (
                             <span className="text-xs text-gray-400">scoring…</span>
                         )}
-                        <div className="flex items-center gap-1">
-                            <button
-                                type="button"
-                                onClick={handleUndo}
-                                disabled={!history.canUndo}
-                                title="Undo (⌘Z)"
-                                className={`rounded-md px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 ${history.canUndo ? '' : 'opacity-40 cursor-not-allowed'}`}
-                            >
-                                ↩
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleRedo}
-                                disabled={!history.canRedo}
-                                title="Redo (⌘⇧Z)"
-                                className={`rounded-md px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 ${history.canRedo ? '' : 'opacity-40 cursor-not-allowed'}`}
-                            >
-                                ↪
-                            </button>
-                        </div>
                         <span className="flex items-center gap-1.5 text-xs">
                             {saving ? (
                                 <>
@@ -977,10 +475,10 @@ export default function Edit({
             </div>
             <Head title={`Editing: ${name}`} />
 
-            <div className="flex h-[calc(100vh-6.5rem)] overflow-hidden">
+            <div ref={containerRef} className="flex h-[calc(100vh-6.5rem)] overflow-hidden" style={{ cursor: resizing ? 'col-resize' : undefined }}>
 
                 {/* LEFT: Form */}
-                <div className="w-[45%] shrink-0 overflow-y-auto border-r border-[#eeeef5] bg-[#f5f5fb] p-6">
+                <div className="shrink-0 overflow-y-auto bg-[#f5f5fb] p-6" style={{ width: leftWidth + '%' }}>
 
                     {/* Font Sizes */}
                     <div className="mb-5 rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
@@ -1512,40 +1010,28 @@ export default function Edit({
                     </div>
                 </div>
 
-                {/* RIGHT: Live Preview */}
-                <div className="flex-1 overflow-y-auto bg-gray-100 p-6">
-                    <div
-                        ref={previewRef}
-                        id="resume-preview"
-                        className="mx-auto w-full max-w-[8.5in] bg-white shadow-lg"
-                        style={{ padding: '0.75in', position: 'relative', fontFamily: FONT_FAMILY_CSS[fontFamily] }}
-                    >
-                        {/* Page break indicators — one per page boundary */}
-                        {Array.from({ length: pageCount - 1 }, (_, i) => (
-                            <div
-                                key={i}
-                                style={{ position: 'absolute', top: `${PAGE_HEIGHT_PX * (i + 1)}px`, left: 0, right: 0 }}
-                                className="border-t border-dashed border-gray-300 pointer-events-none"
-                            >
-                                <span className="absolute right-2 -top-3.5 text-[9px] text-gray-400 bg-white px-1">p.{i + 2}</span>
-                            </div>
-                        ))}
+                {/* Resizable divider */}
+                <div
+                    onMouseDown={handleDividerMouseDown}
+                    className="w-1.5 shrink-0 cursor-col-resize bg-[#eeeef5] hover:bg-indigo-300 active:bg-indigo-400 transition-colors flex items-center justify-center group"
+                >
+                    <div className="w-0.5 h-8 rounded-full bg-gray-300 group-hover:bg-indigo-400 transition-colors" />
+                </div>
 
-                        {(() => {
-                            const TemplateComponent = TEMPLATE_MAP[template] ?? ClassicTemplate;
-                            return (
-                                <TemplateComponent
-                                    contact={contact}
-                                    summary={summary}
-                                    experience={experience}
-                                    education={education}
-                                    skills={skills}
-                                    certifications={certifications}
-                                    fontSizes={fontSizes}
-                                />
-                            );
-                        })()}
-                    </div>
+                {/* RIGHT: PDF Preview */}
+                <div className="flex-1 flex flex-col bg-gray-200">
+                    {saving && (
+                        <div className="flex items-center justify-center gap-2 bg-amber-50 px-4 py-1.5 text-xs text-amber-700 border-b border-amber-200">
+                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+                            Saving — preview will refresh when done
+                        </div>
+                    )}
+                    <iframe
+                        src={pdfSrc}
+                        className="flex-1 w-full border-0"
+                        title="Resume PDF preview"
+                        style={{ pointerEvents: resizing ? 'none' : 'auto' }}
+                    />
                 </div>
             </div>
             {wizardStep < 4 && (

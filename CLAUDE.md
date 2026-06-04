@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Backend:** Laravel 13, PHP 8.4, SQLite (default), Inertia.js v2
 - **Frontend:** React 18, TypeScript, Tailwind CSS v3, Vite 8
 - **Auth:** Laravel Breeze (session-based)
-- **PDF:** `barryvdh/laravel-dompdf` — route `GET /builder/{resume}/pdf` triggers server-side generation via `resources/views/resume-pdf.blade.php`
+- **PDF:** `barryvdh/laravel-dompdf` — route `GET /builder/{resume}/pdf` triggers server-side generation via `resources/views/resume-pdf.blade.php`. `GET /builder/{resume}/preview` streams the same PDF inline (used by the live preview iframe in the editor).
 - **Media:** `spatie/laravel-medialibrary` (installed, migration exists, not yet used)
 - **Routing on the frontend:** Ziggy (`route()` helper available globally in React via `resources/js/types/global.d.ts`)
 - **AI suggestions:** `openai-php/client` for OpenAI; raw `Http::post` for Anthropic Claude — keys in `config/services.php` (`services.anthropic.key`, `services.openai.key`). Never call `env()` directly in app code; always use `config()`.
@@ -57,7 +57,7 @@ All resume content is stored as JSON columns on a single `resumes` table (no sep
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses the `AuthorizesRequests` trait so `$this->authorize()` is available everywhere.
 
 ### Frontend page structure
-Pages live in `resources/js/Pages/`. The core feature is `ResumeBuilder/Edit.tsx`, which is a self-contained split-panel editor + live preview. It uses `onBlur` on every field to trigger a `router.put` save (no debounce timer). State for all resume sections is managed with `useState`; refs mirror current state so the `save` callback never captures stale closures.
+Pages live in `resources/js/Pages/`. The core feature is `ResumeBuilder/Edit.tsx`, which is a resizable split-panel editor + live preview. It uses `onBlur` on every field to trigger a `router.put` save (no debounce timer). State for all resume sections is managed with `useState`; refs mirror current state so the `save` callback never captures stale closures. The panel divider is draggable (`leftWidth` state, `handleDividerMouseDown`); widths are tracked as percentages.
 
 ### Shared Inertia props
 `HandleInertiaRequests::share()` passes `auth.user` to every page. Access it in React via `usePage().props.auth.user`.
@@ -78,10 +78,10 @@ Use Ziggy's `route('named.route', params)` helper — it's globally typed in `re
 `POST /builder/{resume}/beacon` accepts a raw JSON body from the `beforeunload` `navigator.sendBeacon` call in `Edit.tsx`. The `_token` field in the JSON body satisfies CSRF verification (Laravel reads it from the request body regardless of content-type). The `app.blade.php` root template includes `<meta name="csrf-token">` for this purpose.
 
 ### Templates
-Eight templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `creative`, `executive`, `ats`) are stored as a string column on `resumes`. The live preview panel in `Edit.tsx` conditionally applies Tailwind classes based on the selected template. The PDF Blade view (`resources/views/resume-pdf.blade.php`) uses a single style for all templates.
+Eight templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `creative`, `executive`, `ats`) are stored as a string column on `resumes`. The live preview in `Edit.tsx` is an `<iframe>` that loads `GET /builder/{resume}/preview` (the server-rendered PDF stream) — there are no inline React template components in the editor. A cache-busting `?t=<timestamp>` query param on `pdfSrc` forces the iframe to reload after each save. The PDF Blade view (`resources/views/resume-pdf.blade.php`) is the single source of truth for all template rendering.
 
 ### Font sizes
-`font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor update the live preview but the PDF Blade view currently uses hardcoded sizes.
+`font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor save on blur, which triggers a `pdfSrc` refresh so the iframe preview reflects the new sizes via the server-rendered PDF.
 
 ### ATS score
 `GET /builder/{resume}/ats-score` (throttled 10 req/min) returns a JSON score via `AtsScoreController` → `AtsScorer` service. Requires resume ownership (`authorize('update', $resume)`). `DELETE /builder/{resume}/ats-score` clears the cached score.
