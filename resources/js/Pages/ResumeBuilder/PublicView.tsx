@@ -1,4 +1,5 @@
 import PublicLayout from '@/Layouts/PublicLayout';
+import QRCodeDisplay from '@/Components/QRCodeDisplay';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { PageProps, ResumeData } from '@/types';
@@ -142,8 +143,14 @@ export default function PublicView({ resume, token }: Props) {
                         </section>
                     )}
 
+                    {/* QR Code */}
+                    <div className="mt-10 mb-2 flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 py-6 px-4">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Scan to share</p>
+                        <QRCodeDisplay url={route('public.resume', token)} size={120} />
+                    </div>
+
                     {/* Contact form */}
-                    <div className="mt-12 border-l-4 border-indigo-400 bg-indigo-50 rounded-r-lg p-6">
+                    <div className="mt-6 border-l-4 border-indigo-400 bg-indigo-50 rounded-r-lg p-6">
                         <h3 className="mb-4 text-sm font-semibold text-gray-800">Interested in this candidate? Reach out directly.</h3>
 
                         {props.flash?.questionSubmitted ? (
