@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
 import AISuggestButton from '@/Components/AISuggestButton';
+import TailorModal from './TailorModal';
 import { TagIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
@@ -154,6 +155,8 @@ export default function Edit({
     const [savedAt, setSavedAt] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const pendingSave = useRef(false);
+
+    const [showTailor, setShowTailor] = useState(false);
 
     const [ats, setAts] = useState<AtsScore | null>(null);
     const [atsLoading, setAtsLoading] = useState(false);
@@ -465,6 +468,13 @@ export default function Edit({
                         ) : (
                             <span className="text-xs text-gray-300" title="Add ANTHROPIC_API_KEY or OPENAI_API_KEY to .env to enable AI suggestions">✦ AI off</span>
                         )}
+                        <button
+                            type="button"
+                            onClick={() => setShowTailor(true)}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+                        >
+                            Tailor to Job
+                        </button>
                         <a
                             href={route('builder.docx', resume.id)}
                             className="inline-flex items-center gap-1.5 rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb]"
@@ -1176,6 +1186,21 @@ export default function Edit({
                         )}
                     </div>
                 </div>
+            )}
+            {showTailor && (
+                <TailorModal
+                    resumeId={resume.id}
+                    onApplySummary={(s) => { setSummary(s); save(); }}
+                    onAddKeywords={(kws) => {
+                        setSkills((prev) => {
+                            const next = Array.from(new Set([...prev, ...kws]));
+                            skillsRef.current = next;
+                            return next;
+                        });
+                        save();
+                    }}
+                    onClose={() => setShowTailor(false)}
+                />
             )}
         </AuthenticatedLayout>
     );
