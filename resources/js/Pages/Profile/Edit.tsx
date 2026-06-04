@@ -1,11 +1,20 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
+import BrowserExtensionTokens from './Partials/BrowserExtensionTokens';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
-export default function Edit({ mustVerifyEmail, status }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+export default function Edit({
+    mustVerifyEmail,
+    status,
+    tokens,
+}: PageProps<{
+    mustVerifyEmail: boolean;
+    status?: string;
+    tokens: { id: number; name: string; created_at: string }[];
+}>) {
     return (
         <AuthenticatedLayout>
             <Head title="Profile" />
@@ -24,6 +33,10 @@ export default function Edit({ mustVerifyEmail, status }: PageProps<{ mustVerify
 
                     <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <UpdatePasswordForm className="max-w-xl" />
+                    </div>
+
+                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                        <BrowserExtensionTokens tokens={tokens} className="max-w-xl" />
                     </div>
 
                     <div className="rounded-xl border border-red-100 bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
