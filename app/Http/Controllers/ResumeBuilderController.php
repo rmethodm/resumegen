@@ -122,6 +122,25 @@ class ResumeBuilderController extends Controller
         return $this->buildPdf($resume)->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
     }
 
+    public function downloadDocx(Resume $resume): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $this->authorize('update', $resume);
+
+        $word = app(\App\Services\DocxGenerator::class)->generate($resume);
+
+        $filename = $resume->name
+            ? preg_replace('/[^a-zA-Z0-9_\-]/', '_', $resume->name).'.docx'
+            : $resume->id.'.docx';
+
+        return response()->stream(function () use ($word) {
+            $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word, 'Word2007');
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+        ]);
+    }
+
     public function previewPdf(Resume $resume)
     {
         $this->authorize('update', $resume);

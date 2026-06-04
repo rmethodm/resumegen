@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/builder/{resume}', [ResumeBuilderController::class, 'update'])->name('builder.update');
     Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
     Route::get('/builder/{resume}/pdf', [ResumeBuilderController::class, 'downloadPdf'])->name('builder.pdf');
+    Route::get('/builder/{resume}/docx', [ResumeBuilderController::class, 'downloadDocx'])->name('builder.docx');
     Route::get('/builder/{resume}/preview', [ResumeBuilderController::class, 'previewPdf'])->name('builder.preview');
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
     Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
