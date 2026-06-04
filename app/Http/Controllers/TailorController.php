@@ -79,7 +79,7 @@ EOT;
         }
 
         if (! $result || ! isset($result['summary'], $result['keywords'], $result['score'])) {
-            return response()->json(['error' => 'AI service unavailable'], 503);
+            return response()->json(['message' => 'AI service unavailable'], 503);
         }
 
         AiUsageLogger::log(
