@@ -8,11 +8,12 @@ use Illuminate\Support\Carbon;
 
 class UserLimits
 {
-    private const FREE_TEMPLATES = ['classic', 'modern', 'ats'];
+    private const FREE_TEMPLATES = ['classic', 'modern', 'ats', 'skills-first', 'bold'];
 
     private const ALL_TEMPLATES = [
         'classic', 'modern', 'minimal', 'minimal-ruled',
         'sidebar', 'creative', 'executive', 'ats',
+        'skills-first', 'skills-first-visual', 'academic', 'bold', 'timeline',
     ];
 
     public static function resumeLimit(User $user): ?int
@@ -60,6 +61,16 @@ class UserLimits
     public static function canAts(User $user): bool
     {
         return $user->isAtLeastStarter();
+    }
+
+    public static function canTailor(User $user): bool
+    {
+        return $user->isAtLeastStarter();
+    }
+
+    public static function customSectionLimit(User $user): ?int
+    {
+        return $user->planTier() === 'free' ? 2 : null;
     }
 
     public static function aiUsageThisPeriod(User $user): int

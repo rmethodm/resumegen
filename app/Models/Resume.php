@@ -17,6 +17,7 @@ class Resume extends Model
         'contact', 'summary', 'experience', 'education',
         'skills', 'certifications', 'font_sizes',
         'ats_cache', 'ats_cached_at',
+        'section_order', 'custom_sections',
     ];
 
     protected $casts = [
@@ -28,6 +29,8 @@ class Resume extends Model
         'font_sizes' => 'array',
         'ats_cache' => 'array',
         'ats_cached_at' => 'datetime',
+        'section_order' => 'array',
+        'custom_sections' => 'array',
     ];
 
     public function user(): BelongsTo
