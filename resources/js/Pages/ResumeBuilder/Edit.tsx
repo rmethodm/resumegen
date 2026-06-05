@@ -3,6 +3,7 @@ import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
 import AISuggestButton from '@/Components/AISuggestButton';
 import TailorModal from './TailorModal';
+import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { TagIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
@@ -133,12 +134,20 @@ export default function Edit({
     questions: initialQuestions,
     aiCapabilities,
     isFirstResume,
+    canAts,
+    canDocx,
+    aiUsed,
+    aiLimit,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
     questions: ResumeQuestion[];
     aiCapabilities: AiCapabilities;
     isFirstResume: boolean;
+    canAts: boolean;
+    canDocx: boolean;
+    aiUsed: number;
+    aiLimit: number;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -475,12 +484,23 @@ export default function Edit({
                         >
                             Tailor to Job
                         </button>
-                        <a
-                            href={route('builder.docx', resume.id)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb]"
-                        >
-                            DOCX
-                        </a>
+                        {canDocx ? (
+                            <a
+                                href={route('builder.docx', resume.id)}
+                                className="inline-flex items-center gap-1.5 rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb]"
+                            >
+                                DOCX
+                            </a>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => triggerUpgradeModal('docx_export', 'starter')}
+                                className="rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] transition hover:bg-[#fafafe]"
+                                title="Upgrade to Starter to download DOCX"
+                            >
+                                🔒 DOCX
+                            </button>
+                        )}
                         <a
                             href={route('builder.pdf', resume.id)}
                             className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
@@ -562,52 +582,65 @@ export default function Edit({
 
                     {/* ATS Score */}
                     <div className="mb-5 rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-                        <button
-                            type="button"
-                            onClick={() => setAtsOpen(o => !o)}
-                            className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-gray-800 hover:bg-gray-50 focus:outline-none"
-                        >
-                            <span>ATS Score{ats ? ` · ${ats.score}/100` : ''}</span>
-                            <span className="text-gray-400 text-xs">{atsOpen ? '−' : '+'}</span>
-                        </button>
+                        {!canAts ? (
+                            <button
+                                type="button"
+                                onClick={() => triggerUpgradeModal('ats_scoring', 'starter')}
+                                className="flex w-full items-center justify-between rounded-xl border border-[#eeeef5] bg-white px-4 py-3 text-left text-sm font-semibold text-[#a0a0b0]"
+                            >
+                                <span>🔒 ATS Score</span>
+                                <span className="text-xs">Starter+</span>
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={() => setAtsOpen(o => !o)}
+                                    className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-gray-800 hover:bg-gray-50 focus:outline-none"
+                                >
+                                    <span>ATS Score{ats ? ` · ${ats.score}/100` : ''}</span>
+                                    <span className="text-gray-400 text-xs">{atsOpen ? '−' : '+'}</span>
+                                </button>
 
-                        {atsOpen && ats && (
-                            <div className="border-t border-gray-100 bg-white px-4 py-3 text-sm">
-                                <ul className="mb-3 space-y-1 text-xs text-gray-600">
-                                    <li>Action verbs: {ats.breakdown.action_verbs}/30</li>
-                                    <li>Technical: {ats.breakdown.technical}/40</li>
-                                    <li>Soft skills: {ats.breakdown.soft_skills}/15</li>
-                                    <li>Format signals: {ats.breakdown.format_signals}/15</li>
-                                </ul>
+                                {atsOpen && ats && (
+                                    <div className="border-t border-gray-100 bg-white px-4 py-3 text-sm">
+                                        <ul className="mb-3 space-y-1 text-xs text-gray-600">
+                                            <li>Action verbs: {ats.breakdown.action_verbs}/30</li>
+                                            <li>Technical: {ats.breakdown.technical}/40</li>
+                                            <li>Soft skills: {ats.breakdown.soft_skills}/15</li>
+                                            <li>Format signals: {ats.breakdown.format_signals}/15</li>
+                                        </ul>
 
-                                {(['technical', 'action_verbs', 'soft_skills'] as const).map(cat => (
-                                    ats.missing[cat].length > 0 ? (
-                                        <div key={cat} className="mb-3">
-                                            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                Missing {cat.replace('_', ' ')}
-                                            </p>
-                                            <div className="flex flex-wrap gap-1">
-                                                {ats.missing[cat].slice(0, 10).map(kw => (
-                                                    <button
-                                                        key={kw}
-                                                        type="button"
-                                                        onClick={() => {
-                                                            const next = Array.from(new Set([...(skillsRef.current ?? []), kw]));
-                                                            skillsRef.current = next;
-                                                            setSkills(next);
-                                                            save();
-                                                        }}
-                                                        className="rounded border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs text-gray-700 hover:border-indigo-400 hover:bg-indigo-50"
-                                                        title="Add to skills"
-                                                    >
-                                                        + {kw}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    ) : null
-                                ))}
-                            </div>
+                                        {(['technical', 'action_verbs', 'soft_skills'] as const).map(cat => (
+                                            ats.missing[cat].length > 0 ? (
+                                                <div key={cat} className="mb-3">
+                                                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                        Missing {cat.replace('_', ' ')}
+                                                    </p>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {ats.missing[cat].slice(0, 10).map(kw => (
+                                                            <button
+                                                                key={kw}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const next = Array.from(new Set([...(skillsRef.current ?? []), kw]));
+                                                                    skillsRef.current = next;
+                                                                    setSkills(next);
+                                                                    save();
+                                                                }}
+                                                                className="rounded border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs text-gray-700 hover:border-indigo-400 hover:bg-indigo-50"
+                                                                title="Add to skills"
+                                                            >
+                                                                + {kw}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ) : null
+                                        ))}
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
 

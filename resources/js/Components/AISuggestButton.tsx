@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AISuggestContext } from '@/types';
+import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 
 type Provider = 'claude' | 'openai';
 type Field = 'summary' | 'bullets' | 'skills' | 'title';
@@ -62,6 +63,11 @@ export default function AISuggestButton({
             const data = await res.json();
 
             if (!res.ok) {
+                if (res.status === 402 && data.required_tier) {
+                    triggerUpgradeModal('ai_suggest', data.required_tier);
+                    setStatus('idle');
+                    return;
+                }
                 setError(data.error ?? 'Something went wrong');
                 setStatus('error');
                 return;

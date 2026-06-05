@@ -3,9 +3,10 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 type ResumeRow = { id: number; name: string; pdf_filename: string | null; updated_at: string };
-type Props = { resumes: ResumeRow[]; atLimit: boolean };
+type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null };
 
-export default function Index({ resumes, atLimit }: Props) {
+export default function Index({ resumes, resumeCount, resumeLimit }: Props) {
+    const atLimit = resumeLimit !== null && resumeCount >= resumeLimit;
     const [creating, setCreating] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editingName, setEditingName] = useState('');
@@ -48,11 +49,11 @@ export default function Index({ resumes, atLimit }: Props) {
                         </div>
                         {!creating && (
                             <button
-                                onClick={() => atLimit ? window.location.href = route('billing.index') : setCreating(true)}
-                                title={atLimit ? 'Upgrade to Pro for unlimited resumes' : undefined}
+                                onClick={() => atLimit ? undefined : setCreating(true)}
+                                title={atLimit ? `Upgrade to unlock more resumes (${resumeCount}/${resumeLimit} used)` : undefined}
                                 className={`rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition ${atLimit ? 'cursor-not-allowed bg-[#a0a0b0]' : 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] hover:opacity-90'}`}
                             >
-                                {atLimit ? '+ New Resume (limit reached)' : '+ New Resume'}
+                                {atLimit ? `+ New Resume (${resumeCount}/${resumeLimit})` : '+ New Resume'}
                             </button>
                         )}
                         {creating && (

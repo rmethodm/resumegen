@@ -86,6 +86,10 @@ class ResumeBuilderController extends Controller
                 'claude' => ! empty(config('services.anthropic.key')),
                 'openai' => ! empty(config('services.openai.key')),
             ],
+            'canAts' => UserLimits::canAts($user),
+            'canDocx' => UserLimits::canDocx($user),
+            'aiUsed' => UserLimits::aiUsageThisPeriod($user),
+            'aiLimit' => UserLimits::aiLimit($user),
         ]);
     }
 
