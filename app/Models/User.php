@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'is_master_admin', 'is_pro'])]
+#[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'is_master_admin', 'is_pro', 'plan_tier'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -27,12 +27,27 @@ class User extends Authenticatable
             'has_completed_onboarding' => 'boolean',
             'is_master_admin' => 'boolean',
             'is_pro' => 'boolean',
+            'plan_tier' => 'string',
         ];
     }
 
     public function isPro(): bool
     {
-        return $this->is_master_admin || $this->is_pro || $this->subscribed('default');
+        return $this->planTier() === 'pro' || $this->subscribed('default');
+    }
+
+    public function planTier(): string
+    {
+        if ($this->is_master_admin || $this->is_pro) {
+            return 'pro';
+        }
+
+        return $this->plan_tier ?? 'free';
+    }
+
+    public function isAtLeastStarter(): bool
+    {
+        return in_array($this->planTier(), ['starter', 'pro'], true);
     }
 
     public function resumes(): HasMany

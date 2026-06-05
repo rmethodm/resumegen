@@ -11,11 +11,11 @@ class AiUsageLog extends Model
 
     protected $fillable = [
         'user_id', 'provider', 'model', 'feature',
-        'input_tokens', 'output_tokens', 'cost_usd',
+        'input_tokens', 'output_tokens', 'cost_usd', 'created_at',
     ];
 
     protected $casts = [
-        'cost_usd'   => 'float',
+        'cost_usd' => 'float',
         'created_at' => 'datetime',
     ];
 
