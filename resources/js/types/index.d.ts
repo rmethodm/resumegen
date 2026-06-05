@@ -83,6 +83,7 @@ export interface ResumeData {
     skills: string[] | null;
     certifications: CertEntry[] | null;
     custom_sections: CustomSection[] | null;
+    section_order: string[] | null;
     font_sizes: FontSizes | null;
 }
 

@@ -7,11 +7,11 @@ import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { TagIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
-    DndContext, closestCenter, PointerSensor, useSensor, useSensors,
-    DragEndEvent,
+    DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors,
+    type DragEndEvent,
 } from '@dnd-kit/core';
 import {
-    SortableContext, verticalListSortingStrategy, useSortable,
+    SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable,
     arrayMove,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -119,9 +119,35 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
     );
 }
 
+function DraggableSectionWrapper({ id, children }: { id: string; children: React.ReactNode }) {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+        <div ref={setNodeRef} style={style} className="mb-5 relative">
+            <div
+                {...attributes}
+                {...listeners}
+                className="absolute left-0 top-0 flex h-full w-6 cursor-grab items-center justify-center rounded-l-lg text-indigo-300 hover:text-indigo-500 active:cursor-grabbing z-10"
+                title="Drag to reorder"
+            >
+                <svg viewBox="0 0 20 20" width="14" fill="currentColor">
+                    <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                </svg>
+            </div>
+            <div className="pl-6">{children}</div>
+        </div>
+    );
+}
 
 const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, body: 10, sectionSpacing: 9, entrySpacing: 3 };
+
+const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'education', 'skills', 'certifications'];
 
 const freshPdfSrc = (resumeId: number) => route('builder.preview', resumeId) + '?t=' + Date.now();
 
@@ -162,6 +188,9 @@ export default function Edit({
     const [skills, setSkills] = useState<string[]>(resume.skills ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
     const [customSections, setCustomSections] = useState<CustomSection[]>(resume.custom_sections ?? []);
+    const [sectionOrder, setSectionOrder] = useState<string[]>(
+        resume.section_order ?? DEFAULT_SECTION_ORDER
+    );
 
     const [fontSizes, setFontSizes] = useState<FontSizes>({ ...DEFAULT_FONT_SIZES, ...(resume.font_sizes ?? {}) });
     const [fontFamily, setFontFamily] = useState<'sans' | 'serif' | 'mono'>(resume.font_family ?? 'sans');
@@ -266,6 +295,7 @@ export default function Edit({
     const skillsRef = useRef(skills);
     const certificationsRef = useRef(certifications);
     const customSectionsRef = useRef(customSections);
+    const sectionOrderRef = useRef(sectionOrder);
     const fontSizesRef = useRef(fontSizes);
     const fontFamilyRef = useRef(fontFamily);
 
@@ -278,6 +308,7 @@ export default function Edit({
     skillsRef.current = skills;
     certificationsRef.current = certifications;
     customSectionsRef.current = customSections;
+    sectionOrderRef.current = sectionOrder;
     fontSizesRef.current = fontSizes;
     fontFamilyRef.current = fontFamily;
 
@@ -296,6 +327,7 @@ export default function Edit({
             skills: skillsRef.current,
             certifications: certificationsRef.current as any,
             custom_sections: customSectionsRef.current as any,
+            section_order: sectionOrderRef.current,
             font_sizes: fontSizesRef.current as any,
             font_family: fontFamilyRef.current,
         }, {
@@ -339,6 +371,7 @@ export default function Edit({
                     skills: skillsRef.current,
                     certifications: certificationsRef.current,
                     custom_sections: customSectionsRef.current,
+                    section_order: sectionOrderRef.current,
                     font_sizes: fontSizesRef.current,
                     font_family: fontFamilyRef.current,
                     _token: csrfToken,
@@ -349,7 +382,22 @@ export default function Edit({
         return () => window.removeEventListener('beforeunload', handler);
     }, [resume.id]);
 
-    const sensors = useSensors(useSensor(PointerSensor));
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    );
+
+    const handleSectionDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (over && active.id !== over.id) {
+            setSectionOrder(prev => {
+                const oldIndex = prev.indexOf(active.id as string);
+                const newIndex = prev.indexOf(over.id as string);
+                return arrayMove(prev, oldIndex, newIndex);
+            });
+            setTimeout(save, 0);
+        }
+    };
 
     const handleExpDragEnd = (e: DragEndEvent) => {
         const { active, over } = e;
@@ -392,10 +440,8 @@ export default function Edit({
 
     const addCustomSection = () => {
         const id = crypto.randomUUID();
-        setCustomSections(prev => [
-            ...prev,
-            { id, name: 'New Section', entries: [] },
-        ]);
+        setCustomSections(prev => [...prev, { id, name: 'New Section', entries: [] }]);
+        setSectionOrder(prev => [...prev, `custom_${id}`]);
     };
 
     const updateCustomSection = (sectionId: string, field: 'name', value: string) => {
@@ -407,6 +453,8 @@ export default function Edit({
     const deleteCustomSection = (sectionId: string) => {
         if (!window.confirm('Delete this section and all its entries?')) { return; }
         setCustomSections(prev => prev.filter(s => s.id !== sectionId));
+        setSectionOrder(prev => prev.filter(k => k !== `custom_${sectionId}`));
+        setTimeout(save, 0);
     };
 
     const addCustomEntry = (sectionId: string) => {
@@ -734,7 +782,7 @@ export default function Edit({
 
                     <div className="flex flex-col gap-4">
 
-                        {/* Contact */}
+                        {/* Contact — fixed, never draggable */}
                         <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader title="Contact Information" open={openSections.contact} onToggle={() => toggleSection('contact')} />
                             {openSections.contact && (
@@ -753,302 +801,332 @@ export default function Edit({
                             )}
                         </div>
 
-                        {/* Summary */}
-                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
-                            <SectionHeader title="Professional Summary" open={openSections.summary} onToggle={() => toggleSection('summary')} />
-                            {openSections.summary && (
-                                <div className="p-4">
-                                    <div className="relative">
-                                        <textarea
-                                            value={summary}
-                                            onChange={e => setSummary(e.target.value)}
-                                            onBlur={save}
-                                            rows={4}
-                                            placeholder="A brief summary of your professional background and goals…"
-                                            className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        />
-                                        {aiEnabled && (
-                                            <div className="absolute top-1.5 right-1.5">
-                                                <AISuggestButton
-                                                    field="summary"
-                                                    context={{ summary }}
-                                                    resumeId={resume.id}
-                                                    provider={aiProvider}
-                                                    onAccept={v => { setSummary(v); save(); }}
-                                                />
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Experience */}
-                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
-                            <SectionHeader title={`Work Experience (${experience.length})`} open={openSections.experience} onToggle={() => toggleSection('experience')} />
-                            {openSections.experience && (
-                                <div className="flex flex-col gap-4 p-4 pl-8">
-                                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleExpDragEnd}>
-                                        <SortableContext items={experience.map(e => e.id)} strategy={verticalListSortingStrategy}>
-                                            {experience.map((exp, idx) => (
-                                                <SortableItem key={exp.id} id={exp.id}>
-                                                    <div className="rounded-md border border-gray-100 bg-gray-50 p-3">
-                                                        <div className="mb-2 flex items-center justify-between">
-                                                            <span className="text-xs font-semibold text-gray-400">Position {idx + 1}</span>
-                                                            {experience.length > 1 && (
-                                                                <button type="button" onClick={() => { removeExp(exp.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
+                        {/* Sortable sections */}
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
+                            <SortableContext
+                                items={[...sectionOrder, ...customSections.map(s => `custom_${s.id}`).filter(k => !sectionOrder.includes(k))]}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {[...sectionOrder, ...customSections.map(s => `custom_${s.id}`).filter(k => !sectionOrder.includes(k))].map(key => {
+                                    if (key === 'summary') return (
+                                        <DraggableSectionWrapper key="summary" id="summary">
+                                            <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                                                <SectionHeader title="Professional Summary" open={openSections.summary} onToggle={() => toggleSection('summary')} />
+                                                {openSections.summary && (
+                                                    <div className="p-4">
+                                                        <div className="relative">
+                                                            <textarea
+                                                                value={summary}
+                                                                onChange={e => setSummary(e.target.value)}
+                                                                onBlur={save}
+                                                                rows={4}
+                                                                placeholder="A brief summary of your professional background and goals…"
+                                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                            />
+                                                            {aiEnabled && (
+                                                                <div className="absolute top-1.5 right-1.5">
+                                                                    <AISuggestButton
+                                                                        field="summary"
+                                                                        context={{ summary }}
+                                                                        resumeId={resume.id}
+                                                                        provider={aiProvider}
+                                                                        onAccept={v => { setSummary(v); save(); }}
+                                                                    />
+                                                                </div>
                                                             )}
                                                         </div>
-                                                        <div className="grid grid-cols-2 gap-3">
-                                                            <Field label="Company" value={exp.company} onChange={v => updateExp(exp.id, 'company', v)} onBlur={save} placeholder="Acme Corp" />
-                                                            <div className="flex flex-col gap-1">
-                                                                <div className="flex items-center justify-between">
-                                                                    <label className="text-xs font-medium text-gray-600">Job Title</label>
-                                                                    {aiEnabled && (
-                                                                        <AISuggestButton
-                                                                            field="title"
-                                                                            context={{ title: exp.title, company: exp.company }}
-                                                                            resumeId={resume.id}
-                                                                            provider={aiProvider}
-                                                                            buttonLabel="✦"
-                                                                            onAccept={v => { updateExp(exp.id, 'title', v); save(); }}
-                                                                        />
-                                                                    )}
-                                                                </div>
-                                                                <input
-                                                                    type="text"
-                                                                    value={exp.title}
-                                                                    onChange={e => updateExp(exp.id, 'title', e.target.value)}
-                                                                    onBlur={save}
-                                                                    placeholder="Software Engineer"
-                                                                    className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                                />
-                                                            </div>
-                                                            <Field label="Start Date" value={exp.start_date} onChange={v => updateExp(exp.id, 'start_date', v)} onBlur={save} placeholder="Jan 2022" />
-                                                            <div className="flex flex-col gap-1">
-                                                                <Field label="End Date" value={exp.end_date} onChange={v => updateExp(exp.id, 'end_date', v)} onBlur={save} placeholder="Present" />
-                                                                <label className="flex items-center gap-1 text-xs text-gray-500">
-                                                                    <input type="checkbox" checked={exp.current} onChange={e => { updateExp(exp.id, 'current', e.target.checked); save(); }} className="rounded border-gray-300" />
-                                                                    Current role
-                                                                </label>
-                                                            </div>
-                                                            <div className="col-span-2 flex flex-col gap-1">
-                                                                <div className="flex items-center justify-between">
-                                                                    <label className="text-xs font-medium text-gray-600">Bullet Points</label>
-                                                                    {aiEnabled && (
-                                                                        <AISuggestButton
-                                                                            field="bullets"
-                                                                            context={{ title: exp.title, company: exp.company, bullets: exp.bullets }}
-                                                                            resumeId={resume.id}
-                                                                            provider={aiProvider}
-                                                                            buttonLabel="✦ Improve"
-                                                                            onAccept={v => { updateExp(exp.id, 'bullets', v); save(); }}
-                                                                        />
-                                                                    )}
-                                                                </div>
-                                                                <BulletEditor
-                                                                    bullets={exp.bullets ? exp.bullets.split('\n') : []}
-                                                                    onChange={lines => updateExp(exp.id, 'bullets', lines.join('\n'))}
-                                                                    onBlur={save}
-                                                                />
-                                                            </div>
-                                                        </div>
                                                     </div>
-                                                </SortableItem>
-                                            ))}
-                                        </SortableContext>
-                                    </DndContext>
-                                    <button type="button" onClick={addExp} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
-                                        + Add Position
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Education */}
-                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
-                            <SectionHeader title={`Education (${education.length})`} open={openSections.education} onToggle={() => toggleSection('education')} />
-                            {openSections.education && (
-                                <div className="flex flex-col gap-4 p-4 pl-8">
-                                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleEduDragEnd}>
-                                        <SortableContext items={education.map(e => e.id)} strategy={verticalListSortingStrategy}>
-                                            {education.map((edu, idx) => (
-                                                <SortableItem key={edu.id} id={edu.id}>
-                                                    <div className="rounded-md border border-gray-100 bg-gray-50 p-3">
-                                                        <div className="mb-2 flex items-center justify-between">
-                                                            <span className="text-xs font-semibold text-gray-400">School {idx + 1}</span>
-                                                            {education.length > 1 && (
-                                                                <button type="button" onClick={() => { removeEdu(edu.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
-                                                            )}
-                                                        </div>
-                                                        <div className="grid grid-cols-2 gap-3">
-                                                            <div className="col-span-2">
-                                                                <Field label="School" value={edu.school} onChange={v => updateEdu(edu.id, 'school', v)} onBlur={save} placeholder="Georgia Tech" />
-                                                            </div>
-                                                            <Field label="Degree" value={edu.degree} onChange={v => updateEdu(edu.id, 'degree', v)} onBlur={save} placeholder="B.S." />
-                                                            <Field label="Field of Study" value={edu.field} onChange={v => updateEdu(edu.id, 'field', v)} onBlur={save} placeholder="Computer Science" />
-                                                            <Field label="Graduation Year" value={edu.grad_year} onChange={v => updateEdu(edu.id, 'grad_year', v)} onBlur={save} placeholder="2020" />
-                                                        </div>
-                                                    </div>
-                                                </SortableItem>
-                                            ))}
-                                        </SortableContext>
-                                    </DndContext>
-                                    <button type="button" onClick={addEdu} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
-                                        + Add School
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Skills */}
-                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
-                            <SectionHeader title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')} />
-                            {openSections.skills && (
-                                <div className="p-4 flex flex-col gap-2">
-                                    <label className="text-xs font-medium text-gray-600">Press Enter or comma to add</label>
-                                    <TagInput tags={skills} onChange={setSkills} onBlur={save} />
-                                    {aiEnabled && (
-                                        <AISuggestButton
-                                            field="skills"
-                                            context={{
-                                                title: experience[0]?.title,
-                                                company: experience[0]?.company,
-                                                skills,
-                                            }}
-                                            resumeId={resume.id}
-                                            provider={aiProvider}
-                                            buttonLabel="✦ Suggest skills"
-                                            onAccept={v => {
-                                                const newSkills = v.split(',').map((s: string) => s.trim()).filter((s: string) => s && !skills.includes(s));
-                                                setSkills(prev => [...prev, ...newSkills]);
-                                                save();
-                                            }}
-                                        />
-                                    )}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Certifications */}
-                        <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
-                            <SectionHeader title={`Certifications (${certifications.length})`} open={openSections.certifications} onToggle={() => toggleSection('certifications')} />
-                            {openSections.certifications && (
-                                <div className="flex flex-col gap-4 p-4">
-                                    {certifications.map((cert, idx) => (
-                                        <div key={cert.id} className="rounded-md border border-gray-100 bg-gray-50 p-3">
-                                            <div className="mb-2 flex items-center justify-between">
-                                                <span className="text-xs font-semibold text-gray-400">Cert {idx + 1}</span>
-                                                <button type="button" onClick={() => { removeCert(cert.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
+                                                )}
                                             </div>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <div className="col-span-2">
-                                                    <Field label="Certification Name" value={cert.name} onChange={v => updateCert(cert.id, 'name', v)} onBlur={save} placeholder="AWS Solutions Architect" />
+                                        </DraggableSectionWrapper>
+                                    );
+
+                                    if (key === 'experience') return (
+                                        <DraggableSectionWrapper key="experience" id="experience">
+                                            <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                                                <SectionHeader title={`Work Experience (${experience.length})`} open={openSections.experience} onToggle={() => toggleSection('experience')} />
+                                                {openSections.experience && (
+                                                    <div className="flex flex-col gap-4 p-4 pl-8">
+                                                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleExpDragEnd}>
+                                                            <SortableContext items={experience.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                                                                {experience.map((exp, idx) => (
+                                                                    <SortableItem key={exp.id} id={exp.id}>
+                                                                        <div className="rounded-md border border-gray-100 bg-gray-50 p-3">
+                                                                            <div className="mb-2 flex items-center justify-between">
+                                                                                <span className="text-xs font-semibold text-gray-400">Position {idx + 1}</span>
+                                                                                {experience.length > 1 && (
+                                                                                    <button type="button" onClick={() => { removeExp(exp.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
+                                                                                )}
+                                                                            </div>
+                                                                            <div className="grid grid-cols-2 gap-3">
+                                                                                <Field label="Company" value={exp.company} onChange={v => updateExp(exp.id, 'company', v)} onBlur={save} placeholder="Acme Corp" />
+                                                                                <div className="flex flex-col gap-1">
+                                                                                    <div className="flex items-center justify-between">
+                                                                                        <label className="text-xs font-medium text-gray-600">Job Title</label>
+                                                                                        {aiEnabled && (
+                                                                                            <AISuggestButton
+                                                                                                field="title"
+                                                                                                context={{ title: exp.title, company: exp.company }}
+                                                                                                resumeId={resume.id}
+                                                                                                provider={aiProvider}
+                                                                                                buttonLabel="✦"
+                                                                                                onAccept={v => { updateExp(exp.id, 'title', v); save(); }}
+                                                                                            />
+                                                                                        )}
+                                                                                    </div>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        value={exp.title}
+                                                                                        onChange={e => updateExp(exp.id, 'title', e.target.value)}
+                                                                                        onBlur={save}
+                                                                                        placeholder="Software Engineer"
+                                                                                        className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                                    />
+                                                                                </div>
+                                                                                <Field label="Start Date" value={exp.start_date} onChange={v => updateExp(exp.id, 'start_date', v)} onBlur={save} placeholder="Jan 2022" />
+                                                                                <div className="flex flex-col gap-1">
+                                                                                    <Field label="End Date" value={exp.end_date} onChange={v => updateExp(exp.id, 'end_date', v)} onBlur={save} placeholder="Present" />
+                                                                                    <label className="flex items-center gap-1 text-xs text-gray-500">
+                                                                                        <input type="checkbox" checked={exp.current} onChange={e => { updateExp(exp.id, 'current', e.target.checked); save(); }} className="rounded border-gray-300" />
+                                                                                        Current role
+                                                                                    </label>
+                                                                                </div>
+                                                                                <div className="col-span-2 flex flex-col gap-1">
+                                                                                    <div className="flex items-center justify-between">
+                                                                                        <label className="text-xs font-medium text-gray-600">Bullet Points</label>
+                                                                                        {aiEnabled && (
+                                                                                            <AISuggestButton
+                                                                                                field="bullets"
+                                                                                                context={{ title: exp.title, company: exp.company, bullets: exp.bullets }}
+                                                                                                resumeId={resume.id}
+                                                                                                provider={aiProvider}
+                                                                                                buttonLabel="✦ Improve"
+                                                                                                onAccept={v => { updateExp(exp.id, 'bullets', v); save(); }}
+                                                                                            />
+                                                                                        )}
+                                                                                    </div>
+                                                                                    <BulletEditor
+                                                                                        bullets={exp.bullets ? exp.bullets.split('\n') : []}
+                                                                                        onChange={lines => updateExp(exp.id, 'bullets', lines.join('\n'))}
+                                                                                        onBlur={save}
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </SortableItem>
+                                                                ))}
+                                                            </SortableContext>
+                                                        </DndContext>
+                                                        <button type="button" onClick={addExp} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
+                                                            + Add Position
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </DraggableSectionWrapper>
+                                    );
+
+                                    if (key === 'education') return (
+                                        <DraggableSectionWrapper key="education" id="education">
+                                            <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                                                <SectionHeader title={`Education (${education.length})`} open={openSections.education} onToggle={() => toggleSection('education')} />
+                                                {openSections.education && (
+                                                    <div className="flex flex-col gap-4 p-4 pl-8">
+                                                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleEduDragEnd}>
+                                                            <SortableContext items={education.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                                                                {education.map((edu, idx) => (
+                                                                    <SortableItem key={edu.id} id={edu.id}>
+                                                                        <div className="rounded-md border border-gray-100 bg-gray-50 p-3">
+                                                                            <div className="mb-2 flex items-center justify-between">
+                                                                                <span className="text-xs font-semibold text-gray-400">School {idx + 1}</span>
+                                                                                {education.length > 1 && (
+                                                                                    <button type="button" onClick={() => { removeEdu(edu.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
+                                                                                )}
+                                                                            </div>
+                                                                            <div className="grid grid-cols-2 gap-3">
+                                                                                <div className="col-span-2">
+                                                                                    <Field label="School" value={edu.school} onChange={v => updateEdu(edu.id, 'school', v)} onBlur={save} placeholder="Georgia Tech" />
+                                                                                </div>
+                                                                                <Field label="Degree" value={edu.degree} onChange={v => updateEdu(edu.id, 'degree', v)} onBlur={save} placeholder="B.S." />
+                                                                                <Field label="Field of Study" value={edu.field} onChange={v => updateEdu(edu.id, 'field', v)} onBlur={save} placeholder="Computer Science" />
+                                                                                <Field label="Graduation Year" value={edu.grad_year} onChange={v => updateEdu(edu.id, 'grad_year', v)} onBlur={save} placeholder="2020" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </SortableItem>
+                                                                ))}
+                                                            </SortableContext>
+                                                        </DndContext>
+                                                        <button type="button" onClick={addEdu} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
+                                                            + Add School
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </DraggableSectionWrapper>
+                                    );
+
+                                    if (key === 'skills') return (
+                                        <DraggableSectionWrapper key="skills" id="skills">
+                                            <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                                                <SectionHeader title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')} />
+                                                {openSections.skills && (
+                                                    <div className="p-4 flex flex-col gap-2">
+                                                        <label className="text-xs font-medium text-gray-600">Press Enter or comma to add</label>
+                                                        <TagInput tags={skills} onChange={setSkills} onBlur={save} />
+                                                        {aiEnabled && (
+                                                            <AISuggestButton
+                                                                field="skills"
+                                                                context={{
+                                                                    title: experience[0]?.title,
+                                                                    company: experience[0]?.company,
+                                                                    skills,
+                                                                }}
+                                                                resumeId={resume.id}
+                                                                provider={aiProvider}
+                                                                buttonLabel="✦ Suggest skills"
+                                                                onAccept={v => {
+                                                                    const newSkills = v.split(',').map((s: string) => s.trim()).filter((s: string) => s && !skills.includes(s));
+                                                                    setSkills(prev => [...prev, ...newSkills]);
+                                                                    save();
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </DraggableSectionWrapper>
+                                    );
+
+                                    if (key === 'certifications') return (
+                                        <DraggableSectionWrapper key="certifications" id="certifications">
+                                            <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                                                <SectionHeader title={`Certifications (${certifications.length})`} open={openSections.certifications} onToggle={() => toggleSection('certifications')} />
+                                                {openSections.certifications && (
+                                                    <div className="flex flex-col gap-4 p-4">
+                                                        {certifications.map((cert, idx) => (
+                                                            <div key={cert.id} className="rounded-md border border-gray-100 bg-gray-50 p-3">
+                                                                <div className="mb-2 flex items-center justify-between">
+                                                                    <span className="text-xs font-semibold text-gray-400">Cert {idx + 1}</span>
+                                                                    <button type="button" onClick={() => { removeCert(cert.id); save(); }} title="Remove" aria-label="Remove" className="text-red-400 hover:text-red-600"><TrashIcon className="w-4 h-4" /></button>
+                                                                </div>
+                                                                <div className="grid grid-cols-2 gap-3">
+                                                                    <div className="col-span-2">
+                                                                        <Field label="Certification Name" value={cert.name} onChange={v => updateCert(cert.id, 'name', v)} onBlur={save} placeholder="AWS Solutions Architect" />
+                                                                    </div>
+                                                                    <Field label="Issuer" value={cert.issuer} onChange={v => updateCert(cert.id, 'issuer', v)} onBlur={save} placeholder="Amazon Web Services" />
+                                                                    <Field label="Date" value={cert.date} onChange={v => updateCert(cert.id, 'date', v)} onBlur={save} placeholder="Mar 2024" />
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        <button type="button" onClick={addCert} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
+                                                            + Add Certification
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </DraggableSectionWrapper>
+                                    );
+
+                                    // Custom section
+                                    const customId = key.startsWith('custom_') ? key.slice(7) : key;
+                                    const section = customSections.find(s => s.id === customId);
+                                    if (!section) return null;
+                                    return (
+                                        <DraggableSectionWrapper key={key} id={key}>
+                                            <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                                                <div className="flex w-full items-center justify-between border-l-4 border-indigo-400 bg-indigo-50 px-4 py-3">
+                                                    <input
+                                                        className="flex-1 bg-transparent text-sm font-semibold text-indigo-700 focus:outline-none"
+                                                        value={section.name}
+                                                        onChange={e => updateCustomSection(section.id, 'name', e.target.value)}
+                                                        onBlur={save}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => deleteCustomSection(section.id)}
+                                                        className="ml-2 text-xs text-red-400 hover:text-red-600"
+                                                        title="Delete section"
+                                                    >
+                                                        ✕
+                                                    </button>
                                                 </div>
-                                                <Field label="Issuer" value={cert.issuer} onChange={v => updateCert(cert.id, 'issuer', v)} onBlur={save} placeholder="Amazon Web Services" />
-                                                <Field label="Date" value={cert.date} onChange={v => updateCert(cert.id, 'date', v)} onBlur={save} placeholder="Mar 2024" />
-                                            </div>
-                                        </div>
-                                    ))}
-                                    <button type="button" onClick={addCert} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
-                                        + Add Certification
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Custom Sections */}
-                        {customSections.map(section => (
-                            <div key={section.id} className="mb-5 rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
-                                <div className="flex w-full items-center justify-between border-l-4 border-indigo-400 bg-indigo-50 px-4 py-3">
-                                    <input
-                                        className="flex-1 bg-transparent text-sm font-semibold text-indigo-700 focus:outline-none"
-                                        value={section.name}
-                                        onChange={e => updateCustomSection(section.id, 'name', e.target.value)}
-                                        onBlur={save}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => { deleteCustomSection(section.id); setTimeout(save, 0); }}
-                                        className="ml-2 text-xs text-red-400 hover:text-red-600"
-                                        title="Delete section"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                                <div className="divide-y divide-gray-100 bg-white">
-                                    {section.entries.map((entry, idx) => (
-                                        <div key={entry.id} className="p-3 space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-xs font-semibold text-gray-400">Entry {idx + 1}</span>
+                                                <div className="divide-y divide-gray-100 bg-white">
+                                                    {section.entries.map((entry, idx) => (
+                                                        <div key={entry.id} className="p-3 space-y-2">
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-xs font-semibold text-gray-400">Entry {idx + 1}</span>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => { deleteCustomEntry(section.id, entry.id); setTimeout(save, 0); }}
+                                                                    className="text-xs text-red-400 hover:text-red-600"
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            </div>
+                                                            <input
+                                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                placeholder="Title"
+                                                                value={entry.title}
+                                                                onChange={e => updateCustomEntry(section.id, entry.id, 'title', e.target.value)}
+                                                                onBlur={save}
+                                                            />
+                                                            <input
+                                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                placeholder="Subtitle / Institution"
+                                                                value={entry.subtitle}
+                                                                onChange={e => updateCustomEntry(section.id, entry.id, 'subtitle', e.target.value)}
+                                                                onBlur={save}
+                                                            />
+                                                            <div className="flex gap-2">
+                                                                <input
+                                                                    className="w-1/2 rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                    placeholder="Start date"
+                                                                    value={entry.start_date}
+                                                                    onChange={e => updateCustomEntry(section.id, entry.id, 'start_date', e.target.value)}
+                                                                    onBlur={save}
+                                                                />
+                                                                <input
+                                                                    className="w-1/2 rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                    placeholder="End date (or blank)"
+                                                                    value={entry.end_date ?? ''}
+                                                                    onChange={e => updateCustomEntry(section.id, entry.id, 'end_date', e.target.value || null)}
+                                                                    onBlur={save}
+                                                                />
+                                                            </div>
+                                                            <textarea
+                                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                placeholder="Description"
+                                                                rows={2}
+                                                                value={entry.description}
+                                                                onChange={e => updateCustomEntry(section.id, entry.id, 'description', e.target.value)}
+                                                                onBlur={save}
+                                                            />
+                                                            <textarea
+                                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                placeholder="Bullets (one per line)"
+                                                                rows={3}
+                                                                value={entry.bullets.join('\n')}
+                                                                onChange={e => updateCustomEntry(section.id, entry.id, 'bullets', e.target.value.split('\n'))}
+                                                                onBlur={save}
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
                                                 <button
                                                     type="button"
-                                                    onClick={() => { deleteCustomEntry(section.id, entry.id); setTimeout(save, 0); }}
-                                                    className="text-xs text-red-400 hover:text-red-600"
+                                                    onClick={() => addCustomEntry(section.id)}
+                                                    className="mt-1 w-full rounded-b-lg bg-indigo-50 border-t border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100"
                                                 >
-                                                    Remove
+                                                    + Add entry
                                                 </button>
                                             </div>
-                                            <input
-                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                placeholder="Title"
-                                                value={entry.title}
-                                                onChange={e => updateCustomEntry(section.id, entry.id, 'title', e.target.value)}
-                                                onBlur={save}
-                                            />
-                                            <input
-                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                placeholder="Subtitle / Institution"
-                                                value={entry.subtitle}
-                                                onChange={e => updateCustomEntry(section.id, entry.id, 'subtitle', e.target.value)}
-                                                onBlur={save}
-                                            />
-                                            <div className="flex gap-2">
-                                                <input
-                                                    className="w-1/2 rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                    placeholder="Start date"
-                                                    value={entry.start_date}
-                                                    onChange={e => updateCustomEntry(section.id, entry.id, 'start_date', e.target.value)}
-                                                    onBlur={save}
-                                                />
-                                                <input
-                                                    className="w-1/2 rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                    placeholder="End date (or blank)"
-                                                    value={entry.end_date ?? ''}
-                                                    onChange={e => updateCustomEntry(section.id, entry.id, 'end_date', e.target.value || null)}
-                                                    onBlur={save}
-                                                />
-                                            </div>
-                                            <textarea
-                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                placeholder="Description"
-                                                rows={2}
-                                                value={entry.description}
-                                                onChange={e => updateCustomEntry(section.id, entry.id, 'description', e.target.value)}
-                                                onBlur={save}
-                                            />
-                                            <textarea
-                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                placeholder="Bullets (one per line)"
-                                                rows={3}
-                                                value={entry.bullets.join('\n')}
-                                                onChange={e => updateCustomEntry(section.id, entry.id, 'bullets', e.target.value.split('\n'))}
-                                                onBlur={save}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => { addCustomEntry(section.id); }}
-                                    className="mt-1 w-full rounded-b-lg bg-indigo-50 border-t border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100"
-                                >
-                                    + Add entry
-                                </button>
-                            </div>
-                        ))}
+                                        </DraggableSectionWrapper>
+                                    );
+                                })}
+                            </SortableContext>
+                        </DndContext>
 
-                        {/* Add Section button */}
+                        {/* Add Section button — outside DndContext */}
                         {(customSectionLimit === null || customSections.length < customSectionLimit) ? (
                             <button
                                 type="button"
