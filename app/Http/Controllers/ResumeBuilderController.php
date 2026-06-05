@@ -131,7 +131,7 @@ class ResumeBuilderController extends Controller
     {
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'template' => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats'],
+            'template' => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats,skills-first,skills-first-visual,academic,bold,timeline'],
             'accent_color' => ['sometimes', 'nullable', 'in:#4f46e5,#1e3a5f,#475569,#166534,#7f1d1d,#1f2937,#0f766e,#78716c'],
             'font_family' => ['sometimes', 'nullable', 'in:sans,serif,mono'],
             'summary' => ['nullable', 'string'],
@@ -141,6 +141,9 @@ class ResumeBuilderController extends Controller
             'skills' => ['nullable', 'array'],
             'certifications' => ['nullable', 'array'],
             'font_sizes' => ['nullable', 'array'],
+            'section_order' => ['nullable', 'array'],
+            'section_order.*' => ['string'],
+            'custom_sections' => ['nullable', 'array'],
         ];
     }
 
