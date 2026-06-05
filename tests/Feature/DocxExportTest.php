@@ -13,7 +13,7 @@ class DocxExportTest extends TestCase
 
     public function test_owner_can_download_docx(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->starter()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $response = $this->actingAs($user)->get(route('builder.docx', $resume));
