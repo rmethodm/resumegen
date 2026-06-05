@@ -103,6 +103,7 @@ class ResumeBuilderController extends Controller
             'canTailor' => UserLimits::canTailor($user),
             'aiUsed' => UserLimits::aiUsageThisPeriod($user),
             'aiLimit' => UserLimits::aiLimit($user),
+            'customSectionLimit' => UserLimits::customSectionLimit($user),
         ]);
     }
 
@@ -111,6 +112,17 @@ class ResumeBuilderController extends Controller
         $this->authorize('update', $resume);
 
         $validated = $request->validate(self::resumeRules());
+
+        if (isset($validated['custom_sections'])) {
+            $limit = UserLimits::customSectionLimit($request->user());
+            if ($limit !== null && count($validated['custom_sections']) > $limit) {
+                return back()->with('featureGate', [
+                    'feature' => 'custom_sections',
+                    'requiredTier' => 'starter',
+                    'message' => "Free accounts are limited to {$limit} custom sections.",
+                ]);
+            }
+        }
 
         if (isset($validated['template'])) {
             $allowed = UserLimits::allowedTemplates($request->user());
