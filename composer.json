@@ -14,12 +14,14 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "openai-php/client": "^0.19.2",
+        "phpoffice/phpword": "^1.4",
         "spatie/laravel-medialibrary": "^11.22",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^4.2",
         "fakerphp/faker": "^1.23",
+        "laravel/boost": "^2.4",
         "laravel/breeze": "^2.4",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
