@@ -104,4 +104,49 @@ class JobApplicationTest extends TestCase
 
         $this->assertDatabaseMissing('job_applications', ['id' => $app->id]);
     }
+
+    public function test_free_user_at_job_limit_is_blocked(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        JobApplication::factory()->count(3)->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->post(route('jobs.store'), [
+                'company' => 'Acme Corp',
+                'role' => 'Engineer',
+                'status' => 'applied',
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('featureGate.feature', 'job_limit');
+    }
+
+    public function test_starter_user_has_unlimited_jobs(): void
+    {
+        $user = User::factory()->starter()->create();
+        JobApplication::factory()->count(10)->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->post(route('jobs.store'), [
+                'company' => 'Acme Corp',
+                'role' => 'Engineer',
+                'status' => 'applied',
+            ])
+            ->assertRedirect()
+            ->assertSessionMissing('featureGate');
+    }
+
+    public function test_free_user_below_job_limit_can_create(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        JobApplication::factory()->count(2)->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->post(route('jobs.store'), [
+                'company' => 'Acme Corp',
+                'role' => 'Engineer',
+                'status' => 'applied',
+            ])
+            ->assertRedirect()
+            ->assertSessionMissing('featureGate');
+    }
 }

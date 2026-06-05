@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Data\CoverLetterTemplates;
 use App\Models\CoverLetter;
+use App\Services\UserLimits;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -12,7 +13,9 @@ class CoverLetterController extends Controller
 {
     public function index(Request $request): Response
     {
-        $letters = $request->user()
+        $user = $request->user();
+
+        $letters = $user
             ->coverLetters()
             ->orderByDesc('updated_at')
             ->get(['id', 'name', 'template_key', 'resume_id', 'updated_at']);
@@ -24,21 +27,32 @@ class CoverLetterController extends Controller
                 'label' => $t['label'],
                 'description' => $t['description'],
             ])->values(),
+            'coverLetterLimit' => UserLimits::coverLetterLimit($user),
+            'coverLetterCount' => $user->coverLetters()->count(),
         ]);
     }
 
     public function store(Request $request)
     {
+        $user = $request->user();
+        $limit = UserLimits::coverLetterLimit($user);
+        if ($limit !== null && $user->coverLetters()->count() >= $limit) {
+            return back()->with('featureGate', [
+                'feature' => 'cover_letter_limit',
+                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ]);
+        }
+
         $validated = $request->validate([
             'template_key' => ['required', 'in:'.implode(',', CoverLetterTemplates::keys())],
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $letter = $request->user()->coverLetters()->create([
+        $letter = $user->coverLetters()->create([
             'name' => $validated['name'],
             'template_key' => $validated['template_key'],
             'body' => CoverLetterTemplates::render($validated['template_key'], [
-                'name' => $request->user()->name,
+                'name' => $user->name,
             ]),
         ]);
 
