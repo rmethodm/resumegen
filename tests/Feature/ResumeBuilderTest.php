@@ -13,7 +13,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_can_save_minimal_ruled_template(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->starter()->create();
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $response = $this->actingAs($user)->put(route('builder.update', $resume->id), [
@@ -112,7 +112,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_new_templates_are_accepted(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->starter()->create();
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         foreach (['sidebar', 'creative', 'executive', 'ats'] as $template) {
@@ -177,7 +177,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_duplicate_copies_new_style_fields(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->starter()->create();
         $resume = $user->resumes()->create([
             'name' => 'Orig',
             'pdf_filename' => 'orig.pdf',
@@ -260,5 +260,61 @@ class ResumeBuilderTest extends TestCase
             'template' => 'modern',
             'summary' => 'Updated via beacon',
         ]);
+    }
+
+    public function test_free_user_cannot_use_restricted_template(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume->id), ['template' => 'creative'])
+            ->assertRedirect()
+            ->assertSessionHas('featureGate.feature', 'template_access');
+    }
+
+    public function test_starter_user_can_use_restricted_template(): void
+    {
+        $user = User::factory()->starter()->create();
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume->id), ['template' => 'creative'])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'creative']);
+    }
+
+    public function test_free_user_cannot_download_docx(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->actingAs($user)
+            ->get(route('builder.docx', $resume->id))
+            ->assertRedirect()
+            ->assertSessionHas('featureGate.feature', 'docx_export');
+    }
+
+    public function test_starter_user_can_download_docx(): void
+    {
+        $user = User::factory()->starter()->create();
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->actingAs($user)
+            ->get(route('builder.docx', $resume->id))
+            ->assertOk();
+    }
+
+    public function test_free_user_at_resume_limit_cannot_duplicate(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        $r1 = $user->resumes()->create(['name' => 'A', 'pdf_filename' => 'a.pdf']);
+        $user->resumes()->create(['name' => 'B', 'pdf_filename' => 'b.pdf']);
+
+        $this->actingAs($user)
+            ->post(route('builder.duplicate', $r1->id))
+            ->assertRedirect()
+            ->assertSessionHas('featureGate.feature', 'resume_limit');
     }
 }

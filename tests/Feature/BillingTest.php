@@ -29,13 +29,14 @@ class BillingTest extends TestCase
     public function test_free_user_at_limit_is_redirected_when_creating_resume(): void
     {
         $user = User::factory()->create();
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 2; $i++) {
             $user->resumes()->create(['name' => "Resume $i", 'pdf_filename' => "$i.pdf"]);
         }
 
         $this->actingAs($user)
-            ->post(route('builder.store'), ['name' => 'Sixth Resume'])
-            ->assertRedirect(route('billing.index'));
+            ->post(route('builder.store'), ['name' => 'Third Resume'])
+            ->assertRedirect()
+            ->assertSessionHas('featureGate.feature', 'resume_limit');
     }
 
     public function test_free_user_under_limit_can_create_resume(): void

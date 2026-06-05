@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
+use App\Services\DocxGenerator;
+use App\Services\UserLimits;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use PhpOffice\PhpWord\IOFactory;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ResumeBuilderController extends Controller
 {
@@ -18,20 +23,25 @@ class ResumeBuilderController extends Controller
             ->orderByDesc('updated_at')
             ->get(['id', 'name', 'pdf_filename', 'updated_at']);
 
-        $atLimit = ! $user->isPro() && $resumes->count() >= 5;
+        $resumeLimit = UserLimits::resumeLimit($user);
 
         return Inertia::render('ResumeBuilder/Index', [
             'resumes' => $resumes,
-            'atLimit' => $atLimit,
+            'resumeCount' => $resumes->count(),
+            'resumeLimit' => $resumeLimit,
         ]);
     }
 
     public function store(Request $request)
     {
         $user = $request->user();
+        $limit = UserLimits::resumeLimit($user);
 
-        if (! $user->isPro() && $user->resumes()->count() >= 5) {
-            return redirect()->route('billing.index')->with('limitReached', true);
+        if ($limit !== null && $user->resumes()->count() >= $limit) {
+            return back()->with('featureGate', [
+                'feature' => 'resume_limit',
+                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ]);
         }
 
         $validated = $request->validate([
@@ -85,6 +95,16 @@ class ResumeBuilderController extends Controller
 
         $validated = $request->validate(self::resumeRules());
 
+        if (isset($validated['template'])) {
+            $allowed = UserLimits::allowedTemplates($request->user());
+            if (! in_array($validated['template'], $allowed, true)) {
+                return back()->with('featureGate', [
+                    'feature' => 'template_access',
+                    'requiredTier' => 'starter',
+                ]);
+            }
+        }
+
         $resume->update($validated);
 
         return back();
@@ -122,21 +142,28 @@ class ResumeBuilderController extends Controller
         return $this->buildPdf($resume)->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
     }
 
-    public function downloadDocx(Resume $resume): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function downloadDocx(Resume $resume): StreamedResponse|RedirectResponse
     {
         $this->authorize('update', $resume);
 
-        $word = app(\App\Services\DocxGenerator::class)->generate($resume);
+        if (! UserLimits::canDocx(auth()->user())) {
+            return back()->with('featureGate', [
+                'feature' => 'docx_export',
+                'requiredTier' => 'starter',
+            ]);
+        }
+
+        $word = app(DocxGenerator::class)->generate($resume);
 
         $filename = $resume->name
             ? preg_replace('/[^a-zA-Z0-9_\-]/', '_', $resume->name).'.docx'
             : $resume->id.'.docx';
 
         return response()->stream(function () use ($word) {
-            $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word, 'Word2007');
+            $writer = IOFactory::createWriter($word, 'Word2007');
             $writer->save('php://output');
         }, 200, [
-            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ]);
     }
@@ -171,7 +198,17 @@ class ResumeBuilderController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $copy = $resume->user->resumes()->create([
+        $user = $resume->user;
+        $limit = UserLimits::resumeLimit($user);
+
+        if ($limit !== null && $user->resumes()->count() >= $limit) {
+            return back()->with('featureGate', [
+                'feature' => 'resume_limit',
+                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ]);
+        }
+
+        $copy = $user->resumes()->create([
             'name' => 'Copy of '.$resume->name,
             'pdf_filename' => Str::uuid().'.pdf',
             'template' => $resume->template,
