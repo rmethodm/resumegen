@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
+use App\Services\AbuseFilter;
 use App\Services\AiUsageLogger;
 use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
@@ -35,6 +36,20 @@ class AiSuggestController extends Controller
             'context.skills.*' => ['string', 'max:50'],
             'provider' => ['required', 'in:claude,openai'],
         ]);
+
+        $textFields = array_filter([
+            $validated['context']['title'] ?? null,
+            $validated['context']['company'] ?? null,
+            $validated['context']['summary'] ?? null,
+            $validated['context']['bullets'] ?? null,
+            ...($validated['context']['skills'] ?? []),
+        ]);
+
+        foreach ($textFields as $text) {
+            if (AbuseFilter::check($text)) {
+                return response()->json(['error' => 'Content policy violation'], 422);
+            }
+        }
 
         if ($validated['provider'] === 'claude') {
             return $this->suggestWithClaude($validated['field'], $validated['context']);
