@@ -43,4 +43,19 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    public function free(): static
+    {
+        return $this->state(['plan_tier' => 'free']);
+    }
+
+    public function starter(): static
+    {
+        return $this->state(['plan_tier' => 'starter']);
+    }
+
+    public function pro(): static
+    {
+        return $this->state(['plan_tier' => 'pro']);
+    }
 }

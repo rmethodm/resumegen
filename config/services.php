@@ -41,14 +41,16 @@ return [
     ],
 
     'openai' => [
-        'key'           => env('OPENAI_API_KEY'),
-        'ats_model'     => env('OPENAI_ATS_MODEL', 'gpt-4o-mini'),
+        'key' => env('OPENAI_API_KEY'),
+        'ats_model' => env('OPENAI_ATS_MODEL', 'gpt-4o-mini'),
         'suggest_model' => env('OPENAI_SUGGEST_MODEL', 'gpt-4o'),
     ],
 
     'stripe' => [
-        'monthly_price_id' => env('STRIPE_MONTHLY_PRICE_ID'),
-        'yearly_price_id' => env('STRIPE_YEARLY_PRICE_ID'),
+        'starter_monthly_price_id' => env('STRIPE_STARTER_MONTHLY_PRICE_ID'),
+        'starter_yearly_price_id' => env('STRIPE_STARTER_YEARLY_PRICE_ID'),
+        'pro_monthly_price_id' => env('STRIPE_PRO_MONTHLY_PRICE_ID'),
+        'pro_yearly_price_id' => env('STRIPE_PRO_YEARLY_PRICE_ID'),
     ],
 
 ];
