@@ -681,6 +681,7 @@ export default function Edit({
                                 <p className="text-indigo-600 text-xs mt-0.5">Pre-fill Publications, Teaching Experience, Presentations, and Grants.</p>
                             </div>
                             <div className="flex gap-2">
+                                {(customSectionLimit === null || customSections.length + 4 <= customSectionLimit) ? (
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -699,6 +700,15 @@ export default function Edit({
                                 >
                                     Add them
                                 </button>
+                                ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => triggerUpgradeModal('custom_sections', 'starter')}
+                                    className="rounded-md bg-indigo-600 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-700 opacity-70"
+                                >
+                                    🔒 Upgrade to add
+                                </button>
+                                )}
                                 <button
                                     type="button"
                                     onClick={() => setShowAcademicBanner(false)}

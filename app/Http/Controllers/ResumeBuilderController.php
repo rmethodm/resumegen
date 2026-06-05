@@ -222,6 +222,13 @@ class ResumeBuilderController extends Controller
 
         $validated = validator($data, self::resumeRules())->validate();
 
+        if (isset($validated['custom_sections'])) {
+            $limit = UserLimits::customSectionLimit($request->user());
+            if ($limit !== null && count($validated['custom_sections']) > $limit) {
+                return response()->noContent();
+            }
+        }
+
         $resume->update($validated);
 
         return response()->noContent();
@@ -254,6 +261,8 @@ class ResumeBuilderController extends Controller
             'skills' => $resume->skills,
             'certifications' => $resume->certifications,
             'font_sizes' => $resume->font_sizes,
+            'custom_sections' => $resume->custom_sections,
+            'section_order' => $resume->section_order,
         ]);
 
         return redirect()->route('builder.edit', $copy->id);
