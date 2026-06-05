@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resume;
 use App\Services\DocxGenerator;
+use App\Services\ResumeStrengthScorer;
 use App\Services\UserLimits;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
@@ -21,14 +22,25 @@ class ResumeBuilderController extends Controller
         $user = $request->user();
         $resumes = $user->resumes()
             ->orderByDesc('updated_at')
-            ->get(['id', 'name', 'pdf_filename', 'updated_at']);
+            ->get()
+            ->map(function (Resume $resume) {
+                $strength = ResumeStrengthScorer::score($resume);
 
-        $resumeLimit = UserLimits::resumeLimit($user);
+                return [
+                    'id' => $resume->id,
+                    'name' => $resume->name,
+                    'pdf_filename' => $resume->pdf_filename,
+                    'updated_at' => $resume->updated_at,
+                    'strength' => $strength['score'],
+                    'strength_tip' => $strength['tip'],
+                ];
+            });
 
         return Inertia::render('ResumeBuilder/Index', [
             'resumes' => $resumes,
             'resumeCount' => $resumes->count(),
-            'resumeLimit' => $resumeLimit,
+            'resumeLimit' => UserLimits::resumeLimit($user),
+            'allowedTemplates' => UserLimits::allowedTemplates($user),
         ]);
     }
 
@@ -88,6 +100,7 @@ class ResumeBuilderController extends Controller
             ],
             'canAts' => UserLimits::canAts($user),
             'canDocx' => UserLimits::canDocx($user),
+            'canTailor' => UserLimits::canTailor($user),
             'aiUsed' => UserLimits::aiUsageThisPeriod($user),
             'aiLimit' => UserLimits::aiLimit($user),
         ]);

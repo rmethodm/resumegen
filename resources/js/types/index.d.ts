@@ -5,6 +5,7 @@ export interface User {
     email_verified_at?: string;
     is_master_admin: boolean;
     is_pro: boolean;
+    two_factor_confirmed_at: string | null;
 }
 
 export interface Contact {
@@ -107,6 +108,15 @@ export interface AISuggestContext {
     company?: string;
     bullets?: string;
     skills?: string[];
+}
+
+export interface ResumeRow {
+    id: number;
+    name: string;
+    pdf_filename: string | null;
+    updated_at: string;
+    strength: number;
+    strength_tip: string;
 }
 
 export interface ResumeStat {
