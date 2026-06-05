@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Cashier\Subscription;
+use Laravel\Cashier\SubscriptionItem;
 use Tests\TestCase;
 
 class BillingTest extends TestCase
@@ -61,7 +63,90 @@ class BillingTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->where('plan', 'free')
                 ->where('resumeCount', 1)
+                ->where('resumeLimit', 2)
+            );
+    }
+
+    public function test_billing_page_passes_starter_plan_data(): void
+    {
+        $user = User::factory()->starter()->create();
+        $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->actingAs($user)
+            ->get(route('billing.index'))
+            ->assertInertia(fn ($page) => $page
+                ->where('plan', 'starter')
                 ->where('resumeLimit', 5)
             );
+    }
+
+    public function test_billing_page_passes_pro_plan_data(): void
+    {
+        $user = User::factory()->pro()->create();
+
+        $this->actingAs($user)
+            ->get(route('billing.index'))
+            ->assertInertia(fn ($page) => $page
+                ->where('plan', 'pro')
+                ->where('resumeLimit', null)
+            );
+    }
+
+    public function test_checkout_requires_tier_param(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('billing.checkout'), ['interval' => 'monthly'])
+            ->assertSessionHasErrors('tier');
+    }
+
+    public function test_subscription_observer_sets_plan_tier_on_active(): void
+    {
+        config([
+            'services.stripe.starter_monthly_price_id' => 'price_starter_monthly_test',
+            'services.stripe.starter_yearly_price_id' => 'price_starter_yearly_test',
+            'services.stripe.pro_monthly_price_id' => 'price_pro_monthly_test',
+            'services.stripe.pro_yearly_price_id' => 'price_pro_yearly_test',
+        ]);
+
+        $user = User::factory()->create(['plan_tier' => 'free']);
+
+        $subscription = new Subscription([
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'sub_test_'.uniqid(),
+            'stripe_status' => 'active',
+        ]);
+        $subscription->save();
+
+        $item = new SubscriptionItem([
+            'subscription_id' => $subscription->id,
+            'stripe_id' => 'si_test_'.uniqid(),
+            'stripe_product' => 'prod_test_starter',
+            'stripe_price' => 'price_starter_monthly_test',
+            'quantity' => 1,
+        ]);
+        $item->save();
+
+        // Simulate the observer by touching (triggers the saved event again)
+        $subscription->touch();
+
+        $this->assertSame('starter', $user->fresh()->plan_tier);
+    }
+
+    public function test_subscription_observer_resets_to_free_on_cancel(): void
+    {
+        $user = User::factory()->starter()->create();
+
+        $subscription = new Subscription([
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'sub_test_'.uniqid(),
+            'stripe_status' => 'canceled',
+        ]);
+        $subscription->save();
+
+        $this->assertSame('free', $user->fresh()->plan_tier);
     }
 }

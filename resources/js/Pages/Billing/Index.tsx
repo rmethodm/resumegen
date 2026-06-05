@@ -2,13 +2,22 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-type Props = { plan: 'free' | 'pro'; resumeCount: number; resumeLimit: number | null; limitReached: boolean };
+type Props = {
+    plan: 'free' | 'starter' | 'pro';
+    resumeCount: number;
+    resumeLimit: number | null;
+    aiUsed: number;
+    aiLimit: number | null;
+    limitReached: boolean;
+};
 
-export default function BillingIndex({ plan, resumeCount, resumeLimit, limitReached }: Props) {
+export default function BillingIndex({ plan, resumeCount, resumeLimit, aiUsed, aiLimit, limitReached }: Props) {
     const [interval, setInterval] = useState<'monthly' | 'yearly'>('monthly');
+    const [tier, setTier] = useState<'starter' | 'pro'>('starter');
     const usagePct = resumeLimit ? Math.min(100, Math.round((resumeCount / resumeLimit) * 100)) : 0;
+    const isPaid = plan === 'starter' || plan === 'pro';
 
-    const checkout = () => router.post(route('billing.checkout'), { interval });
+    const checkout = () => router.post(route('billing.checkout'), { interval, tier });
     const manageSubscription = () => { window.location.href = route('billing.portal'); };
 
     return (
@@ -39,9 +48,9 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, limitReac
                             <div className="flex-1 rounded-xl border-2 border-[#4f46e5] bg-[#eef2ff] p-5">
                                 <p className="text-[10px] font-bold uppercase tracking-wide text-[#4f46e5]">Current Plan</p>
                                 <p className="mt-1.5 text-2xl font-extrabold tracking-tight text-[#0f0f1a]">
-                                    {plan === 'pro' ? 'Pro' : 'Free'}
+                                    {plan === 'pro' ? 'Pro' : plan === 'starter' ? 'Starter' : 'Free'}
                                 </p>
-                                {plan === 'free' && resumeLimit !== null ? (
+                                {!isPaid && resumeLimit !== null ? (
                                     <>
                                         <p className="mt-1 text-xs text-[#71717a]">{resumeCount} of {resumeLimit} resumes used</p>
                                         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#c7d2fe]">
@@ -54,17 +63,18 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, limitReac
                             </div>
 
                             {/* Upgrade or manage */}
-                            {plan === 'free' ? (
+                            {!isPaid ? (
                                 <div className="flex-1 rounded-xl border border-[#eeeef5] bg-white p-5">
-                                    <p className="text-[10px] font-bold uppercase tracking-wide text-[#a0a0b0]">Upgrade to Pro</p>
-                                    <p className="mt-1.5 text-2xl font-extrabold tracking-tight text-[#0f0f1a]">
-                                        {interval === 'monthly' ? '$5' : '$49'}
-                                        <span className="text-sm font-normal text-[#a0a0b0]">{interval === 'monthly' ? '/month' : '/year'}</span>
-                                    </p>
-                                    <p className="mt-1 text-xs text-[#a0a0b0]">Unlimited resumes</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-wide text-[#a0a0b0]">Upgrade</p>
+
+                                    {/* Tier toggle */}
+                                    <div className="mt-2 flex w-fit overflow-hidden rounded-lg border border-[#eeeef5] text-xs">
+                                        <button type="button" onClick={() => setTier('starter')} className={`px-3 py-1.5 font-semibold transition ${tier === 'starter' ? 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white' : 'bg-white text-[#71717a] hover:bg-[#fafafe]'}`}>Starter</button>
+                                        <button type="button" onClick={() => setTier('pro')} className={`px-3 py-1.5 font-semibold transition ${tier === 'pro' ? 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white' : 'bg-white text-[#71717a] hover:bg-[#fafafe]'}`}>Pro</button>
+                                    </div>
 
                                     {/* Interval toggle */}
-                                    <div className="mt-3 flex w-fit overflow-hidden rounded-lg border border-[#eeeef5] text-xs">
+                                    <div className="mt-2 flex w-fit overflow-hidden rounded-lg border border-[#eeeef5] text-xs">
                                         <button type="button" onClick={() => setInterval('monthly')} className={`px-3 py-1.5 font-semibold transition ${interval === 'monthly' ? 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white' : 'bg-white text-[#71717a] hover:bg-[#fafafe]'}`}>Monthly</button>
                                         <button type="button" onClick={() => setInterval('yearly')} className={`px-3 py-1.5 font-semibold transition ${interval === 'yearly' ? 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white' : 'bg-white text-[#71717a] hover:bg-[#fafafe]'}`}>
                                             Yearly <span className="text-emerald-600 font-bold">–18%</span>
@@ -79,7 +89,7 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, limitReac
                                 <div className="flex flex-1 flex-col justify-between rounded-xl border border-[#eeeef5] bg-white p-5">
                                     <div>
                                         <p className="text-[10px] font-bold uppercase tracking-wide text-[#a0a0b0]">Subscription</p>
-                                        <p className="mt-1.5 text-sm text-[#71717a]">You're on the Pro plan. Manage your subscription, invoices, or cancel via the Stripe portal.</p>
+                                        <p className="mt-1.5 text-sm text-[#71717a]">You're on the {plan === 'pro' ? 'Pro' : 'Starter'} plan. Manage your subscription, invoices, or cancel via the Stripe portal.</p>
                                     </div>
                                     <button type="button" onClick={manageSubscription} className="mt-4 w-full rounded-lg border border-[#eeeef5] bg-white px-4 py-2 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe]">
                                         Manage subscription →
@@ -89,7 +99,7 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, limitReac
                         </div>
 
                         <div className="border-t border-[#eeeef5] px-6 py-3 text-center text-xs text-[#a0a0b0]">
-                            {plan === 'pro' ? 'To cancel, use the Stripe portal above.' : 'No credit card required for the free plan.'}
+                            {isPaid ? 'To cancel, use the Stripe portal above.' : 'No credit card required for the free plan.'}
                         </div>
                     </div>
                 </div>

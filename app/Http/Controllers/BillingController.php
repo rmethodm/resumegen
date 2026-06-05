@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UserLimits;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,23 +13,26 @@ class BillingController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $subscribed = $user->isPro();
 
         return Inertia::render('Billing/Index', [
-            'plan' => $subscribed ? 'pro' : 'free',
+            'plan' => $user->planTier(),
             'resumeCount' => $user->resumes()->count(),
-            'resumeLimit' => $subscribed ? null : 5,
+            'resumeLimit' => UserLimits::resumeLimit($user),
+            'aiUsed' => UserLimits::aiUsageThisPeriod($user),
+            'aiLimit' => UserLimits::aiLimit($user),
             'limitReached' => session('limitReached', false),
         ]);
     }
 
     public function checkout(Request $request): RedirectResponse
     {
-        $request->validate(['interval' => ['required', 'in:monthly,yearly']]);
+        $request->validate([
+            'interval' => ['required', 'in:monthly,yearly'],
+            'tier' => ['required', 'in:starter,pro'],
+        ]);
 
-        $priceId = $request->interval === 'yearly'
-            ? config('services.stripe.yearly_price_id')
-            : config('services.stripe.monthly_price_id');
+        $key = $request->tier.'_'.$request->interval.'_price_id';
+        $priceId = config("services.stripe.{$key}");
 
         $checkout = $request->user()->newSubscription('default', $priceId)
             ->checkout([
