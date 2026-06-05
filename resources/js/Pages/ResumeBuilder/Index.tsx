@@ -4,8 +4,17 @@ import { DocumentDuplicateIcon, PencilSquareIcon, TrashIcon } from '@heroicons/r
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
 
-type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; allowedTemplates: string[] };
+type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null };
 type SortKey = 'name' | 'updated_at';
+
+function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortDir: 'asc' | 'desc' }) {
+    return (
+        <span className="ml-1 inline-flex flex-col leading-none text-[#c4c4d0]">
+            <span className={sortKey === k && sortDir === 'asc' ? 'text-[#4f46e5]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
+            <span className={sortKey === k && sortDir === 'desc' ? 'text-[#4f46e5]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
+        </span>
+    );
+}
 
 export default function Index({ resumes, resumeCount, resumeLimit }: Props) {
     const atLimit = resumeLimit !== null && resumeCount >= resumeLimit;
@@ -69,13 +78,6 @@ export default function Index({ resumes, resumeCount, resumeLimit }: Props) {
     const pageRows   = sorted.slice(start, start + pageSize);
     const showingFrom = sorted.length === 0 ? 0 : start + 1;
     const showingTo   = Math.min(start + pageSize, sorted.length);
-
-    const SortIcon = ({ k }: { k: SortKey }) => (
-        <span className="ml-1 inline-flex flex-col leading-none text-[#c4c4d0]">
-            <span className={sortKey === k && sortDir === 'asc' ? 'text-[#4f46e5]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
-            <span className={sortKey === k && sortDir === 'desc' ? 'text-[#4f46e5]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
-        </span>
-    );
 
     return (
         <AuthenticatedLayout>
@@ -155,7 +157,7 @@ export default function Index({ resumes, resumeCount, resumeLimit }: Props) {
                                         >
                                             <span className="inline-flex items-center gap-0.5">
                                                 Resume
-                                                <SortIcon k="name" />
+                                                <SortIcon k="name" sortKey={sortKey} sortDir={sortDir} />
                                             </span>
                                         </th>
                                         <th
@@ -164,7 +166,7 @@ export default function Index({ resumes, resumeCount, resumeLimit }: Props) {
                                         >
                                             <span className="inline-flex items-center gap-0.5">
                                                 Last Edited
-                                                <SortIcon k="updated_at" />
+                                                <SortIcon k="updated_at" sortKey={sortKey} sortDir={sortDir} />
                                             </span>
                                         </th>
                                         <th className="px-5 py-3.5 text-right text-xs font-semibold text-[#71717a]">Actions</th>
