@@ -317,4 +317,77 @@ class ResumeBuilderTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('featureGate.feature', 'resume_limit');
     }
+
+    public function test_free_user_can_use_skills_first_template(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), ['template' => 'skills-first'])
+            ->assertRedirect();
+
+        $this->assertSame('skills-first', $resume->fresh()->template);
+    }
+
+    public function test_free_user_can_use_bold_template(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), ['template' => 'bold'])
+            ->assertRedirect();
+
+        $this->assertSame('bold', $resume->fresh()->template);
+    }
+
+    public function test_free_user_cannot_use_skills_first_visual_template(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), ['template' => 'skills-first-visual'])
+            ->assertRedirect();
+
+        $this->assertNotSame('skills-first-visual', $resume->fresh()->template);
+    }
+
+    public function test_free_user_cannot_use_academic_template(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), ['template' => 'academic'])
+            ->assertRedirect();
+
+        $this->assertNotSame('academic', $resume->fresh()->template);
+    }
+
+    public function test_free_user_cannot_use_timeline_template(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), ['template' => 'timeline'])
+            ->assertRedirect();
+
+        $this->assertNotSame('timeline', $resume->fresh()->template);
+    }
+
+    public function test_starter_user_can_use_all_new_templates(): void
+    {
+        $user = User::factory()->starter()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        foreach (['skills-first', 'skills-first-visual', 'academic', 'bold', 'timeline'] as $tpl) {
+            $this->actingAs($user)
+                ->put(route('builder.update', $resume), ['template' => $tpl])
+                ->assertRedirect();
+            $this->assertSame($tpl, $resume->fresh()->template, "Failed for template: {$tpl}");
+        }
+    }
 }

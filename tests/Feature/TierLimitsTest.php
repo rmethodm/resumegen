@@ -88,27 +88,30 @@ class TierLimitsTest extends TestCase
 
     // ── allowedTemplates ──────────────────────────────────────────────────────
 
-    public function test_free_user_gets_three_templates(): void
+    public function test_free_user_gets_five_templates(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $allowed = UserLimits::allowedTemplates($user);
-        $this->assertCount(3, $allowed);
+        $this->assertCount(5, $allowed);
         $this->assertContains('classic', $allowed);
         $this->assertContains('modern', $allowed);
         $this->assertContains('ats', $allowed);
+        $this->assertContains('skills-first', $allowed);
+        $this->assertContains('bold', $allowed);
         $this->assertNotContains('creative', $allowed);
+        $this->assertNotContains('academic', $allowed);
     }
 
     public function test_starter_user_gets_all_templates(): void
     {
         $user = User::factory()->starter()->create();
-        $this->assertCount(8, UserLimits::allowedTemplates($user));
+        $this->assertCount(13, UserLimits::allowedTemplates($user));
     }
 
     public function test_pro_user_gets_all_templates(): void
     {
         $user = User::factory()->pro()->create();
-        $this->assertCount(8, UserLimits::allowedTemplates($user));
+        $this->assertCount(13, UserLimits::allowedTemplates($user));
     }
 
     // ── canDocx / canAts ──────────────────────────────────────────────────────

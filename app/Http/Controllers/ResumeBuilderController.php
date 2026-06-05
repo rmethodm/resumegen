@@ -104,6 +104,7 @@ class ResumeBuilderController extends Controller
             'aiUsed' => UserLimits::aiUsageThisPeriod($user),
             'aiLimit' => UserLimits::aiLimit($user),
             'customSectionLimit' => UserLimits::customSectionLimit($user),
+            'allowedTemplates' => UserLimits::allowedTemplates($user),
         ]);
     }
 

@@ -58,7 +58,7 @@ export interface CustomSection {
     entries: CustomSectionEntry[];
 }
 
-export type ResumeTemplate = 'classic' | 'minimal' | 'minimal-ruled' | 'executive' | 'ats';
+export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled' | 'sidebar' | 'creative' | 'executive' | 'ats' | 'skills-first' | 'skills-first-visual' | 'academic' | 'bold' | 'timeline';
 
 export interface FontSizes {
     name: number;

@@ -149,6 +149,24 @@ const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, b
 
 const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'education', 'skills', 'certifications'];
 
+const NON_ATS_TEMPLATES = ['skills-first-visual', 'timeline'];
+
+const TEMPLATE_LABELS: Record<string, string> = {
+    'classic': 'Classic',
+    'modern': 'Modern',
+    'minimal': 'Minimal',
+    'minimal-ruled': 'Minimal Ruled',
+    'sidebar': 'Sidebar',
+    'creative': 'Creative',
+    'executive': 'Executive',
+    'ats': 'ATS',
+    'skills-first': 'Skills-First',
+    'skills-first-visual': 'Skills-First Visual ⚠️',
+    'academic': 'Academic CV',
+    'bold': 'Minimalist Bold',
+    'timeline': 'Timeline ⚠️',
+};
+
 const freshPdfSrc = (resumeId: number) => route('builder.preview', resumeId) + '?t=' + Date.now();
 
 
@@ -166,6 +184,7 @@ export default function Edit({
     aiUsed,
     aiLimit,
     customSectionLimit,
+    allowedTemplates,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -178,6 +197,7 @@ export default function Edit({
     aiUsed: number;
     aiLimit: number;
     customSectionLimit: number | null;
+    allowedTemplates: string[];
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -200,6 +220,9 @@ export default function Edit({
     const pendingSave = useRef(false);
 
     const [showTailor, setShowTailor] = useState(false);
+    const [showAcademicBanner, setShowAcademicBanner] = useState(
+        template === 'academic' && (resume.custom_sections ?? []).length === 0
+    );
 
     const [ats, setAts] = useState<AtsScore | null>(null);
     const [atsLoading, setAtsLoading] = useState(false);
@@ -355,6 +378,14 @@ export default function Edit({
         setWizardStep(4);
     }, [save]);
 
+    useEffect(() => {
+        if (template === 'academic' && customSections.length === 0) {
+            setShowAcademicBanner(true);
+        } else {
+            setShowAcademicBanner(false);
+        }
+    }, [template]);
+
     // Save on tab close via beacon
     useEffect(() => {
         const handler = () => {
@@ -506,19 +537,23 @@ export default function Edit({
                     <h2 className="text-sm font-semibold text-[#0f0f1a]">{name}</h2>
                 </div>
                 <div className="flex items-center gap-4">
+                        <div className="flex flex-col">
                         <select
                             aria-label="Resume template"
                             value={template}
-                            onChange={e => { setTemplate(e.target.value as ResumeTemplate); }}
-                            onBlur={save}
+                            onChange={e => { setTemplate(e.target.value as ResumeTemplate); setTimeout(save, 0); }}
                             className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         >
-                            <option value="classic">Classic</option>
-                            <option value="minimal">Minimal</option>
-                            <option value="minimal-ruled">Minimal Ruled</option>
-                            <option value="executive">Executive</option>
-                            <option value="ats">ATS</option>
+                            {allowedTemplates.map(t => (
+                                <option key={t} value={t}>{TEMPLATE_LABELS[t] ?? t}</option>
+                            ))}
                         </select>
+                        {NON_ATS_TEMPLATES.includes(template) && (
+                            <p className="mt-1 text-xs text-amber-600">
+                                ⚠️ Design-focused · Not ATS-optimized
+                            </p>
+                        )}
+                        </div>
                         <div className="flex items-center rounded-md border border-gray-200 overflow-hidden text-xs" aria-label="Font family">
                             {(['sans', 'serif', 'mono'] as const).map(f => (
                                 <button
@@ -637,6 +672,43 @@ export default function Edit({
 
                 {/* LEFT: Form */}
                 <div className="shrink-0 overflow-y-auto bg-[#f5f5fb] p-6" style={{ width: leftWidth + '%' }}>
+
+                    {showAcademicBanner && (
+                        <div className="mb-4 flex items-start gap-3 rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm">
+                            <span className="text-indigo-500 mt-0.5">🎓</span>
+                            <div className="flex-1">
+                                <p className="font-semibold text-indigo-700">Add suggested CV sections?</p>
+                                <p className="text-indigo-600 text-xs mt-0.5">Pre-fill Publications, Teaching Experience, Presentations, and Grants.</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const suggested = ['Publications', 'Teaching Experience', 'Presentations', 'Grants'];
+                                        const newSections = suggested.map(name => ({
+                                            id: crypto.randomUUID(),
+                                            name,
+                                            entries: [] as CustomSectionEntry[],
+                                        }));
+                                        setCustomSections(prev => [...prev, ...newSections]);
+                                        setSectionOrder(prev => [...prev, ...newSections.map(s => `custom_${s.id}`)]);
+                                        setShowAcademicBanner(false);
+                                        setTimeout(save, 0);
+                                    }}
+                                    className="rounded-md bg-indigo-600 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-700"
+                                >
+                                    Add them
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAcademicBanner(false)}
+                                    className="rounded-md border border-indigo-300 px-3 py-1 text-xs text-indigo-600 hover:bg-indigo-100"
+                                >
+                                    Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Font Sizes */}
                     <div className="mb-5 rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
