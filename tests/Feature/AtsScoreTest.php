@@ -20,7 +20,7 @@ class AtsScoreTest extends TestCase
 
     public function test_owner_can_fetch_score(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->starter()->create();
         $resume = $user->resumes()->create([
             'name' => 'r',
             'pdf_filename' => 'r.pdf',
@@ -81,7 +81,7 @@ class AtsScoreTest extends TestCase
 
     public function test_score_is_cached_on_first_fetch(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->starter()->create();
         $resume = $user->resumes()->create(['name' => 'r', 'pdf_filename' => 'r.pdf']);
 
         $this->assertNull($resume->ats_cache);
@@ -94,11 +94,11 @@ class AtsScoreTest extends TestCase
 
     public function test_cached_score_is_returned_without_recomputing(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->starter()->create();
         $resume = $user->resumes()->create([
-            'name'          => 'r',
-            'pdf_filename'  => 'r.pdf',
-            'ats_cache'     => ['score' => 99, 'found' => [], 'missing' => [], 'breakdown' => ['action_verbs' => 29, 'technical' => 40, 'soft_skills' => 15, 'format_signals' => 15]],
+            'name' => 'r',
+            'pdf_filename' => 'r.pdf',
+            'ats_cache' => ['score' => 99, 'found' => [], 'missing' => [], 'breakdown' => ['action_verbs' => 29, 'technical' => 40, 'soft_skills' => 15, 'format_signals' => 15]],
             'ats_cached_at' => now(),
         ]);
 
@@ -109,11 +109,11 @@ class AtsScoreTest extends TestCase
 
     public function test_cache_bust_clears_ats_cache(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $resume = $user->resumes()->create([
-            'name'          => 'r',
-            'pdf_filename'  => 'r.pdf',
-            'ats_cache'     => ['score' => 88, 'found' => [], 'missing' => [], 'breakdown' => []],
+            'name' => 'r',
+            'pdf_filename' => 'r.pdf',
+            'ats_cache' => ['score' => 88, 'found' => [], 'missing' => [], 'breakdown' => []],
             'ats_cached_at' => now(),
         ]);
 
@@ -135,5 +135,29 @@ class AtsScoreTest extends TestCase
         $this->actingAs($other)
             ->deleteJson(route('builder.ats-score.destroy', $resume->id))
             ->assertForbidden();
+    }
+
+    public function test_free_user_cannot_access_ats_score(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->actingAs($user)
+            ->getJson(route('builder.ats-score', $resume->id))
+            ->assertStatus(402)
+            ->assertJson(['required_tier' => 'starter']);
+    }
+
+    public function test_starter_user_can_access_ats_score(): void
+    {
+        $user = User::factory()->starter()->create();
+        $resume = $user->resumes()->create([
+            'name' => 'CV', 'pdf_filename' => 'cv.pdf',
+            'ats_cache' => ['score' => 80, 'breakdown' => [], 'missing' => []],
+        ]);
+
+        $this->actingAs($user)
+            ->getJson(route('builder.ats-score', $resume->id))
+            ->assertOk();
     }
 }

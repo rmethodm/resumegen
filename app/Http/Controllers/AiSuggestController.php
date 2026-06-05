@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resume;
 use App\Services\AiUsageLogger;
+use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -14,6 +15,14 @@ class AiSuggestController extends Controller
     public function suggest(Request $request, Resume $resume): JsonResponse
     {
         $this->authorize('update', $resume);
+
+        $user = $request->user();
+        if (UserLimits::atAiLimit($user)) {
+            return response()->json([
+                'error' => 'Monthly AI suggestion limit reached.',
+                'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ], 402);
+        }
 
         $validated = $request->validate([
             'field' => ['required', 'in:summary,bullets,skills,title'],
@@ -72,13 +81,13 @@ class AiSuggestController extends Controller
         $model = config('services.anthropic.model', 'claude-sonnet-4-6');
 
         $response = Http::withHeaders([
-            'x-api-key'         => $apiKey,
+            'x-api-key' => $apiKey,
             'anthropic-version' => '2023-06-01',
-            'content-type'      => 'application/json',
+            'content-type' => 'application/json',
         ])->post('https://api.anthropic.com/v1/messages', [
-            'model'      => $model,
+            'model' => $model,
             'max_tokens' => 400,
-            'messages'   => [['role' => 'user', 'content' => $this->buildPrompt($field, $context)]],
+            'messages' => [['role' => 'user', 'content' => $this->buildPrompt($field, $context)]],
         ]);
 
         if (! $response->ok()) {
@@ -94,7 +103,7 @@ class AiSuggestController extends Controller
             outputTokens: $response->json('usage.output_tokens', 0),
         );
 
-        $text        = $response->json('content.0.text', '[]');
+        $text = $response->json('content.0.text', '[]');
         $suggestions = json_decode($text, true) ?? [];
 
         return response()->json(['suggestions' => array_slice($suggestions, 0, 3)]);
@@ -107,13 +116,13 @@ class AiSuggestController extends Controller
             return response()->json(['error' => 'API key not configured'], 422);
         }
 
-        $model  = config('services.openai.suggest_model', 'gpt-4o');
+        $model = config('services.openai.suggest_model', 'gpt-4o');
         $client = OpenAI::client($apiKey);
 
         $result = $client->chat()->create([
-            'model'      => $model,
+            'model' => $model,
             'max_tokens' => 400,
-            'messages'   => [['role' => 'user', 'content' => $this->buildPrompt($field, $context)]],
+            'messages' => [['role' => 'user', 'content' => $this->buildPrompt($field, $context)]],
         ]);
 
         AiUsageLogger::log(
@@ -125,7 +134,7 @@ class AiSuggestController extends Controller
             outputTokens: $result->usage->completionTokens,
         );
 
-        $text        = $result->choices[0]->message->content ?? '[]';
+        $text = $result->choices[0]->message->content ?? '[]';
         $suggestions = json_decode($text, true) ?? [];
 
         return response()->json(['suggestions' => array_slice($suggestions, 0, 3)]);
