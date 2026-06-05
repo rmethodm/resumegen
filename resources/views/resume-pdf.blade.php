@@ -84,6 +84,17 @@
   .ats h2 { text-transform: none; letter-spacing: 0; border: 0; color: #000; padding: 0; margin: {{ $spacingSection }}pt 0 4pt; font-size: {{ $sizeHeading }}pt; font-weight: bold; }
   .ats .row { display: block; }
   .ats { color: #000; }
+
+  /* bold template */
+  .bold h1 { font-size: 22pt; font-weight: 900; letter-spacing: -0.5px; }
+  .bold h2 { border-bottom: 3px solid {{ $accent }}; color: {{ $accent }}; font-weight: 900; letter-spacing: 2px; }
+
+  /* academic template */
+  .academic h2 { color: #444; border-bottom-color: #ccc; font-weight: bold; }
+
+  /* skills-first chip block */
+  .skills-first-chips { background: #eef2ff; border-radius: 4pt; padding: 6pt 8pt; margin-bottom: 8pt; font-size: {{ $sizeBody }}pt; }
+  .skills-first-chips .label { font-size: 7pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #4f46e5; margin-bottom: 4pt; }
 </style>
 </head>
 <body>
@@ -139,8 +150,92 @@
     @include('partials.resume-body', ['atsMode' => true])
   </div>
 
-@else
+@elseif ($template === 'skills-first')
   <div class="page">
+    <div style="text-align:center; border-bottom: 2px solid {{ $accent }}; padding-bottom: 10px; margin-bottom: 12px;">
+      <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
+      <div style="font-size: {{ $sizeContact }}pt; color: #555;">{{ implode(' • ', $contactParts) }}</div>
+    </div>
+    @if ($resume->skills && count($resume->skills))
+      {{-- skills is a plain string[] — render as chips before the body --}}
+      <div class="skills-first-chips">
+        <div class="label">Core Competencies</div>
+        <div>{{ implode(' · ', $resume->skills) }}</div>
+      </div>
+    @endif
+    @include('partials.resume-body', ['skipSections' => ['skills']])
+  </div>
+
+@elseif ($template === 'skills-first-visual')
+  <div class="page">
+    <div style="border-left: 4px solid {{ $accent }}; padding-left: 8pt; margin-bottom: 10pt;">
+      <h1 style="text-align:left;">{{ $c['full_name'] ?? $resume->name }}</h1>
+      <div style="font-size: {{ $sizeContact }}pt; color: {{ $accent }}; font-weight: bold;">
+        {{ $resume->contact['title'] ?? '' }}
+      </div>
+      <div style="font-size: {{ $sizeContact }}pt; color: #555;">{{ implode(' • ', $contactParts) }}</div>
+    </div>
+    @if ($resume->skills && count($resume->skills))
+      <h2>Technical Skills</h2>
+      @foreach ($resume->skills as $skill)
+        <div style="display:flex; align-items:center; margin-bottom:3pt; gap:8pt;">
+          <span style="font-size:{{ $sizeBody }}pt; width:100pt; flex-shrink:0;">{{ $skill }}</span>
+          <div style="height:3pt; flex:1; background:#eeeef5; border-radius:99pt; overflow:hidden;">
+            <div style="height:3pt; width:80%; background:{{ $accent }}; border-radius:99pt;"></div>
+          </div>
+        </div>
+      @endforeach
+    @endif
+    @include('partials.resume-body', ['skipSections' => ['skills']])
+  </div>
+
+@elseif ($template === 'timeline')
+  <div class="page">
+    <div style="text-align:center; border-bottom: 2px solid {{ $accent }}; padding-bottom: 10px; margin-bottom: 12px;">
+      <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
+      <div style="font-size: {{ $sizeContact }}pt; color: #555;">{{ implode(' • ', $contactParts) }}</div>
+    </div>
+    @if ($resume->summary)
+      <h2>Summary</h2>
+      <p>{{ $resume->summary }}</p>
+    @endif
+    @if ($resume->experience && count($resume->experience))
+      <h2>Experience</h2>
+      @foreach ($resume->experience as $exp)
+        @if (!empty($exp['company']) || !empty($exp['title']))
+        <div style="display:flex; gap:8pt; margin-bottom:6pt;">
+          <div style="display:flex; flex-direction:column; align-items:center; width:10pt; flex-shrink:0;">
+            <div style="width:7pt; height:7pt; border-radius:50%; background:{{ $accent }}; flex-shrink:0;"></div>
+            <div style="width:1pt; flex:1; background:#c7d2fe; margin-top:2pt;"></div>
+          </div>
+          <div style="flex:1; padding-bottom:4pt;">
+            <div style="font-weight:bold; font-size:{{ $sizeBody }}pt;">{{ $exp['title'] ?? '' }}</div>
+            <div style="font-size:{{ $sizeContact }}pt; color:#71717a;">
+              {{ $exp['company'] ?? '' }}
+              @if(($exp['start_date'] ?? '') || ($exp['end_date'] ?? ''))
+                · {{ $exp['start_date'] ?? '' }} – {{ ($exp['current'] ?? false) ? 'Present' : ($exp['end_date'] ?? '') }}
+              @endif
+            </div>
+            @foreach (array_filter(explode("\n", $exp['bullets'] ?? '')) as $b)
+              <div style="font-size:{{ $sizeBody }}pt; padding-left:8pt;">• {{ $b }}</div>
+            @endforeach
+          </div>
+        </div>
+        @endif
+      @endforeach
+    @endif
+    @include('partials.resume-body', ['skipSections' => ['summary', 'experience']])
+  </div>
+
+@else
+  @php
+    $outerClass = match($template) {
+        'bold'     => 'bold',
+        'academic' => 'academic',
+        default    => '',
+    };
+  @endphp
+  <div class="page {{ $outerClass }}">
     <div style="text-align:center; border-bottom: 2px solid {{ in_array($template, ['classic','minimal','minimal-ruled']) ? '#222' : $accent }}; padding-bottom: 10px; margin-bottom: 12px;">
       <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
       <div style="font-size: {{ $sizeContact }}pt; color: #555;">{{ implode(' • ', $contactParts) }}</div>
