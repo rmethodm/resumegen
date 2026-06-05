@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Resume;
+use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,9 +25,13 @@ class ResumeController extends Controller
     public function store(Request $request): JsonResponse
     {
         $user = $request->user();
+        $limit = UserLimits::resumeLimit($user);
 
-        if (! $user->isPro() && $user->resumes()->count() >= 5) {
-            return response()->json(['message' => 'Resume limit reached. Upgrade to Pro.'], 403);
+        if ($limit !== null && $user->resumes()->count() >= $limit) {
+            return response()->json([
+                'message' => 'Resume limit reached.',
+                'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ], 402);
         }
 
         $validated = $request->validate([
@@ -70,7 +75,17 @@ class ResumeController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $copy = $resume->user->resumes()->create([
+        $user = $resume->user;
+        $limit = UserLimits::resumeLimit($user);
+
+        if ($limit !== null && $user->resumes()->count() >= $limit) {
+            return response()->json([
+                'message' => 'Resume limit reached.',
+                'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ], 402);
+        }
+
+        $copy = $user->resumes()->create([
             'name' => 'Copy of '.$resume->name,
             'pdf_filename' => Str::uuid().'.pdf',
             'template' => $resume->template,

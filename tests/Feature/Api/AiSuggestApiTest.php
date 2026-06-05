@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use App\Models\AiUsageLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -32,6 +33,31 @@ class AiSuggestApiTest extends ApiTestCase
             ])
             ->assertOk()
             ->assertJsonPath('suggestions.0', 'Suggestion A');
+    }
+
+    public function test_api_ai_suggest_returns_402_when_at_limit(): void
+    {
+        config(['services.anthropic.key' => 'fake-key']);
+
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+        $token = $user->createToken('test')->plainTextToken;
+
+        for ($i = 0; $i < 5; $i++) {
+            AiUsageLog::create([
+                'user_id' => $user->id, 'provider' => 'anthropic',
+                'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
+                'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
+                'created_at' => now(),
+            ]);
+        }
+
+        $this->withToken($token)
+            ->postJson("/api/resumes/{$resume->id}/ai-suggest", [
+                'field' => 'summary', 'context' => ['title' => 'Dev'], 'provider' => 'claude',
+            ])
+            ->assertStatus(402)
+            ->assertJsonPath('required_tier', 'starter');
     }
 
     public function test_cannot_suggest_for_other_users_resume(): void
