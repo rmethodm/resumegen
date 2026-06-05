@@ -27,11 +27,12 @@ class AiSuggestController extends Controller
         $validated = $request->validate([
             'field' => ['required', 'in:summary,bullets,skills,title'],
             'context' => ['required', 'array'],
-            'context.summary' => ['nullable', 'string'],
-            'context.title' => ['nullable', 'string'],
-            'context.company' => ['nullable', 'string'],
-            'context.bullets' => ['nullable', 'string'],
-            'context.skills' => ['nullable', 'array'],
+            'context.summary' => ['nullable', 'string', 'max:1500'],
+            'context.title' => ['nullable', 'string', 'max:100'],
+            'context.company' => ['nullable', 'string', 'max:150'],
+            'context.bullets' => ['nullable', 'string', 'max:1500'],
+            'context.skills' => ['nullable', 'array', 'max:50'],
+            'context.skills.*' => ['string', 'max:50'],
             'provider' => ['required', 'in:claude,openai'],
         ]);
 

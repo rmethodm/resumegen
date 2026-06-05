@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\AiUsageLog;
+use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -170,5 +171,41 @@ class AiSuggestTest extends TestCase
         ]);
 
         Http::assertSent(fn ($req) => $req['model'] === 'claude-custom-model');
+    }
+
+    public function test_title_over_limit_returns_422(): void
+    {
+        $user = User::factory()->starter()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)->postJson(route('builder.ai-suggest', $resume), [
+            'field' => 'title',
+            'provider' => 'claude',
+            'context' => ['title' => str_repeat('a', 101)],
+        ])->assertUnprocessable();
+    }
+
+    public function test_summary_over_limit_returns_422(): void
+    {
+        $user = User::factory()->starter()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)->postJson(route('builder.ai-suggest', $resume), [
+            'field' => 'summary',
+            'provider' => 'claude',
+            'context' => ['summary' => str_repeat('a', 1501)],
+        ])->assertUnprocessable();
+    }
+
+    public function test_skills_array_over_limit_returns_422(): void
+    {
+        $user = User::factory()->starter()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)->postJson(route('builder.ai-suggest', $resume), [
+            'field' => 'skills',
+            'provider' => 'claude',
+            'context' => ['skills' => array_fill(0, 51, 'PHP')],
+        ])->assertUnprocessable();
     }
 }
