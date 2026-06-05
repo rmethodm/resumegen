@@ -19,7 +19,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ResumeData, ShareLink, ResumeQuestion, ResumeTemplate,
     ExperienceEntry, EducationEntry, CertEntry, Contact, AiCapabilities,
-    FontSizes, AtsScore,
+    FontSizes, AtsScore, CustomSection, CustomSectionEntry,
 } from '@/types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -136,8 +136,10 @@ export default function Edit({
     isFirstResume,
     canAts,
     canDocx,
+    canTailor,
     aiUsed,
     aiLimit,
+    customSectionLimit,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -146,8 +148,10 @@ export default function Edit({
     isFirstResume: boolean;
     canAts: boolean;
     canDocx: boolean;
+    canTailor: boolean;
     aiUsed: number;
     aiLimit: number;
+    customSectionLimit: number | null;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -157,6 +161,7 @@ export default function Edit({
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? [emptyEdu()]);
     const [skills, setSkills] = useState<string[]>(resume.skills ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
+    const [customSections, setCustomSections] = useState<CustomSection[]>(resume.custom_sections ?? []);
 
     const [fontSizes, setFontSizes] = useState<FontSizes>({ ...DEFAULT_FONT_SIZES, ...(resume.font_sizes ?? {}) });
     const [fontFamily, setFontFamily] = useState<'sans' | 'serif' | 'mono'>(resume.font_family ?? 'sans');
@@ -260,6 +265,7 @@ export default function Edit({
     const educationRef = useRef(education);
     const skillsRef = useRef(skills);
     const certificationsRef = useRef(certifications);
+    const customSectionsRef = useRef(customSections);
     const fontSizesRef = useRef(fontSizes);
     const fontFamilyRef = useRef(fontFamily);
 
@@ -271,6 +277,7 @@ export default function Edit({
     educationRef.current = education;
     skillsRef.current = skills;
     certificationsRef.current = certifications;
+    customSectionsRef.current = customSections;
     fontSizesRef.current = fontSizes;
     fontFamilyRef.current = fontFamily;
 
@@ -288,6 +295,7 @@ export default function Edit({
             education: educationRef.current as any,
             skills: skillsRef.current,
             certifications: certificationsRef.current as any,
+            custom_sections: customSectionsRef.current as any,
             font_sizes: fontSizesRef.current as any,
             font_family: fontFamilyRef.current,
         }, {
@@ -330,6 +338,7 @@ export default function Edit({
                     education: educationRef.current,
                     skills: skillsRef.current,
                     certifications: certificationsRef.current,
+                    custom_sections: customSectionsRef.current,
                     font_sizes: fontSizesRef.current,
                     font_family: fontFamilyRef.current,
                     _token: csrfToken,
@@ -380,6 +389,60 @@ export default function Edit({
         setCertifications(prev => prev.map(c => c.id === id ? { ...c, [field]: val } : c)), []);
     const addCert = () => setCertifications(prev => [...prev, emptyCert()]);
     const removeCert = (id: string) => setCertifications(prev => prev.filter(c => c.id !== id));
+
+    const addCustomSection = () => {
+        const id = crypto.randomUUID();
+        setCustomSections(prev => [
+            ...prev,
+            { id, name: 'New Section', entries: [] },
+        ]);
+    };
+
+    const updateCustomSection = (sectionId: string, field: 'name', value: string) => {
+        setCustomSections(prev =>
+            prev.map(s => (s.id === sectionId ? { ...s, [field]: value } : s))
+        );
+    };
+
+    const deleteCustomSection = (sectionId: string) => {
+        if (!window.confirm('Delete this section and all its entries?')) { return; }
+        setCustomSections(prev => prev.filter(s => s.id !== sectionId));
+    };
+
+    const addCustomEntry = (sectionId: string) => {
+        const entryId = crypto.randomUUID();
+        setCustomSections(prev =>
+            prev.map(s =>
+                s.id === sectionId
+                    ? {
+                          ...s,
+                          entries: [
+                              ...s.entries,
+                              { id: entryId, title: '', subtitle: '', start_date: '', end_date: null, description: '', bullets: [] },
+                          ],
+                      }
+                    : s
+            )
+        );
+    };
+
+    const updateCustomEntry = (sectionId: string, entryId: string, field: keyof CustomSectionEntry, value: string | string[] | null) => {
+        setCustomSections(prev =>
+            prev.map(s =>
+                s.id === sectionId
+                    ? { ...s, entries: s.entries.map(e => (e.id === entryId ? { ...e, [field]: value } : e)) }
+                    : s
+            )
+        );
+    };
+
+    const deleteCustomEntry = (sectionId: string, entryId: string) => {
+        setCustomSections(prev =>
+            prev.map(s =>
+                s.id === sectionId ? { ...s, entries: s.entries.filter(e => e.id !== entryId) } : s
+            )
+        );
+    };
 
     const pdfFilename = resume.pdf_filename ?? `${resume.id}.pdf`;
     const unreadCount = initialQuestions.filter(q => !q.is_read).length;
@@ -477,13 +540,24 @@ export default function Edit({
                         ) : (
                             <span className="text-xs text-gray-300" title="Add ANTHROPIC_API_KEY or OPENAI_API_KEY to .env to enable AI suggestions">✦ AI off</span>
                         )}
-                        <button
-                            type="button"
-                            onClick={() => setShowTailor(true)}
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
-                        >
-                            Tailor to Job
-                        </button>
+                        {canTailor ? (
+                            <button
+                                type="button"
+                                onClick={() => setShowTailor(true)}
+                                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+                            >
+                                Tailor to Job
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => triggerUpgradeModal('tailor', 'starter')}
+                                className="inline-flex items-center gap-1.5 rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] transition hover:bg-[#fafafe]"
+                                title="Upgrade to Starter to tailor your resume to a job description"
+                            >
+                                🔒 Tailor to Job
+                            </button>
+                        )}
                         {canDocx ? (
                             <a
                                 href={route('builder.docx', resume.id)}
@@ -882,6 +956,116 @@ export default function Edit({
                                 </div>
                             )}
                         </div>
+
+                        {/* Custom Sections */}
+                        {customSections.map(section => (
+                            <div key={section.id} className="mb-5 rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                                <div className="flex w-full items-center justify-between border-l-4 border-indigo-400 bg-indigo-50 px-4 py-3">
+                                    <input
+                                        className="flex-1 bg-transparent text-sm font-semibold text-indigo-700 focus:outline-none"
+                                        value={section.name}
+                                        onChange={e => updateCustomSection(section.id, 'name', e.target.value)}
+                                        onBlur={save}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => { deleteCustomSection(section.id); setTimeout(save, 0); }}
+                                        className="ml-2 text-xs text-red-400 hover:text-red-600"
+                                        title="Delete section"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                                <div className="divide-y divide-gray-100 bg-white">
+                                    {section.entries.map((entry, idx) => (
+                                        <div key={entry.id} className="p-3 space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-xs font-semibold text-gray-400">Entry {idx + 1}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { deleteCustomEntry(section.id, entry.id); setTimeout(save, 0); }}
+                                                    className="text-xs text-red-400 hover:text-red-600"
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                            <input
+                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                placeholder="Title"
+                                                value={entry.title}
+                                                onChange={e => updateCustomEntry(section.id, entry.id, 'title', e.target.value)}
+                                                onBlur={save}
+                                            />
+                                            <input
+                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                placeholder="Subtitle / Institution"
+                                                value={entry.subtitle}
+                                                onChange={e => updateCustomEntry(section.id, entry.id, 'subtitle', e.target.value)}
+                                                onBlur={save}
+                                            />
+                                            <div className="flex gap-2">
+                                                <input
+                                                    className="w-1/2 rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                    placeholder="Start date"
+                                                    value={entry.start_date}
+                                                    onChange={e => updateCustomEntry(section.id, entry.id, 'start_date', e.target.value)}
+                                                    onBlur={save}
+                                                />
+                                                <input
+                                                    className="w-1/2 rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                    placeholder="End date (or blank)"
+                                                    value={entry.end_date ?? ''}
+                                                    onChange={e => updateCustomEntry(section.id, entry.id, 'end_date', e.target.value || null)}
+                                                    onBlur={save}
+                                                />
+                                            </div>
+                                            <textarea
+                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                placeholder="Description"
+                                                rows={2}
+                                                value={entry.description}
+                                                onChange={e => updateCustomEntry(section.id, entry.id, 'description', e.target.value)}
+                                                onBlur={save}
+                                            />
+                                            <textarea
+                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                placeholder="Bullets (one per line)"
+                                                rows={3}
+                                                value={entry.bullets.join('\n')}
+                                                onChange={e => updateCustomEntry(section.id, entry.id, 'bullets', e.target.value.split('\n'))}
+                                                onBlur={save}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => { addCustomEntry(section.id); }}
+                                    className="mt-1 w-full rounded-b-lg bg-indigo-50 border-t border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100"
+                                >
+                                    + Add entry
+                                </button>
+                            </div>
+                        ))}
+
+                        {/* Add Section button */}
+                        {(customSectionLimit === null || customSections.length < customSectionLimit) ? (
+                            <button
+                                type="button"
+                                onClick={addCustomSection}
+                                className="mt-2 w-full rounded-lg border-2 border-dashed border-indigo-200 bg-white py-2.5 text-sm font-medium text-indigo-500 hover:border-indigo-400 hover:bg-indigo-50 transition"
+                            >
+                                + Add Custom Section
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => triggerUpgradeModal('custom_sections', 'starter')}
+                                className="mt-2 w-full rounded-lg border-2 border-dashed border-gray-200 bg-white py-2.5 text-sm font-medium text-[#a0a0b0] cursor-not-allowed"
+                            >
+                                🔒 Add Custom Section (Starter+)
+                            </button>
+                        )}
 
                         {/* Share Links */}
                         <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">

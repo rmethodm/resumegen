@@ -42,6 +42,22 @@ export interface CertEntry {
     date: string;
 }
 
+export interface CustomSectionEntry {
+    id: string;
+    title: string;
+    subtitle: string;
+    start_date: string;
+    end_date: string | null;
+    description: string;
+    bullets: string[];
+}
+
+export interface CustomSection {
+    id: string;
+    name: string;
+    entries: CustomSectionEntry[];
+}
+
 export type ResumeTemplate = 'classic' | 'minimal' | 'minimal-ruled' | 'executive' | 'ats';
 
 export interface FontSizes {
@@ -66,6 +82,7 @@ export interface ResumeData {
     education: EducationEntry[] | null;
     skills: string[] | null;
     certifications: CertEntry[] | null;
+    custom_sections: CustomSection[] | null;
     font_sizes: FontSizes | null;
 }
 
