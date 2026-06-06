@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { ResumeRow } from '@/types';
 import { DocumentDuplicateIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
 import PdfImportModal from './Partials/PdfImportModal';
 import GenerateResumeModal from './Partials/GenerateResumeModal';
@@ -24,8 +24,6 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
     const [creating, setCreating] = useState(false);
     const [showPdfImport, setShowPdfImport] = useState(false);
     const [showGenerate, setShowGenerate] = useState(false);
-    const [editingId, setEditingId] = useState<number | null>(null);
-    const [editingName, setEditingName] = useState('');
     const [search, setSearch] = useState('');
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
@@ -37,14 +35,6 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
         if (sortKey === k) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
         else { setSortKey(k); setSortDir('desc'); }
         setPage(1);
-    };
-
-    const startRename = (id: number, name: string) => { setEditingId(id); setEditingName(name); };
-    const commitRename = (id: number) => {
-        if (editingName.trim() && editingName.trim() !== resumes.find(r => r.id === id)?.name) {
-            router.patch(route('builder.update', id), { name: editingName.trim() }, { preserveScroll: true });
-        }
-        setEditingId(null);
     };
 
     const submit = (e: FormEvent) => {
@@ -168,7 +158,7 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                 <select
                                     value={pageSize}
                                     onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                                    className="rounded-lg border border-[#eeeef5] px-2 py-1 text-sm text-[#0f0f1a] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                    className="rounded-lg border border-[#eeeef5] px-2 py-1 text-sm leading-none text-[#0f0f1a] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
                                 >
                                     {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
                                 </select>
@@ -223,50 +213,36 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                     ) : pageRows.map(r => (
                                         <tr key={r.id} className="border-b border-[#f5f5fb] transition-colors hover:bg-[#fafafe]">
                                             <td className="px-5 py-4">
-                                                {editingId === r.id ? (
-                                                    <input
-                                                        autoFocus
-                                                        type="text"
-                                                        value={editingName}
-                                                        onChange={e => setEditingName(e.target.value)}
-                                                        onBlur={() => commitRename(r.id)}
-                                                        onKeyDown={e => { if (e.key === 'Enter') commitRename(r.id); if (e.key === 'Escape') setEditingId(null); }}
-                                                        className="rounded-lg border border-[#eeeef5] text-sm font-semibold focus:border-[#4f46e5] focus:ring-[#4f46e5]"
-                                                    />
-                                                ) : (
-                                                    <>
-                                                        <p className="cursor-pointer font-bold text-[#0f0f1a] hover:text-[#4f46e5]" title="Click to rename" onClick={() => startRename(r.id, r.name)}>
-                                                            {r.name}
-                                                        </p>
-                                                        <div className="mt-1 flex items-center gap-2">
-                                                            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#eeeef5]">
-                                                                <div
-                                                                    className={`h-full rounded-full ${
-                                                                        r.strength <= 40
-                                                                            ? 'bg-gradient-to-r from-red-400 to-red-500'
-                                                                            : r.strength <= 70
-                                                                              ? 'bg-gradient-to-r from-amber-400 to-amber-500'
-                                                                              : 'bg-gradient-to-r from-indigo-500 to-violet-600'
-                                                                    }`}
-                                                                    style={{ width: `${r.strength}%` }}
-                                                                />
-                                                            </div>
-                                                            <span
-                                                                className={`text-xs font-bold tabular-nums ${
-                                                                    r.strength <= 40
-                                                                        ? 'text-red-500'
-                                                                        : r.strength <= 70
-                                                                          ? 'text-amber-500'
-                                                                          : 'text-indigo-600'
-                                                                }`}
-                                                            >
-                                                                {r.strength}%
-                                                            </span>
-                                                        </div>
-                                                        {r.strength < 100 && (
-                                                            <p className="mt-0.5 text-xs text-[#a0a0b0]">{r.strength_tip}</p>
-                                                        )}
-                                                    </>
+                                                <Link href={route('builder.edit', r.id)} className="font-bold text-[#0f0f1a] hover:text-[#4f46e5]">
+                                                    {r.name}
+                                                </Link>
+                                                <div className="mt-1 flex items-center gap-2">
+                                                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#eeeef5]">
+                                                        <div
+                                                            className={`h-full rounded-full ${
+                                                                r.strength <= 40
+                                                                    ? 'bg-gradient-to-r from-red-400 to-red-500'
+                                                                    : r.strength <= 70
+                                                                      ? 'bg-gradient-to-r from-amber-400 to-amber-500'
+                                                                      : 'bg-gradient-to-r from-indigo-500 to-violet-600'
+                                                            }`}
+                                                            style={{ width: `${r.strength}%` }}
+                                                        />
+                                                    </div>
+                                                    <span
+                                                        className={`text-xs font-bold tabular-nums ${
+                                                            r.strength <= 40
+                                                                ? 'text-red-500'
+                                                                : r.strength <= 70
+                                                                  ? 'text-amber-500'
+                                                                  : 'text-indigo-600'
+                                                        }`}
+                                                    >
+                                                        {r.strength}%
+                                                    </span>
+                                                </div>
+                                                {r.strength < 100 && (
+                                                    <p className="mt-0.5 text-xs text-[#a0a0b0]">{r.strength_tip}</p>
                                                 )}
                                             </td>
                                             <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(r.updated_at)}</td>
