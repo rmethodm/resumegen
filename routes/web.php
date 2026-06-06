@@ -17,6 +17,7 @@ use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
+use App\Http\Controllers\ResumeGeneratorController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\TailorController;
 use App\Http\Controllers\UsageController;
@@ -100,6 +101,10 @@ Route::middleware(['auth', 'two_factor_challenge', 'two_factor_setup'])->group(f
 
     Route::get('/usage', [UsageController::class, 'index'])->name('usage.index');
     Route::get('/messages', fn () => Inertia::render('Messages/Index'))->name('messages.index');
+
+    Route::post('/builder/generate', [ResumeGeneratorController::class, 'generate'])
+        ->name('builder.generate')
+        ->middleware('throttle:3,1');
 
     Route::post('/import/pdf', [PdfImportController::class, 'extract'])
         ->name('import.pdf.extract')
