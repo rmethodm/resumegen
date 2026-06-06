@@ -5,6 +5,7 @@ import { DocumentDuplicateIcon, PencilSquareIcon, TrashIcon } from '@heroicons/r
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
 import PdfImportModal from './Partials/PdfImportModal';
+import GenerateResumeModal from './Partials/GenerateResumeModal';
 
 type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; canGenerate: boolean };
 type SortKey = 'name' | 'updated_at';
@@ -18,10 +19,11 @@ function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortD
     );
 }
 
-export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, canGenerate: _canGenerate }: Props) {
+export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, canGenerate }: Props) {
     const atLimit = resumeLimit !== null && resumeCount >= resumeLimit;
     const [creating, setCreating] = useState(false);
     const [showPdfImport, setShowPdfImport] = useState(false);
+    const [showGenerate, setShowGenerate] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editingName, setEditingName] = useState('');
     const [search, setSearch] = useState('');
@@ -112,6 +114,23 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                         className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 transition"
                                     >
                                         🔒 Import PDF
+                                    </button>
+                                )}
+                                {canGenerate ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowGenerate(true)}
+                                        className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                                    >
+                                        ✨ Generate
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => triggerUpgradeModal('generate', 'starter')}
+                                        className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
+                                    >
+                                        🔒 Generate
                                     </button>
                                 )}
                                 <button
@@ -307,6 +326,7 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                     onClose={() => setShowPdfImport(false)}
                 />
             )}
+            {showGenerate && <GenerateResumeModal onClose={() => setShowGenerate(false)} />}
         </AuthenticatedLayout>
     );
 }

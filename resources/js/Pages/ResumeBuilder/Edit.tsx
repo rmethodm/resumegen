@@ -227,6 +227,9 @@ export default function Edit({
     const { pdfImported } = usePage().props as { pdfImported?: boolean };
     const [showPdfBanner, setShowPdfBanner] = useState(!!pdfImported);
 
+    const { resumeGenerated } = usePage().props as { resumeGenerated?: boolean };
+    const [showGeneratedBanner, setShowGeneratedBanner] = useState(!!resumeGenerated);
+
     const [ats, setAts] = useState<AtsScore | null>(null);
     const [atsLoading, setAtsLoading] = useState(false);
     const [atsOpen, setAtsOpen] = useState(false);
@@ -680,6 +683,13 @@ export default function Edit({
                         <div className="mb-4 flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm">
                             <span className="text-blue-700">📄 Imported from PDF — review and edit your details.</span>
                             <button type="button" onClick={() => setShowPdfBanner(false)} className="ml-3 text-blue-400 hover:text-blue-600">✕</button>
+                        </div>
+                    )}
+
+                    {showGeneratedBanner && (
+                        <div className="mb-4 flex items-center justify-between rounded-lg border border-violet-200 bg-violet-50 px-4 py-2.5 text-sm">
+                            <span className="text-violet-700">✨ AI-generated draft — review and personalize your resume.</span>
+                            <button type="button" onClick={() => setShowGeneratedBanner(false)} className="ml-3 text-violet-400 hover:text-violet-600">✕</button>
                         </div>
                     )}
 
