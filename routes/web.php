@@ -41,6 +41,7 @@ Route::middleware(['auth', 'two_factor_challenge', 'two_factor_setup'])->group(f
     Route::delete('/profile/tokens/{tokenId}', [PersonalTokenController::class, 'destroy'])->name('profile.tokens.destroy');
 
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+    Route::patch('/user/profile-info', [ProfileController::class, 'updatePersona'])->name('profile.persona');
 
     Route::post('/user/two-factor-authentication', [TwoFactorController::class, 'store'])
         ->name('two-factor.enable');

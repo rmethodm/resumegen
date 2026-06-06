@@ -40,6 +40,7 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
+            'profile' => $user->profile ?? [],
             'tokens' => $user->tokens->map(fn ($t) => [
                 'id' => $t->id,
                 'name' => $t->name,
@@ -52,6 +53,27 @@ class ProfileController extends Controller
                 'recoveryCodes' => session('two_factor_recovery_codes'),
             ],
         ]);
+    }
+
+    /**
+     * Update the user's persona profile (contact defaults).
+     */
+    public function updatePersona(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'full_name' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'linkedin_url' => ['nullable', 'url', 'max:255'],
+            'website' => ['nullable', 'url', 'max:255'],
+        ]);
+
+        $request->user()->update([
+            'profile' => array_filter($request->only(['full_name', 'email', 'phone', 'location', 'linkedin_url', 'website']), fn ($v) => $v !== null),
+        ]);
+
+        return Redirect::route('profile.edit');
     }
 
     /**

@@ -68,6 +68,21 @@ class UserLimits
         return $user->isAtLeastStarter();
     }
 
+    public static function canPdfImport(User $user): bool
+    {
+        return $user->isAtLeastStarter();
+    }
+
+    public static function canGenerate(User $user): bool
+    {
+        return $user->isAtLeastStarter();
+    }
+
+    public static function canCoverLetterTailor(User $user): bool
+    {
+        return $user->isAtLeastStarter();
+    }
+
     public static function customSectionLimit(User $user): ?int
     {
         return $user->planTier() === 'free' ? 2 : null;

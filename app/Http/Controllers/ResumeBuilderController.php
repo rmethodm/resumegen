@@ -65,6 +65,10 @@ class ResumeBuilderController extends Controller
             'pdf_filename' => Str::uuid().'.pdf',
         ]);
 
+        if ($user->profile) {
+            $resume->update(['contact' => $user->profile]);
+        }
+
         return redirect()->route('builder.edit', $resume->id);
     }
 
