@@ -5,7 +5,7 @@ import AISuggestButton from '@/Components/AISuggestButton';
 import TailorModal from './TailorModal';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { TagIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import {
     DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors,
     type DragEndEvent,
@@ -223,6 +223,9 @@ export default function Edit({
     const [showAcademicBanner, setShowAcademicBanner] = useState(
         template === 'academic' && (resume.custom_sections ?? []).length === 0
     );
+
+    const { pdfImported } = usePage().props as { pdfImported?: boolean };
+    const [showPdfBanner, setShowPdfBanner] = useState(!!pdfImported);
 
     const [ats, setAts] = useState<AtsScore | null>(null);
     const [atsLoading, setAtsLoading] = useState(false);
@@ -672,6 +675,13 @@ export default function Edit({
 
                 {/* LEFT: Form */}
                 <div className="shrink-0 overflow-y-auto bg-[#f5f5fb] p-6" style={{ width: leftWidth + '%' }}>
+
+                    {showPdfBanner && (
+                        <div className="mb-4 flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm">
+                            <span className="text-blue-700">📄 Imported from PDF — review and edit your details.</span>
+                            <button type="button" onClick={() => setShowPdfBanner(false)} className="ml-3 text-blue-400 hover:text-blue-600">✕</button>
+                        </div>
+                    )}
 
                     {showAcademicBanner && (
                         <div className="mb-4 flex items-start gap-3 rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm">

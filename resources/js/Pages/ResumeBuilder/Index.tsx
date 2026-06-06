@@ -1,10 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { ResumeRow } from '@/types';
 import { DocumentDuplicateIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
+import PdfImportModal from './Partials/PdfImportModal';
 
-type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null };
+type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; canGenerate: boolean };
 type SortKey = 'name' | 'updated_at';
 
 function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortDir: 'asc' | 'desc' }) {
@@ -16,9 +18,10 @@ function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortD
     );
 }
 
-export default function Index({ resumes, resumeCount, resumeLimit }: Props) {
+export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, canGenerate: _canGenerate }: Props) {
     const atLimit = resumeLimit !== null && resumeCount >= resumeLimit;
     const [creating, setCreating] = useState(false);
+    const [showPdfImport, setShowPdfImport] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editingName, setEditingName] = useState('');
     const [search, setSearch] = useState('');
@@ -93,13 +96,32 @@ export default function Index({ resumes, resumeCount, resumeLimit }: Props) {
                             <p className="mt-1 text-sm text-[#a0a0b0]">{resumeCount} resume{resumeCount !== 1 ? 's' : ''}</p>
                         </div>
                         {!creating && (
-                            <button
-                                onClick={() => atLimit ? undefined : setCreating(true)}
-                                title={atLimit ? `Upgrade to unlock more resumes (${resumeCount}/${resumeLimit} used)` : undefined}
-                                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition ${atLimit ? 'cursor-not-allowed bg-[#a0a0b0]' : 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] hover:opacity-90'}`}
-                            >
-                                {atLimit ? `+ New Resume (${resumeCount}/${resumeLimit})` : '+ New Resume'}
-                            </button>
+                            <div className="flex items-center gap-2">
+                                {canPdfImport ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPdfImport(true)}
+                                        className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 transition"
+                                    >
+                                        ⬆ Import PDF
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => triggerUpgradeModal('pdf_import', 'starter')}
+                                        className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 transition"
+                                    >
+                                        🔒 Import PDF
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => atLimit ? undefined : setCreating(true)}
+                                    title={atLimit ? `Upgrade to unlock more resumes (${resumeCount}/${resumeLimit} used)` : undefined}
+                                    className={`rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition ${atLimit ? 'cursor-not-allowed bg-[#a0a0b0]' : 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] hover:opacity-90'}`}
+                                >
+                                    {atLimit ? `+ New Resume (${resumeCount}/${resumeLimit})` : '+ New Resume'}
+                                </button>
+                            </div>
                         )}
                         {creating && (
                             <form onSubmit={submit} className="flex items-center gap-2">
@@ -279,6 +301,12 @@ export default function Index({ resumes, resumeCount, resumeLimit }: Props) {
                     </div>
                 </div>
             </div>
+            {showPdfImport && (
+                <PdfImportModal
+                    resumes={resumes.map(r => ({ id: r.id, name: r.name }))}
+                    onClose={() => setShowPdfImport(false)}
+                />
+            )}
         </AuthenticatedLayout>
     );
 }

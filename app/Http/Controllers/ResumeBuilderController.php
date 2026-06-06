@@ -41,6 +41,8 @@ class ResumeBuilderController extends Controller
             'resumeCount' => $resumes->count(),
             'resumeLimit' => UserLimits::resumeLimit($user),
             'allowedTemplates' => UserLimits::allowedTemplates($user),
+            'canPdfImport' => UserLimits::canPdfImport($user),
+            'canGenerate' => UserLimits::canGenerate($user),
         ]);
     }
 
