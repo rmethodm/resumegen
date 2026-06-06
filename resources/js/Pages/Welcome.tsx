@@ -205,6 +205,41 @@ export default function Welcome({ auth }: PageProps) {
                             </div>
                         </div>
                         {/* end slide 0 */}
+                        {/* Slide 1 — Cover Letters */}
+                        <div className={`absolute inset-0 flex bg-[#f9fafb] transition-opacity duration-500 ${activeSlide === 1 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                            {/* Letter list sidebar */}
+                            <div className="w-40 flex-shrink-0 border-r border-[#f3f4f6] bg-[#fafafa] px-3 py-3 sm:w-48">
+                                <p className="mb-2 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">My Cover Letters</p>
+                                <div className="mb-1.5 rounded-md border border-[#4f46e5] bg-[#eef2ff] px-2 py-2">
+                                    <p className="text-[9px] font-bold text-[#4f46e5]">Google — SWE L5</p>
+                                    <p className="text-[7px] text-[#818cf8]">Modern template</p>
+                                </div>
+                                <div className="mb-1.5 rounded-md border border-[#f3f4f6] bg-white px-2 py-2">
+                                    <p className="text-[9px] font-bold text-[#374151]">Stripe — PM</p>
+                                    <p className="text-[7px] text-[#9ca3af]">Standard template</p>
+                                </div>
+                                <div className="rounded-md border border-[#f3f4f6] bg-white px-2 py-2">
+                                    <p className="text-[9px] font-bold text-[#374151]">Airbnb — Design</p>
+                                    <p className="text-[7px] text-[#9ca3af]">Career change</p>
+                                </div>
+                            </div>
+                            {/* Letter editor */}
+                            <div className="flex-1 px-5 py-4">
+                                <p className="mb-3 text-[11px] font-black text-[#0f172a]">Google — Software Engineer L5</p>
+                                <div className="mb-1.5 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1.5 h-1.5 w-11/12 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-3 h-1.5 w-4/5 rounded-full bg-[#e0e7ff]" />
+                                <div className="mb-1.5 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1.5 h-1.5 w-10/12 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1.5 h-1.5 w-3/4 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-3 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-1.5 w-11/12 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-3 h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
+                                <span className="inline-flex items-center gap-1 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[9px] font-bold text-[#4f46e5]">
+                                    ✦ AI tailored
+                                </span>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </section>
