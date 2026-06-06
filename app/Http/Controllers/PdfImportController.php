@@ -17,12 +17,15 @@ class PdfImportController extends Controller
             return response()->json(['error' => 'Upgrade required', 'required_tier' => 'starter'], 402);
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'file' => ['required', 'file', 'mimes:pdf', 'max:5120'],
+            'hint' => ['nullable', 'string', 'in:generic,linkedin'],
         ]);
 
+        $hint = $validated['hint'] ?? 'generic';
+
         try {
-            $result = (new PdfResumeParser)->parse($request->file('file'), $request->user());
+            $result = (new PdfResumeParser)->parse($request->file('file'), $request->user(), $hint);
         } catch (\RuntimeException $e) {
             $message = $e->getMessage() === 'content_policy'
                 ? 'Content policy violation'
@@ -31,7 +34,7 @@ class PdfImportController extends Controller
             return response()->json(['error' => $message], 422);
         }
 
-        return response()->json($result);
+        return response()->json(array_merge($result, ['hint' => $hint]));
     }
 
     public function confirm(Request $request): RedirectResponse
@@ -41,9 +44,11 @@ class PdfImportController extends Controller
             'action' => ['required', 'in:new,overwrite'],
             'resume_id' => ['nullable', 'integer'],
             'name' => ['required_if:action,new', 'nullable', 'string', 'max:255'],
+            'hint' => ['nullable', 'string', 'in:generic,linkedin'],
         ]);
 
         $user = $request->user();
+        $hint = $validated['hint'] ?? 'generic';
 
         if ($validated['action'] === 'new') {
             $resume = $user->resumes()->create(array_merge(
@@ -56,6 +61,8 @@ class PdfImportController extends Controller
             $resume->update($validated['data']);
         }
 
-        return redirect()->route('builder.edit', $resume)->with('pdfImported', true);
+        $flashKey = $hint === 'linkedin' ? 'linkedInImported' : 'pdfImported';
+
+        return redirect()->route('builder.edit', $resume)->with($flashKey, true);
     }
 }
