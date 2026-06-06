@@ -173,6 +173,64 @@ export default function Welcome({ auth }: PageProps) {
                     </div>
                 </section>
 
+                {/* ── Social proof bar ──────────────────────────── */}
+                <div className="border-y border-[#f1f5f9] bg-[#f8fafc] py-4 px-6">
+                    <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-10 gap-y-3">
+                        {[
+                            { num: '2,400+', label: 'resumes built' },
+                            { num: '8',      label: 'ATS-ready templates' },
+                            { num: 'Free',   label: 'to get started' },
+                            { num: 'AI',     label: 'powered suggestions' },
+                        ].map(({ num, label }) => (
+                            <div key={label} className="flex items-center gap-2">
+                                <span className="text-lg font-black text-[#0f172a]">{num}</span>
+                                <span className="text-sm text-[#9ca3af]">{label}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* ── How it works ──────────────────────────────── */}
+                <section id="how-it-works" className="bg-white px-6 py-20">
+                    <div className="mx-auto max-w-4xl">
+                        <h2 className="mb-2 text-center text-3xl font-black tracking-tight text-[#0f172a]">
+                            Get hired in 3 steps
+                        </h2>
+                        <p className="mb-14 text-center text-sm text-[#6b7280]">
+                            From blank page to interview-ready in minutes
+                        </p>
+                        <div className="relative grid grid-cols-1 gap-12 sm:grid-cols-3">
+                            {/* Connector line (desktop only) */}
+                            <div className="pointer-events-none absolute left-[calc(16.67%+22px)] right-[calc(16.67%+22px)] top-[22px] hidden h-px bg-gradient-to-r from-[#c7d2fe] via-[#a5b4fc] to-[#c7d2fe] sm:block" />
+                            {[
+                                {
+                                    n: '1',
+                                    title: 'Import or start fresh',
+                                    desc: 'Upload your LinkedIn PDF or start from scratch. Our AI parses your experience instantly.',
+                                },
+                                {
+                                    n: '2',
+                                    title: 'Let AI improve it',
+                                    desc: 'Generate stronger bullet points, rewrite your summary, and tailor your skills to any job description.',
+                                },
+                                {
+                                    n: '3',
+                                    title: 'Share & apply',
+                                    desc: 'Download as PDF or DOCX, or share a live public link recruiters can view anytime.',
+                                },
+                            ].map(({ n, title, desc }) => (
+                                <div key={n} className="relative text-center">
+                                    <div className="relative z-10 mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] shadow-lg shadow-[#4f46e5]/30">
+                                        <span className="text-base font-black text-white">{n}</span>
+                                    </div>
+                                    <h3 className="mb-2 text-[15px] font-black text-[#0f172a]">{title}</h3>
+                                    <p className="text-sm leading-relaxed text-[#6b7280]">{desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
                 {/* Sections added in subsequent tasks */}
 
             </div>
