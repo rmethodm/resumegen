@@ -98,6 +98,18 @@ class ResumeGeneratorTest extends TestCase
             ->assertUnprocessable();
     }
 
+    public function test_generate_is_blocked_at_resume_limit(): void
+    {
+        $user = User::factory()->starter()->create();
+        $user->resumes()->createMany(array_fill(0, 5, ['name' => 'Resume']));
+
+        $this->actingAs($user)
+            ->post(route('builder.generate'), $this->validPayload())
+            ->assertRedirect();
+
+        $this->assertSame(5, $user->resumes()->count());
+    }
+
     public function test_key_skills_cannot_exceed_10_items(): void
     {
         $user = User::factory()->starter()->create();

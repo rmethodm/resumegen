@@ -66,15 +66,6 @@ EOT;
             $data = json_decode($raw['content'][0]['text'] ?? '', true);
         }
 
-        if (! is_array($data)) {
-            throw new \RuntimeException('AI response could not be parsed. Please try again.');
-        }
-
-        // Always override AI-generated contact with the user's real profile data
-        if (! empty($profile)) {
-            $data['contact'] = array_merge($data['contact'] ?? [], $profile);
-        }
-
         AiUsageLogger::log(
             user: $user,
             provider: 'anthropic',
@@ -83,6 +74,15 @@ EOT;
             inputTokens: $inputTokens,
             outputTokens: $outputTokens,
         );
+
+        if (! is_array($data)) {
+            throw new \RuntimeException('AI response could not be parsed. Please try again.');
+        }
+
+        // Always override AI-generated contact with the user's real profile data
+        if (! empty($profile)) {
+            $data['contact'] = array_merge($data['contact'] ?? [], $profile);
+        }
 
         return $data;
     }

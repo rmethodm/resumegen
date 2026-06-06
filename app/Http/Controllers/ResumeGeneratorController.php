@@ -23,6 +23,21 @@ class ResumeGeneratorController extends Controller
             return back()->with('featureGate', ['feature' => 'generate', 'requiredTier' => 'starter']);
         }
 
+        $limit = UserLimits::resumeLimit($user);
+        if ($limit !== null && $user->resumes()->count() >= $limit) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'error' => 'Resume limit reached',
+                    'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+                ], 402);
+            }
+
+            return back()->with('featureGate', [
+                'feature' => 'resume_limit',
+                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ]);
+        }
+
         $validated = $request->validate([
             'target_role' => ['required', 'string', 'max:100'],
             'years_experience' => ['required', 'integer', 'min:0', 'max:40'],
