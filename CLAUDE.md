@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Media:** `spatie/laravel-medialibrary` (installed, migration exists, not yet used)
 - **Routing on the frontend:** Ziggy (`route()` helper available globally in React via `resources/js/types/global.d.ts`)
 - **AI suggestions:** `openai-php/client` for OpenAI; raw `Http::post` for Anthropic Claude — keys in `config/services.php` (`services.anthropic.key`, `services.openai.key`). Never call `env()` directly in app code; always use `config()`.
-- **Billing:** `laravel/cashier-stripe` — `User` uses `Billable` trait. Stripe price IDs in `config/services.php` (`services.stripe.monthly_price_id`, `services.stripe.yearly_price_id`). Subscription name is `'default'`.
+- **Billing:** `laravel/cashier-stripe` — `User` uses `Billable` trait. Stripe price IDs in `config/services.php`: `services.stripe.starter_monthly_price_id`, `services.stripe.starter_yearly_price_id`, `services.stripe.pro_monthly_price_id`, `services.stripe.pro_yearly_price_id`. Subscription name is `'default'`.
 
 ## Commands
 
@@ -60,7 +60,7 @@ All resume content is stored as JSON columns on a single `resumes` table (no sep
 Pages live in `resources/js/Pages/`. The core feature is `ResumeBuilder/Edit.tsx`, which is a resizable split-panel editor + live preview. It uses `onBlur` on every field to trigger a `router.put` save (no debounce timer). State for all resume sections is managed with `useState`; refs mirror current state so the `save` callback never captures stale closures. The panel divider is draggable (`leftWidth` state, `handleDividerMouseDown`); widths are tracked as percentages.
 
 ### Shared Inertia props
-`HandleInertiaRequests::share()` passes `auth.user` to every page. Access it in React via `usePage().props.auth.user`.
+`HandleInertiaRequests::share()` passes `auth.user` and `featureGate` to every page. Access auth in React via `usePage().props.auth.user`. `featureGate` is a flash-based value (`session()->pull('featureGate')`) — any controller can flash it to surface the `UpgradeModal` without per-page wiring.
 
 ### Frontend routing
 Use Ziggy's `route('named.route', params)` helper — it's globally typed in `resources/js/types/global.d.ts`. Never hardcode URL strings.
@@ -70,6 +70,8 @@ Use Ziggy's `route('named.route', params)` helper — it's globally typed in `re
 
 ### Share links and public view
 `ResumeShareLink` stores a 48-char random token (auto-generated in `booted()`). The public route `/r/{token}` is unauthenticated and renders `ResumeBuilder/PublicView.tsx` via `PublicLayout`. `GET /r/{token}/pdf` serves a public PDF download. If the share link is expired or disabled, `ResumeBuilder/LinkExpired.tsx` is rendered. Questions submitted via the public view are stored in `resume_questions` and shown in the collapsible "Questions" panel on the Edit page. `sender_phone` is optional on the question form. When a question is submitted, `NewQuestionReceived` mailable is sent to the resume owner. Share link management routes: `PATCH /builder/{resume}/share/{link}` (update, e.g. toggle active), `DELETE /builder/{resume}/share/{link}` (delete). Question read-state routes: `PATCH /builder/{resume}/questions/{question}/read` and `PATCH /builder/{resume}/questions/read-all`.
+
+`PublicView.tsx` shows a sticky conversion header and fixed footer CTA ("Made with Resumegen · Build yours free →") to unauthenticated visitors only — hidden when `auth.user` is present. The editor's Share button opens a popover with a read-only URL, copy button, LinkedIn share link, and X (Twitter) share link. The URL is fetched from `GET /builder/{resume}/share-url` on first click (auto-creates an active share link).
 
 ### Analytics
 `ResumeShareEvent` is an append-only table (no `updated_at`) that logs `page_view`, `pdf_download`, and `question_submitted` events. Logging is best-effort (wrapped in try/catch) so it never crashes a public request. `AnalyticsController` aggregates per-resume stats and drives the Dashboard. Unique visitor count uses `COUNT(DISTINCT ip_hash || DATE(created_at))`.
@@ -83,16 +85,51 @@ Eight templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `cr
 ### Font sizes
 `font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor save on blur, which triggers a `pdfSrc` refresh so the iframe preview reflects the new sizes via the server-rendered PDF.
 
+### PDF import (including LinkedIn)
+`POST /builder/import` (two-step: extract then confirm) via `PdfImportController`. `extract()` accepts a `file` (PDF, max 5 MB) and optional `hint` (`generic` | `linkedin`). `confirm()` accepts the extracted data JSON, `action` (`new` | `overwrite`), `resume_id`, `name`, and `hint`. The hint is forwarded to `PdfResumeParser` which routes to a LinkedIn-specific Claude prompt when `hint === 'linkedin'`. On confirm, flashes `linkedInImported` (teal banner) or `pdfImported` (indigo banner) to `Edit.tsx`. Free users can import (no tier gate). `PdfImportModal.tsx` has two tabs — "PDF Resume" and "From LinkedIn" — the LinkedIn tab shows step-by-step download instructions.
+
 ### ATS score
-`GET /builder/{resume}/ats-score` (throttled 10 req/min) returns a JSON score via `AtsScoreController` → `AtsScorer` service. Requires resume ownership (`authorize('update', $resume)`). `DELETE /builder/{resume}/ats-score` clears the cached score.
+`GET /builder/{resume}/ats-score` (throttled 10 req/min) returns a JSON score via `AtsScoreController` → `AtsScorer` service. Requires resume ownership (`authorize('update', $resume)`). `DELETE /builder/{resume}/ats-score` clears the cached score. Free users get 3 uses/month (tracked via `ai_usage_logs` with `feature: 'ats_score'`); Starter+ is unlimited. `atsUsesRemaining` prop passed to `Edit.tsx` (`null` for Starter+, integer for free).
+
+### DOCX export
+`GET /builder/{resume}/docx` streams a Word document via `DocxGenerator` (phpoffice/phpword). Gated to Starter+ via `UserLimits::canDocx()` — free users get a `featureGate` redirect. The `canDocx` prop is passed to `Edit.tsx` to show a `🔒 DOCX` locked button.
+
+### Job tailoring
+`POST /builder/{resume}/tailor` (throttled 5 req/min) accepts a `job_description` string (50–5000 chars) and returns `{ summary, keywords, score }` via `TailorController`. AI analyzes the JD against the resume and suggests a tailored summary, up to 8 missing keywords, and a 0–100 match score. Gated to Starter+ via `UserLimits::canTailor()` — free users get a 402 JSON response. The `canTailor` prop is passed to `Edit.tsx` to show a `🔒 Tailor to Job` locked button. Usage is logged to `ai_usage_logs` with `feature: 'tailor'`.
+
+### Interview Prep Coach
+`POST /builder/{resume}/interview-coach` (throttled 5 req/min) accepts `target_role` (required, max 100) and optional `job_description` (max 3000). Returns `{ questions: [{ question, hint }] }` — up to 8 STAR-framework questions via `InterviewCoachController` → `InterviewCoachService`. Usage logged to `ai_usage_logs` with `feature: 'interview_coach'`. Free users get 3 uses/month then see a 402 upgrade response. `canInterviewCoach` and `interviewCoachUsesRemaining` props passed to `Edit.tsx`. The slide-in `InterviewCoachPanel.tsx` follows the same z-40/z-30 pattern as other panels. `AbuseFilter::check()` applied to both user-supplied fields.
+
+### Share URL endpoint
+`GET /builder/{resume}/share-url` returns `{ url }` JSON via `ResumeBuilderController@shareUrl`. Auto-creates an active `ResumeShareLink` if none exists (or only inactive links exist). Named `builder.share-url`. Used by the Share popover in `Edit.tsx` to get a shareable link on demand without a page refresh.
 
 ### Resume duplicate
 `POST /builder/{resume}/duplicate` creates a copy of a resume (owned by the current user). Handled by `ResumeBuilderController@duplicate`.
 
-### Billing and free-tier limits
-`BillingController` drives `Billing/Index.tsx`. Free users are capped at 5 resumes (`resumeLimit: 5`; Pro gets `null`). When the limit is hit, `limitReached` is flashed in the session and the builder redirects to the billing page. The `checkout` action creates a Stripe Checkout session; `portal` redirects to the Stripe customer portal.
+### Pricing tiers and limits
+The app enforces a 3-tier model: **Free** / **Starter** ($9/mo) / **Pro** ($19/mo). All limits live in `App\Services\UserLimits` — the single source of truth.
 
-Pro access is determined by `User::isPro()`: returns `true` if `is_master_admin`, `is_pro`, or `subscribed('default')`. `is_pro` is a boolean column on `users` that admins can toggle directly (bypassing Stripe) via the admin panel.
+| | Free | Starter | Pro |
+|---|---|---|---|
+| Resumes | 5 | 5 | unlimited |
+| Cover letters | 3 | 5 | unlimited |
+| Job applications | 3 | unlimited | unlimited |
+| AI suggestions | 30/mo | 30/mo | 500/mo |
+| Templates | all 8 | all 8 | all 8 |
+| DOCX export | ✗ | ✓ | ✓ |
+| ATS scoring | 3/mo | unlimited | unlimited |
+| Job tailoring | ✗ | ✓ | ✓ |
+| Interview coach | 3/mo | unlimited | unlimited |
+
+`User::planTier()` resolves: `is_master_admin` → `'pro'`; `is_pro` → `'pro'`; else returns `plan_tier` column value (`'free'`/`'starter'`/`'pro'`). `plan_tier` is kept in sync with Stripe via a Subscription observer in `AppServiceProvider`.
+
+`User::isPro()` is unchanged (returns `true` for `is_master_admin`, `is_pro`, or `subscribed('default')`). `is_pro` is a boolean column on `users` that admins can toggle via the admin panel.
+
+`UserFactory` has `->free()`, `->starter()`, `->pro()` states — use these in tests instead of creating Stripe subscriptions.
+
+**Gate responses:** Inertia routes flash `featureGate` to the session (`back()->with('featureGate', [...])`), which `HandleInertiaRequests::share()` pulls and sends to every page. API/JSON routes return HTTP 402 with `{ error, required_tier }`. The `UpgradeModal` component (`resources/js/Components/UpgradeModal.tsx`) handles both paths — flash-based (Inertia) and event-based (`triggerUpgradeModal(feature, requiredTier)` for XHR responses).
+
+`BillingController` drives `Billing/Index.tsx` (3-card layout: Free / Starter / Pro). The `checkout` action requires both `interval` (monthly/yearly) and `tier` (starter/pro) params. `portal` redirects to the Stripe customer portal.
 
 ### Cover letters
 Full CRUD at `/cover-letters` → `CoverLetterController` → `CoverLetter/Index.tsx` + `CoverLetter/Edit.tsx`. Letters are created from pre-built templates via `App\Data\CoverLetterTemplates`. Each letter has a `template_key`, `name`, `body` (raw text), and optional `resume_id` foreign key.
@@ -105,6 +142,11 @@ Full CRUD at `/jobs` → `JobApplicationController` → `Jobs/Index.tsx` + `Jobs
 
 ### AI suggestions
 `AiSuggestController` handles `POST /builder/{resume}/ai-suggest` (throttled to 10 requests/minute). Supports `field` values: `summary`, `bullets`, `skills`, `title`. Provider is selected per-request (`claude` or `openai`); the active provider is persisted in `localStorage` under `resumegen_ai_provider`. Both keys are checked via `config('services.anthropic.key')` and `config('services.openai.key')` — never `env()` directly.
+
+**Abuse safeguards** (all enforced server-side before the API call):
+- `App\Services\AbuseFilter::check(string $text): bool` — regex block list for prompt injection phrases (`ignore instructions`, `act as`, `jailbreak`, etc.). Returns 422 `{ "error": "Content policy violation" }` on match. Applied to all user-supplied context fields in `AiSuggestController`, `TailorController`, and `InterviewCoachController`.
+- Field-length caps on `context`: `title` 100, `company` 150, `summary` 1500, `bullets` 1500, `skills` array 50 items × 50 chars each.
+- All user values are wrapped in `<user_content>` XML tags in every prompt string to prevent injection.
 
 ### AI usage tracking
 Every AI suggest call (web and API) logs to `ai_usage_logs` via `AiUsageLogger::log()`. The logger looks up cost rates from `ai_model_rates` (keyed by `provider` + `model` + `effective_from` date) and stores `input_tokens`, `output_tokens`, and `cost_usd`. Both models are append-only with no `updated_at`. `GET /usage` → `UsageController` → `Usage/Index.tsx` shows per-user totals and a 30-day activity log. The admin panel has its own aggregated view across all users (see Admin panel section).
@@ -119,6 +161,10 @@ Routes under `/admin` are guarded by `auth` + `master_admin` middleware (`Ensure
 
 ### Rate limiting
 - AI suggest endpoint: `throttle:10,1` (10 req/min)
+- ATS score endpoint: `throttle:10,1` (10 req/min)
+- Job tailor endpoint: `throttle:5,1` (5 req/min)
+- Interview coach endpoint: `throttle:5,1` (5 req/min)
+- API login: `throttle:10,1` (10 req/min)
 - Public question form (`POST /r/{token}/questions`): `throttle:5,1` (5 req/min)
 
 ### API layer (token-based, for iPhone app)
@@ -355,3 +401,85 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Always activate the `medialibrary-development` skill when working with media uploads, conversions, collections, responsive images, or any code that uses the `HasMedia` interface or `InteractsWithMedia` trait.
 
 </laravel-boost-guidelines>
+
+<!-- dgc-policy-v11 -->
+# Dual-Graph Context Policy
+
+This project uses a local dual-graph MCP server for efficient context retrieval.
+
+## MANDATORY: Always follow this order
+
+1. **Call `graph_continue` first** — before any file exploration, grep, or code reading.
+
+2. **If `graph_continue` returns `needs_project=true`**: call `graph_scan` with the
+   current project directory (`pwd`). Do NOT ask the user.
+
+3. **If `graph_continue` returns `skip=true`**: project has fewer than 5 files.
+   Do NOT do broad or recursive exploration. Read only specific files if their names
+   are mentioned, or ask the user what to work on.
+
+4. **Read `recommended_files`** using `graph_read` — **one call per file**.
+   - `graph_read` accepts a single `file` parameter (string). Call it separately for each
+     recommended file. Do NOT pass an array or batch multiple files into one call.
+   - `recommended_files` may contain `file::symbol` entries (e.g. `src/auth.ts::handleLogin`).
+     Pass them verbatim to `graph_read(file: "src/auth.ts::handleLogin")` — it reads only
+     that symbol's lines, not the full file.
+   - Example: if `recommended_files` is `["src/auth.ts::handleLogin", "src/db.ts"]`,
+     call `graph_read(file: "src/auth.ts::handleLogin")` and `graph_read(file: "src/db.ts")`
+     as two separate calls (they can be parallel).
+
+5. **Check `confidence` and obey the caps strictly:**
+   - `confidence=high` -> Stop. Do NOT grep or explore further.
+   - `confidence=medium` -> If recommended files are insufficient, call `fallback_rg`
+     at most `max_supplementary_greps` time(s) with specific terms, then `graph_read`
+     at most `max_supplementary_files` additional file(s). Then stop.
+   - `confidence=low` -> Call `fallback_rg` at most `max_supplementary_greps` time(s),
+     then `graph_read` at most `max_supplementary_files` file(s). Then stop.
+
+## Token Usage
+
+A `token-counter` MCP is available for tracking live token usage.
+
+- To check how many tokens a large file or text will cost **before** reading it:
+  `count_tokens({text: "<content>"})`
+- To log actual usage after a task completes (if the user asks):
+  `log_usage({input_tokens: <est>, output_tokens: <est>, description: "<task>"})`
+- To show the user their running session cost:
+  `get_session_stats()`
+
+Live dashboard URL is printed at startup next to "Token usage".
+
+## Rules
+
+- Do NOT use `rg`, `grep`, or bash file exploration before calling `graph_continue`.
+- Do NOT do broad/recursive exploration at any confidence level.
+- `max_supplementary_greps` and `max_supplementary_files` are hard caps - never exceed them.
+- Do NOT dump full chat history.
+- Do NOT call `graph_retrieve` more than once per turn.
+- After edits, call `graph_register_edit` with the changed files. Use `file::symbol` notation (e.g. `src/auth.ts::handleLogin`) when the edit targets a specific function, class, or hook.
+
+## Context Store
+
+Whenever you make a decision, identify a task, note a next step, fact, or blocker during a conversation, call `graph_add_memory`.
+
+**To add an entry:**
+```
+graph_add_memory(type="decision|task|next|fact|blocker", content="one sentence max 15 words", tags=["topic"], files=["relevant/file.ts"])
+```
+
+**Do NOT write context-store.json directly** — always use `graph_add_memory`. It applies pruning and keeps the store healthy.
+
+**Rules:**
+- Only log things worth remembering across sessions (not every minor detail)
+- `content` must be under 15 words
+- `files` lists the files this decision/task relates to (can be empty)
+- Log immediately when the item arises — not at session end
+
+## Session End
+
+When the user signals they are done (e.g. "bye", "done", "wrap up", "end session"), proactively update `CONTEXT.md` in the project root with:
+- **Current Task**: one sentence on what was being worked on
+- **Key Decisions**: bullet list, max 3 items
+- **Next Steps**: bullet list, max 3 items
+
+Keep `CONTEXT.md` under 20 lines total. Do NOT summarize the full conversation — only what's needed to resume next session.
