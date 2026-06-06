@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\AiUsageLog;
+use App\Models\Resume;
 use App\Models\User;
 use App\Services\UserLimits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -33,7 +34,7 @@ class FreeTierExpansionTest extends TestCase
         $this->assertEquals(30, UserLimits::aiLimit($user));
     }
 
-    public function test_free_user_ai_usage_is_counted_monthly_not_lifetime(): void
+    public function test_free_user_ai_usage_ignores_previous_month(): void
     {
         $user = User::factory()->free()->create();
 
@@ -130,5 +131,32 @@ class FreeTierExpansionTest extends TestCase
         $user = User::factory()->starter()->create();
 
         $this->assertNull(UserLimits::atsUsesRemaining($user));
+    }
+
+    public function test_interview_coach_uses_remaining_is_correct(): void
+    {
+        $user = User::factory()->free()->create();
+
+        AiUsageLog::create(['user_id' => $user->id, 'provider' => 'anthropic', 'model' => 'claude-opus-4-8', 'feature' => 'interview_coach', 'input_tokens' => 0, 'output_tokens' => 0, 'cost_usd' => 0]);
+        AiUsageLog::create(['user_id' => $user->id, 'provider' => 'anthropic', 'model' => 'claude-opus-4-8', 'feature' => 'interview_coach', 'input_tokens' => 0, 'output_tokens' => 0, 'cost_usd' => 0]);
+
+        $this->assertEquals(1, UserLimits::interviewCoachUsesRemaining($user));
+    }
+
+    public function test_starter_interview_coach_uses_remaining_is_null(): void
+    {
+        $user = User::factory()->starter()->create();
+
+        $this->assertNull(UserLimits::interviewCoachUsesRemaining($user));
+    }
+
+    public function test_edit_page_passes_ats_uses_remaining_prop(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->get(route('builder.edit', $resume))
+            ->assertInertia(fn ($page) => $page->has('atsUsesRemaining'));
     }
 }

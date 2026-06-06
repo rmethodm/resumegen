@@ -21,8 +21,7 @@ class UserLimits
     public static function resumeLimit(User $user): ?int
     {
         return match ($user->planTier()) {
-            'free' => 5,
-            'starter' => 5,
+            'free', 'starter' => 5,
             default => null,
         };
     }
@@ -52,6 +51,7 @@ class UserLimits
 
     public static function allowedTemplates(User $user): array
     {
+        // All templates available to all tiers — kept for API compatibility
         return self::ALL_TEMPLATES;
     }
 
@@ -66,7 +66,7 @@ class UserLimits
             return true;
         }
 
-        return self::atsUsageThisMonth($user) < self::FREE_ATS_MONTHLY_LIMIT;
+        return self::atsUsesRemaining($user) > 0;
     }
 
     public static function atsUsageThisMonth(User $user): int
@@ -93,6 +93,7 @@ class UserLimits
 
     public static function canPdfImport(User $user): bool
     {
+        // Always allowed — free tier can import
         return true;
     }
 
@@ -112,7 +113,7 @@ class UserLimits
             return true;
         }
 
-        return self::interviewCoachUsageThisMonth($user) < self::FREE_INTERVIEW_COACH_MONTHLY_LIMIT;
+        return self::interviewCoachUsesRemaining($user) > 0;
     }
 
     public static function interviewCoachUsageThisMonth(User $user): int
