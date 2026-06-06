@@ -26,6 +26,15 @@ export default function Welcome({ auth }: PageProps) {
         }, 4000);
     }
 
+    useEffect(() => {
+        timerRef.current = setInterval(() => {
+            if (!pausedRef.current) setActiveSlide(s => (s + 1) % SLIDES.length);
+        }, 4000);
+        return () => {
+            if (timerRef.current) clearInterval(timerRef.current);
+        };
+    }, []);
+
     return (
         <>
             <Head title="ResumeGen — Build a resume that gets you hired" />
@@ -121,7 +130,11 @@ export default function Welcome({ auth }: PageProps) {
                     <p className="text-xs text-[#9ca3af]">No credit card required · Free forever plan</p>
 
                     {/* App screenshot mockup */}
-                    <div className="relative mx-auto mt-14 max-w-4xl overflow-hidden rounded-xl border border-[#e5e7eb] shadow-2xl shadow-[#4f46e5]/10">
+                    <div
+                        className="relative mx-auto mt-14 max-w-4xl overflow-hidden rounded-xl border border-[#e5e7eb] shadow-2xl shadow-[#4f46e5]/10"
+                        onMouseEnter={() => { pausedRef.current = true; }}
+                        onMouseLeave={() => { pausedRef.current = false; }}
+                    >
                         {/* Window toolbar */}
                         <div className="flex items-center gap-6 border-b border-[#e5e7eb] bg-white px-4 py-2.5">
                             <div className="flex gap-1.5">
