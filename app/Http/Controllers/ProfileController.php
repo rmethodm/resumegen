@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,22 +14,43 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use PragmaRX\Google2FA\Google2FA;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
     public function edit(Request $request): Response
     {
+        $user = $request->user();
+        $google2fa = new Google2FA;
+
+        $qrCodeSvg = null;
+        if ($user->two_factor_secret && ! $user->hasTwoFactorEnabled()) {
+            $qrCodeUrl = $google2fa->getQRCodeUrl(
+                config('app.name'),
+                $user->email,
+                $user->two_factor_secret
+            );
+            $writer = new Writer(new ImageRenderer(
+                new RendererStyle(200),
+                new SvgImageBackEnd
+            ));
+            $qrCodeSvg = $writer->writeString($qrCodeUrl);
+        }
+
         return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
-            'tokens' => $request->user()->tokens->map(fn ($t) => [
-                'id'         => $t->id,
-                'name'       => $t->name,
+            'tokens' => $user->tokens->map(fn ($t) => [
+                'id' => $t->id,
+                'name' => $t->name,
                 'created_at' => $t->created_at->toISOString(),
             ])->values(),
+            'twoFactor' => [
+                'enabled' => $user->hasTwoFactorEnabled(),
+                'pending' => $user->two_factor_secret !== null && ! $user->hasTwoFactorEnabled(),
+                'qrCodeSvg' => $qrCodeSvg,
+                'recoveryCodes' => session('two_factor_recovery_codes'),
+            ],
         ]);
     }
 

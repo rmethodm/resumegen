@@ -3,19 +3,22 @@
 use App\Http\Controllers\Admin\AdminUsageController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AiSuggestController;
-use App\Http\Controllers\TailorController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AtsScoreController;
+use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
+use App\Http\Controllers\Auth\TwoFactorController;
+use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PersonalTokenController;
-use App\Http\Controllers\UsageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ShareLinkController;
+use App\Http\Controllers\TailorController;
+use App\Http\Controllers\UsageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -27,10 +30,10 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [AnalyticsController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'two_factor_challenge', 'two_factor_setup'])
     ->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'two_factor_challenge', 'two_factor_setup'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -38,6 +41,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/tokens/{tokenId}', [PersonalTokenController::class, 'destroy'])->name('profile.tokens.destroy');
 
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+
+    Route::post('/user/two-factor-authentication', [TwoFactorController::class, 'store'])
+        ->name('two-factor.enable');
+    Route::post('/user/confirmed-two-factor-authentication', [ConfirmedTwoFactorController::class, 'store'])
+        ->name('two-factor.confirm');
+    Route::delete('/user/two-factor-authentication', [TwoFactorController::class, 'destroy'])
+        ->middleware('password.confirm')
+        ->name('two-factor.disable');
+    Route::post('/user/two-factor-recovery-codes', [TwoFactorRecoveryCodesController::class, 'store'])
+        ->name('two-factor.recovery-codes');
 
     Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
     Route::post('/builder', [ResumeBuilderController::class, 'store'])->name('builder.store');
@@ -84,6 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
 
     Route::get('/usage', [UsageController::class, 'index'])->name('usage.index');
+    Route::get('/messages', fn () => Inertia::render('Messages/Index'))->name('messages.index');
 });
 
 // Public (unauthenticated) share link routes

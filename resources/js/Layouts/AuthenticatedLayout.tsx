@@ -29,6 +29,7 @@ export default function Authenticated({
                                 <NavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</NavLink>
                                 <NavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</NavLink>
                                 <NavLink href={route('jobs.index')} active={route().current('jobs.*')}>Jobs</NavLink>
+                                <NavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</NavLink>
                                 <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
                                 {user.is_master_admin && (
                                     <NavLink href={route('admin.users.index')} active={route().current('admin.*')}>Admin</NavLink>
@@ -81,6 +82,7 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('jobs.index')} active={route().current('jobs.*')}>Jobs</ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>
                         {user.is_master_admin && (
                             <ResponsiveNavLink href={route('admin.users.index')} active={route().current('admin.*')}>Admin</ResponsiveNavLink>
