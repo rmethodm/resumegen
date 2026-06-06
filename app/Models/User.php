@@ -61,7 +61,7 @@ class User extends Authenticatable
 
     public function requiresTwoFactor(): bool
     {
-        return $this->isPro() && ! $this->hasTwoFactorEnabled();
+        return $this->planTier() === 'pro' && ! $this->hasTwoFactorEnabled();
     }
 
     public function resumes(): HasMany
