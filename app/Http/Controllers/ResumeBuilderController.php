@@ -7,6 +7,7 @@ use App\Services\DocxGenerator;
 use App\Services\ResumeStrengthScorer;
 use App\Services\UserLimits;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -167,6 +168,21 @@ class ResumeBuilderController extends Controller
             'section_order.*' => ['string'],
             'custom_sections' => ['nullable', 'array'],
         ];
+    }
+
+    public function shareUrl(Request $request, Resume $resume): JsonResponse
+    {
+        $this->authorize('update', $resume);
+
+        $link = $resume->shareLinks()->where('is_active', true)->first();
+
+        if (! $link) {
+            $link = $resume->shareLinks()->create(['is_active' => true]);
+        }
+
+        return response()->json([
+            'url' => route('public.resume', $link->token),
+        ]);
     }
 
     public function destroy(Request $request, Resume $resume)

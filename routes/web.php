@@ -81,6 +81,7 @@ Route::middleware(['auth', 'two_factor_challenge', 'two_factor_setup'])->group(f
         ->name('builder.ats-score');
     Route::delete('/builder/{resume}/ats-score', [AtsScoreController::class, 'destroy'])
         ->name('builder.ats-score.destroy');
+    Route::get('/builder/{resume}/share-url', [ResumeBuilderController::class, 'shareUrl'])->name('builder.share-url');
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
