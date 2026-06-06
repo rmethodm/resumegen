@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CoverLetterController;
+use App\Http\Controllers\CoverLetterTailorController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PdfImportController;
@@ -88,6 +89,9 @@ Route::middleware(['auth', 'two_factor_challenge', 'two_factor_setup'])->group(f
     Route::get('/cover-letters/{letter}', [CoverLetterController::class, 'edit'])->name('cover-letters.edit');
     Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
     Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
+    Route::post('/cover-letters/{letter}/ai-tailor', [CoverLetterTailorController::class, 'tailor'])
+        ->name('cover-letters.ai-tailor')
+        ->middleware('throttle:5,1');
 
     Route::get('/jobs', [JobApplicationController::class, 'index'])->name('jobs.index');
     Route::post('/jobs', [JobApplicationController::class, 'store'])->name('jobs.store');
