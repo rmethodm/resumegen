@@ -204,6 +204,11 @@ export interface CoverLetterSuggestion {
     reason: string;
 }
 
+export interface InterviewQuestion {
+    question: string;
+    hint: string;
+}
+
 export type JobStatus = 'saved' | 'applied' | 'interviewing' | 'offered' | 'rejected' | 'closed';
 
 export interface JobApplicationRow {

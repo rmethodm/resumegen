@@ -3,6 +3,7 @@ import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
 import AISuggestButton from '@/Components/AISuggestButton';
 import TailorModal from './TailorModal';
+import InterviewCoachPanel from './Partials/InterviewCoachPanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { TagIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
@@ -181,6 +182,8 @@ export default function Edit({
     canAts,
     canDocx,
     canTailor,
+    canInterviewCoach,
+    interviewCoachUsesRemaining,
     aiUsed,
     aiLimit,
     customSectionLimit,
@@ -194,6 +197,8 @@ export default function Edit({
     canAts: boolean;
     canDocx: boolean;
     canTailor: boolean;
+    canInterviewCoach: boolean;
+    interviewCoachUsesRemaining: number | null;
     aiUsed: number;
     aiLimit: number;
     customSectionLimit: number | null;
@@ -220,6 +225,7 @@ export default function Edit({
     const pendingSave = useRef(false);
 
     const [showTailor, setShowTailor] = useState(false);
+    const [showInterviewCoach, setShowInterviewCoach] = useState(false);
     const [showAcademicBanner, setShowAcademicBanner] = useState(
         template === 'academic' && (resume.custom_sections ?? []).length === 0
     );
@@ -665,6 +671,23 @@ export default function Edit({
                                 title="Upgrade to Starter to download DOCX"
                             >
                                 🔒 DOCX
+                            </button>
+                        )}
+                        {canInterviewCoach ? (
+                            <button
+                                type="button"
+                                onClick={() => setShowInterviewCoach(true)}
+                                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+                            >
+                                Interview Coach
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => triggerUpgradeModal('interview_coach', 'starter')}
+                                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-400 transition hover:bg-gray-50"
+                            >
+                                🔒 Interview Coach
                             </button>
                         )}
                         <a
@@ -1607,6 +1630,15 @@ export default function Edit({
                         save();
                     }}
                     onClose={() => setShowTailor(false)}
+                />
+            )}
+            {showInterviewCoach && (
+                <InterviewCoachPanel
+                    resumeId={resume.id}
+                    resumeName={resume.name}
+                    canInterviewCoach={canInterviewCoach}
+                    interviewCoachUsesRemaining={interviewCoachUsesRemaining}
+                    onClose={() => setShowInterviewCoach(false)}
                 />
             )}
         </AuthenticatedLayout>
