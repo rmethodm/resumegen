@@ -389,6 +389,35 @@ export default function Welcome({ auth }: PageProps) {
                     </div>
                 </section>
 
+                {/* ── Footer CTA ────────────────────────────────── */}
+                <section className="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] px-6 py-16 text-center">
+                    <h2 className="mb-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
+                        Ready to land your next interview?
+                    </h2>
+                    <p className="mb-8 text-sm text-[#a5b4fc]">
+                        Join thousands of job seekers who built their resume with Resumegen
+                    </p>
+                    <Link
+                        href={ctaHref}
+                        className="inline-block rounded-xl bg-white px-8 py-3 text-sm font-black text-[#4f46e5] hover:bg-[#f5f3ff] transition"
+                    >
+                        Create my resume — it's free →
+                    </Link>
+                </section>
+
+                {/* ── Footer ────────────────────────────────────── */}
+                <footer className="bg-[#0f172a] px-6 py-5">
+                    <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 sm:flex-row">
+                        <span className="text-sm font-black text-white">Resumegen</span>
+                        <span className="text-xs text-[#4b5563]">© {new Date().getFullYear()} Resumegen. All rights reserved.</span>
+                        <div className="flex gap-5">
+                            <span className="text-xs text-[#6b7280] cursor-pointer hover:text-[#9ca3af] transition">Privacy</span>
+                            <span className="text-xs text-[#6b7280] cursor-pointer hover:text-[#9ca3af] transition">Terms</span>
+                            <span className="text-xs text-[#6b7280] cursor-pointer hover:text-[#9ca3af] transition">Contact</span>
+                        </div>
+                    </div>
+                </footer>
+
             </div>
         </>
     );
