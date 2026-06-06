@@ -323,6 +323,26 @@ export default function Welcome({ auth }: PageProps) {
                         </div>
                         </div>
                     </div>
+
+                    {/* Carousel dot indicators */}
+                    <div className="mt-4 flex items-center justify-center gap-1.5">
+                        {SLIDES.map((slide, i) => (
+                            <button
+                                key={slide.tab}
+                                onClick={() => goTo(i)}
+                                aria-label={`Go to ${slide.label}`}
+                                className={`h-1.5 rounded-full transition-all duration-300 ${
+                                    i === activeSlide
+                                        ? 'w-5 bg-[#4f46e5]'
+                                        : 'w-1.5 bg-[#d1d5db] hover:bg-[#818cf8]'
+                                }`}
+                            />
+                        ))}
+                    </div>
+                    {/* Slide label */}
+                    <p className="mt-1.5 min-h-[18px] text-center text-xs font-bold text-[#4f46e5]">
+                        {SLIDES[activeSlide].label}
+                    </p>
                 </section>
 
                 {/* ── Social proof bar ──────────────────────────── */}
