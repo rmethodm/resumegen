@@ -145,8 +145,10 @@ export default function Welcome({ auth }: PageProps) {
                                 ))}
                             </div>
                         </div>
-                        {/* App body */}
-                        <div className="flex h-48 bg-[#f9fafb] sm:h-56">
+                        {/* Slides container */}
+                        <div className="relative h-48 sm:h-56">
+                        {/* Slide 0 — Resume Builder */}
+                        <div className={`absolute inset-0 flex bg-[#f9fafb] transition-opacity duration-500 ${activeSlide === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {/* Sidebar */}
                             <div className="w-36 flex-shrink-0 border-r border-[#f3f4f6] bg-[#fafafa] px-3 py-3 sm:w-44">
                                 <p className="mb-1.5 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Document</p>
@@ -201,6 +203,8 @@ export default function Welcome({ auth }: PageProps) {
                                 <div className="mb-1 h-1.5 w-4/5 rounded-full bg-[#f3f4f6]" />
                                 <div className="h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
                             </div>
+                        </div>
+                        {/* end slide 0 */}
                         </div>
                     </div>
                 </section>
