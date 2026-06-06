@@ -14,10 +14,10 @@ class TierLimitsTest extends TestCase
 
     // ── resumeLimit ────────────────────────────────────────────────────────────
 
-    public function test_free_user_resume_limit_is_2(): void
+    public function test_free_user_resume_limit_is_5(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(2, UserLimits::resumeLimit($user));
+        $this->assertSame(5, UserLimits::resumeLimit($user));
     }
 
     public function test_starter_user_resume_limit_is_5(): void
@@ -34,10 +34,10 @@ class TierLimitsTest extends TestCase
 
     // ── coverLetterLimit ───────────────────────────────────────────────────────
 
-    public function test_free_user_cover_letter_limit_is_1(): void
+    public function test_free_user_cover_letter_limit_is_3(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(1, UserLimits::coverLetterLimit($user));
+        $this->assertSame(3, UserLimits::coverLetterLimit($user));
     }
 
     public function test_starter_user_cover_letter_limit_is_5(): void
@@ -68,10 +68,10 @@ class TierLimitsTest extends TestCase
 
     // ── aiLimit ────────────────────────────────────────────────────────────────
 
-    public function test_free_user_ai_limit_is_5(): void
+    public function test_free_user_ai_limit_is_30(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(5, UserLimits::aiLimit($user));
+        $this->assertSame(30, UserLimits::aiLimit($user));
     }
 
     public function test_starter_user_ai_limit_is_30(): void
@@ -88,18 +88,17 @@ class TierLimitsTest extends TestCase
 
     // ── allowedTemplates ──────────────────────────────────────────────────────
 
-    public function test_free_user_gets_five_templates(): void
+    public function test_free_user_gets_all_templates(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $allowed = UserLimits::allowedTemplates($user);
-        $this->assertCount(5, $allowed);
+        $this->assertCount(13, $allowed);
         $this->assertContains('classic', $allowed);
         $this->assertContains('modern', $allowed);
         $this->assertContains('ats', $allowed);
-        $this->assertContains('skills-first', $allowed);
-        $this->assertContains('bold', $allowed);
-        $this->assertNotContains('creative', $allowed);
-        $this->assertNotContains('academic', $allowed);
+        $this->assertContains('creative', $allowed);
+        $this->assertContains('academic', $allowed);
+        $this->assertContains('timeline', $allowed);
     }
 
     public function test_starter_user_gets_all_templates(): void
@@ -128,10 +127,10 @@ class TierLimitsTest extends TestCase
         $this->assertTrue(UserLimits::canDocx($user));
     }
 
-    public function test_free_user_cannot_ats(): void
+    public function test_free_user_can_ats_within_monthly_limit(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertFalse(UserLimits::canAts($user));
+        $this->assertTrue(UserLimits::canAts($user));
     }
 
     public function test_starter_user_can_ats(): void
@@ -142,7 +141,7 @@ class TierLimitsTest extends TestCase
 
     // ── aiUsageThisPeriod ─────────────────────────────────────────────────────
 
-    public function test_free_user_ai_usage_counts_all_time(): void
+    public function test_free_user_ai_usage_counts_current_month_only(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         AiUsageLog::create([
@@ -157,7 +156,7 @@ class TierLimitsTest extends TestCase
             'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
             'created_at' => now(),
         ]);
-        $this->assertSame(2, UserLimits::aiUsageThisPeriod($user));
+        $this->assertSame(1, UserLimits::aiUsageThisPeriod($user));
     }
 
     public function test_starter_user_ai_usage_counts_current_month_only(): void
@@ -180,24 +179,24 @@ class TierLimitsTest extends TestCase
 
     // ── atAiLimit ─────────────────────────────────────────────────────────────
 
-    public function test_free_user_at_ai_limit_after_5_uses(): void
+    public function test_free_user_at_ai_limit_after_30_uses_this_month(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             AiUsageLog::create([
                 'user_id' => $user->id, 'provider' => 'anthropic',
                 'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
                 'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
-                'created_at' => now()->subMonths(1),
+                'created_at' => now(),
             ]);
         }
         $this->assertTrue(UserLimits::atAiLimit($user));
     }
 
-    public function test_free_user_not_at_ai_limit_with_4_uses(): void
+    public function test_free_user_not_at_ai_limit_with_29_uses(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < 29; $i++) {
             AiUsageLog::create([
                 'user_id' => $user->id, 'provider' => 'anthropic',
                 'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',

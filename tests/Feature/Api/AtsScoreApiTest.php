@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use App\Models\AiUsageLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -26,11 +27,19 @@ class AtsScoreApiTest extends ApiTestCase
             ->assertJsonStructure(['score', 'breakdown']);
     }
 
-    public function test_api_ats_score_returns_402_for_free_user(): void
+    public function test_api_ats_score_returns_402_for_free_user_at_monthly_limit(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
         $token = $user->createToken('test')->plainTextToken;
+
+        for ($i = 0; $i < 3; $i++) {
+            AiUsageLog::create([
+                'user_id' => $user->id, 'provider' => 'anthropic',
+                'model' => 'claude-sonnet-4-6', 'feature' => 'ats_score',
+                'input_tokens' => 0, 'output_tokens' => 0, 'cost_usd' => 0.0,
+            ]);
+        }
 
         $this->withToken($token)
             ->getJson("/api/resumes/{$resume->id}/ats-score")

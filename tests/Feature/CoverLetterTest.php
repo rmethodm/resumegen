@@ -98,7 +98,7 @@ class CoverLetterTest extends TestCase
     public function test_free_user_at_cover_letter_limit_is_blocked(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        CoverLetter::factory()->count(1)->create(['user_id' => $user->id]);
+        CoverLetter::factory()->count(3)->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
             ->post(route('cover-letters.store'), [

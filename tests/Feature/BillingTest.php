@@ -31,12 +31,12 @@ class BillingTest extends TestCase
     public function test_free_user_at_limit_is_redirected_when_creating_resume(): void
     {
         $user = User::factory()->create();
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $user->resumes()->create(['name' => "Resume $i", 'pdf_filename' => "$i.pdf"]);
         }
 
         $this->actingAs($user)
-            ->post(route('builder.store'), ['name' => 'Third Resume'])
+            ->post(route('builder.store'), ['name' => 'Sixth Resume'])
             ->assertRedirect()
             ->assertSessionHas('featureGate.feature', 'resume_limit');
     }
@@ -63,7 +63,7 @@ class BillingTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->where('plan', 'free')
                 ->where('resumeCount', 1)
-                ->where('resumeLimit', 2)
+                ->where('resumeLimit', 5)
             );
     }
 

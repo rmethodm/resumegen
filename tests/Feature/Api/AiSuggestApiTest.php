@@ -43,7 +43,7 @@ class AiSuggestApiTest extends ApiTestCase
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
         $token = $user->createToken('test')->plainTextToken;
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             AiUsageLog::create([
                 'user_id' => $user->id, 'provider' => 'anthropic',
                 'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',

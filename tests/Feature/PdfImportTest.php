@@ -35,14 +35,13 @@ class PdfImportTest extends TestCase
         return UploadedFile::fake()->create('resume.pdf', 50, 'application/pdf');
     }
 
-    public function test_free_user_cannot_extract_pdf(): void
+    public function test_free_user_can_extract_pdf(): void
     {
         $user = User::factory()->free()->create();
 
         $this->actingAs($user)
             ->postJson(route('import.pdf.extract'), ['file' => $this->fakePdf()])
-            ->assertStatus(402)
-            ->assertJsonPath('required_tier', 'starter');
+            ->assertStatus(422);
     }
 
     public function test_extract_requires_a_pdf_file(): void

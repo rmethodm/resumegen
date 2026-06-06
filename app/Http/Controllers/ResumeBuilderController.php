@@ -105,6 +105,7 @@ class ResumeBuilderController extends Controller
                 'openai' => ! empty(config('services.openai.key')),
             ],
             'canAts' => UserLimits::canAts($user),
+            'atsUsesRemaining' => UserLimits::atsUsesRemaining($user),
             'canDocx' => UserLimits::canDocx($user),
             'canTailor' => UserLimits::canTailor($user),
             'aiUsed' => UserLimits::aiUsageThisPeriod($user),

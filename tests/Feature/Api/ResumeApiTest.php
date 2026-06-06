@@ -41,7 +41,7 @@ class ResumeApiTest extends ApiTestCase
     public function test_cannot_create_resume_past_free_limit(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $user->resumes()->createMany(array_fill(0, 2, ['name' => 'R', 'pdf_filename' => 'r.pdf']));
+        $user->resumes()->createMany(array_fill(0, 5, ['name' => 'R', 'pdf_filename' => 'r.pdf']));
 
         $this->withToken($this->token($user))
             ->postJson('/api/resumes', ['name' => 'One Too Many'])
@@ -52,12 +52,13 @@ class ResumeApiTest extends ApiTestCase
     public function test_api_store_blocks_free_user_at_limit_with_402(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $user->resumes()->create(['name' => 'A', 'pdf_filename' => 'a.pdf']);
-        $user->resumes()->create(['name' => 'B', 'pdf_filename' => 'b.pdf']);
+        for ($i = 0; $i < 5; $i++) {
+            $user->resumes()->create(['name' => "Resume $i", 'pdf_filename' => "$i.pdf"]);
+        }
         $token = $user->createToken('test')->plainTextToken;
 
         $this->withToken($token)
-            ->postJson('/api/resumes', ['name' => 'Third'])
+            ->postJson('/api/resumes', ['name' => 'Sixth'])
             ->assertStatus(402)
             ->assertJsonPath('required_tier', 'starter');
     }

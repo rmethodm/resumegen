@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\AiUsageLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -137,10 +138,18 @@ class AtsScoreTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_free_user_cannot_access_ats_score(): void
+    public function test_free_user_at_monthly_ats_limit_gets_402(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        for ($i = 0; $i < 3; $i++) {
+            AiUsageLog::create([
+                'user_id' => $user->id, 'provider' => 'anthropic',
+                'model' => 'claude-sonnet-4-6', 'feature' => 'ats_score',
+                'input_tokens' => 0, 'output_tokens' => 0, 'cost_usd' => 0.0,
+            ]);
+        }
 
         $this->actingAs($user)
             ->getJson(route('builder.ats-score', $resume->id))

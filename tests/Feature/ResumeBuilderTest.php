@@ -262,7 +262,7 @@ class ResumeBuilderTest extends TestCase
         ]);
     }
 
-    public function test_free_user_cannot_use_restricted_template(): void
+    public function test_free_user_can_use_all_templates_including_creative(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
@@ -270,7 +270,9 @@ class ResumeBuilderTest extends TestCase
         $this->actingAs($user)
             ->put(route('builder.update', $resume->id), ['template' => 'creative'])
             ->assertRedirect()
-            ->assertSessionHas('featureGate.feature', 'template_access');
+            ->assertSessionMissing('featureGate');
+
+        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'creative']);
     }
 
     public function test_starter_user_can_use_restricted_template(): void
@@ -311,6 +313,9 @@ class ResumeBuilderTest extends TestCase
         $user = User::factory()->create(['plan_tier' => 'free']);
         $r1 = $user->resumes()->create(['name' => 'A', 'pdf_filename' => 'a.pdf']);
         $user->resumes()->create(['name' => 'B', 'pdf_filename' => 'b.pdf']);
+        $user->resumes()->create(['name' => 'C', 'pdf_filename' => 'c.pdf']);
+        $user->resumes()->create(['name' => 'D', 'pdf_filename' => 'd.pdf']);
+        $user->resumes()->create(['name' => 'E', 'pdf_filename' => 'e.pdf']);
 
         $this->actingAs($user)
             ->post(route('builder.duplicate', $r1->id))
@@ -342,7 +347,7 @@ class ResumeBuilderTest extends TestCase
         $this->assertSame('bold', $resume->fresh()->template);
     }
 
-    public function test_free_user_cannot_use_skills_first_visual_template(): void
+    public function test_free_user_can_use_skills_first_visual_template(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
@@ -351,10 +356,10 @@ class ResumeBuilderTest extends TestCase
             ->put(route('builder.update', $resume), ['template' => 'skills-first-visual'])
             ->assertRedirect();
 
-        $this->assertNotSame('skills-first-visual', $resume->fresh()->template);
+        $this->assertSame('skills-first-visual', $resume->fresh()->template);
     }
 
-    public function test_free_user_cannot_use_academic_template(): void
+    public function test_free_user_can_use_academic_template(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
@@ -363,10 +368,10 @@ class ResumeBuilderTest extends TestCase
             ->put(route('builder.update', $resume), ['template' => 'academic'])
             ->assertRedirect();
 
-        $this->assertNotSame('academic', $resume->fresh()->template);
+        $this->assertSame('academic', $resume->fresh()->template);
     }
 
-    public function test_free_user_cannot_use_timeline_template(): void
+    public function test_free_user_can_use_timeline_template(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
@@ -375,7 +380,7 @@ class ResumeBuilderTest extends TestCase
             ->put(route('builder.update', $resume), ['template' => 'timeline'])
             ->assertRedirect();
 
-        $this->assertNotSame('timeline', $resume->fresh()->template);
+        $this->assertSame('timeline', $resume->fresh()->template);
     }
 
     public function test_starter_user_can_use_all_new_templates(): void

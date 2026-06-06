@@ -104,18 +104,18 @@ class AiSuggestTest extends TestCase
         $response->assertJson(['error' => 'API key not configured']);
     }
 
-    public function test_free_user_at_lifetime_ai_limit_gets_402(): void
+    public function test_free_user_at_monthly_ai_limit_gets_402(): void
     {
         config(['services.anthropic.key' => 'test-key']);
         $user = User::factory()->create(['plan_tier' => 'free']);
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             AiUsageLog::create([
                 'user_id' => $user->id, 'provider' => 'anthropic',
                 'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
                 'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
-                'created_at' => now()->subMonths(3),
+                'created_at' => now(),
             ]);
         }
 
