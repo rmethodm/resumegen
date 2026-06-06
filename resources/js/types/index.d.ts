@@ -6,6 +6,14 @@ export interface User {
     is_master_admin: boolean;
     is_pro: boolean;
     two_factor_confirmed_at: string | null;
+    profile: {
+        full_name?: string;
+        email?: string;
+        phone?: string;
+        location?: string;
+        linkedin_url?: string;
+        website?: string;
+    } | null;
 }
 
 export interface Contact {
