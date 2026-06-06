@@ -224,6 +224,7 @@ export default function Edit({
     const [saving, setSaving] = useState(false);
     const pendingSave = useRef(false);
 
+    const [showPreview, setShowPreview] = useState(false);
     const [showTailor, setShowTailor] = useState(false);
     const [showInterviewCoach, setShowInterviewCoach] = useState(false);
     const [showAcademicBanner, setShowAcademicBanner] = useState(
@@ -319,31 +320,6 @@ export default function Edit({
     }, [resume.id, editingLinkLabel]);
 
     const [pdfSrc, setPdfSrc] = useState(() => freshPdfSrc(resume.id));
-
-    const [leftWidth, setLeftWidth] = useState(45);
-    const [resizing, setResizing] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const handleDividerMouseDown = useCallback((e: React.MouseEvent) => {
-        e.preventDefault();
-        setResizing(true);
-
-        const onMouseMove = (ev: MouseEvent) => {
-            if (!containerRef.current) return;
-            const rect = containerRef.current.getBoundingClientRect();
-            const pct = ((ev.clientX - rect.left) / rect.width) * 100;
-            setLeftWidth(Math.min(80, Math.max(20, pct)));
-        };
-
-        const onMouseUp = () => {
-            setResizing(false);
-            window.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('mouseup', onMouseUp);
-        };
-
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseup', onMouseUp);
-    }, []);
 
     // Refs mirror state so save callback never captures stale values
     const nameRef = useRef(name);
@@ -632,10 +608,16 @@ export default function Edit({
                                     <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
                                     <span className="text-green-600">Saved {savedAt}</span>
                                 </>
-                            ) : (
-                                <span className="text-gray-400">Saves on field change</span>
-                            )}
+                            ) : null}
                         </span>
+                        <button
+                            type="button"
+                            onClick={save}
+                            disabled={saving}
+                            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                        >
+                            {saving ? 'Saving…' : 'Save'}
+                        </button>
                         {aiEnabled ? (
                             <div className="flex items-center rounded-md border border-gray-200 overflow-hidden text-xs">
                                 {aiCapabilities.claude && (
@@ -768,6 +750,13 @@ export default function Edit({
                                 </>
                             )}
                         </div>
+                        <button
+                            type="button"
+                            onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }}
+                            className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${showPreview ? 'border-indigo-300 bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}`}
+                        >
+                            {showPreview ? 'Hide Preview' : 'Preview'}
+                        </button>
                         <a
                             href={route('builder.pdf', resume.id)}
                             className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
@@ -778,10 +767,10 @@ export default function Edit({
             </div>
             <Head title={`Editing: ${name}`} />
 
-            <div ref={containerRef} className="flex h-[calc(100vh-6.5rem)] overflow-hidden" style={{ cursor: resizing ? 'col-resize' : undefined }}>
+            <div className="min-h-[calc(100vh-6.5rem)] bg-[#f5f5fb]">
 
-                {/* LEFT: Form */}
-                <div className="shrink-0 overflow-y-auto bg-[#f5f5fb] p-6" style={{ width: leftWidth + '%' }}>
+                {/* Form */}
+                <div className="mx-auto max-w-3xl px-4 py-6 pb-24">
 
                     {showPdfBanner && (
                         <div className="mb-4 flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm">
@@ -987,7 +976,7 @@ export default function Edit({
                             aria-label="Resume name"
                             value={name}
                             onChange={e => setName(e.target.value)}
-                            onBlur={save}
+                           
                             className="rounded-md border-gray-300 text-sm font-medium shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         />
                         <p className="text-xs text-gray-400">File: <span className="font-mono">{pdfFilename}</span></p>
@@ -1001,14 +990,14 @@ export default function Edit({
                             {openSections.contact && (
                                 <div className="grid grid-cols-2 gap-3 p-4">
                                     <div className="col-span-2">
-                                        <Field label="Full Name" value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} onBlur={save} placeholder="Jane Smith" />
+                                        <Field label="Full Name" value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} placeholder="Jane Smith" />
                                     </div>
-                                    <Field label="Email" value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} onBlur={save} type="email" placeholder="jane@example.com" />
-                                    <Field label="Phone" value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} onBlur={save} placeholder="(555) 555-5555" />
-                                    <Field label="Location" value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} onBlur={save} placeholder="Atlanta, GA" />
-                                    <Field label="LinkedIn" value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} onBlur={save} placeholder="linkedin.com/in/jane" />
+                                    <Field label="Email" value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} type="email" placeholder="jane@example.com" />
+                                    <Field label="Phone" value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} placeholder="(555) 555-5555" />
+                                    <Field label="Location" value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} placeholder="Atlanta, GA" />
+                                    <Field label="LinkedIn" value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} placeholder="linkedin.com/in/jane" />
                                     <div className="col-span-2">
-                                        <Field label="Website" value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} onBlur={save} placeholder="janesmith.dev" />
+                                        <Field label="Website" value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} placeholder="janesmith.dev" />
                                     </div>
                                 </div>
                             )}
@@ -1031,7 +1020,7 @@ export default function Edit({
                                                             <textarea
                                                                 value={summary}
                                                                 onChange={e => setSummary(e.target.value)}
-                                                                onBlur={save}
+                                                               
                                                                 rows={4}
                                                                 placeholder="A brief summary of your professional background and goals…"
                                                                 className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -1072,7 +1061,7 @@ export default function Edit({
                                                                                 )}
                                                                             </div>
                                                                             <div className="grid grid-cols-2 gap-3">
-                                                                                <Field label="Company" value={exp.company} onChange={v => updateExp(exp.id, 'company', v)} onBlur={save} placeholder="Acme Corp" />
+                                                                                <Field label="Company" value={exp.company} onChange={v => updateExp(exp.id, 'company', v)} placeholder="Acme Corp" />
                                                                                 <div className="flex flex-col gap-1">
                                                                                     <div className="flex items-center justify-between">
                                                                                         <label className="text-xs font-medium text-gray-600">Job Title</label>
@@ -1091,14 +1080,14 @@ export default function Edit({
                                                                                         type="text"
                                                                                         value={exp.title}
                                                                                         onChange={e => updateExp(exp.id, 'title', e.target.value)}
-                                                                                        onBlur={save}
+                                                                                       
                                                                                         placeholder="Software Engineer"
                                                                                         className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                                                                     />
                                                                                 </div>
-                                                                                <Field label="Start Date" value={exp.start_date} onChange={v => updateExp(exp.id, 'start_date', v)} onBlur={save} placeholder="Jan 2022" />
+                                                                                <Field label="Start Date" value={exp.start_date} onChange={v => updateExp(exp.id, 'start_date', v)} placeholder="Jan 2022" />
                                                                                 <div className="flex flex-col gap-1">
-                                                                                    <Field label="End Date" value={exp.end_date} onChange={v => updateExp(exp.id, 'end_date', v)} onBlur={save} placeholder="Present" />
+                                                                                    <Field label="End Date" value={exp.end_date} onChange={v => updateExp(exp.id, 'end_date', v)} placeholder="Present" />
                                                                                     <label className="flex items-center gap-1 text-xs text-gray-500">
                                                                                         <input type="checkbox" checked={exp.current} onChange={e => { updateExp(exp.id, 'current', e.target.checked); save(); }} className="rounded border-gray-300" />
                                                                                         Current role
@@ -1121,7 +1110,7 @@ export default function Edit({
                                                                                     <BulletEditor
                                                                                         bullets={exp.bullets ? exp.bullets.split('\n') : []}
                                                                                         onChange={lines => updateExp(exp.id, 'bullets', lines.join('\n'))}
-                                                                                        onBlur={save}
+                                                                                       
                                                                                     />
                                                                                 </div>
                                                                             </div>
@@ -1158,11 +1147,11 @@ export default function Edit({
                                                                             </div>
                                                                             <div className="grid grid-cols-2 gap-3">
                                                                                 <div className="col-span-2">
-                                                                                    <Field label="School" value={edu.school} onChange={v => updateEdu(edu.id, 'school', v)} onBlur={save} placeholder="Georgia Tech" />
+                                                                                    <Field label="School" value={edu.school} onChange={v => updateEdu(edu.id, 'school', v)} placeholder="Georgia Tech" />
                                                                                 </div>
-                                                                                <Field label="Degree" value={edu.degree} onChange={v => updateEdu(edu.id, 'degree', v)} onBlur={save} placeholder="B.S." />
-                                                                                <Field label="Field of Study" value={edu.field} onChange={v => updateEdu(edu.id, 'field', v)} onBlur={save} placeholder="Computer Science" />
-                                                                                <Field label="Graduation Year" value={edu.grad_year} onChange={v => updateEdu(edu.id, 'grad_year', v)} onBlur={save} placeholder="2020" />
+                                                                                <Field label="Degree" value={edu.degree} onChange={v => updateEdu(edu.id, 'degree', v)} placeholder="B.S." />
+                                                                                <Field label="Field of Study" value={edu.field} onChange={v => updateEdu(edu.id, 'field', v)} placeholder="Computer Science" />
+                                                                                <Field label="Graduation Year" value={edu.grad_year} onChange={v => updateEdu(edu.id, 'grad_year', v)} placeholder="2020" />
                                                                             </div>
                                                                         </div>
                                                                     </SortableItem>
@@ -1185,7 +1174,7 @@ export default function Edit({
                                                 {openSections.skills && (
                                                     <div className="p-4 flex flex-col gap-2">
                                                         <label className="text-xs font-medium text-gray-600">Press Enter or comma to add</label>
-                                                        <TagInput tags={skills} onChange={setSkills} onBlur={save} />
+                                                        <TagInput tags={skills} onChange={setSkills} />
                                                         {aiEnabled && (
                                                             <AISuggestButton
                                                                 field="skills"
@@ -1224,10 +1213,10 @@ export default function Edit({
                                                                 </div>
                                                                 <div className="grid grid-cols-2 gap-3">
                                                                     <div className="col-span-2">
-                                                                        <Field label="Certification Name" value={cert.name} onChange={v => updateCert(cert.id, 'name', v)} onBlur={save} placeholder="AWS Solutions Architect" />
+                                                                        <Field label="Certification Name" value={cert.name} onChange={v => updateCert(cert.id, 'name', v)} placeholder="AWS Solutions Architect" />
                                                                     </div>
-                                                                    <Field label="Issuer" value={cert.issuer} onChange={v => updateCert(cert.id, 'issuer', v)} onBlur={save} placeholder="Amazon Web Services" />
-                                                                    <Field label="Date" value={cert.date} onChange={v => updateCert(cert.id, 'date', v)} onBlur={save} placeholder="Mar 2024" />
+                                                                    <Field label="Issuer" value={cert.issuer} onChange={v => updateCert(cert.id, 'issuer', v)} placeholder="Amazon Web Services" />
+                                                                    <Field label="Date" value={cert.date} onChange={v => updateCert(cert.id, 'date', v)} placeholder="Mar 2024" />
                                                                 </div>
                                                             </div>
                                                         ))}
@@ -1252,7 +1241,7 @@ export default function Edit({
                                                         className="flex-1 bg-transparent text-sm font-semibold text-indigo-700 focus:outline-none"
                                                         value={section.name}
                                                         onChange={e => updateCustomSection(section.id, 'name', e.target.value)}
-                                                        onBlur={save}
+                                                       
                                                     />
                                                     <button
                                                         type="button"
@@ -1281,14 +1270,14 @@ export default function Edit({
                                                                 placeholder="Title"
                                                                 value={entry.title}
                                                                 onChange={e => updateCustomEntry(section.id, entry.id, 'title', e.target.value)}
-                                                                onBlur={save}
+                                                               
                                                             />
                                                             <input
                                                                 className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                                                 placeholder="Subtitle / Institution"
                                                                 value={entry.subtitle}
                                                                 onChange={e => updateCustomEntry(section.id, entry.id, 'subtitle', e.target.value)}
-                                                                onBlur={save}
+                                                               
                                                             />
                                                             <div className="flex gap-2">
                                                                 <input
@@ -1296,14 +1285,14 @@ export default function Edit({
                                                                     placeholder="Start date"
                                                                     value={entry.start_date}
                                                                     onChange={e => updateCustomEntry(section.id, entry.id, 'start_date', e.target.value)}
-                                                                    onBlur={save}
+                                                                   
                                                                 />
                                                                 <input
                                                                     className="w-1/2 rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                                                     placeholder="End date (or blank)"
                                                                     value={entry.end_date ?? ''}
                                                                     onChange={e => updateCustomEntry(section.id, entry.id, 'end_date', e.target.value || null)}
-                                                                    onBlur={save}
+                                                                   
                                                                 />
                                                             </div>
                                                             <textarea
@@ -1312,7 +1301,7 @@ export default function Edit({
                                                                 rows={2}
                                                                 value={entry.description}
                                                                 onChange={e => updateCustomEntry(section.id, entry.id, 'description', e.target.value)}
-                                                                onBlur={save}
+                                                               
                                                             />
                                                             <textarea
                                                                 className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -1320,7 +1309,7 @@ export default function Edit({
                                                                 rows={3}
                                                                 value={entry.bullets.join('\n')}
                                                                 onChange={e => updateCustomEntry(section.id, entry.id, 'bullets', e.target.value.split('\n'))}
-                                                                onBlur={save}
+                                                               
                                                             />
                                                         </div>
                                                     ))}
@@ -1533,31 +1522,42 @@ export default function Edit({
 
                     </div>
                 </div>
+            </div>
 
-                {/* Resizable divider */}
-                <div
-                    onMouseDown={handleDividerMouseDown}
-                    className="w-1.5 shrink-0 cursor-col-resize bg-[#eeeef5] hover:bg-indigo-300 active:bg-indigo-400 transition-colors flex items-center justify-center group"
-                >
-                    <div className="w-0.5 h-8 rounded-full bg-gray-300 group-hover:bg-indigo-400 transition-colors" />
-                </div>
-
-                {/* RIGHT: PDF Preview */}
-                <div className="flex-1 flex flex-col bg-gray-200">
-                    {saving && (
-                        <div className="flex items-center justify-center gap-2 bg-amber-50 px-4 py-1.5 text-xs text-amber-700 border-b border-amber-200">
-                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
-                            Saving — preview will refresh when done
+            {/* Floating Preview Panel */}
+            {showPreview && (
+                <div className="fixed inset-y-0 right-0 z-40 flex w-[50%] min-w-[420px] flex-col border-l border-gray-200 bg-white shadow-2xl">
+                    <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-4 py-3">
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold text-gray-900">Preview</span>
+                            <span className="truncate text-xs text-gray-400">{pdfFilename}</span>
                         </div>
-                    )}
+                        <div className="flex items-center gap-2">
+                            <a
+                                href={route('builder.pdf', resume.id)}
+                                className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+                            >
+                                Download
+                            </a>
+                            <button
+                                type="button"
+                                onClick={() => setShowPreview(false)}
+                                className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                                aria-label="Close preview"
+                            >
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                     <iframe
                         src={pdfSrc}
                         className="flex-1 w-full border-0"
                         title="Resume PDF preview"
-                        style={{ pointerEvents: resizing ? 'none' : 'auto' }}
                     />
                 </div>
-            </div>
+            )}
             {wizardStep < 4 && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
                     <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
