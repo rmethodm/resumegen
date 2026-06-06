@@ -231,6 +231,60 @@ export default function Welcome({ auth }: PageProps) {
                     </div>
                 </section>
 
+                {/* ── Features ──────────────────────────────────── */}
+                <section id="features" className="border-t border-[#e5e7eb] bg-[#fafafe] px-6 py-20">
+                    <div className="mx-auto max-w-4xl">
+                        <h2 className="mb-2 text-center text-3xl font-black tracking-tight text-[#0f172a]">
+                            Everything you need to get the job
+                        </h2>
+                        <p className="mb-14 text-center text-sm text-[#6b7280]">
+                            Built for job seekers who want an edge
+                        </p>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            {[
+                                {
+                                    icon: '✦',
+                                    title: 'AI Writing Assistant',
+                                    desc: 'Generate compelling bullet points, professional summaries, and skills lists tailored to your role — powered by Claude.',
+                                    tag: '30 AI uses free/mo',
+                                },
+                                {
+                                    icon: '◈',
+                                    title: '8 Professional Templates',
+                                    desc: 'From Classic and ATS-optimized to Modern, Executive, and Creative — all templates included on every plan.',
+                                    tag: 'All templates free',
+                                },
+                                {
+                                    icon: '⇗',
+                                    title: 'Public Share Links',
+                                    desc: 'Share a live link to your resume. Recruiters can view, leave questions, and download — you get notified instantly.',
+                                    tag: 'Free on all plans',
+                                },
+                                {
+                                    icon: '🎯',
+                                    title: 'Job Tailoring + ATS Score',
+                                    desc: 'Paste a job description and get a match score, missing keywords, and a tailored summary — all in one click.',
+                                    tag: 'Starter+',
+                                },
+                            ].map(({ icon, title, desc, tag }) => (
+                                <div
+                                    key={title}
+                                    className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+                                >
+                                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-lg">
+                                        {icon}
+                                    </div>
+                                    <h3 className="mb-2 text-[15px] font-black text-[#0f172a]">{title}</h3>
+                                    <p className="mb-3 text-sm leading-relaxed text-[#6b7280]">{desc}</p>
+                                    <span className="inline-block rounded-full bg-[#eef2ff] px-2.5 py-0.5 text-[11px] font-bold text-[#4338ca]">
+                                        {tag}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
                 {/* Sections added in subsequent tasks */}
 
             </div>
