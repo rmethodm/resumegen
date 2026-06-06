@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\CoverLetterTailorController;
+use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PdfImportController;
@@ -72,6 +73,9 @@ Route::middleware(['auth', 'two_factor_challenge', 'two_factor_setup'])->group(f
     Route::post('/builder/{resume}/tailor', [TailorController::class, 'tailor'])
         ->middleware('throttle:5,1')
         ->name('builder.tailor');
+    Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])
+        ->middleware('throttle:5,1')
+        ->name('builder.interview-coach');
     Route::get('/builder/{resume}/ats-score', [AtsScoreController::class, 'show'])
         ->middleware('throttle:10,1')
         ->name('builder.ats-score');

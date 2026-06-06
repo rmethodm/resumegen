@@ -106,6 +106,8 @@ class ResumeBuilderController extends Controller
             ],
             'canAts' => UserLimits::canAts($user),
             'atsUsesRemaining' => UserLimits::atsUsesRemaining($user),
+            'canInterviewCoach' => UserLimits::canInterviewCoach($user),
+            'interviewCoachUsesRemaining' => UserLimits::interviewCoachUsesRemaining($user),
             'canDocx' => UserLimits::canDocx($user),
             'canTailor' => UserLimits::canTailor($user),
             'aiUsed' => UserLimits::aiUsageThisPeriod($user),
