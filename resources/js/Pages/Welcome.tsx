@@ -240,6 +240,45 @@ export default function Welcome({ auth }: PageProps) {
                                 </span>
                             </div>
                         </div>
+                        {/* Slide 2 — Job Tracker */}
+                        <div className={`absolute inset-0 bg-[#f9fafb] px-4 py-3 transition-opacity duration-500 ${activeSlide === 2 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                            <div className="mb-2.5 flex items-center justify-between">
+                                <p className="text-[11px] font-black text-[#0f172a]">Job Applications</p>
+                                <span className="rounded-md bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-2 py-0.5 text-[8px] font-bold text-white">+ Add job</span>
+                            </div>
+                            {/* Table header */}
+                            <div className="grid grid-cols-4 border-b border-[#e5e7eb] pb-1 text-[7px] font-bold uppercase tracking-widest text-[#9ca3af]">
+                                <span>Company</span><span>Role</span><span>Status</span><span>Applied</span>
+                            </div>
+                            {/* Row 1 */}
+                            <div className="grid grid-cols-4 items-center border-b border-[#f3f4f6] py-1.5 text-[8px] text-[#374151]">
+                                <span className="font-bold">Google</span>
+                                <span>Software Engineer L5</span>
+                                <span><span className="rounded-full bg-[#d1fae5] px-2 py-0.5 text-[7px] font-bold text-[#065f46]">Interview</span></span>
+                                <span>Jun 2</span>
+                            </div>
+                            {/* Row 2 */}
+                            <div className="grid grid-cols-4 items-center border-b border-[#f3f4f6] py-1.5 text-[8px] text-[#374151]">
+                                <span className="font-bold">Stripe</span>
+                                <span>Product Manager</span>
+                                <span><span className="rounded-full bg-[#dbeafe] px-2 py-0.5 text-[7px] font-bold text-[#1d4ed8]">Applied</span></span>
+                                <span>Jun 4</span>
+                            </div>
+                            {/* Row 3 */}
+                            <div className="grid grid-cols-4 items-center border-b border-[#f3f4f6] py-1.5 text-[8px] text-[#374151]">
+                                <span className="font-bold">Airbnb</span>
+                                <span>Staff Designer</span>
+                                <span><span className="rounded-full bg-[#fef3c7] px-2 py-0.5 text-[7px] font-bold text-[#92400e]">Offer</span></span>
+                                <span>May 28</span>
+                            </div>
+                            {/* Row 4 */}
+                            <div className="grid grid-cols-4 items-center py-1.5 text-[8px] text-[#374151]">
+                                <span className="font-bold">Linear</span>
+                                <span>Frontend Engineer</span>
+                                <span><span className="rounded-full bg-[#f3f4f6] px-2 py-0.5 text-[7px] font-bold text-[#6b7280]">Saved</span></span>
+                                <span>—</span>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </section>
