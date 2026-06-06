@@ -98,7 +98,79 @@ export default function Welcome({ auth }: PageProps) {
                     {/* Trust note */}
                     <p className="text-xs text-[#9ca3af]">No credit card required · Free forever plan</p>
 
-                    {/* App screenshot — added in Task 3 */}
+                    {/* App screenshot mockup */}
+                    <div className="relative mx-auto mt-14 max-w-4xl overflow-hidden rounded-xl border border-[#e5e7eb] shadow-2xl shadow-[#4f46e5]/10">
+                        {/* Window toolbar */}
+                        <div className="flex items-center gap-6 border-b border-[#e5e7eb] bg-white px-4 py-2.5">
+                            <div className="flex gap-1.5">
+                                <span className="h-3 w-3 rounded-full bg-[#ff5f56]" />
+                                <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
+                                <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
+                            </div>
+                            <div className="flex gap-4">
+                                <span className="rounded-md bg-[#eef2ff] px-3 py-1 text-xs font-bold text-[#4f46e5]">My Resumes</span>
+                                <span className="px-3 py-1 text-xs text-[#9ca3af]">Cover Letters</span>
+                                <span className="px-3 py-1 text-xs text-[#9ca3af]">Jobs</span>
+                            </div>
+                        </div>
+                        {/* App body */}
+                        <div className="flex h-48 bg-[#f9fafb] sm:h-56">
+                            {/* Sidebar */}
+                            <div className="w-36 flex-shrink-0 border-r border-[#f3f4f6] bg-[#fafafa] px-3 py-3 sm:w-44">
+                                <p className="mb-1.5 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Document</p>
+                                <div className="mb-1 flex items-center gap-2 rounded-md bg-[#eef2ff] px-2 py-1.5">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[#4f46e5]" />
+                                    <span className="text-[10px] font-semibold text-[#4f46e5]">Edit Content</span>
+                                </div>
+                                <div className="flex items-center gap-2 px-2 py-1.5">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
+                                    <span className="text-[10px] text-[#6b7280]">Appearance</span>
+                                </div>
+                                <p className="mb-1.5 mt-3 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">AI Tools</p>
+                                <div className="flex items-center gap-2 px-2 py-1.5">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
+                                    <span className="text-[10px] text-[#6b7280]">AI Suggest</span>
+                                </div>
+                                <div className="flex items-center gap-2 px-2 py-1.5">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
+                                    <span className="text-[10px] text-[#6b7280]">Tailor to Job</span>
+                                </div>
+                                <div className="flex items-center gap-2 px-2 py-1.5">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
+                                    <span className="text-[10px] text-[#6b7280]">ATS Score</span>
+                                </div>
+                            </div>
+                            {/* Editor panel */}
+                            <div className="flex-1 px-5 py-4">
+                                <p className="text-sm font-black text-[#0f172a]">Alex Johnson</p>
+                                <p className="mb-3 text-xs text-[#6b7280]">Senior Product Manager</p>
+                                <p className="mb-1.5 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Summary</p>
+                                <div className="mb-1 h-2 w-full rounded-full bg-[#e0e7ff]" />
+                                <div className="mb-2 h-2 w-4/5 rounded-full bg-[#e0e7ff]" />
+                                <span className="inline-flex items-center gap-1 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[9px] font-bold text-[#4f46e5]">
+                                    ✦ AI improved
+                                </span>
+                                <p className="mb-1.5 mt-3 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Experience</p>
+                                <div className="mb-1 h-2 w-2/5 rounded-full bg-[#e0e7ff]" />
+                                <div className="mb-1 h-2 w-full rounded-full bg-[#f3f4f6]" />
+                                <div className="h-2 w-3/4 rounded-full bg-[#f3f4f6]" />
+                            </div>
+                            {/* PDF preview panel */}
+                            <div className="hidden w-44 flex-shrink-0 border-l border-[#f3f4f6] bg-white px-3 py-4 sm:block">
+                                <div className="mb-2 h-3 w-3/4 rounded-full bg-[#e0e7ff]" />
+                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-1.5 w-4/5 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-3 h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-px w-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-1.5 w-4/5 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-3 h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-px w-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-1.5 w-4/5 rounded-full bg-[#f3f4f6]" />
+                                <div className="h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 {/* Sections added in subsequent tasks */}
