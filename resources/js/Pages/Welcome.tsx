@@ -279,6 +279,48 @@ export default function Welcome({ auth }: PageProps) {
                                 <span>—</span>
                             </div>
                         </div>
+                        {/* Slide 3 — ATS Score */}
+                        <div className={`absolute inset-0 flex bg-[#f9fafb] transition-opacity duration-500 ${activeSlide === 3 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                            {/* Resume content */}
+                            <div className="flex-1 px-5 py-4">
+                                <p className="text-sm font-black text-[#0f172a]">Alex Johnson</p>
+                                <p className="mb-3 text-xs text-[#6b7280]">Senior Product Manager</p>
+                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#e0e7ff]" />
+                                <div className="mb-3 h-1.5 w-4/5 rounded-full bg-[#e0e7ff]" />
+                                <div className="mb-1 h-1.5 w-2/5 rounded-full bg-[#e0e7ff]" />
+                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-1.5 w-3/4 rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
+                                <div className="mb-1 h-1.5 w-5/6 rounded-full bg-[#f3f4f6]" />
+                                <div className="h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
+                            </div>
+                            {/* ATS panel */}
+                            <div className="w-44 flex-shrink-0 border-l border-[#f3f4f6] bg-white px-3 py-4 sm:w-52">
+                                {/* Score ring */}
+                                <div
+                                    className="mx-auto mb-1.5 flex h-14 w-14 items-center justify-center rounded-full"
+                                    style={{ background: 'conic-gradient(#22c55e 0% 78%, #e5e7eb 78% 100%)' }}
+                                >
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sm font-black text-[#0f172a]">
+                                        78
+                                    </div>
+                                </div>
+                                <p className="mb-2 text-center text-[7px] font-bold uppercase tracking-widest text-[#6b7280]">ATS Match Score</p>
+                                <p className="mb-1.5 text-[7px] font-bold uppercase tracking-widest text-[#9ca3af]">Keywords</p>
+                                {[
+                                    { text: 'Product strategy', found: true },
+                                    { text: 'Roadmapping',      found: true },
+                                    { text: 'Stakeholder mgmt', found: true },
+                                    { text: 'OKR frameworks',   found: false },
+                                    { text: 'A/B testing',      found: false },
+                                ].map(kw => (
+                                    <div key={kw.text} className="mb-1 flex items-center gap-1.5">
+                                        <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full ${kw.found ? 'bg-[#22c55e]' : 'bg-[#ef4444]'}`} />
+                                        <span className={`text-[7px] ${kw.found ? 'text-[#374151]' : 'text-[#ef4444]'}`}>{kw.text}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </section>
