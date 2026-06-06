@@ -68,14 +68,12 @@ class PdfImportTest extends TestCase
         $this->fakeClaudeSuccess();
         $user = User::factory()->starter()->create();
 
-        // The fake PDF from UploadedFile::fake() is not a real PDF, so smalot may fail.
-        // We verify the request passes the tier gate (not 402) and either succeeds or
-        // fails with a parsing error (422), not a tier gate error (402).
+        // The fake PDF from UploadedFile::fake() is not a real PDF, so smalot will fail.
+        // The exception is caught and converted to RuntimeException, resulting in a 422.
         $response = $this->actingAs($user)
             ->postJson(route('import.pdf.extract'), ['file' => $this->fakePdf()]);
 
-        $this->assertNotEquals(402, $response->status(), 'Should not be blocked by tier gate');
-        $this->assertContains($response->status(), [200, 422, 500]);
+        $response->assertUnprocessable();
     }
 
     public function test_confirm_creates_new_resume(): void

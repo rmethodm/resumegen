@@ -88,9 +88,13 @@ EOT;
 
     protected function extractText(UploadedFile $file): string
     {
-        $parser = new Parser;
-        $pdf = $parser->parseFile($file->getPathname());
+        try {
+            $parser = new Parser;
+            $pdf = $parser->parseFile($file->getPathname());
 
-        return $pdf->getText();
+            return $pdf->getText();
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Could not read this PDF. Try a text-based PDF.');
+        }
     }
 }
