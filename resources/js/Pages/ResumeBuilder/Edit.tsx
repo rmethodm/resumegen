@@ -230,6 +230,9 @@ export default function Edit({
     const { resumeGenerated } = usePage().props as { resumeGenerated?: boolean };
     const [showGeneratedBanner, setShowGeneratedBanner] = useState(!!resumeGenerated);
 
+    const { linkedInImported } = usePage().props as { linkedInImported?: boolean };
+    const [showLinkedInBanner, setShowLinkedInBanner] = useState(!!linkedInImported);
+
     const [ats, setAts] = useState<AtsScore | null>(null);
     const [atsLoading, setAtsLoading] = useState(false);
     const [atsOpen, setAtsOpen] = useState(false);
@@ -683,6 +686,13 @@ export default function Edit({
                         <div className="mb-4 flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm">
                             <span className="text-blue-700">📄 Imported from PDF — review and edit your details.</span>
                             <button type="button" onClick={() => setShowPdfBanner(false)} className="ml-3 text-blue-400 hover:text-blue-600">✕</button>
+                        </div>
+                    )}
+
+                    {showLinkedInBanner && (
+                        <div className="mb-4 flex items-center justify-between rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm text-teal-700">
+                            <span>Resume imported from LinkedIn. Review and update your details.</span>
+                            <button type="button" onClick={() => setShowLinkedInBanner(false)} className="ml-4 text-teal-500 hover:text-teal-700">✕</button>
                         </div>
                     )}
 
