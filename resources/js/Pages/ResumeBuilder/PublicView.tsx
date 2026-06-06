@@ -21,6 +21,8 @@ export default function PublicView({ resume, token }: Props) {
     const firstCompany = experience.find(e => e.company)?.company ?? '';
     const subtitle = [firstTitle, firstCompany].filter(Boolean).join(' · ');
 
+    const isAuthenticated = !!(usePage().props as PageProps).auth?.user;
+
     const form = useForm({
         sender_name: '',
         sender_email: '',
@@ -36,6 +38,22 @@ export default function PublicView({ resume, token }: Props) {
     return (
         <PublicLayout>
             <Head title={`${resume.name} — Resume`} />
+
+            {!isAuthenticated && (
+                <div className="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
+                    <div className="mx-auto flex max-w-[8.5in] items-center justify-between px-4 py-3">
+                        <p className="text-sm text-gray-600">
+                            <span className="font-medium">{contact?.full_name || resume.name}</span>'s resume
+                        </p>
+                        <a
+                            href={route('register')}
+                            className="rounded-md bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+                        >
+                            Create your free resume →
+                        </a>
+                    </div>
+                </div>
+            )}
 
             <div className="min-h-screen bg-gray-50 py-10">
                 <div className="mx-auto max-w-[8.5in] mb-3 flex justify-end">
@@ -221,6 +239,19 @@ export default function PublicView({ resume, token }: Props) {
 
                 </div>
             </div>
+            {!isAuthenticated && (
+                <div className="fixed bottom-0 left-0 right-0 z-10 border-t border-gray-200 bg-white/95 py-3 backdrop-blur-sm">
+                    <div className="mx-auto flex max-w-[8.5in] items-center justify-between px-4">
+                        <p className="text-sm text-gray-500">Made with <span className="font-medium text-indigo-600">Resumegen</span></p>
+                        <a
+                            href={route('register')}
+                            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                        >
+                            Build yours free →
+                        </a>
+                    </div>
+                </div>
+            )}
         </PublicLayout>
     );
 }

@@ -243,6 +243,11 @@ export default function Edit({
     const [atsLoading, setAtsLoading] = useState(false);
     const [atsOpen, setAtsOpen] = useState(false);
 
+    const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
+    const [shareUrl, setShareUrl] = useState<string | null>(null);
+    const [shareCopied, setShareCopied] = useState(false);
+    const [shareLoading, setShareLoading] = useState(false);
+
     const fetchAts = useCallback(async () => {
         setAtsLoading(true);
         try {
@@ -260,6 +265,23 @@ export default function Edit({
             setAtsLoading(false);
         }
     }, [resume.id]);
+
+    const fetchShareUrl = async () => {
+        if (shareUrl) { setSharePopoverOpen(true); return; }
+        setShareLoading(true);
+        try {
+            const res = await fetch(route('builder.share-url', resume.id), {
+                headers: { 'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '' },
+            });
+            const json = await res.json();
+            setShareUrl(json.url);
+            setSharePopoverOpen(true);
+        } catch {
+            // silently fail
+        } finally {
+            setShareLoading(false);
+        }
+    };
 
     useEffect(() => {
         fetchAts();
@@ -690,6 +712,62 @@ export default function Edit({
                                 🔒 Interview Coach
                             </button>
                         )}
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={fetchShareUrl}
+                                disabled={shareLoading}
+                                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+                            >
+                                {shareLoading ? '…' : 'Share'}
+                            </button>
+
+                            {sharePopoverOpen && shareUrl && (
+                                <>
+                                    <div className="fixed inset-0 z-20" onClick={() => setSharePopoverOpen(false)} />
+                                    <div className="absolute right-0 z-30 mt-2 w-80 rounded-xl border border-gray-200 bg-white p-4 shadow-xl">
+                                        <p className="mb-2 text-xs font-medium text-gray-700">Share your resume</p>
+                                        <div className="flex gap-2">
+                                            <input
+                                                readOnly
+                                                value={shareUrl}
+                                                className="flex-1 rounded-md border-gray-300 text-xs text-gray-600 shadow-sm"
+                                                onFocus={e => e.target.select()}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(shareUrl);
+                                                    setShareCopied(true);
+                                                    setTimeout(() => setShareCopied(false), 2000);
+                                                }}
+                                                className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+                                            >
+                                                {shareCopied ? 'Copied!' : 'Copy'}
+                                            </button>
+                                        </div>
+                                        <div className="mt-3 flex gap-3">
+                                            <a
+                                                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-xs text-blue-600 hover:underline"
+                                            >
+                                                Share on LinkedIn
+                                            </a>
+                                            <a
+                                                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out my resume: ' + shareUrl)}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-xs text-sky-500 hover:underline"
+                                            >
+                                                Share on X
+                                            </a>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                         <a
                             href={route('builder.pdf', resume.id)}
                             className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
