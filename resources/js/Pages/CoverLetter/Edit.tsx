@@ -123,7 +123,7 @@ export default function Edit({ letter, resumes, canCoverLetterTailor }: Props) {
                             <button
                                 type="button"
                                 onClick={() => triggerUpgradeModal('cover_letter_tailor', 'starter')}
-                                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed transition"
+                                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 transition"
                             >
                                 🔒 Tailor to Job
                             </button>
@@ -143,10 +143,15 @@ export default function Edit({ letter, resumes, canCoverLetterTailor }: Props) {
 
             {/* Tailor to Job slide-in panel */}
             {tailorOpen && (
-                <div className="fixed inset-y-0 right-0 z-40 flex w-full max-w-md flex-col border-l border-gray-200 bg-white shadow-xl">
+                <>
+                    <div
+                        className="fixed inset-0 z-30 bg-black/10"
+                        onClick={() => setTailorOpen(false)}
+                    />
+                    <div className="fixed inset-y-0 right-0 z-40 flex w-full max-w-md flex-col border-l border-gray-200 bg-white shadow-xl">
                     <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
                         <h3 className="text-base font-semibold text-gray-900">✨ Tailor to Job</h3>
-                        <button type="button" onClick={() => setTailorOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+                        <button type="button" onClick={() => setTailorOpen(false)} aria-label="Close panel" className="text-gray-400 hover:text-gray-600">✕</button>
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4">
@@ -210,7 +215,7 @@ export default function Edit({ letter, resumes, canCoverLetterTailor }: Props) {
                                 })}
                                 <button
                                     type="button"
-                                    onClick={() => { setSuggestions([]); setJd(''); setAppliedIds(new Set()); setSkippedIds(new Set()); }}
+                                    onClick={() => { setSuggestions([]); setJd(''); setAppliedIds(new Set()); setSkippedIds(new Set()); setTailorError(null); }}
                                     className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
                                 >
                                     Analyze a different JD
@@ -219,6 +224,7 @@ export default function Edit({ letter, resumes, canCoverLetterTailor }: Props) {
                         )}
                     </div>
                 </div>
+                </>
             )}
         </AuthenticatedLayout>
     );
