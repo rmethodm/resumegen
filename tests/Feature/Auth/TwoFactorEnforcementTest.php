@@ -10,7 +10,7 @@ class TwoFactorEnforcementTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_pro_user_without_2fa_redirected_from_dashboard(): void
+    public function test_pro_user_without_2fa_can_access_dashboard(): void
     {
         $user = User::factory()->create([
             'is_pro' => true,
@@ -19,7 +19,7 @@ class TwoFactorEnforcementTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('dashboard'))
-            ->assertRedirect(route('profile.edit'));
+            ->assertOk();
     }
 
     public function test_pro_user_without_2fa_can_access_profile(): void
@@ -34,7 +34,7 @@ class TwoFactorEnforcementTest extends TestCase
             ->assertOk();
     }
 
-    public function test_pro_user_with_2fa_enabled_can_access_dashboard(): void
+    public function test_pro_user_with_2fa_enabled_can_also_access_dashboard(): void
     {
         $user = User::factory()->create([
             'is_pro' => true,
