@@ -5,7 +5,16 @@ import AISuggestButton from '@/Components/AISuggestButton';
 import TailorModal from './TailorModal';
 import InterviewCoachPanel from './Partials/InterviewCoachPanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
-import { TagIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+    TagIcon, TrashIcon,
+    ChevronLeftIcon, ChevronRightIcon,
+    SwatchIcon,
+    BookmarkSquareIcon, EyeIcon, EyeSlashIcon,
+    ArrowDownTrayIcon,
+    SparklesIcon, ChartBarIcon,
+    ScissorsIcon, ChatBubbleLeftRightIcon,
+    LinkIcon,
+} from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import {
     DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors,
@@ -225,6 +234,7 @@ export default function Edit({
     const pendingSave = useRef(false);
 
     const [showPreview, setShowPreview] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     const [showTailor, setShowTailor] = useState(false);
     const [showInterviewCoach, setShowInterviewCoach] = useState(false);
     const [showAcademicBanner, setShowAcademicBanner] = useState(
@@ -541,179 +551,439 @@ export default function Edit({
 
     return (
         <AuthenticatedLayout>
-            <div className="border-b border-[#eeeef5] bg-white px-4 py-2 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <Link href={route('builder.index')} className="text-sm text-[#a0a0b0] hover:text-[#71717a]">
-                        ← Resumes
-                    </Link>
-                    <span className="text-[#eeeef5]">/</span>
-                    <h2 className="text-sm font-semibold text-[#0f0f1a]">{name}</h2>
-                </div>
-                <div className="flex items-center gap-4">
-                        <div className="flex flex-col">
-                        <select
-                            aria-label="Resume template"
-                            value={template}
-                            onChange={e => { setTemplate(e.target.value as ResumeTemplate); setTimeout(save, 0); }}
-                            className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        >
-                            {allowedTemplates.map(t => (
-                                <option key={t} value={t}>{TEMPLATE_LABELS[t] ?? t}</option>
-                            ))}
-                        </select>
-                        {NON_ATS_TEMPLATES.includes(template) && (
-                            <p className="mt-1 text-xs text-amber-600">
-                                ⚠️ Design-focused · Not ATS-optimized
-                            </p>
-                        )}
-                        </div>
-                        <div className="flex items-center rounded-md border border-gray-200 overflow-hidden text-xs" aria-label="Font family">
-                            {(['sans', 'serif', 'mono'] as const).map(f => (
-                                <button
-                                    key={f}
-                                    type="button"
-                                    onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
-                                    className={`px-2.5 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-gray-800 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
-                                >
-                                    {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
-                                </button>
-                            ))}
-                        </div>
-                        {ats && (
-                            <span
-                                className={
-                                    'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold cursor-default ' +
-                                    (ats.score < 50
-                                        ? 'bg-red-100 text-red-700'
-                                        : ats.score < 75
-                                            ? 'bg-amber-100 text-amber-800'
-                                            : 'bg-green-100 text-green-800')
-                                }
-                                title="ATS keyword score"
-                            >
-                                {ats.score} ATS
-                            </span>
-                        )}
-                        {atsLoading && !ats && (
-                            <span className="text-xs text-gray-400">scoring…</span>
-                        )}
-                        <span className="flex items-center gap-1.5 text-xs">
-                            {saving ? (
-                                <>
-                                    <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                                    <span className="text-amber-600">Saving…</span>
-                                </>
-                            ) : savedAt ? (
-                                <>
-                                    <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
-                                    <span className="text-green-600">Saved {savedAt}</span>
-                                </>
-                            ) : null}
-                        </span>
+            <div className="border-b border-[#eeeef5] bg-white px-4 py-2 flex items-center gap-3">
+                <Link href={route('builder.index')} className="text-sm text-[#a0a0b0] hover:text-[#71717a]">
+                    ← Resumes
+                </Link>
+                <span className="text-[#eeeef5]">/</span>
+                <h2 className="text-sm font-semibold text-[#0f0f1a]">{name}</h2>
+            </div>
+            <Head title={`Editing: ${name}`} />
+
+            <div className="flex items-start bg-[#f5f5fb]">
+
+                {/* ── Sidebar ── */}
+                <aside className={`sticky top-0 self-start overflow-y-auto bg-white border-r border-[#eeeef5] transition-all duration-200 ${sidebarOpen ? 'w-56' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+
+                    {/* Toggle button */}
+                    <div className="flex justify-end border-b border-[#eeeef5] px-2 py-2">
                         <button
                             type="button"
-                            onClick={save}
-                            disabled={saving}
-                            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                            onClick={() => setSidebarOpen(v => !v)}
+                            className="rounded-md p-1.5 text-[#a0a0b0] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                            title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
                         >
-                            {saving ? 'Saving…' : 'Save'}
+                            {sidebarOpen
+                                ? <ChevronLeftIcon className="h-4 w-4" />
+                                : <ChevronRightIcon className="h-4 w-4" />}
                         </button>
-                        {aiEnabled ? (
-                            <div className="flex items-center rounded-md border border-gray-200 overflow-hidden text-xs">
-                                {aiCapabilities.claude && (
+                    </div>
+
+                    <div className="px-3 py-4 space-y-5">
+
+                        {/* ── Appearance ── */}
+                        {sidebarOpen && (
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Appearance</p>
+                        )}
+
+                        {/* Template */}
+                        <div title={!sidebarOpen ? 'Template' : undefined}>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <SwatchIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                        <span className="text-xs font-medium text-[#71717a]">Template</span>
+                                    </div>
+                                    <select
+                                        aria-label="Resume template"
+                                        value={template}
+                                        onChange={e => { setTemplate(e.target.value as ResumeTemplate); setTimeout(save, 0); }}
+                                        className="w-full rounded-md border-[#eeeef5] text-xs text-[#0f0f1a] shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                    >
+                                        {allowedTemplates.map(t => (
+                                            <option key={t} value={t}>{TEMPLATE_LABELS[t] ?? t}</option>
+                                        ))}
+                                    </select>
+                                    {NON_ATS_TEMPLATES.includes(template) && (
+                                        <p className="text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>
+                                    )}
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => setSidebarOpen(true)}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                                    title="Template"
+                                >
+                                    <SwatchIcon className="h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Font family */}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-xs font-bold text-[#71717a]">Aa</span>
+                                        <span className="text-xs font-medium text-[#71717a]">Font</span>
+                                    </div>
+                                    <div className="flex overflow-hidden rounded-md border border-[#eeeef5] text-xs" aria-label="Font family">
+                                        {(['sans', 'serif', 'mono'] as const).map(f => (
+                                            <button
+                                                key={f}
+                                                type="button"
+                                                onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
+                                                className={`flex-1 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-[#0f0f1a] text-white' : 'bg-white text-[#71717a] hover:bg-[#f5f5fb]'}`}
+                                            >
+                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => setSidebarOpen(true)}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                                    title="Font"
+                                >
+                                    <span className="text-sm font-bold">Aa</span>
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="border-t border-[#eeeef5]" />
+
+                        {/* ── Document ── */}
+                        {sidebarOpen && (
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Document</p>
+                        )}
+
+                        {/* Save */}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <BookmarkSquareIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                        <span className="text-xs font-medium text-[#71717a]">Save</span>
+                                    </div>
                                     <button
                                         type="button"
-                                        onClick={() => { setAiProvider('claude'); localStorage.setItem('resumegen_ai_provider', 'claude'); }}
-                                        className={`px-2.5 py-1.5 font-medium transition-colors ${aiProvider === 'claude' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                                        onClick={save}
+                                        disabled={saving}
+                                        className="w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca] disabled:opacity-50 transition-colors"
                                     >
-                                        Claude
+                                        {saving ? 'Saving…' : 'Save'}
                                     </button>
-                                )}
-                                {aiCapabilities.openai && (
+                                    {saving ? (
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+                                            <span className="text-[10px] text-amber-600">Saving…</span>
+                                        </div>
+                                    ) : savedAt ? (
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" />
+                                            <span className="text-[10px] text-green-600">Saved {savedAt}</span>
+                                        </div>
+                                    ) : null}
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={save}
+                                    disabled={saving}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] disabled:opacity-50 transition-colors"
+                                    title="Save"
+                                >
+                                    <BookmarkSquareIcon className="h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Preview */}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <EyeIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                        <span className="text-xs font-medium text-[#71717a]">Preview</span>
+                                    </div>
                                     <button
                                         type="button"
-                                        onClick={() => { setAiProvider('openai'); localStorage.setItem('resumegen_ai_provider', 'openai'); }}
-                                        className={`px-2.5 py-1.5 font-medium transition-colors ${aiProvider === 'openai' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                                        onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }}
+                                        className={`w-full rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${showPreview ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#eeeef5] bg-white text-[#0f0f1a] hover:bg-[#f5f5fb]'}`}
                                     >
-                                        ChatGPT
+                                        {showPreview ? 'Hide Preview' : 'Preview'}
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }}
+                                    className={`flex w-full justify-center rounded-md p-2 transition-colors ${showPreview ? 'text-[#4f46e5] bg-[#eef2ff]' : 'text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5]'}`}
+                                    title={showPreview ? 'Hide Preview' : 'Preview'}
+                                >
+                                    {showPreview ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Download PDF */}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <ArrowDownTrayIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                        <span className="text-xs font-medium text-[#71717a]">Download</span>
+                                    </div>
+                                    <a
+                                        href={route('builder.pdf', resume.id)}
+                                        className="block w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb] transition-colors"
+                                    >
+                                        PDF
+                                    </a>
+                                    {canDocx ? (
+                                        <a
+                                            href={route('builder.docx', resume.id)}
+                                            className="block w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb] transition-colors"
+                                        >
+                                            DOCX
+                                        </a>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => triggerUpgradeModal('docx_export', 'starter')}
+                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
+                                        >
+                                            🔒 DOCX
+                                        </button>
+                                    )}
+                                </div>
+                            ) : (
+                                <a
+                                    href={route('builder.pdf', resume.id)}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                                    title="Download PDF"
+                                >
+                                    <ArrowDownTrayIcon className="h-4 w-4" />
+                                </a>
+                            )}
+                        </div>
+
+                        <div className="border-t border-[#eeeef5]" />
+
+                        {/* ── AI Tools ── */}
+                        {sidebarOpen && (
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">AI Tools</p>
+                        )}
+
+                        {/* AI Provider */}
+                        {aiEnabled ? (
+                            <div>
+                                {sidebarOpen ? (
+                                    <div className="space-y-1.5">
+                                        <div className="flex items-center gap-1.5">
+                                            <SparklesIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                            <span className="text-xs font-medium text-[#71717a]">AI Provider</span>
+                                        </div>
+                                        <div className="flex overflow-hidden rounded-md border border-[#eeeef5] text-xs">
+                                            {aiCapabilities.claude && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { setAiProvider('claude'); localStorage.setItem('resumegen_ai_provider', 'claude'); }}
+                                                    className={`flex-1 py-1.5 font-medium transition-colors ${aiProvider === 'claude' ? 'bg-[#4f46e5] text-white' : 'bg-white text-[#71717a] hover:bg-[#f5f5fb]'}`}
+                                                >
+                                                    Claude
+                                                </button>
+                                            )}
+                                            {aiCapabilities.openai && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { setAiProvider('openai'); localStorage.setItem('resumegen_ai_provider', 'openai'); }}
+                                                    className={`flex-1 py-1.5 font-medium transition-colors ${aiProvider === 'openai' ? 'bg-[#4f46e5] text-white' : 'bg-white text-[#71717a] hover:bg-[#f5f5fb]'}`}
+                                                >
+                                                    GPT
+                                                </button>
+                                            )}
+                                        </div>
+                                        <p className="text-[10px] text-[#a0a0b0] tabular-nums">{aiUsed}/{aiLimit} suggestions used</p>
+                                    </div>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSidebarOpen(true)}
+                                        className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                                        title="AI Provider"
+                                    >
+                                        <SparklesIcon className="h-4 w-4" />
                                     </button>
                                 )}
                             </div>
-                        ) : (
-                            <span className="text-xs text-gray-300" title="Add ANTHROPIC_API_KEY or OPENAI_API_KEY to .env to enable AI suggestions">✦ AI off</span>
+                        ) : sidebarOpen ? (
+                            <p className="text-[10px] text-[#a0a0b0]">✦ AI off — add API key in .env</p>
+                        ) : null}
+
+                        {/* ATS Score */}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <ChartBarIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                        <span className="text-xs font-medium text-[#71717a]">ATS Score</span>
+                                    </div>
+                                    {ats ? (
+                                        <span
+                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${ats.score < 50 ? 'bg-red-100 text-red-700' : ats.score < 75 ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'}`}
+                                        >
+                                            {ats.score} / 100
+                                        </span>
+                                    ) : atsLoading ? (
+                                        <span className="text-[10px] text-[#a0a0b0]">Scoring…</span>
+                                    ) : !canAts ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => triggerUpgradeModal('ats_scoring', 'starter')}
+                                            className="text-[10px] text-[#a0a0b0] hover:text-[#4f46e5]"
+                                        >
+                                            🔒 Starter+
+                                        </button>
+                                    ) : null}
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => setSidebarOpen(true)}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                                    title={ats ? `ATS: ${ats.score}` : 'ATS Score'}
+                                >
+                                    <ChartBarIcon className="h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Tailor to Job */}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <ScissorsIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                        <span className="text-xs font-medium text-[#71717a]">Tailor to Job</span>
+                                    </div>
+                                    {canTailor ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowTailor(true)}
+                                            className="w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca] transition-colors"
+                                        >
+                                            Tailor to Job
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => triggerUpgradeModal('tailor', 'starter')}
+                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
+                                        >
+                                            🔒 Starter+
+                                        </button>
+                                    )}
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={canTailor ? () => setShowTailor(true) : () => triggerUpgradeModal('tailor', 'starter')}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                                    title="Tailor to Job"
+                                >
+                                    <ScissorsIcon className="h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Interview Coach */}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <ChatBubbleLeftRightIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                        <span className="text-xs font-medium text-[#71717a]">Interview Coach</span>
+                                    </div>
+                                    {canInterviewCoach ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowInterviewCoach(true)}
+                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb] transition-colors"
+                                        >
+                                            Open Coach
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => triggerUpgradeModal('interview_coach', 'starter')}
+                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
+                                        >
+                                            🔒 Starter+
+                                        </button>
+                                    )}
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={canInterviewCoach ? () => setShowInterviewCoach(true) : () => triggerUpgradeModal('interview_coach', 'starter')}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                                    title="Interview Coach"
+                                >
+                                    <ChatBubbleLeftRightIcon className="h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="border-t border-[#eeeef5]" />
+
+                        {/* ── Share ── */}
+                        {sidebarOpen && (
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Share</p>
                         )}
-                        {canTailor ? (
-                            <button
-                                type="button"
-                                onClick={() => setShowTailor(true)}
-                                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
-                            >
-                                Tailor to Job
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={() => triggerUpgradeModal('tailor', 'starter')}
-                                className="inline-flex items-center gap-1.5 rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] transition hover:bg-[#fafafe]"
-                                title="Upgrade to Starter to tailor your resume to a job description"
-                            >
-                                🔒 Tailor to Job
-                            </button>
-                        )}
-                        {canDocx ? (
-                            <a
-                                href={route('builder.docx', resume.id)}
-                                className="inline-flex items-center gap-1.5 rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb]"
-                            >
-                                DOCX
-                            </a>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={() => triggerUpgradeModal('docx_export', 'starter')}
-                                className="rounded-lg border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] transition hover:bg-[#fafafe]"
-                                title="Upgrade to Starter to download DOCX"
-                            >
-                                🔒 DOCX
-                            </button>
-                        )}
-                        {canInterviewCoach ? (
-                            <button
-                                type="button"
-                                onClick={() => setShowInterviewCoach(true)}
-                                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
-                            >
-                                Interview Coach
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={() => triggerUpgradeModal('interview_coach', 'starter')}
-                                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-400 transition hover:bg-gray-50"
-                            >
-                                🔒 Interview Coach
-                            </button>
-                        )}
+
+                        {/* Share button + popover */}
                         <div className="relative">
-                            <button
-                                type="button"
-                                onClick={fetchShareUrl}
-                                disabled={shareLoading}
-                                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
-                            >
-                                {shareLoading ? '…' : 'Share'}
-                            </button>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <LinkIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
+                                        <span className="text-xs font-medium text-[#71717a]">Share Link</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={fetchShareUrl}
+                                        disabled={shareLoading}
+                                        className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb] disabled:opacity-50 transition-colors"
+                                    >
+                                        {shareLoading ? '…' : 'Get Share Link'}
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={fetchShareUrl}
+                                    disabled={shareLoading}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] disabled:opacity-50 transition-colors"
+                                    title="Share"
+                                >
+                                    <LinkIcon className="h-4 w-4" />
+                                </button>
+                            )}
 
                             {sharePopoverOpen && shareUrl && (
                                 <>
                                     <div className="fixed inset-0 z-20" onClick={() => setSharePopoverOpen(false)} />
-                                    <div className="absolute right-0 z-30 mt-2 w-80 rounded-xl border border-gray-200 bg-white p-4 shadow-xl">
-                                        <p className="mb-2 text-xs font-medium text-gray-700">Share your resume</p>
+                                    <div className="absolute left-full top-0 z-30 ml-2 w-80 rounded-xl border border-[#eeeef5] bg-white p-4 shadow-xl">
+                                        <p className="mb-2 text-xs font-medium text-[#0f0f1a]">Share your resume</p>
                                         <div className="flex gap-2">
                                             <input
                                                 readOnly
                                                 value={shareUrl}
-                                                className="flex-1 rounded-md border-gray-300 text-xs text-gray-600 shadow-sm"
+                                                className="flex-1 rounded-md border-[#eeeef5] text-xs text-[#71717a] shadow-sm"
                                                 onFocus={e => e.target.select()}
                                             />
                                             <button
@@ -723,54 +993,26 @@ export default function Edit({
                                                     setShareCopied(true);
                                                     setTimeout(() => setShareCopied(false), 2000);
                                                 }}
-                                                className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+                                                className="rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca]"
                                             >
                                                 {shareCopied ? 'Copied!' : 'Copy'}
                                             </button>
                                         </div>
                                         <div className="mt-3 flex gap-3">
-                                            <a
-                                                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-xs text-blue-600 hover:underline"
-                                            >
-                                                Share on LinkedIn
-                                            </a>
-                                            <a
-                                                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out my resume: ' + shareUrl)}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-xs text-sky-500 hover:underline"
-                                            >
-                                                Share on X
-                                            </a>
+                                            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">Share on LinkedIn</a>
+                                            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out my resume: ' + shareUrl)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-500 hover:underline">Share on X</a>
                                         </div>
                                     </div>
                                 </>
                             )}
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }}
-                            className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${showPreview ? 'border-indigo-300 bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}`}
-                        >
-                            {showPreview ? 'Hide Preview' : 'Preview'}
-                        </button>
-                        <a
-                            href={route('builder.pdf', resume.id)}
-                            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
-                        >
-                            Download PDF
-                        </a>
-                </div>
-            </div>
-            <Head title={`Editing: ${name}`} />
 
-            <div className="min-h-[calc(100vh-6.5rem)] bg-[#f5f5fb]">
+                    </div>
+                </aside>
 
-                {/* Form */}
-                <div className="mx-auto max-w-3xl px-4 py-6 pb-24">
+                {/* ── Form ── */}
+                <div className="flex-1 min-h-[calc(100vh-3.5rem)] py-6 pb-24">
+                    <div className="mx-auto max-w-2xl px-4">
 
                     {showPdfBanner && (
                         <div className="mb-4 flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm">
@@ -1520,6 +1762,7 @@ export default function Edit({
                             )}
                         </div>
 
+                    </div>
                     </div>
                 </div>
             </div>
