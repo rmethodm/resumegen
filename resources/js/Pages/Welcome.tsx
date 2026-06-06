@@ -129,10 +129,20 @@ export default function Welcome({ auth }: PageProps) {
                                 <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
                                 <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
                             </div>
-                            <div className="flex gap-4">
-                                <span className="rounded-md bg-[#eef2ff] px-3 py-1 text-xs font-bold text-[#4f46e5]">My Resumes</span>
-                                <span className="px-3 py-1 text-xs text-[#9ca3af]">Cover Letters</span>
-                                <span className="px-3 py-1 text-xs text-[#9ca3af]">Jobs</span>
+                            <div className="flex gap-1">
+                                {SLIDES.map((slide, i) => (
+                                    <button
+                                        key={slide.tab}
+                                        onClick={() => goTo(i)}
+                                        className={
+                                            i === activeSlide
+                                                ? 'rounded-md bg-[#eef2ff] px-3 py-1 text-xs font-bold text-[#4f46e5] cursor-pointer'
+                                                : 'px-3 py-1 text-xs text-[#9ca3af] cursor-pointer hover:text-[#6b7280] transition-colors'
+                                        }
+                                    >
+                                        {slide.tab}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                         {/* App body */}
