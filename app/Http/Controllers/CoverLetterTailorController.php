@@ -19,7 +19,7 @@ class CoverLetterTailorController extends Controller
         $user = $request->user();
 
         if (! UserLimits::canCoverLetterTailor($user)) {
-            return response()->json(['error' => 'Upgrade required', 'required_tier' => 'starter'], 402);
+            return response()->json(['error' => 'Cover letter tailoring requires a Starter or Pro plan.', 'required_tier' => 'starter'], 402);
         }
 
         $validated = $request->validate([
@@ -61,6 +61,10 @@ Rules:
 - No markdown, no explanation outside the JSON
 EOT;
 
+        if (! config('services.anthropic.key')) {
+            return response()->json(['message' => 'AI service unavailable'], 503);
+        }
+
         $model = config('services.anthropic.model', 'claude-opus-4-8');
         $inputTokens = 0;
         $outputTokens = 0;
@@ -93,9 +97,9 @@ EOT;
         );
 
         if (! is_array($suggestions)) {
-            return response()->json(['error' => 'AI response could not be parsed. Please try again.'], 422);
+            return response()->json(['message' => 'AI service unavailable'], 503);
         }
 
-        return response()->json(['suggestions' => array_values($suggestions)]);
+        return response()->json(['suggestions' => array_values(array_slice($suggestions, 0, 8))]);
     }
 }
