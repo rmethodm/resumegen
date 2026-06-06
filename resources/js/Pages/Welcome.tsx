@@ -3,6 +3,7 @@ import { PageProps } from '@/types';
 
 export default function Welcome({ auth }: PageProps) {
     const isLoggedIn = !!auth.user;
+    const ctaHref = route(isLoggedIn ? 'dashboard' : 'register');
 
     return (
         <>
@@ -285,7 +286,108 @@ export default function Welcome({ auth }: PageProps) {
                     </div>
                 </section>
 
-                {/* Sections added in subsequent tasks */}
+                {/* ── Pricing ───────────────────────────────────── */}
+                <section id="pricing" className="border-t border-[#e5e7eb] bg-white px-6 py-20">
+                    <div className="mx-auto max-w-4xl">
+                        <h2 className="mb-2 text-center text-3xl font-black tracking-tight text-[#0f172a]">
+                            Simple, transparent pricing
+                        </h2>
+                        <p className="mb-14 text-center text-sm text-[#6b7280]">
+                            Start free — upgrade when you need more
+                        </p>
+
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            {/* Free */}
+                            <div className="rounded-2xl border border-[#e5e7eb] p-6">
+                                <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#6b7280]">Free</p>
+                                <div className="mb-1 flex items-end gap-1">
+                                    <span className="text-4xl font-black leading-none text-[#0f172a]">$0</span>
+                                </div>
+                                <p className="mb-5 text-xs text-[#9ca3af]">Forever free</p>
+                                <ul className="mb-6 space-y-2">
+                                    {['5 resumes', '30 AI suggestions/mo', 'All 8 templates', 'Public share links', '3 ATS scores/mo'].map((f) => (
+                                        <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
+                                            <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
+                                        </li>
+                                    ))}
+                                    {['DOCX export', 'Job tailoring'].map((f) => (
+                                        <li key={f} className="flex items-center gap-2 text-sm text-[#d1d5db]">
+                                            <span className="text-[11px] font-black text-[#d1d5db]">✓</span> {f}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Link
+                                    href={ctaHref}
+                                    className="block rounded-lg bg-[#f3f4f6] py-2.5 text-center text-sm font-bold text-[#374151] hover:bg-[#e5e7eb] transition"
+                                >
+                                    Get started free
+                                </Link>
+                            </div>
+
+                            {/* Starter — highlighted */}
+                            <div className="relative rounded-2xl border-2 border-[#4f46e5] p-6 shadow-lg shadow-[#4f46e5]/10">
+                                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] px-4 py-1 text-[11px] font-black text-white">
+                                    ⭐ Most Popular
+                                </div>
+                                <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#6b7280]">Starter</p>
+                                <div className="mb-1 flex items-end gap-1">
+                                    <span className="text-4xl font-black leading-none text-[#0f172a]">$9</span>
+                                    <span className="mb-1 text-sm text-[#9ca3af]">/mo</span>
+                                </div>
+                                <p className="mb-5 text-xs text-[#9ca3af]">Everything in Free, plus:</p>
+                                <ul className="mb-6 space-y-2">
+                                    {[
+                                        'Unlimited AI suggestions',
+                                        'DOCX export',
+                                        'Job tailoring',
+                                        'Unlimited ATS scoring',
+                                        'Interview prep coach',
+                                        '5 cover letters',
+                                    ].map((f) => (
+                                        <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
+                                            <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Link
+                                    href={ctaHref}
+                                    className="block rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] py-2.5 text-center text-sm font-bold text-white shadow-md shadow-[#4f46e5]/30 hover:opacity-90 transition"
+                                >
+                                    Start for $9/mo
+                                </Link>
+                            </div>
+
+                            {/* Pro */}
+                            <div className="rounded-2xl border border-[#e5e7eb] p-6">
+                                <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#6b7280]">Pro</p>
+                                <div className="mb-1 flex items-end gap-1">
+                                    <span className="text-4xl font-black leading-none text-[#0f172a]">$19</span>
+                                    <span className="mb-1 text-sm text-[#9ca3af]">/mo</span>
+                                </div>
+                                <p className="mb-5 text-xs text-[#9ca3af]">Everything in Starter, plus:</p>
+                                <ul className="mb-6 space-y-2">
+                                    {[
+                                        'Unlimited resumes',
+                                        '500 AI suggestions/mo',
+                                        'Unlimited cover letters',
+                                        'Unlimited job apps',
+                                        'Priority support',
+                                    ].map((f) => (
+                                        <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
+                                            <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Link
+                                    href={ctaHref}
+                                    className="block rounded-lg bg-[#f3f4f6] py-2.5 text-center text-sm font-bold text-[#374151] hover:bg-[#e5e7eb] transition"
+                                >
+                                    Go Pro
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
             </div>
         </>
