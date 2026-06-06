@@ -30,9 +30,9 @@ export default function GenerateResumeModal({ onClose }: Props) {
             route('builder.generate'),
             { ...form, years_experience: Number(form.years_experience), key_skills: skills },
             {
+                onSuccess: () => onClose(),
                 onError: (errors) => {
                     setError(Object.values(errors)[0] as string ?? 'Something went wrong.');
-                    setLoading(false);
                 },
                 onFinish: () => setLoading(false),
             },

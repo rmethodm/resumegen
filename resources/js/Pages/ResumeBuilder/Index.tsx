@@ -120,7 +120,7 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                     <button
                                         type="button"
                                         onClick={() => setShowGenerate(true)}
-                                        className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                                        className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition"
                                     >
                                         ✨ Generate
                                     </button>
@@ -128,7 +128,7 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                     <button
                                         type="button"
                                         onClick={() => triggerUpgradeModal('generate', 'starter')}
-                                        className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
+                                        className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed transition"
                                     >
                                         🔒 Generate
                                     </button>
