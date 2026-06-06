@@ -56,7 +56,13 @@ export default function PublicView({ resume, token }: Props) {
             )}
 
             <div className="min-h-screen bg-gray-50 py-10">
-                <div className="mx-auto max-w-[8.5in] mb-3 flex justify-end">
+                <div className="mx-auto max-w-[8.5in] mb-3 flex justify-end gap-2">
+                    <a
+                        href={route('public.docx', token)}
+                        className="rounded-md border border-indigo-600 px-4 py-2 text-sm font-medium text-indigo-600 shadow-sm hover:bg-indigo-50"
+                    >
+                        Download DOCX
+                    </a>
                     <a
                         href={route('public.pdf', token)}
                         className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"

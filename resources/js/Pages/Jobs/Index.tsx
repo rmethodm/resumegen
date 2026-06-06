@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import type { JobApplicationRow, JobStatus } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
@@ -18,6 +19,9 @@ const STATUS_CLASSES: Record<JobStatus, string> = {
 
 export default function Index({ applications, resumes, statuses }: Props) {
     const [adding, setAdding] = useState(false);
+    const [search, setSearch] = useState('');
+    const [pageSize, setPageSize] = useState(10);
+    const [page, setPage] = useState(1);
     const [sortKey, setSortKey] = useState<SortKey>('updated_at');
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
@@ -34,8 +38,26 @@ export default function Index({ applications, resumes, statuses }: Props) {
         router.delete(route('jobs.destroy', id));
     };
 
+    const toggleSort = (k: SortKey) => {
+        if (sortKey === k) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+        else { setSortKey(k); setSortDir('desc'); }
+        setPage(1);
+    };
+
+    const fmt = (iso: string | null) =>
+        iso ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso)) : '—';
+
+    const filtered = useMemo(() => {
+        const q = search.toLowerCase();
+        return applications.filter(a =>
+            a.company.toLowerCase().includes(q) ||
+            a.role.toLowerCase().includes(q) ||
+            a.status.toLowerCase().includes(q)
+        );
+    }, [applications, search]);
+
     const sorted = useMemo(() => {
-        const copy = [...applications];
+        const copy = [...filtered];
         copy.sort((a, b) => {
             const av = (a[sortKey] ?? '') as string, bv = (b[sortKey] ?? '') as string;
             if (av < bv) return sortDir === 'asc' ? -1 : 1;
@@ -43,20 +65,20 @@ export default function Index({ applications, resumes, statuses }: Props) {
             return 0;
         });
         return copy;
-    }, [applications, sortKey, sortDir]);
+    }, [filtered, sortKey, sortDir]);
 
-    const toggleSort = (k: SortKey) => {
-        if (sortKey === k) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
-        else { setSortKey(k); setSortDir('asc'); }
-    };
+    const totalPages  = Math.max(1, Math.ceil(sorted.length / pageSize));
+    const safePage    = Math.min(page, totalPages);
+    const start       = (safePage - 1) * pageSize;
+    const pageRows    = sorted.slice(start, start + pageSize);
+    const showingFrom = sorted.length === 0 ? 0 : start + 1;
+    const showingTo   = Math.min(start + pageSize, sorted.length);
 
-    const fmt = (iso: string | null) =>
-        iso ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso)) : '—';
-
-    const SortTh = ({ k, label }: { k: SortKey; label: string }) => (
-        <th className="cursor-pointer px-5 py-3 text-[10px] font-bold uppercase tracking-wide text-[#c4c4d0] hover:text-[#71717a] transition" onClick={() => toggleSort(k)}>
-            {label}{sortKey === k ? (sortDir === 'asc' ? ' ↑' : ' ↓') : ''}
-        </th>
+    const SortIcon = ({ k }: { k: SortKey }) => (
+        <span className="ml-1 inline-flex flex-col leading-none text-[#c4c4d0]">
+            <span className={sortKey === k && sortDir === 'asc' ? 'text-[#4f46e5]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
+            <span className={sortKey === k && sortDir === 'desc' ? 'text-[#4f46e5]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
+        </span>
     );
 
     return (
@@ -79,22 +101,60 @@ export default function Index({ applications, resumes, statuses }: Props) {
                     </div>
 
                     <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+
+                        {/* Table controls */}
+                        <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[#eeeef5]">
+                            <div className="flex items-center gap-2 text-sm text-[#71717a]">
+                                <span>Show</span>
+                                <div className="relative">
+                                    <select
+                                        value={pageSize}
+                                        onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+                                        className="h-8 appearance-none rounded-lg border border-[#eeeef5] pl-2 pr-7 py-0 text-sm text-[#0f0f1a] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                    >
+                                        {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
+                                    </select>
+                                </div>
+                                <span>entries</span>
+                            </div>
+                            <div className="relative w-64">
+                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#a0a0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
+                                </svg>
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    value={search}
+                                    onChange={e => { setSearch(e.target.value); setPage(1); }}
+                                    className="w-full rounded-lg border border-[#eeeef5] py-1.5 pl-9 pr-3 text-sm text-[#0f0f1a] placeholder-[#a0a0b0] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                />
+                            </div>
+                        </div>
+
                         <div className="overflow-x-auto">
-                            <table className="min-w-full text-sm">
+                            <table className="min-w-full text-left text-sm">
                                 <thead>
-                                    <tr className="border-b border-[#eeeef5] bg-[#fafafe] text-left">
-                                        <SortTh k="company" label="Company" />
-                                        <SortTh k="role" label="Role" />
-                                        <SortTh k="status" label="Status" />
-                                        <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-wide text-[#c4c4d0]">Resume</th>
-                                        <SortTh k="applied_at" label="Applied" />
-                                        <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-wide text-[#c4c4d0]">URL</th>
-                                        <th className="px-5 py-3 text-right text-[10px] font-bold uppercase tracking-wide text-[#c4c4d0]">Actions</th>
+                                    <tr className="border-b border-[#eeeef5]">
+                                        <th onClick={() => toggleSort('company')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#71717a] hover:text-[#0f0f1a] transition-colors">
+                                            <span className="inline-flex items-center gap-0.5">Company<SortIcon k="company" /></span>
+                                        </th>
+                                        <th onClick={() => toggleSort('role')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#71717a] hover:text-[#0f0f1a] transition-colors">
+                                            <span className="inline-flex items-center gap-0.5">Role<SortIcon k="role" /></span>
+                                        </th>
+                                        <th onClick={() => toggleSort('status')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#71717a] hover:text-[#0f0f1a] transition-colors">
+                                            <span className="inline-flex items-center gap-0.5">Status<SortIcon k="status" /></span>
+                                        </th>
+                                        <th className="px-5 py-3.5 text-xs font-semibold text-[#71717a]">Resume</th>
+                                        <th onClick={() => toggleSort('applied_at')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#71717a] hover:text-[#0f0f1a] transition-colors">
+                                            <span className="inline-flex items-center gap-0.5">Applied<SortIcon k="applied_at" /></span>
+                                        </th>
+                                        <th className="px-5 py-3.5 text-xs font-semibold text-[#71717a]">URL</th>
+                                        <th className="px-5 py-3.5 text-right text-xs font-semibold text-[#71717a]">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-[#f5f5fb]">
+                                <tbody>
                                     {adding && (
-                                        <tr className="bg-[#eef2ff]/40">
+                                        <tr className="border-b border-[#f5f5fb] bg-[#eef2ff]/40">
                                             <td className="px-4 py-2"><input value={form.data.company} onChange={e => form.setData('company', e.target.value)} className="w-full rounded-lg border border-[#eeeef5] text-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]" placeholder="Company" /></td>
                                             <td className="px-4 py-2"><input value={form.data.role} onChange={e => form.setData('role', e.target.value)} className="w-full rounded-lg border border-[#eeeef5] text-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]" placeholder="Role" /></td>
                                             <td className="px-4 py-2">
@@ -119,31 +179,72 @@ export default function Index({ applications, resumes, statuses }: Props) {
                                         </tr>
                                     )}
 
-                                    {sorted.length === 0 && !adding && (
-                                        <tr><td colSpan={7} className="px-5 py-12 text-center text-sm text-[#a0a0b0]">No applications yet. Click "+ New Application" to start tracking.</td></tr>
+                                    {pageRows.length === 0 && !adding && (
+                                        <tr>
+                                            <td colSpan={7} className="px-5 py-12 text-center text-sm text-[#a0a0b0]">
+                                                {search ? 'No applications match your search.' : 'No applications yet. Click "+ New Application" to start tracking.'}
+                                            </td>
+                                        </tr>
                                     )}
 
-                                    {sorted.map(a => (
-                                        <tr key={a.id} className="transition-colors hover:bg-[#fafafe]">
-                                            <td className="px-5 py-3 font-semibold text-[#0f0f1a]">{a.company}</td>
-                                            <td className="px-5 py-3 text-[#71717a]">{a.role}</td>
-                                            <td className="px-5 py-3">
+                                    {pageRows.map(a => (
+                                        <tr key={a.id} className="border-b border-[#f5f5fb] transition-colors hover:bg-[#fafafe]">
+                                            <td className="px-5 py-4 font-bold text-[#0f0f1a]">{a.company}</td>
+                                            <td className="px-5 py-4 text-[#71717a]">{a.role}</td>
+                                            <td className="px-5 py-4">
                                                 <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold ${STATUS_CLASSES[a.status]}`}>{a.status}</span>
                                             </td>
-                                            <td className="px-5 py-3 text-[#71717a]">{a.resume?.name ?? '—'}</td>
-                                            <td className="px-5 py-3 text-[#71717a]">{fmt(a.applied_at)}</td>
-                                            <td className="px-5 py-3">
+                                            <td className="px-5 py-4 text-[#71717a]">{a.resume?.name ?? '—'}</td>
+                                            <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(a.applied_at)}</td>
+                                            <td className="px-5 py-4">
                                                 {a.job_url ? <a href={a.job_url} target="_blank" rel="noopener noreferrer" className="text-[#4f46e5] hover:underline">link</a> : '—'}
                                             </td>
-                                            <td className="px-5 py-3 text-right">
-                                                <Link href={route('jobs.edit', a.id)} className="mr-3 text-xs font-semibold text-[#4f46e5] hover:underline">Edit</Link>
-                                                <button onClick={() => destroy(a.id, `${a.company} – ${a.role}`)} className="text-xs font-medium text-red-600 hover:underline">Delete</button>
+                                            <td className="px-5 py-4">
+                                                <div className="flex items-center justify-end gap-1">
+                                                    <Link href={route('jobs.edit', a.id)} title="Edit" className="rounded-lg p-1.5 text-[#4338ca] hover:bg-[#eef2ff] transition"><PencilSquareIcon className="h-4 w-4" /></Link>
+                                                    <button onClick={() => destroy(a.id, `${a.company} – ${a.role}`)} title="Delete" className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 transition"><TrashIcon className="h-4 w-4" /></button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
+
+                        {/* Pagination */}
+                        <div className="flex items-center justify-between px-5 py-4 border-t border-[#eeeef5]">
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                                    disabled={safePage === 1}
+                                    className="rounded-lg border border-[#eeeef5] px-3.5 py-1.5 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe] disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                    Previous
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                                    <button
+                                        key={p}
+                                        onClick={() => setPage(p)}
+                                        className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${p === safePage ? 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white shadow-sm' : 'border border-[#eeeef5] text-[#71717a] hover:bg-[#fafafe]'}`}
+                                    >
+                                        {p}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={safePage === totalPages}
+                                    className="rounded-lg border border-[#eeeef5] px-3.5 py-1.5 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe] disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                            <p className="text-sm text-[#a0a0b0]">
+                                {sorted.length === 0
+                                    ? 'No entries'
+                                    : `Showing ${showingFrom} to ${showingTo} of ${sorted.length} ${sorted.length === 1 ? 'entry' : 'entries'}`}
+                            </p>
+                        </div>
+
                     </div>
                 </div>
             </div>

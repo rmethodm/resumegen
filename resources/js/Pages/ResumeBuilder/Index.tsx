@@ -155,13 +155,15 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                         <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[#eeeef5]">
                             <div className="flex items-center gap-2 text-sm text-[#71717a]">
                                 <span>Show</span>
-                                <select
-                                    value={pageSize}
-                                    onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                                    className="rounded-lg border border-[#eeeef5] px-2 py-1 text-sm leading-none text-[#0f0f1a] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
-                                >
-                                    {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
-                                </select>
+                                <div className="relative">
+                                    <select
+                                        value={pageSize}
+                                        onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+                                        className="h-8 appearance-none rounded-lg border border-[#eeeef5] pl-2 pr-7 py-0 text-sm text-[#0f0f1a] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                    >
+                                        {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
+                                    </select>
+                                </div>
                                 <span>entries</span>
                             </div>
                             <div className="relative w-64">

@@ -2,6 +2,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { PageProps, ResumeStat } from '@/types';
 import { useMemo, useState } from 'react';
+import {
+    ArrowDownTrayIcon,
+    ChatBubbleLeftRightIcon,
+    DocumentTextIcon,
+    EyeIcon,
+} from '@heroicons/react/24/outline';
 
 type Props = PageProps<{ resumeStats: ResumeStat[]; resumeCount: number }>;
 type SortKey = 'resume_name' | 'page_views' | 'unique_visitors' | 'pdf_downloads' | 'questions_submitted';
@@ -71,16 +77,30 @@ export default function Dashboard() {
                     {/* Stat cards */}
                     <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
                         {[
-                            { label: 'Resumes',       value: resumeCount },
-                            { label: 'Total Views',   value: totalViews },
-                            { label: 'PDF Downloads', value: totalDownloads },
-                            { label: 'Messages',      value: totalMessages },
-                        ].map(({ label, value }) => (
-                            <div key={label} className="rounded-xl border border-[#eeeef5] bg-white p-5 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
-                                <p className="text-3xl font-extrabold tracking-tight text-[#0f0f1a]">{value.toLocaleString()}</p>
-                                <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#a0a0b0]">{label}</p>
-                            </div>
-                        ))}
+                            { label: 'Resumes',       value: resumeCount,    Icon: DocumentTextIcon,         iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-500',  href: route('builder.index') },
+                            { label: 'Total Views',   value: totalViews,     Icon: EyeIcon,                  iconBg: 'bg-violet-50',  iconColor: 'text-violet-500',  href: null },
+                            { label: 'PDF Downloads', value: totalDownloads, Icon: ArrowDownTrayIcon,        iconBg: 'bg-sky-50',     iconColor: 'text-sky-500',     href: null },
+                            { label: 'Messages',      value: totalMessages,  Icon: ChatBubbleLeftRightIcon,  iconBg: 'bg-emerald-50', iconColor: 'text-emerald-500', href: route('messages.index') },
+                        ].map(({ label, value, Icon, iconBg, iconColor, href }) => {
+                            const inner = (
+                                <>
+                                    <div className={`mb-3 inline-flex items-center justify-center rounded-lg p-2 ${iconBg}`}>
+                                        <Icon className={`h-5 w-5 ${iconColor}`} />
+                                    </div>
+                                    <p className="text-3xl font-extrabold tracking-tight text-[#0f0f1a]">{value.toLocaleString()}</p>
+                                    <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#a0a0b0]">{label}</p>
+                                </>
+                            );
+                            return href ? (
+                                <Link key={label} href={href} className="rounded-xl border border-[#eeeef5] bg-white p-5 shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:border-[#c7c5f4] hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
+                                    {inner}
+                                </Link>
+                            ) : (
+                                <div key={label} className="rounded-xl border border-[#eeeef5] bg-white p-5 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                                    {inner}
+                                </div>
+                            );
+                        })}
                     </div>
 
                     {/* Analytics table */}
@@ -90,13 +110,15 @@ export default function Dashboard() {
                         <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[#eeeef5]">
                             <div className="flex items-center gap-2 text-sm text-[#71717a]">
                                 <span>Show</span>
-                                <select
-                                    value={pageSize}
-                                    onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                                    className="rounded-lg border border-[#eeeef5] px-2 py-1 text-sm text-[#0f0f1a] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
-                                >
-                                    {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
-                                </select>
+                                <div className="relative">
+                                    <select
+                                        value={pageSize}
+                                        onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+                                        className="h-8 appearance-none rounded-lg border border-[#eeeef5] pl-2 pr-7 py-0 text-sm text-[#0f0f1a] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                    >
+                                        {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
+                                    </select>
+                                </div>
                                 <span>entries</span>
                             </div>
                             <div className="relative w-64">

@@ -13,7 +13,7 @@ import {
     ArrowDownTrayIcon,
     SparklesIcon, ChartBarIcon,
     ScissorsIcon, ChatBubbleLeftRightIcon,
-    LinkIcon,
+
 } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import {
@@ -712,7 +712,7 @@ export default function Edit({
                                     <button
                                         type="button"
                                         onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }}
-                                        className={`w-full rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${showPreview ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#eeeef5] bg-white text-[#0f0f1a] hover:bg-[#f5f5fb]'}`}
+                                        className={`w-full rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${showPreview ? 'bg-[#4338ca] text-white hover:bg-[#3730a3]' : 'bg-[#4f46e5] text-white hover:bg-[#4338ca]'}`}
                                     >
                                         {showPreview ? 'Hide Preview' : 'Preview'}
                                     </button>
@@ -739,14 +739,14 @@ export default function Edit({
                                     </div>
                                     <a
                                         href={route('builder.pdf', resume.id)}
-                                        className="block w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb] transition-colors"
+                                        className="block w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#4338ca] transition-colors"
                                     >
                                         PDF
                                     </a>
                                     {canDocx ? (
                                         <a
                                             href={route('builder.docx', resume.id)}
-                                            className="block w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb] transition-colors"
+                                            className="block w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#4338ca] transition-colors"
                                         >
                                             DOCX
                                         </a>
@@ -912,7 +912,7 @@ export default function Edit({
                                         <button
                                             type="button"
                                             onClick={() => setShowInterviewCoach(true)}
-                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb] transition-colors"
+                                            className="w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca] transition-colors"
                                         >
                                             Open Coach
                                         </button>
@@ -938,74 +938,6 @@ export default function Edit({
                             )}
                         </div>
 
-                        <div className="border-t border-[#eeeef5]" />
-
-                        {/* ── Share ── */}
-                        {sidebarOpen && (
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Share</p>
-                        )}
-
-                        {/* Share button + popover */}
-                        <div className="relative">
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5">
-                                        <LinkIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
-                                        <span className="text-xs font-medium text-[#71717a]">Share Link</span>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={fetchShareUrl}
-                                        disabled={shareLoading}
-                                        className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb] disabled:opacity-50 transition-colors"
-                                    >
-                                        {shareLoading ? '…' : 'Get Share Link'}
-                                    </button>
-                                </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={fetchShareUrl}
-                                    disabled={shareLoading}
-                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] disabled:opacity-50 transition-colors"
-                                    title="Share"
-                                >
-                                    <LinkIcon className="h-4 w-4" />
-                                </button>
-                            )}
-
-                            {sharePopoverOpen && shareUrl && (
-                                <>
-                                    <div className="fixed inset-0 z-20" onClick={() => setSharePopoverOpen(false)} />
-                                    <div className="absolute left-full top-0 z-30 ml-2 w-80 rounded-xl border border-[#eeeef5] bg-white p-4 shadow-xl">
-                                        <p className="mb-2 text-xs font-medium text-[#0f0f1a]">Share your resume</p>
-                                        <div className="flex gap-2">
-                                            <input
-                                                readOnly
-                                                value={shareUrl}
-                                                className="flex-1 rounded-md border-[#eeeef5] text-xs text-[#71717a] shadow-sm"
-                                                onFocus={e => e.target.select()}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(shareUrl);
-                                                    setShareCopied(true);
-                                                    setTimeout(() => setShareCopied(false), 2000);
-                                                }}
-                                                className="rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca]"
-                                            >
-                                                {shareCopied ? 'Copied!' : 'Copy'}
-                                            </button>
-                                        </div>
-                                        <div className="mt-3 flex gap-3">
-                                            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">Share on LinkedIn</a>
-                                            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out my resume: ' + shareUrl)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-500 hover:underline">Share on X</a>
-                                        </div>
-                                    </div>
-                                </>
-                            )}
-                        </div>
 
                     </div>
                 </aside>

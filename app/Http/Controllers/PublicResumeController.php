@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\NewQuestionReceived;
 use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
+use App\Services\DocxGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -46,6 +47,27 @@ class PublicResumeController extends Controller
         ResumeShareEvent::log($request, $link, 'pdf_download');
 
         return $pdf->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
+    }
+
+    public function downloadDocx(Request $request, string $token)
+    {
+        $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
+
+        abort_if(
+            ! $link->is_active || ($link->expires_at && $link->expires_at->isPast()),
+            410,
+            'This link is no longer active.'
+        );
+
+        $resume = $link->resume;
+        $word = app(DocxGenerator::class)->generate($resume);
+        $filename = $resume->name
+            ? preg_replace('/[^a-zA-Z0-9_\-]/', '_', $resume->name).'.docx'
+            : $resume->id.'.docx';
+
+        return response()->streamDownload(function () use ($word) {
+            $word->save('php://output');
+        }, $filename, ['Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
     }
 
     public function storeQuestion(Request $request, string $token)
