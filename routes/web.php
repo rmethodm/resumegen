@@ -12,6 +12,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\PdfImportController;
 use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
@@ -99,6 +100,12 @@ Route::middleware(['auth', 'two_factor_challenge', 'two_factor_setup'])->group(f
 
     Route::get('/usage', [UsageController::class, 'index'])->name('usage.index');
     Route::get('/messages', fn () => Inertia::render('Messages/Index'))->name('messages.index');
+
+    Route::post('/import/pdf', [PdfImportController::class, 'extract'])
+        ->name('import.pdf.extract')
+        ->middleware('throttle:5,1');
+    Route::post('/import/pdf/confirm', [PdfImportController::class, 'confirm'])
+        ->name('import.pdf.confirm');
 });
 
 // Public (unauthenticated) share link routes
