@@ -1,9 +1,30 @@
 import { Head, Link } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { useEffect, useRef, useState } from 'react';
+
+const SLIDES = [
+    { tab: 'My Resumes',    label: 'Resume Builder' },
+    { tab: 'Cover Letters', label: 'Cover Letters'  },
+    { tab: 'Jobs',          label: 'Job Tracker'    },
+    { tab: 'ATS Score',     label: 'ATS Score'      },
+] as const;
 
 export default function Welcome({ auth }: PageProps) {
     const isLoggedIn = !!auth.user;
     const ctaHref = route(isLoggedIn ? 'dashboard' : 'register');
+
+    const [activeSlide, setActiveSlide] = useState(0);
+    const pausedRef = useRef(false);
+    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    function goTo(n: number) {
+        const next = ((n % SLIDES.length) + SLIDES.length) % SLIDES.length;
+        setActiveSlide(next);
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = setInterval(() => {
+            if (!pausedRef.current) setActiveSlide(s => (s + 1) % SLIDES.length);
+        }, 4000);
+    }
 
     return (
         <>
