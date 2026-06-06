@@ -3,7 +3,6 @@ import { PageProps } from '@/types';
 
 export default function Welcome({ auth }: PageProps) {
     const isLoggedIn = !!auth.user;
-    const ctaHref = route(isLoggedIn ? 'dashboard' : 'register');
 
     return (
         <>
