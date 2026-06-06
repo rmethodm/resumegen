@@ -197,6 +197,13 @@ export interface CoverLetter {
     updated_at: string;
 }
 
+export interface CoverLetterSuggestion {
+    id: number;
+    original_text: string;
+    suggested_text: string;
+    reason: string;
+}
+
 export type JobStatus = 'saved' | 'applied' | 'interviewing' | 'offered' | 'rejected' | 'closed';
 
 export interface JobApplicationRow {
