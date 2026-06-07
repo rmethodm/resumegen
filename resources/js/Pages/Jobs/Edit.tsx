@@ -1,14 +1,16 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import type { InterviewNote, JobApplication, JobStatus } from '@/types';
+import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import axios from 'axios';
 import { FormEvent, useRef, useState } from 'react';
 
 type ResumeOpt = { id: number; name: string };
 type SalaryData = { min: number | null; max: number | null; median: number | null; match: string };
-type Props = { application: JobApplication; resumes: ResumeOpt[]; statuses: JobStatus[]; notes_log: InterviewNote[] };
+type Props = { application: JobApplication; resumes: ResumeOpt[]; statuses: JobStatus[]; notes_log: InterviewNote[]; canNegotiation: boolean };
 
-export default function Edit({ application, resumes, statuses, notes_log }: Props) {
+export default function Edit({ application, resumes, statuses, notes_log, canNegotiation }: Props) {
     const form = useForm({
         company:      application.company,
         role:         application.role,
@@ -42,6 +44,11 @@ export default function Edit({ application, resumes, statuses, notes_log }: Prop
             } catch { /* silent */ }
         }, 500);
     };
+
+    const [negotiationScript, setNegotiationScript] = useState<string | null>(null);
+    const [negotiationLoading, setNegotiationLoading] = useState(false);
+    const [offeredSalary, setOfferedSalary] = useState('');
+    const [targetSalary, setTargetSalary] = useState('');
 
     const [noteBody, setNoteBody] = useState('');
     const [addingNote, setAddingNote] = useState(false);
@@ -117,6 +124,70 @@ export default function Edit({ application, resumes, statuses, notes_log }: Prop
                                 </select>
                             </div>
                         </div>
+                        {application.status === 'offered' && (
+                            <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="font-semibold text-amber-900">Offer received!</p>
+                                        <p className="text-sm text-amber-700">Generate a salary negotiation email to maximize your offer.</p>
+                                    </div>
+                                </div>
+                                {canNegotiation ? (
+                                    <>
+                                        <div className="mt-3 grid grid-cols-2 gap-2">
+                                            <input
+                                                type="text"
+                                                placeholder="Offered salary (optional)"
+                                                value={offeredSalary}
+                                                onChange={(e) => setOfferedSalary(e.target.value)}
+                                                className="rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm focus:outline-none"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Target salary (optional)"
+                                                value={targetSalary}
+                                                onChange={(e) => setTargetSalary(e.target.value)}
+                                                className="rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm focus:outline-none"
+                                            />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            disabled={negotiationLoading}
+                                            onClick={() => {
+                                                setNegotiationLoading(true);
+                                                axios.post(route('jobs.negotiation-script', application.id), {
+                                                    offered_salary: offeredSalary,
+                                                    target_salary: targetSalary,
+                                                }).then((res) => {
+                                                    setNegotiationScript(res.data.email_body);
+                                                }).finally(() => setNegotiationLoading(false));
+                                            }}
+                                            className="mt-3 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50"
+                                        >
+                                            {negotiationLoading ? 'Generating…' : 'Generate Negotiation Script'}
+                                        </button>
+                                        {negotiationScript && (
+                                            <textarea
+                                                readOnly
+                                                value={negotiationScript}
+                                                rows={8}
+                                                className="mt-3 w-full rounded-lg border border-amber-200 bg-white px-3 py-2 text-sm text-gray-800 focus:outline-none"
+                                                onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+                                            />
+                                        )}
+                                    </>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => triggerUpgradeModal('negotiation_script', 'starter')}
+                                        className="mt-3 flex items-center gap-1 rounded-lg border border-amber-300 px-4 py-2 text-sm font-medium text-amber-800"
+                                    >
+                                        <span>🔒</span> Generate Negotiation Script
+                                    </button>
+                                )}
+                            </div>
+                        )}
+
                         <div className="grid grid-cols-3 gap-4">
                             <div>
                                 <label className={labelCls}>Date Applied</label>

@@ -31,6 +31,7 @@ use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
+use App\Http\Controllers\NegotiationScriptController;
 use App\Http\Controllers\TailorController;
 use App\Http\Controllers\UsageController;
 use Illuminate\Support\Facades\Route;
@@ -137,6 +138,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::delete('/jobs/{application}', [JobApplicationController::class, 'destroy'])->name('jobs.destroy');
     Route::post('/jobs/{application}/notes', [InterviewNoteController::class, 'store'])->name('jobs.notes.store');
     Route::delete('/jobs/{application}/notes/{note}', [InterviewNoteController::class, 'destroy'])->name('jobs.notes.destroy');
+    Route::post('/jobs/{job}/negotiation-script', [NegotiationScriptController::class, 'store'])
+        ->name('jobs.negotiation-script')
+        ->middleware('throttle:5,1');
 
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');

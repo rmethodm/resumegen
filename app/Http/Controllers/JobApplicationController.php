@@ -60,13 +60,15 @@ class JobApplicationController extends Controller
     public function edit(Request $request, JobApplication $application): Response
     {
         $this->authorize('update', $application);
-        $resumes = $request->user()->resumes()->orderBy('name')->get(['id', 'name']);
+        $user = $request->user();
+        $resumes = $user->resumes()->orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Jobs/Edit', [
             'application' => $application,
             'resumes' => $resumes,
             'statuses' => JobApplication::STATUSES,
             'notes_log' => $application->interviewNotes()->get(['id', 'body', 'created_at']),
+            'canNegotiation' => UserLimits::canNegotiation($user),
         ]);
     }
 

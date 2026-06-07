@@ -93,6 +93,11 @@ class UserLimits
         return $user->isAtLeastStarter();
     }
 
+    public static function canNegotiation(User $user): bool
+    {
+        return $user->isAtLeastStarter();
+    }
+
     public static function canStrengthHistory(User $user): bool
     {
         return $user->isAtLeastStarter();
