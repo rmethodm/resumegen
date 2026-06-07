@@ -21,6 +21,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeGeneratorController;
+use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
 use App\Http\Controllers\TailorController;
@@ -106,6 +107,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
 
     Route::get('/jobs', [JobApplicationController::class, 'index'])->name('jobs.index');
     Route::post('/jobs', [JobApplicationController::class, 'store'])->name('jobs.store');
+    Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
     Route::get('/jobs/{application}', [JobApplicationController::class, 'edit'])->name('jobs.edit');
     Route::put('/jobs/{application}', [JobApplicationController::class, 'update'])->name('jobs.update');
     Route::delete('/jobs/{application}', [JobApplicationController::class, 'destroy'])->name('jobs.destroy');
