@@ -6,6 +6,7 @@ import SpellBadge from '@/Components/SpellBadge';
 import { useSpellCheck } from '@/hooks/useSpellCheck';
 import TailorModal from './TailorModal';
 import InterviewCoachPanel from './Partials/InterviewCoachPanel';
+import MockInterviewPanel from '@/Components/MockInterviewPanel';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import {
@@ -235,6 +236,7 @@ export default function Edit({
     canTailor,
     canInterviewCoach,
     interviewCoachUsesRemaining,
+    canMockInterview,
     canQuantifyBullet,
     quantifyBulletUsesRemaining,
     canCareerPaths,
@@ -257,6 +259,7 @@ export default function Edit({
     canTailor: boolean;
     canInterviewCoach: boolean;
     interviewCoachUsesRemaining: number | null;
+    canMockInterview: boolean;
     canQuantifyBullet: boolean;
     quantifyBulletUsesRemaining: number | null;
     canCareerPaths: boolean;
@@ -300,6 +303,7 @@ export default function Edit({
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [showTailor, setShowTailor] = useState(false);
     const [showInterviewCoach, setShowInterviewCoach] = useState(false);
+    const [showMockInterview, setShowMockInterview] = useState(false);
     const [showVersions, setShowVersions] = useState(false);
     const [versionName, setVersionName] = useState('');
     const [savingVersion, setSavingVersion] = useState(false);
@@ -1198,6 +1202,44 @@ export default function Edit({
                                     title="Interview Coach"
                                 >
                                     <ChatBubbleLeftRightIcon className="h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Mock Interview */}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-[#71717a] text-sm">🎤</span>
+                                        <span className="text-xs font-medium text-[#71717a]">Mock Interview</span>
+                                    </div>
+                                    {canMockInterview ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowMockInterview(true)}
+                                            className="w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca] transition-colors"
+                                        >
+                                            Start Interview
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => triggerUpgradeModal('mock_interview', 'pro')}
+                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
+                                        >
+                                            🔒 Pro
+                                        </button>
+                                    )}
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={canMockInterview ? () => setShowMockInterview(true) : () => triggerUpgradeModal('mock_interview', 'pro')}
+                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
+                                    title="Mock Interview"
+                                >
+                                    <span className="text-sm">🎤</span>
                                 </button>
                             )}
                         </div>
@@ -2418,6 +2460,12 @@ export default function Edit({
                     canInterviewCoach={canInterviewCoach}
                     interviewCoachUsesRemaining={interviewCoachUsesRemaining}
                     onClose={() => setShowInterviewCoach(false)}
+                />
+            )}
+            {showMockInterview && (
+                <MockInterviewPanel
+                    resumeId={resume.id}
+                    onClose={() => setShowMockInterview(false)}
                 />
             )}
         </AuthenticatedLayout>
