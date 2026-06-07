@@ -25,10 +25,22 @@ class PublicResumeController extends Controller
 
         ResumeShareEvent::log($request, $link, 'page_view');
 
+        $resume = $link->resume;
+        $contact = $resume->contact ?? [];
+        $fullName = $contact['full_name'] ?? $resume->name;
+        $title = $contact['title'] ?? '';
+
+        $og = [
+            'title' => $fullName.' — Resume',
+            'description' => trim(($title ? $title.' · ' : '').$resume->name),
+            'url' => route('public.resume', $token),
+            'image' => route('public.og-image', $token),
+        ];
+
         return Inertia::render('ResumeBuilder/PublicView', [
-            'resume' => $link->resume,
+            'resume' => $resume,
             'token' => $token,
-        ]);
+        ])->withViewData(['og' => $og]);
     }
 
     public function downloadPdf(Request $request, string $token)

@@ -64,4 +64,22 @@ class OgImageTest extends TestCase
 
         $response->assertHeader('Cache-Control', 'max-age=3600, public');
     }
+
+    public function test_public_resume_page_contains_og_meta_tags(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'contact' => ['full_name' => 'Jane Doe', 'title' => 'Engineer'],
+        ]);
+        $link = ResumeShareLink::factory()->for($resume)->create(['is_active' => true]);
+
+        $response = $this->get(route('public.resume', $link->token));
+
+        $response->assertStatus(200);
+        $content = $response->getContent();
+        $this->assertStringContainsString('og:title', $content);
+        $this->assertStringContainsString('og:image', $content);
+        $this->assertStringContainsString('twitter:card', $content);
+        $this->assertStringContainsString('Jane Doe', $content);
+    }
 }
