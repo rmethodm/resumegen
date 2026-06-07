@@ -21,9 +21,16 @@ export default function KanbanView({ jobs }: Props) {
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
-        if (!over || active.id === over.id) return;
+        if (!over) return;
 
-        const newStatus = over.id as JobStatus;
+        // over.id may be a status string (column drop) or a job id (card drop)
+        const isColumn = STATUSES.some(s => s.status === over.id);
+        const newStatus: JobStatus | undefined = isColumn
+            ? (over.id as JobStatus)
+            : jobs.find(j => j.id === over.id)?.status;
+
+        if (!newStatus) return;
+
         const job = jobs.find(j => j.id === active.id);
         if (!job || job.status === newStatus) return;
 
