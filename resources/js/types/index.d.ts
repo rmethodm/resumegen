@@ -154,6 +154,12 @@ export interface ResumeRow {
     tags: ResumeTag[];
 }
 
+export interface TemplateStatRow {
+    template: string;
+    views: number;
+    downloads: number;
+}
+
 export interface ResumeStat {
     resume_id: number;
     resume_name: string;

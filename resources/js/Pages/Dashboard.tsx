@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { PageProps, ResumeStat } from '@/types';
+import { PageProps, ResumeStat, TemplateStatRow } from '@/types';
 import { useMemo, useState } from 'react';
 import {
     ArrowDownTrayIcon,
@@ -9,11 +9,48 @@ import {
     EyeIcon,
 } from '@heroicons/react/24/outline';
 
-type Props = PageProps<{ resumeStats: ResumeStat[]; resumeCount: number }>;
+type Props = PageProps<{ resumeStats: ResumeStat[]; resumeCount: number; templateStats: TemplateStatRow[] }>;
 type SortKey = 'resume_name' | 'page_views' | 'unique_visitors' | 'pdf_downloads' | 'questions_submitted';
 
+function TemplatePerformanceCard({ stats }: { stats: TemplateStatRow[] }) {
+    if (stats.length === 0) return null;
+    const maxViews = Math.max(...stats.map((s) => s.views), 1);
+    const LABELS: Record<string, string> = {
+        classic: 'Classic', modern: 'Modern', minimal: 'Minimal',
+        'minimal-ruled': 'Minimal Ruled', sidebar: 'Sidebar', creative: 'Creative',
+        executive: 'Executive', ats: 'ATS', 'skills-first': 'Skills-First',
+        'skills-first-visual': 'Skills-First Visual', academic: 'Academic CV',
+        bold: 'Minimalist Bold', timeline: 'Timeline',
+    };
+    return (
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+            <div className="border-b border-gray-100 px-6 py-4">
+                <h3 className="text-sm font-semibold text-gray-900">Template Performance</h3>
+                <p className="mt-0.5 text-xs text-gray-500">Views per template across all your shared resumes</p>
+            </div>
+            <div className="divide-y divide-gray-50">
+                {stats.map((row) => (
+                    <div key={row.template} className="flex items-center gap-3 px-6 py-3">
+                        <span className="w-32 shrink-0 text-sm text-gray-700">
+                            {LABELS[row.template] ?? row.template}
+                        </span>
+                        <div className="flex-1 overflow-hidden rounded-full bg-gray-100" style={{ height: '6px' }}>
+                            <div
+                                className="h-full rounded-full bg-indigo-500"
+                                style={{ width: `${(row.views / maxViews) * 100}%` }}
+                            />
+                        </div>
+                        <span className="w-12 shrink-0 text-right text-sm font-medium text-gray-700">{row.views}</span>
+                        <span className="w-20 shrink-0 text-right text-xs text-gray-400">{row.downloads} dl</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export default function Dashboard() {
-    const { resumeStats = [], resumeCount = 0 } = usePage<Props>().props;
+    const { resumeStats = [], resumeCount = 0, templateStats = [] } = usePage<Props>().props;
 
     const totalViews     = resumeStats.reduce((s, r) => s + r.page_views, 0);
     const totalDownloads = resumeStats.reduce((s, r) => s + r.pdf_downloads, 0);
@@ -217,6 +254,11 @@ export default function Dashboard() {
                             </p>
                         </div>
 
+                    </div>
+
+                    {/* Template performance */}
+                    <div className="mt-8">
+                        <TemplatePerformanceCard stats={templateStats} />
                     </div>
 
                 </div>
