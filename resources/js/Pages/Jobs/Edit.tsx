@@ -2,9 +2,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import type { InterviewNote, JobApplication, JobStatus } from '@/types';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 
 type ResumeOpt = { id: number; name: string };
+type SalaryData = { min: number | null; max: number | null; median: number | null; match: string };
 type Props = { application: JobApplication; resumes: ResumeOpt[]; statuses: JobStatus[]; notes_log: InterviewNote[] };
 
 export default function Edit({ application, resumes, statuses, notes_log }: Props) {
@@ -23,6 +24,23 @@ export default function Edit({ application, resumes, statuses, notes_log }: Prop
         e.preventDefault();
         form.transform(data => ({ ...data, resume_id: data.resume_id === '' ? null : data.resume_id, applied_at: data.applied_at || null, follow_up_at: data.follow_up_at || null, job_url: data.job_url || null, notes: data.notes || null }));
         form.put(route('jobs.update', application.id));
+    };
+
+    const [salaryData, setSalaryData] = useState<SalaryData | null>(null);
+    const salaryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const fetchSalary = (roleValue: string) => {
+        if (salaryTimer.current) clearTimeout(salaryTimer.current);
+        if (!roleValue.trim()) { setSalaryData(null); return; }
+        salaryTimer.current = setTimeout(async () => {
+            try {
+                const res = await fetch(
+                    route('jobs.salary') + '?role=' + encodeURIComponent(roleValue),
+                    { headers: { 'Accept': 'application/json' } }
+                );
+                if (res.ok) setSalaryData(await res.json());
+            } catch { /* silent */ }
+        }, 500);
     };
 
     const [noteBody, setNoteBody] = useState('');
@@ -74,7 +92,15 @@ export default function Edit({ application, resumes, statuses, notes_log }: Prop
                         </div>
                         <div>
                             <label className={labelCls}>Role</label>
-                            <input value={form.data.role} onChange={e => form.setData('role', e.target.value)} className={inputCls} required />
+                            <input value={form.data.role} onChange={e => form.setData('role', e.target.value)} onBlur={e => fetchSalary(e.target.value)} className={inputCls} required />
+                            {salaryData && salaryData.match !== 'none' && salaryData.min !== null && (
+                                <div className="mt-2 rounded-lg bg-[#f0f9ff] border border-[#bae6fd] px-3 py-2 text-xs text-[#0369a1]">
+                                    <span className="font-semibold">Market range: </span>
+                                    ${salaryData.min.toLocaleString()} – ${salaryData.max!.toLocaleString()} / year
+                                    <span className="ml-2 text-[#7dd3fc]">· median ${salaryData.median!.toLocaleString()}</span>
+                                    <span className="ml-2 text-[#93c5fd]">(US avg, 2025)</span>
+                                </div>
+                            )}
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
