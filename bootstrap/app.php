@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\NudgeStaleResumesCommand;
 use App\Console\Commands\SendFollowUpReminders;
 use App\Http\Middleware\EnsureMasterAdmin;
 use App\Http\Middleware\EnsureTwoFactorSetup;
@@ -36,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command(SendFollowUpReminders::class)->dailyAt('08:00');
+        $schedule->command(NudgeStaleResumesCommand::class)->daily();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
