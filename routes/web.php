@@ -24,6 +24,7 @@ use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\QuantifyBulletController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeGeneratorController;
+use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\ShareLinkController;
@@ -133,6 +134,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
 
     Route::get('/usage', [UsageController::class, 'index'])->name('usage.index');
+    Route::get('/settings/referral', [ReferralController::class, 'show'])->name('referral.show');
     Route::get('/messages', fn () => Inertia::render('Messages/Index'))->name('messages.index');
 
     Route::post('/builder/generate', [ResumeGeneratorController::class, 'generate'])
@@ -145,6 +147,8 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/import/pdf/confirm', [PdfImportController::class, 'confirm'])
         ->name('import.pdf.confirm');
 });
+
+Route::get('/ref/{code}', [ReferralController::class, 'redirect'])->name('referral.redirect');
 
 // Public (unauthenticated) share link routes
 Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
