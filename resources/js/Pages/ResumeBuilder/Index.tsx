@@ -292,9 +292,14 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                     ) : pageRows.map(r => (
                                         <tr key={r.id} className="border-b border-[#f5f5fb] transition-colors hover:bg-[#fafafe]">
                                             <td className="px-5 py-4">
-                                                <Link href={route('builder.edit', r.id)} className="font-bold text-[#0f0f1a] hover:text-[#4f46e5]">
-                                                    {r.name}
-                                                </Link>
+                                                <div className="flex items-center gap-2">
+                                                    <Link href={route('builder.edit', r.id)} className="font-bold text-[#0f0f1a] hover:text-[#4f46e5]">
+                                                        {r.name}
+                                                    </Link>
+                                                    {r.ab_parent_id !== null && (
+                                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">A/B</span>
+                                                    )}
+                                                </div>
                                                 <div className="mt-1 flex items-center gap-2">
                                                     <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#eeeef5]">
                                                         <div
@@ -368,6 +373,13 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                 <div className="flex items-center justify-end gap-1">
                                                     <Link href={route('builder.edit', r.id)} title="Edit" className="rounded-lg p-1.5 text-[#4338ca] hover:bg-[#eef2ff] transition"><PencilSquareIcon className="h-4 w-4" /></Link>
                                                     <button onClick={() => duplicate(r.id)} title="Duplicate" className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition"><DocumentDuplicateIcon className="h-4 w-4" /></button>
+                                                    <button
+                                                        onClick={() => router.post(route('builder.create-variant', r.id), {}, { preserveScroll: false })}
+                                                        title="Create A/B Variant"
+                                                        className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition text-xs font-semibold"
+                                                    >
+                                                        A/B
+                                                    </button>
                                                     <button onClick={() => destroy(r.id, r.name)} title="Delete" className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 transition"><TrashIcon className="h-4 w-4" /></button>
                                                 </div>
                                             </td>

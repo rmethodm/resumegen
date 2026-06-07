@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 interface ResumeStats {
     id: number;
@@ -16,37 +16,100 @@ interface Props {
     resumeId: number;
 }
 
+const LABELS = ['A', 'B', 'C', 'D'];
+
 export default function AbCompare({ resumes, resumeId }: Props) {
+    const maxViews = Math.max(...resumes.map((r) => r.view_count), 1);
+    const winner = resumes.reduce((best, r) => (r.view_count > best.view_count ? r : best), resumes[0]);
+
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+            header={<h2 className="text-xl font-semibold leading-tight text-gray-800">A/B Compare</h2>}
+        >
             <Head title="A/B Compare" />
+
             <div className="py-12">
-                <div className="max-w-5xl mx-auto sm:px-6 lg:px-8">
-                    <h1 className="text-2xl font-semibold text-gray-900 mb-6">A/B Resume Comparison</h1>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        {resumes.map((resume) => (
-                            <div key={resume.id} className="bg-white shadow rounded-lg p-6">
-                                <h2 className="text-lg font-medium text-gray-800 mb-4">{resume.name}</h2>
-                                <dl className="space-y-2 text-sm text-gray-600">
-                                    <div className="flex justify-between">
-                                        <dt>Views</dt>
-                                        <dd className="font-semibold text-gray-900">{resume.view_count}</dd>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <dt>Unique Visitors</dt>
-                                        <dd className="font-semibold text-gray-900">{resume.unique_visitors}</dd>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <dt>PDF Downloads</dt>
-                                        <dd className="font-semibold text-gray-900">{resume.pdf_downloads}</dd>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <dt>Questions</dt>
-                                        <dd className="font-semibold text-gray-900">{resume.questions_submitted}</dd>
-                                    </div>
-                                </dl>
-                            </div>
-                        ))}
+                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                    <p className="mb-6 text-sm text-gray-500">
+                        Comparing {resumes.length} resume variant{resumes.length !== 1 ? 's' : ''}. The variant
+                        with the most views is highlighted as the winner.
+                    </p>
+
+                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+                        <table className="w-full text-sm">
+                            <thead className="border-b border-gray-200 bg-gray-50">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                                        Resume
+                                    </th>
+                                    <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">
+                                        Views
+                                    </th>
+                                    <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">
+                                        Unique
+                                    </th>
+                                    <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">
+                                        PDF
+                                    </th>
+                                    <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">
+                                        Questions
+                                    </th>
+                                    <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500"></th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {resumes.map((resume, i) => (
+                                    <tr
+                                        key={resume.id}
+                                        className={
+                                            resume.id === winner.id && resume.view_count > 0
+                                                ? 'bg-green-50'
+                                                : ''
+                                        }
+                                    >
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-2">
+                                                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
+                                                    {LABELS[i] ?? i + 1}
+                                                </span>
+                                                <span className="font-medium text-gray-900">{resume.name}</span>
+                                                {resume.id === winner.id && resume.view_count > 0 && (
+                                                    <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                                                        Winner
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-4 text-right font-medium text-gray-900">
+                                            {resume.view_count}
+                                        </td>
+                                        <td className="px-4 py-4 text-right text-gray-600">
+                                            {resume.unique_visitors}
+                                        </td>
+                                        <td className="px-4 py-4 text-right text-gray-600">
+                                            {resume.pdf_downloads}
+                                        </td>
+                                        <td className="px-4 py-4 text-right text-gray-600">
+                                            {resume.questions_submitted}
+                                        </td>
+                                        <td className="px-4 py-4 text-right">
+                                            <Link
+                                                href={route('builder.edit', resume.id)}
+                                                className="text-xs font-medium text-indigo-600 hover:text-indigo-800"
+                                            >
+                                                Edit
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="mt-4">
+                        <Link href={route('builder.index')} className="text-sm text-gray-500 hover:text-gray-700">
+                            ← Back to resumes
+                        </Link>
                     </div>
                 </div>
             </div>
