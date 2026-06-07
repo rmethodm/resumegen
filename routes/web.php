@@ -21,6 +21,7 @@ use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeGeneratorController;
 use App\Http\Controllers\ShareLinkController;
+use App\Http\Controllers\StrengthScoreController;
 use App\Http\Controllers\TailorController;
 use App\Http\Controllers\UsageController;
 use Illuminate\Support\Facades\Route;
@@ -82,6 +83,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
         ->name('builder.ats-score');
     Route::delete('/builder/{resume}/ats-score', [AtsScoreController::class, 'destroy'])
         ->name('builder.ats-score.destroy');
+    Route::get('/builder/{resume}/strength-score', [StrengthScoreController::class, 'show'])
+        ->middleware('throttle:10,1')
+        ->name('builder.strength-score');
     Route::get('/builder/{resume}/share-url', [ResumeBuilderController::class, 'shareUrl'])->name('builder.share-url');
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');

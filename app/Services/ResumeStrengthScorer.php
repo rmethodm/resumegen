@@ -10,6 +10,7 @@ class ResumeStrengthScorer
     {
         $points = 0;
         $tips = [];
+        $checklist = [];
         $order = 0;
 
         $contact = $resume->contact ?? [];
@@ -19,87 +20,93 @@ class ResumeStrengthScorer
         $certifications = $resume->certifications ?? [];
         $customSections = $resume->custom_sections ?? [];
 
-        // Professional summary — 15pts (checked first so it wins ties with contact)
-        if (! empty($resume->summary)) {
-            $points += 15;
-        } else {
+        // Professional summary — 15pts
+        $hasSummary = ! empty($resume->summary);
+        $points += $hasSummary ? 15 : 0;
+        $checklist[] = ['label' => 'Professional summary', 'pts' => 15, 'passed' => $hasSummary];
+        if (! $hasSummary) {
             $tips[] = ['pts' => 15, 'order' => $order++, 'tip' => 'Add a professional summary'];
         }
 
         // Contact info complete — 15pts
-        if (! empty($contact['full_name']) && ! empty($contact['email']) && ! empty($contact['location'])) {
-            $points += 15;
-        } else {
+        $hasContact = ! empty($contact['full_name']) && ! empty($contact['email']) && ! empty($contact['location']);
+        $points += $hasContact ? 15 : 0;
+        $checklist[] = ['label' => 'Contact info complete', 'pts' => 15, 'passed' => $hasContact];
+        if (! $hasContact) {
             $tips[] = ['pts' => 15, 'order' => $order++, 'tip' => 'Complete your contact information'];
         }
 
         // At least 1 experience — 15pts
-        if (count($experience) >= 1) {
-            $points += 15;
-        } else {
+        $hasExp = count($experience) >= 1;
+        $points += $hasExp ? 15 : 0;
+        $checklist[] = ['label' => 'At least one work experience', 'pts' => 15, 'passed' => $hasExp];
+        if (! $hasExp) {
             $tips[] = ['pts' => 15, 'order' => $order++, 'tip' => 'Add at least one work experience'];
         }
 
         // Education — 10pts
-        if (count($education) >= 1) {
-            $points += 10;
-        } else {
+        $hasEdu = count($education) >= 1;
+        $points += $hasEdu ? 10 : 0;
+        $checklist[] = ['label' => 'Education', 'pts' => 10, 'passed' => $hasEdu];
+        if (! $hasEdu) {
             $tips[] = ['pts' => 10, 'order' => $order++, 'tip' => 'Add your education'];
         }
 
-        // At least 3 skills — 10pts (skills is a plain string[])
-        if (count($skills) >= 3) {
-            $points += 10;
-        } else {
+        // At least 3 skills — 10pts
+        $hasSkills = count($skills) >= 3;
+        $points += $hasSkills ? 10 : 0;
+        $checklist[] = ['label' => '3+ skills listed', 'pts' => 10, 'passed' => $hasSkills];
+        if (! $hasSkills) {
             $tips[] = ['pts' => 10, 'order' => $order++, 'tip' => 'Add at least 3 skills'];
         }
 
         // Bullet with number or metric — 10pts
-        // bullets is a newline-separated string per experience entry
         $allBullets = collect($experience)
             ->flatMap(fn ($e) => array_filter(explode("\n", $e['bullets'] ?? '')))
             ->all();
         $hasMetric = collect($allBullets)->contains(fn ($b) => (bool) preg_match('/\d/', $b));
-        if ($hasMetric) {
-            $points += 10;
-        } else {
+        $points += $hasMetric ? 10 : 0;
+        $checklist[] = ['label' => 'Quantified bullet (number/metric)', 'pts' => 10, 'passed' => $hasMetric];
+        if (! $hasMetric) {
             $tips[] = ['pts' => 10, 'order' => $order++, 'tip' => 'Add numbers or metrics to your bullets'];
         }
 
         // At least 2 experiences — 10pts
-        if (count($experience) >= 2) {
-            $points += 10;
-        } else {
+        $hasMultiExp = count($experience) >= 2;
+        $points += $hasMultiExp ? 10 : 0;
+        $checklist[] = ['label' => 'Two or more work experiences', 'pts' => 10, 'passed' => $hasMultiExp];
+        if (! $hasMultiExp) {
             $tips[] = ['pts' => 10, 'order' => $order++, 'tip' => 'Add a second work experience'];
         }
 
         // LinkedIn URL — 5pts
-        if (! empty($contact['linkedin'])) {
-            $points += 5;
-        } else {
+        $hasLinkedIn = ! empty($contact['linkedin']);
+        $points += $hasLinkedIn ? 5 : 0;
+        $checklist[] = ['label' => 'LinkedIn URL', 'pts' => 5, 'passed' => $hasLinkedIn];
+        if (! $hasLinkedIn) {
             $tips[] = ['pts' => 5, 'order' => $order++, 'tip' => 'Add your LinkedIn URL'];
         }
 
         // At least one experience with 3+ bullets — 5pts
         $hasRichBullets = collect($experience)
             ->contains(fn ($e) => count(array_filter(explode("\n", $e['bullets'] ?? ''))) >= 3);
-        if ($hasRichBullets) {
-            $points += 5;
-        } else {
+        $points += $hasRichBullets ? 5 : 0;
+        $checklist[] = ['label' => '3+ bullets on one experience', 'pts' => 5, 'passed' => $hasRichBullets];
+        if (! $hasRichBullets) {
             $tips[] = ['pts' => 5, 'order' => $order++, 'tip' => 'Add 3+ bullets to a work experience entry'];
         }
 
         // Custom section or certification — 5pts
-        if (count($certifications) >= 1 || count($customSections) >= 1) {
-            $points += 5;
-        } else {
+        $hasExtra = count($certifications) >= 1 || count($customSections) >= 1;
+        $points += $hasExtra ? 5 : 0;
+        $checklist[] = ['label' => 'Certification or custom section', 'pts' => 5, 'passed' => $hasExtra];
+        if (! $hasExtra) {
             $tips[] = ['pts' => 5, 'order' => $order++, 'tip' => 'Add a certification or custom section'];
         }
 
-        // Stable sort: highest pts first; preserve insertion order on ties
         usort($tips, fn ($a, $b) => $b['pts'] !== $a['pts'] ? $b['pts'] - $a['pts'] : $a['order'] - $b['order']);
         $tip = $tips[0]['tip'] ?? 'Your resume looks great!';
 
-        return ['score' => $points, 'tip' => $tip];
+        return ['score' => $points, 'tip' => $tip, 'checklist' => $checklist];
     }
 }

@@ -91,6 +91,11 @@ class UserLimits
         return $user->isAtLeastStarter();
     }
 
+    public static function canStrengthHistory(User $user): bool
+    {
+        return $user->isAtLeastStarter();
+    }
+
     public static function canPdfImport(User $user): bool
     {
         // Always allowed — free tier can import

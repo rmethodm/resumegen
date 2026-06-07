@@ -121,6 +121,7 @@ class ResumeBuilderController extends Controller
                 'name' => $s->name,
                 'created_at' => $s->created_at->toDateString(),
             ]),
+            'strengthHistoryEnabled' => UserLimits::canStrengthHistory($user),
         ]);
     }
 
