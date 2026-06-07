@@ -195,6 +195,13 @@ class UserLimits
         return $limit !== null && self::aiUsageThisPeriod($user) >= $limit;
     }
 
+    public static function requirePro(User $user): void
+    {
+        if ($user->planTier() !== 'pro') {
+            abort(response()->json(['error' => 'Pro plan required.', 'required_tier' => 'pro'], 402));
+        }
+    }
+
     public static function tierFromPriceId(string $priceId): string
     {
         $proPrices = array_filter([

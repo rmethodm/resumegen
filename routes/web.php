@@ -15,6 +15,7 @@ use App\Http\Controllers\CoverLetterTailorController;
 use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\InterviewNoteController;
 use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\MockInterviewController;
 use App\Http\Controllers\NegotiationScriptController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
@@ -94,6 +95,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])
         ->middleware('throttle:5,1')
         ->name('builder.interview-coach');
+    Route::post('/builder/{resume}/mock-interview', [MockInterviewController::class, 'chat'])
+        ->middleware('throttle:10,1')
+        ->name('builder.mock-interview');
     Route::post('/builder/{resume}/quantify-bullet', [QuantifyBulletController::class, 'store'])
         ->middleware('throttle:10,1')
         ->name('builder.quantify-bullet');
