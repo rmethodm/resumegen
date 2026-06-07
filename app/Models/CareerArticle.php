@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Database\Factories\CareerArticleFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+#[Fillable(['title', 'slug', 'body', 'category', 'meta_description', 'reading_time_minutes', 'is_published', 'published_at'])]
 class CareerArticle extends Model
 {
     /** @use HasFactory<CareerArticleFactory> */
@@ -18,17 +20,6 @@ class CareerArticle extends Model
         'Interviews',
         'Salary & Negotiation',
         'Career Growth',
-    ];
-
-    protected $fillable = [
-        'title',
-        'slug',
-        'body',
-        'category',
-        'meta_description',
-        'reading_time_minutes',
-        'is_published',
-        'published_at',
     ];
 
     protected $casts = [
