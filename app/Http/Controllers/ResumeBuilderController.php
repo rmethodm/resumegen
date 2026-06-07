@@ -22,6 +22,7 @@ class ResumeBuilderController extends Controller
     {
         $user = $request->user();
         $resumes = $user->resumes()
+            ->where('is_snapshot', false)
             ->orderByDesc('updated_at')
             ->get()
             ->map(function (Resume $resume) {
@@ -52,7 +53,7 @@ class ResumeBuilderController extends Controller
         $user = $request->user();
         $limit = UserLimits::resumeLimit($user);
 
-        if ($limit !== null && $user->resumes()->count() >= $limit) {
+        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
             return back()->with('featureGate', [
                 'feature' => 'resume_limit',
                 'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
@@ -115,6 +116,11 @@ class ResumeBuilderController extends Controller
             'aiLimit' => UserLimits::aiLimit($user),
             'customSectionLimit' => UserLimits::customSectionLimit($user),
             'allowedTemplates' => UserLimits::allowedTemplates($user),
+            'snapshots' => $resume->snapshots()->get(['id', 'name', 'created_at'])->map(fn ($s) => [
+                'id' => $s->id,
+                'name' => $s->name,
+                'created_at' => $s->created_at->toDateString(),
+            ]),
         ]);
     }
 
@@ -183,6 +189,29 @@ class ResumeBuilderController extends Controller
         return response()->json([
             'url' => route('public.resume', $link->token),
         ]);
+    }
+
+    public function saveVersion(Request $request, Resume $resume): RedirectResponse
+    {
+        $this->authorize('update', $resume);
+
+        abort_if($resume->is_snapshot, 422, 'Cannot version a snapshot.');
+
+        $validated = $request->validate([
+            'name' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $snapshotName = $validated['name']
+            ?? $resume->name.' — '.now()->format('M j, Y');
+
+        $snapshot = $resume->replicate(['id', 'created_at', 'updated_at']);
+        $snapshot->name = $snapshotName;
+        $snapshot->parent_resume_id = $resume->id;
+        $snapshot->is_snapshot = true;
+        $snapshot->pdf_filename = Str::uuid().'.pdf';
+        $snapshot->save();
+
+        return back()->with('versionSaved', $snapshotName);
     }
 
     public function destroy(Request $request, Resume $resume)
@@ -266,7 +295,7 @@ class ResumeBuilderController extends Controller
         $user = $resume->user;
         $limit = UserLimits::resumeLimit($user);
 
-        if ($limit !== null && $user->resumes()->count() >= $limit) {
+        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
             return back()->with('featureGate', [
                 'feature' => 'resume_limit',
                 'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',

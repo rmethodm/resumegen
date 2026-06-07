@@ -67,6 +67,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::get('/builder/{resume}/preview', [ResumeBuilderController::class, 'previewPdf'])->name('builder.preview');
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
     Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
+    Route::post('/builder/{resume}/versions', [ResumeBuilderController::class, 'saveVersion'])->name('builder.save-version');
     Route::post('/builder/{resume}/ai-suggest', [AiSuggestController::class, 'suggest'])
         ->middleware('throttle:10,1')
         ->name('builder.ai-suggest');
