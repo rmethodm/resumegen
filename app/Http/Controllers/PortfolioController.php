@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Resume;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class PortfolioController extends Controller
+{
+    public function show(Request $request, string $slug): Response
+    {
+        $user = User::where('portfolio_slug', $slug)
+            ->where('portfolio_is_public', true)
+            ->firstOrFail();
+
+        $resumes = $user->resumes()
+            ->whereHas('shareLinks', fn ($q) => $q
+                ->where('is_active', true)
+                ->where(fn ($q2) => $q2->whereNull('expires_at')->orWhere('expires_at', '>', now()))
+            )
+            ->with(['shareLinks' => fn ($q) => $q
+                ->where('is_active', true)
+                ->where(fn ($q2) => $q2->whereNull('expires_at')->orWhere('expires_at', '>', now()))
+                ->select('id', 'resume_id', 'token')
+                ->limit(1),
+            ])
+            ->get(['id', 'name', 'template'])
+            ->map(fn (Resume $r): array => [
+                'id' => $r->id,
+                'name' => $r->name,
+                'template' => $r->template,
+                'share_url' => $r->shareLinks->first()
+                    ? route('public.resume', $r->shareLinks->first()->token)
+                    : null,
+            ]);
+
+        $og = [
+            'title' => $user->name."'s Portfolio — Resumegen",
+            'description' => $user->portfolio_headline ?? 'Professional resume portfolio',
+            'url' => route('portfolio.show', $slug),
+            'image' => '',
+        ];
+
+        return Inertia::render('Portfolio/Show', [
+            'owner' => [
+                'name' => $user->name,
+                'headline' => $user->portfolio_headline,
+                'bio' => $user->portfolio_bio,
+            ],
+            'resumes' => $resumes,
+        ])->withViewData(['og' => $og]);
+    }
+
+    public function edit(Request $request): Response
+    {
+        $user = $request->user();
+
+        return Inertia::render('Settings/Portfolio', [
+            'portfolioSlug' => $user->portfolio_slug,
+            'portfolioHeadline' => $user->portfolio_headline,
+            'portfolioBio' => $user->portfolio_bio,
+            'portfolioIsPublic' => (bool) $user->portfolio_is_public,
+            'portfolioUrl' => $user->portfolio_slug
+                ? route('portfolio.show', $user->portfolio_slug)
+                : null,
+        ]);
+    }
+
+    public function update(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'portfolio_slug' => [
+                'nullable',
+                'string',
+                'min:3',
+                'max:30',
+                'regex:/^[a-z0-9-]+$/',
+                Rule::unique('users', 'portfolio_slug')->ignore($user->id),
+            ],
+            'portfolio_headline' => ['nullable', 'string', 'max:150'],
+            'portfolio_bio' => ['nullable', 'string', 'max:2000'],
+            'portfolio_is_public' => ['required', 'boolean'],
+        ]);
+
+        $user->update($validated);
+
+        return back()->with('status', 'portfolio-updated');
+    }
+}

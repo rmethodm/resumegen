@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\CareerPathController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\CoverLetterTailorController;
@@ -54,6 +55,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
 
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
     Route::patch('/user/profile-info', [ProfileController::class, 'updatePersona'])->name('profile.persona');
+
+    Route::get('/settings/portfolio', [PortfolioController::class, 'edit'])->name('portfolio.edit');
+    Route::patch('/settings/portfolio', [PortfolioController::class, 'update'])->name('portfolio.update');
 
     Route::post('/user/two-factor-authentication', [TwoFactorController::class, 'store'])
         ->name('two-factor.enable');
@@ -151,6 +155,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
 });
 
 Route::get('/ref/{code}', [ReferralController::class, 'redirect'])->name('referral.redirect');
+
+// Public (unauthenticated) portfolio page
+Route::get('/p/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
 
 // Public (unauthenticated) share link routes
 Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
