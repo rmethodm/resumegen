@@ -166,6 +166,11 @@ class UserLimits
         return max(0, self::FREE_QUANTIFY_BULLET_MONTHLY_LIMIT - self::quantifyBulletUsageThisMonth($user));
     }
 
+    public static function canCareerPaths(User $user): bool
+    {
+        return $user->isAtLeastStarter();
+    }
+
     public static function customSectionLimit(User $user): ?int
     {
         return $user->planTier() === 'free' ? 2 : null;

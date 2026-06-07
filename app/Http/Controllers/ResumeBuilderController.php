@@ -130,6 +130,7 @@ class ResumeBuilderController extends Controller
             'canTailor' => UserLimits::canTailor($user),
             'canQuantifyBullet' => UserLimits::canQuantifyBullet($user),
             'quantifyBulletUsesRemaining' => UserLimits::quantifyBulletUsesRemaining($user),
+            'canCareerPaths' => UserLimits::canCareerPaths($user),
             'aiUsed' => UserLimits::aiUsageThisPeriod($user),
             'aiLimit' => UserLimits::aiLimit($user),
             'customSectionLimit' => UserLimits::customSectionLimit($user),

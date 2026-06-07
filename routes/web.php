@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\CareerPathController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\CoverLetterTailorController;
 use App\Http\Controllers\InterviewCoachController;
@@ -90,6 +91,11 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
         ->name('builder.ats-score');
     Route::delete('/builder/{resume}/ats-score', [AtsScoreController::class, 'destroy'])
         ->name('builder.ats-score.destroy');
+    Route::get('/builder/{resume}/career-paths', [CareerPathController::class, 'show'])
+        ->middleware('throttle:5,1')
+        ->name('builder.career-paths');
+    Route::delete('/builder/{resume}/career-paths', [CareerPathController::class, 'destroy'])
+        ->name('builder.career-paths.destroy');
     Route::get('/builder/{resume}/strength-score', [StrengthScoreController::class, 'show'])
         ->middleware('throttle:10,1')
         ->name('builder.strength-score');
