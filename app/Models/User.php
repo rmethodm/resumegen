@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'is_master_admin', 'is_pro', 'plan_tier', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at', 'profile', 'referral_code', 'referred_by_user_id', 'referral_rewards_earned', 'stale_nudge_sent_at', 'portfolio_slug', 'portfolio_headline', 'portfolio_bio', 'portfolio_is_public'])]
+#[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'is_master_admin', 'is_pro', 'plan_tier', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at', 'profile', 'referral_code', 'referred_by_user_id', 'referral_rewards_earned', 'stale_nudge_sent_at', 'portfolio_slug', 'portfolio_headline', 'portfolio_bio', 'portfolio_is_public', 'target_role', 'industry', 'years_experience'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
