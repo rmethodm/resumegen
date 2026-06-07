@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminUsageController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\CareerController as AdminCareerController;
 use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApplicationContactController;
@@ -198,6 +199,14 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    Route::resource('career', AdminCareerController::class)->names([
+        'index'   => 'career.index',
+        'create'  => 'career.create',
+        'store'   => 'career.store',
+        'edit'    => 'career.edit',
+        'update'  => 'career.update',
+        'destroy' => 'career.destroy',
+    ])->except(['show']);
 });
 
 require __DIR__.'/auth.php';
