@@ -295,3 +295,12 @@ export interface ApplicationContact {
     notes: string | null;
     created_at: string;
 }
+
+export interface WebhookEndpoint {
+    id: number;
+    url: string;
+    secret: string;
+    events: string[];
+    active: boolean;
+    created_at: string;
+}

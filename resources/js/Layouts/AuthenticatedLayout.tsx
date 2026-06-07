@@ -34,6 +34,7 @@ export default function Authenticated({
                                 <NavLink href={route('jobs.index')} active={route().current('jobs.*')}>Jobs</NavLink>
                                 <NavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</NavLink>
                                 <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
+                                <NavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</NavLink>
                                 {user.is_master_admin && (
                                     <NavLink href={route('admin.users.index')} active={route().current('admin.*')}>Admin</NavLink>
                                 )}
@@ -96,6 +97,7 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('jobs.index')} active={route().current('jobs.*')}>Jobs</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</ResponsiveNavLink>
                         {user.is_master_admin && (
                             <ResponsiveNavLink href={route('admin.users.index')} active={route().current('admin.*')}>Admin</ResponsiveNavLink>
                         )}
