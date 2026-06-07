@@ -58,6 +58,8 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/profile/tokens', [PersonalTokenController::class, 'store'])->name('profile.tokens.store');
     Route::delete('/profile/tokens/{tokenId}', [PersonalTokenController::class, 'destroy'])->name('profile.tokens.destroy');
 
+    Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
+    Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
     Route::patch('/user/profile-info', [ProfileController::class, 'updatePersona'])->name('profile.persona');
 
