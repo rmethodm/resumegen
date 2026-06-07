@@ -27,7 +27,7 @@ export default function KanbanView({ jobs }: Props) {
         const job = jobs.find(j => j.id === active.id);
         if (!job || job.status === newStatus) return;
 
-        router.patch(route('jobs.update', active.id as number), { status: newStatus }, {
+        router.put(route('jobs.update', active.id as number), { status: newStatus }, {
             preserveScroll: true,
             preserveState: true,
         });

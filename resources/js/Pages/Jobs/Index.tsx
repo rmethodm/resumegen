@@ -3,6 +3,7 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import type { JobApplicationRow, JobStatus } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
+import KanbanView from './KanbanView';
 
 type ResumeOpt = { id: number; name: string };
 type Props = { applications: JobApplicationRow[]; resumes: ResumeOpt[]; statuses: JobStatus[] };
@@ -18,6 +19,16 @@ const STATUS_CLASSES: Record<JobStatus, string> = {
 };
 
 export default function Index({ applications, resumes, statuses }: Props) {
+    const [view, setView] = useState<'table' | 'kanban'>(() => {
+        if (typeof window === 'undefined') return 'kanban';
+        return (localStorage.getItem('resumegen_jobs_view') as 'table' | 'kanban') ?? 'kanban';
+    });
+
+    const switchView = (v: 'table' | 'kanban') => {
+        setView(v);
+        localStorage.setItem('resumegen_jobs_view', v);
+    };
+
     const [adding, setAdding] = useState(false);
     const [search, setSearch] = useState('');
     const [pageSize, setPageSize] = useState(10);
@@ -93,14 +104,56 @@ export default function Index({ applications, resumes, statuses }: Props) {
                             <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Job Applications</h1>
                             <p className="mt-1 text-sm text-[#a0a0b0]">{applications.length} application{applications.length !== 1 ? 's' : ''}</p>
                         </div>
-                        {!adding && (
-                            <button onClick={() => setAdding(true)} className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
-                                + New Application
-                            </button>
-                        )}
+                        <div className="flex items-center gap-3">
+                            <div className="flex rounded-lg border border-[#e8e8f0] overflow-hidden">
+                                <button type="button" onClick={() => switchView('kanban')}
+                                    className={`px-3 py-1.5 text-xs font-medium transition ${view === 'kanban' ? 'bg-[#4338ca] text-white' : 'bg-white text-[#6b7280] hover:bg-[#f5f5fb]'}`}>
+                                    Kanban
+                                </button>
+                                <button type="button" onClick={() => switchView('table')}
+                                    className={`px-3 py-1.5 text-xs font-medium transition ${view === 'table' ? 'bg-[#4338ca] text-white' : 'bg-white text-[#6b7280] hover:bg-[#f5f5fb]'}`}>
+                                    Table
+                                </button>
+                            </div>
+                            {!adding && (
+                                <button onClick={() => setAdding(true)} className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                                    + New Application
+                                </button>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    {view === 'kanban' && (
+                        <>
+                            {/* Desktop: full Kanban */}
+                            <div className="hidden sm:block">
+                                <KanbanView jobs={applications} />
+                            </div>
+                            {/* Mobile: grouped list */}
+                            <div className="sm:hidden space-y-4">
+                                {(['saved','applied','interviewing','offered','rejected','closed'] as JobStatus[]).map(status => {
+                                    const groupJobs = applications.filter(a => a.status === status);
+                                    if (groupJobs.length === 0) return null;
+                                    return (
+                                        <div key={status}>
+                                            <h3 className="text-xs font-semibold uppercase text-[#a0a0b0] mb-2 capitalize">{status}</h3>
+                                            <div className="space-y-2">
+                                                {groupJobs.map(j => (
+                                                    <div key={j.id} className="rounded-lg bg-white border border-[#e8e8f0] p-3">
+                                                        <p className="font-semibold text-sm text-[#23232d]">{j.company}</p>
+                                                        <p className="text-xs text-[#6b7280]">{j.role}</p>
+                                                        <Link href={route('jobs.edit', j.id)} className="text-xs text-[#4338ca] hover:underline">Edit →</Link>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    )}
+
+                    {view === 'table' && <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
 
                         {/* Table controls */}
                         <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[#eeeef5]">
@@ -259,7 +312,8 @@ export default function Index({ applications, resumes, statuses }: Props) {
                             </p>
                         </div>
 
-                    </div>
+                    </div>}
+
                 </div>
             </div>
         </AuthenticatedLayout>
