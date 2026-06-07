@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminUsageController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\ApplicationContactController;
 use App\Http\Controllers\AtsScoreController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
@@ -143,6 +144,8 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::delete('/jobs/{application}', [JobApplicationController::class, 'destroy'])->name('jobs.destroy');
     Route::post('/jobs/{application}/notes', [InterviewNoteController::class, 'store'])->name('jobs.notes.store');
     Route::delete('/jobs/{application}/notes/{note}', [InterviewNoteController::class, 'destroy'])->name('jobs.notes.destroy');
+    Route::post('/jobs/{application}/contacts', [ApplicationContactController::class, 'store'])->name('jobs.contacts.store');
+    Route::delete('/jobs/{application}/contacts/{contact}', [ApplicationContactController::class, 'destroy'])->name('jobs.contacts.destroy');
     Route::post('/jobs/{job}/negotiation-script', [NegotiationScriptController::class, 'store'])
         ->name('jobs.negotiation-script')
         ->middleware('throttle:5,1');

@@ -37,4 +37,9 @@ class JobApplication extends Model
     {
         return $this->hasMany(InterviewNote::class)->orderByDesc('created_at');
     }
+
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(ApplicationContact::class)->orderBy('name');
+    }
 }

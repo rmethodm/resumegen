@@ -69,6 +69,7 @@ class JobApplicationController extends Controller
             'statuses' => JobApplication::STATUSES,
             'notes_log' => $application->interviewNotes()->get(['id', 'body', 'created_at']),
             'canNegotiation' => UserLimits::canNegotiation($user),
+            'contacts' => $application->contacts()->get(),
         ]);
     }
 
