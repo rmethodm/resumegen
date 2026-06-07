@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobApplication extends Model
 {
@@ -30,5 +31,10 @@ class JobApplication extends Model
     public function resume(): BelongsTo
     {
         return $this->belongsTo(Resume::class);
+    }
+
+    public function interviewNotes(): HasMany
+    {
+        return $this->hasMany(InterviewNote::class)->orderByDesc('created_at');
     }
 }
