@@ -12,7 +12,8 @@ class Resume extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'name', 'pdf_filename', 'template',
+        'user_id',
+        'name', 'pdf_filename', 'template',
         'accent_color', 'font_family',
         'contact', 'summary', 'experience', 'education',
         'skills', 'certifications', 'font_sizes',
@@ -21,6 +22,7 @@ class Resume extends Model
     ];
 
     protected $casts = [
+        'is_snapshot' => 'boolean',
         'contact' => 'array',
         'experience' => 'array',
         'education' => 'array',
@@ -51,5 +53,15 @@ class Resume extends Model
     public function shareEvents(): HasMany
     {
         return $this->hasMany(ResumeShareEvent::class);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Resume::class, 'parent_resume_id');
+    }
+
+    public function snapshots(): HasMany
+    {
+        return $this->hasMany(Resume::class, 'parent_resume_id')->orderByDesc('created_at');
     }
 }
