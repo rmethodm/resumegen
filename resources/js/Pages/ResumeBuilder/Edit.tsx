@@ -182,6 +182,45 @@ const TEMPLATE_LABELS: Record<string, string> = {
 
 const freshPdfSrc = (resumeId: number) => route('builder.preview', resumeId) + '?t=' + Date.now();
 
+const SECTION_TIPS: Record<string, string[]> = {
+    summary: [
+        'Lead with your strongest skill or most impressive accomplishment.',
+        'Keep it 2–3 sentences — recruiters scan in seconds.',
+        'Mention years of experience and your specific target role.',
+        'Avoid personal pronouns ("I am...") — start with your title or skill.',
+    ],
+    experience: [
+        'Start every bullet with a strong action verb: Led, Built, Reduced, Grew.',
+        'Quantify impact where possible: "Increased revenue by 23%" beats "Improved revenue".',
+        'Focus on accomplishments, not just duties — what changed because of you?',
+        'Use consistent tense: past tense for old jobs, present for current.',
+    ],
+    education: [
+        'List most recent degree first.',
+        'Include GPA only if ≥ 3.5 and you graduated within the last 5 years.',
+        'Relevant coursework can help if you lack experience in a target area.',
+    ],
+    skills: [
+        'List skills that match the job description first.',
+        'Group into categories: Languages, Frameworks, Tools, Certifications.',
+        "Avoid soft skills (teamwork, communication) — they're expected, not differentiating.",
+        'Only list tools you can speak to confidently in an interview.',
+    ],
+    certifications: [
+        'Include the issuing body and date for credibility.',
+        'Active certifications are more valuable — remove expired ones for senior roles.',
+    ],
+    contact: [
+        'Use a professional email address — firstname.lastname@domain.com.',
+        'LinkedIn URL should be linkedin.com/in/yourname (customize it in LinkedIn settings).',
+        'City, State is enough for location — no full address needed.',
+    ],
+    custom: [
+        'Custom sections like "Publications" or "Volunteer Work" can differentiate you.',
+        'Use section titles recruiters recognize — avoid overly creative names.',
+    ],
+};
+
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -297,6 +336,8 @@ export default function Edit({
     const [careerPathsOpen, setCareerPathsOpen] = useState(false);
 
     const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
+    const [showTips, setShowTips] = useState(false);
+    const [activeTipsSection, setActiveTipsSection] = useState('summary');
     const [shareUrl, setShareUrl] = useState<string | null>(null);
     const [shareCopied, setShareCopied] = useState(false);
     const [shareLoading, setShareLoading] = useState(false);
@@ -685,9 +726,24 @@ export default function Edit({
                 </Link>
                 <span className="text-[#eeeef5]">/</span>
                 <h2 className="text-sm font-semibold text-[#0f0f1a]">{name}</h2>
+                <button
+                    type="button"
+                    onClick={() => setShowTips(v => !v)}
+                    className={`ml-auto flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+                        showTips
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                    }`}
+                    title="Writing tips"
+                >
+                    <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.14.08-.27.165-.386l2.554-3.476A4 4 0 1010 4a4 4 0 00-1.719 7.138L8 12h4l-.165.614A2 2 0 0112 14z" />
+                    </svg>
+                    Tips
+                </button>
                 {liveScore !== null && (
                     <span
-                        className={`ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                             liveScore >= 80
                                 ? 'bg-green-100 text-green-700'
                                 : liveScore >= 50
@@ -2118,6 +2174,51 @@ export default function Edit({
                                 </div>
                             )}
                         </div>
+
+                        {/* Writing Tips Panel */}
+                        {showTips && (
+                            <div className="mt-4 rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
+                                <div className="border-l-4 border-indigo-400 bg-indigo-50 px-4 py-3 flex items-center justify-between">
+                                    <span className="text-sm font-semibold text-indigo-700">Writing Tips</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowTips(false)}
+                                        className="text-indigo-400 hover:text-indigo-600"
+                                        aria-label="Close tips"
+                                    >
+                                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div className="bg-indigo-50/50 p-4">
+                                    <div className="mb-3 flex flex-wrap gap-1">
+                                        {Object.keys(SECTION_TIPS).map((section) => (
+                                            <button
+                                                key={section}
+                                                type="button"
+                                                onClick={() => setActiveTipsSection(section)}
+                                                className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
+                                                    activeTipsSection === section
+                                                        ? 'bg-indigo-600 text-white'
+                                                        : 'bg-white text-indigo-700 hover:bg-indigo-100'
+                                                }`}
+                                            >
+                                                {section.charAt(0).toUpperCase() + section.slice(1)}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <ul className="space-y-2">
+                                        {(SECTION_TIPS[activeTipsSection] ?? []).map((tip, i) => (
+                                            <li key={i} className="flex gap-2 text-xs text-indigo-900">
+                                                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" />
+                                                {tip}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
 
                     </div>
                     </div>
