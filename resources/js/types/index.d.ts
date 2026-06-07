@@ -209,6 +209,12 @@ export interface InterviewQuestion {
     hint: string;
 }
 
+export interface ResumeSnapshot {
+    id: number;
+    name: string;
+    created_at: string;
+}
+
 export type JobStatus = 'saved' | 'applied' | 'interviewing' | 'offered' | 'rejected' | 'closed';
 
 export interface JobApplicationRow {

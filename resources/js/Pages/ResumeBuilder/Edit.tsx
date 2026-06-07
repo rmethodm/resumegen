@@ -29,7 +29,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ResumeData, ShareLink, ResumeQuestion, ResumeTemplate,
     ExperienceEntry, EducationEntry, CertEntry, Contact, AiCapabilities,
-    FontSizes, AtsScore, CustomSection, CustomSectionEntry,
+    FontSizes, AtsScore, CustomSection, CustomSectionEntry, ResumeSnapshot,
 } from '@/types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -197,6 +197,7 @@ export default function Edit({
     aiLimit,
     customSectionLimit,
     allowedTemplates,
+    snapshots = [],
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -212,6 +213,7 @@ export default function Edit({
     aiLimit: number;
     customSectionLimit: number | null;
     allowedTemplates: string[];
+    snapshots: ResumeSnapshot[];
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -237,6 +239,9 @@ export default function Edit({
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [showTailor, setShowTailor] = useState(false);
     const [showInterviewCoach, setShowInterviewCoach] = useState(false);
+    const [showVersions, setShowVersions] = useState(false);
+    const [versionName, setVersionName] = useState('');
+    const [savingVersion, setSavingVersion] = useState(false);
     const [showAcademicBanner, setShowAcademicBanner] = useState(
         template === 'academic' && (resume.custom_sections ?? []).length === 0
     );
@@ -387,6 +392,18 @@ export default function Edit({
             },
         });
     }, [resume.id, saving, fetchAts]);
+
+    const handleSaveVersion = () => {
+        setSavingVersion(true);
+        router.post(
+            route('builder.save-version', resume.id),
+            { name: versionName || undefined },
+            {
+                onSuccess: () => setVersionName(''),
+                onFinish: () => setSavingVersion(false),
+            },
+        );
+    };
 
     // ─── First-run wizard ────────────────────────────────────────────────
     // 0 = welcome, 1 = contact, 2 = experience, 3 = skills, 4 = done (hidden)
@@ -938,6 +955,67 @@ export default function Edit({
                             )}
                         </div>
 
+                        {/* Version History */}
+                        {sidebarOpen && (
+                            <div className="border-t border-gray-100 pt-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowVersions(v => !v)}
+                                    className="flex w-full items-center justify-between text-xs font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-700"
+                                >
+                                    <span>Versions {snapshots.length > 0 && `(${snapshots.length})`}</span>
+                                    <span>{showVersions ? '−' : '+'}</span>
+                                </button>
+
+                                {showVersions && (
+                                    <div className="mt-2 space-y-2">
+                                        {/* Save current version */}
+                                        <div className="flex gap-1">
+                                            <input
+                                                type="text"
+                                                placeholder="Version name (optional)"
+                                                value={versionName}
+                                                onChange={e => setVersionName(e.target.value)}
+                                                onKeyDown={e => { if (e.key === 'Enter') handleSaveVersion(); }}
+                                                className="min-w-0 flex-1 rounded border border-gray-200 px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={handleSaveVersion}
+                                                disabled={savingVersion}
+                                                className="rounded bg-indigo-600 px-2 py-1 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                                            >
+                                                {savingVersion ? '…' : 'Save'}
+                                            </button>
+                                        </div>
+
+                                        {/* List of existing snapshots */}
+                                        {snapshots.length === 0 ? (
+                                            <p className="text-xs text-gray-400">No saved versions yet.</p>
+                                        ) : (
+                                            <ul className="space-y-1">
+                                                {snapshots.map(snap => (
+                                                    <li key={snap.id} className="flex items-center justify-between rounded bg-gray-50 px-2 py-1.5">
+                                                        <div className="min-w-0">
+                                                            <p className="truncate text-xs font-medium text-gray-700">{snap.name}</p>
+                                                            <p className="text-xs text-gray-400">{new Date(snap.created_at).toLocaleDateString()}</p>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            title="Restore as editable copy"
+                                                            onClick={() => router.post(route('builder.duplicate', snap.id))}
+                                                            className="ml-2 shrink-0 text-xs text-indigo-600 hover:underline"
+                                                        >
+                                                            Copy
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                     </div>
                 </aside>
