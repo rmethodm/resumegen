@@ -35,6 +35,10 @@ class CareerArticle extends Model
             }
 
             $article->reading_time_minutes = (int) ceil(str_word_count(strip_tags($article->body)) / 200) ?: 1;
+
+            if ($article->is_published && ! $article->published_at) {
+                $article->published_at = now();
+            }
         });
 
         static::updating(function (CareerArticle $article) {
