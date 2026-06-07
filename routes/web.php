@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CareerPathController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\CoverLetterTailorController;
@@ -180,6 +181,10 @@ Route::get('/ref/{code}', [ReferralController::class, 'redirect'])->name('referr
 
 // Public (unauthenticated) portfolio page
 Route::get('/p/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
+
+// Public (unauthenticated) Career Hub routes
+Route::get('/career', [CareerHubController::class, 'index'])->name('career.index');
+Route::get('/career/{slug}', [CareerHubController::class, 'show'])->name('career.show');
 
 // Public (unauthenticated) share link routes
 Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
