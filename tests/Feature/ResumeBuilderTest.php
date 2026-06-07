@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Resume;
 use App\Models\User;
+use App\Services\UserLimits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -394,5 +395,60 @@ class ResumeBuilderTest extends TestCase
                 ->assertRedirect();
             $this->assertSame($tpl, $resume->fresh()->template, "Failed for template: {$tpl}");
         }
+    }
+
+    public function test_custom_sections_are_saved_on_update(): void
+    {
+        $user = User::factory()->pro()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $customSections = [
+            [
+                'id' => 'abc-123',
+                'name' => 'Publications',
+                'entries' => [
+                    [
+                        'id' => 'entry-1',
+                        'title' => 'My Paper',
+                        'subtitle' => 'Journal of Testing',
+                        'start_date' => '2024',
+                        'end_date' => null,
+                        'description' => '',
+                        'bullets' => ['Key finding one', 'Key finding two'],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), [
+                'name' => $resume->name,
+                'custom_sections' => $customSections,
+            ])
+            ->assertRedirect();
+
+        $this->assertEquals($customSections, $resume->fresh()->custom_sections);
+    }
+
+    public function test_free_user_cannot_exceed_custom_section_limit(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $limit = UserLimits::customSectionLimit($user);
+        $this->assertNotNull($limit, 'Free users should have a custom section limit');
+
+        $tooMany = array_map(fn ($i) => [
+            'id' => "id-{$i}",
+            'name' => "Section {$i}",
+            'entries' => [],
+        ], range(1, $limit + 1));
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), [
+                'name' => $resume->name,
+                'custom_sections' => $tooMany,
+            ])
+            ->assertSessionHas('featureGate');
     }
 }
