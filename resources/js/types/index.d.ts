@@ -219,6 +219,7 @@ export interface JobApplicationRow {
     resume_id: number | null;
     resume?: { id: number; name: string } | null;
     applied_at: string | null;
+    follow_up_at: string | null;
     job_url: string | null;
     updated_at: string;
 }
@@ -231,6 +232,7 @@ export interface JobApplication {
     role: string;
     status: JobStatus;
     applied_at: string | null;
+    follow_up_at: string | null;
     notes: string | null;
     job_url: string | null;
     created_at: string;

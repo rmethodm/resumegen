@@ -13,11 +13,13 @@ class JobApplication extends Model
     public const STATUSES = ['saved', 'applied', 'interviewing', 'offered', 'rejected', 'closed'];
 
     protected $fillable = [
-        'user_id', 'resume_id', 'company', 'role', 'status', 'applied_at', 'notes', 'job_url',
+        'user_id', 'resume_id', 'company', 'role', 'status',
+        'applied_at', 'follow_up_at', 'notes', 'job_url',
     ];
 
     protected $casts = [
         'applied_at' => 'date',
+        'follow_up_at' => 'date',
     ];
 
     public function user(): BelongsTo

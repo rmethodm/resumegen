@@ -20,7 +20,7 @@ class JobApplicationController extends Controller
             ->orderByDesc('updated_at')
             ->get([
                 'id', 'company', 'role', 'status', 'resume_id',
-                'applied_at', 'job_url', 'updated_at',
+                'applied_at', 'follow_up_at', 'job_url', 'updated_at',
             ]);
 
         $resumes = $user->resumes()->orderBy('name')->get(['id', 'name']);
@@ -98,6 +98,7 @@ class JobApplicationController extends Controller
             'status' => [$req, 'in:'.implode(',', JobApplication::STATUSES)],
             'resume_id' => ['sometimes', 'nullable', 'integer', 'exists:resumes,id'],
             'applied_at' => ['sometimes', 'nullable', 'date'],
+            'follow_up_at' => ['sometimes', 'nullable', 'date'],
             'notes' => ['sometimes', 'nullable', 'string'],
             'job_url' => ['sometimes', 'nullable', 'url', 'max:500'],
         ]);
