@@ -46,33 +46,33 @@ class CareerController extends Controller
         return redirect()->route('admin.career.index')->with('success', 'Article created.');
     }
 
-    public function edit(CareerArticle $article): Response
+    public function edit(CareerArticle $career): Response
     {
         return Inertia::render('Admin/Career/Edit', [
-            'article' => $article,
+            'article' => $career,
             'categories' => CareerArticle::CATEGORIES,
         ]);
     }
 
-    public function update(Request $request, CareerArticle $article): RedirectResponse
+    public function update(Request $request, CareerArticle $career): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', 'unique:career_articles,slug,'.$article->id],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:career_articles,slug,'.$career->id],
             'body' => ['required', 'string'],
             'category' => ['required', 'string', 'in:'.implode(',', CareerArticle::CATEGORIES)],
             'meta_description' => ['nullable', 'string', 'max:255'],
             'is_published' => ['boolean'],
         ]);
 
-        $article->update($validated);
+        $career->update($validated);
 
         return redirect()->route('admin.career.index')->with('success', 'Article updated.');
     }
 
-    public function destroy(CareerArticle $article): RedirectResponse
+    public function destroy(CareerArticle $career): RedirectResponse
     {
-        $article->delete();
+        $career->delete();
 
         return redirect()->route('admin.career.index')->with('success', 'Article deleted.');
     }
