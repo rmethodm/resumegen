@@ -196,6 +196,8 @@ export default function Edit({
     canTailor,
     canInterviewCoach,
     interviewCoachUsesRemaining,
+    canQuantifyBullet,
+    quantifyBulletUsesRemaining,
     aiUsed,
     aiLimit,
     customSectionLimit,
@@ -213,6 +215,8 @@ export default function Edit({
     canTailor: boolean;
     canInterviewCoach: boolean;
     interviewCoachUsesRemaining: number | null;
+    canQuantifyBullet: boolean;
+    quantifyBulletUsesRemaining: number | null;
     aiUsed: number;
     aiLimit: number;
     customSectionLimit: number | null;
@@ -270,6 +274,12 @@ export default function Edit({
     const [ats, setAts] = useState<AtsScore | null>(null);
     const [atsLoading, setAtsLoading] = useState(false);
     const [atsOpen, setAtsOpen] = useState(false);
+
+    const [quantifyLoading, setQuantifyLoading] = useState<string | null>(null);
+    const [quantifySuggestions, setQuantifySuggestions] = useState<{
+        entryId: string;
+        items: string[];
+    } | null>(null);
 
     const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
     const [shareUrl, setShareUrl] = useState<string | null>(null);
@@ -531,6 +541,31 @@ export default function Edit({
         setExperience(prev => prev.map(e => e.id === id ? { ...e, [field]: val } : e)), []);
     const addExp = () => setExperience(prev => [...prev, emptyExp()]);
     const removeExp = (id: string) => setExperience(prev => prev.filter(e => e.id !== id));
+
+    const handleQuantifyBullet = async (entryId: string, bullet: string) => {
+        if (!bullet.trim() || bullet.trim().length < 10) return;
+        setQuantifyLoading(entryId);
+        setQuantifySuggestions(null);
+        try {
+            const res = await fetch(route('builder.quantify-bullet', resume.id), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
+                },
+                body: JSON.stringify({ bullet }),
+            });
+            if (res.status === 402) {
+                triggerUpgradeModal('quantify_bullet', 'starter');
+                return;
+            }
+            if (!res.ok) return;
+            const json = await res.json();
+            setQuantifySuggestions({ entryId, items: json.suggestions ?? [] });
+        } catch { /* best-effort */ } finally {
+            setQuantifyLoading(null);
+        }
+    };
 
     const updateEdu = useCallback((id: string, field: keyof EducationEntry, val: string) =>
         setEducation(prev => prev.map(e => e.id === id ? { ...e, [field]: val } : e)), []);
@@ -1419,8 +1454,59 @@ export default function Edit({
                                                                                     <BulletEditor
                                                                                         bullets={exp.bullets ? exp.bullets.split('\n') : []}
                                                                                         onChange={lines => updateExp(exp.id, 'bullets', lines.join('\n'))}
-                                                                                       
+
                                                                                     />
+                                                                                    <div className="mt-1 flex items-center gap-2">
+                                                                                        {canQuantifyBullet ? (
+                                                                                            <button
+                                                                                                type="button"
+                                                                                                onClick={() => handleQuantifyBullet(exp.id, exp.bullets)}
+                                                                                                disabled={quantifyLoading === exp.id}
+                                                                                                className="inline-flex items-center gap-1 rounded-full bg-[#f0f0ff] px-2 py-0.5 text-xs text-[#6366f1] hover:bg-[#e0e0ff] disabled:opacity-50"
+                                                                                            >
+                                                                                                {quantifyLoading === exp.id ? '⟳' : '⚡'} Quantify
+                                                                                            </button>
+                                                                                        ) : (
+                                                                                            <button
+                                                                                                type="button"
+                                                                                                onClick={() => triggerUpgradeModal('quantify_bullet', 'starter')}
+                                                                                                className="inline-flex items-center gap-1 rounded-full bg-[#f5f5fa] px-2 py-0.5 text-xs text-[#a0a0b0]"
+                                                                                            >
+                                                                                                🔒 Quantify
+                                                                                                {quantifyBulletUsesRemaining === 0 ? ' · Upgrade' : quantifyBulletUsesRemaining !== null ? ` · ${quantifyBulletUsesRemaining} left` : ''}
+                                                                                            </button>
+                                                                                        )}
+                                                                                    </div>
+                                                                                    {quantifySuggestions?.entryId === exp.id && (
+                                                                                        <div className="mt-2 rounded-lg border border-[#e8e8f0] bg-[#fafafe] p-3 space-y-2">
+                                                                                            <div className="flex items-center justify-between">
+                                                                                                <span className="text-xs font-medium text-[#6060a0]">Quantified versions</span>
+                                                                                                <button
+                                                                                                    type="button"
+                                                                                                    onClick={() => setQuantifySuggestions(null)}
+                                                                                                    className="text-xs text-[#a0a0b0] hover:text-[#6060a0]"
+                                                                                                >
+                                                                                                    ✕
+                                                                                                </button>
+                                                                                            </div>
+                                                                                            {quantifySuggestions.items.map((s, i) => (
+                                                                                                <div key={i} className="flex items-start gap-2">
+                                                                                                    <p className="flex-1 text-xs text-[#4040a0]">{s}</p>
+                                                                                                    <button
+                                                                                                        type="button"
+                                                                                                        onClick={() => {
+                                                                                                            updateExp(exp.id, 'bullets', s);
+                                                                                                            save();
+                                                                                                            setQuantifySuggestions(null);
+                                                                                                        }}
+                                                                                                        className="shrink-0 rounded bg-[#6366f1] px-2 py-0.5 text-xs text-white hover:bg-[#5254cc]"
+                                                                                                    >
+                                                                                                        ↩ Use
+                                                                                                    </button>
+                                                                                                </div>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    )}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
