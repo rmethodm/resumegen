@@ -178,4 +178,33 @@ class JobApplicationTest extends TestCase
                 ->where('funnelStats.closed', 0)
             );
     }
+
+    public function test_jobs_index_loads_for_authenticated_user(): void
+    {
+        $user = User::factory()->pro()->create();
+        JobApplication::factory()->count(3)->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->get(route('jobs.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Jobs/Index')
+                ->has('applications', 3)
+            );
+    }
+
+    public function test_kanban_drag_updates_job_status(): void
+    {
+        $user = User::factory()->create();
+        $job = JobApplication::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'saved',
+        ]);
+
+        $this->actingAs($user)
+            ->put(route('jobs.update', $job), ['status' => 'applied'])
+            ->assertRedirect();
+
+        $this->assertEquals('applied', $job->fresh()->status);
+    }
 }
