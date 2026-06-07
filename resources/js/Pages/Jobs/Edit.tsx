@@ -8,18 +8,19 @@ type Props = { application: JobApplication; resumes: ResumeOpt[]; statuses: JobS
 
 export default function Edit({ application, resumes, statuses }: Props) {
     const form = useForm({
-        company:    application.company,
-        role:       application.role,
-        status:     application.status,
-        resume_id:  (application.resume_id ?? '') as number | '',
-        applied_at: application.applied_at ?? '',
-        job_url:    application.job_url ?? '',
-        notes:      application.notes ?? '',
+        company:      application.company,
+        role:         application.role,
+        status:       application.status,
+        resume_id:    (application.resume_id ?? '') as number | '',
+        applied_at:   application.applied_at ?? '',
+        follow_up_at: application.follow_up_at ?? '',
+        job_url:      application.job_url ?? '',
+        notes:        application.notes ?? '',
     });
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        form.transform(data => ({ ...data, resume_id: data.resume_id === '' ? null : data.resume_id, applied_at: data.applied_at || null, job_url: data.job_url || null, notes: data.notes || null }));
+        form.transform(data => ({ ...data, resume_id: data.resume_id === '' ? null : data.resume_id, applied_at: data.applied_at || null, follow_up_at: data.follow_up_at || null, job_url: data.job_url || null, notes: data.notes || null }));
         form.put(route('jobs.update', application.id));
     };
 
@@ -63,10 +64,17 @@ export default function Edit({ application, resumes, statuses }: Props) {
                                 </select>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-3 gap-4">
                             <div>
                                 <label className={labelCls}>Date Applied</label>
                                 <input type="date" value={form.data.applied_at} onChange={e => form.setData('applied_at', e.target.value)} className={inputCls} />
+                            </div>
+                            <div>
+                                <label className={labelCls}>Follow-up Date</label>
+                                <input type="date" value={form.data.follow_up_at} onChange={e => form.setData('follow_up_at', e.target.value)} className={inputCls} />
+                                {form.data.follow_up_at && (
+                                    <p className="mt-1 text-xs text-gray-400">Reminder email will be sent on this date.</p>
+                                )}
                             </div>
                             <div>
                                 <label className={labelCls}>Job URL</label>

@@ -148,6 +148,7 @@ export default function Index({ applications, resumes, statuses }: Props) {
                                         <th onClick={() => toggleSort('applied_at')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#71717a] hover:text-[#0f0f1a] transition-colors">
                                             <span className="inline-flex items-center gap-0.5">Applied<SortIcon k="applied_at" /></span>
                                         </th>
+                                        <th className="px-5 py-3.5 text-xs font-semibold text-[#71717a]">Follow-up</th>
                                         <th className="px-5 py-3.5 text-xs font-semibold text-[#71717a]">URL</th>
                                         <th className="px-5 py-3.5 text-right text-xs font-semibold text-[#71717a]">Actions</th>
                                     </tr>
@@ -181,7 +182,7 @@ export default function Index({ applications, resumes, statuses }: Props) {
 
                                     {pageRows.length === 0 && !adding && (
                                         <tr>
-                                            <td colSpan={7} className="px-5 py-12 text-center text-sm text-[#a0a0b0]">
+                                            <td colSpan={8} className="px-5 py-12 text-center text-sm text-[#a0a0b0]">
                                                 {search ? 'No applications match your search.' : 'No applications yet. Click "+ New Application" to start tracking.'}
                                             </td>
                                         </tr>
@@ -196,6 +197,19 @@ export default function Index({ applications, resumes, statuses }: Props) {
                                             </td>
                                             <td className="px-5 py-4 text-[#71717a]">{a.resume?.name ?? '—'}</td>
                                             <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(a.applied_at)}</td>
+                                            <td className="px-5 py-4 tabular-nums">
+                                                {a.follow_up_at ? (
+                                                    <span className={
+                                                        new Date(a.follow_up_at) < new Date(new Date().toDateString())
+                                                            ? 'font-medium text-amber-600'
+                                                            : 'text-[#71717a]'
+                                                    }>
+                                                        {new Date(a.follow_up_at).toLocaleDateString()}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[#d0d0e0]">—</span>
+                                                )}
+                                            </td>
                                             <td className="px-5 py-4">
                                                 {a.job_url ? <a href={a.job_url} target="_blank" rel="noopener noreferrer" className="text-[#4f46e5] hover:underline">link</a> : '—'}
                                             </td>
