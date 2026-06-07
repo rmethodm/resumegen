@@ -136,6 +136,12 @@ export interface AISuggestContext {
     skills?: string[];
 }
 
+export interface ResumeTag {
+    id: number;
+    label: string;
+    color: string;
+}
+
 export interface ResumeRow {
     id: number;
     name: string;
@@ -144,6 +150,7 @@ export interface ResumeRow {
     strength: number;
     strength_tip: string;
     view_count: number;
+    tags: ResumeTag[];
 }
 
 export interface ResumeStat {

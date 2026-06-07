@@ -64,4 +64,9 @@ class Resume extends Model
     {
         return $this->hasMany(Resume::class, 'parent_resume_id')->orderByDesc('created_at');
     }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(ResumeTag::class)->orderBy('created_at');
+    }
 }

@@ -24,6 +24,7 @@ class ResumeBuilderController extends Controller
         $user = $request->user();
         $resumeCollection = $user->resumes()
             ->where('is_snapshot', false)
+            ->with('tags:id,resume_id,label,color')
             ->orderByDesc('updated_at')
             ->get();
 
@@ -45,6 +46,11 @@ class ResumeBuilderController extends Controller
                 'strength' => $strength['score'],
                 'strength_tip' => $strength['tip'],
                 'view_count' => (int) ($viewCounts[$resume->id] ?? 0),
+                'tags' => $resume->tags->map(fn ($t) => [
+                    'id' => $t->id,
+                    'label' => $t->label,
+                    'color' => $t->color,
+                ])->values()->all(),
             ];
         });
 
