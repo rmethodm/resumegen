@@ -12,6 +12,8 @@ class UserLimits
 
     private const FREE_INTERVIEW_COACH_MONTHLY_LIMIT = 3;
 
+    public const FREE_QUANTIFY_BULLET_MONTHLY_LIMIT = 10;
+
     private const ALL_TEMPLATES = [
         'classic', 'modern', 'minimal', 'minimal-ruled',
         'sidebar', 'creative', 'executive', 'ats',
@@ -136,6 +138,32 @@ class UserLimits
         }
 
         return max(0, self::FREE_INTERVIEW_COACH_MONTHLY_LIMIT - self::interviewCoachUsageThisMonth($user));
+    }
+
+    public static function canQuantifyBullet(User $user): bool
+    {
+        if ($user->isAtLeastStarter()) {
+            return true;
+        }
+
+        return self::quantifyBulletUsesRemaining($user) > 0;
+    }
+
+    public static function quantifyBulletUsageThisMonth(User $user): int
+    {
+        return AiUsageLog::where('user_id', $user->id)
+            ->where('feature', 'quantify_bullet')
+            ->where('created_at', '>=', Carbon::now()->startOfMonth())
+            ->count();
+    }
+
+    public static function quantifyBulletUsesRemaining(User $user): ?int
+    {
+        if ($user->isAtLeastStarter()) {
+            return null;
+        }
+
+        return max(0, self::FREE_QUANTIFY_BULLET_MONTHLY_LIMIT - self::quantifyBulletUsageThisMonth($user));
     }
 
     public static function customSectionLimit(User $user): ?int

@@ -19,6 +19,7 @@ use App\Http\Controllers\PdfImportController;
 use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
+use App\Http\Controllers\QuantifyBulletController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeGeneratorController;
 use App\Http\Controllers\ResumeTagController;
@@ -81,6 +82,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])
         ->middleware('throttle:5,1')
         ->name('builder.interview-coach');
+    Route::post('/builder/{resume}/quantify-bullet', [QuantifyBulletController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('builder.quantify-bullet');
     Route::get('/builder/{resume}/ats-score', [AtsScoreController::class, 'show'])
         ->middleware('throttle:10,1')
         ->name('builder.ats-score');
