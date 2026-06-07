@@ -38,4 +38,90 @@ class OnboardingTest extends TestCase
 
         $this->assertTrue($user->fresh()->has_completed_onboarding);
     }
+
+    public function test_wizard_page_renders_for_new_user(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+        $this->actingAs($user)
+            ->get(route('onboarding.show'))
+            ->assertInertia(fn ($page) => $page->component('Onboarding/Wizard'));
+    }
+
+    public function test_already_onboarded_user_is_redirected_to_dashboard(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => true]);
+
+        $this->actingAs($user)
+            ->get(route('onboarding.show'))
+            ->assertRedirect(route('dashboard'));
+    }
+
+    public function test_post_saves_career_context_fields(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+        $this->actingAs($user)->post(route('onboarding.store'), [
+            'target_role' => 'Senior Engineer',
+            'industry' => 'Technology',
+            'years_experience' => 8,
+        ]);
+
+        $user->refresh();
+        $this->assertEquals('Senior Engineer', $user->target_role);
+        $this->assertEquals('Technology', $user->industry);
+        $this->assertEquals(8, $user->years_experience);
+    }
+
+    public function test_post_saves_contact_info_to_profile_json(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+        $this->actingAs($user)->post(route('onboarding.store'), [
+            'full_name' => 'Jane Doe',
+            'phone' => '555-1234',
+            'location' => 'Austin, TX',
+            'linkedin_url' => 'https://linkedin.com/in/janedoe',
+            'website' => 'https://janedoe.com',
+        ]);
+
+        $user->refresh();
+        $this->assertEquals('Jane Doe', $user->profile['full_name']);
+        $this->assertEquals('555-1234', $user->profile['phone']);
+        $this->assertEquals('Austin, TX', $user->profile['location']);
+        $this->assertEquals('https://linkedin.com/in/janedoe', $user->profile['linkedin_url']);
+        $this->assertEquals('https://janedoe.com', $user->profile['website']);
+    }
+
+    public function test_post_sets_has_completed_onboarding_true(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+        $this->actingAs($user)->post(route('onboarding.store'), [
+            'target_role' => 'Designer',
+        ]);
+
+        $this->assertTrue($user->fresh()->has_completed_onboarding);
+    }
+
+    public function test_post_redirects_to_dashboard(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+        $this->actingAs($user)
+            ->post(route('onboarding.store'), [])
+            ->assertRedirect(route('dashboard'));
+    }
+
+    public function test_registration_redirects_to_onboarding(): void
+    {
+        $response = $this->post(route('register'), [
+            'name' => 'Test User',
+            'email' => 'newuser@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertRedirect(route('onboarding.show'));
+    }
 }
