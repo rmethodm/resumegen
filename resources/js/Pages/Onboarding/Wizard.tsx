@@ -4,36 +4,8 @@ import { FormEventHandler, useState } from 'react';
 
 type Step = 1 | 2;
 
-export default function Wizard() {
-    const [step, setStep] = useState<Step>(1);
-
-    const { data, setData, post, processing, errors } = useForm({
-        target_role: '',
-        industry: '',
-        years_experience: '' as string | number,
-        full_name: '',
-        phone: '',
-        location: '',
-        linkedin_url: '',
-        website: '',
-    });
-
-    const skip: FormEventHandler = (e) => {
-        e.preventDefault();
-        post(route('onboarding.store'));
-    };
-
-    const next: FormEventHandler = (e) => {
-        e.preventDefault();
-        setStep(2);
-    };
-
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-        post(route('onboarding.store'));
-    };
-
-    const StepDots = () => (
+function StepDots({ step }: { step: Step }) {
+    return (
         <div className="mb-6 flex items-center justify-center gap-2">
             {([1, 2] as Step[]).map((s) => (
                 <div
@@ -49,6 +21,33 @@ export default function Wizard() {
             ))}
         </div>
     );
+}
+
+export default function Wizard() {
+    const [step, setStep] = useState<Step>(1);
+
+    const { data, setData, post, processing, errors } = useForm({
+        target_role: '',
+        industry: '',
+        years_experience: '' as string | number,
+        full_name: '',
+        phone: '',
+        location: '',
+        linkedin_url: '',
+        website: '',
+    });
+
+    const handleSkip = () => post(route('onboarding.store'));
+
+    const next: FormEventHandler = (e) => {
+        e.preventDefault();
+        setStep(2);
+    };
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+        post(route('onboarding.store'));
+    };
 
     return (
         <GuestLayout>
@@ -66,15 +65,19 @@ export default function Wizard() {
                     </p>
                 </div>
 
-                <StepDots />
+                <StepDots step={step} />
 
                 {step === 1 && (
                     <form onSubmit={next} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label
+                                htmlFor="target_role"
+                                className="block text-sm font-medium text-gray-700"
+                            >
                                 Target role
                             </label>
                             <input
+                                id="target_role"
                                 type="text"
                                 value={data.target_role}
                                 onChange={(e) => setData('target_role', e.target.value)}
@@ -88,10 +91,14 @@ export default function Wizard() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label
+                                htmlFor="industry"
+                                className="block text-sm font-medium text-gray-700"
+                            >
                                 Industry
                             </label>
                             <input
+                                id="industry"
                                 type="text"
                                 value={data.industry}
                                 onChange={(e) => setData('industry', e.target.value)}
@@ -102,15 +109,24 @@ export default function Wizard() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label
+                                htmlFor="years_experience"
+                                className="block text-sm font-medium text-gray-700"
+                            >
                                 Years of experience
                             </label>
                             <input
+                                id="years_experience"
                                 type="number"
                                 min={0}
                                 max={40}
                                 value={data.years_experience}
-                                onChange={(e) => setData('years_experience', e.target.value)}
+                                onChange={(e) =>
+                                    setData(
+                                        'years_experience',
+                                        e.target.value === '' ? '' : Number(e.target.value),
+                                    )
+                                }
                                 placeholder="0"
                                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                             />
@@ -122,7 +138,7 @@ export default function Wizard() {
                         <div className="flex items-center justify-between pt-2">
                             <button
                                 type="button"
-                                onClick={skip as unknown as React.MouseEventHandler}
+                                onClick={handleSkip}
                                 className="text-sm text-gray-400 hover:text-gray-600"
                             >
                                 Skip for now
@@ -141,10 +157,14 @@ export default function Wizard() {
                     <form onSubmit={submit} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label
+                                    htmlFor="full_name"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
                                     Full name
                                 </label>
                                 <input
+                                    id="full_name"
                                     type="text"
                                     value={data.full_name}
                                     onChange={(e) => setData('full_name', e.target.value)}
@@ -153,10 +173,14 @@ export default function Wizard() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label
+                                    htmlFor="phone"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
                                     Phone
                                 </label>
                                 <input
+                                    id="phone"
                                     type="text"
                                     value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
@@ -165,10 +189,14 @@ export default function Wizard() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label
+                                    htmlFor="location"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
                                     Location
                                 </label>
                                 <input
+                                    id="location"
                                     type="text"
                                     value={data.location}
                                     onChange={(e) => setData('location', e.target.value)}
@@ -177,10 +205,14 @@ export default function Wizard() {
                                 />
                             </div>
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label
+                                    htmlFor="linkedin_url"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
                                     LinkedIn URL
                                 </label>
                                 <input
+                                    id="linkedin_url"
                                     type="url"
                                     value={data.linkedin_url}
                                     onChange={(e) => setData('linkedin_url', e.target.value)}
@@ -192,10 +224,14 @@ export default function Wizard() {
                                 )}
                             </div>
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label
+                                    htmlFor="website"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
                                     Website
                                 </label>
                                 <input
+                                    id="website"
                                     type="url"
                                     value={data.website}
                                     onChange={(e) => setData('website', e.target.value)}
@@ -209,13 +245,22 @@ export default function Wizard() {
                         </div>
 
                         <div className="flex items-center justify-between pt-2">
-                            <button
-                                type="button"
-                                onClick={() => setStep(1)}
-                                className="text-sm text-gray-400 hover:text-gray-600"
-                            >
-                                ← Back
-                            </button>
+                            <div className="flex items-center gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setStep(1)}
+                                    className="text-sm text-gray-400 hover:text-gray-600"
+                                >
+                                    ← Back
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleSkip}
+                                    className="text-sm text-gray-400 hover:text-gray-600"
+                                >
+                                    Skip for now
+                                </button>
+                            </div>
                             <button
                                 type="submit"
                                 disabled={processing}
