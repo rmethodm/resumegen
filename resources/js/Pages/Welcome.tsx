@@ -53,6 +53,7 @@ export default function Welcome({ auth }: PageProps) {
                             <a href="#features" className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">Features</a>
                             <a href="#how-it-works" className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">How it works</a>
                             <a href="#pricing" className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">Pricing</a>
+                            <Link href={route('career.index')} className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">Career</Link>
                         </div>
                         {/* Actions */}
                         <div className="flex items-center gap-3">
