@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
+use App\Models\ResumeShareEvent;
 use App\Services\DocxGenerator;
 use App\Services\ResumeStrengthScorer;
 use App\Services\UserLimits;
@@ -21,22 +22,31 @@ class ResumeBuilderController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $resumes = $user->resumes()
+        $resumeCollection = $user->resumes()
             ->where('is_snapshot', false)
             ->orderByDesc('updated_at')
-            ->get()
-            ->map(function (Resume $resume) {
-                $strength = ResumeStrengthScorer::score($resume);
+            ->get();
 
-                return [
-                    'id' => $resume->id,
-                    'name' => $resume->name,
-                    'pdf_filename' => $resume->pdf_filename,
-                    'updated_at' => $resume->updated_at,
-                    'strength' => $strength['score'],
-                    'strength_tip' => $strength['tip'],
-                ];
-            });
+        $viewCounts = ResumeShareEvent::query()
+            ->where('event', 'page_view')
+            ->whereIn('resume_id', $resumeCollection->pluck('id'))
+            ->selectRaw('resume_id, COUNT(*) as cnt')
+            ->groupBy('resume_id')
+            ->pluck('cnt', 'resume_id');
+
+        $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts) {
+            $strength = ResumeStrengthScorer::score($resume);
+
+            return [
+                'id' => $resume->id,
+                'name' => $resume->name,
+                'pdf_filename' => $resume->pdf_filename,
+                'updated_at' => $resume->updated_at,
+                'strength' => $strength['score'],
+                'strength_tip' => $strength['tip'],
+                'view_count' => (int) ($viewCounts[$resume->id] ?? 0),
+            ];
+        });
 
         return Inertia::render('ResumeBuilder/Index', [
             'resumes' => $resumes,

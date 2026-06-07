@@ -143,6 +143,7 @@ export interface ResumeRow {
     updated_at: string;
     strength: number;
     strength_tip: string;
+    view_count: number;
 }
 
 export interface ResumeStat {
