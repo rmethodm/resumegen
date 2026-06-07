@@ -6,7 +6,7 @@ import SpellBadge from '@/Components/SpellBadge';
 import { useSpellCheck } from '@/hooks/useSpellCheck';
 import TailorModal from './TailorModal';
 import InterviewCoachPanel from './Partials/InterviewCoachPanel';
-import StrengthScorePanel from './Partials/StrengthScorePanel';
+import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import {
     TagIcon, TrashIcon,
@@ -244,6 +244,9 @@ export default function Edit({
     const [saving, setSaving] = useState(false);
     const pendingSave = useRef(false);
 
+    const strengthPanelRef = useRef<StrengthPanelHandle>(null);
+    const [liveScore, setLiveScore] = useState<number | null>(null);
+
     const [showPreview, setShowPreview] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [showTailor, setShowTailor] = useState(false);
@@ -272,6 +275,26 @@ export default function Edit({
     const [shareUrl, setShareUrl] = useState<string | null>(null);
     const [shareCopied, setShareCopied] = useState(false);
     const [shareLoading, setShareLoading] = useState(false);
+
+    const fetchLiveScore = async () => {
+        try {
+            const res = await fetch(route('builder.strength-score', resume.id), {
+                headers: {
+                    'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
+                },
+            });
+            if (!res.ok) return;
+            const json = await res.json();
+            setLiveScore(json.score);
+            strengthPanelRef.current?.refresh();
+        } catch {
+            // best-effort
+        }
+    };
+
+    useEffect(() => {
+        void fetchLiveScore();
+    }, [resume.id]);
 
     const fetchAts = useCallback(async () => {
         setAtsLoading(true);
@@ -398,6 +421,7 @@ export default function Edit({
                 setPdfSrc(freshPdfSrc(resume.id));
                 if (pendingSave.current) { pendingSave.current = false; save(); }
                 fetchAts();
+                void fetchLiveScore();
             },
         });
     }, [resume.id, saving, fetchAts]);
@@ -583,6 +607,20 @@ export default function Edit({
                 </Link>
                 <span className="text-[#eeeef5]">/</span>
                 <h2 className="text-sm font-semibold text-[#0f0f1a]">{name}</h2>
+                {liveScore !== null && (
+                    <span
+                        className={`ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                            liveScore >= 80
+                                ? 'bg-green-100 text-green-700'
+                                : liveScore >= 50
+                                  ? 'bg-amber-100 text-amber-700'
+                                  : 'bg-red-100 text-red-700'
+                        }`}
+                        title="Resume strength score"
+                    >
+                        {liveScore}%
+                    </span>
+                )}
             </div>
             <Head title={`Editing: ${name}`} />
 
@@ -1029,6 +1067,7 @@ export default function Edit({
                         {/* Strength Score */}
                         {sidebarOpen && (
                             <StrengthScorePanel
+                                ref={strengthPanelRef}
                                 resumeId={resume.id}
                                 strengthHistoryEnabled={strengthHistoryEnabled}
                             />
