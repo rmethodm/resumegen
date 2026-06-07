@@ -7,6 +7,7 @@ interface Props {
     canInterviewCoach: boolean;
     interviewCoachUsesRemaining: number | null;
     onClose: () => void;
+    personaDefaults?: { target_role: string | null; industry: string | null; years_experience: number | null };
 }
 
 export default function InterviewCoachPanel({
@@ -15,8 +16,11 @@ export default function InterviewCoachPanel({
     canInterviewCoach,
     interviewCoachUsesRemaining,
     onClose,
+    personaDefaults,
 }: Props) {
-    const [targetRole, setTargetRole] = useState(resumeName.replace(/\s*resume\s*$/i, '').trim());
+    const [targetRole, setTargetRole] = useState(
+        personaDefaults?.target_role ?? resumeName.replace(/\s*resume\s*$/i, '').trim(),
+    );
     const [jobDescription, setJobDescription] = useState('');
     const [questions, setQuestions] = useState<InterviewQuestion[]>([]);
     const [loading, setLoading] = useState(false);

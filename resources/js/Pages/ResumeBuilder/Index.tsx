@@ -7,7 +7,8 @@ import { FormEvent, useMemo, useState } from 'react';
 import PdfImportModal from './Partials/PdfImportModal';
 import GenerateResumeModal from './Partials/GenerateResumeModal';
 
-type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; canGenerate: boolean };
+type PersonaDefaults = { target_role: string | null; industry: string | null; years_experience: number | null };
+type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; canGenerate: boolean; userPersona: PersonaDefaults };
 type SortKey = 'name' | 'updated_at';
 
 const TAG_COLORS = [
@@ -96,7 +97,7 @@ function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortD
     );
 }
 
-export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, canGenerate }: Props) {
+export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, canGenerate, userPersona }: Props) {
     const atLimit = resumeLimit !== null && resumeCount >= resumeLimit;
     const [creating, setCreating] = useState(false);
     const [showPdfImport, setShowPdfImport] = useState(false);
@@ -432,7 +433,7 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                     onClose={() => setShowPdfImport(false)}
                 />
             )}
-            {showGenerate && <GenerateResumeModal onClose={() => setShowGenerate(false)} />}
+            {showGenerate && <GenerateResumeModal onClose={() => setShowGenerate(false)} personaDefaults={userPersona} />}
         </AuthenticatedLayout>
     );
 }

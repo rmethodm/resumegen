@@ -248,6 +248,7 @@ export default function Edit({
     strengthHistoryEnabled,
     photoUrl,
     completionScore,
+    userPersona,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -271,6 +272,7 @@ export default function Edit({
     strengthHistoryEnabled: boolean;
     photoUrl: string | null;
     completionScore: number;
+    userPersona: { target_role: string | null; industry: string | null; years_experience: number | null };
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -2460,6 +2462,7 @@ export default function Edit({
                     canInterviewCoach={canInterviewCoach}
                     interviewCoachUsesRemaining={interviewCoachUsesRemaining}
                     onClose={() => setShowInterviewCoach(false)}
+                    personaDefaults={userPersona}
                 />
             )}
             {showMockInterview && (

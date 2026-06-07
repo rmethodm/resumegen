@@ -63,6 +63,11 @@ class ResumeBuilderController extends Controller
             'allowedTemplates' => UserLimits::allowedTemplates($user),
             'canPdfImport' => UserLimits::canPdfImport($user),
             'canGenerate' => UserLimits::canGenerate($user),
+            'userPersona' => [
+                'target_role' => $user->target_role,
+                'industry' => $user->industry,
+                'years_experience' => $user->years_experience,
+            ],
         ]);
     }
 
@@ -79,11 +84,13 @@ class ResumeBuilderController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $name = $validated['name'] ?? ($user->target_role ? $user->target_role.' Resume' : 'My Resume');
+
         $resume = $user->resumes()->create([
-            'name' => $validated['name'],
+            'name' => $name,
             'pdf_filename' => Str::uuid().'.pdf',
         ]);
 
@@ -148,6 +155,11 @@ class ResumeBuilderController extends Controller
             ]),
             'strengthHistoryEnabled' => UserLimits::canStrengthHistory($user),
             'photoUrl' => $resume->getFirstMediaUrl('photo') ?: null,
+            'userPersona' => [
+                'target_role' => $user->target_role,
+                'industry' => $user->industry,
+                'years_experience' => $user->years_experience,
+            ],
         ]);
     }
 

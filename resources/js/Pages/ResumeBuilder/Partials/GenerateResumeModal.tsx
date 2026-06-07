@@ -3,13 +3,14 @@ import React, { useState } from 'react';
 
 interface Props {
     onClose: () => void;
+    personaDefaults?: { target_role: string | null; industry: string | null; years_experience: number | null };
 }
 
-export default function GenerateResumeModal({ onClose }: Props) {
+export default function GenerateResumeModal({ onClose, personaDefaults }: Props) {
     const [form, setForm] = useState({
-        target_role: '',
-        years_experience: 0,
-        industry: '',
+        target_role: personaDefaults?.target_role ?? '',
+        years_experience: personaDefaults?.years_experience ?? 0,
+        industry: personaDefaults?.industry ?? '',
         key_skills: '',
     });
     const [loading, setLoading] = useState(false);
