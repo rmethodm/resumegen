@@ -149,4 +149,33 @@ class JobApplicationTest extends TestCase
             ->assertRedirect()
             ->assertSessionMissing('featureGate');
     }
+
+    public function test_index_includes_funnel_stats(): void
+    {
+        $user = User::factory()->create();
+
+        JobApplication::factory()->for($user)->create(['status' => 'applied']);
+        JobApplication::factory()->for($user)->create(['status' => 'applied']);
+        JobApplication::factory()->for($user)->create(['status' => 'interviewing']);
+        JobApplication::factory()->for($user)->create(['status' => 'offered']);
+        JobApplication::factory()->for($user)->create(['status' => 'saved']);
+        JobApplication::factory()->for($user)->create(['status' => 'rejected']);
+
+        // Another user's application — must not appear in counts
+        $other = User::factory()->create();
+        JobApplication::factory()->for($other)->create(['status' => 'applied']);
+
+        $this->actingAs($user)
+            ->get(route('jobs.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Jobs/Index')
+                ->where('funnelStats.applied', 2)
+                ->where('funnelStats.interviewing', 1)
+                ->where('funnelStats.offered', 1)
+                ->where('funnelStats.saved', 1)
+                ->where('funnelStats.rejected', 1)
+                ->where('funnelStats.closed', 0)
+            );
+    }
 }

@@ -1,12 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
-import type { JobApplicationRow, JobStatus } from '@/types';
+import type { FunnelStats, JobApplicationRow, JobStatus } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
 import KanbanView from './KanbanView';
 
 type ResumeOpt = { id: number; name: string };
-type Props = { applications: JobApplicationRow[]; resumes: ResumeOpt[]; statuses: JobStatus[] };
+type Props = { applications: JobApplicationRow[]; resumes: ResumeOpt[]; statuses: JobStatus[]; funnelStats: FunnelStats };
 type SortKey = 'company' | 'role' | 'status' | 'applied_at' | 'updated_at';
 
 const STATUS_CLASSES: Record<JobStatus, string> = {
@@ -18,7 +18,82 @@ const STATUS_CLASSES: Record<JobStatus, string> = {
     closed:       'bg-[#f5f5fb] text-[#a0a0b0]',
 };
 
-export default function Index({ applications, resumes, statuses }: Props) {
+function FunnelChart({ stats }: { stats: FunnelStats }) {
+    const stages: { key: keyof FunnelStats; label: string; color: string }[] = [
+        { key: 'applied',      label: 'Applied',      color: 'bg-blue-500' },
+        { key: 'interviewing', label: 'Interviewing',  color: 'bg-amber-500' },
+        { key: 'offered',      label: 'Offered',       color: 'bg-emerald-500' },
+    ];
+
+    const maxCount = Math.max(...stages.map(s => stats[s.key]), 1);
+    const BAR_MAX = 72;
+
+    const barHeight = (count: number) => (count > 0 ? Math.max(6, Math.round((count / maxCount) * BAR_MAX)) : 0);
+
+    const convRate = (from: number, to: number) => {
+        if (from === 0) return '—';
+        return `${Math.round((to / from) * 100)}%`;
+    };
+
+    const active = stages.reduce((sum, s) => sum + stats[s.key], 0);
+
+    return (
+        <div className="mb-6 rounded-xl border border-[#eeeef5] bg-white px-5 py-4 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+            <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-[#0f0f1a]">Application Funnel</h2>
+                <span className="text-xs text-[#a0a0b0]">{active} in pipeline</span>
+            </div>
+
+            <div className="flex items-end gap-1">
+                {/* Main funnel stages */}
+                {stages.map((stage, i) => {
+                    const count = stats[stage.key];
+                    const h = barHeight(count);
+                    return (
+                        <div key={stage.key} className="flex items-end">
+                            <div className="flex flex-col items-center gap-1">
+                                <span className="text-sm font-bold text-[#0f0f1a]">{count}</span>
+                                <div
+                                    className={`w-16 rounded-t-md transition-all ${stage.color}`}
+                                    style={{ height: `${h}px` }}
+                                />
+                                <span className="mt-1 text-center text-[11px] leading-tight text-[#71717a]">{stage.label}</span>
+                            </div>
+                            {i < stages.length - 1 && (
+                                <div className="mb-7 flex flex-col items-center px-1.5">
+                                    <span className="text-[10px] font-semibold text-[#4f46e5]">
+                                        {convRate(stats[stages[i].key], stats[stages[i + 1].key])}
+                                    </span>
+                                    <span className="text-[#c4c4d0]">→</span>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+
+                {/* Divider */}
+                <div className="mx-4 self-stretch border-l border-dashed border-[#eeeef5]" />
+
+                {/* Side stats */}
+                <div className="flex flex-col justify-center gap-2.5 pb-1">
+                    {([
+                        { key: 'saved' as const,    label: 'Saved',    dot: 'bg-indigo-400' },
+                        { key: 'rejected' as const, label: 'Rejected', dot: 'bg-red-400' },
+                        { key: 'closed' as const,   label: 'Closed',   dot: 'bg-gray-300' },
+                    ] as const).map(({ key, label, dot }) => (
+                        <div key={key} className="flex items-center gap-2">
+                            <span className={`h-2 w-2 flex-shrink-0 rounded-full ${dot}`} />
+                            <span className="min-w-[52px] text-xs text-[#71717a]">{label}</span>
+                            <span className="text-xs font-semibold text-[#0f0f1a]">{stats[key]}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default function Index({ applications, resumes, statuses, funnelStats }: Props) {
     const [view, setView] = useState<'table' | 'kanban'>(() => {
         if (typeof window === 'undefined') return 'kanban';
         return (localStorage.getItem('resumegen_jobs_view') as 'table' | 'kanban') ?? 'kanban';
@@ -98,6 +173,8 @@ export default function Index({ applications, resumes, statuses }: Props) {
 
             <div className="py-8">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                    <FunnelChart stats={funnelStats} />
 
                     <div className="mb-6 flex items-start justify-between">
                         <div>

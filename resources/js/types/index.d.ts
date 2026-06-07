@@ -265,6 +265,15 @@ export interface JobApplication {
     updated_at: string;
 }
 
+export interface FunnelStats {
+    saved: number;
+    applied: number;
+    interviewing: number;
+    offered: number;
+    rejected: number;
+    closed: number;
+}
+
 export interface InterviewNote {
     id: number;
     body: string;

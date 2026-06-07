@@ -25,12 +25,18 @@ class JobApplicationController extends Controller
 
         $resumes = $user->resumes()->orderBy('name')->get(['id', 'name']);
 
+        $statusCounts = $applications->countBy('status');
+        $funnelStats = collect(JobApplication::STATUSES)
+            ->mapWithKeys(fn (string $s) => [$s => $statusCounts->get($s, 0)])
+            ->all();
+
         return Inertia::render('Jobs/Index', [
             'applications' => $applications,
             'resumes' => $resumes,
             'statuses' => JobApplication::STATUSES,
             'jobLimit' => UserLimits::jobLimit($user),
             'jobCount' => $user->jobApplications()->count(),
+            'funnelStats' => $funnelStats,
         ]);
     }
 
