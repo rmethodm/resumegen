@@ -206,6 +206,7 @@ export default function Edit({
     snapshots = [],
     strengthHistoryEnabled,
     photoUrl,
+    completionScore,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -227,6 +228,7 @@ export default function Edit({
     snapshots: ResumeSnapshot[];
     strengthHistoryEnabled: boolean;
     photoUrl: string | null;
+    completionScore: number;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -698,6 +700,26 @@ export default function Edit({
                     </span>
                 )}
             </div>
+
+            {/* Completion progress bar */}
+            <div className="flex items-center gap-2 border-b border-gray-100 bg-white px-4 py-1.5">
+                <div className="flex-1 overflow-hidden rounded-full bg-gray-100" style={{ height: '4px' }}>
+                    <div
+                        className={`h-full rounded-full transition-all ${
+                            completionScore >= 70
+                                ? 'bg-green-500'
+                                : completionScore >= 40
+                                  ? 'bg-amber-400'
+                                  : 'bg-red-400'
+                        }`}
+                        style={{ width: `${completionScore}%` }}
+                    />
+                </div>
+                <span className="w-20 shrink-0 text-right text-xs text-gray-400">
+                    {completionScore}% complete
+                </span>
+            </div>
+
             <Head title={`Editing: ${name}`} />
 
             <div className="flex items-start bg-[#f5f5fb]">
