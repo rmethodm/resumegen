@@ -138,7 +138,14 @@ Full CRUD at `/cover-letters` → `CoverLetterController` → `CoverLetter/Index
 Full CRUD at `/jobs` → `JobApplicationController` → `Jobs/Index.tsx` + `Jobs/Edit.tsx`. Columns: `company`, `role`, `status` (enum via `JobApplication::STATUSES`), `resume_id`, `applied_at`, `notes`, `job_url`. Policy-gated on ownership.
 
 ### Onboarding
-`PATCH /user/onboarding` → `OnboardingController@complete` flips `has_completed_onboarding` to `true` on the user. Used for first-run UX flow; field is a boolean column on `users`.
+New users are redirected to `/onboarding` after registration. `OnboardingController` handles three routes:
+- `GET /onboarding` (`onboarding.show`) — renders `Onboarding/Wizard` via `GuestLayout`; redirects to dashboard if `has_completed_onboarding` is already true.
+- `POST /onboarding` (`onboarding.store`) — saves career context (`target_role`, `industry`, `years_experience` — nullable columns on `users`) and contact info (`full_name`, `phone`, `location`, `linkedin_url`, `website` — merged into `profile` JSON column), sets `has_completed_onboarding = true`, redirects to dashboard.
+- `PATCH /user/onboarding` (`onboarding.complete`) — legacy endpoint used by the in-editor first-run wizard; flips `has_completed_onboarding` to `true` and returns `back()`.
+
+The wizard is a two-step client-side form (no round-trips between steps). Step 1: career context. Step 2: contact info. Both steps have a "Skip for now" button that submits empty values. `Onboarding/Wizard.tsx` uses `GuestLayout` and `useForm` from `@inertiajs/react`.
+
+Saved persona fields (`target_role`, `industry`, `years_experience`) are exposed as `userPersona` props on `Edit.tsx` (via `ResumeBuilderController@edit`) and `Index.tsx` (via `ResumeBuilderController@index`). `GenerateResumeModal` and `InterviewCoachPanel` use these as initial form state. `ResumeBuilderController@store` defaults new resume name to `"{target_role} Resume"` when `target_role` is set.
 
 ### AI suggestions
 `AiSuggestController` handles `POST /builder/{resume}/ai-suggest` (throttled to 10 requests/minute). Supports `field` values: `summary`, `bullets`, `skills`, `title`. Provider is selected per-request (`claude` or `openai`); the active provider is persisted in `localStorage` under `resumegen_ai_provider`. Both keys are checked via `config('services.anthropic.key')` and `config('services.openai.key')` — never `env()` directly.
@@ -151,6 +158,19 @@ Full CRUD at `/jobs` → `JobApplicationController` → `Jobs/Index.tsx` + `Jobs
 ### AI usage tracking
 Every AI suggest call (web and API) logs to `ai_usage_logs` via `AiUsageLogger::log()`. The logger looks up cost rates from `ai_model_rates` (keyed by `provider` + `model` + `effective_from` date) and stores `input_tokens`, `output_tokens`, and `cost_usd`. Both models are append-only with no `updated_at`. `GET /usage` → `UsageController` → `Usage/Index.tsx` shows per-user totals and a 30-day activity log. The admin panel has its own aggregated view across all users (see Admin panel section).
 
+### Career Hub
+Public resource library at `/career` for SEO. No authentication required.
+
+- `GET /career` (`career.index`) → `CareerHubController@index` → `CareerHub/Index.tsx` — returns published articles only, ordered by `published_at` desc. Passes `articles` + `categories` props.
+- `GET /career/{slug}` (`career.show`) → `CareerHubController@show` → `CareerHub/Show.tsx` — 404s on unpublished articles.
+
+Both pages use `PublicLayout`. `CareerHub/Index.tsx` has client-side category filter pills. `CareerHub/Show.tsx` renders `body` as `dangerouslySetInnerHTML` with `prose` classes and a CTA footer linking to `/register`. A "Career" link is added to `Welcome.tsx` public nav.
+
+`CareerArticle` model (`app/Models/CareerArticle.php`):
+- `CATEGORIES` const: `['Resume Tips', 'Job Search', 'Interviews', 'Salary & Negotiation', 'Career Growth']`
+- `booted()` hooks: auto-generates `slug` from `title` on create (if not provided); computes `reading_time_minutes` as `ceil(word_count / 200)`; sets `published_at = now()` when `is_published` flips to true (both on create and update).
+- Factory states: `->published()` (`is_published = true`, `published_at = now()`), `->draft()`.
+
 ### Admin panel
 Routes under `/admin` are guarded by `auth` + `master_admin` middleware (`EnsureMasterAdmin` — aborts 403 if `User::is_master_admin` is false). `is_master_admin` is a non-editable boolean on `users`; it must be set directly in the database or via seeder.
 
@@ -158,6 +178,7 @@ Routes under `/admin` are guarded by `auth` + `master_admin` middleware (`Ensure
 - `GET /admin/users` → `AdminUserController@index` → `Admin/Users/Index.tsx` — paginated user list with subscription status and resume count.
 - `PATCH /admin/users/{user}/toggle-pro` — flips `is_pro` on a user (blocked for master admins).
 - `DELETE /admin/users/{user}` — deletes a user and cancels their Stripe subscription immediately (blocked for master admins and self).
+- `GET|POST /admin/career` + `GET /admin/career/create` + `GET|PUT|DELETE /admin/career/{career}/edit` → `Admin\CareerController` → `Admin/Career/Index.tsx` + `Admin/Career/Edit.tsx` — full CRUD for career articles. Named routes: `admin.career.{index,create,store,edit,update,destroy}`.
 
 ### Rate limiting
 - AI suggest endpoint: `throttle:10,1` (10 req/min)
