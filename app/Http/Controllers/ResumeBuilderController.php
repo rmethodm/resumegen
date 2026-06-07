@@ -142,6 +142,7 @@ class ResumeBuilderController extends Controller
                 'created_at' => $s->created_at->toDateString(),
             ]),
             'strengthHistoryEnabled' => UserLimits::canStrengthHistory($user),
+            'photoUrl' => $resume->getFirstMediaUrl('photo') ?: null,
         ]);
     }
 

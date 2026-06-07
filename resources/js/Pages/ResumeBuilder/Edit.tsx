@@ -205,6 +205,7 @@ export default function Edit({
     allowedTemplates,
     snapshots = [],
     strengthHistoryEnabled,
+    photoUrl,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -225,6 +226,7 @@ export default function Edit({
     allowedTemplates: string[];
     snapshots: ResumeSnapshot[];
     strengthHistoryEnabled: boolean;
+    photoUrl: string | null;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -790,6 +792,52 @@ export default function Edit({
                                 </button>
                             )}
                         </div>
+
+                        {/* Profile Photo — only for templates that support it */}
+                        {sidebarOpen && ['sidebar', 'creative', 'executive'].includes(template) && (
+                            <div>
+                                <div className="flex items-center gap-1.5 mb-2">
+                                    <span className="text-xs font-medium text-[#71717a]">Profile Photo</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    {photoUrl ? (
+                                        <img src={photoUrl} alt="Profile" className="h-12 w-12 rounded-full object-cover ring-2 ring-indigo-100" />
+                                    ) : (
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                        </div>
+                                    )}
+                                    <div className="flex flex-col gap-1">
+                                        <label className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                                            Upload Photo
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (!file) return;
+                                                    const form = new FormData();
+                                                    form.append('photo', file);
+                                                    router.post(route('builder.photo.store', resume.id), form, { forceFormData: true, preserveScroll: true });
+                                                }}
+                                            />
+                                        </label>
+                                        {photoUrl && (
+                                            <button
+                                                type="button"
+                                                onClick={() => router.delete(route('builder.photo.destroy', resume.id), { preserveScroll: true })}
+                                                className="text-xs text-red-500 hover:text-red-700"
+                                            >
+                                                Remove
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="border-t border-[#eeeef5]" />
 

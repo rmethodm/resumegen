@@ -99,10 +99,22 @@
 </head>
 <body>
 
+@php
+    $photoDataUri = null;
+    $photoMedia = $resume->getFirstMedia('photo');
+    if ($photoMedia && file_exists($photoMedia->getPath())) {
+        $photoData = base64_encode(file_get_contents($photoMedia->getPath()));
+        $photoMime = $photoMedia->mime_type;
+        $photoDataUri = "data:{$photoMime};base64,{$photoData}";
+    }
+@endphp
+
 @if($template === 'sidebar')
   <div class="sb-wrap">
     <div class="sb-aside">
-      <div class="photo"></div>
+      @if($photoDataUri)
+        <img src="{{ $photoDataUri }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px;" />
+      @endif
       <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
       <div class="group">
         @foreach($contactParts as $part)
@@ -126,6 +138,9 @@
 @elseif($template === 'creative')
   <div class="page">
     <div class="creative-band">
+      @if($photoDataUri)
+        <img src="{{ $photoDataUri }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px;" />
+      @endif
       <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
       <div class="sub">{{ implode(' • ', $contactParts) }}</div>
     </div>
@@ -135,6 +150,9 @@
 @elseif($template === 'executive')
   <div class="page exec">
     <div class="exec-header">
+      @if($photoDataUri)
+        <img src="{{ $photoDataUri }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px;" />
+      @endif
       <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
       <hr>
       <div style="font-size: {{ $sizeContact }}pt;">{{ implode(' • ', $contactParts) }}</div>
