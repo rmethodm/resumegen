@@ -33,15 +33,15 @@ class OnboardingController extends Controller
 
         $user = $request->user();
 
-        $user->update([
-            'target_role' => $request->input('target_role'),
-            'industry' => $request->input('industry'),
-            'years_experience' => $request->input('years_experience'),
-            'has_completed_onboarding' => true,
-        ]);
+        $personaFields = array_filter(
+            $request->only(['target_role', 'industry', 'years_experience']),
+            fn ($v) => $v !== null && $v !== '',
+        );
+
+        $user->update(array_merge($personaFields, ['has_completed_onboarding' => true]));
 
         $contactFields = array_filter(
-            $request->only(['full_name', 'email', 'phone', 'location', 'linkedin_url', 'website']),
+            $request->only(['full_name', 'phone', 'location', 'linkedin_url', 'website']),
             fn ($v) => $v !== null && $v !== '',
         );
 
