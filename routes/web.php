@@ -15,6 +15,7 @@ use App\Http\Controllers\CoverLetterTailorController;
 use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\InterviewNoteController;
 use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PdfImportController;
 use App\Http\Controllers\PersonalTokenController;
@@ -150,6 +151,7 @@ Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.
 Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
 Route::get('/r/{token}/docx', [PublicResumeController::class, 'downloadDocx'])->name('public.docx');
 Route::post('/r/{token}/questions', [PublicResumeController::class, 'storeQuestion'])->middleware('throttle:5,1')->name('public.question');
+Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image');
 
 Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/usage', [AdminUsageController::class, 'index'])->name('usage');
