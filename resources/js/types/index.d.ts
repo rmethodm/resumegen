@@ -215,6 +215,17 @@ export interface ResumeSnapshot {
     created_at: string;
 }
 
+export interface StrengthChecklistItem {
+    label: string;
+    pts: number;
+    passed: boolean;
+}
+
+export interface StrengthHistoryPoint {
+    score: number;
+    date: string;
+}
+
 export type JobStatus = 'saved' | 'applied' | 'interviewing' | 'offered' | 'rejected' | 'closed';
 
 export interface JobApplicationRow {

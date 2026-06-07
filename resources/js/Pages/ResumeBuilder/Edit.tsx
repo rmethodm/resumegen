@@ -6,6 +6,7 @@ import SpellBadge from '@/Components/SpellBadge';
 import { useSpellCheck } from '@/hooks/useSpellCheck';
 import TailorModal from './TailorModal';
 import InterviewCoachPanel from './Partials/InterviewCoachPanel';
+import StrengthScorePanel from './Partials/StrengthScorePanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import {
     TagIcon, TrashIcon,
@@ -200,6 +201,7 @@ export default function Edit({
     customSectionLimit,
     allowedTemplates,
     snapshots = [],
+    strengthHistoryEnabled,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -216,6 +218,7 @@ export default function Edit({
     customSectionLimit: number | null;
     allowedTemplates: string[];
     snapshots: ResumeSnapshot[];
+    strengthHistoryEnabled: boolean;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -1021,6 +1024,14 @@ export default function Edit({
                                     </div>
                                 )}
                             </div>
+                        )}
+
+                        {/* Strength Score */}
+                        {sidebarOpen && (
+                            <StrengthScorePanel
+                                resumeId={resume.id}
+                                strengthHistoryEnabled={strengthHistoryEnabled}
+                            />
                         )}
 
                     </div>
