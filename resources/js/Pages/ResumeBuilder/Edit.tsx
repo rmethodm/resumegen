@@ -198,6 +198,7 @@ export default function Edit({
     interviewCoachUsesRemaining,
     canQuantifyBullet,
     quantifyBulletUsesRemaining,
+    canCareerPaths,
     aiUsed,
     aiLimit,
     customSectionLimit,
@@ -217,6 +218,7 @@ export default function Edit({
     interviewCoachUsesRemaining: number | null;
     canQuantifyBullet: boolean;
     quantifyBulletUsesRemaining: number | null;
+    canCareerPaths: boolean;
     aiUsed: number;
     aiLimit: number;
     customSectionLimit: number | null;
@@ -280,6 +282,15 @@ export default function Edit({
         entryId: string;
         items: string[];
     } | null>(null);
+
+    const [careerPaths, setCareerPaths] = useState<Array<{
+        title: string;
+        match_score: number;
+        rationale: string;
+        skills_gap: string[];
+    }> | null>(null);
+    const [careerPathsLoading, setCareerPathsLoading] = useState(false);
+    const [careerPathsOpen, setCareerPathsOpen] = useState(false);
 
     const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
     const [shareUrl, setShareUrl] = useState<string | null>(null);
@@ -564,6 +575,34 @@ export default function Edit({
             setQuantifySuggestions({ entryId, items: json.suggestions ?? [] });
         } catch { /* best-effort */ } finally {
             setQuantifyLoading(null);
+        }
+    };
+
+    const fetchCareerPaths = async (refresh = false) => {
+        setCareerPathsLoading(true);
+        try {
+            if (refresh) {
+                await fetch(route('builder.career-paths.destroy', resume.id), {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
+                    },
+                });
+            }
+            const res = await fetch(route('builder.career-paths', resume.id), {
+                headers: {
+                    'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
+                },
+            });
+            if (res.status === 402) {
+                triggerUpgradeModal('career_paths', 'starter');
+                return;
+            }
+            if (!res.ok) return;
+            const json = await res.json();
+            setCareerPaths(json.paths ?? []);
+        } catch { /* best-effort */ } finally {
+            setCareerPathsLoading(false);
         }
     };
 
@@ -1106,6 +1145,88 @@ export default function Edit({
                                 resumeId={resume.id}
                                 strengthHistoryEnabled={strengthHistoryEnabled}
                             />
+                        )}
+
+                        {/* Career Paths Panel */}
+                        {sidebarOpen && (
+                            <div className="mt-4 rounded-xl border border-[#e8e8f0] bg-white">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const next = !careerPathsOpen;
+                                        setCareerPathsOpen(next);
+                                        if (next && !careerPaths && canCareerPaths) {
+                                            void fetchCareerPaths();
+                                        }
+                                    }}
+                                    className="flex w-full items-center justify-between px-4 py-3 text-left"
+                                >
+                                    <span className="text-sm font-semibold text-[#2a2a3d]">🧭 Career Paths</span>
+                                    <span className="text-xs text-[#a0a0b0]">{careerPathsOpen ? '▲' : '▼'}</span>
+                                </button>
+                                {careerPathsOpen && (
+                                    <div className="border-t border-[#e8e8f0] px-4 py-3">
+                                        {!canCareerPaths ? (
+                                            <div className="text-center">
+                                                <p className="text-xs text-[#a0a0b0]">Upgrade to Starter to see AI career path suggestions.</p>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => triggerUpgradeModal('career_paths', 'starter')}
+                                                    className="mt-2 rounded-full bg-[#6366f1] px-3 py-1 text-xs text-white"
+                                                >
+                                                    Upgrade
+                                                </button>
+                                            </div>
+                                        ) : careerPathsLoading ? (
+                                            <p className="animate-pulse text-center text-xs text-[#a0a0b0]">Analysing your resume…</p>
+                                        ) : careerPaths ? (
+                                            <div className="space-y-3">
+                                                {careerPaths.map((path, i) => (
+                                                    <div key={i} className="rounded-lg border border-[#e8e8f0] p-3">
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="text-xs font-semibold text-[#2a2a3d]">{path.title}</span>
+                                                            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                                                                path.match_score >= 80
+                                                                    ? 'bg-green-100 text-green-700'
+                                                                    : path.match_score >= 60
+                                                                      ? 'bg-amber-100 text-amber-700'
+                                                                      : 'bg-red-100 text-red-700'
+                                                            }`}>
+                                                                {path.match_score}% match
+                                                            </span>
+                                                        </div>
+                                                        <p className="mt-1 text-xs text-[#6060a0]">{path.rationale}</p>
+                                                        {path.skills_gap.length > 0 && (
+                                                            <div className="mt-1 flex flex-wrap gap-1">
+                                                                {path.skills_gap.map((skill, j) => (
+                                                                    <span key={j} className="rounded-full bg-[#f5f5fa] px-2 py-0.5 text-xs text-[#6060a0]">
+                                                                        + {skill}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => void fetchCareerPaths(true)}
+                                                    className="w-full rounded py-1 text-xs text-[#a0a0b0] hover:bg-[#f5f5fa]"
+                                                >
+                                                    ↻ Refresh
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => void fetchCareerPaths()}
+                                                className="w-full rounded-lg bg-[#6366f1] py-2 text-xs font-medium text-white hover:bg-[#5254cc]"
+                                            >
+                                                Analyse Career Paths
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         )}
 
                     </div>
