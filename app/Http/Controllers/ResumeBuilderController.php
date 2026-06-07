@@ -7,6 +7,7 @@ use App\Models\ResumeShareEvent;
 use App\Services\DocxGenerator;
 use App\Services\ResumeStrengthScorer;
 use App\Services\UserLimits;
+use App\Services\WebhookDispatcher;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -89,6 +90,8 @@ class ResumeBuilderController extends Controller
         if ($user->profile) {
             $resume->update(['contact' => $user->profile]);
         }
+
+        WebhookDispatcher::dispatch($user, 'resume.created', ['id' => $resume->id, 'name' => $resume->name]);
 
         return redirect()->route('builder.edit', $resume->id);
     }
@@ -176,6 +179,8 @@ class ResumeBuilderController extends Controller
         }
 
         $resume->update($validated);
+
+        WebhookDispatcher::dispatch($request->user(), 'resume.updated', ['id' => $resume->id, 'name' => $resume->name]);
 
         return back();
     }

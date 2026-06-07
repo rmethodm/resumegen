@@ -107,4 +107,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ReferralEvent::class, 'referrer_user_id');
     }
+
+    public function webhookEndpoints(): HasMany
+    {
+        return $this->hasMany(WebhookEndpoint::class);
+    }
 }

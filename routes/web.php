@@ -36,6 +36,7 @@ use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
 use App\Http\Controllers\TailorController;
 use App\Http\Controllers\UsageController;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -167,6 +168,10 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
         ->middleware('throttle:5,1');
     Route::post('/import/pdf/confirm', [PdfImportController::class, 'confirm'])
         ->name('import.pdf.confirm');
+
+    Route::get('/webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
+    Route::post('/webhooks', [WebhookController::class, 'store'])->name('webhooks.store');
+    Route::delete('/webhooks/{endpoint}', [WebhookController::class, 'destroy'])->name('webhooks.destroy');
 });
 
 Route::get('/ref/{code}', [ReferralController::class, 'redirect'])->name('referral.redirect');

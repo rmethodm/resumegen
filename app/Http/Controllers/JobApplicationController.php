@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JobApplication;
 use App\Services\UserLimits;
+use App\Services\WebhookDispatcher;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -52,7 +53,9 @@ class JobApplicationController extends Controller
         }
 
         $validated = $this->validateData($request, true);
-        $user->jobApplications()->create($validated);
+        $application = $user->jobApplications()->create($validated);
+
+        WebhookDispatcher::dispatch($user, 'job_application.created', ['id' => $application->id, 'company' => $application->company]);
 
         return redirect()->route('jobs.index');
     }
@@ -86,6 +89,8 @@ class JobApplicationController extends Controller
         }
 
         $application->update($validated);
+
+        WebhookDispatcher::dispatch($request->user(), 'job_application.updated', ['id' => $application->id, 'status' => $application->status]);
 
         return redirect()->route('jobs.index');
     }
