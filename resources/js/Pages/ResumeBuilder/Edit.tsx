@@ -2,6 +2,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
 import AISuggestButton from '@/Components/AISuggestButton';
+import SpellBadge from '@/Components/SpellBadge';
+import { useSpellCheck } from '@/hooks/useSpellCheck';
 import TailorModal from './TailorModal';
 import InterviewCoachPanel from './Partials/InterviewCoachPanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
@@ -227,6 +229,10 @@ export default function Edit({
     const [sectionOrder, setSectionOrder] = useState<string[]>(
         resume.section_order ?? DEFAULT_SECTION_ORDER
     );
+
+    const summarySpell = useSpellCheck(summary ?? '');
+    const allBullets = (experience ?? []).map(e => e.bullets ?? '').join(' ');
+    const bulletSpell = useSpellCheck(allBullets);
 
     const [fontSizes, setFontSizes] = useState<FontSizes>({ ...DEFAULT_FONT_SIZES, ...(resume.font_sizes ?? {}) });
     const [fontFamily, setFontFamily] = useState<'sans' | 'serif' | 'mono'>(resume.font_family ?? 'sans');
@@ -1289,6 +1295,7 @@ export default function Edit({
                                                                 </div>
                                                             )}
                                                         </div>
+                                                        <SpellBadge words={summarySpell} />
                                                     </div>
                                                 )}
                                             </div>
@@ -1374,6 +1381,11 @@ export default function Edit({
                                                         <button type="button" onClick={addExp} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                                             + Add Position
                                                         </button>
+                                                        {bulletSpell.length > 0 && (
+                                                            <div className="mt-1">
+                                                                <SpellBadge words={bulletSpell} />
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
