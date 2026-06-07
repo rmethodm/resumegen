@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import type { InterviewNote, JobApplication, JobStatus } from '@/types';
+import type { ApplicationContact, InterviewNote, JobApplication, JobStatus } from '@/types';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
@@ -8,9 +8,9 @@ import { FormEvent, useRef, useState } from 'react';
 
 type ResumeOpt = { id: number; name: string };
 type SalaryData = { min: number | null; max: number | null; median: number | null; match: string };
-type Props = { application: JobApplication; resumes: ResumeOpt[]; statuses: JobStatus[]; notes_log: InterviewNote[]; canNegotiation: boolean };
+type Props = { application: JobApplication; resumes: ResumeOpt[]; statuses: JobStatus[]; notes_log: InterviewNote[]; contacts: ApplicationContact[]; canNegotiation: boolean };
 
-export default function Edit({ application, resumes, statuses, notes_log, canNegotiation }: Props) {
+export default function Edit({ application, resumes, statuses, notes_log, contacts, canNegotiation }: Props) {
     const form = useForm({
         company:      application.company,
         role:         application.role,
@@ -52,6 +52,9 @@ export default function Edit({ application, resumes, statuses, notes_log, canNeg
 
     const [noteBody, setNoteBody] = useState('');
     const [addingNote, setAddingNote] = useState(false);
+
+    const [showAddContact, setShowAddContact] = useState(false);
+    const [newContact, setNewContact] = useState({ name: '', role: '', email: '', phone: '' });
 
     const submitNote = (e: React.FormEvent) => {
         e.preventDefault();
@@ -257,6 +260,119 @@ export default function Edit({ application, resumes, statuses, notes_log, canNeg
                                         </li>
                                     ))}
                                 </ul>
+                            )}
+                        </div>
+
+                        {/* Contacts */}
+                        <div className="mt-6 border-t border-[#e8e8f0] pt-6">
+                            <div className="flex items-center justify-between mb-3">
+                                <h3 className="text-sm font-semibold text-[#23232d]">Contacts</h3>
+                                {!showAddContact && (
+                                    <button type="button" onClick={() => setShowAddContact(true)}
+                                        className="text-xs text-[#4338ca] hover:underline">
+                                        + Add Contact
+                                    </button>
+                                )}
+                            </div>
+
+                            {contacts.length > 0 && (
+                                <div className="space-y-2 mb-4">
+                                    {contacts.map((c) => (
+                                        <div key={c.id} className="flex items-start justify-between rounded-lg bg-[#f5f5fb] px-3 py-2.5">
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-xs font-medium text-indigo-700">
+                                                        {c.name.charAt(0).toUpperCase()}
+                                                    </span>
+                                                    <span className="text-sm font-medium text-[#23232d]">{c.name}</span>
+                                                    {c.role && <span className="text-xs text-[#a0a0b0]">· {c.role}</span>}
+                                                </div>
+                                                <div className="mt-1 ml-9 space-x-3 text-xs text-[#a0a0b0]">
+                                                    {c.email && <span>{c.email}</span>}
+                                                    {c.phone && <span>{c.phone}</span>}
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    router.delete(route('jobs.contacts.destroy', [application.id, c.id]), {
+                                                        preserveScroll: true,
+                                                    })
+                                                }
+                                                className="text-[#a0a0b0] hover:text-red-500 text-lg leading-none ml-2 transition"
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {showAddContact && (
+                                <div className="space-y-2 rounded-lg border border-[#e8e8f0] p-3">
+                                    <input
+                                        type="text"
+                                        placeholder="Name *"
+                                        value={newContact.name}
+                                        onChange={(e) => setNewContact((c) => ({ ...c, name: e.target.value }))}
+                                        className="w-full rounded border border-[#e8e8f0] px-2 py-1.5 text-sm text-[#23232d] focus:border-[#4338ca] focus:ring-1 focus:ring-[#4338ca] outline-none"
+                                    />
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Role"
+                                            value={newContact.role}
+                                            onChange={(e) => setNewContact((c) => ({ ...c, role: e.target.value }))}
+                                            className="rounded border border-[#e8e8f0] px-2 py-1.5 text-sm text-[#23232d] focus:border-[#4338ca] focus:ring-1 focus:ring-[#4338ca] outline-none"
+                                        />
+                                        <input
+                                            type="email"
+                                            placeholder="Email"
+                                            value={newContact.email}
+                                            onChange={(e) => setNewContact((c) => ({ ...c, email: e.target.value }))}
+                                            className="rounded border border-[#e8e8f0] px-2 py-1.5 text-sm text-[#23232d] focus:border-[#4338ca] focus:ring-1 focus:ring-[#4338ca] outline-none"
+                                        />
+                                        <input
+                                            type="tel"
+                                            placeholder="Phone"
+                                            value={newContact.phone}
+                                            onChange={(e) => setNewContact((c) => ({ ...c, phone: e.target.value }))}
+                                            className="rounded border border-[#e8e8f0] px-2 py-1.5 text-sm text-[#23232d] focus:border-[#4338ca] focus:ring-1 focus:ring-[#4338ca] outline-none"
+                                        />
+                                    </div>
+                                    <div className="flex gap-2 justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setShowAddContact(false);
+                                                setNewContact({ name: '', role: '', email: '', phone: '' });
+                                            }}
+                                            className="text-xs text-[#6b7280] px-3 py-1.5 rounded border border-[#e8e8f0] hover:bg-[#f5f5fb]"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="button"
+                                            disabled={!newContact.name.trim()}
+                                            onClick={() => {
+                                                router.post(route('jobs.contacts.store', application.id), newContact, {
+                                                    preserveScroll: true,
+                                                    onSuccess: () => {
+                                                        setShowAddContact(false);
+                                                        setNewContact({ name: '', role: '', email: '', phone: '' });
+                                                    },
+                                                });
+                                            }}
+                                            className="text-xs bg-[#4338ca] text-white px-3 py-1.5 rounded hover:bg-[#3730a3] disabled:opacity-50"
+                                        >
+                                            Save Contact
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {contacts.length === 0 && !showAddContact && (
+                                <p className="text-sm text-[#a0a0b0]">No contacts yet.</p>
                             )}
                         </div>
 

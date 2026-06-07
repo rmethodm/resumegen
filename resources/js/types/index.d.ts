@@ -285,3 +285,13 @@ export interface InterviewNote {
     body: string;
     created_at: string;
 }
+
+export interface ApplicationContact {
+    id: number;
+    name: string;
+    role: string | null;
+    email: string | null;
+    phone: string | null;
+    notes: string | null;
+    created_at: string;
+}
