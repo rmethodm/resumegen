@@ -19,6 +19,7 @@ class Resume extends Model
         'skills', 'certifications', 'font_sizes',
         'ats_cache', 'ats_cached_at',
         'section_order', 'custom_sections',
+        'ab_parent_id',
     ];
 
     protected $casts = [
@@ -68,5 +69,15 @@ class Resume extends Model
     public function tags(): HasMany
     {
         return $this->hasMany(ResumeTag::class)->orderBy('created_at');
+    }
+
+    public function abParent(): BelongsTo
+    {
+        return $this->belongsTo(Resume::class, 'ab_parent_id');
+    }
+
+    public function abVariants(): HasMany
+    {
+        return $this->hasMany(Resume::class, 'ab_parent_id');
     }
 }

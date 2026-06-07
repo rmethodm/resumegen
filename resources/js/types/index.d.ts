@@ -150,6 +150,7 @@ export interface ResumeRow {
     strength: number;
     strength_tip: string;
     view_count: number;
+    ab_parent_id: number | null;
     tags: ResumeTag[];
 }
 

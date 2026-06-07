@@ -46,6 +46,7 @@ class ResumeBuilderController extends Controller
                 'strength' => $strength['score'],
                 'strength_tip' => $strength['tip'],
                 'view_count' => (int) ($viewCounts[$resume->id] ?? 0),
+                'ab_parent_id' => $resume->ab_parent_id,
                 'tags' => $resume->tags->map(fn ($t) => [
                     'id' => $t->id,
                     'label' => $t->label,
@@ -306,6 +307,50 @@ class ResumeBuilderController extends Controller
         $resume->update($validated);
 
         return response()->noContent();
+    }
+
+    public function createVariant(Request $request, Resume $resume): RedirectResponse
+    {
+        $this->authorize('update', $resume);
+
+        $variant = $resume->replicate();
+        $variant->name = $resume->name.' (Variant)';
+        $variant->ab_parent_id = $resume->id;
+        $variant->save();
+
+        return redirect()->route('builder.edit', $variant->id);
+    }
+
+    public function abCompare(Request $request, Resume $resume): Response
+    {
+        $this->authorize('update', $resume);
+
+        $parentId = $resume->ab_parent_id ?? $resume->id;
+        $group = Resume::where('id', $parentId)
+            ->orWhere('ab_parent_id', $parentId)
+            ->where('user_id', $request->user()->id)
+            ->get(['id', 'name', 'ab_parent_id']);
+
+        $resumes = $group->map(function (Resume $r): array {
+            $events = ResumeShareEvent::where('resume_id', $r->id);
+
+            return [
+                'id' => $r->id,
+                'name' => $r->name,
+                'ab_parent_id' => $r->ab_parent_id,
+                'view_count' => (clone $events)->where('event', 'page_view')->count(),
+                'unique_visitors' => (clone $events)->where('event', 'page_view')
+                    ->selectRaw('COUNT(DISTINCT ip_hash || DATE(created_at)) as cnt')
+                    ->value('cnt') ?? 0,
+                'pdf_downloads' => (clone $events)->where('event', 'pdf_download')->count(),
+                'questions_submitted' => (clone $events)->where('event', 'question_submitted')->count(),
+            ];
+        });
+
+        return Inertia::render('ResumeBuilder/AbCompare', [
+            'resumes' => $resumes,
+            'resumeId' => $resume->id,
+        ]);
     }
 
     public function duplicate(Resume $resume)
