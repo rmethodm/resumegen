@@ -1191,14 +1191,22 @@ export default function Edit({
                                                             <p className="truncate text-xs font-medium text-gray-700">{snap.name}</p>
                                                             <p className="text-xs text-gray-400">{new Date(snap.created_at).toLocaleDateString()}</p>
                                                         </div>
-                                                        <button
-                                                            type="button"
-                                                            title="Restore as editable copy"
-                                                            onClick={() => router.post(route('builder.duplicate', snap.id))}
-                                                            className="ml-2 shrink-0 text-xs text-indigo-600 hover:underline"
-                                                        >
-                                                            Copy
-                                                        </button>
+                                                        <div className="ml-2 flex shrink-0 items-center gap-2">
+                                                            <a
+                                                                href={route('builder.compare', resume.id) + '?with=' + snap.id}
+                                                                className="text-xs text-gray-400 hover:text-indigo-600"
+                                                            >
+                                                                Compare
+                                                            </a>
+                                                            <button
+                                                                type="button"
+                                                                title="Restore as editable copy"
+                                                                onClick={() => router.post(route('builder.duplicate', snap.id))}
+                                                                className="text-xs text-indigo-600 hover:underline"
+                                                            >
+                                                                Copy
+                                                            </button>
+                                                        </div>
                                                     </li>
                                                 ))}
                                             </ul>

@@ -408,6 +408,27 @@ class ResumeBuilderController extends Controller
         ]);
     }
 
+    public function compare(Request $request, Resume $resume): Response
+    {
+        $this->authorize('update', $resume);
+
+        $otherId = $request->query('with');
+        if (! $otherId) {
+            abort(404);
+        }
+
+        $other = Resume::findOrFail($otherId);
+        $this->authorize('update', $other);
+
+        $fields = ['id', 'name', 'contact', 'summary', 'experience', 'education',
+            'skills', 'certifications', 'custom_sections', 'template', 'updated_at'];
+
+        return Inertia::render('ResumeBuilder/Compare', [
+            'resume' => $resume->only($fields),
+            'other' => $other->only($fields),
+        ]);
+    }
+
     public function duplicate(Resume $resume)
     {
         $this->authorize('update', $resume);
