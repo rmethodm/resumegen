@@ -60,6 +60,7 @@ class JobApplicationController extends Controller
             'application' => $application,
             'resumes' => $resumes,
             'statuses' => JobApplication::STATUSES,
+            'notes_log' => $application->interviewNotes()->get(['id', 'body', 'created_at']),
         ]);
     }
 

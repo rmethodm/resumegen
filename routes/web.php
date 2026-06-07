@@ -12,6 +12,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\CoverLetterTailorController;
 use App\Http\Controllers\InterviewCoachController;
+use App\Http\Controllers\InterviewNoteController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PdfImportController;
@@ -108,6 +109,8 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::get('/jobs/{application}', [JobApplicationController::class, 'edit'])->name('jobs.edit');
     Route::put('/jobs/{application}', [JobApplicationController::class, 'update'])->name('jobs.update');
     Route::delete('/jobs/{application}', [JobApplicationController::class, 'destroy'])->name('jobs.destroy');
+    Route::post('/jobs/{application}/notes', [InterviewNoteController::class, 'store'])->name('jobs.notes.store');
+    Route::delete('/jobs/{application}/notes/{note}', [InterviewNoteController::class, 'destroy'])->name('jobs.notes.destroy');
 
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
