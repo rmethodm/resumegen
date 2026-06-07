@@ -1,14 +1,91 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
-import { ResumeRow } from '@/types';
+import { ResumeRow, ResumeTag } from '@/types';
 import { DocumentDuplicateIcon, EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
 import PdfImportModal from './Partials/PdfImportModal';
 import GenerateResumeModal from './Partials/GenerateResumeModal';
 
 type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; canGenerate: boolean };
 type SortKey = 'name' | 'updated_at';
+
+const TAG_COLORS = [
+    '#6366f1', '#8b5cf6', '#10b981', '#f59e0b',
+    '#ef4444', '#0ea5e9', '#64748b', '#f97316',
+];
+
+function AddTagPopover({ resumeId }: { resumeId: number }) {
+    const [open, setOpen] = useState(false);
+    const [label, setLabel] = useState('');
+    const [color, setColor] = useState(TAG_COLORS[0]);
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!label.trim()) { return; }
+        router.post(
+            route('builder.tags.store', resumeId),
+            { label: label.trim(), color },
+            {
+                preserveScroll: true,
+                onSuccess: () => { setOpen(false); setLabel(''); },
+            },
+        );
+    };
+
+    return (
+        <div className="relative">
+            <button
+                onClick={() => setOpen(v => !v)}
+                className="inline-flex items-center rounded-full border border-dashed border-[#c8c8d8] px-2 py-0.5 text-xs text-[#a0a0b0] hover:border-[#6366f1] hover:text-[#6366f1]"
+            >
+                + Tag
+            </button>
+            {open && (
+                <div className="absolute left-0 top-7 z-20 w-56 rounded-lg border border-[#e8e8f0] bg-white p-3 shadow-lg">
+                    <form onSubmit={submit} className="space-y-2">
+                        <input
+                            type="text"
+                            value={label}
+                            onChange={e => setLabel(e.target.value)}
+                            maxLength={30}
+                            placeholder="Tag label"
+                            autoFocus
+                            className="w-full rounded border border-[#e8e8f0] px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#6366f1]"
+                        />
+                        <div className="flex flex-wrap gap-1">
+                            {TAG_COLORS.map(c => (
+                                <button
+                                    key={c}
+                                    type="button"
+                                    onClick={() => setColor(c)}
+                                    className={`h-4 w-4 rounded-full border-2 ${color === c ? 'border-gray-800' : 'border-transparent'}`}
+                                    style={{ backgroundColor: c }}
+                                    aria-label={c}
+                                />
+                            ))}
+                        </div>
+                        <div className="flex justify-end gap-1">
+                            <button
+                                type="button"
+                                onClick={() => setOpen(false)}
+                                className="rounded px-2 py-1 text-xs text-[#a0a0b0] hover:bg-[#f5f5fa]"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="rounded bg-[#6366f1] px-2 py-1 text-xs text-white hover:bg-[#5254cc]"
+                            >
+                                Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
+        </div>
+    );
+}
 
 function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortDir: 'asc' | 'desc' }) {
     return (
@@ -255,6 +332,36 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                         {r.view_count}
                                                     </span>
                                                 )}
+                                                {/* Tag chips */}
+                                                <div className="mt-2 flex flex-wrap items-center gap-1">
+                                                    {r.tags.map((tag: ResumeTag) => (
+                                                        <span
+                                                            key={tag.id}
+                                                            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+                                                            style={{
+                                                                backgroundColor: tag.color + '33',
+                                                                color: tag.color,
+                                                            }}
+                                                        >
+                                                            {tag.label}
+                                                            <button
+                                                                onClick={e => {
+                                                                    e.preventDefault();
+                                                                    router.delete(route('builder.tags.destroy', [r.id, tag.id]), {
+                                                                        preserveScroll: true,
+                                                                    });
+                                                                }}
+                                                                className="ml-0.5 leading-none hover:opacity-70"
+                                                                aria-label={`Remove tag ${tag.label}`}
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </span>
+                                                    ))}
+                                                    {r.tags.length < 5 && (
+                                                        <AddTagPopover resumeId={r.id} />
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(r.updated_at)}</td>
                                             <td className="px-5 py-4">
