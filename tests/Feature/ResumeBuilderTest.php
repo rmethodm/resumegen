@@ -451,4 +451,37 @@ class ResumeBuilderTest extends TestCase
             ])
             ->assertSessionHas('featureGate');
     }
+
+    public function test_section_order_is_saved_on_update(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id, 'section_order' => null]);
+
+        $order = ['skills', 'summary', 'experience', 'education', 'certifications'];
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), [
+                'name' => $resume->name,
+                'section_order' => $order,
+            ])
+            ->assertRedirect();
+
+        $this->assertEquals($order, $resume->fresh()->section_order);
+    }
+
+    public function test_resume_with_null_section_order_uses_default_in_pdf(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->create([
+            'user_id' => $user->id,
+            'section_order' => null,
+            'summary' => 'A brief summary.',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get(route('builder.preview', $resume));
+
+        $response->assertOk();
+        $response->assertHeader('content-type', 'application/pdf');
+    }
 }
