@@ -2,6 +2,8 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import UpgradeModal from '@/Components/UpgradeModal';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
@@ -11,10 +13,11 @@ export default function Authenticated({
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
     const [showingNav, setShowingNav] = useState(false);
+    const { isDark, toggle } = useDarkMode();
 
     return (
-        <div className="min-h-screen bg-[#f5f5fb]">
-            <nav className="border-b border-[#eeeef5] bg-white">
+        <div className="min-h-screen bg-[#f5f5fb] dark:bg-gray-900">
+            <nav className="border-b border-[#eeeef5] bg-white dark:border-gray-700 dark:bg-gray-800">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-[52px] items-center justify-between">
 
@@ -22,7 +25,7 @@ export default function Authenticated({
                         <div className="flex items-center">
                             <Link href={route('dashboard')} className="mr-8 flex items-center gap-2.5">
                                 <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed]" />
-                                <span className="text-[15px] font-extrabold tracking-tight text-[#0f0f1a]">Resumegen</span>
+                                <span className="text-[15px] font-extrabold tracking-tight text-[#0f0f1a] dark:text-white">Resumegen</span>
                             </Link>
                             <div className="hidden sm:flex sm:items-center sm:gap-1">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</NavLink>
@@ -37,17 +40,24 @@ export default function Authenticated({
                             </div>
                         </div>
 
-                        {/* User dropdown */}
-                        <div className="hidden sm:flex sm:items-center">
+                        {/* Right side: dark mode toggle + user dropdown */}
+                        <div className="hidden sm:flex sm:items-center sm:gap-2">
+                            <button
+                                onClick={toggle}
+                                className="rounded-lg p-2 text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                            >
+                                {isDark ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
+                            </button>
                             <Dropdown>
                                 <Dropdown.Trigger>
                                     <button
                                         type="button"
-                                        className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-[#71717a] transition hover:text-[#0f0f1a] focus:outline-none"
+                                        className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-[#71717a] transition hover:text-[#0f0f1a] focus:outline-none dark:text-gray-400 dark:hover:text-white"
                                     >
                                         <div className="h-7 w-7 rounded-full bg-gradient-to-br from-[#4f46e5] to-[#7c3aed]" />
                                         <span>{user.name}</span>
-                                        <svg className="h-4 w-4 text-[#a0a0b0]" viewBox="0 0 20 20" fill="currentColor">
+                                        <svg className="h-4 w-4 text-[#a0a0b0] dark:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                                         </svg>
                                     </button>
@@ -67,7 +77,7 @@ export default function Authenticated({
                             type="button"
                             aria-label="Toggle navigation menu"
                             onClick={() => setShowingNav(v => !v)}
-                            className="-me-2 flex items-center rounded-md p-2 text-[#a0a0b0] transition hover:bg-[#f5f5fb] hover:text-[#71717a] focus:outline-none sm:hidden"
+                            className="-me-2 flex items-center rounded-md p-2 text-[#a0a0b0] transition hover:bg-[#f5f5fb] hover:text-[#71717a] focus:outline-none dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 sm:hidden"
                         >
                             <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                 <path className={!showingNav ? 'inline-flex' : 'hidden'} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -78,7 +88,7 @@ export default function Authenticated({
                 </div>
 
                 {/* Mobile menu */}
-                <div className={(showingNav ? 'block' : 'hidden') + ' border-t border-[#eeeef5] sm:hidden'}>
+                <div className={(showingNav ? 'block' : 'hidden') + ' border-t border-[#eeeef5] dark:border-gray-700 sm:hidden'}>
                     <div className="space-y-1 px-4 pb-3 pt-2">
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</ResponsiveNavLink>
@@ -90,15 +100,25 @@ export default function Authenticated({
                             <ResponsiveNavLink href={route('admin.users.index')} active={route().current('admin.*')}>Admin</ResponsiveNavLink>
                         )}
                     </div>
-                    <div className="border-t border-[#eeeef5] px-4 pb-2 pt-4">
-                        <div className="text-sm font-semibold text-[#0f0f1a]">{user.name}</div>
-                        <div className="mt-0.5 text-xs text-[#a0a0b0]">{user.email}</div>
+                    <div className="border-t border-[#eeeef5] px-4 pb-2 pt-4 dark:border-gray-700">
+                        <div className="text-sm font-semibold text-[#0f0f1a] dark:text-white">{user.name}</div>
+                        <div className="mt-0.5 text-xs text-[#a0a0b0] dark:text-gray-400">{user.email}</div>
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('usage.index')}>My Usage</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('referral.show')}>Refer & Earn</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('portfolio.edit')}>Portfolio</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('logout')} method="post" as="button">Log Out</ResponsiveNavLink>
+                        </div>
+                        <div className="mt-3 border-t border-[#eeeef5] pt-3 dark:border-gray-700">
+                            <button
+                                onClick={toggle}
+                                className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                            >
+                                {isDark ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
+                                <span>{isDark ? 'Light mode' : 'Dark mode'}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
