@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { ResumeRow } from '@/types';
-import { DocumentDuplicateIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { DocumentDuplicateIcon, EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
 import PdfImportModal from './Partials/PdfImportModal';
@@ -245,6 +245,15 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                 </div>
                                                 {r.strength < 100 && (
                                                     <p className="mt-0.5 text-xs text-[#a0a0b0]">{r.strength_tip}</p>
+                                                )}
+                                                {r.view_count > 0 && (
+                                                    <span
+                                                        className="mt-1 flex items-center gap-1 text-xs text-[#6b7280]"
+                                                        title={`${r.view_count} public view${r.view_count !== 1 ? 's' : ''}`}
+                                                    >
+                                                        <EyeIcon className="h-3.5 w-3.5" />
+                                                        {r.view_count}
+                                                    </span>
                                                 )}
                                             </td>
                                             <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(r.updated_at)}</td>
