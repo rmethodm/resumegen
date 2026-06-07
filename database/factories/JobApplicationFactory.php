@@ -15,6 +15,7 @@ class JobApplicationFactory extends Factory
             'company' => $this->faker->company(),
             'role' => $this->faker->jobTitle(),
             'status' => $this->faker->randomElement(JobApplication::STATUSES),
+            'follow_up_at' => null,
         ];
     }
 }

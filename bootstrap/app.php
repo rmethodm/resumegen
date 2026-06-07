@@ -1,9 +1,11 @@
 <?php
 
+use App\Console\Commands\SendFollowUpReminders;
 use App\Http\Middleware\EnsureMasterAdmin;
 use App\Http\Middleware\EnsureTwoFactorSetup;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RequiresTwoFactorChallenge;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -31,6 +33,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'stripe/webhook',
         ]);
+    })
+    ->withSchedule(function (Schedule $schedule): void {
+        $schedule->command(SendFollowUpReminders::class)->dailyAt('08:00');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
