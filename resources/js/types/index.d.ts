@@ -120,6 +120,7 @@ export type PageProps<
 > = T & {
     auth: {
         user: User;
+        orgRole: 'admin' | 'member' | null;
     };
 };
 

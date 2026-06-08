@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Organization;
+use App\Models\OrganizationMember;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -33,6 +35,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'orgRole' => $this->resolveOrgRole($request),
             ],
             'flash' => [
                 'success' => session('success'),
@@ -40,5 +43,24 @@ class HandleInertiaRequests extends Middleware
             ],
             'featureGate' => session()->pull('featureGate'),
         ];
+    }
+
+    private function resolveOrgRole(Request $request): ?string
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return null;
+        }
+
+        if (Organization::where('owner_id', $user->id)->exists()) {
+            return 'admin';
+        }
+
+        if (OrganizationMember::where('user_id', $user->id)->where('role', 'member')->whereNotNull('joined_at')->exists()) {
+            return 'member';
+        }
+
+        return null;
     }
 }
