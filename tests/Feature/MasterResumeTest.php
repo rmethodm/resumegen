@@ -50,6 +50,8 @@ class MasterResumeTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->component('ResumeBuilder/Index')
                 ->has('resumes', 2)
+                ->has('resumes.0.is_master')
+                ->has('resumes.0.master_resume_id')
             );
     }
 
@@ -72,6 +74,23 @@ class MasterResumeTest extends TestCase
             );
     }
 
+    public function test_edit_page_shows_master_out_of_sync_when_never_synced(): void
+    {
+        $user = User::factory()->create();
+        $master = Resume::factory()->for($user)->create(['is_master' => true]);
+        $copy = Resume::factory()->for($user)->create([
+            'master_resume_id' => $master->id,
+            'master_synced_at' => null,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('builder.edit', $copy->id))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('masterOutOfSync', true)
+            );
+    }
+
     public function test_syncing_master_records_current_timestamp(): void
     {
         $user = User::factory()->create();
@@ -87,5 +106,42 @@ class MasterResumeTest extends TestCase
 
         $this->assertNotNull($copy->fresh()->master_synced_at);
         $this->assertTrue($copy->fresh()->master_synced_at->gt(now()->subMinute()));
+    }
+
+    public function test_user_cannot_set_master_on_another_users_resume(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $resume = Resume::factory()->for($owner)->create(['is_master' => false]);
+
+        $this->actingAs($other)
+            ->patch(route('builder.set-master', $resume->id))
+            ->assertForbidden();
+    }
+
+    public function test_user_cannot_create_tailored_copy_of_another_users_resume(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $resume = Resume::factory()->for($owner)->create(['is_master' => true]);
+
+        $this->actingAs($other)
+            ->post(route('builder.create-tailored-copy', $resume->id))
+            ->assertForbidden();
+    }
+
+    public function test_user_cannot_sync_master_on_another_users_resume(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $master = Resume::factory()->for($owner)->create(['is_master' => true]);
+        $copy = Resume::factory()->for($owner)->create([
+            'master_resume_id' => $master->id,
+            'master_synced_at' => now()->subHour(),
+        ]);
+
+        $this->actingAs($other)
+            ->patch(route('builder.sync-master', $copy->id))
+            ->assertForbidden();
     }
 }

@@ -138,7 +138,7 @@ class ResumeBuilderController extends Controller
         $masterOutOfSync = false;
         $masterResume = null;
         if ($resume->master_resume_id) {
-            $master = Resume::find($resume->master_resume_id);
+            $master = $resume->masterResume;
             if ($master) {
                 $masterResume = ['id' => $master->id, 'name' => $master->name];
                 $masterOutOfSync = $resume->master_synced_at === null
@@ -448,6 +448,7 @@ class ResumeBuilderController extends Controller
         $copy->is_master = false;
         $copy->is_snapshot = false;
         $copy->ab_parent_id = null;
+        $copy->pdf_filename = Str::uuid().'.pdf';
         $copy->save();
 
         return redirect()->route('builder.edit', $copy->id);
