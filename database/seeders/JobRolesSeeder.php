@@ -238,6 +238,8 @@ class JobRolesSeeder extends Seeder
             'Zoning Administrator',
         ];
 
+        // Remove duplicate titles
+        $roles = array_unique($roles);
         $records = array_map(fn ($title) => ['title' => $title], $roles);
 
         foreach (array_chunk($records, 100) as $chunk) {

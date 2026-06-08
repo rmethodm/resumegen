@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(AiModelRatesSeeder::class);
+        $this->call(JobRolesSeeder::class);
+        $this->call(JobTitlesSeeder::class);
         $this->call(TestResumesSeeder::class);
         $this->call(TestShareLinksAndQuestionsSeeder::class);
         $this->call(TestAnalyticsDataSeeder::class);

@@ -454,6 +454,8 @@ class JobTitlesSeeder extends Seeder
             'Workers Compensation Specialist', 'Zoning Administrator', 'Zoo Keeper',
         ];
 
+        // Remove duplicate titles
+        $titles = array_unique($titles);
         $records = array_map(fn ($title) => ['title' => $title], $titles);
 
         foreach (array_chunk($records, 100) as $chunk) {
