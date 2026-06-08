@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ResumeSectionEvent extends Model
 {
-    public $timestamps = false;
+    public const UPDATED_AT = null; // append-only, no updated_at column
 
     protected $fillable = ['resume_id', 'section', 'dwell_ms', 'ip_hash'];
 

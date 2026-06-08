@@ -90,4 +90,15 @@ class HeatmapTest extends TestCase
         $this->get(route('builder.heatmap', $resume->id))
             ->assertRedirect(route('login'));
     }
+
+    public function test_heatmap_page_forbidden_for_other_user(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $resume = Resume::factory()->for($owner)->create();
+
+        $this->actingAs($other)
+            ->get(route('builder.heatmap', $resume->id))
+            ->assertForbidden();
+    }
 }
