@@ -58,4 +58,9 @@ class UserFactory extends Factory
     {
         return $this->state(['plan_tier' => 'pro']);
     }
+
+    public function agency(): static
+    {
+        return $this->state(['is_agency' => true]);
+    }
 }

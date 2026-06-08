@@ -24,6 +24,7 @@ class AdminUserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'is_pro' => $user->is_pro,
+                'is_agency' => $user->is_agency,
                 'is_master_admin' => $user->is_master_admin,
                 'subscribed' => $user->subscribed('default'),
                 'resumes_count' => $user->resumes_count,
@@ -44,6 +45,19 @@ class AdminUserController extends Controller
         $user->update(['is_pro' => ! $user->is_pro]);
 
         $label = $user->is_pro ? 'upgraded to Pro' : 'downgraded to Free';
+
+        return back()->with('success', "{$user->name} has been {$label}.");
+    }
+
+    public function toggleAgency(Request $request, User $user): RedirectResponse
+    {
+        if ($user->is_master_admin) {
+            return back()->with('error', 'Cannot modify a master admin.');
+        }
+
+        $user->update(['is_agency' => ! $user->is_agency]);
+
+        $label = $user->is_agency ? 'upgraded to Agency' : 'downgraded from Agency';
 
         return back()->with('success', "{$user->name} has been {$label}.");
     }

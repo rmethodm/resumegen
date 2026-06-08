@@ -25,7 +25,7 @@ class UserLimits
     {
         return match ($user->planTier()) {
             'starter' => 5,
-            'pro' => null,
+            'pro', 'agency' => null,
             default => 5, // free or unknown — cap at 5
         };
     }
@@ -35,7 +35,7 @@ class UserLimits
         return match ($user->planTier()) {
             'free' => 3,
             'starter' => 5,
-            'pro' => null,
+            'pro', 'agency' => null,
             default => 3, // unknown — most restrictive
         };
     }
@@ -49,7 +49,7 @@ class UserLimits
     {
         return match ($user->planTier()) {
             'starter' => 30,
-            'pro' => 500,
+            'pro', 'agency' => 500,
             default => 30, // free or unknown
         };
     }

@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-interface AdminUser { id: number; name: string; email: string; is_pro: boolean; is_master_admin: boolean; subscribed: boolean; resumes_count: number; created_at: string }
+interface AdminUser { id: number; name: string; email: string; is_pro: boolean; is_agency: boolean; is_master_admin: boolean; subscribed: boolean; resumes_count: number; created_at: string }
 interface PaginatedUsers { data: AdminUser[]; current_page: number; last_page: number; next_page_url: string | null; prev_page_url: string | null }
 interface Props { users: PaginatedUsers; flash?: { success?: string; error?: string } }
 
@@ -65,6 +65,14 @@ export default function AdminUsersIndex({ users, flash }: Props) {
                                                             {user.is_pro ? 'Revoke Pro' : 'Grant Pro'}
                                                         </button>
                                                     )}
+                                                    <button
+                                                        type="button"
+                                                        disabled={isProtected}
+                                                        onClick={() => router.patch(route('admin.users.toggle-agency', user.id), {}, { preserveScroll: true })}
+                                                        className={`text-xs font-medium ${isProtected ? 'cursor-not-allowed text-[#c4c4d0]' : user.is_agency ? 'text-violet-600 hover:text-violet-800' : 'text-[#a0a0b0] hover:text-[#6b7280]'}`}
+                                                    >
+                                                        {user.is_agency ? 'Agency ✓' : 'Agency'}
+                                                    </button>
                                                     <button disabled={isProtected} onClick={() => setConfirmDelete(user)}
                                                         className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${isProtected ? 'cursor-not-allowed text-[#c4c4d0]' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>
                                                         Delete
