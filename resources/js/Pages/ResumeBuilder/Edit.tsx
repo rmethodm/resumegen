@@ -89,9 +89,9 @@ function SectionHeader({ title, open, onToggle }: { title: string; open: boolean
 }
 
 function Field({
-    label, value, onChange, onBlur, type = 'text', placeholder = '',
+    label, value, onChange, onBlur, type = 'text', placeholder = '', spellCheck,
 }: {
-    label: string; value: string; onChange: (v: string) => void; onBlur?: () => void; type?: string; placeholder?: string;
+    label: string; value: string; onChange: (v: string) => void; onBlur?: () => void; type?: string; placeholder?: string; spellCheck?: boolean;
 }) {
     return (
         <div className="flex flex-col gap-1">
@@ -102,6 +102,7 @@ function Field({
                 onChange={e => onChange(e.target.value)}
                 onBlur={onBlur}
                 placeholder={placeholder}
+                spellCheck={spellCheck ?? type === 'text'}
                 className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
         </div>
@@ -1634,12 +1635,12 @@ export default function Edit({
                                     <div className="col-span-2">
                                         <Field label="Full Name" value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} placeholder="Jane Smith" />
                                     </div>
-                                    <Field label="Email" value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} type="email" placeholder="jane@example.com" />
-                                    <Field label="Phone" value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} placeholder="(555) 555-5555" />
+                                    <Field label="Email" value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} type="email" placeholder="jane@example.com" spellCheck={false} />
+                                    <Field label="Phone" value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} placeholder="(555) 555-5555" spellCheck={false} />
                                     <Field label="Location" value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} placeholder="Atlanta, GA" />
-                                    <Field label="LinkedIn" value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} placeholder="linkedin.com/in/jane" />
+                                    <Field label="LinkedIn" value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} placeholder="linkedin.com/in/jane" spellCheck={false} />
                                     <div className="col-span-2">
-                                        <Field label="Website" value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} placeholder="janesmith.dev" />
+                                        <Field label="Website" value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} placeholder="janesmith.dev" spellCheck={false} />
                                     </div>
                                 </div>
                             )}
@@ -1662,7 +1663,7 @@ export default function Edit({
                                                             <textarea
                                                                 value={summary}
                                                                 onChange={e => setSummary(e.target.value)}
-                                                               
+                                                                spellCheck={true}
                                                                 rows={4}
                                                                 placeholder="A brief summary of your professional background and goals…"
                                                                 className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -2000,7 +2001,7 @@ export default function Edit({
                                                                 rows={2}
                                                                 value={entry.description}
                                                                 onChange={e => updateCustomEntry(section.id, entry.id, 'description', e.target.value)}
-                                                               
+                                                                spellCheck={true}
                                                             />
                                                             <textarea
                                                                 className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -2008,7 +2009,7 @@ export default function Edit({
                                                                 rows={3}
                                                                 value={entry.bullets.join('\n')}
                                                                 onChange={e => updateCustomEntry(section.id, entry.id, 'bullets', e.target.value.split('\n'))}
-                                                               
+                                                                spellCheck={true}
                                                             />
                                                         </div>
                                                     ))}
