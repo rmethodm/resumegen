@@ -144,4 +144,58 @@ class MasterResumeTest extends TestCase
             ->patch(route('builder.sync-master', $copy->id))
             ->assertForbidden();
     }
+
+    public function test_pull_from_master_copies_content_to_copy(): void
+    {
+        $user = User::factory()->create();
+        $master = Resume::factory()->for($user)->create([
+            'is_master' => true,
+            'summary' => 'Master summary text',
+            'template' => 'modern',
+        ]);
+        $copy = Resume::factory()->for($user)->create([
+            'master_resume_id' => $master->id,
+            'master_synced_at' => now()->subHour(),
+            'summary' => 'Old copy summary',
+            'template' => 'classic',
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('builder.pull-from-master', $copy->id))
+            ->assertRedirect();
+
+        $copy->refresh();
+        $this->assertEquals('Master summary text', $copy->summary);
+        $this->assertEquals('modern', $copy->template);
+        $this->assertNotNull($copy->master_synced_at);
+        $this->assertTrue($copy->master_synced_at->gt(now()->subMinute()));
+    }
+
+    public function test_pull_from_master_sets_master_synced_at(): void
+    {
+        $user = User::factory()->create();
+        $master = Resume::factory()->for($user)->create(['is_master' => true]);
+        $copy = Resume::factory()->for($user)->create([
+            'master_resume_id' => $master->id,
+            'master_synced_at' => now()->subDay(),
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('builder.pull-from-master', $copy->id))
+            ->assertRedirect();
+
+        $this->assertTrue($copy->fresh()->master_synced_at->gt(now()->subMinute()));
+    }
+
+    public function test_pull_from_master_forbidden_for_other_user(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $master = Resume::factory()->for($owner)->create(['is_master' => true]);
+        $copy = Resume::factory()->for($owner)->create(['master_resume_id' => $master->id]);
+
+        $this->actingAs($other)
+            ->post(route('builder.pull-from-master', $copy->id))
+            ->assertForbidden();
+    }
 }

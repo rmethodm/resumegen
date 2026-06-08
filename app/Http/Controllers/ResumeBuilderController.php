@@ -470,6 +470,32 @@ class ResumeBuilderController extends Controller
         return back();
     }
 
+    public function pullFromMaster(Resume $resume): RedirectResponse
+    {
+        $this->authorize('update', $resume);
+
+        $master = $resume->masterResume;
+        if (! $master) {
+            return back()->withErrors(['master' => 'No master resume linked.']);
+        }
+
+        $resume->update([
+            'contact' => $master->contact,
+            'summary' => $master->summary,
+            'experience' => $master->experience,
+            'education' => $master->education,
+            'skills' => $master->skills,
+            'certifications' => $master->certifications,
+            'font_family' => $master->font_family,
+            'accent_color' => $master->accent_color,
+            'template' => $master->template,
+            'font_sizes' => $master->font_sizes,
+            'master_synced_at' => now(),
+        ]);
+
+        return back();
+    }
+
     public function abCompare(Request $request, Resume $resume): Response
     {
         $this->authorize('update', $resume);

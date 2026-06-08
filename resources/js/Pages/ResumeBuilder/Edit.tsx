@@ -1495,6 +1495,18 @@ export default function Edit({
                                 Your master resume has been updated — your tailored copy may be out of date.
                             </span>
                             <div className="ml-4 flex shrink-0 gap-3">
+                                <button
+                                    type="button"
+                                    className="font-medium text-amber-700 underline hover:text-amber-900"
+                                    onClick={() => {
+                                        router.post(route('builder.pull-from-master', resume.id), {}, {
+                                            preserveScroll: false,
+                                            onSuccess: () => setSyncDismissed(true),
+                                        });
+                                    }}
+                                >
+                                    Pull from master
+                                </button>
                                 <a href={route('builder.edit', masterResume.id)} className="font-medium text-amber-700 underline hover:text-amber-900">
                                     View master →
                                 </a>

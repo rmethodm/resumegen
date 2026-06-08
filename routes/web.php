@@ -94,6 +94,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::patch('/builder/{resume}/set-master', [ResumeBuilderController::class, 'setMaster'])->name('builder.set-master');
     Route::post('/builder/{resume}/create-tailored-copy', [ResumeBuilderController::class, 'createTailoredCopy'])->name('builder.create-tailored-copy');
     Route::patch('/builder/{resume}/sync-master', [ResumeBuilderController::class, 'syncMaster'])->name('builder.sync-master');
+    Route::post('/builder/{resume}/pull-from-master', [ResumeBuilderController::class, 'pullFromMaster'])->name('builder.pull-from-master');
     Route::get('/builder/{resume}/ab-compare', [ResumeBuilderController::class, 'abCompare'])->name('builder.ab-compare');
     Route::get('/builder/{resume}/compare', [ResumeBuilderController::class, 'compare'])->name('builder.compare');
     Route::get('/builder/{resume}/heatmap', [HeatmapController::class, 'show'])->name('builder.heatmap');
