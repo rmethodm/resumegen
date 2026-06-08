@@ -202,7 +202,7 @@ class UserLimits
 
     public static function requirePro(User $user): void
     {
-        if ($user->planTier() !== 'pro') {
+        if (! in_array($user->planTier(), ['pro', 'agency'], true)) {
             abort(response()->json(['error' => 'Pro plan required.', 'required_tier' => 'pro'], 402));
         }
     }

@@ -174,7 +174,7 @@ class ResumeBuilderController extends Controller
             'canQuantifyBullet' => UserLimits::canQuantifyBullet($user),
             'quantifyBulletUsesRemaining' => UserLimits::quantifyBulletUsesRemaining($user),
             'canCareerPaths' => UserLimits::canCareerPaths($user),
-            'canMockInterview' => $user->planTier() === 'pro',
+            'canMockInterview' => in_array($user->planTier(), ['pro', 'agency'], true),
             'aiUsed' => UserLimits::aiUsageThisPeriod($user),
             'aiLimit' => UserLimits::aiLimit($user),
             'customSectionLimit' => UserLimits::customSectionLimit($user),
