@@ -164,7 +164,7 @@ const DEFAULT_FONT_SIZES: FontSizes = { name: 16, contact: 9.5, heading: 10.5, b
 
 const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'education', 'skills', 'certifications'];
 
-const NON_ATS_TEMPLATES = ['skills-first-visual', 'timeline'];
+const NON_ATS_TEMPLATES = ['skills-first-visual', 'timeline', 'two-column'];
 
 const TEMPLATE_LABELS: Record<string, string> = {
     'classic': 'Classic',
@@ -180,6 +180,7 @@ const TEMPLATE_LABELS: Record<string, string> = {
     'academic': 'Academic CV',
     'bold': 'Minimalist Bold',
     'timeline': 'Timeline ⚠️',
+    'two-column': 'Two-Column ⚠️',
 };
 
 const freshPdfSrc = (resumeId: number) => route('builder.preview', resumeId) + '?t=' + Date.now();

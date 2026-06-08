@@ -484,4 +484,19 @@ class ResumeBuilderTest extends TestCase
         $response->assertOk();
         $response->assertHeader('content-type', 'application/pdf');
     }
+
+    public function test_two_column_template_renders_pdf(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->create([
+            'user_id' => $user->id,
+            'template' => 'two-column',
+            'contact' => ['full_name' => 'Ada Lovelace', 'title' => 'Engineer'],
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('builder.preview', $resume))
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+    }
 }

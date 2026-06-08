@@ -66,6 +66,15 @@
   .sb-aside .photo { width: 72pt; height: 72pt; border-radius: 50%; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); margin: 0 auto 10pt; }
   .sb-main h2 { color: {{ $accent }}; border-bottom-color: {{ $accent }}; }
 
+  .tc-wrap  { display: table; width: 100%; }
+  .tc-aside { display: table-cell; width: 30%; background: {{ $accent }}; color: #fff; padding: 0.4in; vertical-align: top; }
+  .tc-main  { display: table-cell; width: 70%; padding: 0.4in; vertical-align: top; }
+  .tc-aside h1 { color: #fff; font-size: 14pt; text-align: center; margin-bottom: 4pt; }
+  .tc-aside .tc-sub { text-align: center; font-size: {{ $sizeContact }}pt; color: rgba(255,255,255,0.85); margin-bottom: 10pt; }
+  .tc-aside .tc-label { font-size: 7pt; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; color: rgba(255,255,255,0.7); margin: 10pt 0 4pt; }
+  .tc-aside .tc-item  { font-size: {{ $sizeBody }}pt; margin-bottom: 2pt; }
+  .tc-main h2 { color: {{ $accent }}; border-bottom-color: {{ $accent }}; }
+
   .creative-band { background: {{ $accent }}; color: #fff; padding: 24pt 0.75in; margin: -0.75in -0.75in 18pt; }
   .creative-band h1 { color: #fff; }
   .creative-band .sub { color: rgba(255,255,255,0.85); font-size: {{ $sizeContact }}pt; }
@@ -205,6 +214,36 @@
       @endforeach
     @endif
     @include('partials.resume-body', ['skipSections' => ['skills']])
+  </div>
+
+@elseif ($template === 'two-column')
+  <div class="tc-wrap">
+    <div class="tc-aside">
+      @if($photoDataUri)
+        <img src="{{ $photoDataUri }}" style="width:65px;height:65px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 8pt;" />
+      @endif
+      <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
+      <div class="tc-sub">
+        @foreach($contactParts as $part)
+          <div>{{ $part }}</div>
+        @endforeach
+      </div>
+      @if($resume->skills && count($resume->skills))
+        <div class="tc-label">Skills</div>
+        @foreach($resume->skills as $s)
+          <div class="tc-item">{{ $s }}</div>
+        @endforeach
+      @endif
+      @if($resume->certifications && count($resume->certifications))
+        <div class="tc-label">Certifications</div>
+        @foreach($resume->certifications as $cert)
+          <div class="tc-item">{{ $cert['name'] ?? '' }}</div>
+        @endforeach
+      @endif
+    </div>
+    <div class="tc-main">
+      @include('partials.resume-body', ['skipSections' => ['skills', 'certifications']])
+    </div>
   </div>
 
 @elseif ($template === 'timeline')
