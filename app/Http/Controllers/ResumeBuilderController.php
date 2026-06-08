@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrganizationMember;
+use App\Models\RecruiterNote;
 use App\Models\Resume;
 use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
+use App\Models\User;
 use App\Services\DocxGenerator;
 use App\Services\ResumeStrengthScorer;
 use App\Services\UserLimits;
@@ -191,6 +194,7 @@ class ResumeBuilderController extends Controller
             ],
             'masterOutOfSync' => $masterOutOfSync,
             'masterResume' => $masterResume,
+            'recruiterNote' => $this->getRecruiterNote($request->user(), $resume),
         ]);
     }
 
@@ -581,5 +585,21 @@ class ResumeBuilderController extends Controller
         ]);
 
         return redirect()->route('builder.edit', $copy->id);
+    }
+
+    private function getRecruiterNote(User $user, Resume $resume): ?string
+    {
+        $orgId = OrganizationMember::where('user_id', $user->id)
+            ->where('role', 'member')
+            ->whereNotNull('joined_at')
+            ->value('organization_id');
+
+        if (! $orgId) {
+            return null;
+        }
+
+        return RecruiterNote::where('organization_id', $orgId)
+            ->where('resume_id', $resume->id)
+            ->value('body');
     }
 }

@@ -254,6 +254,7 @@ export default function Edit({
     userPersona,
     masterOutOfSync,
     masterResume,
+    recruiterNote,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -280,6 +281,7 @@ export default function Edit({
     userPersona: { target_role: string | null; industry: string | null; years_experience: number | null };
     masterOutOfSync?: boolean;
     masterResume?: { id: number; name: string } | null;
+    recruiterNote?: string | null;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -812,6 +814,16 @@ export default function Edit({
                     </div>
 
                     <div className="px-3 py-4 space-y-5">
+
+                        {/* ── Recruiter Note ── */}
+                        {recruiterNote && (
+                            <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">
+                                    Recruiter note
+                                </p>
+                                <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
+                            </div>
+                        )}
 
                         {/* ── Appearance ── */}
                         {sidebarOpen && (
