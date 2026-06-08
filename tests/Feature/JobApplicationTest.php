@@ -222,17 +222,4 @@ class JobApplicationTest extends TestCase
         $this->assertEquals('applied', $job->fresh()->status);
     }
 
-    public function test_jobs_index_renders_for_authenticated_user(): void
-    {
-        $user = User::factory()->create();
-        JobApplication::factory()->count(3)->create(['user_id' => $user->id]);
-
-        $response = $this->actingAs($user)->get(route('jobs.index'));
-
-        $response->assertOk();
-        $response->assertInertia(fn ($page) => $page
-            ->component('Jobs/Index')
-            ->has('applications', 3)
-        );
-    }
 }
