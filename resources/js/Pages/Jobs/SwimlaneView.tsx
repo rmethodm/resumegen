@@ -1,5 +1,5 @@
 import type { JobApplicationRow, JobStatus } from '@/types';
-import { DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { router } from '@inertiajs/react';
 import SwimlaneRow from './SwimlaneRow';
 
