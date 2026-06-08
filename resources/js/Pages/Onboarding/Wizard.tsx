@@ -1,4 +1,5 @@
 import GuestLayout from '@/Layouts/GuestLayout';
+import AutocompleteInput from '@/Components/AutocompleteInput';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 
@@ -76,13 +77,12 @@ export default function Wizard() {
                             >
                                 Target role
                             </label>
-                            <input
+                            <AutocompleteInput
+                                endpoint="job-roles"
                                 id="target_role"
-                                type="text"
-                                value={data.target_role}
-                                onChange={(e) => setData('target_role', e.target.value)}
-                                placeholder="e.g. Senior Product Manager"
-                                maxLength={100}
+                                value={data.target_role ?? ''}
+                                onChange={value => setData('target_role', value)}
+                                placeholder="e.g. Software Engineer"
                                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                             />
                             {errors.target_role && (
