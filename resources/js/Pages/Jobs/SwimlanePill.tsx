@@ -3,15 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { Link, router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-
-const STATUSES: { status: JobStatus; label: string }[] = [
-    { status: 'saved',        label: 'Saved' },
-    { status: 'applied',      label: 'Applied' },
-    { status: 'interviewing', label: 'Interviewing' },
-    { status: 'offered',      label: 'Offered' },
-    { status: 'rejected',     label: 'Rejected' },
-    { status: 'closed',       label: 'Closed' },
-];
+import { JOB_STATUSES } from './jobStatuses';
 
 type Props = { job: JobApplicationRow };
 
@@ -86,7 +78,7 @@ export default function SwimlanePill({ job }: Props) {
 
             {open && (
                 <div className="absolute top-full left-0 mt-1 bg-white border border-[#e8e8f0] rounded-lg shadow-lg z-50 py-1 min-w-[140px]">
-                    {STATUSES.map(({ status, label }) => (
+                    {JOB_STATUSES.map(({ status, label }) => (
                         <button
                             key={status}
                             type="button"

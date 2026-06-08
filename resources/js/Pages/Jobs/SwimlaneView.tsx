@@ -1,16 +1,8 @@
 import type { JobApplicationRow, JobStatus } from '@/types';
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { router } from '@inertiajs/react';
+import { JOB_STATUSES } from './jobStatuses';
 import SwimlaneRow from './SwimlaneRow';
-
-const STATUSES: { status: JobStatus; label: string; color: string }[] = [
-    { status: 'saved',        label: 'Saved',        color: '#4f46e5' },
-    { status: 'applied',      label: 'Applied',      color: '#3b82f6' },
-    { status: 'interviewing', label: 'Interviewing', color: '#f59e0b' },
-    { status: 'offered',      label: 'Offered',      color: '#10b981' },
-    { status: 'rejected',     label: 'Rejected',     color: '#f87171' },
-    { status: 'closed',       label: 'Closed',       color: '#a0a0b0' },
-];
 
 type Props = { jobs: JobApplicationRow[] };
 
@@ -36,7 +28,7 @@ export default function SwimlaneView({ jobs }: Props) {
     return (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <div className="flex flex-col gap-1">
-                {STATUSES.map(({ status, label, color }) => (
+                {JOB_STATUSES.map(({ status, label, color }) => (
                     <SwimlaneRow
                         key={status}
                         status={status}
