@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AutocompleteInput from '@/Components/AutocompleteInput';
 import type { ApplicationContact, InterviewNote, JobApplication, JobStatus } from '@/types';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { TrashIcon } from '@heroicons/react/24/outline';
@@ -102,7 +103,13 @@ export default function Edit({ application, resumes, statuses, notes_log, contac
                         </div>
                         <div>
                             <label className={labelCls}>Role</label>
-                            <input value={form.data.role} onChange={e => form.setData('role', e.target.value)} onBlur={e => fetchSalary(e.target.value)} className={inputCls} required />
+                            <AutocompleteInput
+                                endpoint="job-roles"
+                                value={form.data.role ?? ''}
+                                onChange={value => { form.setData('role', value); fetchSalary(value); }}
+                                placeholder="e.g. Software Engineer"
+                                className={inputCls}
+                            />
                             {salaryData && salaryData.match !== 'none' && salaryData.min !== null && (
                                 <div className="mt-2 rounded-lg bg-[#f0f9ff] border border-[#bae6fd] px-3 py-2 text-xs text-[#0369a1]">
                                     <span className="font-semibold">Market range: </span>
