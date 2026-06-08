@@ -22,6 +22,7 @@ return new class extends Migration
     {
         Schema::table('resumes', function (Blueprint $table) {
             $table->dropForeignIdFor(JobApplication::class);
+            $table->dropColumn('job_application_id');
         });
     }
 };

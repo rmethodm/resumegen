@@ -47,9 +47,10 @@ class ResumeJobTaggingTest extends TestCase
 
         $this->actingAs($user)
             ->patch(route('builder.link-job', $resume), ['job_application_id' => $otherJob->id])
-            ->assertStatus(403);
+            ->assertForbidden();
     }
 
+    // This test will pass once Task 2 wires eager-loading of linkedJob in ResumeBuilderController::index()
     public function test_dashboard_includes_linked_job_for_resumes(): void
     {
         $user = User::factory()->create();
