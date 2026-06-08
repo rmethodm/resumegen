@@ -1,13 +1,13 @@
 # Resumegen Context
 
 ## Current Task
-Batch 10 complete — spellcheck, two-column template, weekly trend chart, OG image polish. 524/524 tests passing.
+Batch 11 complete — master resume, recruiter heatmaps, referral rewards. 544/544 tests passing.
 
 ## Key Decisions
-- Browser-native spellCheck added via Field component prop (type === 'text' default); Location/Phone/LinkedIn/Website get explicit false
-- Tips sidebar, portfolio page, funnel chart, and timeline template were pre-built — plan only covered gaps
-- Weekly trend chart aggregates client-side from existing applications prop (created_at added to query)
+- Master resume uses is_master + master_resume_id + master_synced_at; copies detect stale via updated_at comparison
+- Heatmap tracking uses IntersectionObserver + sendBeacon in PublicView.tsx; section_events table is append-only
+- ReferralRewardService is called from Subscription observer; idempotency guard prevents double-rewarding; Stripe calls wrapped in try/catch with Log::warning
 
 ## Next Steps
-- Batch 11 candidates: more templates, GitHub portfolio import, application funnel enhancements
+- Batch 12 candidates: real-time live score, custom domain for public resume, recruiter multi-seat
 - 5 deferred audit fixes still pending (see project-audit-remaining-fixes.md)
