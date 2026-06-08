@@ -30,6 +30,7 @@ class ResumeBuilderController extends Controller
         $resumeCollection = $user->resumes()
             ->where('is_snapshot', false)
             ->with('tags:id,resume_id,label,color')
+            ->with('linkedJob:id,role,company')
             ->orderByDesc('updated_at')
             ->get();
 
@@ -74,6 +75,10 @@ class ResumeBuilderController extends Controller
                     : null,
                 'master_synced_at' => $resume->master_synced_at?->toISOString(),
                 'has_active_share_link' => isset($activeShareResumeIds[$resume->id]),
+                'job_application_id' => $resume->job_application_id,
+                'linked_job' => $resume->linkedJob
+                    ? ['id' => $resume->linkedJob->id, 'role' => $resume->linkedJob->role, 'company' => $resume->linkedJob->company]
+                    : null,
             ];
         });
 
@@ -434,6 +439,27 @@ class ResumeBuilderController extends Controller
         $this->authorize('update', $resume);
 
         $resume->update(['is_master' => ! $resume->is_master]);
+
+        return back();
+    }
+
+    public function linkJob(Request $request, Resume $resume): RedirectResponse
+    {
+        $this->authorize('update', $resume);
+
+        $validated = $request->validate([
+            'job_application_id' => ['nullable', 'integer'],
+        ]);
+
+        if ($validated['job_application_id'] !== null) {
+            $owns = $request->user()
+                ->jobApplications()
+                ->whereKey($validated['job_application_id'])
+                ->exists();
+            abort_if(! $owns, 403);
+        }
+
+        $resume->update(['job_application_id' => $validated['job_application_id']]);
 
         return back();
     }

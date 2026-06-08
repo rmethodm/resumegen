@@ -97,6 +97,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
     Route::post('/builder/{resume}/create-variant', [ResumeBuilderController::class, 'createVariant'])->name('builder.create-variant');
     Route::patch('/builder/{resume}/set-master', [ResumeBuilderController::class, 'setMaster'])->name('builder.set-master');
+    Route::patch('/builder/{resume}/link-job', [ResumeBuilderController::class, 'linkJob'])->name('builder.link-job');
     Route::post('/builder/{resume}/create-tailored-copy', [ResumeBuilderController::class, 'createTailoredCopy'])->name('builder.create-tailored-copy');
     Route::patch('/builder/{resume}/sync-master', [ResumeBuilderController::class, 'syncMaster'])->name('builder.sync-master');
     Route::post('/builder/{resume}/pull-from-master', [ResumeBuilderController::class, 'pullFromMaster'])->name('builder.pull-from-master');
