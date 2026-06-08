@@ -142,7 +142,7 @@ function WeeklyTrendChart({ applications }: { applications: JobApplicationRow[] 
             </div>
             <div className="flex items-end gap-1">
                 {weeklyBars.map((bar, i) => (
-                    <div key={i} className="flex flex-1 flex-col items-center gap-1">
+                    <div key={bar.label} className="flex flex-1 flex-col items-center gap-1">
                         <div
                             className="w-full rounded-t transition-all"
                             style={{
