@@ -32,6 +32,7 @@ class AutocompleteController extends Controller
 
     private function search(string $model, string $q): JsonResponse
     {
+        $q = trim($q);
         if (mb_strlen($q) < 2) {
             return response()->json([]);
         }
