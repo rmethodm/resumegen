@@ -243,6 +243,7 @@ export default function Edit({
     canQuantifyBullet,
     quantifyBulletUsesRemaining,
     canCareerPaths,
+    canGrammarCheck,
     aiUsed,
     aiLimit,
     customSectionLimit,
@@ -270,6 +271,7 @@ export default function Edit({
     canQuantifyBullet: boolean;
     quantifyBulletUsesRemaining: number | null;
     canCareerPaths: boolean;
+    canGrammarCheck: boolean;
     aiUsed: number;
     aiLimit: number;
     customSectionLimit: number | null;
@@ -345,6 +347,7 @@ export default function Edit({
         entryId: string;
         items: string[];
     } | null>(null);
+    const [grammarLoading, setGrammarLoading] = useState(false);
 
     const [careerPaths, setCareerPaths] = useState<Array<{
         title: string;
@@ -640,6 +643,34 @@ export default function Edit({
             setQuantifySuggestions({ entryId, items: json.suggestions ?? [] });
         } catch { /* best-effort */ } finally {
             setQuantifyLoading(null);
+        }
+    };
+
+    const handleGrammarCheck = async (section: string, text: string, onAccept: (corrected: string) => void) => {
+        if (!text.trim() || text.trim().length < 10) return;
+        if (!canGrammarCheck) {
+            triggerUpgradeModal('grammar_check', 'starter');
+            return;
+        }
+        setGrammarLoading(true);
+        try {
+            const res = await fetch(route('builder.grammar-check', resume.id), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
+                },
+                body: JSON.stringify({ section, text }),
+            });
+            if (res.status === 402) {
+                triggerUpgradeModal('grammar_check', 'starter');
+                return;
+            }
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.corrected) onAccept(data.corrected);
+        } catch { /* best-effort */ } finally {
+            setGrammarLoading(false);
         }
     };
 
@@ -1738,7 +1769,18 @@ export default function Edit({
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <SpellBadge words={summarySpell} />
+                                                        <div className="flex items-center gap-2">
+                                                            <SpellBadge words={summarySpell} />
+                                                            <button
+                                                                type="button"
+                                                                disabled={grammarLoading}
+                                                                onClick={() => handleGrammarCheck('summary', summary ?? '', v => { setSummary(v); save(); })}
+                                                                className="rounded px-2 py-0.5 text-xs text-[#71717a] hover:bg-[#f5f5fb] disabled:opacity-50"
+                                                                title="Polish grammar with AI (Starter+)"
+                                                            >
+                                                                {grammarLoading ? '…' : '✦ Polish'}
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
@@ -1876,11 +1918,29 @@ export default function Edit({
                                                         <button type="button" onClick={addExp} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                                             + Add Position
                                                         </button>
-                                                        {bulletSpell.length > 0 && (
-                                                            <div className="mt-1">
+                                                        <div className="mt-1 flex items-center gap-2">
+                                                            {bulletSpell.length > 0 && (
                                                                 <SpellBadge words={bulletSpell} />
-                                                            </div>
-                                                        )}
+                                                            )}
+                                                            <button
+                                                                type="button"
+                                                                disabled={grammarLoading}
+                                                                onClick={() => handleGrammarCheck('bullets', allBullets, v => {
+                                                                    const lines = v.split('\n').filter(Boolean);
+                                                                    let idx = 0;
+                                                                    (experience ?? []).forEach(exp => {
+                                                                        const count = (exp.bullets ?? '').split('\n').filter(Boolean).length || 0;
+                                                                        updateExp(exp.id, 'bullets', lines.slice(idx, idx + count).join('\n'));
+                                                                        idx += count;
+                                                                    });
+                                                                    save();
+                                                                })}
+                                                                className="rounded px-2 py-0.5 text-xs text-[#71717a] hover:bg-[#f5f5fb] disabled:opacity-50"
+                                                                title="Polish all bullets grammar with AI (Starter+)"
+                                                            >
+                                                                {grammarLoading ? '…' : '✦ Polish all'}
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
