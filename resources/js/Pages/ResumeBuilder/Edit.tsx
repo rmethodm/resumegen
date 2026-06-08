@@ -1637,7 +1637,7 @@ export default function Edit({
                                     </div>
                                     <Field label="Email" value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} type="email" placeholder="jane@example.com" />
                                     <Field label="Phone" value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} placeholder="(555) 555-5555" spellCheck={false} />
-                                    <Field label="Location" value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} placeholder="Atlanta, GA" />
+                                    <Field label="Location" value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} spellCheck={false} placeholder="Atlanta, GA" />
                                     <Field label="LinkedIn" value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} placeholder="linkedin.com/in/jane" spellCheck={false} />
                                     <div className="col-span-2">
                                         <Field label="Website" value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} placeholder="janesmith.dev" spellCheck={false} />
