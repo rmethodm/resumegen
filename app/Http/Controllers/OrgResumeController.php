@@ -38,7 +38,8 @@ class OrgResumeController extends Controller
         $org = Organization::where('owner_id', $request->user()->id)->firstOrFail();
         $this->verifyMemberResume($org, $resume);
 
-        $pdf = Pdf::loadView('resume-pdf', ['resume' => $resume]);
+        $pdf = Pdf::loadView('resume-pdf', ['resume' => $resume])
+            ->setPaper('letter', 'portrait');
 
         return response()->streamDownload(
             fn () => print ($pdf->output()),
@@ -52,12 +53,20 @@ class OrgResumeController extends Controller
         $org = Organization::where('owner_id', $request->user()->id)->firstOrFail();
         $this->verifyMemberResume($org, $resume);
 
-        $request->validate(['body' => ['required', 'string', 'max:2000']]);
+        $request->validate(['body' => ['nullable', 'string', 'max:2000']]);
 
-        RecruiterNote::updateOrCreate(
-            ['organization_id' => $org->id, 'resume_id' => $resume->id],
-            ['author_id' => $request->user()->id, 'body' => $request->string('body')->toString()],
-        );
+        $body = $request->string('body')->toString();
+
+        if ($body === '') {
+            RecruiterNote::where('organization_id', $org->id)
+                ->where('resume_id', $resume->id)
+                ->delete();
+        } else {
+            RecruiterNote::updateOrCreate(
+                ['organization_id' => $org->id, 'resume_id' => $resume->id],
+                ['author_id' => $request->user()->id, 'body' => $body],
+            );
+        }
 
         return response()->json(['ok' => true]);
     }

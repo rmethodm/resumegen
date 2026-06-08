@@ -17,7 +17,6 @@ export default function OrgResume({ resume, previewUrl, note: initialNote, orgNa
     const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '';
 
     const saveNote = async () => {
-        if (!note.trim()) return;
         setSaving(true);
         setSaved(false);
         try {
