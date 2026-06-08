@@ -174,6 +174,11 @@ class UserLimits
         return max(0, self::FREE_QUANTIFY_BULLET_MONTHLY_LIMIT - self::quantifyBulletUsageThisMonth($user));
     }
 
+    public static function canGrammarCheck(User $user): bool
+    {
+        return in_array($user->planTier(), ['starter', 'pro', 'agency'], true);
+    }
+
     public static function canCareerPaths(User $user): bool
     {
         return $user->isAtLeastStarter();

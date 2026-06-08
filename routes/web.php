@@ -16,6 +16,7 @@ use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CareerPathController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\CoverLetterTailorController;
+use App\Http\Controllers\GrammarCheckController;
 use App\Http\Controllers\HeatmapController;
 use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\InterviewNoteController;
@@ -120,6 +121,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/builder/{resume}/quantify-bullet', [QuantifyBulletController::class, 'store'])
         ->middleware('throttle:10,1')
         ->name('builder.quantify-bullet');
+    Route::post('/builder/{resume}/grammar-check', [GrammarCheckController::class, 'check'])
+        ->middleware('throttle:5,1')
+        ->name('builder.grammar-check');
     Route::get('/builder/{resume}/ats-score', [AtsScoreController::class, 'show'])
         ->middleware('throttle:10,1')
         ->name('builder.ats-score');
