@@ -71,7 +71,7 @@ class AbTestingTest extends TestCase
         );
     }
 
-    public function test_deleting_parent_nullifies_variant_ab_parent_id(): void
+    public function test_deleting_parent_also_deletes_variant(): void
     {
         $user = User::factory()->create();
         $parent = Resume::factory()->for($user)->create();
@@ -79,7 +79,6 @@ class AbTestingTest extends TestCase
 
         $this->actingAs($user)->delete(route('builder.destroy', $parent->id));
 
-        $variant->refresh();
-        $this->assertNull($variant->ab_parent_id);
+        $this->assertModelMissing($variant);
     }
 }

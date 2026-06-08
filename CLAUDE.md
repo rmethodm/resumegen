@@ -53,6 +53,8 @@ All routes return Inertia responses — there are no Blade views beyond the sing
 ### Resume data model
 All resume content is stored as JSON columns on a single `resumes` table (no separate section tables). The `Resume` model casts `contact`, `experience`, `education`, `skills`, `certifications`, and `font_sizes` to arrays automatically. The frontend owns the shape of these JSON blobs; the backend validates them as `nullable array`. `accent_color` (hex string) and `font_family` (string) are plain string columns added in migration `2026_05_28_120000`.
 
+**Cascade delete:** `Resume::booted()` has a `deleting` observer that deletes all A/B variants (`ab_parent_id = id`) and snapshots (`parent_resume_id = id`, `is_snapshot = true`) before the parent is removed. This is model-level (not FK-level) so it works on SQLite and fires model events on children.
+
 ### Authorization
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses the `AuthorizesRequests` trait so `$this->authorize()` is available everywhere.
 
@@ -121,7 +123,7 @@ The app enforces a 3-tier model: **Free** / **Starter** ($9/mo) / **Pro** ($19/m
 | Job tailoring | ✗ | ✓ | ✓ |
 | Interview coach | 3/mo | unlimited | unlimited |
 
-`User::planTier()` resolves: `is_master_admin` → `'pro'`; `is_pro` → `'pro'`; else returns `plan_tier` column value (`'free'`/`'starter'`/`'pro'`). `plan_tier` is kept in sync with Stripe via a Subscription observer in `AppServiceProvider`.
+`User::planTier()` resolves: `is_master_admin` → `'pro'`; `is_pro` → `'pro'`; else returns `plan_tier` column value (`'free'`/`'starter'`/`'pro'`). `plan_tier` is kept in sync with Stripe via a Subscription observer in `AppServiceProvider`. All `match` expressions in `UserLimits` have explicit `'pro'` arms and a restrictive `default` fallback (capped at free-tier limits) so unknown/corrupted tiers never grant elevated access. `aiUsageThisPeriod()` is cached per-user per-month with a 60-second TTL (key: `ai_usage_{id}_{Y-m}`).
 
 `User::isPro()` is unchanged (returns `true` for `is_master_admin`, `is_pro`, or `subscribed('default')`). `is_pro` is a boolean column on `users` that admins can toggle via the admin panel.
 
@@ -186,21 +188,22 @@ Three nullable columns on `resumes`: `is_master` (bool, default false), `master_
 Routes (all auth + policy-gated):
 - `PATCH /builder/{resume}/set-master` (`builder.set-master`) — toggles `is_master`
 - `POST /builder/{resume}/create-tailored-copy` (`builder.create-tailored-copy`) — replicates resume, sets `master_resume_id`, assigns fresh `pdf_filename`
-- `PATCH /builder/{resume}/sync-master` (`builder.sync-master`) — sets `master_synced_at = now()`
+- `PATCH /builder/{resume}/sync-master` (`builder.sync-master`) — sets `master_synced_at = now()` (dismiss-only, no content sync)
+- `POST /builder/{resume}/pull-from-master` (`builder.pull-from-master`) — copies all content fields from master into the copy and sets `master_synced_at = now()`
 
-`index()` includes `is_master`, `master_resume_id`, `master_updated_at`, `master_synced_at` per resume (master's `updated_at` batch-fetched in one query). `edit()` adds `masterOutOfSync` (bool) and `masterResume` ({id, name}|null) props. Dashboard shows violet "Master" badge and amber "⚠ Master updated" stale badge (null `master_synced_at` is always considered stale). Editor shows a dismissible amber banner with "View master →" and "Dismiss" (calls sync-master + clears local state).
+`index()` includes `is_master`, `master_resume_id`, `master_updated_at`, `master_synced_at` per resume (master's `updated_at` batch-fetched in one query). `edit()` adds `masterOutOfSync` (bool) and `masterResume` ({id, name}|null) props. Dashboard shows violet "Master" badge and amber "⚠ Master updated" stale badge (null `master_synced_at` is always considered stale). Editor shows a dismissible amber banner with three actions: "Pull from master" (calls pull-from-master, reloads page), "View master →" (link), and "Dismiss" (calls sync-master + clears local state).
 
 ### Recruiter Heatmaps
 `resume_section_events` is an append-only table (`created_at` only, no `updated_at` — model uses `public const UPDATED_AT = null`). Columns: `resume_id` (FK cascade), `section` (string), `dwell_ms` (unsignedInt, clamped to 120000), `ip_hash` (SHA-256 of visitor IP).
 
 Routes:
 - `POST /r/{token}/section-events` (`public.section-events`) — unauthenticated, `throttle:30,1`. Validates active + non-expired share link → 404 otherwise. Accepts `{ sections: [{ section, dwell_ms }] }` (max 20). Section regex: `^(summary|experience|education|skills|certifications|custom_[a-z0-9_]+)$`. Validation runs before try/catch; only DB inserts are wrapped.
-- `GET /builder/{resume}/heatmap` (`builder.heatmap`) — auth + ownership. Aggregates `section, COUNT(*) as view_count, AVG(dwell_ms) as avg_dwell_ms` ordered by view_count desc. Renders `ResumeBuilder/Heatmap.tsx`.
+- `GET /builder/{resume}/heatmap` (`builder.heatmap`) — auth + ownership. Accepts optional `?period=7d|30d|all` (default `30d`). Aggregates `section, COUNT(*) as view_count, AVG(dwell_ms) as avg_dwell_ms` ordered by view_count desc. Passes `period` and `totalViews` as Inertia props. Renders `ResumeBuilder/Heatmap.tsx`. Section name `max:50` enforced on ingest.
 
-`PublicView.tsx` contains a `useSectionHeatmap(token)` hook that attaches an `IntersectionObserver` (threshold 0.25) to all `[data-section]` elements, accumulates dwell time, and fires `navigator.sendBeacon` on `beforeunload` (skipped if total page time < 500ms). The five section wrappers carry `data-section="summary|experience|education|skills|certifications"`. `ResumeBuilder/Heatmap.tsx` renders a pure-CSS horizontal bar chart with empty state. Dashboard shows a "Heatmap" link per resume card when `has_active_share_link` is true (batch-queried in `index()`).
+`PublicView.tsx` contains a `useSectionHeatmap(token)` hook that attaches an `IntersectionObserver` (threshold 0.25) to all `[data-section]` elements, accumulates dwell time, and fires `navigator.sendBeacon` on `beforeunload` (skipped if total page time < 500ms). The five section wrappers carry `data-section="summary|experience|education|skills|certifications"`. `ResumeBuilder/Heatmap.tsx` renders a pure-CSS horizontal bar chart with a 7d/30d/all-time period selector and total views summary. Dashboard shows a "Heatmap" link per resume card when `has_active_share_link` is true (batch-queried in `index()`).
 
 ### Referral Rewards
-`ReferralRewardService::grantIfEligible(User $upgradedUser)` completes the referral loop. Guards: null `referred_by_user_id` → skip; existing `upgrade` ReferralEvent for this user → skip (idempotency). Creates `ReferralEvent` (event_type `'upgrade'`), increments referrer's `referral_rewards_earned`. Then tries Stripe reward: if referrer has an active `'default'` subscription → `$sub->active()` check then `extend(now()->addMonth())`; otherwise creates a Stripe customer balance credit of -900 cents. Stripe calls are wrapped in `try/catch` with `Log::warning` on failure — DB writes are NOT wrapped (they should propagate). Wired in `AppServiceProvider` Subscription observer after `plan_tier` sync, gated on `['starter', 'pro']` tiers.
+`ReferralRewardService::grantIfEligible(User $upgradedUser)` completes the referral loop. Guards: null `referred_by_user_id` → skip; existing `upgrade` ReferralEvent for this user → skip (idempotency — checked inside `DB::transaction` with `lockForUpdate()` to prevent race conditions). Creates `ReferralEvent` (event_type `'upgrade'`), increments referrer's `referral_rewards_earned`, logs success via `Log::info`. Then tries Stripe reward: if referrer has an active `'default'` subscription → `$sub->active()` check then `extend(now()->addMonth())`; otherwise creates a Stripe customer balance credit of -900 cents. Stripe calls are wrapped in `try/catch` with `Log::warning` on failure — DB writes are NOT wrapped (they should propagate). Wired in `AppServiceProvider` Subscription observer after `plan_tier` sync, gated on `['starter', 'pro']` tiers.
 
 ### Rate limiting
 - AI suggest endpoint: `throttle:10,1` (10 req/min)
