@@ -24,6 +24,10 @@ use App\Http\Controllers\MockInterviewController;
 use App\Http\Controllers\NegotiationScriptController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\OrgController;
+use App\Http\Controllers\OrgInviteController;
+use App\Http\Controllers\OrgJoinController;
+use App\Http\Controllers\OrgResumeController;
 use App\Http\Controllers\PdfImportController;
 use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\PortfolioController;
@@ -194,9 +198,27 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
         Route::post('/autocomplete/job-roles', [AutocompleteController::class, 'storeRole'])->name('autocomplete.job-roles.store');
         Route::post('/autocomplete/job-titles', [AutocompleteController::class, 'storeTitle'])->name('autocomplete.job-titles.store');
     });
+
+    // Org workspace
+    Route::get('/org/create', [OrgController::class, 'create'])->name('org.create');
+    Route::post('/org', [OrgController::class, 'store'])->name('org.store');
+    Route::get('/org', [OrgController::class, 'show'])->name('org.show');
+
+    Route::middleware('org.admin')->group(function () {
+        Route::patch('/org', [OrgController::class, 'update'])->name('org.update');
+        Route::post('/org/invite', [OrgInviteController::class, 'store'])->name('org.invite.store');
+        Route::delete('/org/members/{member}', [OrgInviteController::class, 'destroy'])->name('org.invite.destroy');
+        Route::get('/org/resumes/{resume}', [OrgResumeController::class, 'show'])->name('org.resume.show');
+        Route::get('/org/resumes/{resume}/preview', [OrgResumeController::class, 'preview'])->name('org.resume.preview');
+        Route::put('/org/resumes/{resume}/notes', [OrgResumeController::class, 'upsertNote'])->name('org.resume.notes');
+    });
 });
 
 Route::get('/ref/{code}', [ReferralController::class, 'redirect'])->name('referral.redirect');
+
+// Org invite join — unauthenticated, token-based
+Route::get('/org/join/{token}', [OrgJoinController::class, 'show'])->name('org.join.show');
+Route::post('/org/join/{token}', [OrgJoinController::class, 'store'])->name('org.join.store');
 
 // Public (unauthenticated) portfolio page
 Route::get('/p/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');

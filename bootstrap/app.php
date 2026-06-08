@@ -3,6 +3,7 @@
 use App\Console\Commands\NudgeStaleResumesCommand;
 use App\Console\Commands\SendFollowUpReminders;
 use App\Http\Middleware\EnsureMasterAdmin;
+use App\Http\Middleware\EnsureOrgAdmin;
 use App\Http\Middleware\EnsureTwoFactorSetup;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RequiresTwoFactorChallenge;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'master_admin' => EnsureMasterAdmin::class,
+            'org.admin' => EnsureOrgAdmin::class,
             'two_factor_challenge' => RequiresTwoFactorChallenge::class,
             'two_factor_setup' => EnsureTwoFactorSetup::class,
         ]);
