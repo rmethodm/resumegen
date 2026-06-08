@@ -407,6 +407,15 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                     >
                                                         {r.is_master ? 'Master ✓' : 'Master'}
                                                     </button>
+                                                    {r.has_active_share_link && (
+                                                        <Link
+                                                            href={route('builder.heatmap', r.id)}
+                                                            title="View section heatmap"
+                                                            className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition text-xs"
+                                                        >
+                                                            Heatmap
+                                                        </Link>
+                                                    )}
                                                     <button onClick={() => destroy(r.id, r.name)} title="Delete" className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 transition"><TrashIcon className="h-4 w-4" /></button>
                                                 </div>
                                             </td>

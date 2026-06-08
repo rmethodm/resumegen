@@ -1,8 +1,50 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import QRCodeDisplay from '@/Components/QRCodeDisplay';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { FormEvent } from 'react';
+import { FormEvent, useEffect, useRef } from 'react';
 import { PageProps, ResumeData } from '@/types';
+
+function useSectionHeatmap(token: string): void {
+    const startTimes = useRef<Record<string, number>>({});
+    const accumulated = useRef<Record<string, number>>({});
+    const pageStart = useRef<number>(Date.now());
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const section = (entry.target as HTMLElement).dataset.section;
+                if (!section) { return; }
+                if (entry.isIntersecting) {
+                    startTimes.current[section] = Date.now();
+                } else if (startTimes.current[section] !== undefined) {
+                    accumulated.current[section] = (accumulated.current[section] ?? 0) + (Date.now() - startTimes.current[section]);
+                    delete startTimes.current[section];
+                }
+            });
+        }, { threshold: 0.25 });
+
+        document.querySelectorAll('[data-section]').forEach(el => observer.observe(el));
+
+        const handleUnload = (): void => {
+            if (Date.now() - pageStart.current < 500) { return; }
+            Object.entries(startTimes.current).forEach(([section, start]) => {
+                accumulated.current[section] = (accumulated.current[section] ?? 0) + (Date.now() - start);
+            });
+            const sections = Object.entries(accumulated.current).map(([section, dwell_ms]) => ({ section, dwell_ms }));
+            if (sections.length === 0) { return; }
+            navigator.sendBeacon(
+                route('public.section-events', token),
+                JSON.stringify({ sections }),
+            );
+        };
+
+        window.addEventListener('beforeunload', handleUnload);
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('beforeunload', handleUnload);
+        };
+    }, [token]);
+}
 
 interface Props {
     resume: ResumeData;
@@ -11,6 +53,7 @@ interface Props {
 
 export default function PublicView({ resume, token }: Props) {
     const { props } = usePage<PageProps<{ flash: { questionSubmitted?: boolean } }>>();
+    useSectionHeatmap(token);
     const contact = resume.contact;
     const skills = resume.skills ?? [];
     const experience = resume.experience ?? [];
@@ -91,7 +134,7 @@ export default function PublicView({ resume, token }: Props) {
 
                     {/* Summary */}
                     {resume.summary && (
-                        <section className="mb-8">
+                        <section className="mb-8" data-section="summary">
                             <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Summary</div>
                             <p className="text-sm leading-relaxed text-gray-700">{resume.summary}</p>
                         </section>
@@ -99,7 +142,7 @@ export default function PublicView({ resume, token }: Props) {
 
                     {/* Experience */}
                     {experience.some(e => e.company || e.title) && (
-                        <section className="mb-8">
+                        <section className="mb-8" data-section="experience">
                             <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Experience</div>
                             {experience.filter(e => e.company || e.title).map(exp => (
                                 <div key={exp.id} className="flex gap-6 mb-5">
@@ -123,7 +166,7 @@ export default function PublicView({ resume, token }: Props) {
 
                     {/* Education */}
                     {education.some(e => e.school) && (
-                        <section className="mb-8">
+                        <section className="mb-8" data-section="education">
                             <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Education</div>
                             {education.filter(e => e.school).map(edu => (
                                 <div key={edu.id} className="flex gap-6 mb-3">
@@ -141,7 +184,7 @@ export default function PublicView({ resume, token }: Props) {
 
                     {/* Skills */}
                     {skills.length > 0 && (
-                        <section className="mb-8">
+                        <section className="mb-8" data-section="skills">
                             <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Skills</div>
                             <div className="flex flex-wrap gap-2">
                                 {skills.map((skill, i) => (
@@ -153,7 +196,7 @@ export default function PublicView({ resume, token }: Props) {
 
                     {/* Certifications */}
                     {certifications.some(c => c.name) && (
-                        <section className="mb-8">
+                        <section className="mb-8" data-section="certifications">
                             <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Certifications</div>
                             {certifications.filter(c => c.name).map(cert => (
                                 <div key={cert.id} className="flex gap-6 mb-2">

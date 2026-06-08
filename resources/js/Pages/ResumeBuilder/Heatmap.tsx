@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
-interface SectionStat {
+interface HeatmapSection {
     section: string;
     view_count: number;
     avg_dwell_ms: number;
@@ -9,30 +9,79 @@ interface SectionStat {
 
 interface Props {
     resume: { id: number; name: string };
-    sections: SectionStat[];
+    sections: HeatmapSection[];
+}
+
+const SECTION_LABELS: Record<string, string> = {
+    summary: 'Summary',
+    experience: 'Work Experience',
+    education: 'Education',
+    skills: 'Skills',
+    certifications: 'Certifications',
+};
+
+function formatSection(section: string): string {
+    if (SECTION_LABELS[section]) {
+        return SECTION_LABELS[section];
+    }
+    if (section.startsWith('custom_')) {
+        return section
+            .replace('custom_', '')
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, c => c.toUpperCase());
+    }
+    return section;
 }
 
 export default function Heatmap({ resume, sections }: Props) {
+    const maxCount = Math.max(...sections.map(s => s.view_count), 1);
+
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                    Resume Heatmap — {resume.name}
+                </h2>
+            }
+        >
             <Head title={`Heatmap — ${resume.name}`} />
+
             <div className="py-12">
-                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-                    <h1 className="mb-6 text-2xl font-bold text-gray-900">{resume.name} — Recruiter Heatmap</h1>
+                <div className="mx-auto max-w-2xl space-y-6 px-4 sm:px-6 lg:px-8">
+                    <div>
+                        <Link href={route('builder.index')} className="text-sm text-indigo-600 hover:underline">
+                            ← Back to resumes
+                        </Link>
+                    </div>
+
                     {sections.length === 0 ? (
-                        <p className="text-gray-500">No section data yet. Share your resume to start collecting recruiter attention data.</p>
+                        <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
+                            <p className="text-gray-500">No public views recorded yet.</p>
+                            <p className="mt-1 text-sm text-gray-400">
+                                Share your resume to start collecting section attention data.
+                            </p>
+                        </div>
                     ) : (
-                        <ul className="space-y-3">
-                            {sections.map((s) => (
-                                <li key={s.section} className="rounded border bg-white p-4 shadow-sm">
-                                    <span className="font-medium capitalize">{s.section}</span>
-                                    <span className="ml-4 text-sm text-gray-500">
-                                        {s.view_count} view{s.view_count !== 1 ? 's' : ''} · avg{' '}
-                                        {(s.avg_dwell_ms / 1000).toFixed(1)}s
-                                    </span>
-                                </li>
+                        <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
+                            {sections.map(s => (
+                                <div key={s.section} className="flex items-center gap-4 px-6 py-4">
+                                    <div className="w-36 shrink-0 text-sm font-medium text-gray-700">
+                                        {formatSection(s.section)}
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="h-5 overflow-hidden rounded-full bg-gray-100">
+                                            <div
+                                                className="h-full rounded-full bg-indigo-500 transition-all"
+                                                style={{ width: `${Math.round((s.view_count / maxCount) * 100)}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="w-44 shrink-0 text-right text-sm text-gray-500">
+                                        {s.view_count} view{s.view_count !== 1 ? 's' : ''} · avg {(s.avg_dwell_ms / 1000).toFixed(1)}s
+                                    </div>
+                                </div>
                             ))}
-                        </ul>
+                        </div>
                     )}
                 </div>
             </div>
