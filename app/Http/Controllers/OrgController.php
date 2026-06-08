@@ -22,7 +22,7 @@ class OrgController extends Controller
         $members = OrganizationMember::where('organization_id', $org->id)
             ->where('role', 'member')
             ->whereNotNull('joined_at')
-            ->with('user')
+            ->with(['user', 'user.resumes' => fn ($q) => $q->where('is_snapshot', false)->orderByDesc('updated_at')->select(['id', 'user_id', 'name'])])
             ->get()
             ->map(fn (OrganizationMember $m) => [
                 'id' => $m->id,
@@ -30,11 +30,8 @@ class OrgController extends Controller
                 'name' => $m->user?->name,
                 'email' => $m->invite_email ?? $m->user?->email,
                 'joined_at' => $m->joined_at?->toDateString(),
-                'resume_count' => $m->user?->resumes()->where('is_snapshot', false)->count() ?? 0,
-                'resumes' => $m->user?->resumes()
-                    ->where('is_snapshot', false)
-                    ->orderByDesc('updated_at')
-                    ->get(['id', 'name'])
+                'resume_count' => $m->user?->resumes->count() ?? 0,
+                'resumes' => $m->user?->resumes
                     ->map(fn ($r) => ['id' => $r->id, 'name' => $r->name])
                     ->all() ?? [],
             ]);

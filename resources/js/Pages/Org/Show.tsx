@@ -43,7 +43,7 @@ export default function Show({ org, members, pendingInvites }: Props) {
         router.delete(route('org.invite.destroy', memberId), { preserveScroll: true });
     };
 
-    const totalUsed = members.length + pendingInvites.length;
+    const totalUsed = members.length + pendingInvites.length + 1; // +1 for the admin/owner seat
 
     return (
         <AuthenticatedLayout>
