@@ -27,7 +27,7 @@ class ResumeController extends Controller
         $user = $request->user();
         $limit = UserLimits::resumeLimit($user);
 
-        if ($limit !== null && $user->resumes()->count() >= $limit) {
+        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
             return response()->json([
                 'message' => 'Resume limit reached.',
                 'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',
@@ -78,7 +78,7 @@ class ResumeController extends Controller
         $user = $resume->user;
         $limit = UserLimits::resumeLimit($user);
 
-        if ($limit !== null && $user->resumes()->count() >= $limit) {
+        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
             return response()->json([
                 'message' => 'Resume limit reached.',
                 'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',

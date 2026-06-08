@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\AiUsageLog;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class UserLimits
 {
@@ -23,8 +24,9 @@ class UserLimits
     public static function resumeLimit(User $user): ?int
     {
         return match ($user->planTier()) {
-            'free', 'starter' => 5,
-            default => null,
+            'starter' => 5,
+            'pro' => null,
+            default => 5, // free or unknown — cap at 5
         };
     }
 
@@ -33,7 +35,8 @@ class UserLimits
         return match ($user->planTier()) {
             'free' => 3,
             'starter' => 5,
-            default => null,
+            'pro' => null,
+            default => 3, // unknown — most restrictive
         };
     }
 
@@ -45,9 +48,9 @@ class UserLimits
     public static function aiLimit(User $user): ?int
     {
         return match ($user->planTier()) {
-            'free' => 30,
             'starter' => 30,
-            default => 500,
+            'pro' => 500,
+            default => 30, // free or unknown
         };
     }
 
@@ -183,9 +186,11 @@ class UserLimits
 
     public static function aiUsageThisPeriod(User $user): int
     {
-        return AiUsageLog::where('user_id', $user->id)
+        $key = 'ai_usage_'.$user->id.'_'.now()->format('Y-m');
+
+        return (int) Cache::remember($key, 60, fn () => AiUsageLog::where('user_id', $user->id)
             ->where('created_at', '>=', Carbon::now()->startOfMonth())
-            ->count();
+            ->count());
     }
 
     public static function atAiLimit(User $user): bool

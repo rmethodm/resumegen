@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ReferralEvent;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Laravel\Cashier\Cashier;
 
 class ReferralRewardService
@@ -14,24 +15,41 @@ class ReferralRewardService
             return;
         }
 
-        if (ReferralEvent::where('referred_user_id', $upgradedUser->id)
-            ->where('event_type', 'upgrade')
-            ->exists()) {
-            return;
-        }
-
         $referrer = User::find($upgradedUser->referred_by_user_id);
         if (! $referrer) {
             return;
         }
 
-        ReferralEvent::create([
-            'referrer_user_id' => $referrer->id,
-            'referred_user_id' => $upgradedUser->id,
-            'event_type' => 'upgrade',
-        ]);
+        $rewarded = DB::transaction(function () use ($upgradedUser, $referrer): bool {
+            // Re-check inside transaction with lock to prevent double-reward
+            $alreadyRewarded = ReferralEvent::where('referred_user_id', $upgradedUser->id)
+                ->where('event_type', 'upgrade')
+                ->lockForUpdate()
+                ->exists();
 
-        $referrer->increment('referral_rewards_earned');
+            if ($alreadyRewarded) {
+                return false;
+            }
+
+            ReferralEvent::create([
+                'referrer_user_id' => $referrer->id,
+                'referred_user_id' => $upgradedUser->id,
+                'event_type' => 'upgrade',
+            ]);
+
+            $referrer->increment('referral_rewards_earned');
+
+            return true;
+        });
+
+        if (! $rewarded) {
+            return;
+        }
+
+        \Log::info('Referral reward granted', [
+            'referrer_id' => $referrer->id,
+            'referred_user_id' => $upgradedUser->id,
+        ]);
 
         try {
             $sub = $referrer->subscription('default');

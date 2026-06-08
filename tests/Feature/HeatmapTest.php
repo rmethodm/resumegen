@@ -101,4 +101,15 @@ class HeatmapTest extends TestCase
             ->get(route('builder.heatmap', $resume->id))
             ->assertForbidden();
     }
+
+    public function test_section_name_max_length_validated(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create(['is_active' => true]);
+
+        $this->postJson(route('public.section-events', $link->token), [
+            'sections' => [['section' => str_repeat('a', 51), 'dwell_ms' => 1000]],
+        ])->assertUnprocessable();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -71,6 +72,27 @@ class ResumeApiTest extends ApiTestCase
         $this->withToken($token)
             ->postJson('/api/resumes', ['name' => 'First'])
             ->assertCreated();
+    }
+
+    public function test_snapshots_do_not_count_toward_resume_limit(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        // Create 4 real resumes
+        $user->resumes()->createMany(array_fill(0, 4, ['name' => 'R', 'pdf_filename' => 'r.pdf']));
+        // Create 1 snapshot directly (is_snapshot not in fillable, use forceFill)
+        $snapshot = new Resume(['name' => 'Snapshot', 'pdf_filename' => 's.pdf']);
+        $snapshot->forceFill(['user_id' => $user->id, 'is_snapshot' => true])->save();
+
+        // Should be allowed — only 4 non-snapshot resumes exist, limit is 5
+        $this->withToken($this->token($user))
+            ->postJson('/api/resumes', ['name' => 'Fifth Real Resume'])
+            ->assertCreated();
+
+        // Now at limit (5 non-snapshots), next should be blocked
+        $this->withToken($this->token($user))
+            ->postJson('/api/resumes', ['name' => 'Sixth Real Resume'])
+            ->assertStatus(402)
+            ->assertJsonPath('required_tier', 'starter');
     }
 
     public function test_can_show_own_resume(): void

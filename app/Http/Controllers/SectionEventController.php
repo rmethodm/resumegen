@@ -19,7 +19,7 @@ class SectionEventController extends Controller
 
         $validated = $request->validate([
             'sections' => ['required', 'array', 'max:20'],
-            'sections.*.section' => ['required', 'string', 'regex:/^(summary|experience|education|skills|certifications|custom_[a-z0-9_]+)$/'],
+            'sections.*.section' => ['required', 'string', 'max:50', 'regex:/^(summary|experience|education|skills|certifications|custom_[a-z0-9_]+)$/'],
             'sections.*.dwell_ms' => ['required', 'integer', 'min:0'],
         ]);
 
