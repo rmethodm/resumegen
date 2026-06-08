@@ -13,6 +13,16 @@ class Resume extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Resume $resume): void {
+            // Delete A/B variants — they are meaningless without the parent
+            $resume->abVariants()->delete();
+            // Delete snapshots — they are versions of this specific resume
+            $resume->snapshots()->delete();
+        });
+    }
+
     protected $fillable = [
         'user_id',
         'name', 'pdf_filename', 'template',
