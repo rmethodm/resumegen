@@ -1,0 +1,112 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Organization;
+use App\Models\OrganizationMember;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class OrgController extends Controller
+{
+    public function show(Request $request): Response|RedirectResponse
+    {
+        $org = Organization::where('owner_id', $request->user()->id)->first();
+
+        if (! $org) {
+            return redirect()->route('org.create');
+        }
+
+        $members = OrganizationMember::where('organization_id', $org->id)
+            ->where('role', 'member')
+            ->whereNotNull('joined_at')
+            ->with('user')
+            ->get()
+            ->map(fn (OrganizationMember $m) => [
+                'id' => $m->id,
+                'user_id' => $m->user_id,
+                'name' => $m->user?->name,
+                'email' => $m->invite_email ?? $m->user?->email,
+                'joined_at' => $m->joined_at?->toDateString(),
+                'resume_count' => $m->user?->resumes()->where('is_snapshot', false)->count() ?? 0,
+                'resumes' => $m->user?->resumes()
+                    ->where('is_snapshot', false)
+                    ->orderByDesc('updated_at')
+                    ->get(['id', 'name'])
+                    ->map(fn ($r) => ['id' => $r->id, 'name' => $r->name])
+                    ->all() ?? [],
+            ]);
+
+        $pendingInvites = OrganizationMember::where('organization_id', $org->id)
+            ->where('role', 'member')
+            ->whereNull('joined_at')
+            ->get()
+            ->map(fn (OrganizationMember $m) => [
+                'id' => $m->id,
+                'invite_email' => $m->invite_email,
+                'invited_at' => $m->invited_at?->toDateString(),
+            ]);
+
+        return Inertia::render('Org/Show', [
+            'org' => [
+                'id' => $org->id,
+                'name' => $org->name,
+                'seat_limit' => $org->seat_limit,
+            ],
+            'members' => $members,
+            'pendingInvites' => $pendingInvites,
+        ]);
+    }
+
+    public function create(Request $request): Response|RedirectResponse
+    {
+        if (Organization::where('owner_id', $request->user()->id)->exists()) {
+            return redirect()->route('org.show');
+        }
+
+        return Inertia::render('Org/Create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        if (Organization::where('owner_id', $request->user()->id)->exists()) {
+            return redirect()->route('org.show');
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+        ]);
+
+        $org = Organization::create([
+            'name' => $validated['name'],
+            'owner_id' => $request->user()->id,
+        ]);
+
+        OrganizationMember::create([
+            'organization_id' => $org->id,
+            'user_id' => $request->user()->id,
+            'role' => 'admin',
+            'invite_email' => $request->user()->email,
+            'invited_at' => now(),
+            'joined_at' => now(),
+        ]);
+
+        return redirect()->route('org.show');
+    }
+
+    public function update(Request $request): RedirectResponse
+    {
+        $org = Organization::where('owner_id', $request->user()->id)->firstOrFail();
+        $this->authorize('update', $org);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+        ]);
+
+        $org->update($validated);
+
+        return back()->with('success', 'Organization updated.');
+    }
+}
