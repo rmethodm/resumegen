@@ -15,7 +15,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'member'])->default('member');
             $table->string('invite_email')->nullable();
             $table->string('invite_token', 64)->nullable()->unique();
-            $table->timestamp('invited_at');
+            $table->timestamp('invited_at')->useCurrent();
             $table->timestamp('joined_at')->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
