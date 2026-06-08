@@ -217,8 +217,10 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
 Route::get('/ref/{code}', [ReferralController::class, 'redirect'])->name('referral.redirect');
 
 // Org invite join — unauthenticated, token-based
-Route::get('/org/join/{token}', [OrgJoinController::class, 'show'])->name('org.join.show');
-Route::post('/org/join/{token}', [OrgJoinController::class, 'store'])->name('org.join.store');
+Route::middleware('throttle:10,1')->group(function () {
+    Route::get('/org/join/{token}', [OrgJoinController::class, 'show'])->name('org.join.show');
+    Route::post('/org/join/{token}', [OrgJoinController::class, 'store'])->name('org.join.store');
+});
 
 // Public (unauthenticated) portfolio page
 Route::get('/p/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
