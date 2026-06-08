@@ -42,4 +42,9 @@ class JobApplication extends Model
     {
         return $this->hasMany(ApplicationContact::class)->orderBy('name');
     }
+
+    public function taggedResumes(): HasMany
+    {
+        return $this->hasMany(Resume::class, 'job_application_id');
+    }
 }

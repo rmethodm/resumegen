@@ -35,6 +35,7 @@ class Resume extends Model implements HasMedia
         'master_resume_id',
         'is_master',
         'master_synced_at',
+        'job_application_id',
     ];
 
     protected $casts = [
@@ -113,5 +114,10 @@ class Resume extends Model implements HasMedia
     public function tailoredCopies(): HasMany
     {
         return $this->hasMany(Resume::class, 'master_resume_id');
+    }
+
+    public function linkedJob(): BelongsTo
+    {
+        return $this->belongsTo(JobApplication::class, 'job_application_id');
     }
 }
