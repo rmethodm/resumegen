@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Organization;
 use App\Models\OrganizationMember;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -53,14 +54,16 @@ class HandleInertiaRequests extends Middleware
             return null;
         }
 
-        if (Organization::where('owner_id', $user->id)->exists()) {
-            return 'admin';
-        }
+        return Cache::remember("org_role_{$user->id}", 60, function () use ($user) {
+            if (Organization::where('owner_id', $user->id)->exists()) {
+                return 'admin';
+            }
 
-        if (OrganizationMember::where('user_id', $user->id)->where('role', 'member')->whereNotNull('joined_at')->exists()) {
-            return 'member';
-        }
+            if (OrganizationMember::where('user_id', $user->id)->where('role', 'member')->whereNotNull('joined_at')->exists()) {
+                return 'member';
+            }
 
-        return null;
+            return null;
+        });
     }
 }
