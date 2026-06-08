@@ -3,7 +3,7 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import type { FunnelStats, JobApplicationRow, JobStatus } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
-import KanbanView from './KanbanView';
+import SwimlaneView from './SwimlaneView';
 
 type ResumeOpt = { id: number; name: string };
 type Props = { applications: JobApplicationRow[]; resumes: ResumeOpt[]; statuses: JobStatus[]; funnelStats: FunnelStats };
@@ -161,14 +161,10 @@ function WeeklyTrendChart({ applications }: { applications: JobApplicationRow[] 
 }
 
 export default function Index({ applications, resumes, statuses, funnelStats }: Props) {
-    const [view, setView] = useState<'table' | 'kanban'>(() => {
-        if (typeof window === 'undefined') return 'kanban';
-        return (localStorage.getItem('resumegen_jobs_view') as 'table' | 'kanban') ?? 'kanban';
-    });
+    const [view, setView] = useState<'table' | 'kanban'>('table');
 
     const switchView = (v: 'table' | 'kanban') => {
         setView(v);
-        localStorage.setItem('resumegen_jobs_view', v);
     };
 
     const [adding, setAdding] = useState(false);
@@ -261,7 +257,7 @@ export default function Index({ applications, resumes, statuses, funnelStats }: 
                                 </button>
                             </div>
                             {!adding && (
-                                <button onClick={() => setAdding(true)} className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                                <button onClick={() => { if (view === 'kanban') switchView('table'); setAdding(true); }} className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
                                     + New Application
                                 </button>
                             )}
@@ -272,7 +268,7 @@ export default function Index({ applications, resumes, statuses, funnelStats }: 
                         <>
                             {/* Desktop: full Kanban */}
                             <div className="hidden sm:block">
-                                <KanbanView jobs={applications} />
+                                <SwimlaneView jobs={applications} />
                             </div>
                             {/* Mobile: grouped list */}
                             <div className="sm:hidden space-y-4">
