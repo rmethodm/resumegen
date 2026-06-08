@@ -15,6 +15,7 @@ use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CareerPathController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\CoverLetterTailorController;
+use App\Http\Controllers\HeatmapController;
 use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\InterviewNoteController;
 use App\Http\Controllers\JobApplicationController;
@@ -34,6 +35,7 @@ use App\Http\Controllers\ResumeGeneratorController;
 use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\SectionEventController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
 use App\Http\Controllers\TailorController;
@@ -94,6 +96,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::patch('/builder/{resume}/sync-master', [ResumeBuilderController::class, 'syncMaster'])->name('builder.sync-master');
     Route::get('/builder/{resume}/ab-compare', [ResumeBuilderController::class, 'abCompare'])->name('builder.ab-compare');
     Route::get('/builder/{resume}/compare', [ResumeBuilderController::class, 'compare'])->name('builder.compare');
+    Route::get('/builder/{resume}/heatmap', [HeatmapController::class, 'show'])->name('builder.heatmap');
     Route::post('/builder/{resume}/versions', [ResumeBuilderController::class, 'saveVersion'])->name('builder.save-version');
     Route::post('/builder/{resume}/ai-suggest', [AiSuggestController::class, 'suggest'])
         ->middleware('throttle:10,1')
@@ -196,6 +199,9 @@ Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->na
 Route::get('/r/{token}/docx', [PublicResumeController::class, 'downloadDocx'])->name('public.docx');
 Route::post('/r/{token}/questions', [PublicResumeController::class, 'storeQuestion'])->middleware('throttle:5,1')->name('public.question');
 Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image');
+Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'])
+    ->middleware('throttle:30,1')
+    ->name('public.section-events');
 
 Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/usage', [AdminUsageController::class, 'index'])->name('usage');

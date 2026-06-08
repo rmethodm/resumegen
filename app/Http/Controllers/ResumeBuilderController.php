@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resume;
 use App\Models\ResumeShareEvent;
+use App\Models\ResumeShareLink;
 use App\Services\DocxGenerator;
 use App\Services\ResumeStrengthScorer;
 use App\Services\UserLimits;
@@ -41,7 +42,12 @@ class ResumeBuilderController extends Controller
             ? Resume::whereIn('id', $masterIds)->pluck('updated_at', 'id')
             : collect();
 
-        $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts, $masterUpdatedAts) {
+        $activeShareResumeIds = ResumeShareLink::where('is_active', true)
+            ->whereIn('resume_id', $resumeCollection->pluck('id'))
+            ->pluck('resume_id')
+            ->flip();
+
+        $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts, $masterUpdatedAts, $activeShareResumeIds) {
             $strength = ResumeStrengthScorer::score($resume);
 
             return [
@@ -64,6 +70,7 @@ class ResumeBuilderController extends Controller
                     ? optional($masterUpdatedAts->get($resume->master_resume_id))?->toISOString()
                     : null,
                 'master_synced_at' => $resume->master_synced_at?->toISOString(),
+                'has_active_share_link' => isset($activeShareResumeIds[$resume->id]),
             ];
         });
 
