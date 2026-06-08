@@ -305,7 +305,7 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                             Master
                                                         </span>
                                                     )}
-                                                    {r.master_resume_id !== null && r.master_updated_at && r.master_synced_at && r.master_updated_at > r.master_synced_at && (
+                                                    {r.master_resume_id !== null && r.master_updated_at && (r.master_synced_at === null || r.master_updated_at > r.master_synced_at) && (
                                                         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
                                                             ⚠ Master updated
                                                         </span>

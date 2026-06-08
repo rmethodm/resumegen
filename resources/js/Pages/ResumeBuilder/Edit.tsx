@@ -1492,13 +1492,14 @@ export default function Edit({
                     {masterOutOfSync && !syncDismissed && masterResume && (
                         <div className="mb-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm">
                             <span className="text-amber-800">
-                                Your master resume has been updated — this tailored copy may be out of date.
+                                Your master resume has been updated — your tailored copy may be out of date.
                             </span>
                             <div className="ml-4 flex shrink-0 gap-3">
                                 <a href={route('builder.edit', masterResume.id)} className="font-medium text-amber-700 underline hover:text-amber-900">
                                     View master →
                                 </a>
                                 <button
+                                    type="button"
                                     className="font-medium text-amber-600 hover:text-amber-800"
                                     onClick={() => {
                                         setSyncDismissed(true);
