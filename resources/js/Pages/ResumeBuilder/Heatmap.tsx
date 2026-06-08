@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 interface HeatmapSection {
     section: string;
@@ -10,6 +10,8 @@ interface HeatmapSection {
 interface Props {
     resume: { id: number; name: string };
     sections: HeatmapSection[];
+    period: '7d' | '30d' | 'all';
+    totalViews: number;
 }
 
 const SECTION_LABELS: Record<string, string> = {
@@ -33,7 +35,7 @@ function formatSection(section: string): string {
     return section;
 }
 
-export default function Heatmap({ resume, sections }: Props) {
+export default function Heatmap({ resume, sections, period, totalViews }: Props) {
     const maxCount = Math.max(...sections.map(s => s.view_count), 1);
 
     return (
@@ -48,11 +50,29 @@ export default function Heatmap({ resume, sections }: Props) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-2xl space-y-6 px-4 sm:px-6 lg:px-8">
-                    <div>
+                    <div className="flex items-center justify-between">
                         <Link href={route('builder.index')} className="text-sm text-indigo-600 hover:underline">
                             ← Back to resumes
                         </Link>
+                        <div className="flex gap-1 rounded-lg border border-gray-200 bg-white p-1">
+                            {(['7d', '30d', 'all'] as const).map(p => (
+                                <button
+                                    key={p}
+                                    type="button"
+                                    onClick={() => router.get(route('builder.heatmap', resume.id), { period: p }, { preserveState: true })}
+                                    className={`rounded-md px-3 py-1 text-xs font-medium transition ${period === p ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    {p === '7d' ? '7 days' : p === '30d' ? '30 days' : 'All time'}
+                                </button>
+                            ))}
+                        </div>
                     </div>
+
+                    {sections.length > 0 && (
+                        <p className="text-sm text-gray-500">
+                            {totalViews} total view{totalViews !== 1 ? 's' : ''} recorded
+                        </p>
+                    )}
 
                     {sections.length === 0 ? (
                         <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">

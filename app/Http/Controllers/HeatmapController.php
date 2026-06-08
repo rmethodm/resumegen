@@ -14,8 +14,17 @@ class HeatmapController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $sections = ResumeSectionEvent::query()
-            ->where('resume_id', $resume->id)
+        $period = $request->query('period', '30d');
+        $query = ResumeSectionEvent::query()->where('resume_id', $resume->id);
+
+        if ($period === '7d') {
+            $query->where('created_at', '>=', now()->subDays(7));
+        } elseif ($period === '30d') {
+            $query->where('created_at', '>=', now()->subDays(30));
+        }
+        // 'all' = no date filter
+
+        $sections = $query
             ->selectRaw('section, COUNT(*) as view_count, AVG(dwell_ms) as avg_dwell_ms')
             ->groupBy('section')
             ->orderByDesc('view_count')
@@ -27,9 +36,13 @@ class HeatmapController extends Controller
             ])
             ->all();
 
+        $totalViews = array_sum(array_column($sections, 'view_count'));
+
         return Inertia::render('ResumeBuilder/Heatmap', [
             'resume' => ['id' => $resume->id, 'name' => $resume->name],
             'sections' => $sections,
+            'period' => $period,
+            'totalViews' => $totalViews,
         ]);
     }
 }

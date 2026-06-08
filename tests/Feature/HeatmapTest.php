@@ -7,6 +7,7 @@ use App\Models\ResumeSectionEvent;
 use App\Models\ResumeShareLink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class HeatmapTest extends TestCase
@@ -100,6 +101,39 @@ class HeatmapTest extends TestCase
         $this->actingAs($other)
             ->get(route('builder.heatmap', $resume->id))
             ->assertForbidden();
+    }
+
+    public function test_period_filter_returns_only_events_within_window(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        // Old event — outside 7-day window
+        DB::table('resume_section_events')->insert([
+            'resume_id' => $resume->id,
+            'section' => 'summary',
+            'dwell_ms' => 1000,
+            'ip_hash' => 'abc',
+            'created_at' => now()->subDays(10),
+        ]);
+
+        // Recent event — inside 7-day window
+        DB::table('resume_section_events')->insert([
+            'resume_id' => $resume->id,
+            'section' => 'experience',
+            'dwell_ms' => 2000,
+            'ip_hash' => 'def',
+            'created_at' => now()->subDays(2),
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('builder.heatmap', ['resume' => $resume->id, 'period' => '7d']))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('period', '7d')
+                ->where('sections.0.section', 'experience')
+                ->has('sections', 1) // Only the recent event
+            );
     }
 
     public function test_section_name_max_length_validated(): void
