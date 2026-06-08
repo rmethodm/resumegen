@@ -29,8 +29,7 @@ class ResumeBuilderController extends Controller
         $user = $request->user();
         $resumeCollection = $user->resumes()
             ->where('is_snapshot', false)
-            ->with('tags:id,resume_id,label,color')
-            ->with('linkedJob:id,role,company')
+            ->with(['tags:id,resume_id,label,color', 'linkedJob:id,role,company'])
             ->orderByDesc('updated_at')
             ->get();
 

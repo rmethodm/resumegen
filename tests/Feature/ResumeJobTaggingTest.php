@@ -50,7 +50,6 @@ class ResumeJobTaggingTest extends TestCase
             ->assertForbidden();
     }
 
-    // This test will pass once Task 2 wires eager-loading of linkedJob in ResumeBuilderController::index()
     public function test_dashboard_includes_linked_job_for_resumes(): void
     {
         $user = User::factory()->create();
