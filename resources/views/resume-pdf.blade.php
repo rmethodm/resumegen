@@ -69,7 +69,7 @@
   .tc-wrap  { display: table; width: 100%; }
   .tc-aside { display: table-cell; width: 30%; background: {{ $accent }}; color: #fff; padding: 0.4in; vertical-align: top; }
   .tc-main  { display: table-cell; width: 70%; padding: 0.4in; vertical-align: top; }
-  .tc-aside h1 { color: #fff; font-size: 14pt; text-align: center; margin-bottom: 4pt; }
+  .tc-aside h1 { color: #fff; font-size: {{ $sizeName }}pt; text-align: center; margin-bottom: 4pt; }
   .tc-aside .tc-sub { text-align: center; font-size: {{ $sizeContact }}pt; color: rgba(255,255,255,0.85); margin-bottom: 10pt; }
   .tc-aside .tc-label { font-size: 7pt; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; color: rgba(255,255,255,0.7); margin: 10pt 0 4pt; }
   .tc-aside .tc-item  { font-size: {{ $sizeBody }}pt; margin-bottom: 2pt; }
