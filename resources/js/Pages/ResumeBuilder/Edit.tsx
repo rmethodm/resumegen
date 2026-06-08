@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AutocompleteInput from '@/Components/AutocompleteInput';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
 import AISuggestButton from '@/Components/AISuggestButton';
@@ -1761,14 +1762,15 @@ export default function Edit({
                                                                                             />
                                                                                         )}
                                                                                     </div>
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        value={exp.title}
-                                                                                        onChange={e => updateExp(exp.id, 'title', e.target.value)}
-                                                                                       
-                                                                                        placeholder="Software Engineer"
-                                                                                        className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                                                    />
+                                                                                    <div onBlur={save}>
+                                                                                        <AutocompleteInput
+                                                                                            endpoint="job-titles"
+                                                                                            value={exp.title ?? ''}
+                                                                                            onChange={value => updateExp(exp.id, 'title', value)}
+                                                                                            placeholder="Job Title"
+                                                                                            className="rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                                        />
+                                                                                    </div>
                                                                                 </div>
                                                                                 <Field label="Start Date" value={exp.start_date} onChange={v => updateExp(exp.id, 'start_date', v)} placeholder="Jan 2022" />
                                                                                 <div className="flex flex-col gap-1">
