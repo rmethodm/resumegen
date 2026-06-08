@@ -180,7 +180,7 @@ const TEMPLATE_LABELS: Record<string, string> = {
     'academic': 'Academic CV',
     'bold': 'Minimalist Bold',
     'timeline': 'Timeline ⚠️',
-    'two-column': 'Two-Column ⚠️',
+    'two-column': 'Two-Column',
 };
 
 const freshPdfSrc = (resumeId: number) => route('builder.preview', resumeId) + '?t=' + Date.now();
