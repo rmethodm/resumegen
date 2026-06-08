@@ -82,4 +82,20 @@ class OgImageTest extends TestCase
         $this->assertStringContainsString('twitter:card', $content);
         $this->assertStringContainsString('Jane Doe', $content);
     }
+
+    public function test_og_image_contains_resumegen_branding(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'contact' => ['full_name' => 'Alex Kim', 'title' => 'Product Designer'],
+        ]);
+        $link = ResumeShareLink::factory()->for($resume)->create(['is_active' => true]);
+
+        $response = $this->get(route('public.og-image', $link->token));
+
+        $response->assertStatus(200);
+        $this->assertStringContainsString('Alex Kim', $response->getContent());
+        $this->assertStringContainsString('Product Designer', $response->getContent());
+        $this->assertStringContainsString('Resumegen', $response->getContent());
+    }
 }
