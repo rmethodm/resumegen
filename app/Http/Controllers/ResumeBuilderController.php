@@ -93,6 +93,9 @@ class ResumeBuilderController extends Controller
                 'industry' => $user->industry,
                 'years_experience' => $user->years_experience,
             ],
+            'jobApplications' => $user->jobApplications()
+                ->orderByDesc('updated_at')
+                ->get(['id', 'role', 'company']),
         ]);
     }
 

@@ -8,7 +8,8 @@ import PdfImportModal from './Partials/PdfImportModal';
 import GenerateResumeModal from './Partials/GenerateResumeModal';
 
 type PersonaDefaults = { target_role: string | null; industry: string | null; years_experience: number | null };
-type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; canGenerate: boolean; userPersona: PersonaDefaults };
+type JobApplicationOpt = { id: number; role: string; company: string };
+type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; canGenerate: boolean; userPersona: PersonaDefaults; jobApplications: JobApplicationOpt[] };
 type SortKey = 'name' | 'updated_at';
 
 const TAG_COLORS = [
@@ -97,7 +98,7 @@ function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortD
     );
 }
 
-export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, canGenerate, userPersona }: Props) {
+export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, canGenerate, userPersona, jobApplications }: Props) {
     const atLimit = resumeLimit !== null && resumeCount >= resumeLimit;
     const [creating, setCreating] = useState(false);
     const [showPdfImport, setShowPdfImport] = useState(false);
@@ -378,6 +379,28 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                         <AddTagPopover resumeId={r.id} />
                                                     )}
                                                 </div>
+                                                {/* Linked job picker — only for tailored copies */}
+                                                {r.master_resume_id !== null && (
+                                                    <div className="mt-1.5 flex items-center gap-1.5">
+                                                        <select
+                                                            value={r.job_application_id ?? ''}
+                                                            onChange={e => {
+                                                                const val = e.target.value === '' ? null : Number(e.target.value);
+                                                                router.patch(route('builder.link-job', r.id), { job_application_id: val }, { preserveScroll: true });
+                                                            }}
+                                                            className="max-w-[180px] truncate rounded border border-[#eeeef5] bg-white px-2 py-0.5 text-xs text-[#71717a] hover:border-[#4f46e5] focus:outline-none focus:ring-1 focus:ring-[#4f46e5]"
+                                                            title="Link this copy to a job application"
+                                                        >
+                                                            <option value="">Link to job…</option>
+                                                            {jobApplications.map(j => (
+                                                                <option key={j.id} value={j.id}>{j.role} @ {j.company}</option>
+                                                            ))}
+                                                        </select>
+                                                        {r.linked_job && (
+                                                            <span className="text-xs text-[#4f46e5]" title={`Linked to ${r.linked_job.role} @ ${r.linked_job.company}`}>✓</span>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </td>
                                             <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(r.updated_at)}</td>
                                             <td className="px-5 py-4">

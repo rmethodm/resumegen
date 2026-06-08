@@ -158,6 +158,8 @@ export interface ResumeRow {
     master_updated_at: string | null;
     master_synced_at: string | null;
     has_active_share_link: boolean;
+    job_application_id: number | null;
+    linked_job: { id: number; role: string; company: string } | null;
 }
 
 export interface TemplateStatRow {
