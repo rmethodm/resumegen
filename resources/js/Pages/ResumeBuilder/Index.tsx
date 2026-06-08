@@ -300,6 +300,16 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                     {r.ab_parent_id !== null && (
                                                         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">A/B</span>
                                                     )}
+                                                    {r.is_master && (
+                                                        <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700">
+                                                            Master
+                                                        </span>
+                                                    )}
+                                                    {r.master_resume_id !== null && r.master_updated_at && r.master_synced_at && r.master_updated_at > r.master_synced_at && (
+                                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                                                            ⚠ Master updated
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div className="mt-1 flex items-center gap-2">
                                                     <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#eeeef5]">
@@ -380,6 +390,22 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                         className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition text-xs font-semibold"
                                                     >
                                                         A/B
+                                                    </button>
+                                                    {r.is_master && (
+                                                        <button
+                                                            onClick={() => router.post(route('builder.create-tailored-copy', r.id), {}, { preserveScroll: false })}
+                                                            title="Create tailored copy"
+                                                            className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition text-xs font-semibold"
+                                                        >
+                                                            Tailored
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={() => router.patch(route('builder.set-master', r.id), {}, { preserveScroll: true })}
+                                                        title={r.is_master ? 'Unset master' : 'Set as master'}
+                                                        className={`rounded-lg p-1.5 transition text-xs font-semibold ${r.is_master ? 'text-violet-600 hover:bg-violet-50' : 'text-[#71717a] hover:bg-[#f5f5fb]'}`}
+                                                    >
+                                                        {r.is_master ? 'Master ✓' : 'Master'}
                                                     </button>
                                                     <button onClick={() => destroy(r.id, r.name)} title="Delete" className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 transition"><TrashIcon className="h-4 w-4" /></button>
                                                 </div>

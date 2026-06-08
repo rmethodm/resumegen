@@ -251,6 +251,8 @@ export default function Edit({
     photoUrl,
     completionScore,
     userPersona,
+    masterOutOfSync,
+    masterResume,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -275,6 +277,8 @@ export default function Edit({
     photoUrl: string | null;
     completionScore: number;
     userPersona: { target_role: string | null; industry: string | null; years_experience: number | null };
+    masterOutOfSync?: boolean;
+    masterResume?: { id: number; name: string } | null;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -323,6 +327,7 @@ export default function Edit({
 
     const { linkedInImported } = usePage().props as { linkedInImported?: boolean };
     const [showLinkedInBanner, setShowLinkedInBanner] = useState(!!linkedInImported);
+    const [syncDismissed, setSyncDismissed] = useState(false);
 
     const [ats, setAts] = useState<AtsScore | null>(null);
     const [atsLoading, setAtsLoading] = useState(false);
@@ -1477,6 +1482,28 @@ export default function Edit({
                                     type="button"
                                     onClick={() => setShowAcademicBanner(false)}
                                     className="rounded-md border border-indigo-300 px-3 py-1 text-xs text-indigo-600 hover:bg-indigo-100"
+                                >
+                                    Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {masterOutOfSync && !syncDismissed && masterResume && (
+                        <div className="mb-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm">
+                            <span className="text-amber-800">
+                                Your master resume has been updated — this tailored copy may be out of date.
+                            </span>
+                            <div className="ml-4 flex shrink-0 gap-3">
+                                <a href={route('builder.edit', masterResume.id)} className="font-medium text-amber-700 underline hover:text-amber-900">
+                                    View master →
+                                </a>
+                                <button
+                                    className="font-medium text-amber-600 hover:text-amber-800"
+                                    onClick={() => {
+                                        setSyncDismissed(true);
+                                        router.patch(route('builder.sync-master', resume.id), {}, { preserveScroll: true });
+                                    }}
                                 >
                                     Dismiss
                                 </button>

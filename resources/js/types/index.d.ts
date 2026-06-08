@@ -152,6 +152,11 @@ export interface ResumeRow {
     view_count: number;
     ab_parent_id: number | null;
     tags: ResumeTag[];
+    is_master: boolean;
+    master_resume_id: number | null;
+    master_updated_at: string | null;
+    master_synced_at: string | null;
+    has_active_share_link: boolean;
 }
 
 export interface TemplateStatRow {
