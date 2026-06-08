@@ -224,12 +224,21 @@ class UserLimits
             config('services.stripe.starter_yearly_price_id'),
         ]);
 
+        $agencyPrices = array_filter([
+            config('services.stripe.agency_monthly_price_id'),
+            config('services.stripe.agency_yearly_price_id'),
+        ]);
+
         if (in_array($priceId, $proPrices, true)) {
             return 'pro';
         }
 
         if (in_array($priceId, $starterPrices, true)) {
             return 'starter';
+        }
+
+        if (in_array($priceId, $agencyPrices, true)) {
+            return 'agency';
         }
 
         return 'free';

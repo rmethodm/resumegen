@@ -51,6 +51,8 @@ return [
         'starter_yearly_price_id' => env('STRIPE_STARTER_YEARLY_PRICE_ID'),
         'pro_monthly_price_id' => env('STRIPE_PRO_MONTHLY_PRICE_ID'),
         'pro_yearly_price_id' => env('STRIPE_PRO_YEARLY_PRICE_ID'),
+        'agency_monthly_price_id' => env('STRIPE_AGENCY_MONTHLY_PRICE_ID'),
+        'agency_yearly_price_id' => env('STRIPE_AGENCY_YEARLY_PRICE_ID'),
     ],
 
 ];

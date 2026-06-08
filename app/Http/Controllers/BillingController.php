@@ -28,7 +28,7 @@ class BillingController extends Controller
     {
         $request->validate([
             'interval' => ['required', 'in:monthly,yearly'],
-            'tier' => ['required', 'in:starter,pro'],
+            'tier' => ['required', 'in:starter,pro,agency'],
         ]);
 
         $key = $request->tier.'_'.$request->interval.'_price_id';
