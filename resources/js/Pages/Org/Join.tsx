@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
 type Props = {
     orgName: string;
@@ -7,8 +7,8 @@ type Props = {
 };
 
 export default function Join({ orgName, recruiterName, token }: Props) {
-    const { auth } = usePage().props as any;
-    const isAuthenticated = !! auth?.user;
+    const { auth } = usePage().props;
+    const isAuthenticated = !!auth.user;
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#f5f5fb]">
@@ -24,15 +24,13 @@ export default function Join({ orgName, recruiterName, token }: Props) {
                 </p>
 
                 {isAuthenticated ? (
-                    <form method="POST" action={route('org.join.store', token)}>
-                        <input type="hidden" name="_token" value={(window as any).csrfToken ?? document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? ''} />
-                        <button
-                            type="submit"
-                            className="w-full rounded-lg bg-[#4f46e5] px-4 py-3 text-sm font-semibold text-white hover:bg-[#4338ca]"
-                        >
-                            Accept & Join {orgName}
-                        </button>
-                    </form>
+                    <button
+                        type="button"
+                        onClick={() => router.post(route('org.join.store', token))}
+                        className="w-full rounded-lg bg-[#4f46e5] px-4 py-3 text-sm font-semibold text-white hover:bg-[#4338ca]"
+                    >
+                        Accept & Join {orgName}
+                    </button>
                 ) : (
                     <div className="space-y-3">
                         <a
