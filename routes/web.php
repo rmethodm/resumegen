@@ -10,6 +10,7 @@ use App\Http\Controllers\AtsScoreController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
+use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CareerPathController;
@@ -183,6 +184,16 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::get('/webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
     Route::post('/webhooks', [WebhookController::class, 'store'])->name('webhooks.store');
     Route::delete('/webhooks/{endpoint}', [WebhookController::class, 'destroy'])->name('webhooks.destroy');
+
+    // Autocomplete lookup
+    Route::middleware('throttle:60,1')->group(function () {
+        Route::get('/autocomplete/job-roles', [AutocompleteController::class, 'searchRoles'])->name('autocomplete.job-roles.search');
+        Route::get('/autocomplete/job-titles', [AutocompleteController::class, 'searchTitles'])->name('autocomplete.job-titles.search');
+    });
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::post('/autocomplete/job-roles', [AutocompleteController::class, 'storeRole'])->name('autocomplete.job-roles.store');
+        Route::post('/autocomplete/job-titles', [AutocompleteController::class, 'storeTitle'])->name('autocomplete.job-titles.store');
+    });
 });
 
 Route::get('/ref/{code}', [ReferralController::class, 'redirect'])->name('referral.redirect');
