@@ -299,6 +299,10 @@ export default function Edit({
     const summarySpell = useSpellCheck(summary ?? '');
     const allBullets = (experience ?? []).map(e => e.bullets ?? '').join(' ');
     const bulletSpell = useSpellCheck(allBullets);
+    const allEduText = (education ?? []).map(e => [e.degree, e.field].filter(Boolean).join(' ')).join(' ');
+    const eduSpell = useSpellCheck(allEduText);
+    const allCertText = (certifications ?? []).map(c => [c.name, c.issuer].filter(Boolean).join(' ')).join(' ');
+    const certSpell = useSpellCheck(allCertText);
 
     const [fontSizes, setFontSizes] = useState<FontSizes>({ ...DEFAULT_FONT_SIZES, ...(resume.font_sizes ?? {}) });
     const [fontFamily, setFontFamily] = useState<'sans' | 'serif' | 'mono'>(resume.font_family ?? 'sans');
@@ -1916,6 +1920,11 @@ export default function Edit({
                                                         <button type="button" onClick={addEdu} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                                             + Add School
                                                         </button>
+                                                        {eduSpell.length > 0 && (
+                                                            <div className="mt-1">
+                                                                <SpellBadge words={eduSpell} />
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
@@ -1978,6 +1987,11 @@ export default function Edit({
                                                         <button type="button" onClick={addCert} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                                             + Add Certification
                                                         </button>
+                                                        {certSpell.length > 0 && (
+                                                            <div className="mt-1">
+                                                                <SpellBadge words={certSpell} />
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
