@@ -254,6 +254,7 @@ export interface JobApplicationRow {
     follow_up_at: string | null;
     job_url: string | null;
     updated_at: string;
+    created_at: string;
 }
 
 export interface JobApplication {

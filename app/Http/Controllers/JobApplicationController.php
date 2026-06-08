@@ -21,7 +21,7 @@ class JobApplicationController extends Controller
             ->orderByDesc('updated_at')
             ->get([
                 'id', 'company', 'role', 'status', 'resume_id',
-                'applied_at', 'follow_up_at', 'job_url', 'updated_at',
+                'applied_at', 'follow_up_at', 'job_url', 'updated_at', 'created_at',
             ]);
 
         $resumes = $user->resumes()->orderBy('name')->get(['id', 'name']);

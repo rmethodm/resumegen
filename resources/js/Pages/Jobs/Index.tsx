@@ -93,6 +93,73 @@ function FunnelChart({ stats }: { stats: FunnelStats }) {
     );
 }
 
+function useJobAnalytics(applications: JobApplicationRow[]) {
+    return useMemo(() => {
+        const now = new Date();
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        const thisMonthCount = applications.filter(a => new Date(a.created_at) >= monthStart).length;
+
+        const cutoff = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+        const oldEnough = applications.filter(a => new Date(a.created_at) <= cutoff);
+        const responded = oldEnough.filter(a => ['interviewing', 'offered'].includes(a.status)).length;
+        const responseRate = oldEnough.length > 0 ? Math.round((responded / oldEnough.length) * 100) : 0;
+
+        const weeklyBars: { label: string; count: number }[] = [];
+        for (let i = 11; i >= 0; i--) {
+            const weekEnd = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+            const weekStart = new Date(weekEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const count = applications.filter(a => {
+                const d = new Date(a.created_at);
+                return d >= weekStart && d < weekEnd;
+            }).length;
+            weeklyBars.push({
+                label: new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(weekStart),
+                count,
+            });
+        }
+
+        return { thisMonthCount, responseRate, weeklyBars };
+    }, [applications]);
+}
+
+function WeeklyTrendChart({ applications }: { applications: JobApplicationRow[] }) {
+    const { thisMonthCount, responseRate, weeklyBars } = useJobAnalytics(applications);
+    const maxCount = Math.max(...weeklyBars.map(b => b.count), 1);
+    const BAR_MAX = 56;
+
+    return (
+        <div className="mb-4 rounded-xl border border-[#eeeef5] bg-white px-5 py-4 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+            <div className="mb-4 flex items-center gap-6">
+                <div>
+                    <div className="text-2xl font-bold text-[#0f0f1a]">{thisMonthCount}</div>
+                    <div className="text-xs text-[#a0a0b0]">Applications this month</div>
+                </div>
+                <div>
+                    <div className="text-2xl font-bold text-[#0f0f1a]">{responseRate}%</div>
+                    <div className="text-xs text-[#a0a0b0]">Response rate</div>
+                </div>
+                <div className="ml-auto text-xs font-semibold text-[#71717a]">Last 12 weeks</div>
+            </div>
+            <div className="flex items-end gap-1">
+                {weeklyBars.map((bar, i) => (
+                    <div key={i} className="flex flex-1 flex-col items-center gap-1">
+                        <div
+                            className="w-full rounded-t transition-all"
+                            style={{
+                                height: bar.count > 0 ? `${Math.max(4, Math.round((bar.count / maxCount) * BAR_MAX))}px` : '2px',
+                                backgroundColor: bar.count > 0 ? '#6366f1' : '#eeeef5',
+                            }}
+                        />
+                        {i % 3 === 0 && (
+                            <span className="text-center text-[9px] leading-tight text-[#a0a0b0]">{bar.label}</span>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export default function Index({ applications, resumes, statuses, funnelStats }: Props) {
     const [view, setView] = useState<'table' | 'kanban'>(() => {
         if (typeof window === 'undefined') return 'kanban';
@@ -174,6 +241,7 @@ export default function Index({ applications, resumes, statuses, funnelStats }: 
             <div className="py-8">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
+                    <WeeklyTrendChart applications={applications} />
                     <FunnelChart stats={funnelStats} />
 
                     <div className="mb-6 flex items-start justify-between">

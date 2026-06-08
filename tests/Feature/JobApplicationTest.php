@@ -193,6 +193,20 @@ class JobApplicationTest extends TestCase
             );
     }
 
+    public function test_jobs_index_includes_created_at_in_applications(): void
+    {
+        $user = User::factory()->create();
+        \App\Models\JobApplication::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->get(route('jobs.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Jobs/Index')
+                ->where('applications.0.created_at', fn ($v) => is_string($v) && strlen($v) > 0)
+            );
+    }
+
     public function test_kanban_drag_updates_job_status(): void
     {
         $user = User::factory()->create();
