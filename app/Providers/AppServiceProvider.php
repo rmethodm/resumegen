@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Services\ReferralRewardService;
 use App\Services\UserLimits;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -44,6 +45,13 @@ class AppServiceProvider extends ServiceProvider
 
             $tier = UserLimits::tierFromPriceId($item->stripe_price);
             User::where('id', $subscription->user_id)->update(['plan_tier' => $tier]);
+
+            if (in_array($tier, ['starter', 'pro'])) {
+                $user = User::find($subscription->user_id);
+                if ($user) {
+                    ReferralRewardService::grantIfEligible($user);
+                }
+            }
         });
 
         Subscription::deleted(function (Subscription $subscription) {
