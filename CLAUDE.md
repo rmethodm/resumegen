@@ -180,6 +180,28 @@ Routes under `/admin` are guarded by `auth` + `master_admin` middleware (`Ensure
 - `DELETE /admin/users/{user}` — deletes a user and cancels their Stripe subscription immediately (blocked for master admins and self).
 - `GET|POST /admin/career` + `GET /admin/career/create` + `GET|PUT|DELETE /admin/career/{career}/edit` → `Admin\CareerController` → `Admin/Career/Index.tsx` + `Admin/Career/Edit.tsx` — full CRUD for career articles. Named routes: `admin.career.{index,create,store,edit,update,destroy}`.
 
+### Master Resume + Tailored Copies
+Three nullable columns on `resumes`: `is_master` (bool, default false), `master_resume_id` (FK→resumes, nullOnDelete), `master_synced_at` (timestamp). Any resume can be a master — no DB-level uniqueness. Tailored copies point to their master via `master_resume_id`; stale detection compares `master.updated_at > copy.master_synced_at`.
+
+Routes (all auth + policy-gated):
+- `PATCH /builder/{resume}/set-master` (`builder.set-master`) — toggles `is_master`
+- `POST /builder/{resume}/create-tailored-copy` (`builder.create-tailored-copy`) — replicates resume, sets `master_resume_id`, assigns fresh `pdf_filename`
+- `PATCH /builder/{resume}/sync-master` (`builder.sync-master`) — sets `master_synced_at = now()`
+
+`index()` includes `is_master`, `master_resume_id`, `master_updated_at`, `master_synced_at` per resume (master's `updated_at` batch-fetched in one query). `edit()` adds `masterOutOfSync` (bool) and `masterResume` ({id, name}|null) props. Dashboard shows violet "Master" badge and amber "⚠ Master updated" stale badge (null `master_synced_at` is always considered stale). Editor shows a dismissible amber banner with "View master →" and "Dismiss" (calls sync-master + clears local state).
+
+### Recruiter Heatmaps
+`resume_section_events` is an append-only table (`created_at` only, no `updated_at` — model uses `public const UPDATED_AT = null`). Columns: `resume_id` (FK cascade), `section` (string), `dwell_ms` (unsignedInt, clamped to 120000), `ip_hash` (SHA-256 of visitor IP).
+
+Routes:
+- `POST /r/{token}/section-events` (`public.section-events`) — unauthenticated, `throttle:30,1`. Validates active + non-expired share link → 404 otherwise. Accepts `{ sections: [{ section, dwell_ms }] }` (max 20). Section regex: `^(summary|experience|education|skills|certifications|custom_[a-z0-9_]+)$`. Validation runs before try/catch; only DB inserts are wrapped.
+- `GET /builder/{resume}/heatmap` (`builder.heatmap`) — auth + ownership. Aggregates `section, COUNT(*) as view_count, AVG(dwell_ms) as avg_dwell_ms` ordered by view_count desc. Renders `ResumeBuilder/Heatmap.tsx`.
+
+`PublicView.tsx` contains a `useSectionHeatmap(token)` hook that attaches an `IntersectionObserver` (threshold 0.25) to all `[data-section]` elements, accumulates dwell time, and fires `navigator.sendBeacon` on `beforeunload` (skipped if total page time < 500ms). The five section wrappers carry `data-section="summary|experience|education|skills|certifications"`. `ResumeBuilder/Heatmap.tsx` renders a pure-CSS horizontal bar chart with empty state. Dashboard shows a "Heatmap" link per resume card when `has_active_share_link` is true (batch-queried in `index()`).
+
+### Referral Rewards
+`ReferralRewardService::grantIfEligible(User $upgradedUser)` completes the referral loop. Guards: null `referred_by_user_id` → skip; existing `upgrade` ReferralEvent for this user → skip (idempotency). Creates `ReferralEvent` (event_type `'upgrade'`), increments referrer's `referral_rewards_earned`. Then tries Stripe reward: if referrer has an active `'default'` subscription → `$sub->active()` check then `extend(now()->addMonth())`; otherwise creates a Stripe customer balance credit of -900 cents. Stripe calls are wrapped in `try/catch` with `Log::warning` on failure — DB writes are NOT wrapped (they should propagate). Wired in `AppServiceProvider` Subscription observer after `plan_tier` sync, gated on `['starter', 'pro']` tiers.
+
 ### Rate limiting
 - AI suggest endpoint: `throttle:10,1` (10 req/min)
 - ATS score endpoint: `throttle:10,1` (10 req/min)
@@ -187,6 +209,7 @@ Routes under `/admin` are guarded by `auth` + `master_admin` middleware (`Ensure
 - Interview coach endpoint: `throttle:5,1` (5 req/min)
 - API login: `throttle:10,1` (10 req/min)
 - Public question form (`POST /r/{token}/questions`): `throttle:5,1` (5 req/min)
+- Section events (`POST /r/{token}/section-events`): `throttle:30,1` (30 req/min)
 
 ### API layer (token-based, for iPhone app)
 A JSON API lives under the `/api` prefix alongside the Inertia web layer. Auth uses Laravel Sanctum personal access tokens — **not** session cookies.
