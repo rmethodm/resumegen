@@ -89,6 +89,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
     Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
     Route::post('/builder/{resume}/create-variant', [ResumeBuilderController::class, 'createVariant'])->name('builder.create-variant');
+    Route::patch('/builder/{resume}/set-master', [ResumeBuilderController::class, 'setMaster'])->name('builder.set-master');
+    Route::post('/builder/{resume}/create-tailored-copy', [ResumeBuilderController::class, 'createTailoredCopy'])->name('builder.create-tailored-copy');
+    Route::patch('/builder/{resume}/sync-master', [ResumeBuilderController::class, 'syncMaster'])->name('builder.sync-master');
     Route::get('/builder/{resume}/ab-compare', [ResumeBuilderController::class, 'abCompare'])->name('builder.ab-compare');
     Route::get('/builder/{resume}/compare', [ResumeBuilderController::class, 'compare'])->name('builder.compare');
     Route::post('/builder/{resume}/versions', [ResumeBuilderController::class, 'saveVersion'])->name('builder.save-version');
@@ -200,11 +203,11 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
     Route::resource('career', AdminCareerController::class)->names([
-        'index'   => 'career.index',
-        'create'  => 'career.create',
-        'store'   => 'career.store',
-        'edit'    => 'career.edit',
-        'update'  => 'career.update',
+        'index' => 'career.index',
+        'create' => 'career.create',
+        'store' => 'career.store',
+        'edit' => 'career.edit',
+        'update' => 'career.update',
         'destroy' => 'career.destroy',
     ])->except(['show']);
 });

@@ -36,7 +36,12 @@ class ResumeBuilderController extends Controller
             ->groupBy('resume_id')
             ->pluck('cnt', 'resume_id');
 
-        $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts) {
+        $masterIds = $resumeCollection->pluck('master_resume_id')->filter()->unique();
+        $masterUpdatedAts = $masterIds->isNotEmpty()
+            ? Resume::whereIn('id', $masterIds)->pluck('updated_at', 'id')
+            : collect();
+
+        $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts, $masterUpdatedAts) {
             $strength = ResumeStrengthScorer::score($resume);
 
             return [
@@ -53,6 +58,12 @@ class ResumeBuilderController extends Controller
                     'label' => $t->label,
                     'color' => $t->color,
                 ])->values()->all(),
+                'is_master' => $resume->is_master,
+                'master_resume_id' => $resume->master_resume_id,
+                'master_updated_at' => $resume->master_resume_id
+                    ? optional($masterUpdatedAts->get($resume->master_resume_id))?->toISOString()
+                    : null,
+                'master_synced_at' => $resume->master_synced_at?->toISOString(),
             ];
         });
 
@@ -124,6 +135,17 @@ class ResumeBuilderController extends Controller
         $isFirstResume = ! $user->has_completed_onboarding
             && $user->resumes()->count() === 1;
 
+        $masterOutOfSync = false;
+        $masterResume = null;
+        if ($resume->master_resume_id) {
+            $master = Resume::find($resume->master_resume_id);
+            if ($master) {
+                $masterResume = ['id' => $master->id, 'name' => $master->name];
+                $masterOutOfSync = $resume->master_synced_at === null
+                    || $master->updated_at->gt($resume->master_synced_at);
+            }
+        }
+
         return Inertia::render('ResumeBuilder/Edit', [
             'resume' => $resume,
             'shareLinks' => $resume->shareLinks,
@@ -160,6 +182,8 @@ class ResumeBuilderController extends Controller
                 'industry' => $user->industry,
                 'years_experience' => $user->years_experience,
             ],
+            'masterOutOfSync' => $masterOutOfSync,
+            'masterResume' => $masterResume,
         ]);
     }
 
@@ -392,6 +416,50 @@ class ResumeBuilderController extends Controller
         $variant->save();
 
         return redirect()->route('builder.edit', $variant->id);
+    }
+
+    public function setMaster(Resume $resume): RedirectResponse
+    {
+        $this->authorize('update', $resume);
+
+        $resume->update(['is_master' => ! $resume->is_master]);
+
+        return back();
+    }
+
+    public function createTailoredCopy(Resume $resume): RedirectResponse
+    {
+        $this->authorize('update', $resume);
+
+        $user = $resume->user;
+        $limit = UserLimits::resumeLimit($user);
+
+        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
+            return back()->with('featureGate', [
+                'feature' => 'resume_limit',
+                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ]);
+        }
+
+        $copy = $resume->replicate();
+        $copy->name = $resume->name.' (Tailored)';
+        $copy->master_resume_id = $resume->id;
+        $copy->master_synced_at = now();
+        $copy->is_master = false;
+        $copy->is_snapshot = false;
+        $copy->ab_parent_id = null;
+        $copy->save();
+
+        return redirect()->route('builder.edit', $copy->id);
+    }
+
+    public function syncMaster(Resume $resume): RedirectResponse
+    {
+        $this->authorize('update', $resume);
+
+        $resume->update(['master_synced_at' => now()]);
+
+        return back();
     }
 
     public function abCompare(Request $request, Resume $resume): Response

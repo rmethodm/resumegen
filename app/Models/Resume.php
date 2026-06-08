@@ -22,10 +22,14 @@ class Resume extends Model implements HasMedia
         'ats_cache', 'ats_cached_at',
         'section_order', 'custom_sections',
         'ab_parent_id',
+        'master_resume_id',
+        'is_master',
+        'master_synced_at',
     ];
 
     protected $casts = [
         'is_snapshot' => 'boolean',
+        'is_master' => 'boolean',
         'contact' => 'array',
         'experience' => 'array',
         'education' => 'array',
@@ -34,6 +38,7 @@ class Resume extends Model implements HasMedia
         'font_sizes' => 'array',
         'ats_cache' => 'array',
         'ats_cached_at' => 'datetime',
+        'master_synced_at' => 'datetime',
         'section_order' => 'array',
         'custom_sections' => 'array',
     ];
@@ -88,5 +93,15 @@ class Resume extends Model implements HasMedia
     public function abVariants(): HasMany
     {
         return $this->hasMany(Resume::class, 'ab_parent_id');
+    }
+
+    public function masterResume(): BelongsTo
+    {
+        return $this->belongsTo(Resume::class, 'master_resume_id');
+    }
+
+    public function tailoredCopies(): HasMany
+    {
+        return $this->hasMany(Resume::class, 'master_resume_id');
     }
 }
