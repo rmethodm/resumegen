@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { type FormEventHandler, useCallback, useEffect, useState } from 'react';
+import { type FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 
 interface SocialLink {
     platform: 'linkedin' | 'github' | 'x' | 'website';
@@ -48,17 +48,28 @@ export default function PortfolioSettings({
     const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
     const [checkingSlug, setCheckingSlug] = useState(false);
 
+    const abortRef = useRef<AbortController | null>(null);
+
     const checkSlug = useCallback(
         async (slug: string) => {
             if (!slug || slug === portfolioSlug || slug.length < 3) {
                 setSlugAvailable(null);
                 return;
             }
+            abortRef.current?.abort();
+            abortRef.current = new AbortController();
             setCheckingSlug(true);
             try {
-                const res = await fetch(route('portfolio.check-slug') + '?slug=' + encodeURIComponent(slug));
-                const json = await res.json() as { available: boolean };
+                const res = await fetch(
+                    route('portfolio.check-slug') + '?slug=' + encodeURIComponent(slug),
+                    { signal: abortRef.current.signal },
+                );
+                const json = (await res.json()) as { available: boolean };
                 setSlugAvailable(json.available);
+            } catch (e) {
+                if ((e as DOMException).name !== 'AbortError') {
+                    setSlugAvailable(null);
+                }
             } finally {
                 setCheckingSlug(false);
             }
