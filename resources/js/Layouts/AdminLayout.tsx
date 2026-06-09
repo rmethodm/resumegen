@@ -11,15 +11,15 @@ const safeRoute = (name: string, fallback: string): string => {
 };
 
 const NAV = [
-    { label: 'Dashboard', href: () => safeRoute('admin.dashboard', '/admin'),               pattern: 'admin.dashboard' },
-    { label: 'Users',     href: () => safeRoute('admin.users.index', '/admin/users'),        pattern: 'admin.users.*' },
-    { label: 'Orgs',      href: () => safeRoute('admin.organizations.index', '/admin/orgs'), pattern: 'admin.organizations.*' },
-    { label: 'Messages',  href: () => safeRoute('admin.messages.index', '/admin/messages'),  pattern: 'admin.messages.*' },
-    { label: 'Referrals', href: () => safeRoute('admin.referrals.index', '/admin/referrals'),pattern: 'admin.referrals.*' },
-    { label: 'Job Titles',href: () => safeRoute('admin.job-titles.index', '/admin/job-titles'), pattern: 'admin.job-titles.*' },
-    { label: 'AI Rates',  href: () => safeRoute('admin.ai-rates.index', '/admin/ai-rates'),  pattern: 'admin.ai-rates.*' },
-    { label: 'Career',    href: () => safeRoute('admin.career.index', '/admin/career'),      pattern: 'admin.career.*' },
-    { label: 'Usage',     href: () => safeRoute('admin.usage', '/admin/usage'),              pattern: 'admin.usage' },
+    { label: 'Dashboard', href: safeRoute('admin.dashboard', '/admin'),               pattern: 'admin.dashboard' },
+    { label: 'Users',     href: safeRoute('admin.users.index', '/admin/users'),        pattern: 'admin.users.*' },
+    { label: 'Orgs',      href: safeRoute('admin.organizations.index', '/admin/orgs'), pattern: 'admin.organizations.*' },
+    { label: 'Messages',  href: safeRoute('admin.messages.index', '/admin/messages'),  pattern: 'admin.messages.*' },
+    { label: 'Referrals', href: safeRoute('admin.referrals.index', '/admin/referrals'),pattern: 'admin.referrals.*' },
+    { label: 'Job Titles',href: safeRoute('admin.job-titles.index', '/admin/job-titles'), pattern: 'admin.job-titles.*' },
+    { label: 'AI Rates',  href: safeRoute('admin.ai-rates.index', '/admin/ai-rates'),  pattern: 'admin.ai-rates.*' },
+    { label: 'Career',    href: safeRoute('admin.career.index', '/admin/career'),      pattern: 'admin.career.*' },
+    { label: 'Usage',     href: safeRoute('admin.usage', '/admin/usage'),              pattern: 'admin.usage' },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         {NAV.map(item => (
                             <Link
                                 key={item.label}
-                                href={item.href()}
+                                href={item.href}
                                 className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition ${
                                     route().current(item.pattern)
                                         ? 'bg-[#4f46e5] text-white'
@@ -44,7 +44,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     </nav>
                 </div>
             </div>
-            <div>{children}</div>
+            <main>{children}</main>
         </AuthenticatedLayout>
     );
 }
