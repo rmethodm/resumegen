@@ -6,6 +6,7 @@ use App\Mail\NewPortfolioMessageMail;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\AbuseFilter;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -15,6 +16,12 @@ use Inertia\Response;
 
 class PortfolioController extends Controller
 {
+    private const RESERVED_SLUGS = [
+        'admin', 'api', 'builder', 'career', 'jobs', 'cover-letters', 'billing',
+        'profile', 'onboarding', 'register', 'login', 'logout', 'p', 'r',
+        'password', 'dashboard', 'usage', 'webhooks', 'settings',
+    ];
+
     public function show(Request $request, string $slug): Response
     {
         $user = User::where('portfolio_slug', $slug)
@@ -85,6 +92,26 @@ class PortfolioController extends Controller
         return back()->with('contactSent', true);
     }
 
+    public function checkSlug(Request $request): JsonResponse
+    {
+        $request->validate([
+            'slug' => ['required', 'string', 'min:3', 'max:30', 'regex:/^[a-z0-9-]+$/'],
+        ]);
+
+        $slug = $request->input('slug');
+
+        if (in_array($slug, self::RESERVED_SLUGS)) {
+            return response()->json(['available' => false]);
+        }
+
+        $query = User::where('portfolio_slug', $slug);
+        if ($request->user()) {
+            $query->where('id', '!=', $request->user()->id);
+        }
+
+        return response()->json(['available' => ! $query->exists()]);
+    }
+
     public function edit(Request $request): Response
     {
         $user = $request->user();
@@ -94,6 +121,7 @@ class PortfolioController extends Controller
             'portfolioHeadline' => $user->portfolio_headline,
             'portfolioBio' => $user->portfolio_bio,
             'portfolioIsPublic' => (bool) $user->portfolio_is_public,
+            'portfolioLinks' => $user->portfolio_links ?? [],
             'portfolioUrl' => $user->portfolio_slug
                 ? route('portfolio.show', $user->portfolio_slug)
                 : null,
@@ -112,10 +140,14 @@ class PortfolioController extends Controller
                 'max:30',
                 'regex:/^[a-z0-9-]+$/',
                 Rule::unique('users', 'portfolio_slug')->ignore($user->id),
+                Rule::notIn(self::RESERVED_SLUGS),
             ],
             'portfolio_headline' => ['nullable', 'string', 'max:150'],
             'portfolio_bio' => ['nullable', 'string', 'max:2000'],
             'portfolio_is_public' => ['required', 'boolean'],
+            'portfolio_links' => ['nullable', 'array', 'max:10'],
+            'portfolio_links.*.platform' => ['required', 'string', 'in:linkedin,github,x,website'],
+            'portfolio_links.*.url' => ['required', 'url', 'max:500'],
         ]);
 
         $user->update($validated);

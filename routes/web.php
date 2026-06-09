@@ -75,6 +75,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
 
     Route::get('/settings/portfolio', [PortfolioController::class, 'edit'])->name('portfolio.edit');
     Route::patch('/settings/portfolio', [PortfolioController::class, 'update'])->name('portfolio.update');
+    Route::get('/portfolio/check-slug', [PortfolioController::class, 'checkSlug'])->name('portfolio.check-slug')->middleware('throttle:10,1');
 
     Route::post('/user/two-factor-authentication', [TwoFactorController::class, 'store'])
         ->name('two-factor.enable');
