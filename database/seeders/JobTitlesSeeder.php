@@ -4,12 +4,45 @@ namespace Database\Seeders;
 
 use App\Models\JobTitle;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class JobTitlesSeeder extends Seeder
 {
+    private const EXTRAS_FILE = 'data/job_titles_extras.json';
+
     public function run(): void
     {
-        $titles = [
+        $static = $this->staticTitles();
+
+        // Persist any runtime-added rows to the extras file before a migration wipes the table.
+        $extrasFile = database_path(self::EXTRAS_FILE);
+        $savedExtras = file_exists($extrasFile) ? json_decode(file_get_contents($extrasFile), true) : [];
+
+        try {
+            $dbTitles = DB::table('job_titles')->pluck('title')->toArray();
+            $newExtras = array_diff($dbTitles, $static);
+            $savedExtras = array_values(array_unique(array_merge($savedExtras, $newExtras)));
+            if (! is_dir(database_path('data'))) {
+                mkdir(database_path('data'), 0755, true);
+            }
+            file_put_contents($extrasFile, json_encode($savedExtras, JSON_PRETTY_PRINT));
+        } catch (\Exception) {
+            // Table doesn't exist yet — fall through to saved extras only.
+        }
+
+        $all = array_unique(array_merge($static, $savedExtras));
+        sort($all);
+        $records = array_map(fn ($title) => ['title' => $title], $all);
+
+        foreach (array_chunk($records, 100) as $chunk) {
+            JobTitle::insertOrIgnore($chunk);
+        }
+    }
+
+    /** @return string[] */
+    private function staticTitles(): array
+    {
+        return [
             'Accounting Assistant', 'Accounting Clerk', 'Accounting Director',
             'Accounting Manager', 'Acquisitions Manager', 'Administrative Analyst',
             'Administrative Assistant', 'Administrative Coordinator',
@@ -453,13 +486,5 @@ class JobTitlesSeeder extends Seeder
             'Workforce Development Specialist', 'Workforce Planning Manager',
             'Workers Compensation Specialist', 'Zoning Administrator', 'Zoo Keeper',
         ];
-
-        // Remove duplicate titles
-        $titles = array_unique($titles);
-        $records = array_map(fn ($title) => ['title' => $title], $titles);
-
-        foreach (array_chunk($records, 100) as $chunk) {
-            JobTitle::upsert($chunk, ['title'], []);
-        }
     }
 }

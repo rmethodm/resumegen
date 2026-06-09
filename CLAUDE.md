@@ -82,7 +82,7 @@ Use Ziggy's `route('named.route', params)` helper — it's globally typed in `re
 `POST /builder/{resume}/beacon` accepts a raw JSON body from the `beforeunload` `navigator.sendBeacon` call in `Edit.tsx`. The `_token` field in the JSON body satisfies CSRF verification (Laravel reads it from the request body regardless of content-type). The `app.blade.php` root template includes `<meta name="csrf-token">` for this purpose.
 
 ### Templates
-Eight templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `creative`, `executive`, `ats`) are stored as a string column on `resumes`. The live preview in `Edit.tsx` is an `<iframe>` that loads `GET /builder/{resume}/preview` (the server-rendered PDF stream) — there are no inline React template components in the editor. A cache-busting `?t=<timestamp>` query param on `pdfSrc` forces the iframe to reload after each save. The PDF Blade view (`resources/views/resume-pdf.blade.php`) is the single source of truth for all template rendering.
+Thirteen templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `creative`, `executive`, `ats`, `bold`, `academic`, `timeline`, `skills-first`, `skills-first-visual`) are stored as a string column on `resumes`. The live preview in `Edit.tsx` is an `<iframe>` that loads `GET /builder/{resume}/preview` (the server-rendered PDF stream) — there are no inline React template components in the editor. A cache-busting `?t=<timestamp>` query param on `pdfSrc` forces the iframe to reload after each save. The PDF Blade view (`resources/views/resume-pdf.blade.php`) is the single source of truth for all template rendering.
 
 ### Font sizes
 `font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor save on blur, which triggers a `pdfSrc` refresh so the iframe preview reflects the new sizes via the server-rendered PDF.
@@ -102,36 +102,16 @@ Eight templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, `cr
 ### Interview Prep Coach
 `POST /builder/{resume}/interview-coach` (throttled 5 req/min) accepts `target_role` (required, max 100) and optional `job_description` (max 3000). Returns `{ questions: [{ question, hint }] }` — up to 8 STAR-framework questions via `InterviewCoachController` → `InterviewCoachService`. Usage logged to `ai_usage_logs` with `feature: 'interview_coach'`. Free users get 3 uses/month then see a 402 upgrade response. `canInterviewCoach` and `interviewCoachUsesRemaining` props passed to `Edit.tsx`. The slide-in `InterviewCoachPanel.tsx` follows the same z-40/z-30 pattern as other panels. `AbuseFilter::check()` applied to both user-supplied fields.
 
+### Grammar check (Polish)
+`POST /builder/{resume}/grammar-check` (throttled 10 req/min) accepts `field` (`summary` | `bullets`) and `content` (string, max 3000). Returns `{ result }` via `GrammarCheckController`. Rewrites the content with grammar/clarity improvements using Claude. Gated to Starter+ via `UserLimits::canGrammarCheck()` — free users see a 402 upgrade response. `canGrammarCheck` prop passed to `Edit.tsx`. Surfaces as a "Polish" button on the summary field and a "Polish all" button on the bullets section. `AbuseFilter::check()` applied to `content`.
+
 ### Share URL endpoint
 `GET /builder/{resume}/share-url` returns `{ url }` JSON via `ResumeBuilderController@shareUrl`. Auto-creates an active `ResumeShareLink` if none exists (or only inactive links exist). Named `builder.share-url`. Used by the Share popover in `Edit.tsx` to get a shareable link on demand without a page refresh.
 
 ### Resume duplicate
 `POST /builder/{resume}/duplicate` creates a copy of a resume (owned by the current user). Handled by `ResumeBuilderController@duplicate`.
 
-### Pricing tiers and limits
-The app enforces a 3-tier model: **Free** / **Starter** ($9/mo) / **Pro** ($19/mo). All limits live in `App\Services\UserLimits` — the single source of truth.
-
-| | Free | Starter | Pro |
-|---|---|---|---|
-| Resumes | 5 | 5 | unlimited |
-| Cover letters | 3 | 5 | unlimited |
-| Job applications | 3 | unlimited | unlimited |
-| AI suggestions | 30/mo | 30/mo | 500/mo |
-| Templates | all 8 | all 8 | all 8 |
-| DOCX export | ✗ | ✓ | ✓ |
-| ATS scoring | 3/mo | unlimited | unlimited |
-| Job tailoring | ✗ | ✓ | ✓ |
-| Interview coach | 3/mo | unlimited | unlimited |
-
-`User::planTier()` resolves: `is_master_admin` → `'pro'`; `is_pro` → `'pro'`; else returns `plan_tier` column value (`'free'`/`'starter'`/`'pro'`). `plan_tier` is kept in sync with Stripe via a Subscription observer in `AppServiceProvider`. All `match` expressions in `UserLimits` have explicit `'pro'` arms and a restrictive `default` fallback (capped at free-tier limits) so unknown/corrupted tiers never grant elevated access. `aiUsageThisPeriod()` is cached per-user per-month with a 60-second TTL (key: `ai_usage_{id}_{Y-m}`).
-
-`User::isPro()` is unchanged (returns `true` for `is_master_admin`, `is_pro`, or `subscribed('default')`). `is_pro` is a boolean column on `users` that admins can toggle via the admin panel.
-
-`UserFactory` has `->free()`, `->starter()`, `->pro()` states — use these in tests instead of creating Stripe subscriptions.
-
-**Gate responses:** Inertia routes flash `featureGate` to the session (`back()->with('featureGate', [...])`), which `HandleInertiaRequests::share()` pulls and sends to every page. API/JSON routes return HTTP 402 with `{ error, required_tier }`. The `UpgradeModal` component (`resources/js/Components/UpgradeModal.tsx`) handles both paths — flash-based (Inertia) and event-based (`triggerUpgradeModal(feature, requiredTier)` for XHR responses).
-
-`BillingController` drives `Billing/Index.tsx` (3-card layout: Free / Starter / Pro). The `checkout` action requires both `interval` (monthly/yearly) and `tier` (starter/pro) params. `portal` redirects to the Stripe customer portal.
+@docs/claude/pricing-and-billing.md
 
 ### Cover letters
 Full CRUD at `/cover-letters` → `CoverLetterController` → `CoverLetter/Index.tsx` + `CoverLetter/Edit.tsx`. Letters are created from pre-built templates via `App\Data\CoverLetterTemplates`. Each letter has a `template_key`, `name`, `body` (raw text), and optional `resume_id` foreign key.
@@ -205,41 +185,42 @@ Routes:
 ### Referral Rewards
 `ReferralRewardService::grantIfEligible(User $upgradedUser)` completes the referral loop. Guards: null `referred_by_user_id` → skip; existing `upgrade` ReferralEvent for this user → skip (idempotency — checked inside `DB::transaction` with `lockForUpdate()` to prevent race conditions). Creates `ReferralEvent` (event_type `'upgrade'`), increments referrer's `referral_rewards_earned`, logs success via `Log::info`. Then tries Stripe reward: if referrer has an active `'default'` subscription → `$sub->active()` check then `extend(now()->addMonth())`; otherwise creates a Stripe customer balance credit of -900 cents. Stripe calls are wrapped in `try/catch` with `Log::warning` on failure — DB writes are NOT wrapped (they should propagate). Wired in `AppServiceProvider` Subscription observer after `plan_tier` sync, gated on `['starter', 'pro']` tiers.
 
+### Public Portfolio Page
+Personal micro-site at `/p/{slug}` combining an identity landing page with a resume hub. Users claim a custom vanity slug via `PATCH /user/portfolio` (`portfolio.update`). The page is live as soon as a slug is set.
+
+**Columns on `users`:** `portfolio_slug` (string, unique, nullable, 3–30 chars `[a-z0-9-]`), `portfolio_headline` (string, nullable), `portfolio_bio` (text, nullable), `portfolio_links` (JSON, nullable — array of `{ platform, url }` where platform ∈ `linkedin|github|x|website`), `portfolio_is_public` (bool).
+
+**`portfolio_messages` table:** append-only (model uses `public const UPDATED_AT = null`). Columns: `user_id` FK cascade, `sender_name`, `sender_email`, `message`, `read_at` nullable.
+
+**Routes:**
+- `GET /p/{slug}` (`portfolio.show`) — public, unauthenticated
+- `POST /p/{slug}/contact` (`portfolio.contact`) — public, `throttle:5,1`
+- `GET /portfolio/check-slug` (`portfolio.check-slug`) — auth required, `throttle:10,1`
+- `PATCH /user/portfolio` (`portfolio.update`) — auth required
+
+**`PortfolioController`:** `show()` looks up user by `portfolio_slug`, eager-loads active non-expired share links with their resume; `contact()` validates, runs `AbuseFilter::check()` on BOTH `sender_name` AND `message`, stores `PortfolioMessage`, queues `NewPortfolioMessageMail`; `checkSlug()` checks availability excluding current user; `update()` validates with `Rule::notIn(RESERVED_SLUGS)` + `Rule::unique()->ignore()` + `distinct:strict` on platform.
+
+**Reserved slugs** (blocked at validation, documented as brand-protection): `admin, api, builder, career, jobs, cover-letters, billing, profile, onboarding, register, login, logout, p, r, password, dashboard, usage, webhooks, settings`.
+
+**`Portfolio/Show.tsx`:** Uses `PublicLayout`. Hero with `InitialsAvatar` (initials circle, deterministic color), headline, bio, social link pills. Resume grid (hidden when no active share links). Contact form with `useForm` + success flash (`contactSent` via `session()->pull()`). Guest CTA fixed top-right (`route('register')`) hidden when `auth.user` present.
+
+**`Settings/Portfolio.tsx`:** Slug input with debounced availability check (400ms, `useRef<AbortController>` for race safety), social link URL inputs using `_link_*` internal fields + `buildLinks()` assembler.
+
+**Mail:** `NewPortfolioMessageMail` — queued (`Mail::to()->queue()`), subject `"New message from {sender_name} via your portfolio"`, Markdown template at `resources/views/mail/new-portfolio-message.blade.php`.
+
 ### Rate limiting
 - AI suggest endpoint: `throttle:10,1` (10 req/min)
 - ATS score endpoint: `throttle:10,1` (10 req/min)
 - Job tailor endpoint: `throttle:5,1` (5 req/min)
 - Interview coach endpoint: `throttle:5,1` (5 req/min)
+- Grammar check endpoint: `throttle:10,1` (10 req/min)
 - API login: `throttle:10,1` (10 req/min)
 - Public question form (`POST /r/{token}/questions`): `throttle:5,1` (5 req/min)
 - Section events (`POST /r/{token}/section-events`): `throttle:30,1` (30 req/min)
+- Portfolio contact form (`POST /p/{slug}/contact`): `throttle:5,1` (5 req/min)
+- Portfolio slug check (`GET /portfolio/check-slug`): `throttle:10,1` (10 req/min)
 
-### API layer (token-based, for iPhone app)
-A JSON API lives under the `/api` prefix alongside the Inertia web layer. Auth uses Laravel Sanctum personal access tokens — **not** session cookies.
-
-**Auth endpoints** (no `auth:sanctum` required):
-- `POST /api/auth/login` — returns `{ token }`, throttled 10/min
-- `GET /api/auth/me` — returns authenticated user
-- `POST /api/auth/logout` — revokes current token
-
-**Resume endpoints** (all require `Authorization: Bearer {token}`):
-- `GET|POST /api/resumes` — index / store
-- `GET|PUT|DELETE /api/resumes/{id}` — show / update / destroy
-- `POST /api/resumes/{id}/duplicate`
-- `POST /api/resumes/{id}/ai-suggest` — throttled 10/min
-- `GET /api/resumes/{id}/ats-score` — throttled 10/min
-
-**Cover letter endpoints** (all require `Authorization: Bearer {token}`):
-- `GET|POST /api/cover-letters` — index (no body field) / store (renders body from template)
-- `GET|PUT|DELETE /api/cover-letters/{id}` — show (includes body) / update / destroy
-
-**Job application endpoints** (all require `Authorization: Bearer {token}`):
-- `GET|POST /api/jobs` — index (eager-loads `resume:id,name`) / store
-- `GET|PUT|DELETE /api/jobs/{id}` — show / update / destroy
-
-**Sanctum config:** `config/sanctum.php` sets `'guard' => []` (intentionally empty) to prevent web session fallback so only token-auth works for API requests.
-
-**API tests:** All API test files must extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). `ApiTestCase` calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum's guard cache from masking token revocation in multi-request tests.
+@docs/claude/api-layer.md
 
 ===
 

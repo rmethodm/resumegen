@@ -4,12 +4,44 @@ namespace Database\Seeders;
 
 use App\Models\JobRole;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class JobRolesSeeder extends Seeder
 {
+    private const EXTRAS_FILE = 'data/job_roles_extras.json';
+
     public function run(): void
     {
-        $roles = [
+        $static = $this->staticRoles();
+
+        $extrasFile = database_path(self::EXTRAS_FILE);
+        $savedExtras = file_exists($extrasFile) ? json_decode(file_get_contents($extrasFile), true) : [];
+
+        try {
+            $dbRoles = DB::table('job_roles')->pluck('title')->toArray();
+            $newExtras = array_diff($dbRoles, $static);
+            $savedExtras = array_values(array_unique(array_merge($savedExtras, $newExtras)));
+            if (! is_dir(database_path('data'))) {
+                mkdir(database_path('data'), 0755, true);
+            }
+            file_put_contents($extrasFile, json_encode($savedExtras, JSON_PRETTY_PRINT));
+        } catch (\Exception) {
+            // Table doesn't exist yet — fall through to saved extras only.
+        }
+
+        $all = array_unique(array_merge($static, $savedExtras));
+        sort($all);
+        $records = array_map(fn ($title) => ['title' => $title], $all);
+
+        foreach (array_chunk($records, 100) as $chunk) {
+            JobRole::insertOrIgnore($chunk);
+        }
+    }
+
+    /** @return string[] */
+    private function staticRoles(): array
+    {
+        return [
             'Accountant', 'Academic Advisor', 'Academic Coach', 'Actor',
             'Administrative Assistant', 'Administrative Coordinator', 'Administrative Manager',
             'Administrative Specialist', 'Admissions Counselor', 'Advertising Manager',
@@ -237,13 +269,5 @@ class JobRolesSeeder extends Seeder
             'Workers Compensation Specialist', 'Workforce Analyst',
             'Zoning Administrator',
         ];
-
-        // Remove duplicate titles
-        $roles = array_unique($roles);
-        $records = array_map(fn ($title) => ['title' => $title], $roles);
-
-        foreach (array_chunk($records, 100) as $chunk) {
-            JobRole::upsert($chunk, ['title'], []);
-        }
     }
 }

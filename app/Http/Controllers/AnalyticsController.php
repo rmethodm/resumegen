@@ -57,9 +57,9 @@ class AnalyticsController extends Controller
             ->join('resumes', 'resume_share_events.resume_id', '=', 'resumes.id')
             ->whereIn('resume_share_events.resume_id', $resumeIds)
             ->selectRaw(
-                'resumes.template,
-                SUM(CASE WHEN resume_share_events.event = "page_view" THEN 1 ELSE 0 END) as views,
-                SUM(CASE WHEN resume_share_events.event = "pdf_download" THEN 1 ELSE 0 END) as downloads'
+                "resumes.template,
+                SUM(CASE WHEN resume_share_events.event = 'page_view' THEN 1 ELSE 0 END) as views,
+                SUM(CASE WHEN resume_share_events.event = 'pdf_download' THEN 1 ELSE 0 END) as downloads"
             )
             ->groupBy('resumes.template')
             ->orderByDesc('views')
