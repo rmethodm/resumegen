@@ -76,7 +76,7 @@ export default function AdminUsersIndex({ users, flash }: Props) {
                                                     {!user.is_master_admin && (
                                                         <button
                                                             type="button"
-                                                            onClick={() => router.post(route('admin.users.impersonate', user.id), {}, { preserveScroll: true })}
+                                                            onClick={() => router.post(route('admin.users.impersonate', user.id))}
                                                             className="rounded-lg bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700 transition hover:bg-violet-100"
                                                         >
                                                             Impersonate
