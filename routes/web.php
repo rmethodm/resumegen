@@ -229,6 +229,7 @@ Route::middleware('throttle:10,1')->group(function () {
 
 // Public (unauthenticated) portfolio page
 Route::get('/p/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
+Route::post('/p/{slug}/contact', [PortfolioController::class, 'contact'])->name('portfolio.contact')->middleware('throttle:5,1');
 
 // Public (unauthenticated) Career Hub routes
 Route::get('/career', [CareerHubController::class, 'index'])->name('career.index');

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewPortfolioMessageMail;
 use App\Models\Resume;
 use App\Models\User;
+use App\Services\AbuseFilter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -51,9 +54,35 @@ class PortfolioController extends Controller
                 'name' => $user->name,
                 'headline' => $user->portfolio_headline,
                 'bio' => $user->portfolio_bio,
+                'links' => $user->portfolio_links ?? [],
+                'slug' => $slug,
             ],
             'resumes' => $resumes,
+            'contactSent' => session('contactSent', false),
         ])->withViewData(['og' => $og]);
+    }
+
+    public function contact(Request $request, string $slug): RedirectResponse
+    {
+        $owner = User::where('portfolio_slug', $slug)
+            ->where('portfolio_is_public', true)
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'sender_name' => ['required', 'string', 'max:100'],
+            'sender_email' => ['required', 'email'],
+            'message' => ['required', 'string', 'max:2000'],
+        ]);
+
+        if (AbuseFilter::check($validated['message'])) {
+            abort(422, 'Content policy violation');
+        }
+
+        $msg = $owner->portfolioMessages()->create($validated);
+
+        Mail::to($owner)->send(new NewPortfolioMessageMail($owner, $msg));
+
+        return back()->with('contactSent', true);
     }
 
     public function edit(Request $request): Response
