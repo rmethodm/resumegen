@@ -1,19 +1,52 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-interface AdminUser { id: number; name: string; email: string; is_pro: boolean; is_agency: boolean; is_master_admin: boolean; subscribed: boolean; resumes_count: number; created_at: string }
+interface AdminUser {
+    id: number;
+    name: string;
+    email: string;
+    is_pro: boolean;
+    is_agency: boolean;
+    is_master_admin: boolean;
+    plan_tier: string;
+    subscribed: boolean;
+    resumes_count: number;
+    cover_letters_count: number;
+    job_applications_count: number;
+    portfolio_slug: string | null;
+    last_active_at: string | null;
+    created_at: string;
+}
 interface PaginatedUsers { data: AdminUser[]; current_page: number; last_page: number; next_page_url: string | null; prev_page_url: string | null }
-interface Props { users: PaginatedUsers; flash?: { success?: string; error?: string } }
+interface Props { users: PaginatedUsers; filters: { q?: string; plan?: string }; flash?: { success?: string; error?: string } }
 
 function PlanBadge({ user }: { user: AdminUser }) {
-    if (user.is_pro)     return <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-700">Pro (Admin)</span>;
-    if (user.subscribed) return <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-700">Pro</span>;
-    return <span className="inline-flex rounded-full bg-[#f5f5fb] px-2.5 py-0.5 text-[10px] font-bold text-[#71717a]">Free</span>;
+    const tier = user.plan_tier;
+    const colors: Record<string, string> = {
+        pro:     'bg-amber-50 text-amber-700',
+        agency:  'bg-violet-50 text-violet-700',
+        starter: 'bg-blue-50 text-blue-700',
+        free:    'bg-[#f5f5fb] text-[#71717a]',
+    };
+    const label = user.is_pro ? 'Pro (Admin)' : tier.charAt(0).toUpperCase() + tier.slice(1);
+    return <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold ${colors[tier] ?? colors.free}`}>{label}</span>;
 }
 
-export default function AdminUsersIndex({ users, flash }: Props) {
+export default function AdminUsersIndex({ users, filters, flash }: Props) {
     const [confirmDelete, setConfirmDelete] = useState<AdminUser | null>(null);
+    const [search, setSearch] = useState(filters.q ?? '');
+
+    useEffect(() => {
+        const t = setTimeout(() => {
+            router.get(route('admin.users.index'), { q: search || undefined, plan: filters.plan }, { preserveState: true, replace: true });
+        }, 300);
+        return () => clearTimeout(t);
+    }, [search]);
+
+    const handlePlanFilter = (plan: string) => {
+        router.get(route('admin.users.index'), { plan: plan === 'all' ? undefined : plan, q: filters.q }, { preserveState: true, replace: true });
+    };
 
     const handleTogglePro = (user: AdminUser) => router.patch(route('admin.users.toggle-pro', user.id), {}, { preserveScroll: true });
     const handleDelete = (user: AdminUser) => router.delete(route('admin.users.destroy', user.id), { preserveScroll: true, onSuccess: () => setConfirmDelete(null) });
@@ -33,11 +66,30 @@ export default function AdminUsersIndex({ users, flash }: Props) {
                     {flash?.success && <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{flash.success}</div>}
                     {flash?.error   && <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{flash.error}</div>}
 
+                    <div className="mb-4 flex flex-wrap items-center gap-3">
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            placeholder="Search name or email…"
+                            className="rounded-lg border border-[#eeeef5] px-3 py-1.5 text-sm text-[#0f0f1a] placeholder-[#c4c4d0] focus:border-[#4f46e5] focus:outline-none"
+                        />
+                        <select
+                            value={filters.plan ?? 'all'}
+                            onChange={e => handlePlanFilter(e.target.value)}
+                            className="rounded-lg border border-[#eeeef5] px-3 py-1.5 text-sm text-[#71717a] focus:border-[#4f46e5] focus:outline-none"
+                        >
+                            {['all','free','starter','pro','agency'].map(p => (
+                                <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <table className="min-w-full text-sm">
                             <thead>
                                 <tr className="border-b border-[#eeeef5] bg-[#fafafe] text-left">
-                                    {['Name', 'Email', 'Plan', 'Resumes', 'Joined', 'Actions'].map(h => (
+                                    {['Name', 'Email', 'Plan', 'Resumes', 'CLs', 'Jobs', 'Portfolio', 'Last Active', 'Joined', 'Actions'].map(h => (
                                         <th key={h} className="px-5 py-3 text-[10px] font-bold uppercase tracking-wide text-[#c4c4d0]">{h}</th>
                                     ))}
                                 </tr>
@@ -54,6 +106,14 @@ export default function AdminUsersIndex({ users, flash }: Props) {
                                             <td className="px-5 py-3 text-[#71717a]">{user.email}</td>
                                             <td className="px-5 py-3"><PlanBadge user={user} /></td>
                                             <td className="px-5 py-3 text-[#71717a]">{user.resumes_count}</td>
+                                            <td className="px-5 py-3 text-[#71717a]">{user.cover_letters_count}</td>
+                                            <td className="px-5 py-3 text-[#71717a]">{user.job_applications_count}</td>
+                                            <td className="px-5 py-3 text-xs">
+                                                {user.portfolio_slug
+                                                    ? <a href={`/p/${user.portfolio_slug}`} target="_blank" className="text-[#4f46e5] underline">{user.portfolio_slug}</a>
+                                                    : <span className="text-[#c4c4d0]">—</span>}
+                                            </td>
+                                            <td className="px-5 py-3 text-xs text-[#a0a0b0]">{user.last_active_at ? new Date(user.last_active_at).toLocaleDateString() : '—'}</td>
                                             <td className="px-5 py-3 text-xs text-[#a0a0b0]">{user.created_at}</td>
                                             <td className="px-5 py-3">
                                                 <div className="flex gap-2">

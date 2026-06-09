@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AiUsageLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,14 +12,31 @@ use Inertia\Response;
 
 class AdminUserController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $users = User::query()
+        $query = User::query()
             ->with('subscriptions')
-            ->withCount('resumes')
-            ->orderBy('created_at')
-            ->orderBy('id')
-            ->paginate(15)
+            ->withCount(['resumes', 'coverLetters', 'jobApplications'])
+            ->addSelect([
+                'last_active_at' => AiUsageLog::select('created_at')
+                    ->whereColumn('user_id', 'users.id')
+                    ->latest()
+                    ->limit(1),
+            ]);
+
+        if ($request->filled('q')) {
+            $q = $request->string('q');
+            $query->where(fn ($sub) => $sub
+                ->where('name', 'like', "%{$q}%")
+                ->orWhere('email', 'like', "%{$q}%")
+            );
+        }
+
+        if ($request->filled('plan') && $request->plan !== 'all') {
+            $query->where('plan_tier', $request->plan);
+        }
+
+        $users = $query->latest()->paginate(25)->withQueryString()
             ->through(fn (User $user) => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -26,13 +44,20 @@ class AdminUserController extends Controller
                 'is_pro' => $user->is_pro,
                 'is_agency' => $user->is_agency,
                 'is_master_admin' => $user->is_master_admin,
+                'plan_tier' => $user->plan_tier ?? 'free',
                 'subscribed' => $user->subscribed('default'),
                 'resumes_count' => $user->resumes_count,
+                'cover_letters_count' => $user->cover_letters_count,
+                'job_applications_count' => $user->job_applications_count,
+                'portfolio_slug' => $user->portfolio_slug,
+                'last_active_at' => $user->last_active_at,
                 'created_at' => $user->created_at->toDateString(),
             ]);
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
+            'filters' => $request->only(['q', 'plan']),
+            'flash' => session()->only(['success', 'error']),
         ]);
     }
 
