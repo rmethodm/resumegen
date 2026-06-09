@@ -1,58 +1,45 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminAiRateController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOrganizationController;
 use App\Http\Controllers\Admin\AdminReferralController;
-use App\Http\Controllers\Admin\AdminUsageController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CareerController as AdminCareerController;
 use App\Http\Controllers\AdminImpersonationController;
-use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApplicationContactController;
-use App\Http\Controllers\AtsScoreController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CareerHubController;
-use App\Http\Controllers\CareerPathController;
 use App\Http\Controllers\CoverLetterController;
-use App\Http\Controllers\CoverLetterTailorController;
-use App\Http\Controllers\GrammarCheckController;
 use App\Http\Controllers\HeatmapController;
-use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\InterviewNoteController;
 use App\Http\Controllers\JobApplicationController;
-use App\Http\Controllers\MockInterviewController;
-use App\Http\Controllers\NegotiationScriptController;
+use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\OrgController;
 use App\Http\Controllers\OrgInviteController;
 use App\Http\Controllers\OrgJoinController;
 use App\Http\Controllers\OrgResumeController;
-use App\Http\Controllers\PdfImportController;
 use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
-use App\Http\Controllers\QuantifyBulletController;
+use App\Http\Controllers\PublicThreadController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\ResumeBuilderController;
-use App\Http\Controllers\ResumeGeneratorController;
 use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\SectionEventController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
-use App\Http\Controllers\TailorController;
-use App\Http\Controllers\UsageController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -105,43 +92,8 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
     Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
     Route::post('/builder/{resume}/create-variant', [ResumeBuilderController::class, 'createVariant'])->name('builder.create-variant');
-    Route::patch('/builder/{resume}/set-master', [ResumeBuilderController::class, 'setMaster'])->name('builder.set-master');
     Route::patch('/builder/{resume}/link-job', [ResumeBuilderController::class, 'linkJob'])->name('builder.link-job');
-    Route::post('/builder/{resume}/create-tailored-copy', [ResumeBuilderController::class, 'createTailoredCopy'])->name('builder.create-tailored-copy');
-    Route::patch('/builder/{resume}/sync-master', [ResumeBuilderController::class, 'syncMaster'])->name('builder.sync-master');
-    Route::post('/builder/{resume}/pull-from-master', [ResumeBuilderController::class, 'pullFromMaster'])->name('builder.pull-from-master');
-    Route::get('/builder/{resume}/ab-compare', [ResumeBuilderController::class, 'abCompare'])->name('builder.ab-compare');
-    Route::get('/builder/{resume}/compare', [ResumeBuilderController::class, 'compare'])->name('builder.compare');
     Route::get('/builder/{resume}/heatmap', [HeatmapController::class, 'show'])->name('builder.heatmap');
-    Route::post('/builder/{resume}/versions', [ResumeBuilderController::class, 'saveVersion'])->name('builder.save-version');
-    Route::post('/builder/{resume}/ai-suggest', [AiSuggestController::class, 'suggest'])
-        ->middleware('throttle:10,1')
-        ->name('builder.ai-suggest');
-    Route::post('/builder/{resume}/tailor', [TailorController::class, 'tailor'])
-        ->middleware('throttle:5,1')
-        ->name('builder.tailor');
-    Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])
-        ->middleware('throttle:5,1')
-        ->name('builder.interview-coach');
-    Route::post('/builder/{resume}/mock-interview', [MockInterviewController::class, 'chat'])
-        ->middleware('throttle:10,1')
-        ->name('builder.mock-interview');
-    Route::post('/builder/{resume}/quantify-bullet', [QuantifyBulletController::class, 'store'])
-        ->middleware('throttle:10,1')
-        ->name('builder.quantify-bullet');
-    Route::post('/builder/{resume}/grammar-check', [GrammarCheckController::class, 'check'])
-        ->middleware('throttle:5,1')
-        ->name('builder.grammar-check');
-    Route::get('/builder/{resume}/ats-score', [AtsScoreController::class, 'show'])
-        ->middleware('throttle:10,1')
-        ->name('builder.ats-score');
-    Route::delete('/builder/{resume}/ats-score', [AtsScoreController::class, 'destroy'])
-        ->name('builder.ats-score.destroy');
-    Route::get('/builder/{resume}/career-paths', [CareerPathController::class, 'show'])
-        ->middleware('throttle:5,1')
-        ->name('builder.career-paths');
-    Route::delete('/builder/{resume}/career-paths', [CareerPathController::class, 'destroy'])
-        ->name('builder.career-paths.destroy');
     Route::get('/builder/{resume}/strength-score', [StrengthScoreController::class, 'show'])
         ->middleware('throttle:10,1')
         ->name('builder.strength-score');
@@ -162,10 +114,6 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::get('/cover-letters/{letter}', [CoverLetterController::class, 'edit'])->name('cover-letters.edit');
     Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
     Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
-    Route::post('/cover-letters/{letter}/ai-tailor', [CoverLetterTailorController::class, 'tailor'])
-        ->name('cover-letters.ai-tailor')
-        ->middleware('throttle:5,1');
-
     Route::get('/jobs', [JobApplicationController::class, 'index'])->name('jobs.index');
     Route::post('/jobs', [JobApplicationController::class, 'store'])->name('jobs.store');
     Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
@@ -176,27 +124,15 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::delete('/jobs/{application}/notes/{note}', [InterviewNoteController::class, 'destroy'])->name('jobs.notes.destroy');
     Route::post('/jobs/{application}/contacts', [ApplicationContactController::class, 'store'])->name('jobs.contacts.store');
     Route::delete('/jobs/{application}/contacts/{contact}', [ApplicationContactController::class, 'destroy'])->name('jobs.contacts.destroy');
-    Route::post('/jobs/{job}/negotiation-script', [NegotiationScriptController::class, 'store'])
-        ->name('jobs.negotiation-script')
-        ->middleware('throttle:5,1');
-
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
 
-    Route::get('/usage', [UsageController::class, 'index'])->name('usage.index');
     Route::get('/settings/referral', [ReferralController::class, 'show'])->name('referral.show');
-    Route::get('/messages', fn () => Inertia::render('Messages/Index'))->name('messages.index');
-
-    Route::post('/builder/generate', [ResumeGeneratorController::class, 'generate'])
-        ->name('builder.generate')
-        ->middleware('throttle:3,1');
-
-    Route::post('/import/pdf', [PdfImportController::class, 'extract'])
-        ->name('import.pdf.extract')
-        ->middleware('throttle:5,1');
-    Route::post('/import/pdf/confirm', [PdfImportController::class, 'confirm'])
-        ->name('import.pdf.confirm');
+    Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
+    Route::patch('/messages/{message}/read', [MessagesController::class, 'markRead'])->name('messages.read');
+    Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');
+    Route::delete('/messages/{message}', [MessagesController::class, 'destroy'])->name('messages.destroy');
 
     Route::get('/webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
     Route::post('/webhooks', [WebhookController::class, 'store'])->name('webhooks.store');
@@ -247,7 +183,8 @@ Route::get('/career/{slug}', [CareerHubController::class, 'show'])->name('career
 Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
 Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
 Route::get('/r/{token}/docx', [PublicResumeController::class, 'downloadDocx'])->name('public.docx');
-Route::post('/r/{token}/questions', [PublicResumeController::class, 'storeQuestion'])->middleware('throttle:5,1')->name('public.question');
+Route::post('/r/{token}/threads', [PublicThreadController::class, 'store'])->middleware('throttle:5,1')->name('public.thread.store');
+Route::post('/r/{token}/threads/{thread}/messages', [PublicThreadController::class, 'addMessage'])->middleware('throttle:10,1')->name('public.thread.message');
 Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image');
 Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'])
     ->middleware('throttle:30,1')
@@ -255,7 +192,6 @@ Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'
 
 Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/usage', [AdminUsageController::class, 'index'])->name('usage');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
     Route::patch('/users/{user}/toggle-agency', [AdminUserController::class, 'toggleAgency'])->name('users.toggle-agency');
@@ -279,9 +215,6 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::post('/job-titles', [AdminJobTitleController::class, 'storeTitle'])->name('job-titles.store');
     Route::patch('/job-titles/{title}', [AdminJobTitleController::class, 'updateTitle'])->name('job-titles.update');
     Route::delete('/job-titles/{title}', [AdminJobTitleController::class, 'destroyTitle'])->name('job-titles.destroy');
-
-    Route::get('/ai-rates', [AdminAiRateController::class, 'index'])->name('ai-rates.index');
-    Route::post('/ai-rates', [AdminAiRateController::class, 'store'])->name('ai-rates.store');
 
     Route::resource('career', AdminCareerController::class)->names([
         'index' => 'career.index',

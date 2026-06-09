@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\NewQuestionReceived;
 use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
 use App\Services\DocxGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class PublicResumeController extends Controller
@@ -80,38 +78,5 @@ class PublicResumeController extends Controller
         return response()->streamDownload(function () use ($word) {
             $word->save('php://output');
         }, $filename, ['Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
-    }
-
-    public function storeQuestion(Request $request, string $token)
-    {
-        $link = ResumeShareLink::with('resume.user')->where('token', $token)->firstOrFail();
-
-        abort_if(
-            ! $link->is_active || ($link->expires_at && $link->expires_at->isPast()),
-            410,
-            'This link is no longer active.'
-        );
-
-        $validated = $request->validate([
-            'sender_name' => ['required', 'string', 'max:150'],
-            'sender_email' => ['required', 'email', 'max:150'],
-            'sender_phone' => ['nullable', 'string', 'max:30'],
-            'message' => ['required', 'string', 'max:2000'],
-        ]);
-
-        $question = $link->questions()->create([
-            ...$validated,
-            'resume_id' => $link->resume_id,
-        ]);
-
-        ResumeShareEvent::log($request, $link, 'question_submitted');
-
-        try {
-            Mail::to($link->resume->user->email)->queue(new NewQuestionReceived($question, $link->resume));
-        } catch (\Throwable) {
-            // Mail failure must never break the public form
-        }
-
-        return back()->with('questionSubmitted', true);
     }
 }
