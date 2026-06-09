@@ -85,6 +85,7 @@ class AdminOrganizationsTest extends TestCase
         $org = Organization::factory()->create(['owner_id' => $user->id]);
 
         $this->actingAs($user)->get(route('admin.organizations.index'))->assertForbidden();
+        $this->actingAs($user)->get(route('admin.organizations.show', $org))->assertForbidden();
         $this->actingAs($user)->delete(route('admin.organizations.destroy', $org))->assertForbidden();
     }
 }

@@ -18,7 +18,12 @@ interface Paginated {
     next_page_url: string | null;
 }
 
-export default function AdminOrgsIndex({ organizations }: { organizations: Paginated }) {
+interface Props {
+    organizations: Paginated;
+    flash?: { success?: string; error?: string };
+}
+
+export default function AdminOrgsIndex({ organizations, flash }: Props) {
     const [confirmDelete, setConfirmDelete] = useState<OrgRow | null>(null);
 
     return (
@@ -27,6 +32,11 @@ export default function AdminOrgsIndex({ organizations }: { organizations: Pagin
             <div className="py-8">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h1 className="mb-6 text-xl font-extrabold tracking-tight text-[#0f0f1a]">Organizations</h1>
+                    {flash?.success && (
+                        <div className="mb-4 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
+                            {flash.success}
+                        </div>
+                    )}
                     <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <table className="min-w-full text-sm">
                             <thead>
