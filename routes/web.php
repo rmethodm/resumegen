@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOrganizationController;
 use App\Http\Controllers\Admin\AdminReferralController;
@@ -266,6 +267,18 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::patch('/messages/{message}/read', [AdminMessageController::class, 'markRead'])->name('messages.read');
     Route::delete('/messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
     Route::get('/referrals', [AdminReferralController::class, 'index'])->name('referrals.index');
+    Route::get('/job-titles', [AdminJobTitleController::class, 'index'])->name('job-titles.index');
+
+    Route::delete('/job-roles', [AdminJobTitleController::class, 'bulkDestroyRoles'])->name('job-roles.bulk-destroy');
+    Route::post('/job-roles', [AdminJobTitleController::class, 'storeRole'])->name('job-roles.store');
+    Route::patch('/job-roles/{role}', [AdminJobTitleController::class, 'updateRole'])->name('job-roles.update');
+    Route::delete('/job-roles/{role}', [AdminJobTitleController::class, 'destroyRole'])->name('job-roles.destroy');
+
+    Route::delete('/job-titles', [AdminJobTitleController::class, 'bulkDestroyTitles'])->name('job-titles.bulk-destroy');
+    Route::post('/job-titles', [AdminJobTitleController::class, 'storeTitle'])->name('job-titles.store');
+    Route::patch('/job-titles/{title}', [AdminJobTitleController::class, 'updateTitle'])->name('job-titles.update');
+    Route::delete('/job-titles/{title}', [AdminJobTitleController::class, 'destroyTitle'])->name('job-titles.destroy');
+
     Route::resource('career', AdminCareerController::class)->names([
         'index' => 'career.index',
         'create' => 'career.create',
