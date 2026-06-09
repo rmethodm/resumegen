@@ -7,6 +7,7 @@ use App\Models\JobRole;
 use App\Models\JobTitle;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -43,7 +44,7 @@ class AdminJobTitleController extends Controller
 
     public function updateRole(Request $request, JobRole $role): RedirectResponse
     {
-        $request->validate(['title' => ['required', 'string', 'min:2', 'max:150']]);
+        $request->validate(['title' => ['required', 'string', 'min:2', 'max:150', Rule::unique('job_roles', 'title')->ignore($role->id)]]);
         $role->update(['title' => $this->titleCase($request->string('title')->toString())]);
 
         return back()->with('success', 'Role updated.');
@@ -58,7 +59,7 @@ class AdminJobTitleController extends Controller
 
     public function bulkDestroyRoles(Request $request): RedirectResponse
     {
-        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        $request->validate(['ids' => ['required', 'array', 'min:1'], 'ids.*' => ['integer']]);
         JobRole::whereIn('id', $request->input('ids'))->delete();
 
         return back()->with('success', 'Roles deleted.');
@@ -74,7 +75,7 @@ class AdminJobTitleController extends Controller
 
     public function updateTitle(Request $request, JobTitle $title): RedirectResponse
     {
-        $request->validate(['title' => ['required', 'string', 'min:2', 'max:150']]);
+        $request->validate(['title' => ['required', 'string', 'min:2', 'max:150', Rule::unique('job_titles', 'title')->ignore($title->id)]]);
         $title->update(['title' => $this->titleCase($request->string('title')->toString())]);
 
         return back()->with('success', 'Title updated.');
@@ -89,7 +90,7 @@ class AdminJobTitleController extends Controller
 
     public function bulkDestroyTitles(Request $request): RedirectResponse
     {
-        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        $request->validate(['ids' => ['required', 'array', 'min:1'], 'ids.*' => ['integer']]);
         JobTitle::whereIn('id', $request->input('ids'))->delete();
 
         return back()->with('success', 'Titles deleted.');

@@ -101,6 +101,17 @@ class AdminJobTitlesTest extends TestCase
             ->assertSessionHasErrors('title');
     }
 
+    public function test_update_job_role_rejects_duplicate_title(): void
+    {
+        $admin = User::factory()->create(['is_master_admin' => true]);
+        JobRole::create(['title' => 'Existing Role']);
+        $role = JobRole::create(['title' => 'Other Role']);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.job-roles.update', $role), ['title' => 'Existing Role'])
+            ->assertSessionHasErrors('title');
+    }
+
     public function test_blocked_for_non_admin(): void
     {
         $user = User::factory()->create();
