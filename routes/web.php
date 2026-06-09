@@ -36,6 +36,7 @@ use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
+use App\Http\Controllers\ResumeThreadController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\SectionEventController;
 use App\Http\Controllers\ShareLinkController;
@@ -106,8 +107,10 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
-    Route::patch('/builder/{resume}/questions/{question}/read', [ShareLinkController::class, 'markRead'])->name('questions.read');
-    Route::patch('/builder/{resume}/questions/read-all', [ShareLinkController::class, 'markAllRead'])->name('questions.read-all');
+    Route::get('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'show'])->name('builder.thread');
+    Route::post('/builder/{resume}/threads/{thread}/reply', [ResumeThreadController::class, 'reply'])->name('builder.thread.reply');
+    Route::patch('/builder/{resume}/threads/{thread}/read', [ResumeThreadController::class, 'read'])->name('builder.thread.read');
+    Route::delete('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'destroy'])->name('builder.thread.destroy');
 
     Route::get('/cover-letters', [CoverLetterController::class, 'index'])->name('cover-letters.index');
     Route::post('/cover-letters', [CoverLetterController::class, 'store'])->name('cover-letters.store');
