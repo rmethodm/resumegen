@@ -12,11 +12,26 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const { user, orgRole } = usePage().props.auth;
+    const { impersonating } = usePage().props as any;
     const [showingNav, setShowingNav] = useState(false);
     const { isDark, toggle } = useDarkMode();
 
     return (
         <div className="min-h-screen bg-[#f5f5fb] dark:bg-gray-900">
+            {impersonating && (
+                <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-sm font-medium text-amber-800">
+                    Impersonating <strong>{impersonating.name}</strong>
+                    {' — '}
+                    <Link
+                        href={route('admin.impersonate.destroy')}
+                        method="delete"
+                        as="button"
+                        className="underline hover:text-amber-900"
+                    >
+                        Stop
+                    </Link>
+                </div>
+            )}
             <nav className="border-b border-[#eeeef5] bg-white dark:border-gray-700 dark:bg-gray-800">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-[52px] items-center justify-between">

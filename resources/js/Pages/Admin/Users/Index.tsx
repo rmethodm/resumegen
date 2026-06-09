@@ -73,6 +73,15 @@ export default function AdminUsersIndex({ users, flash }: Props) {
                                                     >
                                                         {user.is_agency ? 'Agency ✓' : 'Agency'}
                                                     </button>
+                                                    {!user.is_master_admin && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => router.post(route('admin.users.impersonate', user.id), {}, { preserveScroll: true })}
+                                                            className="rounded-lg bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700 transition hover:bg-violet-100"
+                                                        >
+                                                            Impersonate
+                                                        </button>
+                                                    )}
                                                     <button disabled={isProtected} onClick={() => setConfirmDelete(user)}
                                                         className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${isProtected ? 'cursor-not-allowed text-[#c4c4d0]' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>
                                                         Delete

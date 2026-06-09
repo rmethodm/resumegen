@@ -43,6 +43,9 @@ class HandleInertiaRequests extends Middleware
                 'error' => session('error'),
             ],
             'featureGate' => session()->pull('featureGate'),
+            'impersonating' => session()->has('impersonating_id') ? [
+                'name' => $request->user()?->name,
+            ] : null,
         ];
     }
 

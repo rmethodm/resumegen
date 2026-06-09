@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUsageController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CareerController as AdminCareerController;
+use App\Http\Controllers\AdminImpersonationController;
 use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApplicationContactController;
@@ -254,6 +255,7 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
     Route::patch('/users/{user}/toggle-agency', [AdminUserController::class, 'toggleAgency'])->name('users.toggle-agency');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{user}/impersonate', [AdminImpersonationController::class, 'store'])->name('users.impersonate');
     Route::resource('career', AdminCareerController::class)->names([
         'index' => 'career.index',
         'create' => 'career.create',
@@ -263,5 +265,7 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
         'destroy' => 'career.destroy',
     ])->except(['show']);
 });
+
+Route::middleware('auth')->delete('/admin/impersonate', [AdminImpersonationController::class, 'destroy'])->name('admin.impersonate.destroy');
 
 require __DIR__.'/auth.php';
