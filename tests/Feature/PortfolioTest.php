@@ -228,4 +228,13 @@ class PortfolioTest extends TestCase
             'message' => 'Hello!',
         ])->assertSessionHas('contactSent', true);
     }
+
+    public function test_portfolio_slug_check_returns_false_for_reserved_slug(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('portfolio.check-slug', ['slug' => 'admin']))
+            ->assertJson(['available' => false]);
+    }
 }

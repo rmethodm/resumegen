@@ -16,6 +16,8 @@ use Inertia\Response;
 
 class PortfolioController extends Controller
 {
+    // Brand-protection slugs — these are not routing conflicts (portfolios live under /p/)
+    // but are reserved to prevent impersonation or user confusion.
     private const RESERVED_SLUGS = [
         'admin', 'api', 'builder', 'career', 'jobs', 'cover-letters', 'billing',
         'profile', 'onboarding', 'register', 'login', 'logout', 'p', 'r',
@@ -95,7 +97,7 @@ class PortfolioController extends Controller
     public function checkSlug(Request $request): JsonResponse
     {
         $request->validate([
-            'slug' => ['required', 'string', 'min:3', 'max:30', 'regex:/^[a-z0-9-]+$/'],
+            'slug' => ['required', 'string', 'min:3', 'max:30', 'regex:/^[a-z0-9][a-z0-9-]*[a-z0-9]$/'],
         ]);
 
         $slug = $request->input('slug');
@@ -138,7 +140,7 @@ class PortfolioController extends Controller
                 'string',
                 'min:3',
                 'max:30',
-                'regex:/^[a-z0-9-]+$/',
+                'regex:/^[a-z0-9][a-z0-9-]*[a-z0-9]$/',
                 Rule::unique('users', 'portfolio_slug')->ignore($user->id),
                 Rule::notIn(self::RESERVED_SLUGS),
             ],
