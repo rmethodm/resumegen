@@ -74,13 +74,13 @@ class PortfolioController extends Controller
             'message' => ['required', 'string', 'max:2000'],
         ]);
 
-        if (AbuseFilter::check($validated['message'])) {
-            abort(422, 'Content policy violation');
+        if (AbuseFilter::check($validated['sender_name']) || AbuseFilter::check($validated['message'])) {
+            return back()->withErrors(['message' => 'Content policy violation'])->withInput();
         }
 
-        $msg = $owner->portfolioMessages()->create($validated);
+        $message = $owner->portfolioMessages()->create($validated);
 
-        Mail::to($owner)->send(new NewPortfolioMessageMail($owner, $msg));
+        Mail::to($owner)->queue(new NewPortfolioMessageMail($owner, $message));
 
         return back()->with('contactSent', true);
     }
