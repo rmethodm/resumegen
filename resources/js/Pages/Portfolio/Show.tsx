@@ -44,12 +44,11 @@ const PLATFORM_ICONS: Record<string, string> = {
 };
 
 function InitialsAvatar({ name }: { name: string }) {
-    const initials = name
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase();
+    const parts = name.split(' ');
+    const initials = (parts.length >= 2
+        ? parts[0][0] + parts[parts.length - 1][0]
+        : (parts[0] ?? '').slice(0, 2)
+    ).toUpperCase();
     const palette = ['bg-indigo-500', 'bg-violet-500', 'bg-blue-500', 'bg-emerald-500', 'bg-rose-500'];
     const color = palette[name.charCodeAt(0) % palette.length];
 
@@ -82,7 +81,7 @@ export default function PortfolioShow({ owner, resumes, contactSent }: Props) {
             {!auth?.user && (
                 <div className="fixed right-4 top-4 z-50">
                     <a
-                        href="/register"
+                        href={route('register')}
                         className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700"
                     >
                         Build yours free →
