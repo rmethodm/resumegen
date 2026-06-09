@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUsageController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CareerController as AdminCareerController;
-use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AiSuggestController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApplicationContactController;

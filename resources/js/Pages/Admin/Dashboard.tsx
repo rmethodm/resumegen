@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import { type PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
 interface Stats {
@@ -11,23 +12,15 @@ interface Stats {
     published_articles: number;
 }
 
-const safeRoute = (name: string, fallback: string): string => {
-    try {
-        return route(name);
-    } catch {
-        return fallback;
-    }
-};
-
-export default function AdminDashboard({ stats }: { stats: Stats }) {
+export default function AdminDashboard({ stats }: PageProps<{ stats: Stats }>) {
     const cards = [
-        { label: 'Users',               count: stats.users,                href: safeRoute('admin.users.index', '/admin/users'),             description: 'Registered accounts' },
-        { label: 'Organizations',        count: stats.organizations,         href: safeRoute('admin.organizations.index', '/admin/orgs'),      description: 'Agency workspaces' },
-        { label: 'Unread Messages',      count: stats.unread_messages,       href: safeRoute('admin.messages.index', '/admin/messages'),       description: 'Portfolio contact forms' },
-        { label: 'Referral Conversions', count: stats.referral_conversions,  href: safeRoute('admin.referrals.index', '/admin/referrals'),     description: 'Upgrade events' },
-        { label: 'Job Titles',           count: stats.job_titles_count,      href: safeRoute('admin.job-titles.index', '/admin/job-titles'),   description: 'Roles + title entries' },
-        { label: 'AI Rates',             count: stats.ai_rates_count,        href: safeRoute('admin.ai-rates.index', '/admin/ai-rates'),       description: 'Model pricing rows' },
-        { label: 'Published Articles',   count: stats.published_articles,    href: safeRoute('admin.career.index', '/admin/career'),           description: 'Career hub articles' },
+        { label: 'Users',               count: stats.users,                href: route('admin.users.index'),    description: 'Registered accounts' },
+        { label: 'Organizations',        count: stats.organizations,         href: '/admin/orgs',                 description: 'Agency workspaces' },
+        { label: 'Unread Messages',      count: stats.unread_messages,       href: '/admin/messages',             description: 'Portfolio contact forms' },
+        { label: 'Referral Conversions', count: stats.referral_conversions,  href: '/admin/referrals',            description: 'Upgrade events' },
+        { label: 'Job Titles',           count: stats.job_titles_count,      href: '/admin/job-titles',           description: 'Roles + title entries' },
+        { label: 'AI Rates',             count: stats.ai_rates_count,        href: '/admin/ai-rates',             description: 'Model pricing rows' },
+        { label: 'Published Articles',   count: stats.published_articles,    href: route('admin.career.index'),   description: 'Career hub articles' },
     ];
 
     return (
