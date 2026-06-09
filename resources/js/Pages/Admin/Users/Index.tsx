@@ -1,4 +1,4 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -19,7 +19,7 @@ export default function AdminUsersIndex({ users, flash }: Props) {
     const handleDelete = (user: AdminUser) => router.delete(route('admin.users.destroy', user.id), { preserveScroll: true, onSuccess: () => setConfirmDelete(null) });
 
     return (
-        <AuthenticatedLayout>
+        <AdminLayout>
             <Head title="Admin — Users" />
 
             <div className="py-8">
@@ -111,6 +111,6 @@ export default function AdminUsersIndex({ users, flash }: Props) {
                     </div>
                 </div>
             )}
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }

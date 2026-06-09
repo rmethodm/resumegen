@@ -1,4 +1,4 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 interface ArticleFull {
@@ -39,7 +39,7 @@ export default function AdminCareerEdit({ article, categories }: Props) {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AdminLayout>
             <Head title={article ? 'Edit Article' : 'New Article'} />
 
             <div className="py-8">
@@ -189,6 +189,6 @@ export default function AdminCareerEdit({ article, categories }: Props) {
                     </form>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }

@@ -1,4 +1,4 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 
@@ -16,7 +16,7 @@ export default function AdminUsage() {
     const changeRange = (range: string) => router.get('/admin/usage', { range }, { preserveState: false });
 
     return (
-        <AuthenticatedLayout>
+        <AdminLayout>
             <Head title="Admin: AI Usage" />
 
             <div className="py-8">
@@ -116,6 +116,6 @@ export default function AdminUsage() {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }

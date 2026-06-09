@@ -39,10 +39,7 @@ export default function Authenticated({
                                 <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
                                 <NavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</NavLink>
                                 {user.is_master_admin && (
-                                    <>
-                                        <NavLink href={route('admin.users.index')} active={route().current('admin.users.*') || route().current('admin.usage')}>Admin</NavLink>
-                                        <NavLink href={route('admin.career.index')} active={route().current('admin.career.*')}>Career</NavLink>
-                                    </>
+                                    <NavLink href={route('admin.users.index')} active={route().current('admin.*')}>Admin</NavLink>
                                 )}
                             </div>
                         </div>
@@ -108,10 +105,7 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</ResponsiveNavLink>
                         {user.is_master_admin && (
-                            <>
-                                <ResponsiveNavLink href={route('admin.users.index')} active={route().current('admin.users.*') || route().current('admin.usage')}>Admin</ResponsiveNavLink>
-                                <ResponsiveNavLink href={route('admin.career.index')} active={route().current('admin.career.*')}>Career</ResponsiveNavLink>
-                            </>
+                            <ResponsiveNavLink href={route('admin.users.index')} active={route().current('admin.*')}>Admin</ResponsiveNavLink>
                         )}
                     </div>
                     <div className="border-t border-[#eeeef5] px-4 pb-2 pt-4 dark:border-gray-700">

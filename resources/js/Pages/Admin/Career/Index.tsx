@@ -1,4 +1,4 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 
 interface Article {
@@ -22,7 +22,7 @@ export default function AdminCareerIndex({ articles }: Props) {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AdminLayout>
             <Head title="Career Articles" />
 
             <div className="py-8">
@@ -93,6 +93,6 @@ export default function AdminCareerIndex({ articles }: Props) {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }
