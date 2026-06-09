@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAiRateController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
@@ -278,6 +279,9 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::post('/job-titles', [AdminJobTitleController::class, 'storeTitle'])->name('job-titles.store');
     Route::patch('/job-titles/{title}', [AdminJobTitleController::class, 'updateTitle'])->name('job-titles.update');
     Route::delete('/job-titles/{title}', [AdminJobTitleController::class, 'destroyTitle'])->name('job-titles.destroy');
+
+    Route::get('/ai-rates', [AdminAiRateController::class, 'index'])->name('ai-rates.index');
+    Route::post('/ai-rates', [AdminAiRateController::class, 'store'])->name('ai-rates.store');
 
     Route::resource('career', AdminCareerController::class)->names([
         'index' => 'career.index',
