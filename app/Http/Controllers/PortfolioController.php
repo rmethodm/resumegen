@@ -67,7 +67,7 @@ class PortfolioController extends Controller
                 'slug' => $slug,
             ],
             'resumes' => $resumes,
-            'contactSent' => session('contactSent', false),
+            'contactSent' => session()->pull('contactSent', false),
         ])->withViewData(['og' => $og]);
     }
 
@@ -148,7 +148,7 @@ class PortfolioController extends Controller
             'portfolio_bio' => ['nullable', 'string', 'max:2000'],
             'portfolio_is_public' => ['required', 'boolean'],
             'portfolio_links' => ['nullable', 'array', 'max:10'],
-            'portfolio_links.*.platform' => ['required', 'string', 'in:linkedin,github,x,website'],
+            'portfolio_links.*.platform' => ['required', 'string', 'in:linkedin,github,x,website', 'distinct:strict'],
             'portfolio_links.*.url' => ['required', 'url', 'max:500'],
         ]);
 

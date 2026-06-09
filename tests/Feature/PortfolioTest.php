@@ -237,4 +237,18 @@ class PortfolioTest extends TestCase
             ->get(route('portfolio.check-slug', ['slug' => 'admin']))
             ->assertJson(['available' => false]);
     }
+
+    public function test_contact_form_on_private_portfolio_returns_404(): void
+    {
+        User::factory()->create([
+            'portfolio_slug' => 'private-contact',
+            'portfolio_is_public' => false,
+        ]);
+
+        $this->post(route('portfolio.contact', 'private-contact'), [
+            'sender_name' => 'Dave',
+            'sender_email' => 'dave@example.com',
+            'message' => 'Hello!',
+        ])->assertStatus(404);
+    }
 }
