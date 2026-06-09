@@ -32,11 +32,11 @@ class AdminUserController extends Controller
             );
         }
 
-        if ($request->filled('plan') && $request->plan !== 'all') {
-            $query->where('plan_tier', $request->plan);
+        if ($request->filled('plan') && $request->input('plan') !== 'all') {
+            $query->where('plan_tier', $request->input('plan'));
         }
 
-        $users = $query->latest()->paginate(25)->withQueryString()
+        $users = $query->latest('users.created_at')->paginate(25)->withQueryString()
             ->through(fn (User $user) => [
                 'id' => $user->id,
                 'name' => $user->name,

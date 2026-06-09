@@ -1,6 +1,6 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface AdminUser {
     id: number;
@@ -36,8 +36,13 @@ function PlanBadge({ user }: { user: AdminUser }) {
 export default function AdminUsersIndex({ users, filters, flash }: Props) {
     const [confirmDelete, setConfirmDelete] = useState<AdminUser | null>(null);
     const [search, setSearch] = useState(filters.q ?? '');
+    const mountedRef = useRef(false);
 
     useEffect(() => {
+        if (!mountedRef.current) {
+            mountedRef.current = true;
+            return;
+        }
         const t = setTimeout(() => {
             router.get(route('admin.users.index'), { q: search || undefined, plan: filters.plan }, { preserveState: true, replace: true });
         }, 300);
@@ -110,7 +115,7 @@ export default function AdminUsersIndex({ users, filters, flash }: Props) {
                                             <td className="px-5 py-3 text-[#71717a]">{user.job_applications_count}</td>
                                             <td className="px-5 py-3 text-xs">
                                                 {user.portfolio_slug
-                                                    ? <a href={`/p/${user.portfolio_slug}`} target="_blank" className="text-[#4f46e5] underline">{user.portfolio_slug}</a>
+                                                    ? <a href={route('portfolio.show', user.portfolio_slug)} target="_blank" className="text-[#4f46e5] underline">{user.portfolio_slug}</a>
                                                     : <span className="text-[#c4c4d0]">—</span>}
                                             </td>
                                             <td className="px-5 py-3 text-xs text-[#a0a0b0]">{user.last_active_at ? new Date(user.last_active_at).toLocaleDateString() : '—'}</td>
