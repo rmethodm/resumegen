@@ -16,10 +16,8 @@ class Resume extends Model implements HasMedia
     protected static function booted(): void
     {
         static::deleting(function (Resume $resume): void {
-            // Delete A/B variants — they are meaningless without the parent
             $resume->abVariants()->delete();
-            // Delete snapshots — they are versions of this specific resume
-            $resume->snapshots()->delete();
+            $resume->threads()->delete();
         });
     }
 
@@ -29,27 +27,18 @@ class Resume extends Model implements HasMedia
         'accent_color', 'font_family',
         'contact', 'summary', 'experience', 'education',
         'skills', 'certifications', 'font_sizes',
-        'ats_cache', 'ats_cached_at',
         'section_order', 'custom_sections',
         'ab_parent_id',
-        'master_resume_id',
-        'is_master',
-        'master_synced_at',
         'job_application_id',
     ];
 
     protected $casts = [
-        'is_snapshot' => 'boolean',
-        'is_master' => 'boolean',
         'contact' => 'array',
         'experience' => 'array',
         'education' => 'array',
         'skills' => 'array',
         'certifications' => 'array',
         'font_sizes' => 'array',
-        'ats_cache' => 'array',
-        'ats_cached_at' => 'datetime',
-        'master_synced_at' => 'datetime',
         'section_order' => 'array',
         'custom_sections' => 'array',
     ];
@@ -71,24 +60,14 @@ class Resume extends Model implements HasMedia
         return $this->hasMany(ResumeShareLink::class)->latest();
     }
 
-    public function questions(): HasMany
+    public function threads(): HasMany
     {
-        return $this->hasMany(ResumeQuestion::class)->latest();
+        return $this->hasMany(ResumeThread::class)->latest();
     }
 
     public function shareEvents(): HasMany
     {
         return $this->hasMany(ResumeShareEvent::class);
-    }
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Resume::class, 'parent_resume_id');
-    }
-
-    public function snapshots(): HasMany
-    {
-        return $this->hasMany(Resume::class, 'parent_resume_id')->orderByDesc('created_at');
     }
 
     public function tags(): HasMany
@@ -104,16 +83,6 @@ class Resume extends Model implements HasMedia
     public function abVariants(): HasMany
     {
         return $this->hasMany(Resume::class, 'ab_parent_id');
-    }
-
-    public function masterResume(): BelongsTo
-    {
-        return $this->belongsTo(Resume::class, 'master_resume_id');
-    }
-
-    public function tailoredCopies(): HasMany
-    {
-        return $this->hasMany(Resume::class, 'master_resume_id');
     }
 
     public function linkedJob(): BelongsTo

@@ -35,9 +35,9 @@ class ResumeShareLink extends Model
         return $this->belongsTo(Resume::class);
     }
 
-    public function questions(): HasMany
+    public function threads(): HasMany
     {
-        return $this->hasMany(ResumeQuestion::class);
+        return $this->hasMany(ResumeThread::class, 'share_link_id')->latest();
     }
 
     public function events(): HasMany
