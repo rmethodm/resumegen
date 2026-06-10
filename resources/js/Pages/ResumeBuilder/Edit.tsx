@@ -249,6 +249,7 @@ export default function Edit({
     const [skillsLayout, setSkillsLayout] = useState<SkillsLayout>(resume.skills_layout ?? 'inline');
     const [skillsGroups, setSkillsGroups] = useState<SkillGroup[]>(resume.skills_groups ?? []);
     const [skillNarratives, setSkillNarratives] = useState<SkillNarrative[]>(resume.skill_narratives ?? []);
+    const [pendingSkillsLayout, setPendingSkillsLayout] = useState<SkillsLayout | null>(null);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
     const [customSections, setCustomSections] = useState<CustomSection[]>(resume.custom_sections ?? []);
     const [sectionOrder, setSectionOrder] = useState<string[]>(
@@ -1241,7 +1242,23 @@ export default function Edit({
                                                                     <button
                                                                         key={opt}
                                                                         type="button"
-                                                                        onClick={() => { setSkillsLayout(opt); save(); }}
+                                                                        onClick={() => {
+                                                                            if (opt === skillsLayout) return;
+                                                                            const family = (l: SkillsLayout) =>
+                                                                                l === 'narrative' ? 'narrative'
+                                                                                : (l === 'grouped-inline' || l === 'grouped-vertical') ? 'grouped'
+                                                                                : 'flat';
+                                                                            const currentHasData =
+                                                                                family(skillsLayout) === 'narrative' ? skillNarratives.length > 0
+                                                                                : family(skillsLayout) === 'grouped' ? skillsGroups.length > 0
+                                                                                : skills.length > 0;
+                                                                            if (currentHasData && family(opt) !== family(skillsLayout)) {
+                                                                                setPendingSkillsLayout(opt);
+                                                                            } else {
+                                                                                setSkillsLayout(opt);
+                                                                                save();
+                                                                            }
+                                                                        }}
                                                                         className={`flex flex-col items-center gap-1 rounded-lg border-2 p-1.5 transition-colors ${skillsLayout === opt ? 'border-indigo-500 bg-indigo-50 text-indigo-600' : 'border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-400'}`}
                                                                     >
                                                                         {preview}
@@ -1250,6 +1267,36 @@ export default function Edit({
                                                                 ))}
                                                             </div>
                                                         </div>
+
+                                                        {/* Confirmation prompt when switching format families */}
+                                                        {pendingSkillsLayout && (
+                                                            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs">
+                                                                <p className="font-medium text-amber-800 mb-1">Switch format?</p>
+                                                                <p className="text-amber-700 mb-2.5">
+                                                                    Your current content will be hidden but <strong>not deleted</strong> — switch back anytime to restore it.
+                                                                </p>
+                                                                <div className="flex gap-2">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            setSkillsLayout(pendingSkillsLayout);
+                                                                            setPendingSkillsLayout(null);
+                                                                            save();
+                                                                        }}
+                                                                        className="rounded bg-amber-600 px-3 py-1 text-white hover:bg-amber-700"
+                                                                    >
+                                                                        Switch to {pendingSkillsLayout}
+                                                                    </button>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => setPendingSkillsLayout(null)}
+                                                                        className="rounded border border-amber-300 px-3 py-1 text-amber-700 hover:bg-amber-100"
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        )}
 
                                                         {/* Editor for selected format */}
                                                         {skillsLayout === 'narrative' ? (
