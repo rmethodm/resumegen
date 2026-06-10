@@ -9,6 +9,7 @@ use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
 use App\Models\User;
 use App\Services\DocxGenerator;
+use App\Services\ResumeCompletionScorer;
 use App\Services\ResumeStrengthScorer;
 use App\Services\UserLimits;
 use App\Services\WebhookDispatcher;
@@ -145,7 +146,7 @@ class ResumeBuilderController extends Controller
             'canDocx' => UserLimits::canDocx($user),
             'customSectionLimit' => UserLimits::customSectionLimit($user),
             'allowedTemplates' => UserLimits::allowedTemplates($user),
-            'completionScore' => $this->computeCompletionScore($resume),
+            'completionScore' => ResumeCompletionScorer::score($resume),
             'strengthHistoryEnabled' => UserLimits::canStrengthHistory($user),
             'photoUrl' => $resume->getFirstMediaUrl('photo') ?: null,
             'userPersona' => [
@@ -189,59 +190,6 @@ class ResumeBuilderController extends Controller
         WebhookDispatcher::dispatch($request->user(), 'resume.updated', ['id' => $resume->id, 'name' => $resume->name]);
 
         return back();
-    }
-
-    private function computeCompletionScore(Resume $resume): int
-    {
-        $score = 0;
-        $c = $resume->contact ?? [];
-
-        if (! empty($c['full_name'])) {
-            $score += 8;
-        }
-        if (! empty($c['email'])) {
-            $score += 8;
-        }
-        if (! empty($c['phone'])) {
-            $score += 5;
-        }
-        if (! empty($c['location'])) {
-            $score += 5;
-        }
-        if (! empty($c['title'])) {
-            $score += 5;
-        }
-
-        if (! empty($resume->summary) && strlen($resume->summary) >= 50) {
-            $score += 20;
-        }
-
-        $exp = $resume->experience ?? [];
-        if (count($exp) > 0) {
-            $score += 15;
-        }
-        if (count(array_filter($exp, fn ($e) => ! empty($e['bullets']))) > 0) {
-            $score += 5;
-        }
-
-        if (count($resume->education ?? []) > 0) {
-            $score += 12;
-        }
-        if (count($resume->skills ?? []) > 0) {
-            $score += 7;
-        }
-        if (count($resume->certifications ?? []) > 0) {
-            $score += 5;
-        }
-
-        // Photo bonus for photo-supporting templates
-        if (in_array($resume->template ?? 'classic', ['sidebar', 'creative', 'executive'])) {
-            if ($resume->getFirstMediaUrl('photo')) {
-                $score += 5;
-            }
-        }
-
-        return min(100, $score);
     }
 
     private static function resumeRules(): array
