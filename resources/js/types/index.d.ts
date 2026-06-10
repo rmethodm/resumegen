@@ -66,6 +66,13 @@ export interface CustomSection {
     entries: CustomSectionEntry[];
 }
 
+export interface SkillGroup {
+    category: string;
+    items: string[];
+}
+
+export type SkillsLayout = 'inline' | 'bullets' | 'two-column' | 'grouped';
+
 export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled' | 'sidebar' | 'creative' | 'executive' | 'ats' | 'skills-first' | 'skills-first-visual' | 'academic' | 'bold' | 'timeline';
 
 export interface FontSizes {
@@ -89,6 +96,8 @@ export interface ResumeData {
     experience: ExperienceEntry[] | null;
     education: EducationEntry[] | null;
     skills: string[] | null;
+    skills_layout: SkillsLayout | null;
+    skills_groups: SkillGroup[] | null;
     certifications: CertEntry[] | null;
     custom_sections: CustomSection[] | null;
     section_order: string[] | null;
