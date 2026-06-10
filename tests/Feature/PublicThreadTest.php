@@ -29,22 +29,22 @@ class PublicThreadTest extends TestCase
         $link = $this->makeLink();
 
         $this->post(route('public.thread.store', $link->token), [
-            'sender_name'  => 'Alice',
+            'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
-            'message'      => 'Are you available?',
+            'message' => 'Are you available?',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('resume_threads', [
-            'sender_name'  => 'Alice',
+            'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
-            'resume_id'    => $link->resume_id,
+            'resume_id' => $link->resume_id,
         ]);
 
         $thread = ResumeThread::first();
         $this->assertDatabaseHas('resume_thread_messages', [
             'thread_id' => $thread->id,
-            'body'      => 'Are you available?',
-            'is_owner'  => false,
+            'body' => 'Are you available?',
+            'is_owner' => false,
         ]);
     }
 
@@ -54,9 +54,9 @@ class PublicThreadTest extends TestCase
         $link = $this->makeLink();
 
         $this->post(route('public.thread.store', $link->token), [
-            'sender_name'  => 'Bob',
+            'sender_name' => 'Bob',
             'sender_email' => 'bob@example.com',
-            'message'      => 'Hello!',
+            'message' => 'Hello!',
         ]);
 
         Mail::assertQueued(NewThreadStarted::class, fn ($m) => $m->hasTo($link->resume->user->email));
@@ -75,9 +75,9 @@ class PublicThreadTest extends TestCase
         $link = $this->makeLink(false);
 
         $this->post(route('public.thread.store', $link->token), [
-            'sender_name'  => 'X',
+            'sender_name' => 'X',
             'sender_email' => 'x@x.com',
-            'message'      => 'Hi',
+            'message' => 'Hi',
         ])->assertStatus(410);
     }
 
@@ -87,9 +87,9 @@ class PublicThreadTest extends TestCase
         $link->update(['expires_at' => now()->subDay()]);
 
         $this->post(route('public.thread.store', $link->token), [
-            'sender_name'  => 'X',
+            'sender_name' => 'X',
             'sender_email' => 'x@x.com',
-            'message'      => 'Hi',
+            'message' => 'Hi',
         ])->assertStatus(410);
     }
 
@@ -99,9 +99,9 @@ class PublicThreadTest extends TestCase
         $link = $this->makeLink();
 
         $this->post(route('public.thread.store', $link->token), [
-            'sender_name'  => 'Alice',
+            'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
-            'message'      => 'First message',
+            'message' => 'First message',
         ]);
 
         $thread = ResumeThread::first();
@@ -118,8 +118,8 @@ class PublicThreadTest extends TestCase
     {
         $link = $this->makeLink();
         $thread = ResumeThread::create([
-            'resume_id'    => $link->resume_id,
-            'sender_name'  => 'Alice',
+            'resume_id' => $link->resume_id,
+            'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
         ]);
 
@@ -134,8 +134,8 @@ class PublicThreadTest extends TestCase
         $link = $this->makeLink();
 
         $thread = ResumeThread::create([
-            'resume_id'    => $link->resume_id,
-            'sender_name'  => 'Alice',
+            'resume_id' => $link->resume_id,
+            'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
         ]);
 

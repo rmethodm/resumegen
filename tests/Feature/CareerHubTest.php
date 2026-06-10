@@ -190,7 +190,7 @@ class CareerHubTest extends TestCase
             'is_published' => false,
         ]);
 
-        $article = \App\Models\CareerArticle::where('title', 'XSS Test')->first();
+        $article = CareerArticle::where('title', 'XSS Test')->first();
         $this->assertNotNull($article);
         $this->assertStringNotContainsString('<script>', $article->body);
         $this->assertStringContainsString('<p>Good content</p>', $article->body);
@@ -208,7 +208,7 @@ class CareerHubTest extends TestCase
             'is_published' => false,
         ]);
 
-        $article = \App\Models\CareerArticle::where('title', 'XSS Event Test')->first();
+        $article = CareerArticle::where('title', 'XSS Event Test')->first();
         $this->assertNotNull($article);
         $this->assertStringNotContainsString('onclick', $article->body);
     }

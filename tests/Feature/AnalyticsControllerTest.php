@@ -75,17 +75,17 @@ class AnalyticsControllerTest extends TestCase
         for ($i = 0; $i < 100; $i++) {
             ResumeShareEvent::create([
                 'resume_share_link_id' => $link->id,
-                'resume_id'            => $resume->id,
-                'event'                => 'page_view',
-                'ip_hash'              => hash('sha256', fake()->ipv4()),
+                'resume_id' => $resume->id,
+                'event' => 'page_view',
+                'ip_hash' => hash('sha256', fake()->ipv4()),
             ]);
         }
         for ($i = 0; $i < 10; $i++) {
             ResumeShareEvent::create([
                 'resume_share_link_id' => $link->id,
-                'resume_id'            => $resume->id,
-                'event'                => 'pdf_download',
-                'ip_hash'              => null,
+                'resume_id' => $resume->id,
+                'event' => 'pdf_download',
+                'ip_hash' => null,
             ]);
         }
 

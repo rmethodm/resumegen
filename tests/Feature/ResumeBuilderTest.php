@@ -503,10 +503,9 @@ class ResumeBuilderTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('builder.index'))
-            ->assertInertia(fn ($page) =>
-                $page->has('resumes', 3)
-                     ->has('resumes.0.strength')
-                     ->has('resumes.0.strength_tip')
+            ->assertInertia(fn ($page) => $page->has('resumes', 3)
+                ->has('resumes.0.strength')
+                ->has('resumes.0.strength_tip')
             );
     }
 

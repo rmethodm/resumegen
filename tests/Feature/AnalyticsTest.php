@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Resume;
+use App\Models\ResumeShareEvent;
+use App\Models\ResumeShareLink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,8 +18,7 @@ class AnalyticsTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user)
             ->get(route('dashboard'))
-            ->assertInertia(fn ($page) =>
-                $page->has('templateStats')
+            ->assertInertia(fn ($page) => $page->has('templateStats')
             );
     }
 
@@ -35,26 +36,26 @@ class AnalyticsTest extends TestCase
         ]);
 
         // Create share links and events
-        $classicLink = \App\Models\ResumeShareLink::factory()->create([
+        $classicLink = ResumeShareLink::factory()->create([
             'resume_id' => $classicResume->id,
         ]);
-        \App\Models\ResumeShareEvent::create([
+        ResumeShareEvent::create([
             'resume_share_link_id' => $classicLink->id,
             'resume_id' => $classicResume->id,
             'event' => 'page_view',
             'ip_hash' => 'abc',
         ]);
-        \App\Models\ResumeShareEvent::create([
+        ResumeShareEvent::create([
             'resume_share_link_id' => $classicLink->id,
             'resume_id' => $classicResume->id,
             'event' => 'page_view',
             'ip_hash' => 'def',
         ]);
 
-        $modernLink = \App\Models\ResumeShareLink::factory()->create([
+        $modernLink = ResumeShareLink::factory()->create([
             'resume_id' => $modernResume->id,
         ]);
-        \App\Models\ResumeShareEvent::create([
+        ResumeShareEvent::create([
             'resume_share_link_id' => $modernLink->id,
             'resume_id' => $modernResume->id,
             'event' => 'page_view',
@@ -62,11 +63,9 @@ class AnalyticsTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(route('dashboard'));
-        $response->assertInertia(fn ($page) =>
-            $page->where('templateStats', fn ($stats) =>
-                collect($stats)->firstWhere('template', 'classic')['views'] === 2
+        $response->assertInertia(fn ($page) => $page->where('templateStats', fn ($stats) => collect($stats)->firstWhere('template', 'classic')['views'] === 2
                 && collect($stats)->firstWhere('template', 'modern')['views'] === 1
-            )
+        )
         );
     }
 }

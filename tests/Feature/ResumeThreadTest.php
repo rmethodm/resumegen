@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Mail\VisitorThreadReply;
-use App\Models\ResumeShareLink;
 use App\Models\ResumeThread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,10 +18,10 @@ class ResumeThreadTest extends TestCase
         $resume = $owner->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
         $link = $resume->shareLinks()->create(['is_active' => true]);
         $thread = ResumeThread::create([
-            'resume_id'     => $resume->id,
+            'resume_id' => $resume->id,
             'share_link_id' => $link->id,
-            'sender_name'   => 'Alice',
-            'sender_email'  => 'alice@example.com',
+            'sender_name' => 'Alice',
+            'sender_email' => 'alice@example.com',
         ]);
         $thread->messages()->create(['body' => 'Hello!', 'is_owner' => false]);
 
@@ -64,8 +63,8 @@ class ResumeThreadTest extends TestCase
 
         $this->assertDatabaseHas('resume_thread_messages', [
             'thread_id' => $thread->id,
-            'body'      => 'Thanks for reaching out!',
-            'is_owner'  => true,
+            'body' => 'Thanks for reaching out!',
+            'is_owner' => true,
         ]);
     }
 
@@ -141,10 +140,10 @@ class ResumeThreadTest extends TestCase
         for ($i = 0; $i < 5; $i++) {
             $link = $resume->shareLinks()->create(['is_active' => true]);
             $thread = ResumeThread::create([
-                'resume_id'     => $resume->id,
+                'resume_id' => $resume->id,
                 'share_link_id' => $link->id,
-                'sender_name'   => "Visitor {$i}",
-                'sender_email'  => "visitor{$i}@example.com",
+                'sender_name' => "Visitor {$i}",
+                'sender_email' => "visitor{$i}@example.com",
             ]);
             for ($j = 0; $j < 3; $j++) {
                 $thread->messages()->create(['body' => "Message {$j}", 'is_owner' => false]);
@@ -152,7 +151,9 @@ class ResumeThreadTest extends TestCase
         }
 
         $queryCount = 0;
-        \DB::listen(function () use (&$queryCount) { $queryCount++; });
+        \DB::listen(function () use (&$queryCount) {
+            $queryCount++;
+        });
 
         $this->actingAs($user)->get(route('messages.index'));
 

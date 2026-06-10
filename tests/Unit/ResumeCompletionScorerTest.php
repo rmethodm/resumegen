@@ -10,7 +10,7 @@ class ResumeCompletionScorerTest extends TestCase
 {
     public function test_empty_resume_scores_zero(): void
     {
-        $resume = new Resume();
+        $resume = new Resume;
         $this->assertSame(0, ResumeCompletionScorer::score($resume));
     }
 

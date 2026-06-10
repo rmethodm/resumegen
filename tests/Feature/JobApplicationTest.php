@@ -196,7 +196,7 @@ class JobApplicationTest extends TestCase
     public function test_jobs_index_includes_created_at_in_applications(): void
     {
         $user = User::factory()->create();
-        \App\Models\JobApplication::factory()->create(['user_id' => $user->id]);
+        JobApplication::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
             ->get(route('jobs.index'))
@@ -221,5 +221,4 @@ class JobApplicationTest extends TestCase
 
         $this->assertEquals('applied', $job->fresh()->status);
     }
-
 }

@@ -9,15 +9,15 @@ class DocxGenerator
 {
     public function generate(Resume $resume): PhpWord
     {
-        $word = new PhpWord();
+        $word = new PhpWord;
         $word->setDefaultFontName('Calibri');
         $word->setDefaultFontSize(11);
 
         $section = $word->addSection([
-            'marginTop'    => 720,
+            'marginTop' => 720,
             'marginBottom' => 720,
-            'marginLeft'   => 900,
-            'marginRight'  => 900,
+            'marginLeft' => 900,
+            'marginRight' => 900,
         ]);
 
         $contact = $resume->contact ?? [];
@@ -49,7 +49,7 @@ class DocxGenerator
         if ($experience) {
             $this->addSectionHeading($section, 'Experience');
             foreach ($experience as $exp) {
-                $title = trim(($exp['title'] ?? '') . ($exp['company'] ? ' — ' . $exp['company'] : ''));
+                $title = trim(($exp['title'] ?? '').($exp['company'] ? ' — '.$exp['company'] : ''));
                 $dates = implode(' – ', array_filter([
                     $exp['start_date'] ?? null,
                     isset($exp['current']) && $exp['current'] ? 'Present' : ($exp['end_date'] ?? null),
@@ -98,10 +98,10 @@ class DocxGenerator
             foreach ($certs as $cert) {
                 $line = $cert['name'];
                 if (! empty($cert['issuer'])) {
-                    $line .= ' — ' . $cert['issuer'];
+                    $line .= ' — '.$cert['issuer'];
                 }
                 if (! empty($cert['date'])) {
-                    $line .= ' (' . $cert['date'] . ')';
+                    $line .= ' ('.$cert['date'].')';
                 }
                 $section->addText($line, ['size' => 10], ['spaceAfter' => 40]);
             }
@@ -113,12 +113,12 @@ class DocxGenerator
     private function addSectionHeading($section, string $text): void
     {
         $section->addText(strtoupper($text), [
-            'bold'  => true,
-            'size'  => 9,
+            'bold' => true,
+            'size' => 9,
             'color' => '4f46e5',
         ], [
-            'spaceAfter'        => 40,
-            'borderBottomSize'  => 4,
+            'spaceAfter' => 40,
+            'borderBottomSize' => 4,
             'borderBottomColor' => '4f46e5',
         ]);
     }

@@ -15,8 +15,8 @@ class JobDuplicateUrlTest extends ApiTestCase
         $token = $user->createToken('test')->plainTextToken;
         $data = [
             'company' => 'Acme',
-            'role'    => 'Engineer',
-            'status'  => 'saved',
+            'role' => 'Engineer',
+            'status' => 'saved',
             'job_url' => 'https://example.com/jobs/123',
         ];
         $this->withToken($token)->postJson('/api/jobs', $data)->assertStatus(201);
@@ -31,8 +31,8 @@ class JobDuplicateUrlTest extends ApiTestCase
         $token2 = $user2->createToken('test')->plainTextToken;
         $data = [
             'company' => 'Acme',
-            'role'    => 'Engineer',
-            'status'  => 'saved',
+            'role' => 'Engineer',
+            'status' => 'saved',
             'job_url' => 'https://example.com/jobs/123',
         ];
         $this->withToken($token1)->postJson('/api/jobs', $data)->assertStatus(201);

@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Resume;
 use App\Models\User;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CompletionScoreTest extends TestCase
 {
@@ -25,8 +25,7 @@ class CompletionScoreTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(route('builder.edit', $resume->id));
-        $response->assertInertia(fn ($page) =>
-            $page->where('completionScore', 0)
+        $response->assertInertia(fn ($page) => $page->where('completionScore', 0)
         );
     }
 
@@ -54,8 +53,7 @@ class CompletionScoreTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(route('builder.edit', $resume->id));
-        $response->assertInertia(fn ($page) =>
-            $page->where('completionScore', fn ($score) => $score >= 60)
+        $response->assertInertia(fn ($page) => $page->where('completionScore', fn ($score) => $score >= 60)
         );
     }
 
@@ -65,8 +63,7 @@ class CompletionScoreTest extends TestCase
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $response = $this->actingAs($user)->get(route('builder.edit', $resume->id));
-        $response->assertInertia(fn ($page) =>
-            $page->has('completionScore')
+        $response->assertInertia(fn ($page) => $page->has('completionScore')
         );
     }
 }

@@ -13,9 +13,9 @@ class PersonalTokenController extends Controller
         $token = $request->user()->createToken('Browser Extension');
 
         return response()->json([
-            'id'               => $token->accessToken->id,
-            'name'             => $token->accessToken->name,
-            'created_at'       => $token->accessToken->created_at->toISOString(),
+            'id' => $token->accessToken->id,
+            'name' => $token->accessToken->name,
+            'created_at' => $token->accessToken->created_at->toISOString(),
             'plain_text_token' => $token->plainTextToken,
         ], 201);
     }
