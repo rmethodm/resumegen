@@ -71,7 +71,13 @@ export interface SkillGroup {
     items: string[];
 }
 
-export type SkillsLayout = 'inline' | 'bullets' | 'two-column' | 'grouped';
+export type SkillsLayout = 'inline' | 'bullets' | 'grouped-vertical' | 'grouped-inline' | 'narrative';
+
+export interface SkillNarrative {
+    id: string;
+    name: string;
+    bullets: string[];
+}
 
 export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled' | 'sidebar' | 'creative' | 'executive' | 'ats' | 'skills-first' | 'skills-first-visual' | 'academic' | 'bold' | 'timeline';
 
@@ -98,6 +104,7 @@ export interface ResumeData {
     skills: string[] | null;
     skills_layout: SkillsLayout | null;
     skills_groups: SkillGroup[] | null;
+    skill_narratives: SkillNarrative[] | null;
     certifications: CertEntry[] | null;
     custom_sections: CustomSection[] | null;
     section_order: string[] | null;

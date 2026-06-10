@@ -52,32 +52,61 @@
     @elseif ($sectionKey === 'skills')
         @php
             $skillsLayout = $resume->skills_layout ?? 'inline';
-            $hasGroups = $skillsLayout === 'grouped' && $resume->skills_groups && count($resume->skills_groups);
+            $hasGroups = in_array($skillsLayout, ['grouped-vertical', 'grouped-inline']) && $resume->skills_groups && count($resume->skills_groups);
+            $hasNarratives = $skillsLayout === 'narrative' && $resume->skill_narratives && count($resume->skill_narratives);
             $hasFlat = $resume->skills && count($resume->skills);
         @endphp
-        @if ($hasGroups || $hasFlat)
+        @if ($hasGroups || $hasNarratives || $hasFlat)
         <h2>Skills</h2>
-        @if ($hasGroups)
-            @foreach ($resume->skills_groups as $group)
-                @if (!empty($group['items']))
-                <p><strong>{{ $group['category'] }}:</strong> {{ implode($sep, $group['items']) }}</p>
+        @if ($hasNarratives)
+            @foreach ($resume->skill_narratives as $narrative)
+                @if (!empty($narrative['name']))
+                <div class="entry">
+                    <div class="title" style="font-weight:bold;">{{ $narrative['name'] }}</div>
+                    @if (!empty($narrative['bullets']))
+                    <ul>@foreach(array_filter($narrative['bullets']) as $b)<li>{{ $b }}</li>@endforeach</ul>
+                    @endif
+                </div>
                 @endif
             @endforeach
-        @elseif ($skillsLayout === 'bullets')
-            <ul>@foreach($resume->skills as $s)<li>{{ $s }}</li>@endforeach</ul>
-        @elseif ($skillsLayout === 'two-column')
-            @php $chunks = array_chunk($resume->skills, (int) ceil(count($resume->skills) / 2)); @endphp
+        @elseif ($hasGroups && $skillsLayout === 'grouped-inline')
+            {{-- Category: item1, item2, item3 — each group on its own line, two-column table --}}
+            @php $gChunks = array_chunk($resume->skills_groups, (int) ceil(count($resume->skills_groups) / 2)); @endphp
             <table style="width:100%;border:none;border-collapse:collapse;">
                 <tr>
-                    <td style="width:50%;vertical-align:top;padding:0;">
-                        <ul>@foreach($chunks[0] ?? [] as $s)<li>{{ $s }}</li>@endforeach</ul>
+                    @foreach ($gChunks as $col)
+                    <td style="width:50%;vertical-align:top;padding-right:12pt;">
+                        @foreach ($col as $group)
+                            @if (!empty($group['items']))
+                            <p style="margin:0 0 3pt;"><strong>{{ $group['category'] }}</strong> : {{ implode(', ', $group['items']) }}</p>
+                            @endif
+                        @endforeach
                     </td>
-                    <td style="width:50%;vertical-align:top;padding:0;">
-                        <ul>@foreach($chunks[1] ?? [] as $s)<li>{{ $s }}</li>@endforeach</ul>
-                    </td>
+                    @endforeach
                 </tr>
             </table>
-        @else
+        @elseif ($hasGroups && $skillsLayout === 'grouped-vertical')
+            {{-- Category bold header, items listed vertically underneath, multi-column --}}
+            @php $gChunks = array_chunk($resume->skills_groups, (int) ceil(count($resume->skills_groups) / 3)); @endphp
+            <table style="width:100%;border:none;border-collapse:collapse;">
+                <tr>
+                    @foreach ($gChunks as $col)
+                    <td style="vertical-align:top;padding-right:12pt;">
+                        @foreach ($col as $group)
+                            @if (!empty($group['items']))
+                            <p style="margin:0 0 2pt;font-weight:bold;">{{ $group['category'] }}:</p>
+                            @foreach ($group['items'] as $item)
+                            <p style="margin:0 0 1pt;padding-left:4pt;">{{ $item }}</p>
+                            @endforeach
+                            @endif
+                        @endforeach
+                    </td>
+                    @endforeach
+                </tr>
+            </table>
+        @elseif ($skillsLayout === 'bullets' && $hasFlat)
+            <ul>@foreach($resume->skills as $s)<li>{{ $s }}</li>@endforeach</ul>
+        @elseif ($hasFlat)
             <p>{{ implode($sep, $resume->skills) }}</p>
         @endif
         @endif

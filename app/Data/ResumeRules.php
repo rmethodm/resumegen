@@ -16,11 +16,15 @@ class ResumeRules
             'experience' => ['nullable', 'array'],
             'education' => ['nullable', 'array'],
             'skills' => ['nullable', 'array'],
-            'skills_layout' => ['sometimes', 'nullable', 'in:inline,bullets,two-column,grouped'],
+            'skills_layout' => ['sometimes', 'nullable', 'in:inline,bullets,grouped-vertical,grouped-inline,narrative'],
             'skills_groups' => ['nullable', 'array'],
             'skills_groups.*.category' => ['required_with:skills_groups', 'string', 'max:100'],
             'skills_groups.*.items' => ['required_with:skills_groups', 'array'],
             'skills_groups.*.items.*' => ['string', 'max:100'],
+            'skill_narratives' => ['nullable', 'array'],
+            'skill_narratives.*.name' => ['required_with:skill_narratives', 'string', 'max:150'],
+            'skill_narratives.*.bullets' => ['required_with:skill_narratives', 'array'],
+            'skill_narratives.*.bullets.*' => ['string', 'max:500'],
             'certifications' => ['nullable', 'array'],
             'font_sizes' => ['nullable', 'array'],
             'section_order' => ['nullable', 'array'],
@@ -33,7 +37,7 @@ class ResumeRules
     {
         return [
             'template', 'accent_color', 'font_family', 'summary', 'contact',
-            'experience', 'education', 'skills', 'skills_layout', 'skills_groups',
+            'experience', 'education', 'skills', 'skills_layout', 'skills_groups', 'skill_narratives',
             'certifications', 'font_sizes', 'custom_sections', 'section_order',
         ];
     }

@@ -176,7 +176,7 @@
     </div>
     @php
         $sfLayout = $resume->skills_layout ?? 'inline';
-        $sfHasGroups = $sfLayout === 'grouped' && $resume->skills_groups && count($resume->skills_groups);
+        $sfHasGroups = in_array($sfLayout, ['grouped-vertical', 'grouped-inline']) && $resume->skills_groups && count($resume->skills_groups);
         $sfHasFlat = $resume->skills && count($resume->skills);
     @endphp
     @if ($sfHasGroups || $sfHasFlat)
@@ -207,7 +207,7 @@
     </div>
     @php
         $sfvLayout = $resume->skills_layout ?? 'inline';
-        $sfvHasGroups = $sfvLayout === 'grouped' && $resume->skills_groups && count($resume->skills_groups);
+        $sfvHasGroups = in_array($sfvLayout, ['grouped-vertical', 'grouped-inline']) && $resume->skills_groups && count($resume->skills_groups);
     @endphp
     @if ($sfvHasGroups)
       <h2>Technical Skills</h2>

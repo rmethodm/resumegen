@@ -3,7 +3,8 @@ import AutocompleteInput from '@/Components/AutocompleteInput';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
 import SkillGroupEditor from '@/Components/SkillGroupEditor';
-import type { SkillGroup, SkillsLayout } from '@/types';
+import SkillNarrativeEditor from '@/Components/SkillNarrativeEditor';
+import type { SkillGroup, SkillNarrative, SkillsLayout } from '@/types';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
@@ -247,6 +248,7 @@ export default function Edit({
     const [skills, setSkills] = useState<string[]>(resume.skills ?? []);
     const [skillsLayout, setSkillsLayout] = useState<SkillsLayout>(resume.skills_layout ?? 'inline');
     const [skillsGroups, setSkillsGroups] = useState<SkillGroup[]>(resume.skills_groups ?? []);
+    const [skillNarratives, setSkillNarratives] = useState<SkillNarrative[]>(resume.skill_narratives ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
     const [customSections, setCustomSections] = useState<CustomSection[]>(resume.custom_sections ?? []);
     const [sectionOrder, setSectionOrder] = useState<string[]>(
@@ -317,6 +319,7 @@ export default function Edit({
     const skillsRef = useRef(skills);
     const skillsLayoutRef = useRef(skillsLayout);
     const skillsGroupsRef = useRef(skillsGroups);
+    const skillNarrativesRef = useRef(skillNarratives);
     const certificationsRef = useRef(certifications);
     const customSectionsRef = useRef(customSections);
     const sectionOrderRef = useRef(sectionOrder);
@@ -332,6 +335,7 @@ export default function Edit({
     skillsRef.current = skills;
     skillsLayoutRef.current = skillsLayout;
     skillsGroupsRef.current = skillsGroups;
+    skillNarrativesRef.current = skillNarratives;
     certificationsRef.current = certifications;
     customSectionsRef.current = customSections;
     sectionOrderRef.current = sectionOrder;
@@ -353,6 +357,7 @@ export default function Edit({
             skills: skillsRef.current,
             skills_layout: skillsLayoutRef.current,
             skills_groups: skillsGroupsRef.current as any,
+            skill_narratives: skillNarrativesRef.current as any,
             certifications: certificationsRef.current as any,
             custom_sections: customSectionsRef.current as any,
             section_order: sectionOrderRef.current,
@@ -407,6 +412,7 @@ export default function Edit({
                     skills: skillsRef.current,
                     skills_layout: skillsLayoutRef.current,
                     skills_groups: skillsGroupsRef.current,
+                    skill_narratives: skillNarrativesRef.current,
                     certifications: certificationsRef.current,
                     custom_sections: customSectionsRef.current,
                     section_order: sectionOrderRef.current,
@@ -1155,23 +1161,104 @@ export default function Edit({
                                             <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                                                 <SectionHeader title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')} />
                                                 {openSections.skills && (
-                                                    <div className="p-4 flex flex-col gap-3">
-                                                        <div className="flex flex-col gap-1">
-                                                            <label className="text-xs font-medium text-gray-600">Layout</label>
-                                                            <div className="flex gap-1.5">
-                                                                {(['inline', 'bullets', 'two-column', 'grouped'] as SkillsLayout[]).map(opt => (
+                                                    <div className="p-4 flex flex-col gap-4">
+                                                        {/* Visual format picker */}
+                                                        <div className="flex flex-col gap-1.5">
+                                                            <label className="text-xs font-medium text-gray-600">Format</label>
+                                                            <div className="grid grid-cols-5 gap-1.5">
+                                                                {([
+                                                                    {
+                                                                        key: 'inline' as SkillsLayout,
+                                                                        label: 'Inline',
+                                                                        preview: (
+                                                                            <svg viewBox="0 0 60 32" className="w-full h-8">
+                                                                                <rect x="2" y="12" width="8" height="3" rx="1" fill="currentColor" opacity=".7"/>
+                                                                                <rect x="12" y="12" width="10" height="3" rx="1" fill="currentColor" opacity=".7"/>
+                                                                                <rect x="24" y="12" width="7" height="3" rx="1" fill="currentColor" opacity=".7"/>
+                                                                                <rect x="33" y="12" width="12" height="3" rx="1" fill="currentColor" opacity=".7"/>
+                                                                                <rect x="47" y="12" width="9" height="3" rx="1" fill="currentColor" opacity=".7"/>
+                                                                            </svg>
+                                                                        ),
+                                                                    },
+                                                                    {
+                                                                        key: 'bullets' as SkillsLayout,
+                                                                        label: 'Bullets',
+                                                                        preview: (
+                                                                            <svg viewBox="0 0 60 32" className="w-full h-8">
+                                                                                {[6, 13, 20].map(y => (
+                                                                                    <g key={y}>
+                                                                                        <circle cx="6" cy={y} r="1.5" fill="currentColor" opacity=".8"/>
+                                                                                        <rect x="10" y={y - 1.5} width="38" height="3" rx="1" fill="currentColor" opacity=".5"/>
+                                                                                    </g>
+                                                                                ))}
+                                                                            </svg>
+                                                                        ),
+                                                                    },
+                                                                    {
+                                                                        key: 'grouped-inline' as SkillsLayout,
+                                                                        label: 'Grouped',
+                                                                        preview: (
+                                                                            <svg viewBox="0 0 60 32" className="w-full h-8">
+                                                                                {[6, 14, 22].map(y => (
+                                                                                    <g key={y}>
+                                                                                        <rect x="2" y={y - 1.5} width="14" height="3" rx="1" fill="currentColor" opacity=".9"/>
+                                                                                        <rect x="18" y={y - 1.5} width="38" height="3" rx="1" fill="currentColor" opacity=".4"/>
+                                                                                    </g>
+                                                                                ))}
+                                                                            </svg>
+                                                                        ),
+                                                                    },
+                                                                    {
+                                                                        key: 'grouped-vertical' as SkillsLayout,
+                                                                        label: 'Columns',
+                                                                        preview: (
+                                                                            <svg viewBox="0 0 60 32" className="w-full h-8">
+                                                                                {[0, 20, 40].map(x => (
+                                                                                    <g key={x}>
+                                                                                        <rect x={x + 2} y="4" width="14" height="3" rx="1" fill="currentColor" opacity=".9"/>
+                                                                                        <rect x={x + 2} y="10" width="12" height="2.5" rx="1" fill="currentColor" opacity=".4"/>
+                                                                                        <rect x={x + 2} y="14.5" width="10" height="2.5" rx="1" fill="currentColor" opacity=".4"/>
+                                                                                        <rect x={x + 2} y="19" width="13" height="2.5" rx="1" fill="currentColor" opacity=".4"/>
+                                                                                    </g>
+                                                                                ))}
+                                                                            </svg>
+                                                                        ),
+                                                                    },
+                                                                    {
+                                                                        key: 'narrative' as SkillsLayout,
+                                                                        label: 'Narrative',
+                                                                        preview: (
+                                                                            <svg viewBox="0 0 60 32" className="w-full h-8">
+                                                                                <rect x="2" y="4" width="22" height="3" rx="1" fill="currentColor" opacity=".9"/>
+                                                                                <rect x="5" y="10" width="50" height="2.5" rx="1" fill="currentColor" opacity=".4"/>
+                                                                                <rect x="5" y="14" width="44" height="2.5" rx="1" fill="currentColor" opacity=".4"/>
+                                                                                <rect x="2" y="20" width="18" height="3" rx="1" fill="currentColor" opacity=".9"/>
+                                                                                <rect x="5" y="26" width="48" height="2.5" rx="1" fill="currentColor" opacity=".4"/>
+                                                                            </svg>
+                                                                        ),
+                                                                    },
+                                                                ] as const).map(({ key: opt, label, preview }) => (
                                                                     <button
                                                                         key={opt}
                                                                         type="button"
                                                                         onClick={() => { setSkillsLayout(opt); save(); }}
-                                                                        className={`rounded px-2 py-1 text-xs capitalize ${skillsLayout === opt ? 'bg-indigo-600 text-white' : 'border border-gray-300 text-gray-600 hover:border-indigo-400'}`}
+                                                                        className={`flex flex-col items-center gap-1 rounded-lg border-2 p-1.5 transition-colors ${skillsLayout === opt ? 'border-indigo-500 bg-indigo-50 text-indigo-600' : 'border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-400'}`}
                                                                     >
-                                                                        {opt === 'two-column' ? '2-col' : opt}
+                                                                        {preview}
+                                                                        <span className="text-[10px] font-medium leading-none">{label}</span>
                                                                     </button>
                                                                 ))}
                                                             </div>
                                                         </div>
-                                                        {skillsLayout === 'grouped' ? (
+
+                                                        {/* Editor for selected format */}
+                                                        {skillsLayout === 'narrative' ? (
+                                                            <SkillNarrativeEditor
+                                                                narratives={skillNarratives}
+                                                                onChange={setSkillNarratives}
+                                                                onBlur={save}
+                                                            />
+                                                        ) : (skillsLayout === 'grouped-inline' || skillsLayout === 'grouped-vertical') ? (
                                                             <SkillGroupEditor
                                                                 groups={skillsGroups}
                                                                 onChange={setSkillsGroups}

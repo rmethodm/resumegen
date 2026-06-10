@@ -58,13 +58,13 @@ class SkillsLayoutTest extends TestCase
 
         $this->actingAs($this->user)
             ->put(route('builder.update', $this->resume), [
-                'skills_layout' => 'grouped',
+                'skills_layout' => 'grouped-inline',
                 'skills_groups' => $groups,
             ])
             ->assertRedirect();
 
         $this->resume->refresh();
-        $this->assertEquals('grouped', $this->resume->skills_layout);
+        $this->assertEquals('grouped-inline', $this->resume->skills_layout);
         $this->assertCount(2, $this->resume->skills_groups);
         $this->assertEquals('Frontend', $this->resume->skills_groups[0]['category']);
     }
@@ -72,7 +72,7 @@ class SkillsLayoutTest extends TestCase
     public function test_skills_layout_and_groups_are_copied_with_resume(): void
     {
         $this->resume->update([
-            'skills_layout' => 'grouped',
+            'skills_layout' => 'grouped-vertical',
             'skills_groups' => [['category' => 'Tools', 'items' => ['Docker']]],
         ]);
 
@@ -85,7 +85,7 @@ class SkillsLayoutTest extends TestCase
             ->latest()
             ->first();
 
-        $this->assertEquals('grouped', $copy->skills_layout);
+        $this->assertEquals('grouped-vertical', $copy->skills_layout);
         $this->assertEquals('Tools', $copy->skills_groups[0]['category']);
     }
 
@@ -100,10 +100,29 @@ class SkillsLayoutTest extends TestCase
         $response->assertHeader('content-type', 'application/pdf');
     }
 
+    public function test_skill_narratives_are_saved(): void
+    {
+        $narratives = [
+            ['name' => 'Proactive Communication', 'bullets' => ['Demonstrated ability to communicate clearly', 'Led cross-functional meetings']],
+        ];
+
+        $this->actingAs($this->user)
+            ->put(route('builder.update', $this->resume), [
+                'skills_layout' => 'narrative',
+                'skill_narratives' => $narratives,
+            ])
+            ->assertRedirect();
+
+        $this->resume->refresh();
+        $this->assertEquals('narrative', $this->resume->skills_layout);
+        $this->assertCount(1, $this->resume->skill_narratives);
+        $this->assertEquals('Proactive Communication', $this->resume->skill_narratives[0]['name']);
+    }
+
     public function test_pdf_renders_grouped_layout(): void
     {
         $this->resume->update([
-            'skills_layout' => 'grouped',
+            'skills_layout' => 'grouped-inline',
             'skills_groups' => [
                 ['category' => 'Frontend', 'items' => ['React']],
             ],
