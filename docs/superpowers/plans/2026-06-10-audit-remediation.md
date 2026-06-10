@@ -1,6 +1,6 @@
 # Audit Remediation Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Fix all 20 findings from the 2026-06-10 principal-engineer audit, spanning security vulnerabilities, dead code, missing DB indexes, and code quality issues.
 
@@ -21,7 +21,7 @@
 - Modify: `routes/web.php` (add rate limit)
 - Test: `tests/Feature/OgImageTest.php`
 
-- [ ] **Step 1: Write failing tests for the injection guard**
+- [x] **Step 1: Write failing tests for the injection guard**
 
 Open `tests/Feature/OgImageTest.php` and add:
 
@@ -57,7 +57,7 @@ public function test_og_image_with_valid_accent_color_renders(): void
 }
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 php artisan test --compact tests/Feature/OgImageTest.php --filter="malicious_accent_color|valid_accent_color"
@@ -65,7 +65,7 @@ php artisan test --compact tests/Feature/OgImageTest.php --filter="malicious_acc
 
 Expected: FAIL (the malicious test will pass when it shouldn't, or the injection is present)
 
-- [ ] **Step 3: Fix `OgImageController` to whitelist `accent_color`**
+- [x] **Step 3: Fix `OgImageController` to whitelist `accent_color`**
 
 In `app/Http/Controllers/OgImageController.php`, replace line 19:
 
@@ -80,7 +80,7 @@ $accent = in_array($resume->accent_color, $allowed, true)
     : '#6366f1';
 ```
 
-- [ ] **Step 4: Add rate limit to the OgImage route**
+- [x] **Step 4: Add rate limit to the OgImage route**
 
 In `routes/web.php`, find line 189:
 ```php
@@ -91,7 +91,7 @@ Change to:
 Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image')->middleware('throttle:30,1');
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 ```bash
 php artisan test --compact tests/Feature/OgImageTest.php
@@ -99,7 +99,7 @@ php artisan test --compact tests/Feature/OgImageTest.php
 
 Expected: all OgImage tests PASS
 
-- [ ] **Step 6: Run Pint and commit**
+- [x] **Step 6: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Http/Controllers/OgImageController.php routes/web.php
@@ -118,7 +118,7 @@ git commit -m "fix: whitelist accent_color in OgImageController, add rate limit"
 - Modify: `app/Models/CareerArticle.php`
 - Test: `tests/Feature/CareerHubTest.php`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 Add to `tests/Feature/CareerHubTest.php`:
 
@@ -159,7 +159,7 @@ public function test_article_body_strips_event_handlers(): void
 }
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 php artisan test --compact tests/Feature/CareerHubTest.php --filter="xss|script_tag|event_handler"
@@ -167,7 +167,7 @@ php artisan test --compact tests/Feature/CareerHubTest.php --filter="xss|script_
 
 Expected: FAIL (scripts and event handlers are currently saved as-is)
 
-- [ ] **Step 3: Add `sanitizeBody` method to `CareerArticle` model**
+- [x] **Step 3: Add `sanitizeBody` method to `CareerArticle` model**
 
 In `app/Models/CareerArticle.php`, add a static helper after the existing `booted()` method:
 
@@ -184,7 +184,7 @@ public static function sanitizeBody(string $html): string
 }
 ```
 
-- [ ] **Step 4: Apply sanitization in `CareerController` on store and update**
+- [x] **Step 4: Apply sanitization in `CareerController` on store and update**
 
 In `app/Http/Controllers/Admin/CareerController.php`, find the `store` and `update` methods. After `$validated = $request->validate([...])`, add before creating/updating:
 
@@ -199,7 +199,7 @@ Add the import at the top if not already present:
 use App\Models\CareerArticle;
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 ```bash
 php artisan test --compact tests/Feature/CareerHubTest.php
@@ -207,7 +207,7 @@ php artisan test --compact tests/Feature/CareerHubTest.php
 
 Expected: all CareerHub tests PASS
 
-- [ ] **Step 6: Run Pint and commit**
+- [x] **Step 6: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Models/CareerArticle.php app/Http/Controllers/Admin/CareerController.php
@@ -226,7 +226,7 @@ git commit -m "fix: sanitize CareerHub article body to prevent persistent XSS"
 - Modify: `routes/web.php`
 - Test: `tests/Feature/ResumeShareLinkTest.php`
 
-- [ ] **Step 1: Identify and remove dead routes**
+- [x] **Step 1: Identify and remove dead routes**
 
 In `routes/web.php`, search for and delete any lines referencing `markRead` or `markAllRead` on questions, e.g.:
 ```php
@@ -241,7 +241,7 @@ php artisan route:list 2>/dev/null | grep question
 ```
 Expected: no output
 
-- [ ] **Step 2: Remove dead methods from `ShareLinkController`**
+- [x] **Step 2: Remove dead methods from `ShareLinkController`**
 
 In `app/Http/Controllers/ShareLinkController.php`, delete:
 - The `use App\Models\ResumeQuestion;` import (line 6)
@@ -250,7 +250,7 @@ In `app/Http/Controllers/ShareLinkController.php`, delete:
 
 The final file should have only `store`, `update`, and `destroy` methods.
 
-- [ ] **Step 3: Write regression test confirming the dead routes don't exist**
+- [x] **Step 3: Write regression test confirming the dead routes don't exist**
 
 Add to `tests/Feature/ResumeShareLinkTest.php`:
 
@@ -267,7 +267,7 @@ public function test_question_read_routes_no_longer_exist(): void
 }
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 ```bash
 php artisan test --compact tests/Feature/ResumeShareLinkTest.php
@@ -275,7 +275,7 @@ php artisan test --compact tests/Feature/ResumeShareLinkTest.php
 
 Expected: all PASS
 
-- [ ] **Step 5: Run Pint and commit**
+- [x] **Step 5: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Http/Controllers/ShareLinkController.php
@@ -294,7 +294,7 @@ git commit -m "fix: remove dead ShareLinkController question methods that refere
 - Modify: `app/Http/Controllers/WebhookController.php`
 - Test: `tests/Feature/WebhookTest.php`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Add to `tests/Feature/WebhookTest.php`:
 
@@ -339,7 +339,7 @@ public function test_cannot_register_webhook_to_internal_10_range(): void
 }
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 php artisan test --compact tests/Feature/WebhookTest.php --filter="private_ip|localhost|internal_10"
@@ -347,7 +347,7 @@ php artisan test --compact tests/Feature/WebhookTest.php --filter="private_ip|lo
 
 Expected: FAIL (private IPs are currently accepted)
 
-- [ ] **Step 3: Add a custom validation rule to block private IP ranges**
+- [x] **Step 3: Add a custom validation rule to block private IP ranges**
 
 Create `app/Rules/PublicUrl.php`:
 
@@ -391,7 +391,7 @@ class PublicUrl implements ValidationRule
 }
 ```
 
-- [ ] **Step 4: Apply the rule in `WebhookController`**
+- [x] **Step 4: Apply the rule in `WebhookController`**
 
 In `app/Http/Controllers/WebhookController.php`, replace:
 ```php
@@ -402,7 +402,7 @@ With:
 'url' => ['required', 'url', 'max:500', new \App\Rules\PublicUrl()],
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 ```bash
 php artisan test --compact tests/Feature/WebhookTest.php
@@ -410,7 +410,7 @@ php artisan test --compact tests/Feature/WebhookTest.php
 
 Expected: all PASS
 
-- [ ] **Step 6: Run Pint and commit**
+- [x] **Step 6: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Rules/PublicUrl.php app/Http/Controllers/WebhookController.php
@@ -431,7 +431,7 @@ git commit -m "fix: block SSRF by rejecting private IP ranges in webhook URL reg
 - Delete: `app/Mail/NewQuestionReceived.php`
 - Delete: `tests/Feature/NewQuestionMailTest.php`
 
-- [ ] **Step 1: Confirm nothing live imports these classes**
+- [x] **Step 1: Confirm nothing live imports these classes**
 
 ```bash
 grep -rn "ResumeQuestion\|NewQuestionReceived" app routes tests --include="*.php" | grep -v "ResumeQuestion.php\|NewQuestionReceived.php\|NewQuestionMailTest.php"
@@ -439,7 +439,7 @@ grep -rn "ResumeQuestion\|NewQuestionReceived" app routes tests --include="*.php
 
 Expected: no output (only the files themselves). If any other file still references them, fix those references first before deleting.
 
-- [ ] **Step 2: Delete the three dead files**
+- [x] **Step 2: Delete the three dead files**
 
 ```bash
 rm app/Models/ResumeQuestion.php
@@ -447,7 +447,7 @@ rm app/Mail/NewQuestionReceived.php
 rm tests/Feature/NewQuestionMailTest.php
 ```
 
-- [ ] **Step 3: Run the full test suite to confirm nothing broke**
+- [x] **Step 3: Run the full test suite to confirm nothing broke**
 
 ```bash
 php artisan test --compact
@@ -455,7 +455,7 @@ php artisan test --compact
 
 Expected: all tests PASS (same count as before, minus the deleted test file)
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add -u
@@ -471,13 +471,13 @@ git commit -m "chore: delete orphaned ResumeQuestion model, NewQuestionReceived 
 **Files:**
 - Create: `database/migrations/2026_06_10_000001_drop_dead_ai_tables.php`
 
-- [ ] **Step 1: Generate the migration**
+- [x] **Step 1: Generate the migration**
 
 ```bash
 php artisan make:migration drop_dead_ai_tables --no-interaction
 ```
 
-- [ ] **Step 2: Write the migration**
+- [x] **Step 2: Write the migration**
 
 Open the generated file and replace the contents with:
 
@@ -502,7 +502,7 @@ return new class extends Migration
 };
 ```
 
-- [ ] **Step 3: Run the migration**
+- [x] **Step 3: Run the migration**
 
 ```bash
 php artisan migrate
@@ -510,7 +510,7 @@ php artisan migrate
 
 Expected: migration runs cleanly, no errors
 
-- [ ] **Step 4: Verify the tables are gone**
+- [x] **Step 4: Verify the tables are gone**
 
 ```bash
 php artisan tinker --execute 'echo Schema::hasTable("ai_usage_logs") ? "FAIL: still exists" : "OK: gone"; echo "\n"; echo Schema::hasTable("ai_model_rates") ? "FAIL: still exists" : "OK: gone";'
@@ -522,7 +522,7 @@ OK: gone
 OK: gone
 ```
 
-- [ ] **Step 5: Run the test suite**
+- [x] **Step 5: Run the test suite**
 
 ```bash
 php artisan test --compact
@@ -530,7 +530,7 @@ php artisan test --compact
 
 Expected: all PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add database/migrations/
@@ -547,7 +547,7 @@ git commit -m "chore: drop dead ai_usage_logs and ai_model_rates tables"
 - Modify: `app/Http/Controllers/ResumeBuilderController.php`
 - Test: `tests/Feature/ResumeBuilderTest.php`
 
-- [ ] **Step 1: Write a failing test**
+- [x] **Step 1: Write a failing test**
 
 Add to `tests/Feature/ResumeBuilderTest.php`:
 
@@ -565,7 +565,7 @@ public function test_two_column_template_is_rejected_by_validation(): void
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 ```bash
 php artisan test --compact tests/Feature/ResumeBuilderTest.php --filter="two_column_template"
@@ -573,7 +573,7 @@ php artisan test --compact tests/Feature/ResumeBuilderTest.php --filter="two_col
 
 Expected: FAIL (two-column is currently accepted)
 
-- [ ] **Step 3: Remove `two-column` from the validation `in:` list**
+- [x] **Step 3: Remove `two-column` from the validation `in:` list**
 
 In `app/Http/Controllers/ResumeBuilderController.php`, find `resumeRules()` (around line 245). Change:
 
@@ -587,7 +587,7 @@ To:
 'template' => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats,skills-first,skills-first-visual,academic,bold,timeline'],
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 php artisan test --compact tests/Feature/ResumeBuilderTest.php
@@ -595,7 +595,7 @@ php artisan test --compact tests/Feature/ResumeBuilderTest.php
 
 Expected: all PASS
 
-- [ ] **Step 5: Run Pint and commit**
+- [x] **Step 5: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Http/Controllers/ResumeBuilderController.php
@@ -613,7 +613,7 @@ git commit -m "fix: remove two-column from template validation (no PDF partial e
 - Modify: `app/Models/Resume.php`
 - Modify: `composer.json`
 
-- [ ] **Step 1: Add missing fields to `Resume::$fillable`**
+- [x] **Step 1: Add missing fields to `Resume::$fillable`**
 
 In `app/Models/Resume.php`, update `$fillable` to include:
 
@@ -653,7 +653,7 @@ protected $casts = [
 ];
 ```
 
-- [ ] **Step 2: Remove dead composer dependencies**
+- [x] **Step 2: Remove dead composer dependencies**
 
 ```bash
 composer remove openai-php/client smalot/pdfparser --no-interaction
@@ -661,7 +661,7 @@ composer remove openai-php/client smalot/pdfparser --no-interaction
 
 Expected: both packages removed, `composer.json` and `composer.lock` updated, no errors about missing classes.
 
-- [ ] **Step 3: Run the full test suite**
+- [x] **Step 3: Run the full test suite**
 
 ```bash
 php artisan test --compact
@@ -669,7 +669,7 @@ php artisan test --compact
 
 Expected: all PASS
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 ./vendor/bin/pint app/Models/Resume.php
@@ -689,7 +689,7 @@ git commit -m "fix: add missing fields to Resume fillable/casts, remove dead ope
 - Modify: `app/Http/Controllers/MessagesController.php`
 - Test: `tests/Feature/ResumeThreadTest.php`
 
-- [ ] **Step 1: Write a test that verifies query count**
+- [x] **Step 1: Write a test that verifies query count**
 
 Add to `tests/Feature/ResumeThreadTest.php`:
 
@@ -716,7 +716,7 @@ public function test_messages_index_does_not_fire_n_plus_1_queries(): void
 }
 ```
 
-- [ ] **Step 2: Run test to document current behavior**
+- [x] **Step 2: Run test to document current behavior**
 
 ```bash
 php artisan test --compact tests/Feature/ResumeThreadTest.php --filter="n_plus_1"
@@ -724,7 +724,7 @@ php artisan test --compact tests/Feature/ResumeThreadTest.php --filter="n_plus_1
 
 Note the actual query count in the output.
 
-- [ ] **Step 3: Fix the N+1 in `MessagesController`**
+- [x] **Step 3: Fix the N+1 in `MessagesController`**
 
 In `app/Http/Controllers/MessagesController.php`, update `index()`:
 
@@ -755,7 +755,7 @@ public function index(Request $request): Response
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 php artisan test --compact tests/Feature/ResumeThreadTest.php
@@ -763,7 +763,7 @@ php artisan test --compact tests/Feature/ResumeThreadTest.php
 
 Expected: all PASS including the new query count test
 
-- [ ] **Step 5: Run Pint and commit**
+- [x] **Step 5: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Http/Controllers/MessagesController.php
@@ -781,7 +781,7 @@ git commit -m "perf: fix N+1 in MessagesController using withCount instead of co
 - Modify: `app/Http/Controllers/AnalyticsController.php`
 - Test: `tests/Feature/AnalyticsControllerTest.php`
 
-- [ ] **Step 1: Write a test documenting expected output shape**
+- [x] **Step 1: Write a test documenting expected output shape**
 
 Add to `tests/Feature/AnalyticsControllerTest.php`:
 
@@ -814,7 +814,7 @@ public function test_analytics_aggregates_correctly_with_many_events(): void
 }
 ```
 
-- [ ] **Step 2: Run test to verify current behavior is correct but approach is wrong**
+- [x] **Step 2: Run test to verify current behavior is correct but approach is wrong**
 
 ```bash
 php artisan test --compact tests/Feature/AnalyticsControllerTest.php --filter="many_events"
@@ -822,7 +822,7 @@ php artisan test --compact tests/Feature/AnalyticsControllerTest.php --filter="m
 
 Expected: PASS (correctness is fine — we're fixing the approach, not the output)
 
-- [ ] **Step 3: Rewrite `AnalyticsController::index` to aggregate in DB**
+- [x] **Step 3: Rewrite `AnalyticsController::index` to aggregate in DB**
 
 Replace `app/Http/Controllers/AnalyticsController.php` with:
 
@@ -902,7 +902,7 @@ class AnalyticsController extends Controller
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 php artisan test --compact tests/Feature/AnalyticsControllerTest.php tests/Feature/AnalyticsTest.php
@@ -910,7 +910,7 @@ php artisan test --compact tests/Feature/AnalyticsControllerTest.php tests/Featu
 
 Expected: all PASS
 
-- [ ] **Step 5: Run Pint and commit**
+- [x] **Step 5: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Http/Controllers/AnalyticsController.php
@@ -927,13 +927,13 @@ git commit -m "perf: move AnalyticsController event aggregation to DB to prevent
 **Files:**
 - Create: `database/migrations/2026_06_10_000002_add_missing_indexes.php`
 
-- [ ] **Step 1: Generate the migration**
+- [x] **Step 1: Generate the migration**
 
 ```bash
 php artisan make:migration add_missing_indexes --no-interaction
 ```
 
-- [ ] **Step 2: Write the migration**
+- [x] **Step 2: Write the migration**
 
 ```php
 <?php
@@ -972,7 +972,7 @@ return new class extends Migration
 };
 ```
 
-- [ ] **Step 3: Run the migration**
+- [x] **Step 3: Run the migration**
 
 ```bash
 php artisan migrate
@@ -980,7 +980,7 @@ php artisan migrate
 
 Expected: runs cleanly
 
-- [ ] **Step 4: Run the full test suite**
+- [x] **Step 4: Run the full test suite**
 
 ```bash
 php artisan test --compact
@@ -988,7 +988,7 @@ php artisan test --compact
 
 Expected: all PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add database/migrations/
@@ -1005,7 +1005,7 @@ git commit -m "perf: add missing indexes on resume_section_events and resume_thr
 - Modify: `app/Http/Controllers/ResumeBuilderController.php`
 - Test: `tests/Feature/ResumeBuilderTest.php`
 
-- [ ] **Step 1: Write a test verifying strength score appears on the index**
+- [x] **Step 1: Write a test verifying strength score appears on the index**
 
 Add to `tests/Feature/ResumeBuilderTest.php`:
 
@@ -1025,7 +1025,7 @@ public function test_dashboard_includes_strength_score_for_each_resume(): void
 }
 ```
 
-- [ ] **Step 2: Run test to verify current behavior**
+- [x] **Step 2: Run test to verify current behavior**
 
 ```bash
 php artisan test --compact tests/Feature/ResumeBuilderTest.php --filter="strength_score"
@@ -1033,7 +1033,7 @@ php artisan test --compact tests/Feature/ResumeBuilderTest.php --filter="strengt
 
 Expected: PASS (confirming what we're about to cache still works)
 
-- [ ] **Step 3: Wrap strength computation in a cache call**
+- [x] **Step 3: Wrap strength computation in a cache call**
 
 In `app/Http/Controllers/ResumeBuilderController.php`, inside the `index()` method map closure, replace:
 
@@ -1048,7 +1048,7 @@ $cacheKey = "strength:{$resume->id}:" . $resume->updated_at->timestamp;
 $strength = cache()->remember($cacheKey, now()->addMinutes(5), fn () => ResumeStrengthScorer::score($resume));
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 php artisan test --compact tests/Feature/ResumeBuilderTest.php
@@ -1056,7 +1056,7 @@ php artisan test --compact tests/Feature/ResumeBuilderTest.php
 
 Expected: all PASS
 
-- [ ] **Step 5: Run Pint and commit**
+- [x] **Step 5: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Http/Controllers/ResumeBuilderController.php
@@ -1074,7 +1074,7 @@ git commit -m "perf: cache ResumeStrengthScorer result per resume on dashboard i
 - Modify: `app/Providers/AppServiceProvider.php`
 - Test: `tests/Feature/BillingTest.php`
 
-- [ ] **Step 1: Write a test verifying plan_tier is NOT updated on a no-op save**
+- [x] **Step 1: Write a test verifying plan_tier is NOT updated on a no-op save**
 
 Add to `tests/Feature/BillingTest.php`:
 
@@ -1098,7 +1098,7 @@ public function test_plan_tier_is_not_updated_when_subscription_saved_without_st
 }
 ```
 
-- [ ] **Step 2: Add `isDirty` guard to the observer in `AppServiceProvider`**
+- [x] **Step 2: Add `isDirty` guard to the observer in `AppServiceProvider`**
 
 In `app/Providers/AppServiceProvider.php`, update the `Subscription::saved` callback to add a dirty check at the top:
 
@@ -1112,7 +1112,7 @@ Subscription::saved(function (Subscription $subscription) {
     // ... rest of existing logic unchanged
 ```
 
-- [ ] **Step 3: Run tests**
+- [x] **Step 3: Run tests**
 
 ```bash
 php artisan test --compact tests/Feature/BillingTest.php
@@ -1120,7 +1120,7 @@ php artisan test --compact tests/Feature/BillingTest.php
 
 Expected: all PASS
 
-- [ ] **Step 4: Run Pint and commit**
+- [x] **Step 4: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Providers/AppServiceProvider.php
@@ -1141,7 +1141,7 @@ git commit -m "perf: guard Subscription observer with isDirty check to skip no-o
 - Modify: `app/Http/Controllers/ResumeBuilderController.php`
 - Test: `tests/Unit/ResumeCompletionScorerTest.php`
 
-- [ ] **Step 1: Create `ResumeCompletionScorer` service**
+- [x] **Step 1: Create `ResumeCompletionScorer` service**
 
 Create `app/Services/ResumeCompletionScorer.php`:
 
@@ -1188,7 +1188,7 @@ class ResumeCompletionScorer
 }
 ```
 
-- [ ] **Step 2: Write unit tests**
+- [x] **Step 2: Write unit tests**
 
 Create `tests/Unit/ResumeCompletionScorerTest.php`:
 
@@ -1239,7 +1239,7 @@ class ResumeCompletionScorerTest extends TestCase
 }
 ```
 
-- [ ] **Step 3: Run unit tests**
+- [x] **Step 3: Run unit tests**
 
 ```bash
 php artisan test --compact tests/Unit/ResumeCompletionScorerTest.php
@@ -1247,7 +1247,7 @@ php artisan test --compact tests/Unit/ResumeCompletionScorerTest.php
 
 Expected: all PASS
 
-- [ ] **Step 4: Replace private method in `ResumeBuilderController`**
+- [x] **Step 4: Replace private method in `ResumeBuilderController`**
 
 In `app/Http/Controllers/ResumeBuilderController.php`:
 
@@ -1255,7 +1255,7 @@ In `app/Http/Controllers/ResumeBuilderController.php`:
 2. In `edit()`, replace `$this->computeCompletionScore($resume)` with `ResumeCompletionScorer::score($resume)`
 3. Delete the entire `private function computeCompletionScore(Resume $resume): int { ... }` method
 
-- [ ] **Step 5: Run full test suite**
+- [x] **Step 5: Run full test suite**
 
 ```bash
 php artisan test --compact
@@ -1263,7 +1263,7 @@ php artisan test --compact
 
 Expected: all PASS
 
-- [ ] **Step 6: Run Pint and commit**
+- [x] **Step 6: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Services/ResumeCompletionScorer.php app/Http/Controllers/ResumeBuilderController.php
@@ -1283,7 +1283,7 @@ git commit -m "refactor: extract computeCompletionScore into ResumeCompletionSco
 - Modify: `app/Http/Controllers/ReferralController.php`
 - Test: `tests/Feature/ReferralTest.php`
 
-- [ ] **Step 1: Write a test that documents the desired behavior**
+- [x] **Step 1: Write a test that documents the desired behavior**
 
 Add to `tests/Feature/ReferralTest.php`:
 
@@ -1314,7 +1314,7 @@ public function test_ensure_referral_code_action_creates_and_persists_code(): vo
 }
 ```
 
-- [ ] **Step 2: Run tests to verify current behavior**
+- [x] **Step 2: Run tests to verify current behavior**
 
 ```bash
 php artisan test --compact tests/Feature/ReferralTest.php --filter="write_to_db|ensure_referral"
@@ -1322,7 +1322,7 @@ php artisan test --compact tests/Feature/ReferralTest.php --filter="write_to_db|
 
 Expected: first test FAILS (write happens), second FAILS (action doesn't exist yet)
 
-- [ ] **Step 3: Create `EnsureReferralCode` action**
+- [x] **Step 3: Create `EnsureReferralCode` action**
 
 Create `app/Actions/EnsureReferralCode.php`:
 
@@ -1350,7 +1350,7 @@ class EnsureReferralCode
 }
 ```
 
-- [ ] **Step 4: Replace the accessor in `User` model with a plain accessor**
+- [x] **Step 4: Replace the accessor in `User` model with a plain accessor**
 
 In `app/Models/User.php`, replace the entire `getReferralCodeAttribute` method with:
 
@@ -1361,7 +1361,7 @@ public function getReferralCodeAttribute(mixed $value): ?string
 }
 ```
 
-- [ ] **Step 5: Update `ReferralController` to use the action wherever a code is needed**
+- [x] **Step 5: Update `ReferralController` to use the action wherever a code is needed**
 
 In `app/Http/Controllers/ReferralController.php`, find any place that reads `$user->referral_code` and expects it to be guaranteed non-null. Replace with:
 
@@ -1369,7 +1369,7 @@ In `app/Http/Controllers/ReferralController.php`, find any place that reads `$us
 $code = \App\Actions\EnsureReferralCode::for($user);
 ```
 
-- [ ] **Step 6: Run tests**
+- [x] **Step 6: Run tests**
 
 ```bash
 php artisan test --compact tests/Feature/ReferralTest.php
@@ -1377,7 +1377,7 @@ php artisan test --compact tests/Feature/ReferralTest.php
 
 Expected: all PASS
 
-- [ ] **Step 7: Run Pint and commit**
+- [x] **Step 7: Run Pint and commit**
 
 ```bash
 ./vendor/bin/pint app/Models/User.php app/Actions/EnsureReferralCode.php app/Http/Controllers/ReferralController.php
@@ -1396,11 +1396,11 @@ git commit -m "refactor: eliminate write-on-read side effect in User::referral_c
 - Create: `resources/js/Pages/ResumeBuilder/Partials/SharePopover.tsx`
 - Modify: `resources/js/Pages/ResumeBuilder/Edit.tsx`
 
-- [ ] **Step 1: Identify the `ThreadsPanel` section in `Edit.tsx`**
+- [x] **Step 1: Identify the `ThreadsPanel` section in `Edit.tsx`**
 
 Search `Edit.tsx` for the threads panel render block. It will be a section that maps over `threads` prop and renders thread cards with unread indicators. Note the props it needs: `threads`, `resume.id`.
 
-- [ ] **Step 2: Create `ThreadsPanel.tsx`**
+- [x] **Step 2: Create `ThreadsPanel.tsx`**
 
 Create `resources/js/Pages/ResumeBuilder/Partials/ThreadsPanel.tsx`:
 
@@ -1462,11 +1462,11 @@ export default function ThreadsPanel({ threads, resumeId }: Props) {
 }
 ```
 
-- [ ] **Step 3: Find the `SharePopover` section in `Edit.tsx`**
+- [x] **Step 3: Find the `SharePopover` section in `Edit.tsx`**
 
 Search for the share popover — it renders the share URL input, copy button, LinkedIn/X share links, and share link management. Note props needed: `resume.id`, `shareLinks`.
 
-- [ ] **Step 4: Extract `SharePopover` into its own file**
+- [x] **Step 4: Extract `SharePopover` into its own file**
 
 Create `resources/js/Pages/ResumeBuilder/Partials/SharePopover.tsx` and move the share popover JSX and its local state (`shareUrl`, `copied`, etc.) into this component. The component should accept:
 
@@ -1479,7 +1479,7 @@ interface Props {
 
 Reference the existing JSX in `Edit.tsx` exactly — do not change behavior, only move it.
 
-- [ ] **Step 5: Update `Edit.tsx` to import and use the new components**
+- [x] **Step 5: Update `Edit.tsx` to import and use the new components**
 
 In `Edit.tsx`:
 1. Add imports:
@@ -1490,7 +1490,7 @@ import SharePopover from './Partials/SharePopover';
 2. Replace the inline threads JSX with `<ThreadsPanel threads={threads} resumeId={resume.id} />`
 3. Replace the inline share popover JSX with `<SharePopover resumeId={resume.id} shareLinks={shareLinks} />`
 
-- [ ] **Step 6: Build TypeScript to check types**
+- [x] **Step 6: Build TypeScript to check types**
 
 ```bash
 npm run build 2>&1 | tail -20
@@ -1498,7 +1498,7 @@ npm run build 2>&1 | tail -20
 
 Expected: build succeeds with no TypeScript errors
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add resources/js/Pages/ResumeBuilder/Partials/ThreadsPanel.tsx resources/js/Pages/ResumeBuilder/Partials/SharePopover.tsx resources/js/Pages/ResumeBuilder/Edit.tsx
