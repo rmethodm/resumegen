@@ -83,6 +83,36 @@ class OgImageTest extends TestCase
         $this->assertStringContainsString('Jane Doe', $content);
     }
 
+    public function test_og_image_with_malicious_accent_color_is_sanitized(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'accent_color' => 'red" onload="alert(1)',
+        ]);
+        $link = ResumeShareLink::factory()->for($resume)->create(['is_active' => true]);
+
+        $response = $this->get(route('public.og-image', $link->token));
+
+        $response->assertStatus(200);
+        $this->assertStringNotContainsString('onload', $response->getContent());
+        $this->assertStringNotContainsString('alert', $response->getContent());
+    }
+
+    public function test_og_image_with_valid_accent_color_renders(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'accent_color' => '#4f46e5',
+        ]);
+        $link = ResumeShareLink::factory()->for($resume)->create(['is_active' => true]);
+
+        $response = $this->get(route('public.og-image', $link->token));
+
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'image/svg+xml');
+        $this->assertStringContainsString('#4f46e5', $response->getContent());
+    }
+
     public function test_og_image_contains_resumegen_branding(): void
     {
         $user = User::factory()->create();

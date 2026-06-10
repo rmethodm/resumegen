@@ -133,9 +133,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
 
     Route::get('/settings/referral', [ReferralController::class, 'show'])->name('referral.show');
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
-    Route::patch('/messages/{message}/read', [MessagesController::class, 'markRead'])->name('messages.read');
     Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');
-    Route::delete('/messages/{message}', [MessagesController::class, 'destroy'])->name('messages.destroy');
 
     Route::get('/webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
     Route::post('/webhooks', [WebhookController::class, 'store'])->name('webhooks.store');
@@ -188,7 +186,7 @@ Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->na
 Route::get('/r/{token}/docx', [PublicResumeController::class, 'downloadDocx'])->name('public.docx');
 Route::post('/r/{token}/threads', [PublicThreadController::class, 'store'])->middleware('throttle:5,1')->name('public.thread.store');
 Route::post('/r/{token}/threads/{thread}/messages', [PublicThreadController::class, 'addMessage'])->middleware('throttle:10,1')->name('public.thread.message');
-Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image');
+Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image')->middleware('throttle:30,1');
 Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'])
     ->middleware('throttle:30,1')
     ->name('public.section-events');

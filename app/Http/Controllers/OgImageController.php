@@ -15,7 +15,10 @@ class OgImageController extends Controller
         $contact = $resume->contact ?? [];
         $name = $contact['full_name'] ?? $resume->name;
         $title = $contact['title'] ?? '';
-        $accent = $resume->accent_color ?? '#6366f1';
+        $allowed = ['#4f46e5', '#1e3a5f', '#475569', '#166534', '#7f1d1d', '#1f2937', '#0f766e', '#78716c', '#6366f1'];
+        $accent = in_array($resume->accent_color, $allowed, true)
+            ? $resume->accent_color
+            : '#6366f1';
 
         $svg = $this->buildSvg($name, $title, $accent, $resume->name);
 
