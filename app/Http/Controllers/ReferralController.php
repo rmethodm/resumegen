@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\EnsureReferralCode;
 use App\Models\ReferralEvent;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -23,10 +24,11 @@ class ReferralController extends Controller
     public function show(Request $request): Response
     {
         $user = $request->user();
+        $code = EnsureReferralCode::for($user);
 
         return Inertia::render('Referral/Index', [
-            'referralCode' => $user->referral_code,
-            'referralUrl' => route('referral.redirect', $user->referral_code),
+            'referralCode' => $code,
+            'referralUrl' => route('referral.redirect', $code),
             'totalSignups' => ReferralEvent::where('referrer_user_id', $user->id)->where('event_type', 'signup')->count(),
             'totalUpgrades' => ReferralEvent::where('referrer_user_id', $user->id)->where('event_type', 'upgrade')->count(),
             'rewardsEarned' => $user->referral_rewards_earned,

@@ -87,16 +87,9 @@ class User extends Authenticatable
         return $this->hasMany(JobApplication::class);
     }
 
-    public function getReferralCodeAttribute(mixed $value): string
+    public function getReferralCodeAttribute(mixed $value): ?string
     {
-        if ($value !== null) {
-            return $value;
-        }
-
-        $code = strtoupper(bin2hex(random_bytes(6)));
-        $this->forceFill(['referral_code' => $code])->saveQuietly();
-
-        return $code;
+        return $value;
     }
 
     public function referrer(): BelongsTo
