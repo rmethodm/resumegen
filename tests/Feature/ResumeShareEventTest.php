@@ -46,12 +46,11 @@ class ResumeShareEventTest extends TestCase
     {
         $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
-        $link = ResumeShareLink::factory()->create(['resume_id' => $resume->id]);
+        $link = ResumeShareLink::factory()->create(['resume_id' => $resume->id, 'is_active' => true]);
 
-        $this->post(route('public.question', $link->token), [
+        $this->post(route('public.thread.store', $link->token), [
             'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
-            'sender_phone' => '555-1234',
             'message' => 'Hello!',
         ]);
 

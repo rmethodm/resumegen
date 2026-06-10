@@ -71,21 +71,20 @@ class ResumeBuilderTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_mark_all_questions_read(): void
+    public function test_mark_all_threads_read(): void
     {
         $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
-        $link = $resume->shareLinks()->create();
-        $link->questions()->createMany([
-            ['resume_id' => $resume->id, 'sender_name' => 'A', 'sender_email' => 'a@x.com', 'message' => 'Hi', 'is_read' => false],
-            ['resume_id' => $resume->id, 'sender_name' => 'B', 'sender_email' => 'b@x.com', 'message' => 'Hey', 'is_read' => false],
+        $resume->threads()->createMany([
+            ['sender_name' => 'A', 'sender_email' => 'a@x.com', 'is_read' => false],
+            ['sender_name' => 'B', 'sender_email' => 'b@x.com', 'is_read' => false],
         ]);
 
         $this->actingAs($user)
-            ->patch(route('questions.read-all', $resume->id))
+            ->patch(route('messages.read-all'))
             ->assertRedirect();
 
-        $this->assertDatabaseMissing('resume_questions', ['resume_id' => $resume->id, 'is_read' => false]);
+        $this->assertDatabaseMissing('resume_threads', ['resume_id' => $resume->id, 'is_read' => false]);
     }
 
     public function test_new_style_columns_have_expected_defaults(): void

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\NewThreadStarted;
 use App\Mail\NewVisitorReply;
+use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
 use App\Models\ResumeThread;
 use Illuminate\Http\RedirectResponse;
@@ -41,6 +42,8 @@ class PublicThreadController extends Controller
         ]);
 
         $request->session()->push('owned_threads', $thread->id);
+
+        ResumeShareEvent::log($request, $link, 'question_submitted');
 
         try {
             Mail::to($link->resume->user->email)->queue(

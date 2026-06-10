@@ -32,43 +32,26 @@ class PublicResumeTest extends TestCase
         $this->get(route('public.resume', $link->token))->assertStatus(410);
     }
 
-    public function test_question_stored_via_public_route(): void
+    public function test_thread_stored_via_public_route(): void
     {
         $link = $this->makeLink(true);
-        $this->post(route('public.question', $link->token), [
+        $this->post(route('public.thread.store', $link->token), [
             'sender_name' => 'Bob',
             'sender_email' => 'bob@example.com',
-            'sender_phone' => '555-9999',
             'message' => 'Are you available to start next week?',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('resume_questions', [
+        $this->assertDatabaseHas('resume_threads', [
             'sender_name' => 'Bob',
             'resume_id' => $link->resume_id,
         ]);
     }
 
-    public function test_question_requires_name_email_and_message_but_not_phone(): void
+    public function test_thread_requires_name_email_and_message(): void
     {
         $link = $this->makeLink(true);
-        $this->post(route('public.question', $link->token), [])->assertSessionHasErrors([
+        $this->post(route('public.thread.store', $link->token), [])->assertSessionHasErrors([
             'sender_name', 'sender_email', 'message',
-        ])->assertSessionDoesntHaveErrors('sender_phone');
-    }
-
-    public function test_question_can_be_submitted_without_phone(): void
-    {
-        $link = $this->makeLink(true);
-        $this->post(route('public.question', $link->token), [
-            'sender_name' => 'Alice',
-            'sender_email' => 'alice@example.com',
-            'message' => 'Hello, I am interested.',
-        ])->assertRedirect();
-
-        $this->assertDatabaseHas('resume_questions', [
-            'sender_name' => 'Alice',
-            'sender_phone' => null,
-            'resume_id' => $link->resume_id,
         ]);
     }
 
@@ -96,21 +79,21 @@ class PublicResumeTest extends TestCase
         $this->get(route('public.resume', $link->token))->assertOk();
     }
 
-    public function test_expired_link_rejects_question_submission(): void
+    public function test_expired_link_rejects_thread_submission(): void
     {
         $link = $this->makeLink(true);
         $link->update(['expires_at' => now()->subDay()]);
 
-        $this->post(route('public.question', $link->token), [
+        $this->post(route('public.thread.store', $link->token), [
             'sender_name' => 'Alice',
             'sender_email' => 'alice@example.com',
             'message' => 'Hi',
         ])->assertStatus(410);
     }
 
-    public function test_public_question_form_is_rate_limited(): void
+    public function test_public_thread_form_is_rate_limited(): void
     {
-        RateLimiter::clear('public-question');
+        RateLimiter::clear('public-thread');
 
         $link = $this->makeLink(true);
         $payload = [
@@ -120,10 +103,10 @@ class PublicResumeTest extends TestCase
         ];
 
         for ($i = 0; $i < 5; $i++) {
-            $this->post(route('public.question', $link->token), $payload);
+            $this->post(route('public.thread.store', $link->token), $payload);
         }
 
-        $response = $this->post(route('public.question', $link->token), $payload);
+        $response = $this->post(route('public.thread.store', $link->token), $payload);
         $response->assertStatus(429);
     }
 }
