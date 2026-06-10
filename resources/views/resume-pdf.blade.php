@@ -174,11 +174,23 @@
       <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
       <div style="font-size: {{ $sizeContact }}pt; color: #555;">{{ implode(' • ', $contactParts) }}</div>
     </div>
-    @if ($resume->skills && count($resume->skills))
-      {{-- skills is a plain string[] — render as chips before the body --}}
+    @php
+        $sfLayout = $resume->skills_layout ?? 'inline';
+        $sfHasGroups = $sfLayout === 'grouped' && $resume->skills_groups && count($resume->skills_groups);
+        $sfHasFlat = $resume->skills && count($resume->skills);
+    @endphp
+    @if ($sfHasGroups || $sfHasFlat)
       <div class="skills-first-chips">
         <div class="label">Core Competencies</div>
-        <div>{{ implode(' · ', $resume->skills) }}</div>
+        @if ($sfHasGroups)
+          @foreach ($resume->skills_groups as $group)
+            @if (!empty($group['items']))
+              <div><strong>{{ $group['category'] }}:</strong> {{ implode(' · ', $group['items']) }}</div>
+            @endif
+          @endforeach
+        @else
+          <div>{{ implode(' · ', $resume->skills) }}</div>
+        @endif
       </div>
     @endif
     @include('partials.resume-body', ['skipSections' => ['skills']])
@@ -193,7 +205,21 @@
       </div>
       <div style="font-size: {{ $sizeContact }}pt; color: #555;">{{ implode(' • ', $contactParts) }}</div>
     </div>
-    @if ($resume->skills && count($resume->skills))
+    @php
+        $sfvLayout = $resume->skills_layout ?? 'inline';
+        $sfvHasGroups = $sfvLayout === 'grouped' && $resume->skills_groups && count($resume->skills_groups);
+    @endphp
+    @if ($sfvHasGroups)
+      <h2>Technical Skills</h2>
+      @foreach ($resume->skills_groups as $group)
+        @if (!empty($group['items']))
+          <div style="margin-bottom:4pt;font-size:7pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:{{ $accent }};">{{ $group['category'] }}</div>
+          @foreach ($group['items'] as $skill)
+            <span class="skill-chip">{{ $skill }}</span>
+          @endforeach
+        @endif
+      @endforeach
+    @elseif ($resume->skills && count($resume->skills))
       <h2>Technical Skills</h2>
       @foreach ($resume->skills as $skill)
         <div style="display:flex; align-items:center; margin-bottom:3pt; gap:8pt;">
