@@ -2,6 +2,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import AutocompleteInput from '@/Components/AutocompleteInput';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
+import SkillGroupEditor from '@/Components/SkillGroupEditor';
+import type { SkillGroup, SkillsLayout } from '@/types';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
@@ -243,6 +245,8 @@ export default function Edit({
     const [experience, setExperience] = useState<ExperienceEntry[]>(resume.experience ?? [emptyExp()]);
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? [emptyEdu()]);
     const [skills, setSkills] = useState<string[]>(resume.skills ?? []);
+    const [skillsLayout, setSkillsLayout] = useState<SkillsLayout>(resume.skills_layout ?? 'inline');
+    const [skillsGroups, setSkillsGroups] = useState<SkillGroup[]>(resume.skills_groups ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
     const [customSections, setCustomSections] = useState<CustomSection[]>(resume.custom_sections ?? []);
     const [sectionOrder, setSectionOrder] = useState<string[]>(
@@ -311,6 +315,8 @@ export default function Edit({
     const experienceRef = useRef(experience);
     const educationRef = useRef(education);
     const skillsRef = useRef(skills);
+    const skillsLayoutRef = useRef(skillsLayout);
+    const skillsGroupsRef = useRef(skillsGroups);
     const certificationsRef = useRef(certifications);
     const customSectionsRef = useRef(customSections);
     const sectionOrderRef = useRef(sectionOrder);
@@ -324,6 +330,8 @@ export default function Edit({
     experienceRef.current = experience;
     educationRef.current = education;
     skillsRef.current = skills;
+    skillsLayoutRef.current = skillsLayout;
+    skillsGroupsRef.current = skillsGroups;
     certificationsRef.current = certifications;
     customSectionsRef.current = customSections;
     sectionOrderRef.current = sectionOrder;
@@ -343,6 +351,8 @@ export default function Edit({
             experience: experienceRef.current as any,
             education: educationRef.current as any,
             skills: skillsRef.current,
+            skills_layout: skillsLayoutRef.current,
+            skills_groups: skillsGroupsRef.current as any,
             certifications: certificationsRef.current as any,
             custom_sections: customSectionsRef.current as any,
             section_order: sectionOrderRef.current,
@@ -395,6 +405,8 @@ export default function Edit({
                     experience: experienceRef.current,
                     education: educationRef.current,
                     skills: skillsRef.current,
+                    skills_layout: skillsLayoutRef.current,
+                    skills_groups: skillsGroupsRef.current,
                     certifications: certificationsRef.current,
                     custom_sections: customSectionsRef.current,
                     section_order: sectionOrderRef.current,
@@ -1143,9 +1155,34 @@ export default function Edit({
                                             <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                                                 <SectionHeader title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')} />
                                                 {openSections.skills && (
-                                                    <div className="p-4 flex flex-col gap-2">
-                                                        <label className="text-xs font-medium text-gray-600">Press Enter or comma to add</label>
-                                                        <TagInput tags={skills} onChange={setSkills} />
+                                                    <div className="p-4 flex flex-col gap-3">
+                                                        <div className="flex flex-col gap-1">
+                                                            <label className="text-xs font-medium text-gray-600">Layout</label>
+                                                            <div className="flex gap-1.5">
+                                                                {(['inline', 'bullets', 'two-column', 'grouped'] as SkillsLayout[]).map(opt => (
+                                                                    <button
+                                                                        key={opt}
+                                                                        type="button"
+                                                                        onClick={() => { setSkillsLayout(opt); save(); }}
+                                                                        className={`rounded px-2 py-1 text-xs capitalize ${skillsLayout === opt ? 'bg-indigo-600 text-white' : 'border border-gray-300 text-gray-600 hover:border-indigo-400'}`}
+                                                                    >
+                                                                        {opt === 'two-column' ? '2-col' : opt}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                        {skillsLayout === 'grouped' ? (
+                                                            <SkillGroupEditor
+                                                                groups={skillsGroups}
+                                                                onChange={setSkillsGroups}
+                                                                onBlur={save}
+                                                            />
+                                                        ) : (
+                                                            <>
+                                                                <label className="text-xs font-medium text-gray-600">Press Enter or comma to add</label>
+                                                                <TagInput tags={skills} onChange={setSkills} onBlur={save} />
+                                                            </>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
