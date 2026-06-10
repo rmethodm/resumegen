@@ -49,10 +49,38 @@
           @endif
         @endforeach
 
-    @elseif ($sectionKey === 'skills' && $resume->skills && count($resume->skills))
+    @elseif ($sectionKey === 'skills')
+        @php
+            $skillsLayout = $resume->skills_layout ?? 'inline';
+            $hasGroups = $skillsLayout === 'grouped' && $resume->skills_groups && count($resume->skills_groups);
+            $hasFlat = $resume->skills && count($resume->skills);
+        @endphp
+        @if ($hasGroups || $hasFlat)
         <h2>Skills</h2>
-        {{-- skills is a plain string[] --}}
-        <p>{{ implode($sep, $resume->skills) }}</p>
+        @if ($hasGroups)
+            @foreach ($resume->skills_groups as $group)
+                @if (!empty($group['items']))
+                <p><strong>{{ $group['category'] }}:</strong> {{ implode($sep, $group['items']) }}</p>
+                @endif
+            @endforeach
+        @elseif ($skillsLayout === 'bullets')
+            <ul>@foreach($resume->skills as $s)<li>{{ $s }}</li>@endforeach</ul>
+        @elseif ($skillsLayout === 'two-column')
+            @php $chunks = array_chunk($resume->skills, (int) ceil(count($resume->skills) / 2)); @endphp
+            <table style="width:100%;border:none;border-collapse:collapse;">
+                <tr>
+                    <td style="width:50%;vertical-align:top;padding:0;">
+                        <ul>@foreach($chunks[0] ?? [] as $s)<li>{{ $s }}</li>@endforeach</ul>
+                    </td>
+                    <td style="width:50%;vertical-align:top;padding:0;">
+                        <ul>@foreach($chunks[1] ?? [] as $s)<li>{{ $s }}</li>@endforeach</ul>
+                    </td>
+                </tr>
+            </table>
+        @else
+            <p>{{ implode($sep, $resume->skills) }}</p>
+        @endif
+        @endif
 
     @elseif ($sectionKey === 'certifications' && $resume->certifications && count(array_filter($resume->certifications, fn($c2) => !empty($c2['name']))))
         <h2>Certifications</h2>
