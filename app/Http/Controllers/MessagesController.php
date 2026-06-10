@@ -17,6 +17,7 @@ class MessagesController extends Controller
         $threads = ResumeThread::query()
             ->whereHas('resume', fn ($q) => $q->where('user_id', $user->id))
             ->with(['resume:id,name', 'messages' => fn ($q) => $q->latest()->limit(1)])
+            ->withCount('messages')
             ->orderByDesc('created_at')
             ->get()
             ->map(fn ($t) => [
@@ -27,7 +28,7 @@ class MessagesController extends Controller
                 'sender_email' => $t->sender_email,
                 'is_read' => $t->is_read,
                 'preview' => $t->messages->first()?->body ?? '',
-                'message_count' => $t->messages()->count(),
+                'message_count' => $t->messages_count,
                 'created_at' => $t->created_at->toDateTimeString(),
             ]);
 

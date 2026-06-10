@@ -131,4 +131,32 @@ class ResumeThreadTest extends TestCase
 
         $this->assertDatabaseCount('resume_thread_messages', 0);
     }
+
+    public function test_messages_index_does_not_fire_n_plus_1_queries(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        // Create 5 threads with 3 messages each
+        for ($i = 0; $i < 5; $i++) {
+            $link = $resume->shareLinks()->create(['is_active' => true]);
+            $thread = ResumeThread::create([
+                'resume_id'     => $resume->id,
+                'share_link_id' => $link->id,
+                'sender_name'   => "Visitor {$i}",
+                'sender_email'  => "visitor{$i}@example.com",
+            ]);
+            for ($j = 0; $j < 3; $j++) {
+                $thread->messages()->create(['body' => "Message {$j}", 'is_owner' => false]);
+            }
+        }
+
+        $queryCount = 0;
+        \DB::listen(function () use (&$queryCount) { $queryCount++; });
+
+        $this->actingAs($user)->get(route('messages.index'));
+
+        // Should be ~3-5 queries total, not 5+1 for count per thread
+        $this->assertLessThanOrEqual(8, $queryCount, "Expected <= 8 queries but got {$queryCount}");
+    }
 }
