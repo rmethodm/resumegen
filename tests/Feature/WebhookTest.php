@@ -84,4 +84,43 @@ class WebhookTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_cannot_register_webhook_to_private_ip(): void
+    {
+        $user = User::factory()->starter()->create();
+
+        $this->actingAs($user)
+            ->postJson(route('webhooks.store'), [
+                'url' => 'http://169.254.169.254/latest/meta-data/',
+                'events' => ['resume.created'],
+            ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['url']);
+    }
+
+    public function test_cannot_register_webhook_to_localhost(): void
+    {
+        $user = User::factory()->starter()->create();
+
+        $this->actingAs($user)
+            ->postJson(route('webhooks.store'), [
+                'url' => 'http://localhost:6379',
+                'events' => ['resume.created'],
+            ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['url']);
+    }
+
+    public function test_cannot_register_webhook_to_internal_10_range(): void
+    {
+        $user = User::factory()->starter()->create();
+
+        $this->actingAs($user)
+            ->postJson(route('webhooks.store'), [
+                'url' => 'http://10.0.0.1/internal',
+                'events' => ['resume.created'],
+            ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['url']);
+    }
 }

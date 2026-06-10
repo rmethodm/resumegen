@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WebhookEndpoint;
+use App\Rules\PublicUrl;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -36,7 +37,7 @@ class WebhookController extends Controller
         }
 
         $validated = $request->validate([
-            'url' => ['required', 'url', 'max:500'],
+            'url' => ['required', 'url', 'max:500', new PublicUrl],
             'events' => ['required', 'array', 'min:1'],
             'events.*' => ['required', 'string', 'in:'.implode(',', self::VALID_EVENTS)],
         ]);
