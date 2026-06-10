@@ -12,9 +12,9 @@ class PublicResumeTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function makeLink(bool $active = true): ResumeShareLink
+    private function makeLink(bool $active = true, string $tier = 'free'): ResumeShareLink
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['plan_tier' => $tier]);
         $resume = $user->resumes()->create(['name' => 'My CV', 'pdf_filename' => 'cv.pdf']);
 
         return $resume->shareLinks()->create(['is_active' => $active]);
@@ -89,6 +89,44 @@ class PublicResumeTest extends TestCase
             'sender_email' => 'alice@example.com',
             'message' => 'Hi',
         ])->assertStatus(410);
+    }
+
+    public function test_public_pdf_route_is_rate_limited(): void
+    {
+        RateLimiter::clear('public-pdf');
+        $link = $this->makeLink(true);
+
+        for ($i = 0; $i < 20; $i++) {
+            $this->get(route('public.pdf', $link->token));
+        }
+
+        $this->get(route('public.pdf', $link->token))->assertStatus(429);
+    }
+
+    public function test_public_docx_route_is_rate_limited(): void
+    {
+        RateLimiter::clear('public-docx');
+        $link = $this->makeLink(true, 'starter');
+
+        for ($i = 0; $i < 20; $i++) {
+            $this->get(route('public.docx', $link->token));
+        }
+
+        $this->get(route('public.docx', $link->token))->assertStatus(429);
+    }
+
+    public function test_free_tier_owner_public_docx_is_blocked(): void
+    {
+        $link = $this->makeLink(true, 'free');
+        $this->get(route('public.docx', $link->token))->assertRedirect();
+    }
+
+    public function test_starter_tier_owner_public_docx_is_accessible(): void
+    {
+        $link = $this->makeLink(true, 'starter');
+        // Should not redirect (stream response, assertOk not applicable for streams — just assert not a redirect)
+        $response = $this->get(route('public.docx', $link->token));
+        $response->assertSuccessful();
     }
 
     public function test_public_thread_form_is_rate_limited(): void

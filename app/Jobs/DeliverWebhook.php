@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class DeliverWebhook implements ShouldQueue
 {
@@ -38,8 +39,14 @@ class DeliverWebhook implements ShouldQueue
                 'X-Resumegen-Signature' => $signature,
                 'X-Resumegen-Event' => $this->event,
             ])->timeout(10)->post($this->endpoint->url, json_decode($body, true));
-        } catch (\Throwable) {
-            // Silently fail — webhook delivery failures are non-blocking
+        } catch (\Throwable $e) {
+            // Log webhook delivery failures for debugging
+            Log::warning('Webhook delivery failed', [
+                'endpoint_id' => $this->endpoint->id,
+                'url' => $this->endpoint->url,
+                'event' => $this->event,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\ResumeRules;
 use App\Models\OrganizationMember;
 use App\Models\RecruiterNote;
 use App\Models\Resume;
@@ -10,6 +11,7 @@ use App\Models\ResumeShareLink;
 use App\Models\User;
 use App\Services\DocxGenerator;
 use App\Services\ResumeCompletionScorer;
+use App\Services\ResumeCopier;
 use App\Services\ResumeStrengthScorer;
 use App\Services\UserLimits;
 use App\Services\WebhookDispatcher;
@@ -29,7 +31,7 @@ class ResumeBuilderController extends Controller
     {
         $user = $request->user();
         $resumeCollection = $user->resumes()
-            ->where('is_snapshot', false)
+            ->nonSnapshot()
             ->with(['tags:id,resume_id,label,color', 'linkedJob:id,role,company'])
             ->orderByDesc('updated_at')
             ->get();
@@ -93,7 +95,7 @@ class ResumeBuilderController extends Controller
         $user = $request->user();
         $limit = UserLimits::resumeLimit($user);
 
-        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
+        if ($limit !== null && $user->resumes()->nonSnapshot()->count() >= $limit) {
             return back()->with('featureGate', [
                 'feature' => 'resume_limit',
                 'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
@@ -162,7 +164,7 @@ class ResumeBuilderController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $validated = $request->validate(self::resumeRules());
+        $validated = $request->validate(ResumeRules::rules());
 
         if (isset($validated['custom_sections'])) {
             $limit = UserLimits::customSectionLimit($request->user());
@@ -190,26 +192,6 @@ class ResumeBuilderController extends Controller
         WebhookDispatcher::dispatch($request->user(), 'resume.updated', ['id' => $resume->id, 'name' => $resume->name]);
 
         return back();
-    }
-
-    private static function resumeRules(): array
-    {
-        return [
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'template' => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats,skills-first,skills-first-visual,academic,bold,timeline'],
-            'accent_color' => ['sometimes', 'nullable', 'in:#4f46e5,#1e3a5f,#475569,#166534,#7f1d1d,#1f2937,#0f766e,#78716c'],
-            'font_family' => ['sometimes', 'nullable', 'in:sans,serif,mono'],
-            'summary' => ['nullable', 'string'],
-            'contact' => ['nullable', 'array'],
-            'experience' => ['nullable', 'array'],
-            'education' => ['nullable', 'array'],
-            'skills' => ['nullable', 'array'],
-            'certifications' => ['nullable', 'array'],
-            'font_sizes' => ['nullable', 'array'],
-            'section_order' => ['nullable', 'array'],
-            'section_order.*' => ['string'],
-            'custom_sections' => ['nullable', 'array'],
-        ];
     }
 
     public function shareUrl(Request $request, Resume $resume): JsonResponse
@@ -242,11 +224,11 @@ class ResumeBuilderController extends Controller
         return $this->buildPdf($resume)->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
     }
 
-    public function downloadDocx(Resume $resume): StreamedResponse|RedirectResponse
+    public function downloadDocx(Request $request, Resume $resume): StreamedResponse|RedirectResponse
     {
         $this->authorize('update', $resume);
 
-        if (! UserLimits::canDocx(auth()->user())) {
+        if (! UserLimits::canDocx($request->user())) {
             return back()->with('featureGate', [
                 'feature' => 'docx_export',
                 'requiredTier' => 'starter',
@@ -287,7 +269,7 @@ class ResumeBuilderController extends Controller
 
         $data = json_decode($request->getContent(), true) ?? [];
 
-        $validated = validator($data, self::resumeRules())->validate();
+        $validated = validator($data, ResumeRules::rules())->validate();
 
         if (isset($validated['custom_sections'])) {
             $limit = UserLimits::customSectionLimit($request->user());
@@ -334,36 +316,21 @@ class ResumeBuilderController extends Controller
         return back();
     }
 
-    public function duplicate(Resume $resume)
+    public function duplicate(Resume $resume): RedirectResponse
     {
         $this->authorize('update', $resume);
 
         $user = $resume->user;
         $limit = UserLimits::resumeLimit($user);
 
-        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
+        if ($limit !== null && $user->resumes()->nonSnapshot()->count() >= $limit) {
             return back()->with('featureGate', [
                 'feature' => 'resume_limit',
                 'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
             ]);
         }
 
-        $copy = $user->resumes()->create([
-            'name' => 'Copy of '.$resume->name,
-            'pdf_filename' => Str::uuid().'.pdf',
-            'template' => $resume->template,
-            'accent_color' => $resume->accent_color,
-            'font_family' => $resume->font_family,
-            'summary' => $resume->summary,
-            'contact' => $resume->contact,
-            'experience' => $resume->experience,
-            'education' => $resume->education,
-            'skills' => $resume->skills,
-            'certifications' => $resume->certifications,
-            'font_sizes' => $resume->font_sizes,
-            'custom_sections' => $resume->custom_sections,
-            'section_order' => $resume->section_order,
-        ]);
+        $copy = ResumeCopier::copy($resume, $user, 'Copy of '.$resume->name);
 
         return redirect()->route('builder.edit', $copy->id);
     }

@@ -9,6 +9,7 @@ use App\Models\RecruiterNote;
 use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -328,5 +329,79 @@ class OrgTest extends TestCase
 
         // Note survives (cascade is on org/resume, not on member removal)
         $this->assertDatabaseHas('recruiter_notes', ['resume_id' => $resume->id]);
+    }
+
+    public function test_org_role_cache_is_cleared_when_member_is_removed(): void
+    {
+        $admin = User::factory()->agency()->create();
+        $candidate = User::factory()->create();
+        $org = Organization::create(['name' => 'Acme', 'owner_id' => $admin->id]);
+        OrganizationMember::create([
+            'organization_id' => $org->id,
+            'user_id' => $admin->id,
+            'role' => 'admin',
+            'invite_email' => $admin->email,
+            'invited_at' => now(),
+            'joined_at' => now(),
+        ]);
+        $member = OrganizationMember::create([
+            'organization_id' => $org->id,
+            'user_id' => $candidate->id,
+            'role' => 'member',
+            'invite_email' => $candidate->email,
+            'invited_at' => now(),
+            'joined_at' => now(),
+        ]);
+
+        Cache::put("org_role_{$candidate->id}", 'member', 60);
+
+        $this->actingAs($admin)
+            ->delete(route('org.invite.destroy', $member->id))
+            ->assertRedirect();
+
+        $this->assertFalse(Cache::has("org_role_{$candidate->id}"));
+    }
+
+    public function test_org_role_cache_is_cleared_when_member_joins(): void
+    {
+        $admin = User::factory()->agency()->create();
+        $joiner = User::factory()->create();
+        $org = Organization::create(['name' => 'Acme', 'owner_id' => $admin->id]);
+        OrganizationMember::create([
+            'organization_id' => $org->id,
+            'user_id' => $admin->id,
+            'role' => 'admin',
+            'invite_email' => $admin->email,
+            'invited_at' => now(),
+            'joined_at' => now(),
+        ]);
+        $invite = OrganizationMember::create([
+            'organization_id' => $org->id,
+            'role' => 'member',
+            'invite_email' => $joiner->email,
+            'invite_token' => 'test-token-123',
+            'invited_at' => now(),
+        ]);
+
+        Cache::put("org_role_{$joiner->id}", 'none', 60);
+
+        $this->actingAs($joiner)
+            ->post(route('org.join.store', $invite->invite_token))
+            ->assertRedirect();
+
+        $this->assertFalse(Cache::has("org_role_{$joiner->id}"));
+    }
+
+    public function test_org_role_cache_is_cleared_when_org_is_created(): void
+    {
+        $user = User::factory()->agency()->create();
+
+        Cache::put("org_role_{$user->id}", 'none', 60);
+
+        $this->actingAs($user)
+            ->post(route('org.store'), ['name' => 'New Org'])
+            ->assertRedirect(route('org.show'));
+
+        $this->assertFalse(Cache::has("org_role_{$user->id}"));
     }
 }

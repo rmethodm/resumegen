@@ -136,6 +136,30 @@ class HeatmapTest extends TestCase
             );
     }
 
+    public function test_batch_of_events_inserts_all_rows_atomically(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create(['is_active' => true]);
+
+        $this->postJson(route('public.section-events', $link->token), [
+            'sections' => [
+                ['section' => 'summary', 'dwell_ms' => 1000],
+                ['section' => 'experience', 'dwell_ms' => 2000],
+                ['section' => 'education', 'dwell_ms' => 3000],
+            ],
+        ])->assertOk();
+
+        $this->assertDatabaseCount('resume_section_events', 3);
+        $this->assertDatabaseHas('resume_section_events', ['section' => 'summary', 'dwell_ms' => 1000, 'resume_id' => $resume->id]);
+        $this->assertDatabaseHas('resume_section_events', ['section' => 'experience', 'dwell_ms' => 2000]);
+        $this->assertDatabaseHas('resume_section_events', ['section' => 'education', 'dwell_ms' => 3000]);
+
+        // All rows should share the same ip_hash
+        $hashes = ResumeSectionEvent::pluck('ip_hash')->unique();
+        $this->assertCount(1, $hashes);
+    }
+
     public function test_section_name_max_length_validated(): void
     {
         $user = User::factory()->create();

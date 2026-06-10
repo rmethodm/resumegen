@@ -145,6 +145,24 @@ class ResumeApiTest extends ApiTestCase
         $this->assertEquals('Senior dev', $response->json('summary'));
     }
 
+    public function test_duplicate_preserves_custom_sections_and_section_order(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create([
+            'name' => 'Original',
+            'pdf_filename' => 'o.pdf',
+            'custom_sections' => [['title' => 'Volunteering', 'body' => 'Red Cross']],
+            'section_order' => ['summary', 'experience', 'education', 'custom_volunteering'],
+        ]);
+
+        $response = $this->withToken($this->token($user))
+            ->postJson("/api/resumes/{$resume->id}/duplicate")
+            ->assertCreated();
+
+        $this->assertEquals([['title' => 'Volunteering', 'body' => 'Red Cross']], $response->json('custom_sections'));
+        $this->assertEquals(['summary', 'experience', 'education', 'custom_volunteering'], $response->json('section_order'));
+    }
+
     public function test_can_download_resume_pdf(): void
     {
         $user = User::factory()->create();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OrganizationMember;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -56,6 +57,8 @@ class OrgJoinController extends Controller
 
             return $orgName;
         });
+
+        Cache::forget("org_role_{$request->user()->id}");
 
         return redirect()->route('builder.index')
             ->with('success', "You've joined {$orgName}!");

@@ -36,7 +36,7 @@ class JobApplicationController extends Controller
             'resumes' => $resumes,
             'statuses' => JobApplication::STATUSES,
             'jobLimit' => UserLimits::jobLimit($user),
-            'jobCount' => $user->jobApplications()->count(),
+            'jobCount' => $applications->count(),
             'funnelStats' => $funnelStats,
         ]);
     }

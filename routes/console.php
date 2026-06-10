@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('resumes:nudge-stale')->dailyAt('09:00');
+Schedule::command('strength-snapshots:prune')->weekly();

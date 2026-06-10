@@ -9,6 +9,7 @@ use App\Models\ResumeShareLink;
 use App\Models\ResumeThread;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class PublicThreadController extends Controller
@@ -49,8 +50,13 @@ class PublicThreadController extends Controller
             Mail::to($link->resume->user->email)->queue(
                 new NewThreadStarted($thread, $firstMessage, $link->resume)
             );
-        } catch (\Throwable) {
-            // Mail failure must never break the public form
+        } catch (\Throwable $e) {
+            // Log mail failure but don't break the public form
+            Log::warning('Failed to queue new thread notification', [
+                'thread_id' => $thread->id,
+                'resume_id' => $link->resume_id,
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return back()->with('threadStarted', true);
@@ -82,8 +88,13 @@ class PublicThreadController extends Controller
             Mail::to($link->resume->user->email)->queue(
                 new NewVisitorReply($thread, $newMessage, $link->resume)
             );
-        } catch (\Throwable) {
-            // Mail failure must not break the public form
+        } catch (\Throwable $e) {
+            // Log mail failure but don't break the public form
+            Log::warning('Failed to queue visitor reply notification', [
+                'thread_id' => $thread->id,
+                'resume_id' => $link->resume_id,
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return back()->with('messageSent', true);

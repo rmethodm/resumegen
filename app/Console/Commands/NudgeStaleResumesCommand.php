@@ -19,7 +19,7 @@ class NudgeStaleResumesCommand extends Command
         $nudgeCooloff = now()->subDays(7);
 
         User::whereHas('resumes', function ($q) use ($cutoff) {
-            $q->where('updated_at', '<', $cutoff)->where('is_snapshot', false);
+            $q->where('updated_at', '<', $cutoff)->nonSnapshot();
         })
             ->where(function ($q) use ($nudgeCooloff) {
                 $q->whereNull('stale_nudge_sent_at')
@@ -28,7 +28,7 @@ class NudgeStaleResumesCommand extends Command
             ->each(function (User $user) use ($cutoff) {
                 $staleResume = $user->resumes()
                     ->where('updated_at', '<', $cutoff)
-                    ->where('is_snapshot', false)
+                    ->nonSnapshot()
                     ->latest('updated_at')
                     ->first();
 

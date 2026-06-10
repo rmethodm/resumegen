@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Data\ResumeRules;
 use App\Http\Controllers\Controller;
 use App\Models\Resume;
+use App\Services\ResumeCopier;
 use App\Services\UserLimits;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
@@ -58,7 +60,7 @@ class ResumeController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $validated = $request->validate(self::resumeRules());
+        $validated = $request->validate(ResumeRules::rules());
         $resume->update($validated);
 
         return response()->json($resume->fresh());
@@ -96,38 +98,8 @@ class ResumeController extends Controller
             ], 402);
         }
 
-        $copy = $user->resumes()->create([
-            'name' => 'Copy of '.$resume->name,
-            'pdf_filename' => Str::uuid().'.pdf',
-            'template' => $resume->template,
-            'accent_color' => $resume->accent_color,
-            'font_family' => $resume->font_family,
-            'summary' => $resume->summary,
-            'contact' => $resume->contact,
-            'experience' => $resume->experience,
-            'education' => $resume->education,
-            'skills' => $resume->skills,
-            'certifications' => $resume->certifications,
-            'font_sizes' => $resume->font_sizes,
-        ]);
+        $copy = ResumeCopier::copy($resume, $user, 'Copy of '.$resume->name);
 
         return response()->json($copy, 201);
-    }
-
-    private static function resumeRules(): array
-    {
-        return [
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'template' => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats,skills-first,skills-first-visual,academic,bold,timeline'],
-            'accent_color' => ['sometimes', 'nullable', 'in:#4f46e5,#1e3a5f,#475569,#166534,#7f1d1d,#1f2937,#0f766e,#78716c'],
-            'font_family' => ['sometimes', 'nullable', 'in:sans,serif,mono'],
-            'summary' => ['nullable', 'string'],
-            'contact' => ['nullable', 'array'],
-            'experience' => ['nullable', 'array'],
-            'education' => ['nullable', 'array'],
-            'skills' => ['nullable', 'array'],
-            'certifications' => ['nullable', 'array'],
-            'font_sizes' => ['nullable', 'array'],
-        ];
     }
 }

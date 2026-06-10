@@ -181,9 +181,13 @@ Route::get('/career', [CareerHubController::class, 'index'])->name('career.index
 Route::get('/career/{slug}', [CareerHubController::class, 'show'])->name('career.show');
 
 // Public (unauthenticated) share link routes
-Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
-Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
-Route::get('/r/{token}/docx', [PublicResumeController::class, 'downloadDocx'])->name('public.docx');
+Route::middleware('throttle:60,1')->group(function () {
+    Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
+});
+Route::middleware('throttle:20,1')->group(function () {
+    Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
+    Route::get('/r/{token}/docx', [PublicResumeController::class, 'downloadDocx'])->name('public.docx');
+});
 Route::post('/r/{token}/threads', [PublicThreadController::class, 'store'])->middleware('throttle:5,1')->name('public.thread.store');
 Route::post('/r/{token}/threads/{thread}/messages', [PublicThreadController::class, 'addMessage'])->middleware('throttle:10,1')->name('public.thread.message');
 Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image')->middleware('throttle:30,1');

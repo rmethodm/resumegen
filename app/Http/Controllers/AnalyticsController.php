@@ -66,7 +66,7 @@ class AnalyticsController extends Controller
 
         return Inertia::render('Dashboard', [
             'resumeStats' => $stats,
-            'resumeCount' => Resume::where('user_id', $userId)->where('is_snapshot', false)->count(),
+            'resumeCount' => Resume::where('user_id', $userId)->nonSnapshot()->count(),
             'templateStats' => $templateStats,
         ]);
     }

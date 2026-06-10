@@ -6,6 +6,7 @@ use App\Models\Organization;
 use App\Models\OrganizationMember;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,7 +23,7 @@ class OrgController extends Controller
         $members = OrganizationMember::where('organization_id', $org->id)
             ->where('role', 'member')
             ->whereNotNull('joined_at')
-            ->with(['user', 'user.resumes' => fn ($q) => $q->where('is_snapshot', false)->orderByDesc('updated_at')->select(['id', 'user_id', 'name'])])
+            ->with(['user', 'user.resumes' => fn ($q) => $q->nonSnapshot()->orderByDesc('updated_at')->select(['id', 'user_id', 'name'])])
             ->get()
             ->map(fn (OrganizationMember $m) => [
                 'id' => $m->id,
@@ -89,6 +90,8 @@ class OrgController extends Controller
             'invited_at' => now(),
             'joined_at' => now(),
         ]);
+
+        Cache::forget("org_role_{$request->user()->id}");
 
         return redirect()->route('org.show');
     }

@@ -1,13 +1,14 @@
 # Resumegen Context
 
 ## Current Task
-Threads & messaging system built — replaced resume_questions with resume_threads + resume_thread_messages. CLAUDE.md updated.
+Completed 16-task audit remediation plan (2026-06-10). All security, dead code, performance, and code health findings addressed.
 
 ## Key Decisions
-- All AI removed: controllers, services, models, routes, React components, nav links, tests
-- `create-tailored-copy` route kept — it's a manual resume copy (Master Resume feature), not AI
-- Threads system: visitor starts thread via public view; owner replies via editor; Messages inbox at `/messages`
+- Security: accent_color whitelisted in OgImageController, CareerHub body sanitized, dead question routes removed, SSRF blocked via PublicUrl rule
+- Dead code: ResumeQuestion model/mail deleted, ai_usage_logs/ai_model_rates tables dropped, two-column removed from validation, openai/smalot deps removed
+- Performance: N+1 fixed in MessagesController, AnalyticsController now DB-aggregates, indexes added, strength scorer cached, Subscription observer guarded with isDirty
+- Code health: ResumeCompletionScorer extracted, write-on-read fixed with EnsureReferralCode action, ThreadsPanel/SharePopover extracted from Edit.tsx
 
 ## Next Steps
-- 5 deferred audit fixes still pending (see project-audit-remaining-fixes.md)
-- Feature backlog candidates: real-time live score, kanban job tracker
+- Feature backlog candidates: real-time live score, kanban job tracker (see project-feature-backlog.md)
+- 5 pre-audit deferred fixes still pending (see project-audit-remaining-fixes.md)

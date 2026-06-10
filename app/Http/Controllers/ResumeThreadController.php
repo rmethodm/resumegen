@@ -8,6 +8,7 @@ use App\Models\ResumeShareLink;
 use App\Models\ResumeThread;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -64,8 +65,13 @@ class ResumeThreadController extends Controller
                 Mail::to($thread->sender_email)->queue(
                     new VisitorThreadReply($thread, $ownerMessage, $resume, $shareLink)
                 );
-            } catch (\Throwable) {
-                // Mail failure must not block the reply
+            } catch (\Throwable $e) {
+                // Log mail failure but don't block the reply
+                Log::warning('Failed to queue visitor thread reply', [
+                    'thread_id' => $thread->id,
+                    'resume_id' => $resume->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
 

@@ -6,6 +6,8 @@ use App\Models\ResumeSectionEvent;
 use App\Models\ResumeShareLink;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SectionEventController extends Controller
 {
@@ -24,19 +26,28 @@ class SectionEventController extends Controller
         ]);
 
         $ipHash = hash('sha256', $request->ip() ?? '');
+        $now = now();
+
+        $rows = array_map(fn (array $item) => [
+            'resume_id' => $link->resume_id,
+            'section' => $item['section'],
+            'dwell_ms' => min((int) $item['dwell_ms'], 120000),
+            'ip_hash' => $ipHash,
+            'created_at' => $now,
+        ], $validated['sections']);
 
         try {
-            foreach ($validated['sections'] as $item) {
-                ResumeSectionEvent::create([
-                    'resume_id' => $link->resume_id,
-                    'section' => $item['section'],
-                    'dwell_ms' => min((int) $item['dwell_ms'], 120000),
-                    'ip_hash' => $ipHash,
-                ]);
-            }
+            DB::transaction(fn () => ResumeSectionEvent::insert($rows));
 
             return response()->json(['ok' => true]);
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            // Log section event insertion failures
+            Log::warning('Failed to store section events', [
+                'resume_id' => $link->resume_id,
+                'sections_count' => count($validated['sections']),
+                'error' => $e->getMessage(),
+            ]);
+
             return response()->json(['ok' => false]);
         }
     }

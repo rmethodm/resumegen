@@ -7,6 +7,7 @@ use App\Models\Organization;
 use App\Models\OrganizationMember;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -59,6 +60,10 @@ class OrgInviteController extends Controller
 
         if ($member->role === 'admin') {
             return back()->with('error', 'Cannot remove the org admin.');
+        }
+
+        if ($member->user_id) {
+            Cache::forget("org_role_{$member->user_id}");
         }
 
         $member->delete();
