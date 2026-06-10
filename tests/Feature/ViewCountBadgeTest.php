@@ -58,20 +58,4 @@ class ViewCountBadgeTest extends TestCase
                 ->where('resumes.0.view_count', 2)
             );
     }
-
-    public function test_snapshots_excluded_from_index(): void
-    {
-        $user = User::factory()->create();
-        $parent = Resume::factory()->for($user)->create();
-        Resume::factory()->for($user)->create([
-            'is_snapshot' => true,
-            'parent_resume_id' => $parent->id,
-        ]);
-
-        $this->actingAs($user)
-            ->get(route('builder.index'))
-            ->assertInertia(fn ($page) => $page->component('ResumeBuilder/Index')
-                ->has('resumes', 1)
-            );
-    }
 }

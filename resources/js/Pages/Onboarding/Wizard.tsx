@@ -61,7 +61,7 @@ export default function Wizard() {
                     </h1>
                     <p className="mt-1 text-sm text-gray-500">
                         {step === 1
-                            ? "We'll use this to pre-fill your resumes and tailor AI suggestions."
+                            ? "We'll use this to pre-fill your resumes and personalize your experience."
                             : 'Pre-fills your resume contact section automatically.'}
                     </p>
                 </div>

@@ -5,11 +5,9 @@ import { DocumentDuplicateIcon, EyeIcon, PencilSquareIcon, TrashIcon } from '@he
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { FormEvent, useMemo, useState } from 'react';
 import PdfImportModal from './Partials/PdfImportModal';
-import GenerateResumeModal from './Partials/GenerateResumeModal';
 
-type PersonaDefaults = { target_role: string | null; industry: string | null; years_experience: number | null };
 type JobApplicationOpt = { id: number; role: string; company: string };
-type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; canGenerate: boolean; userPersona: PersonaDefaults; jobApplications: JobApplicationOpt[] };
+type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; jobApplications: JobApplicationOpt[] };
 type SortKey = 'name' | 'updated_at';
 
 const TAG_COLORS = [
@@ -98,11 +96,10 @@ function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortD
     );
 }
 
-export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, canGenerate, userPersona, jobApplications }: Props) {
+export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, jobApplications }: Props) {
     const atLimit = resumeLimit !== null && resumeCount >= resumeLimit;
     const [creating, setCreating] = useState(false);
     const [showPdfImport, setShowPdfImport] = useState(false);
-    const [showGenerate, setShowGenerate] = useState(false);
     const [search, setSearch] = useState('');
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
@@ -183,23 +180,6 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                         className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 transition"
                                     >
                                         🔒 Import PDF
-                                    </button>
-                                )}
-                                {canGenerate ? (
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowGenerate(true)}
-                                        className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition"
-                                    >
-                                        ✨ Generate
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        onClick={() => triggerUpgradeModal('generate', 'starter')}
-                                        className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed transition"
-                                    >
-                                        🔒 Generate
                                     </button>
                                 )}
                                 <button
@@ -301,16 +281,6 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                     {r.ab_parent_id !== null && (
                                                         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">A/B</span>
                                                     )}
-                                                    {r.is_master && (
-                                                        <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700">
-                                                            Master
-                                                        </span>
-                                                    )}
-                                                    {r.master_resume_id !== null && r.master_updated_at && (r.master_synced_at === null || r.master_updated_at > r.master_synced_at) && (
-                                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-                                                            ⚠ Master updated
-                                                        </span>
-                                                    )}
                                                 </div>
                                                 <div className="mt-1 flex items-center gap-2">
                                                     <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#eeeef5]">
@@ -380,27 +350,6 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                     )}
                                                 </div>
                                                 {/* Linked job picker — only for tailored copies */}
-                                                {r.master_resume_id !== null && (
-                                                    <div className="mt-1.5 flex items-center gap-1.5">
-                                                        <select
-                                                            value={r.job_application_id ?? ''}
-                                                            onChange={e => {
-                                                                const val = e.target.value === '' ? null : Number(e.target.value);
-                                                                router.patch(route('builder.link-job', r.id), { job_application_id: val }, { preserveScroll: true });
-                                                            }}
-                                                            className="max-w-[180px] truncate rounded border border-[#eeeef5] bg-white px-2 py-0.5 text-xs text-[#71717a] hover:border-[#4f46e5] focus:outline-none focus:ring-1 focus:ring-[#4f46e5]"
-                                                            title="Link this copy to a job application"
-                                                        >
-                                                            <option value="">Link to job…</option>
-                                                            {jobApplications.map(j => (
-                                                                <option key={j.id} value={j.id}>{j.role} @ {j.company}</option>
-                                                            ))}
-                                                        </select>
-                                                        {r.linked_job && (
-                                                            <span className="text-xs text-[#4f46e5]" title={`Linked to ${r.linked_job.role} @ ${r.linked_job.company}`}>✓</span>
-                                                        )}
-                                                    </div>
-                                                )}
                                             </td>
                                             <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(r.updated_at)}</td>
                                             <td className="px-5 py-4">
@@ -413,22 +362,6 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                         className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition text-xs font-semibold"
                                                     >
                                                         A/B
-                                                    </button>
-                                                    {r.is_master && (
-                                                        <button
-                                                            onClick={() => router.post(route('builder.create-tailored-copy', r.id), {}, { preserveScroll: false })}
-                                                            title="Create tailored copy"
-                                                            className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition text-xs font-semibold"
-                                                        >
-                                                            Tailored
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => router.patch(route('builder.set-master', r.id), {}, { preserveScroll: true })}
-                                                        title={r.is_master ? 'Unset master' : 'Set as master'}
-                                                        className={`rounded-lg p-1.5 transition text-xs font-semibold ${r.is_master ? 'text-violet-600 hover:bg-violet-50' : 'text-[#71717a] hover:bg-[#f5f5fb]'}`}
-                                                    >
-                                                        {r.is_master ? 'Master ✓' : 'Master'}
                                                     </button>
                                                     {r.has_active_share_link && (
                                                         <Link
@@ -491,7 +424,6 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                     onClose={() => setShowPdfImport(false)}
                 />
             )}
-            {showGenerate && <GenerateResumeModal onClose={() => setShowGenerate(false)} personaDefaults={userPersona} />}
         </AuthenticatedLayout>
     );
 }

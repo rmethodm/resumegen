@@ -3,11 +3,70 @@
 namespace Tests\Feature\Api;
 
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 
 class AuthApiTest extends ApiTestCase
 {
     use RefreshDatabase;
+
+    public function test_user_can_register_and_receive_token(): void
+    {
+        $response = $this->postJson('/api/auth/register', [
+            'name' => 'Jane Doe',
+            'email' => 'jane@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+        $response->assertCreated()
+            ->assertJsonStructure(['token', 'user' => ['id', 'name', 'email', 'plan_tier']]);
+
+        $this->assertDatabaseHas('users', ['email' => 'jane@example.com']);
+    }
+
+    public function test_register_fails_with_duplicate_email(): void
+    {
+        User::factory()->create(['email' => 'taken@example.com']);
+
+        $this->postJson('/api/auth/register', [
+            'name' => 'Another User',
+            'email' => 'taken@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ])->assertUnprocessable()->assertJsonValidationErrors(['email']);
+    }
+
+    public function test_user_can_request_password_reset_link(): void
+    {
+        Notification::fake();
+
+        $user = User::factory()->create();
+
+        $this->postJson('/api/auth/forgot-password', ['email' => $user->email])
+            ->assertOk()
+            ->assertJsonStructure(['message']);
+
+        Notification::assertSentTo($user, ResetPassword::class);
+    }
+
+    public function test_forgot_password_returns_ok_for_unknown_email(): void
+    {
+        // Intentionally vague response — don't reveal whether an email exists
+        $this->postJson('/api/auth/forgot-password', ['email' => 'noone@example.com'])
+            ->assertUnprocessable();
+    }
+
+    public function test_login_response_includes_plan_tier(): void
+    {
+        $user = User::factory()->create(['password' => bcrypt('password'), 'plan_tier' => 'starter']);
+
+        $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertOk()->assertJsonPath('user.plan_tier', 'starter');
+    }
 
     public function test_user_can_login_and_receive_token(): void
     {

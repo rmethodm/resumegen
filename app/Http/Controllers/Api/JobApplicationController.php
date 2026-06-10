@@ -25,7 +25,7 @@ class JobApplicationController extends Controller
     {
         $validated = $this->validateData($request, true);
 
-        if (!empty($validated['job_url'])) {
+        if (! empty($validated['job_url'])) {
             $exists = $request->user()
                 ->jobApplications()
                 ->where('job_url', $validated['job_url'])

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Resume;
 use App\Services\UserLimits;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -27,7 +28,7 @@ class ResumeController extends Controller
         $user = $request->user();
         $limit = UserLimits::resumeLimit($user);
 
-        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
+        if ($limit !== null && $user->resumes()->count() >= $limit) {
             return response()->json([
                 'message' => 'Resume limit reached.',
                 'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',
@@ -71,6 +72,16 @@ class ResumeController extends Controller
         return response()->noContent();
     }
 
+    public function pdf(Resume $resume): Response
+    {
+        $this->authorize('update', $resume);
+
+        $pdf = Pdf::loadView('resume-pdf', ['resume' => $resume])
+            ->setPaper('letter', 'portrait');
+
+        return $pdf->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
+    }
+
     public function duplicate(Resume $resume): JsonResponse
     {
         $this->authorize('update', $resume);
@@ -78,7 +89,7 @@ class ResumeController extends Controller
         $user = $resume->user;
         $limit = UserLimits::resumeLimit($user);
 
-        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
+        if ($limit !== null && $user->resumes()->count() >= $limit) {
             return response()->json([
                 'message' => 'Resume limit reached.',
                 'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',
@@ -107,7 +118,7 @@ class ResumeController extends Controller
     {
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'template' => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats'],
+            'template' => ['sometimes', 'required', 'in:classic,modern,minimal,minimal-ruled,sidebar,creative,executive,ats,skills-first,skills-first-visual,academic,bold,timeline'],
             'accent_color' => ['sometimes', 'nullable', 'in:#4f46e5,#1e3a5f,#475569,#166534,#7f1d1d,#1f2937,#0f766e,#78716c'],
             'font_family' => ['sometimes', 'nullable', 'in:sans,serif,mono'],
             'summary' => ['nullable', 'string'],

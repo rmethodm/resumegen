@@ -124,19 +124,6 @@ export type PageProps<
     };
 };
 
-export interface AiCapabilities {
-    claude: boolean;
-    openai: boolean;
-}
-
-export interface AISuggestContext {
-    summary?: string;
-    title?: string;
-    company?: string;
-    bullets?: string;
-    skills?: string[];
-}
-
 export interface ResumeTag {
     id: number;
     label: string;
@@ -153,10 +140,7 @@ export interface ResumeRow {
     view_count: number;
     ab_parent_id: number | null;
     tags: ResumeTag[];
-    is_master: boolean;
-    master_resume_id: number | null;
-    master_updated_at: string | null;
-    master_synced_at: string | null;
+
     has_active_share_link: boolean;
     job_application_id: number | null;
     linked_job: { id: number; role: string; company: string } | null;
@@ -230,12 +214,6 @@ export interface CoverLetterSuggestion {
 export interface InterviewQuestion {
     question: string;
     hint: string;
-}
-
-export interface ResumeSnapshot {
-    id: number;
-    name: string;
-    created_at: string;
 }
 
 export interface StrengthChecklistItem {

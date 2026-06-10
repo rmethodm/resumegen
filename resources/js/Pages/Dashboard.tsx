@@ -111,29 +111,29 @@ export default function Dashboard() {
                         <p className="mt-1 text-sm text-[#a0a0b0]">Your resume activity at a glance</p>
                     </div>
 
-                    {/* Stat cards */}
-                    <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                    {/* Stat strip */}
+                    <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
                         {[
-                            { label: 'Resumes',       value: resumeCount,    Icon: DocumentTextIcon,         iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-500',  href: route('builder.index') },
-                            { label: 'Total Views',   value: totalViews,     Icon: EyeIcon,                  iconBg: 'bg-violet-50',  iconColor: 'text-violet-500',  href: null },
-                            { label: 'PDF Downloads', value: totalDownloads, Icon: ArrowDownTrayIcon,        iconBg: 'bg-sky-50',     iconColor: 'text-sky-500',     href: null },
-                            { label: 'Messages',      value: totalMessages,  Icon: ChatBubbleLeftRightIcon,  iconBg: 'bg-emerald-50', iconColor: 'text-emerald-500', href: route('messages.index') },
-                        ].map(({ label, value, Icon, iconBg, iconColor, href }) => {
+                            { label: 'Resumes',       value: resumeCount,    Icon: DocumentTextIcon,         iconColor: 'text-indigo-500',  href: route('builder.index') },
+                            { label: 'Total Views',   value: totalViews,     Icon: EyeIcon,                  iconColor: 'text-violet-500',  href: null },
+                            { label: 'PDF Downloads', value: totalDownloads, Icon: ArrowDownTrayIcon,        iconColor: 'text-sky-500',     href: null },
+                            { label: 'Messages',      value: totalMessages,  Icon: ChatBubbleLeftRightIcon,  iconColor: 'text-emerald-500', href: route('messages.index') },
+                        ].map(({ label, value, Icon, iconColor, href }) => {
                             const inner = (
-                                <>
-                                    <div className={`mb-3 inline-flex items-center justify-center rounded-lg p-2 ${iconBg}`}>
-                                        <Icon className={`h-5 w-5 ${iconColor}`} />
+                                <div className="flex items-center gap-3">
+                                    <Icon className={`h-4 w-4 shrink-0 ${iconColor}`} />
+                                    <div>
+                                        <p className="text-lg font-bold leading-none tracking-tight text-[#0f0f1a]">{value.toLocaleString()}</p>
+                                        <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#a0a0b0]">{label}</p>
                                     </div>
-                                    <p className="text-3xl font-extrabold tracking-tight text-[#0f0f1a]">{value.toLocaleString()}</p>
-                                    <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#a0a0b0]">{label}</p>
-                                </>
+                                </div>
                             );
                             return href ? (
-                                <Link key={label} href={href} className="rounded-xl border border-[#eeeef5] bg-white p-5 shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:border-[#c7c5f4] hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
+                                <Link key={label} href={href} className="rounded-lg border border-[#eeeef5] bg-white px-4 py-3 shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:border-[#c7c5f4] hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
                                     {inner}
                                 </Link>
                             ) : (
-                                <div key={label} className="rounded-xl border border-[#eeeef5] bg-white p-5 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                                <div key={label} className="rounded-lg border border-[#eeeef5] bg-white px-4 py-3 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                                     {inner}
                                 </div>
                             );

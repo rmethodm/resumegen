@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\AiUsageLog;
 use App\Models\User;
 use App\Services\UserLimits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -66,26 +65,6 @@ class TierLimitsTest extends TestCase
         $this->assertNull(UserLimits::jobLimit($user));
     }
 
-    // ── aiLimit ────────────────────────────────────────────────────────────────
-
-    public function test_free_user_ai_limit_is_30(): void
-    {
-        $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(30, UserLimits::aiLimit($user));
-    }
-
-    public function test_starter_user_ai_limit_is_30(): void
-    {
-        $user = User::factory()->starter()->create();
-        $this->assertSame(30, UserLimits::aiLimit($user));
-    }
-
-    public function test_pro_user_ai_limit_is_500(): void
-    {
-        $user = User::factory()->pro()->create();
-        $this->assertSame(500, UserLimits::aiLimit($user));
-    }
-
     // ── allowedTemplates ──────────────────────────────────────────────────────
 
     public function test_free_user_gets_all_templates(): void
@@ -113,7 +92,7 @@ class TierLimitsTest extends TestCase
         $this->assertCount(13, UserLimits::allowedTemplates($user));
     }
 
-    // ── canDocx / canAts ──────────────────────────────────────────────────────
+    // ── canDocx ──────────────────────────────────────────────────────────────
 
     public function test_free_user_cannot_docx(): void
     {
@@ -125,86 +104,6 @@ class TierLimitsTest extends TestCase
     {
         $user = User::factory()->starter()->create();
         $this->assertTrue(UserLimits::canDocx($user));
-    }
-
-    public function test_free_user_can_ats_within_monthly_limit(): void
-    {
-        $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertTrue(UserLimits::canAts($user));
-    }
-
-    public function test_starter_user_can_ats(): void
-    {
-        $user = User::factory()->starter()->create();
-        $this->assertTrue(UserLimits::canAts($user));
-    }
-
-    // ── aiUsageThisPeriod ─────────────────────────────────────────────────────
-
-    public function test_free_user_ai_usage_counts_current_month_only(): void
-    {
-        $user = User::factory()->create(['plan_tier' => 'free']);
-        AiUsageLog::create([
-            'user_id' => $user->id, 'provider' => 'anthropic',
-            'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
-            'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
-            'created_at' => now()->subMonths(3),
-        ]);
-        AiUsageLog::create([
-            'user_id' => $user->id, 'provider' => 'anthropic',
-            'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
-            'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
-            'created_at' => now(),
-        ]);
-        $this->assertSame(1, UserLimits::aiUsageThisPeriod($user));
-    }
-
-    public function test_starter_user_ai_usage_counts_current_month_only(): void
-    {
-        $user = User::factory()->starter()->create();
-        AiUsageLog::create([
-            'user_id' => $user->id, 'provider' => 'anthropic',
-            'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
-            'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
-            'created_at' => now()->subMonths(2),
-        ]);
-        AiUsageLog::create([
-            'user_id' => $user->id, 'provider' => 'anthropic',
-            'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
-            'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
-            'created_at' => now(),
-        ]);
-        $this->assertSame(1, UserLimits::aiUsageThisPeriod($user));
-    }
-
-    // ── atAiLimit ─────────────────────────────────────────────────────────────
-
-    public function test_free_user_at_ai_limit_after_30_uses_this_month(): void
-    {
-        $user = User::factory()->create(['plan_tier' => 'free']);
-        for ($i = 0; $i < 30; $i++) {
-            AiUsageLog::create([
-                'user_id' => $user->id, 'provider' => 'anthropic',
-                'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
-                'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
-                'created_at' => now(),
-            ]);
-        }
-        $this->assertTrue(UserLimits::atAiLimit($user));
-    }
-
-    public function test_free_user_not_at_ai_limit_with_29_uses(): void
-    {
-        $user = User::factory()->create(['plan_tier' => 'free']);
-        for ($i = 0; $i < 29; $i++) {
-            AiUsageLog::create([
-                'user_id' => $user->id, 'provider' => 'anthropic',
-                'model' => 'claude-sonnet-4-6', 'feature' => 'ai_suggest',
-                'input_tokens' => 100, 'output_tokens' => 50, 'cost_usd' => 0.0,
-                'created_at' => now(),
-            ]);
-        }
-        $this->assertFalse(UserLimits::atAiLimit($user));
     }
 
     // ── planTier ──────────────────────────────────────────────────────────────

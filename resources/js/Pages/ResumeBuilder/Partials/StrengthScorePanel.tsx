@@ -1,5 +1,5 @@
 import type { StrengthChecklistItem, StrengthHistoryPoint } from '@/types';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 export interface StrengthPanelHandle {
     refresh: () => void;
@@ -38,7 +38,7 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
         const [checklist, setChecklist] = useState<StrengthChecklistItem[]>([]);
         const [history, setHistory] = useState<StrengthHistoryPoint[] | null>(null);
         const [loading, setLoading] = useState(false);
-        const [open, setOpen] = useState(false);
+        const [open, setOpen] = useState(true);
 
         const load = async () => {
             if (loading) return;
@@ -57,6 +57,8 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                 setLoading(false);
             }
         };
+
+        useEffect(() => { void load(); }, []);
 
         useImperativeHandle(ref, () => ({
             refresh: () => {

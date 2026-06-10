@@ -41,6 +41,10 @@ class CareerController extends Controller
             'is_published' => ['boolean'],
         ]);
 
+        if (isset($validated['body'])) {
+            $validated['body'] = CareerArticle::sanitizeBody($validated['body']);
+        }
+
         CareerArticle::create($validated);
 
         return redirect()->route('admin.career.index')->with('success', 'Article created.');
@@ -64,6 +68,10 @@ class CareerController extends Controller
             'meta_description' => ['nullable', 'string', 'max:255'],
             'is_published' => ['boolean'],
         ]);
+
+        if (isset($validated['body'])) {
+            $validated['body'] = CareerArticle::sanitizeBody($validated['body']);
+        }
 
         $career->update($validated);
 

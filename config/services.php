@@ -35,17 +35,6 @@ return [
         ],
     ],
 
-    'anthropic' => [
-        'key' => env('ANTHROPIC_API_KEY'),
-        'model' => env('ANTHROPIC_MODEL', 'claude-sonnet-4-6'),
-    ],
-
-    'openai' => [
-        'key' => env('OPENAI_API_KEY'),
-        'ats_model' => env('OPENAI_ATS_MODEL', 'gpt-4o-mini'),
-        'suggest_model' => env('OPENAI_SUGGEST_MODEL', 'gpt-4o'),
-    ],
-
     'stripe' => [
         'starter_monthly_price_id' => env('STRIPE_STARTER_MONTHLY_PRICE_ID'),
         'starter_yearly_price_id' => env('STRIPE_STARTER_YEARLY_PRICE_ID'),

@@ -177,4 +177,39 @@ class CareerHubTest extends TestCase
             ->get('/admin/career')
             ->assertForbidden();
     }
+
+    public function test_article_body_with_script_tag_is_stripped_on_save(): void
+    {
+        $admin = User::factory()->create(['is_master_admin' => true]);
+
+        $this->actingAs($admin)->post(route('admin.career.store'), [
+            'title' => 'XSS Test',
+            'category' => 'Resume Tips',
+            'body' => '<p>Good content</p><script>alert("xss")</script>',
+            'meta_description' => 'test',
+            'is_published' => false,
+        ]);
+
+        $article = \App\Models\CareerArticle::where('title', 'XSS Test')->first();
+        $this->assertNotNull($article);
+        $this->assertStringNotContainsString('<script>', $article->body);
+        $this->assertStringContainsString('<p>Good content</p>', $article->body);
+    }
+
+    public function test_article_body_strips_event_handlers(): void
+    {
+        $admin = User::factory()->create(['is_master_admin' => true]);
+
+        $this->actingAs($admin)->post(route('admin.career.store'), [
+            'title' => 'XSS Event Test',
+            'category' => 'Resume Tips',
+            'body' => '<p onclick="alert(1)">Click me</p>',
+            'meta_description' => 'test',
+            'is_published' => false,
+        ]);
+
+        $article = \App\Models\CareerArticle::where('title', 'XSS Event Test')->first();
+        $this->assertNotNull($article);
+        $this->assertStringNotContainsString('onclick', $article->body);
+    }
 }

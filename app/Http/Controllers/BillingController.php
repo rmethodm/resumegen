@@ -18,8 +18,6 @@ class BillingController extends Controller
             'plan' => $user->planTier(),
             'resumeCount' => $user->resumes()->count(),
             'resumeLimit' => UserLimits::resumeLimit($user),
-            'aiUsed' => UserLimits::aiUsageThisPeriod($user),
-            'aiLimit' => UserLimits::aiLimit($user),
             'limitReached' => session('limitReached', false),
         ]);
     }

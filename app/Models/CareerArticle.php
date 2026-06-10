@@ -27,6 +27,18 @@ class CareerArticle extends Model
         'published_at' => 'datetime',
     ];
 
+    public static function sanitizeBody(string $html): string
+    {
+        $allowed = '<p><br><strong><em><u><s><ul><ol><li><h2><h3><h4><blockquote><a><img><code><pre>';
+        $clean = strip_tags($html, $allowed);
+        // Remove event handler attributes (onclick, onload, onerror, etc.)
+        $clean = preg_replace('/\s+on\w+\s*=\s*["\'][^"\']*["\']/i', '', $clean);
+        // Remove javascript: href/src
+        $clean = preg_replace('/\b(href|src)\s*=\s*["\']javascript:[^"\']*["\']/i', '', $clean);
+
+        return $clean;
+    }
+
     protected static function booted(): void
     {
         static::creating(function (CareerArticle $article) {

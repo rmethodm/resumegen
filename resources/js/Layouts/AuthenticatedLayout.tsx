@@ -83,7 +83,6 @@ export default function Authenticated({
                                 </Dropdown.Trigger>
                                 <Dropdown.Content>
                                     <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
-                                    <Dropdown.Link href={route('usage.index')}>My Usage</Dropdown.Link>
                                     <Dropdown.Link href={route('referral.show')}>Refer & Earn</Dropdown.Link>
                                     <Dropdown.Link href={route('portfolio.edit')}>Portfolio</Dropdown.Link>
                                     <Dropdown.Link href={route('logout')} method="post" as="button">Log Out</Dropdown.Link>
@@ -128,7 +127,6 @@ export default function Authenticated({
                         <div className="mt-0.5 text-xs text-[#a0a0b0] dark:text-gray-400">{user.email}</div>
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
-                            <ResponsiveNavLink href={route('usage.index')}>My Usage</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('referral.show')}>Refer & Earn</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('portfolio.edit')}>Portfolio</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('logout')} method="post" as="button">Log Out</ResponsiveNavLink>

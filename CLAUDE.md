@@ -10,7 +10,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **PDF:** `barryvdh/laravel-dompdf` — route `GET /builder/{resume}/pdf` triggers server-side generation via `resources/views/resume-pdf.blade.php`. `GET /builder/{resume}/preview` streams the same PDF inline (used by the live preview iframe in the editor).
 - **Media:** `spatie/laravel-medialibrary` (installed, migration exists, not yet used)
 - **Routing on the frontend:** Ziggy (`route()` helper available globally in React via `resources/js/types/global.d.ts`)
-- **AI suggestions:** `openai-php/client` for OpenAI; raw `Http::post` for Anthropic Claude — keys in `config/services.php` (`services.anthropic.key`, `services.openai.key`). Never call `env()` directly in app code; always use `config()`.
 - **Billing:** `laravel/cashier-stripe` — `User` uses `Billable` trait. Stripe price IDs in `config/services.php`: `services.stripe.starter_monthly_price_id`, `services.stripe.starter_yearly_price_id`, `services.stripe.pro_monthly_price_id`, `services.stripe.pro_yearly_price_id`. Subscription name is `'default'`.
 
 ## Commands
@@ -71,7 +70,20 @@ Use Ziggy's `route('named.route', params)` helper — it's globally typed in `re
 `npm run build` runs `tsc` (type-check) then `vite build`. Output lands in `public/build/`. Always rebuild after editing frontend files when not running `npm run dev`.
 
 ### Share links and public view
-`ResumeShareLink` stores a 48-char random token (auto-generated in `booted()`). The public route `/r/{token}` is unauthenticated and renders `ResumeBuilder/PublicView.tsx` via `PublicLayout`. `GET /r/{token}/pdf` serves a public PDF download. If the share link is expired or disabled, `ResumeBuilder/LinkExpired.tsx` is rendered. Questions submitted via the public view are stored in `resume_questions` and shown in the collapsible "Questions" panel on the Edit page. `sender_phone` is optional on the question form. When a question is submitted, `NewQuestionReceived` mailable is sent to the resume owner. Share link management routes: `PATCH /builder/{resume}/share/{link}` (update, e.g. toggle active), `DELETE /builder/{resume}/share/{link}` (delete). Question read-state routes: `PATCH /builder/{resume}/questions/{question}/read` and `PATCH /builder/{resume}/questions/read-all`.
+`ResumeShareLink` stores a 48-char random token (auto-generated in `booted()`). The public route `/r/{token}` is unauthenticated and renders `ResumeBuilder/PublicView.tsx` via `PublicLayout`. `GET /r/{token}/pdf` serves a public PDF download. If the share link is expired or disabled, `ResumeBuilder/LinkExpired.tsx` is rendered. Visitors can start threaded conversations via the public view — stored in `resume_threads` + `resume_thread_messages` and shown in the "Threads" panel on the Edit page. Share link management routes: `PATCH /builder/{resume}/share/{link}` (update, e.g. toggle active), `DELETE /builder/{resume}/share/{link}` (delete).
+
+### Threads & Messaging
+`ResumeThread` belongs to a resume and (optionally) a share link; `ResumeThreadMessage` belongs to a thread. `is_owner` boolean on messages distinguishes owner replies from visitor messages. `is_read` boolean on `ResumeThread` tracks unread state.
+
+**Public routes** (`POST /r/{token}/threads`, `POST /r/{token}/threads/{thread}/messages`): throttled `5,1`. Visitor session tracks owned thread IDs in `owned_threads` session key for reply authorization. Fires `NewThreadStarted` / `NewVisitorReply` mailables to the resume owner.
+
+**Owner routes** (all auth + ownership-gated):
+- `GET /builder/{resume}/threads/{thread}` (`builder.thread`) → `ResumeThreadController@show` → `ResumeBuilder/Thread.tsx`
+- `POST /builder/{resume}/threads/{thread}/reply` (`builder.thread.reply`) — creates owner message, emails visitor via `VisitorThreadReply` mailable
+- `PATCH /builder/{resume}/threads/{thread}/read` (`builder.thread.read`) — marks thread read
+- `DELETE /builder/{resume}/threads/{thread}` (`builder.thread.destroy`) — deletes thread, redirects to messages inbox
+
+**Messages inbox** (`GET /messages` → `MessagesController@index` → `Messages/Index.tsx`): lists all threads across all resumes with unread badge. `PATCH /messages/read-all` (`messages.read-all`) marks all read.
 
 `PublicView.tsx` shows a sticky conversion header and fixed footer CTA ("Made with Resumegen · Build yours free →") to unauthenticated visitors only — hidden when `auth.user` is present. The editor's Share button opens a popover with a read-only URL, copy button, LinkedIn share link, and X (Twitter) share link. The URL is fetched from `GET /builder/{resume}/share-url` on first click (auto-creates an active share link).
 
@@ -87,23 +99,8 @@ Thirteen templates (`classic`, `modern`, `minimal`, `minimal-ruled`, `sidebar`, 
 ### Font sizes
 `font_sizes` is a nullable JSON column on `resumes`. The `DEFAULT_FONT_SIZES` constant is defined at module scope in `Edit.tsx` (not inside the component). Sliders in the "Font Sizes" section of the editor save on blur, which triggers a `pdfSrc` refresh so the iframe preview reflects the new sizes via the server-rendered PDF.
 
-### PDF import (including LinkedIn)
-`POST /builder/import` (two-step: extract then confirm) via `PdfImportController`. `extract()` accepts a `file` (PDF, max 5 MB) and optional `hint` (`generic` | `linkedin`). `confirm()` accepts the extracted data JSON, `action` (`new` | `overwrite`), `resume_id`, `name`, and `hint`. The hint is forwarded to `PdfResumeParser` which routes to a LinkedIn-specific Claude prompt when `hint === 'linkedin'`. On confirm, flashes `linkedInImported` (teal banner) or `pdfImported` (indigo banner) to `Edit.tsx`. Free users can import (no tier gate). `PdfImportModal.tsx` has two tabs — "PDF Resume" and "From LinkedIn" — the LinkedIn tab shows step-by-step download instructions.
-
-### ATS score
-`GET /builder/{resume}/ats-score` (throttled 10 req/min) returns a JSON score via `AtsScoreController` → `AtsScorer` service. Requires resume ownership (`authorize('update', $resume)`). `DELETE /builder/{resume}/ats-score` clears the cached score. Free users get 3 uses/month (tracked via `ai_usage_logs` with `feature: 'ats_score'`); Starter+ is unlimited. `atsUsesRemaining` prop passed to `Edit.tsx` (`null` for Starter+, integer for free).
-
 ### DOCX export
 `GET /builder/{resume}/docx` streams a Word document via `DocxGenerator` (phpoffice/phpword). Gated to Starter+ via `UserLimits::canDocx()` — free users get a `featureGate` redirect. The `canDocx` prop is passed to `Edit.tsx` to show a `🔒 DOCX` locked button.
-
-### Job tailoring
-`POST /builder/{resume}/tailor` (throttled 5 req/min) accepts a `job_description` string (50–5000 chars) and returns `{ summary, keywords, score }` via `TailorController`. AI analyzes the JD against the resume and suggests a tailored summary, up to 8 missing keywords, and a 0–100 match score. Gated to Starter+ via `UserLimits::canTailor()` — free users get a 402 JSON response. The `canTailor` prop is passed to `Edit.tsx` to show a `🔒 Tailor to Job` locked button. Usage is logged to `ai_usage_logs` with `feature: 'tailor'`.
-
-### Interview Prep Coach
-`POST /builder/{resume}/interview-coach` (throttled 5 req/min) accepts `target_role` (required, max 100) and optional `job_description` (max 3000). Returns `{ questions: [{ question, hint }] }` — up to 8 STAR-framework questions via `InterviewCoachController` → `InterviewCoachService`. Usage logged to `ai_usage_logs` with `feature: 'interview_coach'`. Free users get 3 uses/month then see a 402 upgrade response. `canInterviewCoach` and `interviewCoachUsesRemaining` props passed to `Edit.tsx`. The slide-in `InterviewCoachPanel.tsx` follows the same z-40/z-30 pattern as other panels. `AbuseFilter::check()` applied to both user-supplied fields.
-
-### Grammar check (Polish)
-`POST /builder/{resume}/grammar-check` (throttled 10 req/min) accepts `field` (`summary` | `bullets`) and `content` (string, max 3000). Returns `{ result }` via `GrammarCheckController`. Rewrites the content with grammar/clarity improvements using Claude. Gated to Starter+ via `UserLimits::canGrammarCheck()` — free users see a 402 upgrade response. `canGrammarCheck` prop passed to `Edit.tsx`. Surfaces as a "Polish" button on the summary field and a "Polish all" button on the bullets section. `AbuseFilter::check()` applied to `content`.
 
 ### Share URL endpoint
 `GET /builder/{resume}/share-url` returns `{ url }` JSON via `ResumeBuilderController@shareUrl`. Auto-creates an active `ResumeShareLink` if none exists (or only inactive links exist). Named `builder.share-url`. Used by the Share popover in `Edit.tsx` to get a shareable link on demand without a page refresh.
@@ -127,18 +124,7 @@ New users are redirected to `/onboarding` after registration. `OnboardingControl
 
 The wizard is a two-step client-side form (no round-trips between steps). Step 1: career context. Step 2: contact info. Both steps have a "Skip for now" button that submits empty values. `Onboarding/Wizard.tsx` uses `GuestLayout` and `useForm` from `@inertiajs/react`.
 
-Saved persona fields (`target_role`, `industry`, `years_experience`) are exposed as `userPersona` props on `Edit.tsx` (via `ResumeBuilderController@edit`) and `Index.tsx` (via `ResumeBuilderController@index`). `GenerateResumeModal` and `InterviewCoachPanel` use these as initial form state. `ResumeBuilderController@store` defaults new resume name to `"{target_role} Resume"` when `target_role` is set.
-
-### AI suggestions
-`AiSuggestController` handles `POST /builder/{resume}/ai-suggest` (throttled to 10 requests/minute). Supports `field` values: `summary`, `bullets`, `skills`, `title`. Provider is selected per-request (`claude` or `openai`); the active provider is persisted in `localStorage` under `resumegen_ai_provider`. Both keys are checked via `config('services.anthropic.key')` and `config('services.openai.key')` — never `env()` directly.
-
-**Abuse safeguards** (all enforced server-side before the API call):
-- `App\Services\AbuseFilter::check(string $text): bool` — regex block list for prompt injection phrases (`ignore instructions`, `act as`, `jailbreak`, etc.). Returns 422 `{ "error": "Content policy violation" }` on match. Applied to all user-supplied context fields in `AiSuggestController`, `TailorController`, and `InterviewCoachController`.
-- Field-length caps on `context`: `title` 100, `company` 150, `summary` 1500, `bullets` 1500, `skills` array 50 items × 50 chars each.
-- All user values are wrapped in `<user_content>` XML tags in every prompt string to prevent injection.
-
-### AI usage tracking
-Every AI suggest call (web and API) logs to `ai_usage_logs` via `AiUsageLogger::log()`. The logger looks up cost rates from `ai_model_rates` (keyed by `provider` + `model` + `effective_from` date) and stores `input_tokens`, `output_tokens`, and `cost_usd`. Both models are append-only with no `updated_at`. `GET /usage` → `UsageController` → `Usage/Index.tsx` shows per-user totals and a 30-day activity log. The admin panel has its own aggregated view across all users (see Admin panel section).
+Saved persona fields (`target_role`, `industry`, `years_experience`) are exposed as `userPersona` props on `Edit.tsx` (via `ResumeBuilderController@edit`) and `Index.tsx` (via `ResumeBuilderController@index`). `ResumeBuilderController@store` defaults new resume name to `"{target_role} Resume"` when `target_role` is set.
 
 ### Career Hub
 Public resource library at `/career` for SEO. No authentication required.
@@ -156,7 +142,6 @@ Both pages use `PublicLayout`. `CareerHub/Index.tsx` has client-side category fi
 ### Admin panel
 Routes under `/admin` are guarded by `auth` + `master_admin` middleware (`EnsureMasterAdmin` — aborts 403 if `User::is_master_admin` is false). `is_master_admin` is a non-editable boolean on `users`; it must be set directly in the database or via seeder.
 
-- `GET /admin/usage` → `AdminUsageController@index` → `Admin/Usage.tsx` — AI cost dashboard aggregated across all users, filterable by date range (`30days`, `month`, `all`). Breaks down by provider, model, feature, and per-user.
 - `GET /admin/users` → `AdminUserController@index` → `Admin/Users/Index.tsx` — paginated user list with subscription status and resume count.
 - `PATCH /admin/users/{user}/toggle-pro` — flips `is_pro` on a user (blocked for master admins).
 - `DELETE /admin/users/{user}` — deletes a user and cancels their Stripe subscription immediately (blocked for master admins and self).
@@ -198,7 +183,7 @@ Personal micro-site at `/p/{slug}` combining an identity landing page with a res
 - `GET /portfolio/check-slug` (`portfolio.check-slug`) — auth required, `throttle:10,1`
 - `PATCH /user/portfolio` (`portfolio.update`) — auth required
 
-**`PortfolioController`:** `show()` looks up user by `portfolio_slug`, eager-loads active non-expired share links with their resume; `contact()` validates, runs `AbuseFilter::check()` on BOTH `sender_name` AND `message`, stores `PortfolioMessage`, queues `NewPortfolioMessageMail`; `checkSlug()` checks availability excluding current user; `update()` validates with `Rule::notIn(RESERVED_SLUGS)` + `Rule::unique()->ignore()` + `distinct:strict` on platform.
+**`PortfolioController`:** `show()` looks up user by `portfolio_slug`, eager-loads active non-expired share links with their resume; `contact()` validates, stores `PortfolioMessage`, queues `NewPortfolioMessageMail`; `checkSlug()` checks availability excluding current user; `update()` validates with `Rule::notIn(RESERVED_SLUGS)` + `Rule::unique()->ignore()` + `distinct:strict` on platform.
 
 **Reserved slugs** (blocked at validation, documented as brand-protection): `admin, api, builder, career, jobs, cover-letters, billing, profile, onboarding, register, login, logout, p, r, password, dashboard, usage, webhooks, settings`.
 
@@ -209,13 +194,8 @@ Personal micro-site at `/p/{slug}` combining an identity landing page with a res
 **Mail:** `NewPortfolioMessageMail` — queued (`Mail::to()->queue()`), subject `"New message from {sender_name} via your portfolio"`, Markdown template at `resources/views/mail/new-portfolio-message.blade.php`.
 
 ### Rate limiting
-- AI suggest endpoint: `throttle:10,1` (10 req/min)
-- ATS score endpoint: `throttle:10,1` (10 req/min)
-- Job tailor endpoint: `throttle:5,1` (5 req/min)
-- Interview coach endpoint: `throttle:5,1` (5 req/min)
-- Grammar check endpoint: `throttle:10,1` (10 req/min)
 - API login: `throttle:10,1` (10 req/min)
-- Public question form (`POST /r/{token}/questions`): `throttle:5,1` (5 req/min)
+- Public thread form (`POST /r/{token}/threads`): `throttle:5,1` (5 req/min)
 - Section events (`POST /r/{token}/section-events`): `throttle:30,1` (30 req/min)
 - Portfolio contact form (`POST /p/{slug}/contact`): `throttle:5,1` (5 req/min)
 - Portfolio slug check (`GET /portfolio/check-slug`): `throttle:10,1` (10 req/min)

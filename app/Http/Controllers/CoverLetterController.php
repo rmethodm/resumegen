@@ -68,7 +68,6 @@ class CoverLetterController extends Controller
         return Inertia::render('CoverLetter/Edit', [
             'letter' => $letter,
             'resumes' => $resumes,
-            'canCoverLetterTailor' => UserLimits::canCoverLetterTailor($request->user()),
         ]);
     }
 

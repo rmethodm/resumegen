@@ -2,12 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Console\Commands\NudgeStaleResumesCommand;
 use App\Mail\StaleResumeNudgeMail;
 use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -22,7 +20,6 @@ class StaleNudgeTest extends TestCase
         Resume::factory()->create([
             'user_id' => $user->id,
             'updated_at' => now()->subDays(31),
-            'is_snapshot' => false,
         ]);
 
         $this->artisan('resumes:nudge-stale')->assertSuccessful();
@@ -37,7 +34,6 @@ class StaleNudgeTest extends TestCase
         Resume::factory()->create([
             'user_id' => $user->id,
             'updated_at' => now()->subDays(31),
-            'is_snapshot' => false,
         ]);
 
         $this->artisan('resumes:nudge-stale')->assertSuccessful();
@@ -52,22 +48,6 @@ class StaleNudgeTest extends TestCase
         Resume::factory()->create([
             'user_id' => $user->id,
             'updated_at' => now()->subDays(10),
-            'is_snapshot' => false,
-        ]);
-
-        $this->artisan('resumes:nudge-stale')->assertSuccessful();
-
-        Mail::assertNothingQueued();
-    }
-
-    public function test_skips_snapshots(): void
-    {
-        Mail::fake();
-        $user = User::factory()->create();
-        Resume::factory()->create([
-            'user_id' => $user->id,
-            'updated_at' => now()->subDays(31),
-            'is_snapshot' => true,
         ]);
 
         $this->artisan('resumes:nudge-stale')->assertSuccessful();
@@ -82,7 +62,6 @@ class StaleNudgeTest extends TestCase
         Resume::factory()->count(3)->create([
             'user_id' => $user->id,
             'updated_at' => now()->subDays(31),
-            'is_snapshot' => false,
         ]);
 
         $this->artisan('resumes:nudge-stale')->assertSuccessful();

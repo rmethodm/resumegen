@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Mail\NewPortfolioMessageMail;
 use App\Models\Resume;
 use App\Models\User;
-use App\Services\AbuseFilter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -82,10 +81,6 @@ class PortfolioController extends Controller
             'sender_email' => ['required', 'email'],
             'message' => ['required', 'string', 'max:2000'],
         ]);
-
-        if (AbuseFilter::check($validated['sender_name']) || AbuseFilter::check($validated['message'])) {
-            return back()->withErrors(['message' => 'Content policy violation'])->withInput();
-        }
 
         $message = $owner->portfolioMessages()->create($validated);
 

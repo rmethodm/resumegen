@@ -6,7 +6,6 @@ const SLIDES = [
     { tab: 'My Resumes',    label: 'Resume Builder' },
     { tab: 'Cover Letters', label: 'Cover Letters'  },
     { tab: 'Jobs',          label: 'Job Tracker'    },
-    { tab: 'ATS Score',     label: 'ATS Score'      },
 ] as const;
 
 export default function Welcome({ auth }: PageProps) {
@@ -94,7 +93,7 @@ export default function Welcome({ auth }: PageProps) {
                     {/* Badge */}
                     <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-[#eef2ff] px-3 py-1">
                         <span className="h-1.5 w-1.5 rounded-full bg-[#4f46e5]" />
-                        <span className="text-xs font-bold text-[#4338ca]">AI-Powered Resume Builder</span>
+                        <span className="text-xs font-bold text-[#4338ca]">Professional Resume Builder</span>
                     </div>
 
                     {/* Headline */}
@@ -108,7 +107,7 @@ export default function Welcome({ auth }: PageProps) {
 
                     {/* Subtext */}
                     <p className="mx-auto mb-8 max-w-lg text-base leading-relaxed text-[#6b7280] sm:text-lg">
-                        Write compelling bullets with AI, choose from 8 ATS-friendly templates, and share your resume with a link recruiters can actually find.
+                        Build a polished resume with 8 ATS-friendly templates, track your applications, and share your resume with a link recruiters can actually find.
                     </p>
 
                     {/* CTAs */}
@@ -174,18 +173,14 @@ export default function Welcome({ auth }: PageProps) {
                                     <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
                                     <span className="text-[10px] text-[#6b7280]">Appearance</span>
                                 </div>
-                                <p className="mb-1.5 mt-3 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">AI Tools</p>
+                                <p className="mb-1.5 mt-3 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Export</p>
                                 <div className="flex items-center gap-2 px-2 py-1.5">
                                     <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
-                                    <span className="text-[10px] text-[#6b7280]">AI Suggest</span>
+                                    <span className="text-[10px] text-[#6b7280]">Download PDF</span>
                                 </div>
                                 <div className="flex items-center gap-2 px-2 py-1.5">
                                     <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
-                                    <span className="text-[10px] text-[#6b7280]">Tailor to Job</span>
-                                </div>
-                                <div className="flex items-center gap-2 px-2 py-1.5">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
-                                    <span className="text-[10px] text-[#6b7280]">ATS Score</span>
+                                    <span className="text-[10px] text-[#6b7280]">Share Link</span>
                                 </div>
                             </div>
                             {/* Editor panel */}
@@ -195,9 +190,6 @@ export default function Welcome({ auth }: PageProps) {
                                 <p className="mb-1.5 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Summary</p>
                                 <div className="mb-1 h-2 w-full rounded-full bg-[#e0e7ff]" />
                                 <div className="mb-2 h-2 w-4/5 rounded-full bg-[#e0e7ff]" />
-                                <span className="inline-flex items-center gap-1 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[9px] font-bold text-[#4f46e5]">
-                                    ✦ AI improved
-                                </span>
                                 <p className="mb-1.5 mt-3 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Experience</p>
                                 <div className="mb-1 h-2 w-2/5 rounded-full bg-[#e0e7ff]" />
                                 <div className="mb-1 h-2 w-full rounded-full bg-[#f3f4f6]" />
@@ -249,9 +241,6 @@ export default function Welcome({ auth }: PageProps) {
                                 <div className="mb-3 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
                                 <div className="mb-1 h-1.5 w-11/12 rounded-full bg-[#f3f4f6]" />
                                 <div className="mb-3 h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
-                                <span className="inline-flex items-center gap-1 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[9px] font-bold text-[#4f46e5]">
-                                    ✦ AI tailored
-                                </span>
                             </div>
                         </div>
                         {/* Slide 2 — Job Tracker */}
@@ -293,48 +282,6 @@ export default function Welcome({ auth }: PageProps) {
                                 <span>—</span>
                             </div>
                         </div>
-                        {/* Slide 3 — ATS Score */}
-                        <div className={`absolute inset-0 flex bg-[#f9fafb] transition-opacity duration-500 ${activeSlide === 3 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                            {/* Resume content */}
-                            <div className="flex-1 px-5 py-4">
-                                <p className="text-sm font-black text-[#0f172a]">Alex Johnson</p>
-                                <p className="mb-3 text-xs text-[#6b7280]">Senior Product Manager</p>
-                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#e0e7ff]" />
-                                <div className="mb-3 h-1.5 w-4/5 rounded-full bg-[#e0e7ff]" />
-                                <div className="mb-1 h-1.5 w-2/5 rounded-full bg-[#e0e7ff]" />
-                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-1.5 w-3/4 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-1.5 w-5/6 rounded-full bg-[#f3f4f6]" />
-                                <div className="h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
-                            </div>
-                            {/* ATS panel */}
-                            <div className="w-44 flex-shrink-0 border-l border-[#f3f4f6] bg-white px-3 py-4 sm:w-52">
-                                {/* Score ring */}
-                                <div
-                                    className="mx-auto mb-1.5 flex h-14 w-14 items-center justify-center rounded-full"
-                                    style={{ background: 'conic-gradient(#22c55e 0% 78%, #e5e7eb 78% 100%)' }}
-                                >
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sm font-black text-[#0f172a]">
-                                        78
-                                    </div>
-                                </div>
-                                <p className="mb-2 text-center text-[7px] font-bold uppercase tracking-widest text-[#6b7280]">ATS Match Score</p>
-                                <p className="mb-1.5 text-[7px] font-bold uppercase tracking-widest text-[#9ca3af]">Keywords</p>
-                                {[
-                                    { text: 'Product strategy', found: true },
-                                    { text: 'Roadmapping',      found: true },
-                                    { text: 'Stakeholder mgmt', found: true },
-                                    { text: 'OKR frameworks',   found: false },
-                                    { text: 'A/B testing',      found: false },
-                                ].map(kw => (
-                                    <div key={kw.text} className="mb-1 flex items-center gap-1.5">
-                                        <span className={`h-1.5 w-1.5 flex-shrink-0 rounded-full ${kw.found ? 'bg-[#22c55e]' : 'bg-[#ef4444]'}`} />
-                                        <span className={`text-[7px] ${kw.found ? 'text-[#374151]' : 'text-[#ef4444]'}`}>{kw.text}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
                         </div>
                     </div>
 
@@ -370,7 +317,7 @@ export default function Welcome({ auth }: PageProps) {
                             { num: '2,400+', label: 'resumes built' },
                             { num: '8',      label: 'ATS-ready templates' },
                             { num: 'Free',   label: 'to get started' },
-                            { num: 'AI',     label: 'powered suggestions' },
+                            { num: '13',     label: 'resume templates' },
                         ].map(({ num, label }) => (
                             <div key={label} className="flex items-center gap-2">
                                 <span className="text-lg font-black text-[#0f172a]">{num}</span>
@@ -396,12 +343,12 @@ export default function Welcome({ auth }: PageProps) {
                                 {
                                     n: '1',
                                     title: 'Import or start fresh',
-                                    desc: 'Upload your LinkedIn PDF or start from scratch. Our AI parses your experience instantly.',
+                                    desc: 'Upload your LinkedIn PDF or start from scratch. We parse your experience and pre-fill your resume instantly.',
                                 },
                                 {
                                     n: '2',
-                                    title: 'Let AI improve it',
-                                    desc: 'Generate stronger bullet points, rewrite your summary, and tailor your skills to any job description.',
+                                    title: 'Craft your content',
+                                    desc: 'Write strong bullet points and a compelling summary. Choose from 13 professional templates to make it stand out.',
                                 },
                                 {
                                     n: '3',
@@ -434,15 +381,15 @@ export default function Welcome({ auth }: PageProps) {
                             {[
                                 {
                                     icon: '✦',
-                                    title: 'AI Writing Assistant',
-                                    desc: 'Generate compelling bullet points, professional summaries, and skills lists tailored to your role — powered by Claude.',
-                                    tag: '30 AI uses free/mo',
+                                    title: '13 Professional Templates',
+                                    desc: 'From Classic and ATS-optimized to Modern, Executive, and Creative — all templates included on every plan.',
+                                    tag: 'All templates free',
                                 },
                                 {
                                     icon: '◈',
-                                    title: '8 Professional Templates',
-                                    desc: 'From Classic and ATS-optimized to Modern, Executive, and Creative — all templates included on every plan.',
-                                    tag: 'All templates free',
+                                    title: 'PDF & LinkedIn Import',
+                                    desc: 'Upload your existing resume or LinkedIn PDF and we\'ll parse your experience to pre-fill your new resume instantly.',
+                                    tag: 'Starter+',
                                 },
                                 {
                                     icon: '⇗',
@@ -451,10 +398,10 @@ export default function Welcome({ auth }: PageProps) {
                                     tag: 'Free on all plans',
                                 },
                                 {
-                                    icon: '🎯',
-                                    title: 'Job Tailoring + ATS Score',
-                                    desc: 'Paste a job description and get a match score, missing keywords, and a tailored summary — all in one click.',
-                                    tag: 'Starter+',
+                                    icon: '📊',
+                                    title: 'Job Application Tracker',
+                                    desc: 'Track every application from saved to offer in one place. Link resumes to jobs and stay organized through your search.',
+                                    tag: 'Free on all plans',
                                 },
                             ].map(({ icon, title, desc, tag }) => (
                                 <div
@@ -494,12 +441,12 @@ export default function Welcome({ auth }: PageProps) {
                                 </div>
                                 <p className="mb-5 text-xs text-[#9ca3af]">Forever free</p>
                                 <ul className="mb-6 space-y-2">
-                                    {['5 resumes', '30 AI suggestions/mo', 'All 8 templates', 'Public share links', '3 ATS scores/mo'].map((f) => (
+                                    {['5 resumes', '3 cover letters', 'All 13 templates', 'Public share links', 'Job tracker (3 apps)'].map((f) => (
                                         <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                             <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
                                         </li>
                                     ))}
-                                    {['DOCX export', 'Job tailoring'].map((f) => (
+                                    {['DOCX export', 'PDF import'].map((f) => (
                                         <li key={f} className="flex items-center gap-2 text-sm text-[#d1d5db]">
                                             <span className="text-[11px] font-black text-[#d1d5db]">✓</span> {f}
                                         </li>
@@ -526,12 +473,12 @@ export default function Welcome({ auth }: PageProps) {
                                 <p className="mb-5 text-xs text-[#9ca3af]">Everything in Free, plus:</p>
                                 <ul className="mb-6 space-y-2">
                                     {[
-                                        'Unlimited AI suggestions',
                                         'DOCX export',
-                                        'Job tailoring',
-                                        'Unlimited ATS scoring',
-                                        'Interview prep coach',
+                                        'PDF import',
                                         '5 cover letters',
+                                        'Unlimited job apps',
+                                        'Portfolio page',
+                                        'Referral rewards',
                                     ].map((f) => (
                                         <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                             <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
@@ -557,10 +504,9 @@ export default function Welcome({ auth }: PageProps) {
                                 <ul className="mb-6 space-y-2">
                                     {[
                                         'Unlimited resumes',
-                                        '500 AI suggestions/mo',
                                         'Unlimited cover letters',
-                                        'Unlimited job apps',
                                         'Priority support',
+                                        'Early access to new features',
                                     ].map((f) => (
                                         <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                             <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}

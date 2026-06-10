@@ -1,14 +1,13 @@
 # Resumegen Context
 
 ## Current Task
-Public Portfolio Page feature complete — 597/597 tests passing. CLAUDE.md updated.
+Threads & messaging system built — replaced resume_questions with resume_threads + resume_thread_messages. CLAUDE.md updated.
 
 ## Key Decisions
-- Portfolio slugs: `^[a-z0-9][a-z0-9-]*[a-z0-9]$` (no leading/trailing hyphens); 19 reserved slugs blocked server-side
-- `session()->pull('contactSent')` (not `session()`) to prevent re-showing on refresh
-- `Mail::to()->queue()` for portfolio contact notifications (non-blocking)
+- All AI removed: controllers, services, models, routes, React components, nav links, tests
+- `create-tailored-copy` route kept — it's a manual resume copy (Master Resume feature), not AI
+- Threads system: visitor starts thread via public view; owner replies via editor; Messages inbox at `/messages`
 
 ## Next Steps
 - 5 deferred audit fixes still pending (see project-audit-remaining-fixes.md)
-- Agency Stripe pricing wired — config keys + checkout validation + subscription observer done
-- Feature backlog candidates: real-time live score, kanban job tracker, AI cover letter tailoring
+- Feature backlog candidates: real-time live score, kanban job tracker

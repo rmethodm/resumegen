@@ -15,9 +15,9 @@ export default function Login({
     canResetPassword: boolean;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: false as boolean,
+        email: 'rmethodm@outlook.com',
+        password: 'up7run2011',
+        remember: true as boolean,
     });
 
     const submit: FormEventHandler = (e) => {

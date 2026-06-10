@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -74,23 +73,14 @@ class ResumeApiTest extends ApiTestCase
             ->assertCreated();
     }
 
-    public function test_snapshots_do_not_count_toward_resume_limit(): void
+    public function test_resume_limit_is_enforced_for_free_tier(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        // Create 4 real resumes
-        $user->resumes()->createMany(array_fill(0, 4, ['name' => 'R', 'pdf_filename' => 'r.pdf']));
-        // Create 1 snapshot directly (is_snapshot not in fillable, use forceFill)
-        $snapshot = new Resume(['name' => 'Snapshot', 'pdf_filename' => 's.pdf']);
-        $snapshot->forceFill(['user_id' => $user->id, 'is_snapshot' => true])->save();
+        // Create 5 resumes to hit the free limit
+        $user->resumes()->createMany(array_fill(0, 5, ['name' => 'R', 'pdf_filename' => 'r.pdf']));
 
-        // Should be allowed — only 4 non-snapshot resumes exist, limit is 5
         $this->withToken($this->token($user))
-            ->postJson('/api/resumes', ['name' => 'Fifth Real Resume'])
-            ->assertCreated();
-
-        // Now at limit (5 non-snapshots), next should be blocked
-        $this->withToken($this->token($user))
-            ->postJson('/api/resumes', ['name' => 'Sixth Real Resume'])
+            ->postJson('/api/resumes', ['name' => 'One Too Many'])
             ->assertStatus(402)
             ->assertJsonPath('required_tier', 'starter');
     }
@@ -153,5 +143,30 @@ class ResumeApiTest extends ApiTestCase
 
         $this->assertEquals('Copy of Original', $response->json('name'));
         $this->assertEquals('Senior dev', $response->json('summary'));
+    }
+
+    public function test_can_download_resume_pdf(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create([
+            'name' => 'My Resume', 'pdf_filename' => 'my-resume.pdf',
+        ]);
+
+        $this->withToken($this->token($user))
+            ->get("/api/resumes/{$resume->id}/pdf")
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+    }
+
+    public function test_cannot_download_another_users_resume_pdf(): void
+    {
+        $owner = User::factory()->create();
+        $resume = $owner->resumes()->create(['name' => 'Private', 'pdf_filename' => 'p.pdf']);
+
+        $other = User::factory()->create();
+
+        $this->withToken($this->token($other))
+            ->get("/api/resumes/{$resume->id}/pdf")
+            ->assertForbidden();
     }
 }

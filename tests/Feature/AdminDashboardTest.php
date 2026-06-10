@@ -27,7 +27,6 @@ class AdminDashboardTest extends TestCase
                 ->has('stats.unread_messages')
                 ->has('stats.referral_conversions')
                 ->has('stats.job_titles_count')
-                ->has('stats.ai_rates_count')
                 ->has('stats.published_articles')
             );
     }

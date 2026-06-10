@@ -22,20 +22,6 @@ class ResumeCascadeDeleteTest extends TestCase
         $this->assertModelMissing($variant);
     }
 
-    public function test_deleting_parent_resume_deletes_snapshots(): void
-    {
-        $user = User::factory()->create();
-        $parent = Resume::factory()->for($user)->create();
-        $snapshot = Resume::factory()->for($user)->create([
-            'parent_resume_id' => $parent->id,
-            'is_snapshot' => true,
-        ]);
-
-        $parent->delete();
-
-        $this->assertModelMissing($snapshot);
-    }
-
     public function test_deleting_standalone_resume_does_not_affect_others(): void
     {
         $user = User::factory()->create();

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AiUsageLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,13 +15,7 @@ class AdminUserController extends Controller
     {
         $query = User::query()
             ->with('subscriptions')
-            ->withCount(['resumes', 'coverLetters', 'jobApplications'])
-            ->addSelect([
-                'last_active_at' => AiUsageLog::select('created_at')
-                    ->whereColumn('user_id', 'users.id')
-                    ->latest()
-                    ->limit(1),
-            ]);
+            ->withCount(['resumes', 'coverLetters', 'jobApplications']);
 
         if ($request->filled('q')) {
             $q = $request->string('q');
@@ -50,7 +43,6 @@ class AdminUserController extends Controller
                 'cover_letters_count' => $user->cover_letters_count,
                 'job_applications_count' => $user->job_applications_count,
                 'portfolio_slug' => $user->portfolio_slug,
-                'last_active_at' => $user->last_active_at,
                 'created_at' => $user->created_at->toDateString(),
             ]);
 
