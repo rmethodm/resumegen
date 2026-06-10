@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
-use App\Models\ResumeQuestion;
 use App\Models\ResumeShareLink;
 use Illuminate\Http\Request;
 
@@ -43,26 +42,6 @@ class ShareLinkController extends Controller
         $this->authorize('update', $resume);
         abort_if($link->resume_id !== $resume->id, 403);
         $link->delete();
-
-        return back();
-    }
-
-    public function markRead(Resume $resume, ResumeQuestion $question)
-    {
-        $this->authorize('update', $resume);
-        abort_if($question->resume_id !== $resume->id, 403);
-        $question->update(['is_read' => true]);
-
-        return back();
-    }
-
-    public function markAllRead(Resume $resume)
-    {
-        $this->authorize('update', $resume);
-
-        ResumeQuestion::where('resume_id', $resume->id)
-            ->where('is_read', false)
-            ->update(['is_read' => true]);
 
         return back();
     }

@@ -37,4 +37,14 @@ class ResumeShareLinkTest extends TestCase
         $this->assertTrue($thread->shareLink->is($link));
         $this->assertTrue($thread->resume->is($resume));
     }
+
+    public function test_question_read_routes_no_longer_exist(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $this->actingAs($user)
+            ->patch("/builder/{$resume->id}/questions/read-all")
+            ->assertStatus(404);
+    }
 }
