@@ -2,12 +2,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import AutocompleteInput from '@/Components/AutocompleteInput';
 import BulletEditor from '@/Components/BulletEditor';
 import TagInput from '@/Components/TagInput';
-import AISuggestButton from '@/Components/AISuggestButton';
-import SpellBadge from '@/Components/SpellBadge';
-import { useSpellCheck } from '@/hooks/useSpellCheck';
-import TailorModal from './TailorModal';
-import InterviewCoachPanel from './Partials/InterviewCoachPanel';
-import MockInterviewPanel from '@/Components/MockInterviewPanel';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import {
@@ -16,11 +10,8 @@ import {
     SwatchIcon,
     BookmarkSquareIcon, EyeIcon, EyeSlashIcon,
     ArrowDownTrayIcon,
-    SparklesIcon, ChartBarIcon,
-    ScissorsIcon, ChatBubbleLeftRightIcon,
-
 } from '@heroicons/react/24/outline';
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
     DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors,
     type DragEndEvent,
@@ -32,9 +23,9 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-    ResumeData, ShareLink, ResumeQuestion, ResumeTemplate,
-    ExperienceEntry, EducationEntry, CertEntry, Contact, AiCapabilities,
-    FontSizes, AtsScore, CustomSection, CustomSectionEntry, ResumeSnapshot,
+    ResumeData, ShareLink, ResumeTemplate,
+    ExperienceEntry, EducationEntry, CertEntry, Contact,
+    FontSizes, CustomSection, CustomSectionEntry,
 } from '@/types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -231,58 +222,28 @@ const SECTION_TIPS: Record<string, string[]> = {
 export default function Edit({
     resume,
     shareLinks: initialLinks,
-    questions: initialQuestions,
-    aiCapabilities,
+    threads: initialThreads,
     isFirstResume,
-    canAts,
     canDocx,
-    canTailor,
-    canInterviewCoach,
-    interviewCoachUsesRemaining,
-    canMockInterview,
-    canQuantifyBullet,
-    quantifyBulletUsesRemaining,
-    canCareerPaths,
-    canGrammarCheck,
-    aiUsed,
-    aiLimit,
     customSectionLimit,
     allowedTemplates,
-    snapshots = [],
     strengthHistoryEnabled,
     photoUrl,
     completionScore,
-    userPersona,
-    masterOutOfSync,
-    masterResume,
+
     recruiterNote,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
-    questions: ResumeQuestion[];
-    aiCapabilities: AiCapabilities;
+    threads: { id: number; sender_name: string; sender_email: string; is_read: boolean; created_at: string }[];
     isFirstResume: boolean;
-    canAts: boolean;
     canDocx: boolean;
-    canTailor: boolean;
-    canInterviewCoach: boolean;
-    interviewCoachUsesRemaining: number | null;
-    canMockInterview: boolean;
-    canQuantifyBullet: boolean;
-    quantifyBulletUsesRemaining: number | null;
-    canCareerPaths: boolean;
-    canGrammarCheck: boolean;
-    aiUsed: number;
-    aiLimit: number;
     customSectionLimit: number | null;
     allowedTemplates: string[];
-    snapshots: ResumeSnapshot[];
     strengthHistoryEnabled: boolean;
     photoUrl: string | null;
     completionScore: number;
-    userPersona: { target_role: string | null; industry: string | null; years_experience: number | null };
-    masterOutOfSync?: boolean;
-    masterResume?: { id: number; name: string } | null;
+
     recruiterNote?: string | null;
 }) {
     const [name, setName] = useState(resume.name);
@@ -298,14 +259,6 @@ export default function Edit({
         resume.section_order ?? DEFAULT_SECTION_ORDER
     );
 
-    const summarySpell = useSpellCheck(summary ?? '');
-    const allBullets = (experience ?? []).map(e => e.bullets ?? '').join(' ');
-    const bulletSpell = useSpellCheck(allBullets);
-    const allEduText = (education ?? []).map(e => [e.degree, e.field].filter(Boolean).join(' ')).join(' ');
-    const eduSpell = useSpellCheck(allEduText);
-    const allCertText = (certifications ?? []).map(c => [c.name, c.issuer].filter(Boolean).join(' ')).join(' ');
-    const certSpell = useSpellCheck(allCertText);
-
     const [fontSizes, setFontSizes] = useState<FontSizes>({ ...DEFAULT_FONT_SIZES, ...(resume.font_sizes ?? {}) });
     const [fontFamily, setFontFamily] = useState<'sans' | 'serif' | 'mono'>(resume.font_family ?? 'sans');
 
@@ -318,45 +271,13 @@ export default function Edit({
 
     const [showPreview, setShowPreview] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [showTailor, setShowTailor] = useState(false);
-    const [showInterviewCoach, setShowInterviewCoach] = useState(false);
-    const [showMockInterview, setShowMockInterview] = useState(false);
-    const [showVersions, setShowVersions] = useState(false);
-    const [versionName, setVersionName] = useState('');
-    const [savingVersion, setSavingVersion] = useState(false);
+
+
     const [showAcademicBanner, setShowAcademicBanner] = useState(
         template === 'academic' && (resume.custom_sections ?? []).length === 0
     );
 
-    const { pdfImported } = usePage().props as { pdfImported?: boolean };
-    const [showPdfBanner, setShowPdfBanner] = useState(!!pdfImported);
 
-    const { resumeGenerated } = usePage().props as { resumeGenerated?: boolean };
-    const [showGeneratedBanner, setShowGeneratedBanner] = useState(!!resumeGenerated);
-
-    const { linkedInImported } = usePage().props as { linkedInImported?: boolean };
-    const [showLinkedInBanner, setShowLinkedInBanner] = useState(!!linkedInImported);
-    const [syncDismissed, setSyncDismissed] = useState(false);
-
-    const [ats, setAts] = useState<AtsScore | null>(null);
-    const [atsLoading, setAtsLoading] = useState(false);
-    const [atsOpen, setAtsOpen] = useState(false);
-
-    const [quantifyLoading, setQuantifyLoading] = useState<string | null>(null);
-    const [quantifySuggestions, setQuantifySuggestions] = useState<{
-        entryId: string;
-        items: string[];
-    } | null>(null);
-    const [grammarLoading, setGrammarLoading] = useState(false);
-
-    const [careerPaths, setCareerPaths] = useState<Array<{
-        title: string;
-        match_score: number;
-        rationale: string;
-        skills_gap: string[];
-    }> | null>(null);
-    const [careerPathsLoading, setCareerPathsLoading] = useState(false);
-    const [careerPathsOpen, setCareerPathsOpen] = useState(false);
 
     const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
     const [showTips, setShowTips] = useState(false);
@@ -385,24 +306,6 @@ export default function Edit({
         void fetchLiveScore();
     }, [resume.id]);
 
-    const fetchAts = useCallback(async () => {
-        setAtsLoading(true);
-        try {
-            const res = await fetch(route('builder.ats-score', resume.id), {
-                headers: { Accept: 'application/json' },
-                credentials: 'same-origin',
-            });
-            if (res.ok) {
-                const data: AtsScore = await res.json();
-                setAts(data);
-            }
-        } catch {
-            // best-effort
-        } finally {
-            setAtsLoading(false);
-        }
-    }, [resume.id]);
-
     const fetchShareUrl = async () => {
         if (shareUrl) { setSharePopoverOpen(true); return; }
         setShareLoading(true);
@@ -419,20 +322,6 @@ export default function Edit({
             setShareLoading(false);
         }
     };
-
-    useEffect(() => {
-        fetchAts();
-    }, [fetchAts]);
-
-    const [aiProvider, setAiProvider] = useState<'claude' | 'openai'>(() => {
-        const stored = localStorage.getItem('resumegen_ai_provider');
-        if (stored === 'openai' && aiCapabilities.openai) return 'openai';
-        if (aiCapabilities.claude) return 'claude';
-        if (aiCapabilities.openai) return 'openai';
-        return 'claude';
-    });
-
-    const aiEnabled = aiCapabilities.claude || aiCapabilities.openai;
 
     const [openSections, setOpenSections] = useState({
         fontSizes: false, contact: true, summary: true, experience: true,
@@ -509,23 +398,10 @@ export default function Edit({
                 setSavedAt(new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(new Date()));
                 setPdfSrc(freshPdfSrc(resume.id));
                 if (pendingSave.current) { pendingSave.current = false; save(); }
-                fetchAts();
                 void fetchLiveScore();
             },
         });
-    }, [resume.id, saving, fetchAts]);
-
-    const handleSaveVersion = () => {
-        setSavingVersion(true);
-        router.post(
-            route('builder.save-version', resume.id),
-            { name: versionName || undefined },
-            {
-                onSuccess: () => setVersionName(''),
-                onFinish: () => setSavingVersion(false),
-            },
-        );
-    };
+    }, [resume.id, saving]);
 
     // ─── First-run wizard ────────────────────────────────────────────────
     // 0 = welcome, 1 = contact, 2 = experience, 3 = skills, 4 = done (hidden)
@@ -621,87 +497,6 @@ export default function Edit({
     const addExp = () => setExperience(prev => [...prev, emptyExp()]);
     const removeExp = (id: string) => setExperience(prev => prev.filter(e => e.id !== id));
 
-    const handleQuantifyBullet = async (entryId: string, bullet: string) => {
-        if (!bullet.trim() || bullet.trim().length < 10) return;
-        setQuantifyLoading(entryId);
-        setQuantifySuggestions(null);
-        try {
-            const res = await fetch(route('builder.quantify-bullet', resume.id), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
-                },
-                body: JSON.stringify({ bullet }),
-            });
-            if (res.status === 402) {
-                triggerUpgradeModal('quantify_bullet', 'starter');
-                return;
-            }
-            if (!res.ok) return;
-            const json = await res.json();
-            setQuantifySuggestions({ entryId, items: json.suggestions ?? [] });
-        } catch { /* best-effort */ } finally {
-            setQuantifyLoading(null);
-        }
-    };
-
-    const handleGrammarCheck = async (section: string, text: string, onAccept: (corrected: string) => void) => {
-        if (!text.trim() || text.trim().length < 10) return;
-        if (!canGrammarCheck) {
-            triggerUpgradeModal('grammar_check', 'starter');
-            return;
-        }
-        setGrammarLoading(true);
-        try {
-            const res = await fetch(route('builder.grammar-check', resume.id), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
-                },
-                body: JSON.stringify({ section, text }),
-            });
-            if (res.status === 402) {
-                triggerUpgradeModal('grammar_check', 'starter');
-                return;
-            }
-            if (!res.ok) return;
-            const data = await res.json();
-            if (data.corrected) onAccept(data.corrected);
-        } catch { /* best-effort */ } finally {
-            setGrammarLoading(false);
-        }
-    };
-
-    const fetchCareerPaths = async (refresh = false) => {
-        setCareerPathsLoading(true);
-        try {
-            if (refresh) {
-                await fetch(route('builder.career-paths.destroy', resume.id), {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
-                    },
-                });
-            }
-            const res = await fetch(route('builder.career-paths', resume.id), {
-                headers: {
-                    'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
-                },
-            });
-            if (res.status === 402) {
-                triggerUpgradeModal('career_paths', 'starter');
-                return;
-            }
-            if (!res.ok) return;
-            const json = await res.json();
-            setCareerPaths(json.paths ?? []);
-        } catch { /* best-effort */ } finally {
-            setCareerPathsLoading(false);
-        }
-    };
-
     const updateEdu = useCallback((id: string, field: keyof EducationEntry, val: string) =>
         setEducation(prev => prev.map(e => e.id === id ? { ...e, [field]: val } : e)), []);
     const addEdu = () => setEducation(prev => [...prev, emptyEdu()]);
@@ -767,7 +562,7 @@ export default function Edit({
     };
 
     const pdfFilename = resume.pdf_filename ?? `${resume.id}.pdf`;
-    const unreadCount = initialQuestions.filter(q => !q.is_read).length;
+    const unreadCount = initialThreads.filter(t => !t.is_read).length;
 
     return (
         <AuthenticatedLayout>
@@ -1096,281 +891,6 @@ export default function Edit({
                             )}
                         </div>
 
-                        <div className="border-t border-[#eeeef5]" />
-
-                        {/* ── AI Tools ── */}
-                        {sidebarOpen && (
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">AI Tools</p>
-                        )}
-
-                        {/* AI Provider */}
-                        {aiEnabled ? (
-                            <div>
-                                {sidebarOpen ? (
-                                    <div className="space-y-1.5">
-                                        <div className="flex items-center gap-1.5">
-                                            <SparklesIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
-                                            <span className="text-xs font-medium text-[#71717a]">AI Provider</span>
-                                        </div>
-                                        <div className="flex overflow-hidden rounded-md border border-[#eeeef5] text-xs">
-                                            {aiCapabilities.claude && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => { setAiProvider('claude'); localStorage.setItem('resumegen_ai_provider', 'claude'); }}
-                                                    className={`flex-1 py-1.5 font-medium transition-colors ${aiProvider === 'claude' ? 'bg-[#4f46e5] text-white' : 'bg-white text-[#71717a] hover:bg-[#f5f5fb]'}`}
-                                                >
-                                                    Claude
-                                                </button>
-                                            )}
-                                            {aiCapabilities.openai && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => { setAiProvider('openai'); localStorage.setItem('resumegen_ai_provider', 'openai'); }}
-                                                    className={`flex-1 py-1.5 font-medium transition-colors ${aiProvider === 'openai' ? 'bg-[#4f46e5] text-white' : 'bg-white text-[#71717a] hover:bg-[#f5f5fb]'}`}
-                                                >
-                                                    GPT
-                                                </button>
-                                            )}
-                                        </div>
-                                        <p className="text-[10px] text-[#a0a0b0] tabular-nums">{aiUsed}/{aiLimit} suggestions used</p>
-                                    </div>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        onClick={() => setSidebarOpen(true)}
-                                        className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
-                                        title="AI Provider"
-                                    >
-                                        <SparklesIcon className="h-4 w-4" />
-                                    </button>
-                                )}
-                            </div>
-                        ) : sidebarOpen ? (
-                            <p className="text-[10px] text-[#a0a0b0]">✦ AI off — add API key in .env</p>
-                        ) : null}
-
-                        {/* ATS Score */}
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5">
-                                        <ChartBarIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
-                                        <span className="text-xs font-medium text-[#71717a]">ATS Score</span>
-                                    </div>
-                                    {ats ? (
-                                        <span
-                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${ats.score < 50 ? 'bg-red-100 text-red-700' : ats.score < 75 ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'}`}
-                                        >
-                                            {ats.score} / 100
-                                        </span>
-                                    ) : atsLoading ? (
-                                        <span className="text-[10px] text-[#a0a0b0]">Scoring…</span>
-                                    ) : !canAts ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => triggerUpgradeModal('ats_scoring', 'starter')}
-                                            className="text-[10px] text-[#a0a0b0] hover:text-[#4f46e5]"
-                                        >
-                                            🔒 Starter+
-                                        </button>
-                                    ) : null}
-                                </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={() => setSidebarOpen(true)}
-                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
-                                    title={ats ? `ATS: ${ats.score}` : 'ATS Score'}
-                                >
-                                    <ChartBarIcon className="h-4 w-4" />
-                                </button>
-                            )}
-                        </div>
-
-                        {/* Tailor to Job */}
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5">
-                                        <ScissorsIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
-                                        <span className="text-xs font-medium text-[#71717a]">Tailor to Job</span>
-                                    </div>
-                                    {canTailor ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowTailor(true)}
-                                            className="w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca] transition-colors"
-                                        >
-                                            Tailor to Job
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={() => triggerUpgradeModal('tailor', 'starter')}
-                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
-                                        >
-                                            🔒 Starter+
-                                        </button>
-                                    )}
-                                </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={canTailor ? () => setShowTailor(true) : () => triggerUpgradeModal('tailor', 'starter')}
-                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
-                                    title="Tailor to Job"
-                                >
-                                    <ScissorsIcon className="h-4 w-4" />
-                                </button>
-                            )}
-                        </div>
-
-                        {/* Interview Coach */}
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5">
-                                        <ChatBubbleLeftRightIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" />
-                                        <span className="text-xs font-medium text-[#71717a]">Interview Coach</span>
-                                    </div>
-                                    {canInterviewCoach ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowInterviewCoach(true)}
-                                            className="w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca] transition-colors"
-                                        >
-                                            Open Coach
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={() => triggerUpgradeModal('interview_coach', 'starter')}
-                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
-                                        >
-                                            🔒 Starter+
-                                        </button>
-                                    )}
-                                </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={canInterviewCoach ? () => setShowInterviewCoach(true) : () => triggerUpgradeModal('interview_coach', 'starter')}
-                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
-                                    title="Interview Coach"
-                                >
-                                    <ChatBubbleLeftRightIcon className="h-4 w-4" />
-                                </button>
-                            )}
-                        </div>
-
-                        {/* Mock Interview */}
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="text-[#71717a] text-sm">🎤</span>
-                                        <span className="text-xs font-medium text-[#71717a]">Mock Interview</span>
-                                    </div>
-                                    {canMockInterview ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowMockInterview(true)}
-                                            className="w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca] transition-colors"
-                                        >
-                                            Start Interview
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={() => triggerUpgradeModal('mock_interview', 'pro')}
-                                            className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
-                                        >
-                                            🔒 Pro
-                                        </button>
-                                    )}
-                                </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={canMockInterview ? () => setShowMockInterview(true) : () => triggerUpgradeModal('mock_interview', 'pro')}
-                                    className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors"
-                                    title="Mock Interview"
-                                >
-                                    <span className="text-sm">🎤</span>
-                                </button>
-                            )}
-                        </div>
-
-                        {/* Version History */}
-                        {sidebarOpen && (
-                            <div className="border-t border-gray-100 pt-3">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowVersions(v => !v)}
-                                    className="flex w-full items-center justify-between text-xs font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-700"
-                                >
-                                    <span>Versions {snapshots.length > 0 && `(${snapshots.length})`}</span>
-                                    <span>{showVersions ? '−' : '+'}</span>
-                                </button>
-
-                                {showVersions && (
-                                    <div className="mt-2 space-y-2">
-                                        {/* Save current version */}
-                                        <div className="flex gap-1">
-                                            <input
-                                                type="text"
-                                                placeholder="Version name (optional)"
-                                                value={versionName}
-                                                onChange={e => setVersionName(e.target.value)}
-                                                onKeyDown={e => { if (e.key === 'Enter') handleSaveVersion(); }}
-                                                className="min-w-0 flex-1 rounded border border-gray-200 px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={handleSaveVersion}
-                                                disabled={savingVersion}
-                                                className="rounded bg-indigo-600 px-2 py-1 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-                                            >
-                                                {savingVersion ? '…' : 'Save'}
-                                            </button>
-                                        </div>
-
-                                        {/* List of existing snapshots */}
-                                        {snapshots.length === 0 ? (
-                                            <p className="text-xs text-gray-400">No saved versions yet.</p>
-                                        ) : (
-                                            <ul className="space-y-1">
-                                                {snapshots.map(snap => (
-                                                    <li key={snap.id} className="flex items-center justify-between rounded bg-gray-50 px-2 py-1.5">
-                                                        <div className="min-w-0">
-                                                            <p className="truncate text-xs font-medium text-gray-700">{snap.name}</p>
-                                                            <p className="text-xs text-gray-400">{new Date(snap.created_at).toLocaleDateString()}</p>
-                                                        </div>
-                                                        <div className="ml-2 flex shrink-0 items-center gap-2">
-                                                            <a
-                                                                href={route('builder.compare', resume.id) + '?with=' + snap.id}
-                                                                className="text-xs text-gray-400 hover:text-indigo-600"
-                                                            >
-                                                                Compare
-                                                            </a>
-                                                            <button
-                                                                type="button"
-                                                                title="Restore as editable copy"
-                                                                onClick={() => router.post(route('builder.duplicate', snap.id))}
-                                                                className="text-xs text-indigo-600 hover:underline"
-                                                            >
-                                                                Copy
-                                                            </button>
-                                                        </div>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
                         {/* Strength Score */}
                         {sidebarOpen && (
                             <StrengthScorePanel
@@ -1380,115 +900,12 @@ export default function Edit({
                             />
                         )}
 
-                        {/* Career Paths Panel */}
-                        {sidebarOpen && (
-                            <div className="mt-4 rounded-xl border border-[#e8e8f0] bg-white">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        const next = !careerPathsOpen;
-                                        setCareerPathsOpen(next);
-                                        if (next && !careerPaths && canCareerPaths) {
-                                            void fetchCareerPaths();
-                                        }
-                                    }}
-                                    className="flex w-full items-center justify-between px-4 py-3 text-left"
-                                >
-                                    <span className="text-sm font-semibold text-[#2a2a3d]">🧭 Career Paths</span>
-                                    <span className="text-xs text-[#a0a0b0]">{careerPathsOpen ? '▲' : '▼'}</span>
-                                </button>
-                                {careerPathsOpen && (
-                                    <div className="border-t border-[#e8e8f0] px-4 py-3">
-                                        {!canCareerPaths ? (
-                                            <div className="text-center">
-                                                <p className="text-xs text-[#a0a0b0]">Upgrade to Starter to see AI career path suggestions.</p>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => triggerUpgradeModal('career_paths', 'starter')}
-                                                    className="mt-2 rounded-full bg-[#6366f1] px-3 py-1 text-xs text-white"
-                                                >
-                                                    Upgrade
-                                                </button>
-                                            </div>
-                                        ) : careerPathsLoading ? (
-                                            <p className="animate-pulse text-center text-xs text-[#a0a0b0]">Analysing your resume…</p>
-                                        ) : careerPaths ? (
-                                            <div className="space-y-3">
-                                                {careerPaths.map((path, i) => (
-                                                    <div key={i} className="rounded-lg border border-[#e8e8f0] p-3">
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-xs font-semibold text-[#2a2a3d]">{path.title}</span>
-                                                            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                                                                path.match_score >= 80
-                                                                    ? 'bg-green-100 text-green-700'
-                                                                    : path.match_score >= 60
-                                                                      ? 'bg-amber-100 text-amber-700'
-                                                                      : 'bg-red-100 text-red-700'
-                                                            }`}>
-                                                                {path.match_score}% match
-                                                            </span>
-                                                        </div>
-                                                        <p className="mt-1 text-xs text-[#6060a0]">{path.rationale}</p>
-                                                        {path.skills_gap.length > 0 && (
-                                                            <div className="mt-1 flex flex-wrap gap-1">
-                                                                {path.skills_gap.map((skill, j) => (
-                                                                    <span key={j} className="rounded-full bg-[#f5f5fa] px-2 py-0.5 text-xs text-[#6060a0]">
-                                                                        + {skill}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => void fetchCareerPaths(true)}
-                                                    className="w-full rounded py-1 text-xs text-[#a0a0b0] hover:bg-[#f5f5fa]"
-                                                >
-                                                    ↻ Refresh
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <button
-                                                type="button"
-                                                onClick={() => void fetchCareerPaths()}
-                                                className="w-full rounded-lg bg-[#6366f1] py-2 text-xs font-medium text-white hover:bg-[#5254cc]"
-                                            >
-                                                Analyse Career Paths
-                                            </button>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
                     </div>
                 </aside>
 
                 {/* ── Form ── */}
                 <div className="flex-1 min-h-[calc(100vh-3.5rem)] py-6 pb-24">
                     <div className="mx-auto max-w-2xl px-4">
-
-                    {showPdfBanner && (
-                        <div className="mb-4 flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm">
-                            <span className="text-blue-700">📄 Imported from PDF — review and edit your details.</span>
-                            <button type="button" onClick={() => setShowPdfBanner(false)} className="ml-3 text-blue-400 hover:text-blue-600">✕</button>
-                        </div>
-                    )}
-
-                    {showLinkedInBanner && (
-                        <div className="mb-4 flex items-center justify-between rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm text-teal-700">
-                            <span>Resume imported from LinkedIn. Review and update your details.</span>
-                            <button type="button" onClick={() => setShowLinkedInBanner(false)} className="ml-4 text-teal-500 hover:text-teal-700">✕</button>
-                        </div>
-                    )}
-
-                    {showGeneratedBanner && (
-                        <div className="mb-4 flex items-center justify-between rounded-lg border border-violet-200 bg-violet-50 px-4 py-2.5 text-sm">
-                            <span className="text-violet-700">✨ AI-generated draft — review and personalize your resume.</span>
-                            <button type="button" onClick={() => setShowGeneratedBanner(false)} className="ml-3 text-violet-400 hover:text-violet-600">✕</button>
-                        </div>
-                    )}
 
                     {showAcademicBanner && (
                         <div className="mb-4 flex items-start gap-3 rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm">
@@ -1530,41 +947,6 @@ export default function Edit({
                                     type="button"
                                     onClick={() => setShowAcademicBanner(false)}
                                     className="rounded-md border border-indigo-300 px-3 py-1 text-xs text-indigo-600 hover:bg-indigo-100"
-                                >
-                                    Dismiss
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {masterOutOfSync && !syncDismissed && masterResume && (
-                        <div className="mb-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm">
-                            <span className="text-amber-800">
-                                Your master resume has been updated — your tailored copy may be out of date.
-                            </span>
-                            <div className="ml-4 flex shrink-0 gap-3">
-                                <button
-                                    type="button"
-                                    className="font-medium text-amber-700 underline hover:text-amber-900"
-                                    onClick={() => {
-                                        router.post(route('builder.pull-from-master', resume.id), {}, {
-                                            preserveScroll: false,
-                                            onSuccess: () => setSyncDismissed(true),
-                                        });
-                                    }}
-                                >
-                                    Pull from master
-                                </button>
-                                <a href={route('builder.edit', masterResume.id)} className="font-medium text-amber-700 underline hover:text-amber-900">
-                                    View master →
-                                </a>
-                                <button
-                                    type="button"
-                                    className="font-medium text-amber-600 hover:text-amber-800"
-                                    onClick={() => {
-                                        setSyncDismissed(true);
-                                        router.patch(route('builder.sync-master', resume.id), {}, { preserveScroll: true });
-                                    }}
                                 >
                                     Dismiss
                                 </button>
@@ -1636,70 +1018,6 @@ export default function Edit({
                         )}
                     </div>
 
-                    {/* ATS Score */}
-                    <div className="mb-5 rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-                        {!canAts ? (
-                            <button
-                                type="button"
-                                onClick={() => triggerUpgradeModal('ats_scoring', 'starter')}
-                                className="flex w-full items-center justify-between rounded-xl border border-[#eeeef5] bg-white px-4 py-3 text-left text-sm font-semibold text-[#a0a0b0]"
-                            >
-                                <span>🔒 ATS Score</span>
-                                <span className="text-xs">Starter+</span>
-                            </button>
-                        ) : (
-                            <>
-                                <button
-                                    type="button"
-                                    onClick={() => setAtsOpen(o => !o)}
-                                    className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-gray-800 hover:bg-gray-50 focus:outline-none"
-                                >
-                                    <span>ATS Score{ats ? ` · ${ats.score}/100` : ''}</span>
-                                    <span className="text-gray-400 text-xs">{atsOpen ? '−' : '+'}</span>
-                                </button>
-
-                                {atsOpen && ats && (
-                                    <div className="border-t border-gray-100 bg-white px-4 py-3 text-sm">
-                                        <ul className="mb-3 space-y-1 text-xs text-gray-600">
-                                            <li>Action verbs: {ats.breakdown.action_verbs}/30</li>
-                                            <li>Technical: {ats.breakdown.technical}/40</li>
-                                            <li>Soft skills: {ats.breakdown.soft_skills}/15</li>
-                                            <li>Format signals: {ats.breakdown.format_signals}/15</li>
-                                        </ul>
-
-                                        {(['technical', 'action_verbs', 'soft_skills'] as const).map(cat => (
-                                            ats.missing[cat].length > 0 ? (
-                                                <div key={cat} className="mb-3">
-                                                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                        Missing {cat.replace('_', ' ')}
-                                                    </p>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {ats.missing[cat].slice(0, 10).map(kw => (
-                                                            <button
-                                                                key={kw}
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    const next = Array.from(new Set([...(skillsRef.current ?? []), kw]));
-                                                                    skillsRef.current = next;
-                                                                    setSkills(next);
-                                                                    save();
-                                                                }}
-                                                                className="rounded border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs text-gray-700 hover:border-indigo-400 hover:bg-indigo-50"
-                                                                title="Add to skills"
-                                                            >
-                                                                + {kw}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ) : null
-                                        ))}
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </div>
-
                     {/* Resume Name */}
                     <div className="mb-5 flex flex-col gap-1">
                         <label className="text-xs font-medium text-gray-500">Resume Name</label>
@@ -1748,39 +1066,14 @@ export default function Edit({
                                                 <SectionHeader title="Professional Summary" open={openSections.summary} onToggle={() => toggleSection('summary')} />
                                                 {openSections.summary && (
                                                     <div className="p-4">
-                                                        <div className="relative">
-                                                            <textarea
-                                                                value={summary}
-                                                                onChange={e => setSummary(e.target.value)}
-                                                                spellCheck={true}
-                                                                rows={4}
-                                                                placeholder="A brief summary of your professional background and goals…"
-                                                                className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                            />
-                                                            {aiEnabled && (
-                                                                <div className="absolute top-1.5 right-1.5">
-                                                                    <AISuggestButton
-                                                                        field="summary"
-                                                                        context={{ summary }}
-                                                                        resumeId={resume.id}
-                                                                        provider={aiProvider}
-                                                                        onAccept={v => { setSummary(v); save(); }}
-                                                                    />
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <SpellBadge words={summarySpell} />
-                                                            <button
-                                                                type="button"
-                                                                disabled={grammarLoading}
-                                                                onClick={() => handleGrammarCheck('summary', summary ?? '', v => { setSummary(v); save(); })}
-                                                                className="rounded px-2 py-0.5 text-xs text-[#71717a] hover:bg-[#f5f5fb] disabled:opacity-50"
-                                                                title="Polish grammar with AI (Starter+)"
-                                                            >
-                                                                {grammarLoading ? '…' : '✦ Polish'}
-                                                            </button>
-                                                        </div>
+                                                        <textarea
+                                                            value={summary}
+                                                            onChange={e => setSummary(e.target.value)}
+                                                            spellCheck={true}
+                                                            rows={4}
+                                                            placeholder="A brief summary of your professional background and goals…"
+                                                            className="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                        />
                                                     </div>
                                                 )}
                                             </div>
@@ -1807,19 +1100,7 @@ export default function Edit({
                                                                             <div className="grid grid-cols-2 gap-3">
                                                                                 <Field label="Company" value={exp.company} onChange={v => updateExp(exp.id, 'company', v)} placeholder="Acme Corp" />
                                                                                 <div className="flex flex-col gap-1">
-                                                                                    <div className="flex items-center justify-between">
-                                                                                        <label className="text-xs font-medium text-gray-600">Job Title</label>
-                                                                                        {aiEnabled && (
-                                                                                            <AISuggestButton
-                                                                                                field="title"
-                                                                                                context={{ title: exp.title, company: exp.company }}
-                                                                                                resumeId={resume.id}
-                                                                                                provider={aiProvider}
-                                                                                                buttonLabel="✦"
-                                                                                                onAccept={v => { updateExp(exp.id, 'title', v); save(); }}
-                                                                                            />
-                                                                                        )}
-                                                                                    </div>
+                                                                                    <label className="text-xs font-medium text-gray-600">Job Title</label>
                                                                                     <div onBlur={save}>
                                                                                         <AutocompleteInput
                                                                                             endpoint="job-titles"
@@ -1839,75 +1120,12 @@ export default function Edit({
                                                                                     </label>
                                                                                 </div>
                                                                                 <div className="col-span-2 flex flex-col gap-1">
-                                                                                    <div className="flex items-center justify-between">
-                                                                                        <label className="text-xs font-medium text-gray-600">Bullet Points</label>
-                                                                                        {aiEnabled && (
-                                                                                            <AISuggestButton
-                                                                                                field="bullets"
-                                                                                                context={{ title: exp.title, company: exp.company, bullets: exp.bullets }}
-                                                                                                resumeId={resume.id}
-                                                                                                provider={aiProvider}
-                                                                                                buttonLabel="✦ Improve"
-                                                                                                onAccept={v => { updateExp(exp.id, 'bullets', v); save(); }}
-                                                                                            />
-                                                                                        )}
-                                                                                    </div>
+                                                                                    <label className="text-xs font-medium text-gray-600">Bullet Points</label>
                                                                                     <BulletEditor
                                                                                         bullets={exp.bullets ? exp.bullets.split('\n') : []}
                                                                                         onChange={lines => updateExp(exp.id, 'bullets', lines.join('\n'))}
 
                                                                                     />
-                                                                                    <div className="mt-1 flex items-center gap-2">
-                                                                                        {canQuantifyBullet ? (
-                                                                                            <button
-                                                                                                type="button"
-                                                                                                onClick={() => handleQuantifyBullet(exp.id, exp.bullets)}
-                                                                                                disabled={quantifyLoading === exp.id}
-                                                                                                className="inline-flex items-center gap-1 rounded-full bg-[#f0f0ff] px-2 py-0.5 text-xs text-[#6366f1] hover:bg-[#e0e0ff] disabled:opacity-50"
-                                                                                            >
-                                                                                                {quantifyLoading === exp.id ? '⟳' : '⚡'} Quantify
-                                                                                            </button>
-                                                                                        ) : (
-                                                                                            <button
-                                                                                                type="button"
-                                                                                                onClick={() => triggerUpgradeModal('quantify_bullet', 'starter')}
-                                                                                                className="inline-flex items-center gap-1 rounded-full bg-[#f5f5fa] px-2 py-0.5 text-xs text-[#a0a0b0]"
-                                                                                            >
-                                                                                                🔒 Quantify
-                                                                                                {quantifyBulletUsesRemaining === 0 ? ' · Upgrade' : quantifyBulletUsesRemaining !== null ? ` · ${quantifyBulletUsesRemaining} left` : ''}
-                                                                                            </button>
-                                                                                        )}
-                                                                                    </div>
-                                                                                    {quantifySuggestions?.entryId === exp.id && (
-                                                                                        <div className="mt-2 rounded-lg border border-[#e8e8f0] bg-[#fafafe] p-3 space-y-2">
-                                                                                            <div className="flex items-center justify-between">
-                                                                                                <span className="text-xs font-medium text-[#6060a0]">Quantified versions</span>
-                                                                                                <button
-                                                                                                    type="button"
-                                                                                                    onClick={() => setQuantifySuggestions(null)}
-                                                                                                    className="text-xs text-[#a0a0b0] hover:text-[#6060a0]"
-                                                                                                >
-                                                                                                    ✕
-                                                                                                </button>
-                                                                                            </div>
-                                                                                            {quantifySuggestions.items.map((s, i) => (
-                                                                                                <div key={i} className="flex items-start gap-2">
-                                                                                                    <p className="flex-1 text-xs text-[#4040a0]">{s}</p>
-                                                                                                    <button
-                                                                                                        type="button"
-                                                                                                        onClick={() => {
-                                                                                                            updateExp(exp.id, 'bullets', s);
-                                                                                                            save();
-                                                                                                            setQuantifySuggestions(null);
-                                                                                                        }}
-                                                                                                        className="shrink-0 rounded bg-[#6366f1] px-2 py-0.5 text-xs text-white hover:bg-[#5254cc]"
-                                                                                                    >
-                                                                                                        ↩ Use
-                                                                                                    </button>
-                                                                                                </div>
-                                                                                            ))}
-                                                                                        </div>
-                                                                                    )}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1918,29 +1136,6 @@ export default function Edit({
                                                         <button type="button" onClick={addExp} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                                             + Add Position
                                                         </button>
-                                                        <div className="mt-1 flex items-center gap-2">
-                                                            {bulletSpell.length > 0 && (
-                                                                <SpellBadge words={bulletSpell} />
-                                                            )}
-                                                            <button
-                                                                type="button"
-                                                                disabled={grammarLoading}
-                                                                onClick={() => handleGrammarCheck('bullets', allBullets, v => {
-                                                                    const lines = v.split('\n').filter(Boolean);
-                                                                    let idx = 0;
-                                                                    (experience ?? []).forEach(exp => {
-                                                                        const count = (exp.bullets ?? '').split('\n').filter(Boolean).length || 0;
-                                                                        updateExp(exp.id, 'bullets', lines.slice(idx, idx + count).join('\n'));
-                                                                        idx += count;
-                                                                    });
-                                                                    save();
-                                                                })}
-                                                                className="rounded px-2 py-0.5 text-xs text-[#71717a] hover:bg-[#f5f5fb] disabled:opacity-50"
-                                                                title="Polish all bullets grammar with AI (Starter+)"
-                                                            >
-                                                                {grammarLoading ? '…' : '✦ Polish all'}
-                                                            </button>
-                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
@@ -1980,11 +1175,6 @@ export default function Edit({
                                                         <button type="button" onClick={addEdu} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                                             + Add School
                                                         </button>
-                                                        {eduSpell.length > 0 && (
-                                                            <div className="mt-1">
-                                                                <SpellBadge words={eduSpell} />
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 )}
                                             </div>
@@ -1999,24 +1189,6 @@ export default function Edit({
                                                     <div className="p-4 flex flex-col gap-2">
                                                         <label className="text-xs font-medium text-gray-600">Press Enter or comma to add</label>
                                                         <TagInput tags={skills} onChange={setSkills} />
-                                                        {aiEnabled && (
-                                                            <AISuggestButton
-                                                                field="skills"
-                                                                context={{
-                                                                    title: experience[0]?.title,
-                                                                    company: experience[0]?.company,
-                                                                    skills,
-                                                                }}
-                                                                resumeId={resume.id}
-                                                                provider={aiProvider}
-                                                                buttonLabel="✦ Suggest skills"
-                                                                onAccept={v => {
-                                                                    const newSkills = v.split(',').map((s: string) => s.trim()).filter((s: string) => s && !skills.includes(s));
-                                                                    setSkills(prev => [...prev, ...newSkills]);
-                                                                    save();
-                                                                }}
-                                                            />
-                                                        )}
                                                     </div>
                                                 )}
                                             </div>
@@ -2047,11 +1219,6 @@ export default function Edit({
                                                         <button type="button" onClick={addCert} className="mt-1 rounded-md bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-100">
                                                             + Add Certification
                                                         </button>
-                                                        {certSpell.length > 0 && (
-                                                            <div className="mt-1">
-                                                                <SpellBadge words={certSpell} />
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 )}
                                             </div>
@@ -2305,10 +1472,10 @@ export default function Edit({
                             )}
                         </div>
 
-                        {/* Questions Inbox */}
+                        {/* Messages Inbox */}
                         <div className="rounded-lg border border-indigo-200 overflow-hidden shadow-sm">
                             <SectionHeader
-                                title={`Questions${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+                                title={`Messages${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
                                 open={openSections.questions}
                                 onToggle={() => toggleSection('questions')}
                             />
@@ -2318,32 +1485,28 @@ export default function Edit({
                                         <div className="flex justify-end">
                                             <button
                                                 type="button"
-                                                onClick={() => router.patch(route('questions.read-all', resume.id), {}, { preserveScroll: true })}
+                                                onClick={() => router.patch(route('messages.read-all'), {}, { preserveScroll: true })}
                                                 className="text-xs text-indigo-600 hover:text-indigo-800"
                                             >
                                                 Mark all read
                                             </button>
                                         </div>
                                     )}
-                                    {initialQuestions.length === 0 && (
-                                        <p className="text-xs text-gray-400">No questions yet.</p>
+                                    {initialThreads.length === 0 && (
+                                        <p className="text-xs text-gray-400">No messages yet.</p>
                                     )}
-                                    {initialQuestions.map(q => (
-                                        <div key={q.id} className={`rounded-md border p-3 text-xs flex flex-col gap-1 ${q.is_read ? 'border-gray-100 bg-white' : 'border-indigo-100 bg-indigo-50'}`}>
+                                    {initialThreads.map(t => (
+                                        <Link
+                                            key={t.id}
+                                            href={route('builder.thread', [resume.id, t.id])}
+                                            className={`rounded-md border p-3 text-xs flex flex-col gap-1 transition hover:bg-indigo-50/50 ${t.is_read ? 'border-gray-100 bg-white' : 'border-indigo-100 bg-indigo-50'}`}
+                                        >
                                             <div className="flex items-center justify-between">
-                                                <span className="font-semibold text-gray-700">{q.sender_name} — {q.sender_email} — {q.sender_phone}</span>
-                                                <span className="text-gray-400">{q.created_at}</span>
+                                                <span className="font-semibold text-gray-700">{t.sender_name}</span>
+                                                <span className="text-gray-400">{t.created_at}</span>
                                             </div>
-                                            <span className="text-gray-400 text-[10px]">via link: {q.link_label}</span>
-                                            <p className="text-gray-700 mt-1">{q.message}</p>
-                                            {!q.is_read && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => router.patch(route('questions.read', [resume.id, q.id]))}
-                                                    className="self-start text-[10px] text-indigo-600 hover:text-indigo-800 mt-1"
-                                                >Mark as read</button>
-                                            )}
-                                        </div>
+                                            <span className="text-gray-400 text-[10px]">{t.sender_email}</span>
+                                        </Link>
                                     ))}
                                 </div>
                             )}
@@ -2569,37 +1732,6 @@ export default function Edit({
                         )}
                     </div>
                 </div>
-            )}
-            {showTailor && (
-                <TailorModal
-                    resumeId={resume.id}
-                    onApplySummary={(s) => { setSummary(s); save(); }}
-                    onAddKeywords={(kws) => {
-                        setSkills((prev) => {
-                            const next = Array.from(new Set([...prev, ...kws]));
-                            skillsRef.current = next;
-                            return next;
-                        });
-                        save();
-                    }}
-                    onClose={() => setShowTailor(false)}
-                />
-            )}
-            {showInterviewCoach && (
-                <InterviewCoachPanel
-                    resumeId={resume.id}
-                    resumeName={resume.name}
-                    canInterviewCoach={canInterviewCoach}
-                    interviewCoachUsesRemaining={interviewCoachUsesRemaining}
-                    onClose={() => setShowInterviewCoach(false)}
-                    personaDefaults={userPersona}
-                />
-            )}
-            {showMockInterview && (
-                <MockInterviewPanel
-                    resumeId={resume.id}
-                    onClose={() => setShowMockInterview(false)}
-                />
             )}
         </AuthenticatedLayout>
     );

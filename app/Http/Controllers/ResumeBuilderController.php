@@ -40,17 +40,12 @@ class ResumeBuilderController extends Controller
             ->groupBy('resume_id')
             ->pluck('cnt', 'resume_id');
 
-        $masterIds = $resumeCollection->pluck('master_resume_id')->filter()->unique();
-        $masterUpdatedAts = $masterIds->isNotEmpty()
-            ? Resume::whereIn('id', $masterIds)->pluck('updated_at', 'id')
-            : collect();
-
         $activeShareResumeIds = ResumeShareLink::where('is_active', true)
             ->whereIn('resume_id', $resumeCollection->pluck('id'))
             ->pluck('resume_id')
             ->flip();
 
-        $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts, $masterUpdatedAts, $activeShareResumeIds) {
+        $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts, $activeShareResumeIds) {
             $strength = ResumeStrengthScorer::score($resume);
 
             return [
@@ -67,12 +62,6 @@ class ResumeBuilderController extends Controller
                     'label' => $t->label,
                     'color' => $t->color,
                 ])->values()->all(),
-                'is_master' => $resume->is_master,
-                'master_resume_id' => $resume->master_resume_id,
-                'master_updated_at' => $resume->master_resume_id
-                    ? optional($masterUpdatedAts->get($resume->master_resume_id))?->toISOString()
-                    : null,
-                'master_synced_at' => $resume->master_synced_at?->toISOString(),
                 'has_active_share_link' => isset($activeShareResumeIds[$resume->id]),
                 'job_application_id' => $resume->job_application_id,
                 'linked_job' => $resume->linkedJob
@@ -86,8 +75,6 @@ class ResumeBuilderController extends Controller
             'resumeCount' => $resumes->count(),
             'resumeLimit' => UserLimits::resumeLimit($user),
             'allowedTemplates' => UserLimits::allowedTemplates($user),
-            'canPdfImport' => UserLimits::canPdfImport($user),
-            'canGenerate' => UserLimits::canGenerate($user),
             'userPersona' => [
                 'target_role' => $user->target_role,
                 'industry' => $user->industry,
@@ -135,64 +122,29 @@ class ResumeBuilderController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $resume->load(['shareLinks', 'questions.shareLink']);
+        $resume->load(['shareLinks', 'threads']);
 
-        $questions = $resume->questions->map(fn ($q) => [
-            'id' => $q->id,
-            'sender_name' => $q->sender_name,
-            'sender_email' => $q->sender_email,
-            'sender_phone' => $q->sender_phone,
-            'message' => $q->message,
-            'is_read' => $q->is_read,
-            'link_label' => $q->shareLink?->label ?? '(unlabelled)',
-            'created_at' => $q->created_at->toDateTimeString(),
+        $threads = $resume->threads->map(fn ($t) => [
+            'id' => $t->id,
+            'sender_name' => $t->sender_name,
+            'sender_email' => $t->sender_email,
+            'is_read' => $t->is_read,
+            'created_at' => $t->created_at->toDateTimeString(),
         ]);
 
         $user = $request->user();
         $isFirstResume = ! $user->has_completed_onboarding
             && $user->resumes()->count() === 1;
 
-        $masterOutOfSync = false;
-        $masterResume = null;
-        if ($resume->master_resume_id) {
-            $master = $resume->masterResume;
-            if ($master) {
-                $masterResume = ['id' => $master->id, 'name' => $master->name];
-                $masterOutOfSync = $resume->master_synced_at === null
-                    || $master->updated_at->gt($resume->master_synced_at);
-            }
-        }
-
         return Inertia::render('ResumeBuilder/Edit', [
             'resume' => $resume,
             'shareLinks' => $resume->shareLinks,
-            'questions' => $questions,
+            'threads' => $threads,
             'isFirstResume' => $isFirstResume,
-            'aiCapabilities' => [
-                'claude' => ! empty(config('services.anthropic.key')),
-                'openai' => ! empty(config('services.openai.key')),
-            ],
-            'canAts' => UserLimits::canAts($user),
-            'atsUsesRemaining' => UserLimits::atsUsesRemaining($user),
-            'canInterviewCoach' => UserLimits::canInterviewCoach($user),
-            'interviewCoachUsesRemaining' => UserLimits::interviewCoachUsesRemaining($user),
             'canDocx' => UserLimits::canDocx($user),
-            'canTailor' => UserLimits::canTailor($user),
-            'canQuantifyBullet' => UserLimits::canQuantifyBullet($user),
-            'quantifyBulletUsesRemaining' => UserLimits::quantifyBulletUsesRemaining($user),
-            'canCareerPaths' => UserLimits::canCareerPaths($user),
-            'canGrammarCheck' => UserLimits::canGrammarCheck($user),
-            'canMockInterview' => in_array($user->planTier(), ['pro', 'agency'], true),
-            'aiUsed' => UserLimits::aiUsageThisPeriod($user),
-            'aiLimit' => UserLimits::aiLimit($user),
             'customSectionLimit' => UserLimits::customSectionLimit($user),
             'allowedTemplates' => UserLimits::allowedTemplates($user),
             'completionScore' => $this->computeCompletionScore($resume),
-            'snapshots' => $resume->snapshots()->get(['id', 'name', 'created_at'])->map(fn ($s) => [
-                'id' => $s->id,
-                'name' => $s->name,
-                'created_at' => $s->created_at->toDateString(),
-            ]),
             'strengthHistoryEnabled' => UserLimits::canStrengthHistory($user),
             'photoUrl' => $resume->getFirstMediaUrl('photo') ?: null,
             'userPersona' => [
@@ -200,8 +152,6 @@ class ResumeBuilderController extends Controller
                 'industry' => $user->industry,
                 'years_experience' => $user->years_experience,
             ],
-            'masterOutOfSync' => $masterOutOfSync,
-            'masterResume' => $masterResume,
             'recruiterNote' => $this->getRecruiterNote($request->user(), $resume),
         ]);
     }
@@ -328,29 +278,6 @@ class ResumeBuilderController extends Controller
         ]);
     }
 
-    public function saveVersion(Request $request, Resume $resume): RedirectResponse
-    {
-        $this->authorize('update', $resume);
-
-        abort_if($resume->is_snapshot, 422, 'Cannot version a snapshot.');
-
-        $validated = $request->validate([
-            'name' => ['nullable', 'string', 'max:255'],
-        ]);
-
-        $snapshotName = $validated['name']
-            ?? $resume->name.' — '.now()->format('M j, Y');
-
-        $snapshot = $resume->replicate(['id', 'created_at', 'updated_at']);
-        $snapshot->name = $snapshotName;
-        $snapshot->parent_resume_id = $resume->id;
-        $snapshot->is_snapshot = true;
-        $snapshot->pdf_filename = Str::uuid().'.pdf';
-        $snapshot->save();
-
-        return back()->with('versionSaved', $snapshotName);
-    }
-
     public function destroy(Request $request, Resume $resume)
     {
         $this->authorize('delete', $resume);
@@ -437,15 +364,6 @@ class ResumeBuilderController extends Controller
         return redirect()->route('builder.edit', $variant->id);
     }
 
-    public function setMaster(Resume $resume): RedirectResponse
-    {
-        $this->authorize('update', $resume);
-
-        $resume->update(['is_master' => ! $resume->is_master]);
-
-        return back();
-    }
-
     public function linkJob(Request $request, Resume $resume): RedirectResponse
     {
         $this->authorize('update', $resume);
@@ -465,121 +383,6 @@ class ResumeBuilderController extends Controller
         $resume->update(['job_application_id' => $validated['job_application_id']]);
 
         return back();
-    }
-
-    public function createTailoredCopy(Resume $resume): RedirectResponse
-    {
-        $this->authorize('update', $resume);
-
-        $user = $resume->user;
-        $limit = UserLimits::resumeLimit($user);
-
-        if ($limit !== null && $user->resumes()->where('is_snapshot', false)->count() >= $limit) {
-            return back()->with('featureGate', [
-                'feature' => 'resume_limit',
-                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
-            ]);
-        }
-
-        $copy = $resume->replicate();
-        $copy->name = $resume->name.' (Tailored)';
-        $copy->master_resume_id = $resume->id;
-        $copy->master_synced_at = now();
-        $copy->is_master = false;
-        $copy->is_snapshot = false;
-        $copy->ab_parent_id = null;
-        $copy->pdf_filename = Str::uuid().'.pdf';
-        $copy->save();
-
-        return redirect()->route('builder.edit', $copy->id);
-    }
-
-    public function syncMaster(Resume $resume): RedirectResponse
-    {
-        $this->authorize('update', $resume);
-
-        $resume->update(['master_synced_at' => now()]);
-
-        return back();
-    }
-
-    public function pullFromMaster(Resume $resume): RedirectResponse
-    {
-        $this->authorize('update', $resume);
-
-        $master = $resume->masterResume;
-        if (! $master) {
-            return back()->withErrors(['master' => 'No master resume linked.']);
-        }
-
-        $resume->update([
-            'contact' => $master->contact,
-            'summary' => $master->summary,
-            'experience' => $master->experience,
-            'education' => $master->education,
-            'skills' => $master->skills,
-            'certifications' => $master->certifications,
-            'font_family' => $master->font_family,
-            'accent_color' => $master->accent_color,
-            'template' => $master->template,
-            'font_sizes' => $master->font_sizes,
-            'master_synced_at' => now(),
-        ]);
-
-        return back();
-    }
-
-    public function abCompare(Request $request, Resume $resume): Response
-    {
-        $this->authorize('update', $resume);
-
-        $parentId = $resume->ab_parent_id ?? $resume->id;
-        $group = Resume::where('id', $parentId)
-            ->orWhere('ab_parent_id', $parentId)
-            ->where('user_id', $request->user()->id)
-            ->get(['id', 'name', 'ab_parent_id']);
-
-        $resumes = $group->map(function (Resume $r): array {
-            $events = ResumeShareEvent::where('resume_id', $r->id);
-
-            return [
-                'id' => $r->id,
-                'name' => $r->name,
-                'ab_parent_id' => $r->ab_parent_id,
-                'view_count' => (clone $events)->where('event', 'page_view')->count(),
-                'unique_visitors' => (clone $events)->where('event', 'page_view')
-                    ->selectRaw('COUNT(DISTINCT ip_hash || DATE(created_at)) as cnt')
-                    ->value('cnt') ?? 0,
-                'pdf_downloads' => (clone $events)->where('event', 'pdf_download')->count(),
-                'questions_submitted' => (clone $events)->where('event', 'question_submitted')->count(),
-            ];
-        });
-
-        return Inertia::render('ResumeBuilder/AbCompare', [
-            'resumes' => $resumes,
-            'resumeId' => $resume->id,
-        ]);
-    }
-
-    public function compare(Request $request, Resume $resume): Response
-    {
-        $this->authorize('update', $resume);
-
-        $otherId = $request->query('with');
-        if (! $otherId) {
-            abort(404);
-        }
-
-        $other = Resume::findOrFail($otherId);
-        $this->authorize('update', $other);
-
-        $fields = ['id', 'name', 'contact', 'summary', 'experience', 'education',
-            'skills', 'certifications', 'custom_sections', 'template', 'updated_at'];
-
-        return Inertia::render('ResumeBuilder/Compare', [
-            'resume' => $resume->only($fields),
-            'other' => $other->only($fields),
-        ]);
     }
 
     public function duplicate(Resume $resume)
