@@ -39,6 +39,18 @@ class ResumeBuilderTest extends TestCase
         $response->assertSessionHasErrors('template');
     }
 
+    public function test_two_column_template_is_rejected_by_validation(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
+
+        $this->actingAs($user)
+            ->put(route('builder.update', $resume), [
+                'template' => 'two-column',
+            ])
+            ->assertSessionHasErrors('template');
+    }
+
     public function test_user_can_duplicate_their_own_resume(): void
     {
         $user = User::factory()->create();
