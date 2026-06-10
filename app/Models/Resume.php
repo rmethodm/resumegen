@@ -30,6 +30,11 @@ class Resume extends Model implements HasMedia
         'section_order', 'custom_sections',
         'ab_parent_id',
         'job_application_id',
+        'is_snapshot',
+        'is_master',
+        'master_resume_id',
+        'master_synced_at',
+        'parent_resume_id',
     ];
 
     protected $casts = [
@@ -41,6 +46,9 @@ class Resume extends Model implements HasMedia
         'font_sizes' => 'array',
         'section_order' => 'array',
         'custom_sections' => 'array',
+        'is_snapshot' => 'boolean',
+        'is_master' => 'boolean',
+        'master_synced_at' => 'datetime',
     ];
 
     public function registerMediaCollections(): void
