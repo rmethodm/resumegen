@@ -14,42 +14,34 @@ class AnalyticsController extends Controller
     public function index(Request $request): Response
     {
         $userId = $request->user()->id;
-
-        // Get all resume IDs belonging to this user
         $resumeIds = Resume::where('user_id', $userId)->pluck('id');
 
-        // Single query: fetch the minimal columns needed for all aggregations
-        $rawEvents = ResumeShareEvent::whereIn('resume_id', $resumeIds)
-            ->select('resume_id', 'event', 'ip_hash', DB::raw('DATE(created_at) as event_date'))
+        $aggregates = ResumeShareEvent::whereIn('resume_id', $resumeIds)
+            ->select(
+                'resume_id',
+                DB::raw("SUM(CASE WHEN event = 'page_view' THEN 1 ELSE 0 END) as page_views"),
+                DB::raw("SUM(CASE WHEN event = 'pdf_download' THEN 1 ELSE 0 END) as pdf_downloads"),
+                DB::raw("SUM(CASE WHEN event = 'question_submitted' THEN 1 ELSE 0 END) as questions_submitted"),
+                DB::raw("COUNT(DISTINCT CASE WHEN event = 'page_view' AND ip_hash IS NOT NULL THEN ip_hash || DATE(created_at) END) as unique_visitors")
+            )
+            ->groupBy('resume_id')
             ->get()
-            ->groupBy('resume_id');
-
-        // Compute both event-type totals and unique-visitor counts from the one result set
-        $totals = $rawEvents->map(fn ($rows) => $rows->groupBy('event'));
-
-        $uniqueVisitors = $rawEvents->map(
-            fn ($rows) => $rows
-                ->where('event', 'page_view')
-                ->whereNotNull('ip_hash')
-                ->map(fn ($r) => $r->ip_hash.$r->event_date)
-                ->unique()
-                ->count()
-        );
+            ->keyBy('resume_id');
 
         $resumes = Resume::whereIn('id', $resumeIds)
             ->orderByDesc('updated_at')
             ->get(['id', 'name']);
 
-        $stats = $resumes->map(function (Resume $resume) use ($totals, $uniqueVisitors) {
-            $byType = $totals->get($resume->id, collect());
+        $stats = $resumes->map(function (Resume $resume) use ($aggregates) {
+            $agg = $aggregates->get($resume->id);
 
             return [
                 'resume_id' => $resume->id,
                 'resume_name' => $resume->name,
-                'page_views' => (int) ($byType->get('page_view', collect())->count()),
-                'unique_visitors' => (int) ($uniqueVisitors->get($resume->id, 0)),
-                'pdf_downloads' => (int) ($byType->get('pdf_download', collect())->count()),
-                'questions_submitted' => (int) ($byType->get('question_submitted', collect())->count()),
+                'page_views' => (int) ($agg?->page_views ?? 0),
+                'unique_visitors' => (int) ($agg?->unique_visitors ?? 0),
+                'pdf_downloads' => (int) ($agg?->pdf_downloads ?? 0),
+                'questions_submitted' => (int) ($agg?->questions_submitted ?? 0),
             ];
         });
 

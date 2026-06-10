@@ -66,6 +66,37 @@ class AnalyticsControllerTest extends TestCase
         );
     }
 
+    public function test_analytics_aggregates_correctly_with_many_events(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+        $link = ResumeShareLink::factory()->create(['resume_id' => $resume->id, 'is_active' => true]);
+
+        for ($i = 0; $i < 100; $i++) {
+            ResumeShareEvent::create([
+                'resume_share_link_id' => $link->id,
+                'resume_id'            => $resume->id,
+                'event'                => 'page_view',
+                'ip_hash'              => hash('sha256', fake()->ipv4()),
+            ]);
+        }
+        for ($i = 0; $i < 10; $i++) {
+            ResumeShareEvent::create([
+                'resume_share_link_id' => $link->id,
+                'resume_id'            => $resume->id,
+                'event'                => 'pdf_download',
+                'ip_hash'              => null,
+            ]);
+        }
+
+        $response = $this->actingAs($user)->get(route('dashboard'));
+        $response->assertInertia(fn ($page) => $page
+            ->has('resumeStats', 1)
+            ->where('resumeStats.0.page_views', 100)
+            ->where('resumeStats.0.pdf_downloads', 10)
+        );
+    }
+
     public function test_same_ip_on_same_day_counts_as_one_unique_visitor(): void
     {
         $user = User::factory()->create();
