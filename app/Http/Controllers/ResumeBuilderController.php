@@ -46,7 +46,8 @@ class ResumeBuilderController extends Controller
             ->flip();
 
         $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts, $activeShareResumeIds) {
-            $strength = ResumeStrengthScorer::score($resume);
+            $cacheKey = "strength:{$resume->id}:".$resume->updated_at->timestamp;
+            $strength = cache()->remember($cacheKey, now()->addMinutes(5), fn () => ResumeStrengthScorer::score($resume));
 
             return [
                 'id' => $resume->id,

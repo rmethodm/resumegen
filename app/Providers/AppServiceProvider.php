@@ -27,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
         Vite::prefetch(concurrency: 3);
 
         Subscription::saved(function (Subscription $subscription) {
+            if (! $subscription->isDirty(['stripe_status', 'stripe_price'])) {
+                return;
+            }
+
             if (in_array($subscription->stripe_status, ['canceled', 'incomplete_expired', 'unpaid'])) {
                 User::where('id', $subscription->user_id)->update(['plan_tier' => 'free', 'is_agency' => false]);
 

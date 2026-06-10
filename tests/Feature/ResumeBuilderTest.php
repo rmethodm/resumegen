@@ -496,6 +496,20 @@ class ResumeBuilderTest extends TestCase
         $response->assertHeader('content-type', 'application/pdf');
     }
 
+    public function test_dashboard_includes_strength_score_for_each_resume(): void
+    {
+        $user = User::factory()->create();
+        Resume::factory()->for($user)->count(3)->create();
+
+        $this->actingAs($user)
+            ->get(route('builder.index'))
+            ->assertInertia(fn ($page) =>
+                $page->has('resumes', 3)
+                     ->has('resumes.0.strength')
+                     ->has('resumes.0.strength_tip')
+            );
+    }
+
     public function test_two_column_template_renders_pdf(): void
     {
         $user = User::factory()->create();

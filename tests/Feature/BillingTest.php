@@ -129,10 +129,34 @@ class BillingTest extends TestCase
         ]);
         $item->save();
 
-        // Simulate the observer by touching (triggers the saved event again)
-        $subscription->touch();
+        // Simulate the observer firing by saving with a status change
+        $subscription->stripe_status = 'trialing';
+        $subscription->save();
+        $subscription->stripe_status = 'active';
+        $subscription->save();
 
         $this->assertSame('starter', $user->fresh()->plan_tier);
+    }
+
+    public function test_plan_tier_is_not_updated_when_subscription_saved_without_status_change(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'starter']);
+
+        $subscription = new Subscription([
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'sub_test_'.uniqid(),
+            'stripe_status' => 'active',
+        ]);
+        $subscription->save();
+
+        // Reset plan_tier back to starter to isolate the touch test
+        $user->update(['plan_tier' => 'starter']);
+
+        // Touch without changing status or price — observer should skip
+        $subscription->touch();
+
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'plan_tier' => 'starter']);
     }
 
     public function test_subscription_observer_resets_to_free_on_cancel(): void
