@@ -130,18 +130,18 @@ function DraggableSectionWrapper({ id, children }: { id: string; children: React
     };
 
     return (
-        <div ref={setNodeRef} style={style} className="mb-5 flex items-start">
+        <div ref={setNodeRef} style={style} className="mb-5 relative">
             <div
                 {...attributes}
                 {...listeners}
-                className="flex h-10 w-5 shrink-0 cursor-grab items-center justify-center text-indigo-300 hover:text-indigo-500 active:cursor-grabbing"
+                className="absolute left-0 top-0 flex h-full w-6 cursor-grab items-center justify-center rounded-l-lg text-indigo-300 hover:text-indigo-500 active:cursor-grabbing z-10"
                 title="Drag to reorder"
             >
                 <svg viewBox="0 0 20 20" width="14" fill="currentColor">
                     <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
                 </svg>
             </div>
-            <div className="min-w-0 flex-1">{children}</div>
+            <div className="pl-6">{children}</div>
         </div>
     );
 }
