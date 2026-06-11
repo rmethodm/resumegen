@@ -130,6 +130,8 @@ export default function Builder({ resume, savedSections: initialSavedSections, a
     const [saving, setSaving] = useState(false);
     const [savedAt, setSavedAt] = useState<string | null>(null);
     const [activeDragData, setActiveDragData] = useState<{ label: string } | null>(null);
+    const [showPreview, setShowPreview] = useState(false);
+    const [pdfSrc, setPdfSrc] = useState(() => route('builder.preview', resume.id) + '?t=' + Date.now());
 
     const sectionsRef = useRef(sections);
     sectionsRef.current = sections;
@@ -163,6 +165,7 @@ export default function Builder({ resume, savedSections: initialSavedSections, a
                     setSaving(false);
                     const now = new Date();
                     setSavedAt(`${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`);
+                    setPdfSrc(route('builder.preview', resume.id) + '?t=' + Date.now());
                 },
             },
         );
@@ -284,7 +287,7 @@ export default function Builder({ resume, savedSections: initialSavedSections, a
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex items-start bg-[#f5f5fb]">
+                <div className="flex min-h-[calc(100vh-52px)] items-start bg-[#f5f5fb]">
                     <BuilderPalette
                         savedSections={savedSections}
                         onDeleteSaved={handleDeleteSaved}
@@ -310,6 +313,7 @@ export default function Builder({ resume, savedSections: initialSavedSections, a
                         onFontChange={handleFontChange}
                         onAccentChange={setAccentColor}
                         onSave={save}
+                        onPreview={() => setShowPreview(true)}
                     />
                 </div>
 
@@ -321,6 +325,33 @@ export default function Builder({ resume, savedSections: initialSavedSections, a
                     )}
                 </DragOverlay>
             </DndContext>
+
+            {showPreview && (
+                <div className="fixed inset-y-0 right-0 z-40 flex w-[50%] min-w-[420px] flex-col border-l border-gray-200 bg-white shadow-2xl">
+                    <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-4 py-3">
+                        <span className="text-sm font-semibold text-gray-900">PDF Preview</span>
+                        <div className="flex items-center gap-2">
+                            <a
+                                href={route('builder.pdf', resume.id)}
+                                className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+                            >
+                                Download
+                            </a>
+                            <button
+                                type="button"
+                                onClick={() => setShowPreview(false)}
+                                className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                                aria-label="Close preview"
+                            >
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <iframe src={pdfSrc} className="flex-1 w-full border-0" title="Resume PDF preview" />
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }

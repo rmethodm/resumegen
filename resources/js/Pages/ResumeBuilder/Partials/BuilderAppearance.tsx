@@ -33,6 +33,7 @@ interface Props {
     onFontChange: (f: 'sans' | 'serif' | 'mono') => void;
     onAccentChange: (color: string) => void;
     onSave: () => void;
+    onPreview: () => void;
 }
 
 export default function BuilderAppearance({
@@ -48,6 +49,7 @@ export default function BuilderAppearance({
     onFontChange,
     onAccentChange,
     onSave,
+    onPreview,
 }: Props) {
     return (
         <aside
@@ -124,6 +126,13 @@ export default function BuilderAppearance({
                         className="flex w-full items-center justify-center gap-1 rounded bg-[#4f46e5] px-2 py-1.5 text-[10px] font-medium text-white hover:bg-[#4338ca] disabled:opacity-50 transition-colors"
                     >
                         {saving ? 'Saving…' : '💾 Save'}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onPreview}
+                        className="flex w-full items-center justify-center gap-1 rounded border border-[#4f46e5] bg-white px-2 py-1.5 text-[10px] font-medium text-[#4f46e5] hover:bg-[#eef2ff] transition-colors"
+                    >
+                        👁 Preview
                     </button>
                     {savedAt && !saving && (
                         <p className="text-[9px] text-green-600 text-center">Saved {savedAt}</p>
