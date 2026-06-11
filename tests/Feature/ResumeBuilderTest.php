@@ -218,7 +218,7 @@ class ResumeBuilderTest extends TestCase
         $this->actingAs($user)
             ->get(route('builder.edit', $resume->id))
             ->assertInertia(fn ($page) => $page
-                ->component('ResumeBuilder/Builder')
+                ->component('ResumeBuilder/Edit')
                 ->where('isFirstResume', true)
             );
     }

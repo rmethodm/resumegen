@@ -34,15 +34,17 @@ use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\ResumeBuilderController;
-use App\Http\Controllers\SavedSectionController;
 use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\ResumeThreadController;
 use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\SavedSectionController;
 use App\Http\Controllers\SectionEventController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
 use App\Http\Controllers\WebhookController;
+use App\Services\UserLimits;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -57,9 +59,22 @@ Route::get('/dashboard', [AnalyticsController::class, 'index'])
     ->middleware(['auth', 'verified', 'two_factor_challenge'])
     ->name('dashboard');
 
-Route::get('/test', fn () => inertia('Test/Index'))
-    ->middleware(['auth', 'two_factor_challenge'])
-    ->name('test');
+Route::get('/test', function (Request $request) {
+    $user = $request->user();
+    $resume = $user->resumes()->nonSnapshot()->latest()->first();
+
+    if (! $resume) {
+        return redirect()->route('builder.index')
+            ->with('status', 'Create a resume first to try the new builder.');
+    }
+
+    return Inertia::render('ResumeBuilder/Builder', [
+        'resume' => $resume,
+        'savedSections' => $user->savedSections()->latest()->get(),
+        'allowedTemplates' => UserLimits::allowedTemplates($user),
+        'canDocx' => UserLimits::canDocx($user),
+    ]);
+})->middleware(['auth', 'two_factor_challenge'])->name('test');
 
 Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
