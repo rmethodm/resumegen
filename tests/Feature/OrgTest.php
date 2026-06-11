@@ -206,7 +206,7 @@ class OrgTest extends TestCase
             ->get(route('builder.edit', $resume->id))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
-                ->component('ResumeBuilder/Edit')
+                ->component('ResumeBuilder/Builder')
                 ->where('recruiterNote', 'Great fit for senior roles.')
             );
     }

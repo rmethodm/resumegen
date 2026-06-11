@@ -140,7 +140,7 @@ class ResumeBuilderController extends Controller
         $isFirstResume = ! $user->has_completed_onboarding
             && $user->resumes()->count() === 1;
 
-        return Inertia::render('ResumeBuilder/Edit', [
+        return Inertia::render('ResumeBuilder/Builder', [
             'resume' => $resume,
             'shareLinks' => $resume->shareLinks,
             'threads' => $threads,
