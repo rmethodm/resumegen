@@ -484,7 +484,7 @@ export default function Edit({
     const removeCert = (id: string) => setCertifications(prev => prev.filter(c => c.id !== id));
 
     const addCustomSection = () => {
-        const id = uuid();
+        const id = crypto.randomUUID();
         setCustomSections(prev => [...prev, { id, name: 'New Section', entries: [] }]);
         setSectionOrder(prev => [...prev, `custom_${id}`]);
     };
@@ -503,7 +503,7 @@ export default function Edit({
     };
 
     const addCustomEntry = (sectionId: string) => {
-        const entryId = uuid();
+        const entryId = crypto.randomUUID();
         setCustomSections(prev =>
             prev.map(s =>
                 s.id === sectionId
@@ -897,7 +897,7 @@ export default function Edit({
                                     onClick={() => {
                                         const suggested = ['Publications', 'Teaching Experience', 'Presentations', 'Grants'];
                                         const newSections = suggested.map(name => ({
-                                            id: uuid(),
+                                            id: crypto.randomUUID(),
                                             name,
                                             entries: [] as CustomSectionEntry[],
                                         }));
