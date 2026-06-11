@@ -34,6 +34,7 @@ use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\ResumeBuilderController;
+use App\Http\Controllers\SavedSectionController;
 use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\ResumeThreadController;
@@ -55,6 +56,10 @@ Route::get('/', function () {
 Route::get('/dashboard', [AnalyticsController::class, 'index'])
     ->middleware(['auth', 'verified', 'two_factor_challenge'])
     ->name('dashboard');
+
+Route::get('/test', fn () => inertia('Test/Index'))
+    ->middleware(['auth', 'two_factor_challenge'])
+    ->name('test');
 
 Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -84,6 +89,9 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
 
     Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
     Route::post('/builder', [ResumeBuilderController::class, 'store'])->name('builder.store');
+    Route::get('/builder/saved-sections', [SavedSectionController::class, 'index'])->name('saved-sections.index');
+    Route::post('/builder/saved-sections', [SavedSectionController::class, 'store'])->name('saved-sections.store');
+    Route::delete('/builder/saved-sections/{savedSection}', [SavedSectionController::class, 'destroy'])->name('saved-sections.destroy');
     Route::get('/builder/{resume}', [ResumeBuilderController::class, 'edit'])->name('builder.edit');
     Route::put('/builder/{resume}', [ResumeBuilderController::class, 'update'])->name('builder.update');
     Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
