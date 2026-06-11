@@ -157,6 +157,7 @@ class ResumeBuilderController extends Controller
                 'years_experience' => $user->years_experience,
             ],
             'recruiterNote' => $this->getRecruiterNote($request->user(), $resume),
+            'savedSections' => $user->savedSections()->latest()->get(),
         ]);
     }
 
