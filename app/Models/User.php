@@ -116,4 +116,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(PortfolioMessage::class);
     }
+
+    public function savedSections(): HasMany
+    {
+        return $this->hasMany(SavedSection::class);
+    }
 }
