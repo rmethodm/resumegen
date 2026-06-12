@@ -205,6 +205,11 @@ Personal micro-site at `/p/{slug}` combining an identity landing page with a res
 
 **Mail:** `NewPortfolioMessageMail` — queued (`Mail::to()->queue()`), subject `"New message from {sender_name} via your portfolio"`, Markdown template at `resources/views/mail/new-portfolio-message.blade.php`.
 
+### AI (OpenAI)
+`openai-php/laravel` (config `config/openai.php`) reads `OPENAI_API_KEY` from env. `config/ai.php` holds the default model (`env('OPENAI_MODEL', 'gpt-4o-mini')`), per-tier `monthly_limits` (foundation only — not enforced on any route yet), and a per-model `pricing` map (cents per 1k tokens).
+
+`App\Services\AiService::chat(string $prompt, array $options)` injects the OpenAI `ClientContract`, sends a single-prompt chat completion, logs the call to `ai_requests` (via `AiRequest` model — `user_id`, `feature`, `model`, token counts, `estimated_cost_cents`, `status`), and returns the reply text. On failure it logs an `error` row then rethrows. `$options` accepts `model`, `user`, and `feature`. Not yet wired to any route or controller — it's a reusable foundation.
+
 ### Rate limiting
 - API login: `throttle:10,1` (10 req/min)
 - Public thread form (`POST /r/{token}/threads`): `throttle:5,1` (5 req/min)
