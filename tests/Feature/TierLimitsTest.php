@@ -71,25 +71,25 @@ class TierLimitsTest extends TestCase
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $allowed = UserLimits::allowedTemplates($user);
-        $this->assertCount(13, $allowed);
+        $this->assertCount(9, $allowed);
         $this->assertContains('classic', $allowed);
         $this->assertContains('modern', $allowed);
         $this->assertContains('ats', $allowed);
-        $this->assertContains('creative', $allowed);
+        $this->assertContains('skills-first', $allowed);
         $this->assertContains('academic', $allowed);
-        $this->assertContains('timeline', $allowed);
+        $this->assertContains('bold', $allowed);
     }
 
     public function test_starter_user_gets_all_templates(): void
     {
         $user = User::factory()->starter()->create();
-        $this->assertCount(13, UserLimits::allowedTemplates($user));
+        $this->assertCount(9, UserLimits::allowedTemplates($user));
     }
 
     public function test_pro_user_gets_all_templates(): void
     {
         $user = User::factory()->pro()->create();
-        $this->assertCount(13, UserLimits::allowedTemplates($user));
+        $this->assertCount(9, UserLimits::allowedTemplates($user));
     }
 
     // ── canDocx ──────────────────────────────────────────────────────────────

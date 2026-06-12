@@ -127,7 +127,7 @@ class ResumeBuilderTest extends TestCase
         $user = User::factory()->starter()->create();
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
-        foreach (['sidebar', 'creative', 'executive', 'ats'] as $template) {
+        foreach (['minimal-ruled', 'executive', 'ats', 'bold'] as $template) {
             $this->actingAs($user)->put(route('builder.update', $resume->id), [
                 'name' => 'Test',
                 'template' => $template,
@@ -274,29 +274,29 @@ class ResumeBuilderTest extends TestCase
         ]);
     }
 
-    public function test_free_user_can_use_all_templates_including_creative(): void
+    public function test_free_user_can_use_modern_template(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
 
         $this->actingAs($user)
-            ->put(route('builder.update', $resume->id), ['template' => 'creative'])
+            ->put(route('builder.update', $resume->id), ['template' => 'modern'])
             ->assertRedirect()
             ->assertSessionMissing('featureGate');
 
-        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'creative']);
+        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'modern']);
     }
 
-    public function test_starter_user_can_use_restricted_template(): void
+    public function test_starter_user_can_use_any_template(): void
     {
         $user = User::factory()->starter()->create();
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
 
         $this->actingAs($user)
-            ->put(route('builder.update', $resume->id), ['template' => 'creative'])
+            ->put(route('builder.update', $resume->id), ['template' => 'executive'])
             ->assertRedirect();
 
-        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'creative']);
+        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'executive']);
     }
 
     public function test_free_user_cannot_download_docx(): void
@@ -359,16 +359,16 @@ class ResumeBuilderTest extends TestCase
         $this->assertSame('bold', $resume->fresh()->template);
     }
 
-    public function test_free_user_can_use_skills_first_visual_template(): void
+    public function test_free_user_can_use_minimal_template(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
-            ->put(route('builder.update', $resume), ['template' => 'skills-first-visual'])
+            ->put(route('builder.update', $resume), ['template' => 'minimal'])
             ->assertRedirect();
 
-        $this->assertSame('skills-first-visual', $resume->fresh()->template);
+        $this->assertSame('minimal', $resume->fresh()->template);
     }
 
     public function test_free_user_can_use_academic_template(): void
@@ -383,24 +383,24 @@ class ResumeBuilderTest extends TestCase
         $this->assertSame('academic', $resume->fresh()->template);
     }
 
-    public function test_free_user_can_use_timeline_template(): void
+    public function test_free_user_can_use_classic_template(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
-            ->put(route('builder.update', $resume), ['template' => 'timeline'])
+            ->put(route('builder.update', $resume), ['template' => 'classic'])
             ->assertRedirect();
 
-        $this->assertSame('timeline', $resume->fresh()->template);
+        $this->assertSame('classic', $resume->fresh()->template);
     }
 
-    public function test_starter_user_can_use_all_new_templates(): void
+    public function test_starter_user_can_use_all_templates(): void
     {
         $user = User::factory()->starter()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
-        foreach (['skills-first', 'skills-first-visual', 'academic', 'bold', 'timeline'] as $tpl) {
+        foreach (['skills-first', 'minimal-ruled', 'academic', 'bold', 'ats'] as $tpl) {
             $this->actingAs($user)
                 ->put(route('builder.update', $resume), ['template' => $tpl])
                 ->assertRedirect();
