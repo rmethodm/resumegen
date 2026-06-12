@@ -48,6 +48,18 @@ export interface CertEntry {
     name: string;
     issuer: string;
     date: string;
+    expiration: string;
+    credential_id: string;
+}
+
+export interface ProjectEntry {
+    id: string;
+    name: string;
+    description: string;
+    url: string;
+    start_date: string;
+    end_date: string;
+    bullets: string;
 }
 
 export interface CustomSectionEntry {
@@ -67,6 +79,8 @@ export interface CustomSection {
 }
 
 export interface SkillGroup {
+    id?: string;
+    category_type?: string;
     category: string;
     items: string[];
 }
@@ -79,7 +93,7 @@ export interface SkillNarrative {
     bullets: string[];
 }
 
-export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled' | 'sidebar' | 'creative' | 'executive' | 'ats' | 'skills-first' | 'skills-first-visual' | 'academic' | 'bold' | 'timeline';
+export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled' | 'executive' | 'ats' | 'skills-first' | 'academic' | 'bold';
 
 export interface FontSizes {
     name: number;
@@ -106,6 +120,7 @@ export interface ResumeData {
     skills_groups: SkillGroup[] | null;
     skill_narratives: SkillNarrative[] | null;
     certifications: CertEntry[] | null;
+    projects: ProjectEntry[] | null;
     custom_sections: CustomSection[] | null;
     section_order: string[] | null;
     font_sizes: FontSizes | null;

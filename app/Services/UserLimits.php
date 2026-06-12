@@ -8,8 +8,8 @@ class UserLimits
 {
     private const ALL_TEMPLATES = [
         'classic', 'modern', 'minimal', 'minimal-ruled',
-        'sidebar', 'creative', 'executive', 'ats',
-        'skills-first', 'skills-first-visual', 'academic', 'bold', 'timeline',
+        'executive', 'ats',
+        'skills-first', 'academic', 'bold',
     ];
 
     public static function resumeLimit(User $user): ?int

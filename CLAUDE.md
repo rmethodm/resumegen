@@ -116,6 +116,18 @@ Full CRUD at `/cover-letters` → `CoverLetterController` → `CoverLetter/Index
 ### Job applications
 Full CRUD at `/jobs` → `JobApplicationController` → `Jobs/Index.tsx` + `Jobs/Edit.tsx`. Columns: `company`, `role`, `status` (enum via `JobApplication::STATUSES`), `resume_id`, `applied_at`, `notes`, `job_url`. Policy-gated on ownership.
 
+### Job Roles / Titles / Skills reference data
+Three seeded lookup tables power autocomplete and admin management. Seed all three with `php artisan db:seed --class=JobRolesSeeder` / `JobTitlesSeeder` / `JobSkillsSeeder` (idempotent — use `insertOrIgnore`).
+
+- **`job_roles`** (`JobRole` model) and **`job_titles`** (`JobTitle` model) — each a single `title` string column. `JobTitlesSeeder` merges a static list with a `database/data/job_titles_extras.json` file so runtime-added titles survive `migrate:fresh` (it persists DB-only rows to the extras file before reseeding).
+- **`job_skills`** — `category` + `name` columns, unique on `(category, name)`. Seeded with 828 skills across 27 categories. No Eloquent model or routes yet (seed-only reference data).
+
+**Autocomplete** (`AutocompleteController`, auth-gated, web routes):
+- `GET /autocomplete/job-roles` (`autocomplete.job-roles.search`) + `GET /autocomplete/job-titles` (`autocomplete.job-titles.search`) — `?q=` prefix search (min 2 chars), falls back to substring `LIKE %q%` when fewer than 3 prefix matches, returns up to 10 `{id, title}`.
+- `POST /autocomplete/job-roles` (`autocomplete.job-roles.store`) + `POST /autocomplete/job-titles` (`autocomplete.job-titles.store`) — `firstOrCreate` a title-cased entry, returns `{id, title}`. Lets the UI add new options on the fly. Frontend consumes these via `resources/js/Components/AutocompleteInput.tsx`.
+
+**Admin management** (`Admin\AdminJobTitleController`, master-admin gated, under `/admin`): `GET /admin/job-titles` (`admin.job-titles.index`) renders `Admin/JobTitles/Index.tsx` — a tabbed (roles/titles), searchable, paginated (50/page) CRUD with single-row create/update/delete plus bulk delete (`admin.job-roles.bulk-destroy`, `admin.job-titles.bulk-destroy`). All writes title-case the input.
+
 ### Onboarding
 New users are redirected to `/onboarding` after registration. `OnboardingController` handles three routes:
 - `GET /onboarding` (`onboarding.show`) — renders `Onboarding/Wizard` via `GuestLayout`; redirects to dashboard if `has_completed_onboarding` is already true.

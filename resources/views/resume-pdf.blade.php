@@ -125,7 +125,7 @@
       <div class="group">
         <div class="group-title">Skills</div>
         @foreach($resume->skills as $s)
-          <div style="font-size: {{ $sizeBody }}pt;">{{ $s }}</div>
+          <div style="font-size: {{ $sizeBody }}pt;">{{ ltrim($s, "•\-\* \t") }}</div>
         @endforeach
       </div>
       @endif
@@ -261,7 +261,7 @@
               @endif
             </div>
             @foreach (array_filter(explode("\n", $exp['bullets'] ?? '')) as $b)
-              <div style="font-size:{{ $sizeBody }}pt; padding-left:8pt;">• {{ $b }}</div>
+              <div style="font-size:{{ $sizeBody }}pt; padding-left:8pt;">• {{ ltrim($b, "•\-\* \t") }}</div>
             @endforeach
           </div>
         </div>

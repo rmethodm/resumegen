@@ -52,8 +52,15 @@ class ResumeStrengthScorer
             $tips[] = ['pts' => 10, 'order' => $order++, 'tip' => 'Add your education'];
         }
 
-        // At least 3 skills — 10pts
-        $hasSkills = count($skills) >= 3;
+        // At least 3 skills — 10pts (count across all layout formats)
+        $skillCount = count($skills);
+        foreach ($resume->skills_groups ?? [] as $group) {
+            $skillCount += count($group['items'] ?? []);
+        }
+        foreach ($resume->skill_narratives ?? [] as $narrative) {
+            $skillCount += count(array_filter($narrative['bullets'] ?? []));
+        }
+        $hasSkills = $skillCount >= 3;
         $points += $hasSkills ? 10 : 0;
         $checklist[] = ['label' => '3+ skills listed', 'pts' => 10, 'passed' => $hasSkills];
         if (! $hasSkills) {

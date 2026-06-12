@@ -26,6 +26,7 @@
             <meta name="twitter:image" content="{{ $og['image'] }}" />
         @endisset
 
+        <link rel="icon" type="image/svg+xml" href="/r-monogram.svg">
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->

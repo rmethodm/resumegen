@@ -46,6 +46,7 @@ class Resume extends Model implements HasMedia
         'skills_groups' => 'array',
         'skill_narratives' => 'array',
         'certifications' => 'array',
+        'projects' => 'array',
         'font_sizes' => 'array',
         'section_order' => 'array',
         'custom_sections' => 'array',

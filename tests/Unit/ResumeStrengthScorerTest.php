@@ -17,6 +17,8 @@ class ResumeStrengthScorerTest extends TestCase
             'experience' => json_encode([]),
             'education' => json_encode([]),
             'skills' => json_encode([]),
+            'skills_groups' => json_encode([]),
+            'skill_narratives' => json_encode([]),
             'certifications' => json_encode([]),
             'custom_sections' => json_encode([]),
         ], $attrs));
@@ -93,6 +95,43 @@ class ResumeStrengthScorerTest extends TestCase
         ]);
         $result = ResumeStrengthScorer::score($resume);
         $this->assertSame(0, $result['score']);
+    }
+
+    public function test_grouped_skills_count_toward_skill_score(): void
+    {
+        $resume = $this->makeResume([
+            'skills_groups' => json_encode([
+                ['category' => 'Languages', 'items' => ['PHP', 'Python', 'JavaScript']],
+            ]),
+        ]);
+        $result = ResumeStrengthScorer::score($resume);
+        $this->assertSame(10, $result['score']);
+    }
+
+    public function test_narrative_skills_count_toward_skill_score(): void
+    {
+        $resume = $this->makeResume([
+            'skill_narratives' => json_encode([
+                ['name' => 'Backend', 'bullets' => ['PHP', 'Laravel', 'MySQL']],
+            ]),
+        ]);
+        $result = ResumeStrengthScorer::score($resume);
+        $this->assertSame(10, $result['score']);
+    }
+
+    public function test_skills_counted_across_all_layout_formats(): void
+    {
+        $resume = $this->makeResume([
+            'skills' => json_encode(['PHP']),
+            'skills_groups' => json_encode([
+                ['category' => 'Frontend', 'items' => ['React']],
+            ]),
+            'skill_narratives' => json_encode([
+                ['name' => 'DevOps', 'bullets' => ['Docker']],
+            ]),
+        ]);
+        $result = ResumeStrengthScorer::score($resume);
+        $this->assertSame(10, $result['score']);
     }
 
     public function test_bullet_with_number_adds_10_points(): void

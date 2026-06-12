@@ -2,7 +2,7 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import QRCodeDisplay from '@/Components/QRCodeDisplay';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { ChevronDownIcon, ChevronUpIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import { ChatBubbleLeftRightIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { PageProps, ResumeData } from '@/types';
 
 // ─── Heatmap hook ────────────────────────────────────────────────────────────
@@ -71,94 +71,165 @@ interface Props {
     ownedThreadIds: number[];
 }
 
-function formatTime(str: string) {
-    return new Date(str).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function formatRelativeTime(str: string): string {
+    const diff = Date.now() - new Date(str).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) { return 'just now'; }
+    if (mins < 60) { return `${mins}m ago`; }
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) { return `${hrs}h ago`; }
+    return new Date(str).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-// ─── Thread card ─────────────────────────────────────────────────────────────
-function ThreadCard({ thread, token, ownerName, isOwned }: { thread: Thread; token: string; ownerName: string; isOwned: boolean }) {
-    const [open, setOpen] = useState(false);
-    const bottomRef = useRef<HTMLDivElement>(null);
+const AVATAR_PALETTE = [
+    'bg-indigo-500',
+    'bg-violet-500',
+    'bg-blue-500',
+    'bg-emerald-500',
+    'bg-rose-500',
+    'bg-amber-500',
+    'bg-cyan-500',
+];
+
+function getAvatarColor(name: string): string {
+    return AVATAR_PALETTE[name.charCodeAt(0) % AVATAR_PALETTE.length];
+}
+
+function getInitials(name: string): string {
+    const parts = name.trim().split(/\s+/);
+    return (parts.length >= 2
+        ? parts[0][0] + parts[parts.length - 1][0]
+        : (parts[0] ?? '').slice(0, 2)
+    ).toUpperCase();
+}
+
+// ─── Comment Avatar ───────────────────────────────────────────────────────────
+function CommentAvatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
+    const color = getAvatarColor(name);
+    const sz = size === 'sm'
+        ? 'h-6 w-6 text-[9px]'
+        : 'h-8 w-8 text-xs';
+    return (
+        <div className={`flex shrink-0 items-center justify-center rounded-full font-bold text-white ${color} ${sz}`}>
+            {getInitials(name)}
+        </div>
+    );
+}
+
+// ─── Comment card (Word-style) ────────────────────────────────────────────────
+function CommentCard({ thread, token, ownerName, isOwned }: {
+    thread: Thread; token: string; ownerName: string; isOwned: boolean;
+}) {
+    const [replying, setReplying] = useState(false);
     const replyForm = useForm({ body: '' });
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
-        if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, [open, thread.messages.length]);
+        if (replying) { textareaRef.current?.focus(); }
+    }, [replying]);
 
     const submitReply = (e: FormEvent) => {
         e.preventDefault();
         replyForm.post(route('public.thread.message', [token, thread.id]), {
-            onSuccess: () => replyForm.reset('body'),
+            onSuccess: () => {
+                replyForm.reset('body');
+                setReplying(false);
+            },
         });
     };
 
-    const preview = thread.messages[0]?.body ?? '';
+    const rootMsg = thread.messages[0];
+    const replies = thread.messages.slice(1);
 
     return (
-        <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-sm">
-            <button
-                onClick={() => setOpen(o => !o)}
-                className="flex w-full items-start gap-3 px-4 py-3 text-left transition hover:bg-[#fafafe]"
-            >
-                <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-sm font-semibold text-[#0f0f1a]">{thread.sender_name}</span>
-                        <span className="text-[10px] text-[#c0c0cc]">{formatTime(thread.created_at)}</span>
+        <div className="group rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+
+            {/* Root comment */}
+            <div className="p-4">
+                <div className="flex gap-3">
+                    <CommentAvatar name={thread.sender_name} />
+                    <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-baseline gap-1.5">
+                            <span className="text-sm font-semibold text-gray-900 leading-none">{thread.sender_name}</span>
+                            <span className="text-[11px] text-gray-400">{formatRelativeTime(thread.created_at)}</span>
+                        </div>
+                        {rootMsg && (
+                            <p className="mt-1.5 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                {rootMsg.body}
+                            </p>
+                        )}
                     </div>
-                    {!open && (
-                        <p className="mt-0.5 line-clamp-1 text-xs text-[#a0a0b0]">{preview}</p>
-                    )}
                 </div>
-                {open
-                    ? <ChevronUpIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#c0c0cc]" />
-                    : <ChevronDownIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#c0c0cc]" />
-                }
-            </button>
+            </div>
 
-            {open && (
-                <div className="border-t border-[#f0f0f8] bg-gray-100 px-4 py-3">
-                    <div className="space-y-2">
-                        {thread.messages.map(msg => (
-                            <div key={msg.id} className={`flex ${msg.is_owner ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-xs shadow-sm ${
-                                    msg.is_owner
-                                        ? 'rounded-br-sm bg-indigo-500 text-white'
-                                        : 'rounded-bl-sm bg-gray-200 text-gray-900'
-                                }`}>
-                                    {msg.is_owner && (
-                                        <p className={`mb-0.5 text-[10px] font-medium ${msg.is_owner ? 'text-indigo-200' : 'text-[#a0a0b0]'}`}>
-                                            {ownerName}
-                                        </p>
-                                    )}
-                                    <p className="whitespace-pre-wrap leading-relaxed">{msg.body}</p>
-                                    <p className={`mt-0.5 text-right text-[9px] ${msg.is_owner ? 'text-indigo-200' : 'text-gray-500'}`}>
-                                        {formatTime(msg.created_at)}
-                                    </p>
+            {/* Replies */}
+            {replies.length > 0 && (
+                <div className="border-t border-gray-100 px-4 pb-3">
+                    <div className="ml-4 border-l-2 border-gray-100 pl-3 space-y-3 pt-3">
+                        {replies.map(msg => {
+                            const name = msg.is_owner ? ownerName : thread.sender_name;
+                            return (
+                                <div key={msg.id} className="flex gap-2.5">
+                                    <CommentAvatar name={name} size="sm" />
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex flex-wrap items-baseline gap-1.5">
+                                            <span className="text-xs font-semibold text-gray-900">{name}</span>
+                                            {msg.is_owner && (
+                                                <span className="rounded-full bg-indigo-50 px-1.5 py-0.5 text-[9px] font-medium text-indigo-600">Author</span>
+                                            )}
+                                            <span className="text-[10px] text-gray-400">{formatRelativeTime(msg.created_at)}</span>
+                                        </div>
+                                        <p className="mt-0.5 text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{msg.body}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                        <div ref={bottomRef} />
+                            );
+                        })}
                     </div>
+                </div>
+            )}
 
-                    {isOwned && (
-                        <form onSubmit={submitReply} className="mt-3 flex gap-2">
+            {/* Reply action */}
+            {isOwned && (
+                <div className="border-t border-gray-100 px-4 py-2.5">
+                    {!replying ? (
+                        <button
+                            onClick={() => setReplying(true)}
+                            className="flex items-center gap-1.5 text-xs font-medium text-gray-400 transition hover:text-indigo-600"
+                        >
+                            <ChatBubbleLeftRightIcon className="h-3.5 w-3.5" />
+                            Reply
+                        </button>
+                    ) : (
+                        <form onSubmit={submitReply} className="space-y-2">
                             <textarea
+                                ref={textareaRef}
                                 value={replyForm.data.body}
                                 onChange={e => replyForm.setData('body', e.target.value)}
                                 onKeyDown={e => {
-                                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) submitReply(e as unknown as FormEvent);
+                                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { submitReply(e as unknown as FormEvent); }
+                                    if (e.key === 'Escape') { setReplying(false); }
                                 }}
                                 rows={2}
-                                placeholder="Continue the conversation…"
-                                className="flex-1 resize-none rounded-lg border border-[#e0e0ea] px-3 py-2 text-xs text-[#0f0f1a] placeholder-[#b0b0c0] focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                                placeholder="Write a reply… (⌘↵ to send)"
+                                className="w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                             />
-                            <button
-                                type="submit"
-                                disabled={replyForm.processing || !replyForm.data.body.trim()}
-                                className="self-end rounded-lg bg-indigo-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-indigo-700 disabled:opacity-50"
-                            >
-                                Send
-                            </button>
+                            <div className="flex items-center justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setReplying(false)}
+                                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={replyForm.processing || !replyForm.data.body.trim()}
+                                    className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-indigo-700 disabled:opacity-50"
+                                >
+                                    {replyForm.processing ? 'Sending…' : 'Post reply'}
+                                </button>
+                            </div>
                         </form>
                     )}
                 </div>
@@ -167,15 +238,20 @@ function ThreadCard({ thread, token, ownerName, isOwned }: { thread: Thread; tok
     );
 }
 
-// ─── New conversation form ────────────────────────────────────────────────────
-function NewThreadForm({ token }: { token: string }) {
+// ─── New comment form (Word "+ New Comment" style) ────────────────────────────
+function NewCommentForm({ token }: { token: string }) {
     const [open, setOpen] = useState(false);
+    const nameRef = useRef<HTMLInputElement>(null);
     const form = useForm({ sender_name: '', sender_email: '', message: '' });
     const { props } = usePage<PageProps<{ flash: { threadStarted?: boolean } }>>();
 
     useEffect(() => {
-        if (props.flash?.threadStarted) setOpen(false);
+        if (props.flash?.threadStarted) { setOpen(false); }
     }, [props.flash?.threadStarted]);
+
+    useEffect(() => {
+        if (open) { nameRef.current?.focus(); }
+    }, [open]);
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
@@ -184,72 +260,104 @@ function NewThreadForm({ token }: { token: string }) {
 
     if (props.flash?.threadStarted) {
         return (
-            <div className="flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-                <svg className="h-4 w-4 shrink-0 text-green-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                Message sent! You'll hear back soon.
+            <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500">
+                    <svg className="h-3.5 w-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <p className="text-sm font-medium text-emerald-800">Comment posted!</p>
+                    <p className="text-xs text-emerald-600">You'll hear back by email soon.</p>
+                </div>
             </div>
         );
     }
 
-    return (
-        <div className="rounded-xl border border-indigo-200 bg-indigo-50">
+    if (!open) {
+        return (
             <button
-                onClick={() => setOpen(o => !o)}
-                className="flex w-full items-center gap-2 px-4 py-3 text-left"
+                onClick={() => setOpen(true)}
+                className="group flex w-full items-center gap-2.5 rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-sm text-gray-400 transition hover:border-indigo-400 hover:text-indigo-600"
             >
-                <ChatBubbleLeftRightIcon className="h-4 w-4 text-indigo-500" />
-                <span className="text-sm font-medium text-indigo-700">Start a conversation</span>
-                {open
-                    ? <ChevronUpIcon className="ml-auto h-4 w-4 text-indigo-400" />
-                    : <ChevronDownIcon className="ml-auto h-4 w-4 text-indigo-400" />
-                }
+                <PlusIcon className="h-4 w-4 transition group-hover:rotate-90" />
+                Add a comment
             </button>
+        );
+    }
 
-            {open && (
-                <form onSubmit={submit} className="space-y-3 border-t border-indigo-200 px-4 pb-4 pt-3">
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="flex flex-col gap-1">
-                            <label className="text-xs font-medium text-indigo-700">Name *</label>
-                            <input
-                                type="text"
-                                value={form.data.sender_name}
-                                onChange={e => form.setData('sender_name', e.target.value)}
-                                className="rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-sm text-[#0f0f1a] focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                            />
-                            {form.errors.sender_name && <p className="text-xs text-red-500">{form.errors.sender_name}</p>}
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <label className="text-xs font-medium text-indigo-700">Email *</label>
-                            <input
-                                type="email"
-                                value={form.data.sender_email}
-                                onChange={e => form.setData('sender_email', e.target.value)}
-                                className="rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-sm text-[#0f0f1a] focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                            />
-                            {form.errors.sender_email && <p className="text-xs text-red-500">{form.errors.sender_email}</p>}
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <label className="text-xs font-medium text-indigo-700">Message *</label>
-                        <textarea
-                            rows={3}
-                            value={form.data.message}
-                            onChange={e => form.setData('message', e.target.value)}
-                            className="resize-none rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-sm text-[#0f0f1a] focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+    return (
+        <div className="rounded-xl border border-indigo-200 bg-white shadow-sm">
+            {/* Card header */}
+            <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+                <span className="text-sm font-semibold text-gray-900">New comment</span>
+                <button
+                    onClick={() => setOpen(false)}
+                    className="rounded-md p-0.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                >
+                    <XMarkIcon className="h-4 w-4" />
+                </button>
+            </div>
+
+            <form onSubmit={submit} className="p-4 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="mb-1 block text-xs font-medium text-gray-600">Name <span className="text-red-400">*</span></label>
+                        <input
+                            ref={nameRef}
+                            type="text"
+                            value={form.data.sender_name}
+                            onChange={e => form.setData('sender_name', e.target.value)}
+                            className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                            placeholder="Your name"
                         />
-                        {form.errors.message && <p className="text-xs text-red-500">{form.errors.message}</p>}
+                        {form.errors.sender_name && <p className="mt-1 text-xs text-red-500">{form.errors.sender_name}</p>}
                     </div>
-                    <button
-                        type="submit"
-                        disabled={form.processing}
-                        className="w-full rounded-lg bg-indigo-600 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-50"
-                    >
-                        {form.processing ? 'Sending…' : 'Send Message'}
-                    </button>
-                </form>
-            )}
+                    <div>
+                        <label className="mb-1 block text-xs font-medium text-gray-600">Email <span className="text-red-400">*</span></label>
+                        <input
+                            type="email"
+                            value={form.data.sender_email}
+                            onChange={e => form.setData('sender_email', e.target.value)}
+                            className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                            placeholder="you@example.com"
+                        />
+                        {form.errors.sender_email && <p className="mt-1 text-xs text-red-500">{form.errors.sender_email}</p>}
+                    </div>
+                </div>
+
+                <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-600">Comment <span className="text-red-400">*</span></label>
+                    <textarea
+                        rows={3}
+                        value={form.data.message}
+                        onChange={e => form.setData('message', e.target.value)}
+                        className="w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                        placeholder="Leave feedback, ask a question, or introduce yourself…"
+                    />
+                    {form.errors.message && <p className="mt-1 text-xs text-red-500">{form.errors.message}</p>}
+                </div>
+
+                <div className="flex items-center justify-between">
+                    <p className="text-[10px] text-gray-400">Replies will be sent to your email</p>
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setOpen(false)}
+                            className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={form.processing}
+                            className="rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-medium text-white transition hover:bg-indigo-700 disabled:opacity-50"
+                        >
+                            {form.processing ? 'Posting…' : 'Post comment'}
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     );
 }
@@ -295,7 +403,6 @@ export default function PublicView({ resume, token, threads, ownerName, ownedThr
 
                     {/* ── Left: Resume (60%) ── */}
                     <div className="w-[60%] shrink-0">
-                        {/* Download buttons */}
                         <div className="mb-3 flex justify-end gap-2">
                             <a
                                 href={route('public.docx', token)}
@@ -417,21 +524,35 @@ export default function PublicView({ resume, token, threads, ownerName, ownedThr
                         </div>
                     </div>
 
-                    {/* ── Right: Conversations (40%) ── */}
+                    {/* ── Right: Comments sidebar (Word-style) ── */}
                     <div className="flex-1 min-w-0">
                         <div className="sticky top-20">
-                            <h2 className="mb-4 text-sm font-semibold text-[#0f0f1a]">
-                                Conversations
-                                {threads.length > 0 && (
-                                    <span className="ml-2 rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-600">
-                                        {threads.length}
-                                    </span>
-                                )}
-                            </h2>
 
+                            {/* Sidebar header */}
+                            <div className="mb-4 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <h2 className="text-sm font-semibold text-gray-900">Comments</h2>
+                                    {threads.length > 0 && (
+                                        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-600">
+                                            {threads.length}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Comments list */}
                             <div className="max-h-[calc(100vh-12rem)] overflow-y-auto space-y-3 pr-1">
+
+                                {threads.length === 0 && (
+                                    <div className="rounded-xl border border-dashed border-gray-200 bg-white px-4 py-8 text-center">
+                                        <ChatBubbleLeftRightIcon className="mx-auto mb-2 h-6 w-6 text-gray-300" />
+                                        <p className="text-sm font-medium text-gray-400">No comments yet</p>
+                                        <p className="mt-0.5 text-xs text-gray-300">Be the first to leave feedback</p>
+                                    </div>
+                                )}
+
                                 {threads.map(thread => (
-                                    <ThreadCard
+                                    <CommentCard
                                         key={thread.id}
                                         thread={thread}
                                         token={token}
@@ -440,7 +561,7 @@ export default function PublicView({ resume, token, threads, ownerName, ownedThr
                                     />
                                 ))}
 
-                                <NewThreadForm token={token} />
+                                <NewCommentForm token={token} />
                             </div>
                         </div>
                     </div>

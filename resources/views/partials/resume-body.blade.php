@@ -29,7 +29,7 @@
             </div>
             <div class="sub">{{ $exp['company'] ?? '' }}</div>
             @if(!empty($exp['bullets']))
-            <ul>@foreach(array_filter(explode("\n", $exp['bullets'])) as $b)<li>{{ $b }}</li>@endforeach</ul>
+            <ul>@foreach(array_filter(explode("\n", $exp['bullets'])) as $b)<li>{{ ltrim($b, "•\-\* \t") }}</li>@endforeach</ul>
             @endif
           </div>
           @endif
@@ -64,7 +64,7 @@
                 <div class="entry">
                     <div class="title" style="font-weight:bold;">{{ $narrative['name'] }}</div>
                     @if (!empty($narrative['bullets']))
-                    <ul>@foreach(array_filter($narrative['bullets']) as $b)<li>{{ $b }}</li>@endforeach</ul>
+                    <ul>@foreach(array_filter($narrative['bullets']) as $b)<li>{{ ltrim($b, "•\-\* \t") }}</li>@endforeach</ul>
                     @endif
                 </div>
                 @endif
@@ -105,7 +105,7 @@
                 </tr>
             </table>
         @elseif ($skillsLayout === 'bullets' && $hasFlat)
-            <ul>@foreach($resume->skills as $s)<li>{{ $s }}</li>@endforeach</ul>
+            <ul>@foreach($resume->skills as $s)<li>{{ ltrim($s, "•\-\* \t") }}</li>@endforeach</ul>
         @elseif ($hasFlat)
             <p>{{ implode($sep, $resume->skills) }}</p>
         @endif
@@ -145,7 +145,7 @@
                         @if (!empty($entry['bullets']))
                             <ul>
                                 @foreach ($entry['bullets'] as $b)
-                                    @if (!empty($b)) <li>{{ $b }}</li> @endif
+                                    @if (!empty($b)) <li>{{ ltrim($b, "•\-\* \t") }}</li> @endif
                                 @endforeach
                             </ul>
                         @endif
