@@ -81,4 +81,32 @@ class AutocompleteSkillsTest extends TestCase
     {
         $this->postJson('/autocomplete/job-skills', ['name' => 'Python'])->assertUnauthorized();
     }
+
+    public function test_search_filters_to_bucket_categories_when_category_given(): void
+    {
+        $user = User::factory()->create();
+        // 'Web & Mobile' bucket = Web Frontend / Web Backend / Mobile Development
+        JobSkill::create(['category' => 'Web Frontend', 'name' => 'Reactive Forms']);
+        JobSkill::create(['category' => 'Healthcare & Clinical', 'name' => 'Reactive Care']);
+
+        $response = $this->actingAs($user)
+            ->getJson('/autocomplete/job-skills?q=Rea&category='.urlencode('Web & Mobile'));
+
+        $response->assertOk()
+            ->assertJsonCount(1)
+            ->assertJsonFragment(['name' => 'Reactive Forms']);
+    }
+
+    public function test_unknown_category_falls_back_to_flat_search(): void
+    {
+        $user = User::factory()->create();
+        JobSkill::create(['category' => 'Web Frontend', 'name' => 'Reactive Forms']);
+        JobSkill::create(['category' => 'Healthcare & Clinical', 'name' => 'Reactive Care']);
+
+        $response = $this->actingAs($user)
+            ->getJson('/autocomplete/job-skills?q=Rea&category='.urlencode('Not A Bucket'));
+
+        // Unknown bucket → no filter → both match.
+        $response->assertOk()->assertJsonCount(2);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\SkillCategories;
 use App\Models\JobRole;
 use App\Models\JobSkill;
 use App\Models\JobTitle;
@@ -23,7 +24,10 @@ class AutocompleteController extends Controller
 
     public function searchSkills(Request $request): JsonResponse
     {
-        return $this->search(JobSkill::class, 'name', (string) $request->query('q', ''));
+        $bucket = (string) $request->query('category', '');
+        $categories = $bucket !== '' ? SkillCategories::categoriesFor($bucket) : [];
+
+        return $this->search(JobSkill::class, 'name', (string) $request->query('q', ''), $categories);
     }
 
     public function storeRole(Request $request): JsonResponse
@@ -43,8 +47,9 @@ class AutocompleteController extends Controller
 
     /**
      * @param  class-string<Model>  $model
+     * @param  list<string>  $categories
      */
-    private function search(string $model, string $column, string $q): JsonResponse
+    private function search(string $model, string $column, string $q, array $categories = []): JsonResponse
     {
         $q = trim($q);
         if (mb_strlen($q) < 2) {
@@ -52,12 +57,14 @@ class AutocompleteController extends Controller
         }
 
         $results = $model::where($column, 'like', $q.'%')
+            ->when($categories, fn ($query) => $query->whereIn('category', $categories))
             ->orderBy($column)
             ->limit(10)
             ->get(['id', $column]);
 
         if ($results->count() < 3) {
             $results = $model::where($column, 'like', '%'.$q.'%')
+                ->when($categories, fn ($query) => $query->whereIn('category', $categories))
                 ->orderBy($column)
                 ->limit(10)
                 ->get(['id', $column]);
