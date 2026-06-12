@@ -323,38 +323,3 @@ export interface WebhookEndpoint {
     created_at: string;
 }
 
-export type BuilderFieldType = 'text' | 'textarea' | 'date-range' | 'checkbox' | 'bullets';
-
-export interface BuilderField {
-    id: string;
-    type: BuilderFieldType;
-    label: string;
-    placeholder?: string;
-    value?: string | boolean | string[];
-}
-
-export type SectionType =
-    | 'contact'
-    | 'summary'
-    | 'experience'
-    | 'education'
-    | 'skills'
-    | 'certifications'
-    | `custom_${string}`;
-
-export interface CanvasSection {
-    instanceId: string;
-    type: SectionType;
-    label: string;
-    fields: BuilderField[];
-}
-
-export interface SavedSectionData {
-    id: number;
-    user_id: number;
-    name: string;
-    type: string;
-    fields: BuilderField[];
-    created_at: string;
-    updated_at: string;
-}
