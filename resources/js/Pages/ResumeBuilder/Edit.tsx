@@ -563,8 +563,8 @@ export default function Edit({
         const data = await ai.run<{ suggestion: string }>(route('builder.ai.summary', resume.id));
         if (data?.suggestion) { setSummary(data.suggestion); setTimeout(save, 0); }
     };
-    const handleImproveExperience = async (expId: string, bullets: string) => {
-        if (!bullets.trim()) { return; }
+    const handleImproveExperience = async (expId: string, bullets: string | null) => {
+        if (!bullets?.trim()) { return; }
         const data = await ai.run<{ suggestion: string }>(route('builder.ai.rewrite-bullet', resume.id), { text: bullets });
         if (data?.suggestion) {
             setExperience(prev => prev.map(e => e.id === expId ? { ...e, bullets: data.suggestion } : e));
@@ -842,7 +842,7 @@ export default function Edit({
                                                     <div>
                                                         <FLabel>Bullet Points <span className="text-[#a0a0b0] font-normal">(one per line)</span></FLabel>
                                                         <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
-                                                        <button type="button" onClick={() => handleImproveExperience(exp.id, exp.bullets)} disabled={ai.remaining === 0 || ai.loadingUrl !== null || !exp.bullets.trim()} className="mt-1 text-xs font-medium text-[#4f46e5] hover:text-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed">✨ Improve with AI</button>
+                                                        <button type="button" onClick={() => handleImproveExperience(exp.id, exp.bullets)} disabled={ai.remaining === 0 || ai.loadingUrl !== null || !exp.bullets?.trim()} className="mt-1 text-xs font-medium text-[#4f46e5] hover:text-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed">✨ Improve with AI</button>
                                                     </div>
                                                 </EntryCard>
                                             ))}
