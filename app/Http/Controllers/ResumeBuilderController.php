@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Data\ResumeRules;
+use App\Data\SkillCategories;
 use App\Models\OrganizationMember;
 use App\Models\RecruiterNote;
 use App\Models\Resume;
@@ -149,6 +150,7 @@ class ResumeBuilderController extends Controller
             'customSectionLimit' => UserLimits::customSectionLimit($user),
             'allowedTemplates' => UserLimits::allowedTemplates($user),
             'completionScore' => ResumeCompletionScorer::score($resume),
+            'skillCategoryOptions' => SkillCategories::labels(),
             'strengthHistoryEnabled' => UserLimits::canStrengthHistory($user),
             'photoUrl' => $resume->getFirstMediaUrl('photo') ?: null,
             'userPersona' => [

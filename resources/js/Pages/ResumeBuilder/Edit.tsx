@@ -47,10 +47,6 @@ const emptySkillCategory = () => ({ id: uuid(), category_type: '', category_name
 
 // ─── Skill category presets ───────────────────────────────────────────────────
 
-const SKILL_CATEGORY_OPTIONS = [
-    'Languages', 'Frameworks', 'Libraries', 'Tools', 'Databases',
-    'Cloud', 'DevOps', 'Design', 'Testing', 'Other',
-];
 
 // ─── Design primitives ───────────────────────────────────────────────────────
 
@@ -423,6 +419,7 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
     isFirstResume, canDocx, allowedTemplates, strengthHistoryEnabled, photoUrl, completionScore, recruiterNote,
+    skillCategoryOptions,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -434,6 +431,7 @@ export default function Edit({
     photoUrl: string | null;
     completionScore: number;
     recruiterNote?: string | null;
+    skillCategoryOptions: string[];
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -955,7 +953,7 @@ export default function Edit({
                                                                     className="flex-1 min-w-0 rounded-lg border border-[#eeeef5] px-2 py-1.5 text-sm text-[#23232d] focus:border-[#4f46e5] focus:ring-1 focus:ring-[#4f46e5] focus:outline-none"
                                                                 >
                                                                     <option value="">Select category...</option>
-                                                                    {SKILL_CATEGORY_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                                                                    {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
                                                                 </select>
                                                                 <input
                                                                     type="text"
@@ -972,6 +970,7 @@ export default function Edit({
                                                             <div className="p-3">
                                                                 <SkillTagInput
                                                                     skills={cat.skills}
+                                                                    category={cat.category_type}
                                                                     onChange={skills => { setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, skills } : c)); setTimeout(save, 0); }}
                                                                     placeholder={cat.category_name ? `Search ${cat.category_name} skills or add custom...` : 'Search skills (e.g. Python, React, SolidWorks...) or add custom'}
                                                                 />
