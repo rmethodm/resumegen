@@ -223,6 +223,11 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::patch('/job-titles/{title}', [AdminJobTitleController::class, 'updateTitle'])->name('job-titles.update');
     Route::delete('/job-titles/{title}', [AdminJobTitleController::class, 'destroyTitle'])->name('job-titles.destroy');
 
+    Route::delete('/job-skills', [AdminJobTitleController::class, 'bulkDestroySkills'])->name('job-skills.bulk-destroy');
+    Route::post('/job-skills', [AdminJobTitleController::class, 'storeSkill'])->name('job-skills.store');
+    Route::patch('/job-skills/{skill}', [AdminJobTitleController::class, 'updateSkill'])->name('job-skills.update');
+    Route::delete('/job-skills/{skill}', [AdminJobTitleController::class, 'destroySkill'])->name('job-skills.destroy');
+
     Route::resource('career', AdminCareerController::class)->names([
         'index' => 'career.index',
         'create' => 'career.create',

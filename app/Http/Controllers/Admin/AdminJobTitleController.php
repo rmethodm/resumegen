@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobRole;
+use App\Models\JobSkill;
 use App\Models\JobTitle;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,15 +21,19 @@ class AdminJobTitleController extends Controller
 
         $rolesQuery = JobRole::query();
         $titlesQuery = JobTitle::query();
+        $skillsQuery = JobSkill::query();
 
         if ($q) {
             $rolesQuery->where('title', 'like', "%{$q}%");
             $titlesQuery->where('title', 'like', "%{$q}%");
+            $skillsQuery->where('name', 'like', "%{$q}%");
         }
 
         return Inertia::render('Admin/JobTitles/Index', [
             'roles' => $rolesQuery->orderBy('title')->paginate(50, ['*'], 'roles_page')->withQueryString(),
             'titles' => $titlesQuery->orderBy('title')->paginate(50, ['*'], 'titles_page')->withQueryString(),
+            'skills' => $skillsQuery->orderBy('name')->paginate(50, ['*'], 'skills_page')->withQueryString(),
+            'categories' => JobSkill::query()->distinct()->orderBy('category')->pluck('category'),
             'tab' => $tab,
             'filters' => ['q' => $q],
         ]);
@@ -94,6 +99,51 @@ class AdminJobTitleController extends Controller
         JobTitle::whereIn('id', $request->input('ids'))->delete();
 
         return back()->with('success', 'Titles deleted.');
+    }
+
+    public function storeSkill(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'min:2', 'max:150'],
+            'category' => ['required', 'string', 'min:2', 'max:100'],
+        ]);
+
+        JobSkill::firstOrCreate([
+            'name' => $this->titleCase($request->string('name')->toString()),
+            'category' => $this->titleCase($request->string('category')->toString()),
+        ]);
+
+        return back()->with('success', 'Skill added.');
+    }
+
+    public function updateSkill(Request $request, JobSkill $skill): RedirectResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'min:2', 'max:150'],
+            'category' => ['required', 'string', 'min:2', 'max:100'],
+        ]);
+
+        $skill->update([
+            'name' => $this->titleCase($request->string('name')->toString()),
+            'category' => $this->titleCase($request->string('category')->toString()),
+        ]);
+
+        return back()->with('success', 'Skill updated.');
+    }
+
+    public function destroySkill(JobSkill $skill): RedirectResponse
+    {
+        $skill->delete();
+
+        return back()->with('success', 'Skill deleted.');
+    }
+
+    public function bulkDestroySkills(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => ['required', 'array', 'min:1'], 'ids.*' => ['integer']]);
+        JobSkill::whereIn('id', $request->input('ids'))->delete();
+
+        return back()->with('success', 'Skills deleted.');
     }
 
     private function titleCase(string $value): string
