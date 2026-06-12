@@ -38,13 +38,10 @@ use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\ResumeThreadController;
 use App\Http\Controllers\SalaryController;
-use App\Http\Controllers\SavedSectionController;
 use App\Http\Controllers\SectionEventController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
 use App\Http\Controllers\WebhookController;
-use App\Services\UserLimits;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -58,23 +55,6 @@ Route::get('/', function () {
 Route::get('/dashboard', [AnalyticsController::class, 'index'])
     ->middleware(['auth', 'verified', 'two_factor_challenge'])
     ->name('dashboard');
-
-Route::get('/test', function (Request $request) {
-    $user = $request->user();
-    $resume = $user->resumes()->nonSnapshot()->latest()->first();
-
-    if (! $resume) {
-        return redirect()->route('builder.index')
-            ->with('status', 'Create a resume first to try the new builder.');
-    }
-
-    return Inertia::render('ResumeBuilder/Builder', [
-        'resume' => $resume,
-        'savedSections' => $user->savedSections()->latest()->get(),
-        'allowedTemplates' => UserLimits::allowedTemplates($user),
-        'canDocx' => UserLimits::canDocx($user),
-    ]);
-})->middleware(['auth', 'two_factor_challenge'])->name('test');
 
 Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -104,9 +84,6 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
 
     Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
     Route::post('/builder', [ResumeBuilderController::class, 'store'])->name('builder.store');
-    Route::get('/builder/saved-sections', [SavedSectionController::class, 'index'])->name('saved-sections.index');
-    Route::post('/builder/saved-sections', [SavedSectionController::class, 'store'])->name('saved-sections.store');
-    Route::delete('/builder/saved-sections/{savedSection}', [SavedSectionController::class, 'destroy'])->name('saved-sections.destroy');
     Route::get('/builder/{resume}', [ResumeBuilderController::class, 'edit'])->name('builder.edit');
     Route::put('/builder/{resume}', [ResumeBuilderController::class, 'update'])->name('builder.update');
     Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
@@ -166,10 +143,12 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
     Route::middleware('throttle:60,1')->group(function () {
         Route::get('/autocomplete/job-roles', [AutocompleteController::class, 'searchRoles'])->name('autocomplete.job-roles.search');
         Route::get('/autocomplete/job-titles', [AutocompleteController::class, 'searchTitles'])->name('autocomplete.job-titles.search');
+        Route::get('/autocomplete/job-skills', [AutocompleteController::class, 'searchSkills'])->name('autocomplete.job-skills.search');
     });
     Route::middleware('throttle:10,1')->group(function () {
         Route::post('/autocomplete/job-roles', [AutocompleteController::class, 'storeRole'])->name('autocomplete.job-roles.store');
         Route::post('/autocomplete/job-titles', [AutocompleteController::class, 'storeTitle'])->name('autocomplete.job-titles.store');
+        Route::post('/autocomplete/job-skills', [AutocompleteController::class, 'storeSkills'])->name('autocomplete.job-skills.store');
     });
 
     // Org workspace

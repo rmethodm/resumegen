@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobRole;
+use App\Models\JobSkill;
 use App\Models\JobTitle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
@@ -12,62 +13,77 @@ class AutocompleteController extends Controller
 {
     public function searchRoles(Request $request): JsonResponse
     {
-        return $this->search(JobRole::class, (string) $request->query('q', ''));
+        return $this->search(JobRole::class, 'title', (string) $request->query('q', ''));
     }
 
     public function searchTitles(Request $request): JsonResponse
     {
-        return $this->search(JobTitle::class, (string) $request->query('q', ''));
+        return $this->search(JobTitle::class, 'title', (string) $request->query('q', ''));
+    }
+
+    public function searchSkills(Request $request): JsonResponse
+    {
+        return $this->search(JobSkill::class, 'name', (string) $request->query('q', ''));
     }
 
     public function storeRole(Request $request): JsonResponse
     {
-        return $this->store(JobRole::class, $request);
+        return $this->store(JobRole::class, 'title', $request);
     }
 
     public function storeTitle(Request $request): JsonResponse
     {
-        return $this->store(JobTitle::class, $request);
+        return $this->store(JobTitle::class, 'title', $request);
     }
 
-    private function search(string $model, string $q): JsonResponse
+    public function storeSkills(Request $request): JsonResponse
+    {
+        return $this->store(JobSkill::class, 'name', $request, ['category' => 'User Added']);
+    }
+
+    /**
+     * @param  class-string<Model>  $model
+     */
+    private function search(string $model, string $column, string $q): JsonResponse
     {
         $q = trim($q);
         if (mb_strlen($q) < 2) {
             return response()->json([]);
         }
 
-        /** @var class-string<Model> $model */
-        $results = $model::where('title', 'like', $q.'%')
-            ->orderBy('title')
+        $results = $model::where($column, 'like', $q.'%')
+            ->orderBy($column)
             ->limit(10)
-            ->get(['id', 'title']);
+            ->get(['id', $column]);
 
         if ($results->count() < 3) {
-            $results = $model::where('title', 'like', '%'.$q.'%')
-                ->orderBy('title')
+            $results = $model::where($column, 'like', '%'.$q.'%')
+                ->orderBy($column)
                 ->limit(10)
-                ->get(['id', 'title']);
+                ->get(['id', $column]);
         }
 
         return response()->json($results);
     }
 
-    private function store(string $model, Request $request): JsonResponse
+    /**
+     * @param  class-string<Model>  $model
+     * @param  array<string, mixed>  $createAttributes
+     */
+    private function store(string $model, string $column, Request $request, array $createAttributes = []): JsonResponse
     {
         $request->validate([
-            'title' => ['required', 'string', 'min:2', 'max:150'],
+            $column => ['required', 'string', 'min:2', 'max:150'],
         ]);
 
-        $title = mb_convert_case(
-            mb_strtolower(trim($request->string('title')->toString())),
+        $value = mb_convert_case(
+            mb_strtolower(trim($request->string($column)->toString())),
             MB_CASE_TITLE,
             'UTF-8'
         );
 
-        /** @var class-string<Model> $model */
-        $record = $model::firstOrCreate(['title' => $title]);
+        $record = $model::firstOrCreate([$column => $value], $createAttributes);
 
-        return response()->json(['id' => $record->id, 'title' => $record->title]);
+        return response()->json(['id' => $record->id, $column => $record->{$column}]);
     }
 }
