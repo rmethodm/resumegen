@@ -29,11 +29,13 @@ class AiPrompts
         $text = $input['text'] ?? '';
 
         return <<<PROMPT
-        Rewrite this resume bullet point to be more impactful. Start with a strong action verb,
-        keep it to a single concise line, quantify impact where the original implies it, and do
-        not invent facts. Return ONLY the rewritten bullet with no quotes or preamble.
+        Rewrite the following resume bullet point(s) to be more impactful. Start each bullet with a
+        strong action verb, keep each to a single concise line, quantify impact where the original
+        implies it, and do not invent facts. Preserve the number of bullets, one per line. Return
+        ONLY the rewritten bullet(s) with no quotes, numbering, or preamble.
 
-        Bullet: {$text}
+        Bullets:
+        {$text}
         PROMPT;
     }
 
