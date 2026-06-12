@@ -1,8 +1,12 @@
 import { useCallback, useState } from 'react';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 
-const csrf = (): string =>
-    document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+// Read the fresh XSRF-TOKEN cookie Laravel refreshes on every response — the
+// same token Inertia/axios send. The <meta> CSRF token goes stale in an SPA.
+const xsrfToken = (): string => {
+    const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+    return match ? decodeURIComponent(match[1]) : '';
+};
 
 interface OverQuota {
     error: string;
@@ -31,10 +35,12 @@ export function useAiSuggestion(initialRemaining: number) {
             try {
                 const res = await fetch(url, {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         Accept: 'application/json',
-                        'X-CSRF-TOKEN': csrf(),
+                        'X-XSRF-TOKEN': xsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest',
                     },
                     body: JSON.stringify(body),
                 });
@@ -54,7 +60,8 @@ export function useAiSuggestion(initialRemaining: number) {
                 }
 
                 if (!res.ok) {
-                    window.alert(data.error ?? 'AI request failed. Try again.');
+                    // 422 returns { message, errors }; 5xx returns { error }.
+                    window.alert(data.error ?? data.message ?? 'AI request failed. Try again.');
                     return null;
                 }
 
