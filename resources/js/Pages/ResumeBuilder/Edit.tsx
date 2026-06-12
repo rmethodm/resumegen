@@ -220,17 +220,33 @@ function EntryCard({
 
 // ─── Tag input for skills ─────────────────────────────────────────────────────
 
+function highlightMatch(text: string, query: string): React.ReactNode {
+    const q = query.trim();
+    if (!q) { return text; }
+    const idx = text.toLowerCase().indexOf(q.toLowerCase());
+    if (idx === -1) { return text; }
+    return (
+        <>
+            {text.slice(0, idx)}
+            <span className="font-semibold text-[#4f46e5]">{text.slice(idx, idx + q.length)}</span>
+            {text.slice(idx + q.length)}
+        </>
+    );
+}
+
 function SkillTagInput({
-    skills, onChange, placeholder,
+    skills, onChange, placeholder, category,
 }: {
-    skills: string[]; onChange: (skills: string[]) => void; placeholder?: string;
+    skills: string[]; onChange: (skills: string[]) => void; placeholder?: string; category?: string;
 }) {
     const [inputVal, setInputVal] = useState('');
     const [suggestions, setSuggestions] = useState<{ id: number; name: string }[]>([]);
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
     const containerRef = useRef<HTMLDivElement>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+    const listId = useRef(`skills-list-${Math.round(performance.now())}`).current;
 
     const addSkill = (raw: string) => {
         const trimmed = raw.trim().replace(/,$/, '');
@@ -263,25 +279,28 @@ function SkillTagInput({
         if (q.length < 2) {
             setSuggestions([]);
             setOpen(false);
+            setLoading(false);
             return;
         }
+        setLoading(true);
+        setOpen(true);
         debounceRef.current = setTimeout(async () => {
             try {
-                const res = await fetch(`/autocomplete/job-skills?q=${encodeURIComponent(q)}`, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                });
-                if (!res.ok) { return; }
+                const url = `/autocomplete/job-skills?q=${encodeURIComponent(q)}`
+                    + (category ? `&category=${encodeURIComponent(category)}` : '');
+                const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                if (!res.ok) { setLoading(false); return; }
                 const data: { id: number; name: string }[] = await res.json();
-                const filtered = data.filter(s => !skills.includes(s.name));
-                setSuggestions(filtered);
-                setOpen(filtered.length > 0);
+                setSuggestions(data.filter(s => !skills.includes(s.name)));
                 setActiveIndex(-1);
             } catch {
                 // silent
+            } finally {
+                setLoading(false);
             }
         }, 150);
         return () => clearTimeout(debounceRef.current);
-    }, [inputVal, skills]);
+    }, [inputVal, skills, category]);
 
     // Outside-click closes the dropdown.
     useEffect(() => {
@@ -293,6 +312,8 @@ function SkillTagInput({
         document.addEventListener('mousedown', handler);
         return () => document.removeEventListener('mousedown', handler);
     }, []);
+
+    const showEmpty = open && !loading && inputVal.trim().length >= 2 && suggestions.length === 0;
 
     return (
         <div ref={containerRef} className="relative">
@@ -314,6 +335,10 @@ function SkillTagInput({
                         type="text"
                         value={inputVal}
                         autoComplete="off"
+                        role="combobox"
+                        aria-expanded={open}
+                        aria-controls={listId}
+                        aria-activedescendant={activeIndex >= 0 ? `${listId}-opt-${activeIndex}` : undefined}
                         onChange={e => setInputVal(e.target.value)}
                         onKeyDown={e => {
                             if (open && suggestions.length > 0 && e.key === 'ArrowDown') {
@@ -344,23 +369,37 @@ function SkillTagInput({
                         placeholder={skills.length === 0 ? placeholder : ''}
                         className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-[#23232d] placeholder-[#a0a0b0] focus:ring-0 focus:outline-none"
                     />
+                    {loading && (
+                        <span className="self-center" aria-hidden="true">
+                            <svg className="h-3.5 w-3.5 animate-spin text-[#a0a0b0]" viewBox="0 0 24 24" fill="none">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                            </svg>
+                        </span>
+                    )}
                 </div>
             </div>
-            {open && suggestions.length > 0 && (
-                <ul className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#e8e8f0] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+            {open && (suggestions.length > 0 || showEmpty) && (
+                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#e8e8f0] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
+                            id={`${listId}-opt-${i}`}
+                            role="option"
+                            aria-selected={i === activeIndex}
                             onMouseDown={() => addSkill(s.name)}
                             className={`px-3 py-2 text-sm cursor-pointer ${
-                                i === activeIndex
-                                    ? 'bg-[#eef2ff] text-[#4f46e5]'
-                                    : 'text-[#23232d] hover:bg-[#f5f5fb]'
+                                i === activeIndex ? 'bg-[#eef2ff] text-[#4f46e5]' : 'text-[#23232d] hover:bg-[#f5f5fb]'
                             }`}
                         >
-                            {s.name}
+                            {highlightMatch(s.name, inputVal)}
                         </li>
                     ))}
+                    {showEmpty && (
+                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-[#a0a0b0]">
+                            No matches — press Enter to add “{inputVal.trim()}”
+                        </li>
+                    )}
                 </ul>
             )}
         </div>
