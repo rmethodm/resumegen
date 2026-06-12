@@ -18,7 +18,7 @@ class AiSuggestionController extends Controller
     public function rewriteBullet(Request $request, Resume $resume): JsonResponse
     {
         $this->authorize('update', $resume);
-        $data = $request->validate(['text' => ['required', 'string', 'max:2000']]);
+        $data = $request->validate(['text' => ['required', 'string', 'max:8000']]);
 
         return $this->run($request->user(), 'rewrite_bullet', ['text' => $data['text']],
             fn (string $reply): array => ['suggestion' => trim($reply)]);

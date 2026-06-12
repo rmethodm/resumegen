@@ -47,6 +47,19 @@ class AiSuggestionTest extends TestCase
         ]);
     }
 
+    public function test_rewrite_bullet_accepts_a_long_bullets_block(): void
+    {
+        $this->fakeReply('Rewritten.');
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        // A multi-line experience bullets block can exceed the old 2000-char cap.
+        $this->actingAs($user)->postJson(
+            route('builder.ai.rewrite-bullet', $resume),
+            ['text' => str_repeat('Delivered measurable impact across teams. ', 80)] // ~3360 chars
+        )->assertOk()->assertJson(['suggestion' => 'Rewritten.']);
+    }
+
     public function test_ats_keywords_split_into_array(): void
     {
         $this->fakeReply("Kubernetes, Terraform\nObservability"); // double quotes: real newline
