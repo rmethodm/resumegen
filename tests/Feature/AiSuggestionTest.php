@@ -6,6 +6,7 @@ use App\Models\Resume;
 use App\Models\User;
 use App\Services\UserLimits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use OpenAI\Contracts\ClientContract;
 use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Testing\ClientFake;
@@ -134,5 +135,17 @@ class AiSuggestionTest extends TestCase
 
         $this->actingAs($user)->postJson(route('builder.ai.summary', $resume), [])
             ->assertStatus(422);
+    }
+
+    public function test_edit_page_exposes_ai_quota_props(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)->get(route('builder.edit', $resume))
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->where('aiRemaining', 10)
+                ->where('aiCanUpgrade', true)
+            );
     }
 }
