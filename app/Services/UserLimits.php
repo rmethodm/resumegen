@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AiRequest;
 use App\Models\User;
 
 class UserLimits
@@ -55,6 +56,31 @@ class UserLimits
     public static function customSectionLimit(User $user): ?int
     {
         return $user->planTier() === 'free' ? 2 : null;
+    }
+
+    public static function aiMonthlyLimit(User $user): int
+    {
+        $limits = config('ai.monthly_limits', []);
+
+        return match ($user->planTier()) {
+            'starter' => $limits['starter'] ?? 0,
+            'pro' => $limits['pro'] ?? 0,
+            'agency' => $limits['agency'] ?? 0,
+            'free' => $limits['free'] ?? 0,
+            default => $limits['free'] ?? 0, // unknown — most restrictive
+        };
+    }
+
+    public static function aiRequestsThisMonth(User $user): int
+    {
+        return AiRequest::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->count();
+    }
+
+    public static function canUseAi(User $user): bool
+    {
+        return self::aiRequestsThisMonth($user) < self::aiMonthlyLimit($user);
     }
 
     public static function requirePro(User $user): void
