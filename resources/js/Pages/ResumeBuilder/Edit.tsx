@@ -3,6 +3,7 @@ import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/Strengt
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
+import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
     SwatchIcon,
@@ -419,7 +420,7 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
     isFirstResume, canDocx, allowedTemplates, strengthHistoryEnabled, photoUrl, completionScore, recruiterNote,
-    skillCategoryOptions,
+    skillCategoryOptions, aiRemaining,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -432,12 +433,16 @@ export default function Edit({
     completionScore: number;
     recruiterNote?: string | null;
     skillCategoryOptions: string[];
+    aiRemaining: number;
+    aiCanUpgrade: boolean;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
     const [contact, setContact] = useState<Contact>(resume.contact ?? emptyContact());
     const [summary, setSummary] = useState(resume.summary ?? '');
     const [experience, setExperience] = useState<ExperienceEntry[]>(resume.experience ?? []);
+    const ai = useAiSuggestion(aiRemaining);
+    const [keywordGaps, setKeywordGaps] = useState<string[]>([]);
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? []);
     const [projects, setProjects] = useState<ProjectEntry[]>(resume.projects ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
@@ -552,6 +557,24 @@ export default function Edit({
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [resume.id, saving]);
+
+    // ── AI suggestion handlers ──
+    const handleGenerateSummary = async () => {
+        const data = await ai.run<{ suggestion: string }>(route('builder.ai.summary', resume.id));
+        if (data?.suggestion) { setSummary(data.suggestion); setTimeout(save, 0); }
+    };
+    const handleImproveExperience = async (expId: string, bullets: string) => {
+        if (!bullets.trim()) { return; }
+        const data = await ai.run<{ suggestion: string }>(route('builder.ai.rewrite-bullet', resume.id), { text: bullets });
+        if (data?.suggestion) {
+            setExperience(prev => prev.map(e => e.id === expId ? { ...e, bullets: data.suggestion } : e));
+            setTimeout(save, 0);
+        }
+    };
+    const handleKeywordGaps = async () => {
+        const data = await ai.run<{ keywords: string[] }>(route('builder.ai.ats-keywords', resume.id));
+        if (data?.keywords) { setKeywordGaps(data.keywords); }
+    };
 
     // First-run wizard: 0=welcome, 1=contact, 2=done
     const [wizardStep, setWizardStep] = useState<0 | 1 | 2>(isFirstResume ? 0 : 2);
@@ -776,6 +799,8 @@ export default function Edit({
                             )}
                         </div>
 
+                        <div className="px-1 pb-1 text-xs text-[#a0a0b0]">✨ {ai.remaining} AI uses left this month</div>
+
                         {/* Draggable sections */}
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
                             <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
@@ -792,7 +817,10 @@ export default function Edit({
                                                 placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
                                                 rows={5}
                                             />
-                                            <p className="text-right text-xs text-[#a0a0b0]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                                            <div className="flex items-center justify-between">
+                                                <button type="button" onClick={handleGenerateSummary} disabled={ai.remaining === 0 || ai.loadingUrl !== null} className="text-xs font-medium text-[#4f46e5] hover:text-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed">✨ Generate with AI</button>
+                                                <p className="text-right text-xs text-[#a0a0b0]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                                            </div>
                                         </DraggableSection>
                                     );
 
@@ -814,6 +842,7 @@ export default function Edit({
                                                     <div>
                                                         <FLabel>Bullet Points <span className="text-[#a0a0b0] font-normal">(one per line)</span></FLabel>
                                                         <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
+                                                        <button type="button" onClick={() => handleImproveExperience(exp.id, exp.bullets)} disabled={ai.remaining === 0 || ai.loadingUrl !== null || !exp.bullets.trim()} className="mt-1 text-xs font-medium text-[#4f46e5] hover:text-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed">✨ Improve with AI</button>
                                                     </div>
                                                 </EntryCard>
                                             ))}
@@ -863,6 +892,16 @@ export default function Edit({
                                     // ── Skills ──
                                     if (key === 'skills') return (
                                         <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')}>
+                                            <div className="pb-1">
+                                                <button type="button" onClick={handleKeywordGaps} disabled={ai.remaining === 0 || ai.loadingUrl !== null} className="text-xs font-medium text-[#4f46e5] hover:text-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed">✨ Find ATS keyword gaps</button>
+                                                {keywordGaps.length > 0 && (
+                                                    <div className="mt-2 flex flex-wrap gap-1">
+                                                        {keywordGaps.map(k => (
+                                                            <span key={k} className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{k}</span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
                                             {/* Layout picker cards */}
                                             <div className="grid grid-cols-3 gap-2 pb-1">
                                                 <SkillsLayoutCard label="Inline" selected={skillsLayout === 'inline'} onClick={() => { setSkillsLayout('inline'); setTimeout(save, 0); }}>

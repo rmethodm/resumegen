@@ -147,6 +147,8 @@ class ResumeBuilderController extends Controller
             'threads' => $threads,
             'isFirstResume' => $isFirstResume,
             'canDocx' => UserLimits::canDocx($user),
+            'aiRemaining' => UserLimits::aiRemaining($user),
+            'aiCanUpgrade' => UserLimits::aiCanUpgrade($user),
             'customSectionLimit' => UserLimits::customSectionLimit($user),
             'allowedTemplates' => UserLimits::allowedTemplates($user),
             'completionScore' => ResumeCompletionScorer::score($resume),

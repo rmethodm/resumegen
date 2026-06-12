@@ -74,6 +74,7 @@ class UserLimits
     public static function aiRequestsThisMonth(User $user): int
     {
         return AiRequest::where('user_id', $user->id)
+            ->where('status', 'success')
             ->where('created_at', '>=', now()->startOfMonth())
             ->count();
     }
@@ -81,6 +82,25 @@ class UserLimits
     public static function canUseAi(User $user): bool
     {
         return self::aiRequestsThisMonth($user) < self::aiMonthlyLimit($user);
+    }
+
+    public static function aiRemaining(User $user): int
+    {
+        return max(0, self::aiMonthlyLimit($user) - self::aiRequestsThisMonth($user));
+    }
+
+    public static function aiCanUpgrade(User $user): bool
+    {
+        return in_array($user->planTier(), ['free', 'starter'], true);
+    }
+
+    public static function aiNextTier(User $user): ?string
+    {
+        return match ($user->planTier()) {
+            'free' => 'starter',
+            'starter' => 'pro',
+            default => null,
+        };
     }
 
     public static function requirePro(User $user): void
