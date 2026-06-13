@@ -1,13 +1,13 @@
 # Resumegen Context
 
 ## Current Task
-Shipped two sub-projects (specs + plans in docs/superpowers): repricing reposition + AI lockdown. All tests green (569).
+Completed the full super-admin initiative: 8 sub-projects shipped to main (audit log, content mgmt, revenue, ops, delivery log, MRR snapshots, growth analytics, retention cohorts). 637 tests green.
 
 ## Key Decisions
-- Repricing: Free 2 resumes/1 letter, Starter 10/10, AI 25/150/500/1000; org creation/seats gated to Agency; master admin (+ rmethodm@outlook.com) now resolves to agency tier. Hard-enforce via creation gates only — no destructive resume-locking UI.
-- AI lockdown: AiService moderation pre-check (flagged→422, no quota burn) + user_{id} attribution + max_tokens cap (config ai.max_completion_tokens=1000).
-- ClientFake is FIFO/type-agnostic: any new AI test must prepend a clean-moderation fake.
+- Each sub-project ran spec → plan → TDD → `--no-ff` merge on its own branch; specs/plans in docs/superpowers/. New admin nav: Revenue · Growth · Content · Audit Log · Ops.
+- Retention needs per-period activity, not just last_active_at → built `user_activity_days` table + `TrackActivity` middleware (session-gated, web group).
+- Two new crons: `revenue:snapshot` (daily 23:55, MRR history) + `system-events:prune` (daily, 30d). Need scheduler running in prod.
 
 ## Next Steps
-- Earlier unstaged work (StrengthScore/target-JD, AiPrompts, migration) still in working tree — review/commit separately.
-- AI lockdown spec mentioned future API ai-suggest routes don't exist yet; render() on the exception covers them when added.
+- Optional: add OPENAI_ADMIN_KEY (OpenAI cost reconcile) — degrades gracefully without it.
+- No remaining flagged items; all spec "out of scope" notes are intentional deferrals.
