@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\ModerationException;
 use App\Models\User;
 use App\Services\AiService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenAI\Contracts\ClientContract;
+use OpenAI\Resources\Chat;
 use OpenAI\Responses\Chat\CreateResponse;
+use OpenAI\Responses\Moderations\CreateResponse as ModerationResponse;
 use OpenAI\Testing\ClientFake;
 use Tests\TestCase;
 
@@ -17,6 +20,7 @@ class AiServiceTest extends TestCase
     public function test_chat_returns_text_and_logs_a_request(): void
     {
         $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
             CreateResponse::fake([
                 'model' => 'gpt-4o-mini',
                 'choices' => [
@@ -47,6 +51,7 @@ class AiServiceTest extends TestCase
         config()->set('ai.pricing', ['gpt-4o-mini' => ['input' => 1.0, 'output' => 2.0]]);
 
         $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
             CreateResponse::fake([
                 'model' => 'gpt-4o-mini',
                 'choices' => [['index' => 0, 'message' => ['role' => 'assistant', 'content' => 'ok']]],
@@ -65,6 +70,8 @@ class AiServiceTest extends TestCase
         // The SDK fake replays canned responses; to exercise the catch branch we
         // bind a mock client whose chat()->create() throws.
         $mock = \Mockery::mock(ClientContract::class);
+        $mock->shouldReceive('moderations->create')
+            ->andReturn(ModerationResponse::fake(['results' => [['flagged' => false]]]));
         $mock->shouldReceive('chat->create')->andThrow(new \RuntimeException('boom'));
         $this->app->instance(ClientContract::class, $mock);
 
@@ -81,5 +88,48 @@ class AiServiceTest extends TestCase
             'user_id' => $user->id,
             'status' => 'error',
         ]);
+    }
+
+    public function test_flagged_input_throws_logs_flagged_and_skips_chat(): void
+    {
+        $fake = new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => true]]]),
+        ]);
+        $this->app->instance(ClientContract::class, $fake);
+
+        $user = User::factory()->create();
+
+        $this->expectException(ModerationException::class);
+
+        try {
+            app(AiService::class)->chat('bad stuff', ['user' => $user, 'feature' => 'smoke']);
+        } finally {
+            $this->assertDatabaseHas('ai_requests', [
+                'user_id' => $user->id,
+                'feature' => 'smoke',
+                'status' => 'flagged',
+            ]);
+            $fake->assertNotSent(Chat::class);
+        }
+    }
+
+    public function test_chat_payload_includes_user_and_max_tokens(): void
+    {
+        $fake = new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
+            CreateResponse::fake([
+                'model' => 'gpt-4o-mini',
+                'choices' => [['index' => 0, 'message' => ['role' => 'assistant', 'content' => 'ok']]],
+                'usage' => ['prompt_tokens' => 1, 'completion_tokens' => 1, 'total_tokens' => 2],
+            ]),
+        ]);
+        $this->app->instance(ClientContract::class, $fake);
+
+        $user = User::factory()->create();
+        app(AiService::class)->chat('hi', ['user' => $user]);
+
+        $fake->assertSent(Chat::class, fn (string $method, array $parameters): bool => $method === 'create'
+            && $parameters['user'] === 'user_'.$user->id
+            && $parameters['max_tokens'] === 1000);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ModerationException;
 use App\Models\AiRequest;
 use App\Models\User;
 use OpenAI\Contracts\ClientContract;
@@ -22,12 +23,16 @@ class AiService
         $user = $options['user'] ?? null;
         $feature = $options['feature'] ?? null;
 
+        $this->moderate($prompt, $user, $feature, $model);
+
         try {
             $response = $this->client->chat()->create([
                 'model' => $model,
                 'messages' => [
                     ['role' => 'user', 'content' => $prompt],
                 ],
+                'user' => $this->userId($user),
+                'max_tokens' => config('ai.max_completion_tokens', 1000),
             ]);
 
             $promptTokens = $response->usage->promptTokens;
@@ -42,6 +47,29 @@ class AiService
 
             throw $e;
         }
+    }
+
+    /**
+     * Pre-screen user text with OpenAI's free moderations endpoint. Flagged input
+     * is logged and rejected before it ever reaches the chat completion endpoint.
+     */
+    private function moderate(string $text, ?User $user, ?string $feature, string $model): void
+    {
+        $result = $this->client->moderations()->create([
+            'input' => $text,
+            'user' => $this->userId($user),
+        ]);
+
+        if ($result->results[0]->flagged ?? false) {
+            $this->log($user, $feature, $model, 0, 0, 0, 'flagged');
+
+            throw new ModerationException;
+        }
+    }
+
+    private function userId(?User $user): string
+    {
+        return $user ? 'user_'.$user->id : 'guest';
     }
 
     private function log(
