@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAiController;
 use App\Http\Controllers\Admin\AdminAuditController;
+use App\Http\Controllers\Admin\AdminContentController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
@@ -229,6 +230,14 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::delete('/messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
     Route::get('/referrals', [AdminReferralController::class, 'index'])->name('referrals.index');
     Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
+
+    Route::get('/content', [AdminContentController::class, 'index'])->name('content.index');
+    Route::get('/content/resumes/{resume}', [AdminContentController::class, 'showResume'])->name('content.resume.show');
+    Route::delete('/content/resumes/{resume}', [AdminContentController::class, 'destroyResume'])->name('content.resume.destroy');
+    Route::delete('/content/cover-letters/{coverLetter}', [AdminContentController::class, 'destroyCoverLetter'])->name('content.cover-letter.destroy');
+    Route::delete('/content/jobs/{jobApplication}', [AdminContentController::class, 'destroyJob'])->name('content.job.destroy');
+    Route::patch('/content/share-links/{shareLink}/disable', [AdminContentController::class, 'disableShareLink'])->name('content.share-link.disable');
+    Route::patch('/content/users/{user}/unpublish-portfolio', [AdminContentController::class, 'unpublishPortfolio'])->name('content.portfolio.unpublish');
     Route::get('/job-titles', [AdminJobTitleController::class, 'index'])->name('job-titles.index');
 
     Route::delete('/job-roles', [AdminJobTitleController::class, 'bulkDestroyRoles'])->name('job-roles.bulk-destroy');
