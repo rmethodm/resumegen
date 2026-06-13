@@ -61,7 +61,7 @@ class AiService
         ]);
 
         if ($result->results[0]->flagged ?? false) {
-            $this->log($user, $feature, $model, 0, 0, 0, 'flagged');
+            $this->log($user, $feature, $model, 0, 0, 0, 'flagged', $text);
 
             throw new ModerationException;
         }
@@ -80,6 +80,7 @@ class AiService
         int $completionTokens,
         int $totalTokens,
         string $status,
+        ?string $flaggedText = null,
     ): void {
         AiRequest::create([
             'user_id' => $user?->id,
@@ -90,6 +91,7 @@ class AiService
             'total_tokens' => $totalTokens,
             'estimated_cost_cents' => $this->estimateCostCents($model, $promptTokens, $completionTokens),
             'status' => $status,
+            'flagged_text' => $flaggedText,
         ]);
     }
 
