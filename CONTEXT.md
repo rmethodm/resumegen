@@ -1,14 +1,13 @@
 # Resumegen Context
 
 ## Current Task
-Completed 16-task audit remediation plan (2026-06-10). All security, dead code, performance, and code health findings addressed.
+Shipped two sub-projects (specs + plans in docs/superpowers): repricing reposition + AI lockdown. All tests green (569).
 
 ## Key Decisions
-- Security: accent_color whitelisted in OgImageController, CareerHub body sanitized, dead question routes removed, SSRF blocked via PublicUrl rule
-- Dead code: ResumeQuestion model/mail deleted, ai_usage_logs/ai_model_rates tables dropped, two-column removed from validation, openai/smalot deps removed
-- Performance: N+1 fixed in MessagesController, AnalyticsController now DB-aggregates, indexes added, strength scorer cached, Subscription observer guarded with isDirty
-- Code health: ResumeCompletionScorer extracted, write-on-read fixed with EnsureReferralCode action, ThreadsPanel/SharePopover extracted from Edit.tsx
+- Repricing: Free 2 resumes/1 letter, Starter 10/10, AI 25/150/500/1000; org creation/seats gated to Agency; master admin (+ rmethodm@outlook.com) now resolves to agency tier. Hard-enforce via creation gates only — no destructive resume-locking UI.
+- AI lockdown: AiService moderation pre-check (flagged→422, no quota burn) + user_{id} attribution + max_tokens cap (config ai.max_completion_tokens=1000).
+- ClientFake is FIFO/type-agnostic: any new AI test must prepend a clean-moderation fake.
 
 ## Next Steps
-- Feature backlog candidates: real-time live score, kanban job tracker (see project-feature-backlog.md)
-- 5 pre-audit deferred fixes still pending (see project-audit-remaining-fixes.md)
+- Earlier unstaged work (StrengthScore/target-JD, AiPrompts, migration) still in working tree — review/commit separately.
+- AI lockdown spec mentioned future API ai-suggest routes don't exist yet; render() on the exception covers them when added.
