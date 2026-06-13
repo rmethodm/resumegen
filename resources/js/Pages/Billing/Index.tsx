@@ -12,10 +12,10 @@ type Props = {
 };
 
 const PLAN_FEATURES: Record<string, string[]> = {
-    free:    ['2 resumes', '3 templates', '5 lifetime AI credits', '1 cover letter', '3 job applications'],
-    starter: ['5 resumes', 'All 8 templates', '30 AI credits/month', 'ATS scoring', 'DOCX export', '5 cover letters', 'Unlimited job tracking'],
-    pro:     ['Unlimited resumes', 'All templates (current + future)', '500 AI credits/month', 'ATS scoring', 'DOCX export', 'Unlimited cover letters', 'API access'],
-    agency:  ['Everything in Pro', 'Recruiter org workspace', 'Invite candidates as members', 'Per-resume recruiter notes', 'Org dashboard with all member resumes', 'Priority support'],
+    free:    ['2 resumes', '1 cover letter', '3 job applications', '4 templates', '25 AI generations/month'],
+    starter: ['10 resumes', '10 cover letters', 'Unlimited job tracking', 'All 9 templates', 'DOCX export', 'ATS scoring', '150 AI generations/month'],
+    pro:     ['Unlimited resumes & cover letters', 'All templates (current + future)', 'DOCX export', 'ATS scoring', 'API access', '500 AI generations/month'],
+    agency:  ['Team workspace + member seats', 'Everything in Pro', 'Invite candidates as members', 'Per-resume recruiter notes', 'Org dashboard with all member resumes', '1000 AI generations/month'],
 };
 
 export default function BillingIndex({ plan, resumeCount, resumeLimit, aiUsed, aiLimit, limitReached }: Props) {

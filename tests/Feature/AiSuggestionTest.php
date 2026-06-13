@@ -39,7 +39,7 @@ class AiSuggestionTest extends TestCase
         );
 
         $res->assertOk()
-            ->assertJson(['suggestion' => 'Led a team of five engineers to ship X.', 'remaining' => 9]);
+            ->assertJson(['suggestion' => 'Led a team of five engineers to ship X.', 'remaining' => 24]);
         $this->assertDatabaseHas('ai_requests', [
             'user_id' => $user->id,
             'feature' => 'rewrite_bullet',
@@ -72,6 +72,18 @@ class AiSuggestionTest extends TestCase
         );
 
         $res->assertOk()->assertJson(['keywords' => ['Kubernetes', 'Terraform', 'Observability']]);
+    }
+
+    public function test_ats_keywords_accepts_a_target_job_description(): void
+    {
+        $this->fakeReply('GraphQL, Kafka');
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)->postJson(
+            route('builder.ai.ats-keywords', $resume),
+            ['job_description' => 'We need a backend engineer fluent in GraphQL and Kafka.']
+        )->assertOk()->assertJson(['keywords' => ['GraphQL', 'Kafka']]);
     }
 
     public function test_over_quota_free_user_gets_upgrade_payload(): void
@@ -157,7 +169,7 @@ class AiSuggestionTest extends TestCase
 
         $this->actingAs($user)->get(route('builder.edit', $resume))
             ->assertInertia(fn (AssertableInertia $page) => $page
-                ->where('aiRemaining', 10)
+                ->where('aiRemaining', 25)
                 ->where('aiCanUpgrade', true)
             );
     }

@@ -63,7 +63,7 @@ class BillingTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->where('plan', 'free')
                 ->where('resumeCount', 1)
-                ->where('resumeLimit', 5)
+                ->where('resumeLimit', 2)
             );
     }
 
@@ -76,7 +76,7 @@ class BillingTest extends TestCase
             ->get(route('billing.index'))
             ->assertInertia(fn ($page) => $page
                 ->where('plan', 'starter')
-                ->where('resumeLimit', 5)
+                ->where('resumeLimit', 10)
             );
     }
 

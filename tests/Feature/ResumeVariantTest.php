@@ -42,16 +42,17 @@ class ResumeVariantTest extends TestCase
     {
         $user = User::factory()->free()->create();
 
-        // Create 4 normal resumes + 1 snapshot = 5 rows total, but only 4 non-snapshots
-        Resume::factory()->for($user)->count(4)->create(['is_snapshot' => false]);
-        Resume::factory()->for($user)->create(['is_snapshot' => true]);
+        // Free limit is 2 non-snapshots. 1 normal + 3 snapshots: if snapshots counted,
+        // the 4 rows would block creation. They must not.
+        Resume::factory()->for($user)->create(['is_snapshot' => false]);
+        Resume::factory()->for($user)->count(3)->create(['is_snapshot' => true]);
 
         $response = $this->actingAs($user)
             ->post(route('builder.store'), ['name' => 'New Resume']);
 
         // Should NOT get a featureGate — should redirect to the new resume's edit page
-        // Verify the new resume was created (non-snapshot count is now 5, not 6)
-        $this->assertSame(5, $user->resumes()->nonSnapshot()->count());
+        // Verify the new resume was created (non-snapshot count is now 2, not blocked)
+        $this->assertSame(2, $user->resumes()->nonSnapshot()->count());
 
         // The response should redirect to a builder edit page (not back with featureGate)
         $response->assertRedirect();
