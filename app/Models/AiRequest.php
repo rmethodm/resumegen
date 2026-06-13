@@ -23,6 +23,7 @@ class AiRequest extends Model
         'total_tokens',
         'estimated_cost_cents',
         'status',
+        'flagged_text',
     ];
 
     /**
