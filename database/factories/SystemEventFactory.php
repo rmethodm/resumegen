@@ -1,0 +1,22 @@
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<\App\Models\SystemEvent>
+ */
+class SystemEventFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'channel' => $this->faker->randomElement(['mail', 'stripe_webhook']),
+            'type' => $this->faker->randomElement(['Welcome email', 'invoice.paid', 'customer.subscription.updated']),
+            'status' => $this->faker->randomElement(['sent', 'received']),
+            'recipient' => $this->faker->optional()->safeEmail(),
+            'meta' => null,
+        ];
+    }
+}
