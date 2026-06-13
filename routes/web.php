@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminAiController;
 use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminContentController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminGrowthController;
 use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOpsController;
@@ -233,6 +234,7 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::get('/referrals', [AdminReferralController::class, 'index'])->name('referrals.index');
     Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
     Route::get('/revenue', [AdminRevenueController::class, 'index'])->name('revenue.index');
+    Route::get('/growth', [AdminGrowthController::class, 'index'])->name('growth.index');
 
     Route::get('/ops', [AdminOpsController::class, 'index'])->name('ops.index');
     Route::post('/ops/failed/{uuid}/retry', [AdminOpsController::class, 'retryFailed'])->name('ops.retry');
