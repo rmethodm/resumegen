@@ -18,6 +18,7 @@ const NAV = [
     { label: 'Referrals', href: safeRoute('admin.referrals.index', '/admin/referrals'),pattern: 'admin.referrals.*' },
     { label: 'Job Titles',href: safeRoute('admin.job-titles.index', '/admin/job-titles'), pattern: 'admin.job-titles.*' },
     { label: 'AI Usage',  href: safeRoute('admin.ai.overview', '/admin/ai'),           pattern: 'admin.ai.*' },
+    { label: 'Content',   href: safeRoute('admin.content.index', '/admin/content'),     pattern: 'admin.content.*' },
     { label: 'Audit Log', href: safeRoute('admin.audit.index', '/admin/audit'),        pattern: 'admin.audit.*' },
     { label: 'Career',    href: safeRoute('admin.career.index', '/admin/career'),      pattern: 'admin.career.*' },
     { label: 'Usage',     href: safeRoute('admin.usage', '/admin/usage'),              pattern: 'admin.usage' },

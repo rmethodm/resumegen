@@ -107,6 +107,17 @@ class AdminContentTest extends TestCase
         $this->assertDatabaseHas('admin_audit_logs', ['action' => 'content.portfolio.unpublish', 'target_id' => $user->id]);
     }
 
+    public function test_show_resume_renders(): void
+    {
+        $resume = Resume::factory()->for(User::factory())->create(['name' => 'CV', 'summary' => 'Hello world']);
+
+        $this->actingAs($this->admin())->get(route('admin.content.resume.show', $resume))
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Admin/Content/Resume')
+                ->where('resume.summary', 'Hello world')
+            );
+    }
+
     public function test_non_admin_forbidden(): void
     {
         $user = User::factory()->create(['is_master_admin' => false]);
