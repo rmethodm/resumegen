@@ -29,6 +29,7 @@ class AdminGrowthController extends Controller
             'signups' => $this->report->signupsSeries($period),
             'funnel' => $this->report->funnel(),
             'referral' => $this->report->referral(),
+            'retention' => $this->report->retentionCohorts(),
         ]);
     }
 }
