@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
 use OpenAI\Contracts\ClientContract;
 use OpenAI\Responses\Chat\CreateResponse;
+use OpenAI\Responses\Moderations\CreateResponse as ModerationResponse;
 use OpenAI\Testing\ClientFake;
 use Tests\TestCase;
 
@@ -19,6 +20,7 @@ class AiSuggestionTest extends TestCase
     private function fakeReply(string $content): void
     {
         $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
             CreateResponse::fake([
                 'model' => 'gpt-4o-mini',
                 'choices' => [['index' => 0, 'message' => ['role' => 'assistant', 'content' => $content]]],
@@ -117,6 +119,8 @@ class AiSuggestionTest extends TestCase
     public function test_openai_failure_returns_503_and_does_not_count(): void
     {
         $mock = \Mockery::mock(ClientContract::class);
+        $mock->shouldReceive('moderations->create')
+            ->andReturn(ModerationResponse::fake(['results' => [['flagged' => false]]]));
         $mock->shouldReceive('chat->create')->andThrow(new \RuntimeException('boom'));
         $this->app->instance(ClientContract::class, $mock);
 
@@ -160,6 +164,24 @@ class AiSuggestionTest extends TestCase
 
         $this->actingAs($user)->postJson(route('builder.ai.summary', $resume), [])
             ->assertStatus(422);
+    }
+
+    public function test_flagged_input_returns_422_and_does_not_count_quota(): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => true]]]),
+        ]));
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)->postJson(
+            route('builder.ai.rewrite-bullet', $resume),
+            ['text' => 'something disallowed']
+        )->assertStatus(422)
+            ->assertJson(['error' => "This content can't be processed."]);
+
+        $this->assertDatabaseHas('ai_requests', ['user_id' => $user->id, 'status' => 'flagged']);
+        $this->assertSame(0, UserLimits::aiRequestsThisMonth($user));
     }
 
     public function test_edit_page_exposes_ai_quota_props(): void

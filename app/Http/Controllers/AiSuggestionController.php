@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Data\AiPrompts;
+use App\Exceptions\ModerationException;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\AiService;
@@ -41,11 +42,16 @@ class AiSuggestionController extends Controller
     public function atsKeywords(Request $request, Resume $resume): JsonResponse
     {
         $this->authorize('update', $resume);
-        $data = $request->validate(['role' => ['nullable', 'string', 'max:200']]);
+        $data = $request->validate([
+            'role' => ['nullable', 'string', 'max:200'],
+            'job_description' => ['nullable', 'string', 'max:10000'],
+        ]);
         $role = $data['role'] ?? $request->user()->target_role ?? '';
+        $jobDescription = $data['job_description'] ?? $resume->target_job_description ?? '';
 
         return $this->run($request->user(), 'ats_keywords', [
             'role' => $role,
+            'job_description' => $jobDescription,
             'experience' => $resume->experience ?? [],
             'skills' => $resume->skills ?? [],
         ], fn (string $reply): array => ['keywords' => $this->splitKeywords($reply)]);
@@ -75,6 +81,8 @@ class AiSuggestionController extends Controller
                 AiPrompts::build($feature, $input),
                 ['user' => $user, 'feature' => $feature],
             );
+        } catch (ModerationException) {
+            return response()->json(['error' => ModerationException::USER_MESSAGE], 422);
         } catch (Throwable $e) {
             report($e);
 
