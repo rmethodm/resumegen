@@ -1,15 +1,19 @@
 ### Pricing tiers and limits
 The app enforces a 4-tier model: **Free** / **Starter** ($9/mo) / **Pro** ($19/mo) / **Agency** ($49/mo). All limits live in `App\Services\UserLimits` — the single source of truth.
 
-| | Free | Starter | Pro |
-|---|---|---|---|
-| Resumes | 5 | 5 | unlimited |
-| Cover letters | 3 | 5 | unlimited |
-| Job applications | 3 | unlimited | unlimited |
-| Templates | all 13 | all 13 | all 13 |
-| DOCX export | ✗ | ✓ | ✓ |
+| | Free | Starter | Pro | Agency |
+|---|---|---|---|---|
+| Resumes | 2 | 10 | unlimited | unlimited |
+| Cover letters | 1 | 10 | unlimited | unlimited |
+| Job applications | 3 | unlimited | unlimited | unlimited |
+| Templates | 4 (classic, modern, minimal, ats) | all 9 | all 9 | all 9 |
+| DOCX export | ✗ | ✓ | ✓ | ✓ |
+| AI generations/mo | 25 | 150 | 500 | 1000 |
+| Team workspace (orgs + seats) | ✗ | ✗ | ✗ | ✓ |
 
-`User::planTier()` resolves: `is_master_admin` → `'pro'`; `is_pro` → `'pro'`; `is_agency` → `'agency'`; else returns `plan_tier` column value (`'free'`/`'starter'`/`'pro'`/`'agency'`). `plan_tier` is kept in sync with Stripe via a Subscription observer in `AppServiceProvider`. All `match` expressions in `UserLimits` have explicit `'pro'` arms and a restrictive `default` fallback (capped at free-tier limits) so unknown/corrupted tiers never grant elevated access.
+New caps are hard-enforced at creation time via `UserLimits` gates (no destructive lock-out of existing content). Org creation and member seats are gated to Agency via `UserLimits::canCreateOrg()` / `canUseOrg()`.
+
+`User::planTier()` resolves: `is_master_admin` → `'agency'`; `is_pro` → `'pro'`; `is_agency` → `'agency'`; else returns `plan_tier` column value (`'free'`/`'starter'`/`'pro'`/`'agency'`). `plan_tier` is kept in sync with Stripe via a Subscription observer in `AppServiceProvider`. All `match` expressions in `UserLimits` have explicit `'pro'`/`'agency'` arms and a restrictive `default` fallback (capped at free-tier limits) so unknown/corrupted tiers never grant elevated access. The owner account `rmethodm@outlook.com` is granted `is_master_admin` (→ agency) via migration so it always retains full access.
 
 `User::isPro()` is unchanged (returns `true` for `is_master_admin`, `is_pro`, or `subscribed('default')`). `is_pro` is a boolean column on `users` that admins can toggle via the admin panel. `is_agency` is a boolean column synced by the Subscription observer when an agency price ID is active.
 
