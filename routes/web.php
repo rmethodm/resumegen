@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOrganizationController;
 use App\Http\Controllers\Admin\AdminReferralController;
+use App\Http\Controllers\Admin\AdminRevenueController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CareerController as AdminCareerController;
 use App\Http\Controllers\AdminImpersonationController;
@@ -230,6 +231,7 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::delete('/messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
     Route::get('/referrals', [AdminReferralController::class, 'index'])->name('referrals.index');
     Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
+    Route::get('/revenue', [AdminRevenueController::class, 'index'])->name('revenue.index');
 
     Route::get('/content', [AdminContentController::class, 'index'])->name('content.index');
     Route::get('/content/resumes/{resume}', [AdminContentController::class, 'showResume'])->name('content.resume.show');
