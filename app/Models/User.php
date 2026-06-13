@@ -13,12 +13,19 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'is_master_admin', 'is_pro', 'is_agency', 'plan_tier', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at', 'profile', 'referral_code', 'referred_by_user_id', 'referral_rewards_earned', 'stale_nudge_sent_at', 'portfolio_slug', 'portfolio_headline', 'portfolio_bio', 'portfolio_is_public', 'portfolio_links', 'target_role', 'industry', 'years_experience'])]
+#[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'is_master_admin', 'is_pro', 'is_agency', 'plan_tier', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at', 'profile', 'referral_code', 'referred_by_user_id', 'referral_rewards_earned', 'stale_nudge_sent_at', 'portfolio_slug', 'portfolio_headline', 'portfolio_bio', 'portfolio_is_public', 'portfolio_links', 'target_role', 'industry', 'years_experience', 'ai_limit_override', 'ai_blocked', 'ai_usage_reset_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use Billable, HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'ai_blocked' => false,
+    ];
 
     protected function casts(): array
     {
@@ -36,6 +43,8 @@ class User extends Authenticatable
             'profile' => 'array',
             'portfolio_is_public' => 'boolean',
             'portfolio_links' => 'array',
+            'ai_blocked' => 'boolean',
+            'ai_usage_reset_at' => 'datetime',
         ];
     }
 
@@ -81,6 +90,14 @@ class User extends Authenticatable
     public function resumes(): HasMany
     {
         return $this->hasMany(Resume::class);
+    }
+
+    /**
+     * @return HasMany<AiRequest, $this>
+     */
+    public function aiRequests(): HasMany
+    {
+        return $this->hasMany(AiRequest::class);
     }
 
     public function coverLetters(): HasMany

@@ -73,6 +73,10 @@ class UserLimits
 
     public static function aiMonthlyLimit(User $user): int
     {
+        if ($user->ai_limit_override !== null) {
+            return (int) $user->ai_limit_override;
+        }
+
         $limits = config('ai.monthly_limits', []);
 
         return match ($user->planTier()) {
@@ -86,14 +90,23 @@ class UserLimits
 
     public static function aiRequestsThisMonth(User $user): int
     {
+        $since = now()->startOfMonth();
+        if ($user->ai_usage_reset_at !== null && $user->ai_usage_reset_at->greaterThan($since)) {
+            $since = $user->ai_usage_reset_at;
+        }
+
         return AiRequest::where('user_id', $user->id)
             ->where('status', 'success')
-            ->where('created_at', '>=', now()->startOfMonth())
+            ->where('created_at', '>=', $since)
             ->count();
     }
 
     public static function canUseAi(User $user): bool
     {
+        if ($user->ai_blocked) {
+            return false;
+        }
+
         return self::aiRequestsThisMonth($user) < self::aiMonthlyLimit($user);
     }
 

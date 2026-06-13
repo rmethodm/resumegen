@@ -7,6 +7,13 @@ return [
     'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
 
     /*
+     * Org-level Admin API key (distinct from OPENAI_API_KEY) used only by
+     * App\Services\OpenAiUsageService to read org Costs/Usage. Optional —
+     * when absent, the admin dashboard degrades gracefully.
+     */
+    'admin_key' => env('OPENAI_ADMIN_KEY'),
+
+    /*
      * Hard cap on completion tokens per chat call. 1000 fits the longest
      * multi-line bullet rewrites (input cap is 8000 chars).
      */
