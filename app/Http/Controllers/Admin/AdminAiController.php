@@ -120,6 +120,35 @@ class AdminAiController extends Controller
         return back()->with('success', $user->ai_blocked ? 'User AI blocked.' : 'User AI unblocked.');
     }
 
+    public function flagged(): Response
+    {
+        $items = AiRequest::query()
+            ->where('status', 'flagged')
+            ->whereNotNull('flagged_text')
+            ->with('user:id,name,email')
+            ->latest()
+            ->paginate(25)
+            ->through(fn (AiRequest $r): array => [
+                'id' => $r->id,
+                'feature' => $r->feature,
+                'flagged_text' => $r->flagged_text,
+                'created_at' => $r->created_at,
+                'user' => $r->user ? ['id' => $r->user->id, 'name' => $r->user->name, 'email' => $r->user->email] : null,
+            ]);
+
+        return Inertia::render('Admin/Ai/Flagged', [
+            'items' => $items,
+            'flash' => session()->only(['success', 'error']),
+        ]);
+    }
+
+    public function destroyFlagged(AiRequest $aiRequest): RedirectResponse
+    {
+        $aiRequest->delete();
+
+        return back()->with('success', 'Flagged entry deleted.');
+    }
+
     /**
      * Normalize the period query param to a known token.
      */

@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('resumes:nudge-stale')->dailyAt('09:00');
 Schedule::command('strength-snapshots:prune')->weekly();
+Schedule::command('ai:prune-flagged')->daily();
