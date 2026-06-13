@@ -92,6 +92,14 @@ class User extends Authenticatable
         return $this->hasMany(Resume::class);
     }
 
+    /**
+     * @return HasMany<AiRequest, $this>
+     */
+    public function aiRequests(): HasMany
+    {
+        return $this->hasMany(AiRequest::class);
+    }
+
     public function coverLetters(): HasMany
     {
         return $this->hasMany(CoverLetter::class);
