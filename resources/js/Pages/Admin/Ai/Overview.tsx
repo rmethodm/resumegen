@@ -1,5 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { BarList, LineChart, Stat, fmtCents } from './Charts';
 
 type BarRow = { label: string; count: number; cost_cents: number };
@@ -22,6 +22,10 @@ export default function AiOverview({ period, totals, series, byFeature, byModel,
     return (
         <AdminLayout>
             <Head title="AI Usage" />
+            <div className="mb-4 flex items-center gap-4 text-sm">
+                <Link href={route('admin.ai.users')} className="text-indigo-600 hover:underline">Per-user usage →</Link>
+                <Link href={route('admin.ai.flagged')} className="text-indigo-600 hover:underline">Flagged content →</Link>
+            </div>
             <div className="mb-4 flex items-center justify-between">
                 <h1 className="text-xl font-semibold">AI Usage</h1>
                 <div className="flex gap-1">
