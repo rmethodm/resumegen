@@ -7,6 +7,12 @@ return [
     'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
 
     /*
+     * Hard cap on completion tokens per chat call. 1000 fits the longest
+     * multi-line bullet rewrites (input cap is 8000 chars).
+     */
+    'max_completion_tokens' => 1000,
+
+    /*
      * Per-tier monthly AI request caps. Consumed by App\Services\UserLimits.
      * Not enforced on any route yet — foundation for a future feature.
      */
