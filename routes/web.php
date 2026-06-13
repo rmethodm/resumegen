@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAiController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
@@ -206,6 +207,7 @@ Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'
 
 Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/ai', [AdminAiController::class, 'overview'])->name('ai.overview');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
     Route::patch('/users/{user}/toggle-agency', [AdminUserController::class, 'toggleAgency'])->name('users.toggle-agency');

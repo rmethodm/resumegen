@@ -17,7 +17,7 @@ const NAV = [
     { label: 'Messages',  href: safeRoute('admin.messages.index', '/admin/messages'),  pattern: 'admin.messages.*' },
     { label: 'Referrals', href: safeRoute('admin.referrals.index', '/admin/referrals'),pattern: 'admin.referrals.*' },
     { label: 'Job Titles',href: safeRoute('admin.job-titles.index', '/admin/job-titles'), pattern: 'admin.job-titles.*' },
-    { label: 'AI Rates',  href: safeRoute('admin.ai-rates.index', '/admin/ai-rates'),  pattern: 'admin.ai-rates.*' },
+    { label: 'AI Usage',  href: safeRoute('admin.ai.overview', '/admin/ai'),           pattern: 'admin.ai.*' },
     { label: 'Career',    href: safeRoute('admin.career.index', '/admin/career'),      pattern: 'admin.career.*' },
     { label: 'Usage',     href: safeRoute('admin.usage', '/admin/usage'),              pattern: 'admin.usage' },
 ];
