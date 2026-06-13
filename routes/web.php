@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAiController;
+use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
@@ -227,6 +228,7 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::patch('/messages/{message}/read', [AdminMessageController::class, 'markRead'])->name('messages.read');
     Route::delete('/messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
     Route::get('/referrals', [AdminReferralController::class, 'index'])->name('referrals.index');
+    Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
     Route::get('/job-titles', [AdminJobTitleController::class, 'index'])->name('job-titles.index');
 
     Route::delete('/job-roles', [AdminJobTitleController::class, 'bulkDestroyRoles'])->name('job-roles.bulk-destroy');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminAuditLog;
 use App\Models\AiRequest;
 use App\Models\User;
 use App\Services\AiUsageReport;
@@ -102,6 +103,8 @@ class AdminAiController extends Controller
     {
         $user->update(['ai_usage_reset_at' => now()]);
 
+        AdminAuditLog::record('ai.reset-quota', $user, "Reset monthly AI usage for {$user->email}");
+
         return back()->with('success', 'Monthly AI usage reset.');
     }
 
@@ -110,12 +113,16 @@ class AdminAiController extends Controller
         $data = $request->validate(['limit' => ['nullable', 'integer', 'min:0', 'max:100000']]);
         $user->update(['ai_limit_override' => $data['limit'] ?? null]);
 
+        AdminAuditLog::record('ai.set-limit', $user, "Set AI limit for {$user->email}", ['limit' => $data['limit'] ?? null]);
+
         return back()->with('success', 'Custom AI limit updated.');
     }
 
     public function toggleBlock(User $user): RedirectResponse
     {
         $user->update(['ai_blocked' => ! $user->ai_blocked]);
+
+        AdminAuditLog::record('ai.block', $user, ($user->ai_blocked ? 'Blocked' : 'Unblocked')." AI for {$user->email}", ['blocked' => $user->ai_blocked]);
 
         return back()->with('success', $user->ai_blocked ? 'User AI blocked.' : 'User AI unblocked.');
     }
@@ -144,6 +151,8 @@ class AdminAiController extends Controller
 
     public function destroyFlagged(AiRequest $aiRequest): RedirectResponse
     {
+        AdminAuditLog::record('ai.flagged.delete', $aiRequest, 'Deleted a flagged AI entry');
+
         $aiRequest->delete();
 
         return back()->with('success', 'Flagged entry deleted.');

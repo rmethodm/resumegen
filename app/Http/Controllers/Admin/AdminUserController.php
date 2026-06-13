@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminAuditLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -63,6 +64,8 @@ class AdminUserController extends Controller
 
         $label = $user->is_pro ? 'upgraded to Pro' : 'downgraded to Free';
 
+        AdminAuditLog::record('user.toggle-pro', $user, "{$user->email} {$label}", ['is_pro' => $user->is_pro]);
+
         return back()->with('success', "{$user->name} has been {$label}.");
     }
 
@@ -75,6 +78,8 @@ class AdminUserController extends Controller
         $user->update(['is_agency' => ! $user->is_agency]);
 
         $label = $user->is_agency ? 'upgraded to Agency' : 'downgraded from Agency';
+
+        AdminAuditLog::record('user.toggle-agency', $user, "{$user->email} {$label}", ['is_agency' => $user->is_agency]);
 
         return back()->with('success', "{$user->name} has been {$label}.");
     }
@@ -90,6 +95,9 @@ class AdminUserController extends Controller
         }
 
         $user->subscription('default')?->cancelNow();
+
+        AdminAuditLog::record('user.delete', $user, "Deleted user {$user->email}", ['name' => $user->name]);
+
         $user->delete();
 
         return back()->with('success', "{$user->name} has been deleted.");
