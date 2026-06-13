@@ -116,8 +116,19 @@ three control forms (reset quota, set/clear custom limit, toggle block).
 
 - `resources/js/Pages/Admin/Ai/Overview.tsx`, `Users.tsx`, `User.tsx`, `Flagged.tsx`.
 - Reuse the existing admin layout/nav; add an **"AI"** link to the admin navigation.
-- Charts are pure-CSS bars/lines, following `ResumeBuilder/Heatmap.tsx` — **no new
-  chart dependency**.
+- **Visual-first:** every view pairs numbers with a chart, not just tables.
+  - Overview: a **line/area chart** of daily request volume (and cost) over the
+    period; **horizontal bar charts** for the by-feature, by-model, and by-status
+    breakdowns; a **donut/stacked bar** for success vs error vs flagged; KPI
+    stat cards across the top; an our-estimate-vs-OpenAI-actual **comparison bar**.
+  - Users table: an inline **mini sparkline/bar** of recent activity per row where
+    practical, plus colored cost/usage intensity cells.
+  - Per-user detail: a small **bar chart** of that user's daily usage and a
+    used-vs-limit **progress bar**.
+- Charts are pure-CSS / inline-SVG bars, lines, and donuts, following the approach
+  in `ResumeBuilder/Heatmap.tsx` — **no new chart dependency**. A single small
+  reusable chart helper component (e.g. `Admin/Ai/Charts.tsx`) holds the
+  bar/line/donut primitives so the four pages stay focused.
 - Period selector mirrors the existing Heatmap/Analytics 7d/30d/all control.
 - Control forms use Inertia `router.patch`; success re-renders with fresh props.
 - `flagged_text` is only ever sent to master-admin pages.
