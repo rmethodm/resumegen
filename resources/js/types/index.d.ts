@@ -113,6 +113,7 @@ export interface ResumeData {
     font_family: 'sans' | 'serif' | 'mono' | null;
     contact: Contact | null;
     summary: string | null;
+    target_job_description: string | null;
     experience: ExperienceEntry[] | null;
     education: EducationEntry[] | null;
     skills: string[] | null;

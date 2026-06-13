@@ -8,6 +8,8 @@ export interface StrengthPanelHandle {
 interface Props {
     resumeId: number;
     strengthHistoryEnabled: boolean;
+    aiRemaining: number;
+    onGenerateSummary: () => void;
 }
 
 function Sparkline({ data }: { data: StrengthHistoryPoint[] }) {
@@ -33,8 +35,10 @@ function Sparkline({ data }: { data: StrengthHistoryPoint[] }) {
 }
 
 const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
-    function StrengthScorePanel({ resumeId, strengthHistoryEnabled }, ref) {
+    function StrengthScorePanel({ resumeId, strengthHistoryEnabled, aiRemaining, onGenerateSummary }, ref) {
         const [score, setScore] = useState<number | null>(null);
+        const [tip, setTip] = useState<string | null>(null);
+        const [tipKey, setTipKey] = useState<string | null>(null);
         const [checklist, setChecklist] = useState<StrengthChecklistItem[]>([]);
         const [history, setHistory] = useState<StrengthHistoryPoint[] | null>(null);
         const [loading, setLoading] = useState(false);
@@ -51,6 +55,8 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                 });
                 const json = await res.json();
                 setScore(json.score);
+                setTip(json.tip ?? null);
+                setTipKey(json.tipKey ?? null);
                 setChecklist(json.checklist ?? []);
                 setHistory(json.history ?? null);
             } finally {
@@ -108,6 +114,16 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                                         <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${score}%` }} />
                                     </div>
                                 </div>
+
+                                {/* Next-step nudge — turns the score into an action (and an AI shortcut where it fits) */}
+                                {score < 100 && tip && (
+                                    <div className="rounded-lg bg-[#eef2ff] px-3 py-2">
+                                        <p className="text-xs font-medium text-[#3730a3]">Next: {tip}</p>
+                                        {tipKey === 'summary' && aiRemaining > 0 && (
+                                            <button type="button" onClick={onGenerateSummary} className="mt-1 text-xs font-semibold text-[#4f46e5] hover:text-[#4338ca]">✨ Generate it with AI →</button>
+                                        )}
+                                    </div>
+                                )}
 
                                 {/* Checklist */}
                                 <ul className="space-y-1">

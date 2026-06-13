@@ -26,8 +26,20 @@ class StrengthScorePanelTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'score',
+            'tip',
+            'tipKey',
             'checklist' => [['label', 'pts', 'passed']],
         ]);
+    }
+
+    public function test_top_tip_is_the_highest_value_gap(): void
+    {
+        $user = User::factory()->create();
+        // Empty resume: the missing summary (15pts) should be the top tip.
+        $resume = Resume::factory()->create(['user_id' => $user->id, 'summary' => null]);
+
+        $this->actingAs($user)->get(route('builder.strength-score', $resume))
+            ->assertJson(['tipKey' => 'summary']);
     }
 
     public function test_snapshot_saved_on_first_call(): void

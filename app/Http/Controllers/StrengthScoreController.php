@@ -44,6 +44,8 @@ class StrengthScoreController extends Controller
 
         return response()->json([
             'score' => $result['score'],
+            'tip' => $result['tip'],
+            'tipKey' => $result['tipKey'],
             'checklist' => $result['checklist'],
             'history' => $history,
         ]);

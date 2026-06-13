@@ -149,6 +149,7 @@ class ResumeBuilderController extends Controller
             'canDocx' => UserLimits::canDocx($user),
             'aiRemaining' => UserLimits::aiRemaining($user),
             'aiCanUpgrade' => UserLimits::aiCanUpgrade($user),
+            'aiNextTier' => UserLimits::aiNextTier($user),
             'customSectionLimit' => UserLimits::customSectionLimit($user),
             'allowedTemplates' => UserLimits::allowedTemplates($user),
             'completionScore' => ResumeCompletionScorer::score($resume),
@@ -183,7 +184,8 @@ class ResumeBuilderController extends Controller
 
         if (isset($validated['template'])) {
             $allowed = UserLimits::allowedTemplates($request->user());
-            if (! in_array($validated['template'], $allowed, true)) {
+            // Grandfather the resume's existing template so a tier change never bounces a saved selection.
+            if ($validated['template'] !== $resume->template && ! in_array($validated['template'], $allowed, true)) {
                 return back()->with('featureGate', [
                     'feature' => 'template_access',
                     'requiredTier' => 'starter',

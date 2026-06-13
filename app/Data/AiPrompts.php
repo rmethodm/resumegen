@@ -63,14 +63,23 @@ class AiPrompts
     private static function atsKeywords(array $input): string
     {
         $role = $input['role'] ?? '';
+        $jobDescription = trim($input['job_description'] ?? '');
         $experience = json_encode($input['experience'] ?? [], JSON_UNESCAPED_SLASHES);
         $skills = json_encode($input['skills'] ?? [], JSON_UNESCAPED_SLASHES);
 
-        return <<<PROMPT
-        You are an ATS keyword analyst. For the target role "{$role}", list up to 15 important
-        keywords or skills that are commonly expected but appear MISSING from the resume content
-        below. Return ONLY a comma-separated list, no numbering, no commentary.
+        // When a target job description is provided, gaps are scored against it rather than the generic role.
+        $target = $jobDescription !== ''
+            ? 'the target job description below'
+            : "the target role \"{$role}\"";
 
+        $jobBlock = $jobDescription !== ''
+            ? "\n        Target job description: {$jobDescription}\n"
+            : '';
+
+        return <<<PROMPT
+        You are an ATS keyword analyst. List up to 15 important keywords or skills expected for {$target}
+        that appear MISSING from the resume content below. Return ONLY a comma-separated list, no numbering, no commentary.
+        {$jobBlock}
         Current skills: {$skills}
         Current experience: {$experience}
         PROMPT;

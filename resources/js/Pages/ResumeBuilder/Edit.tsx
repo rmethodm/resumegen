@@ -420,7 +420,7 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
     isFirstResume, canDocx, allowedTemplates, strengthHistoryEnabled, photoUrl, completionScore, recruiterNote,
-    skillCategoryOptions, aiRemaining,
+    skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -435,13 +435,18 @@ export default function Edit({
     skillCategoryOptions: string[];
     aiRemaining: number;
     aiCanUpgrade: boolean;
+    aiNextTier: 'starter' | 'pro' | null;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
     const [contact, setContact] = useState<Contact>(resume.contact ?? emptyContact());
     const [summary, setSummary] = useState(resume.summary ?? '');
+    const [targetJobDescription, setTargetJobDescription] = useState(resume.target_job_description ?? '');
     const [experience, setExperience] = useState<ExperienceEntry[]>(resume.experience ?? []);
     const ai = useAiSuggestion(aiRemaining);
+    // Tracks fields already rewritten by AI this session, so the button reads "Regenerate". Keys: 'summary', `exp:${id}`.
+    const [aiGenerated, setAiGenerated] = useState<Set<string>>(new Set());
+    const markGenerated = (key: string) => setAiGenerated(prev => new Set(prev).add(key));
     const [keywordGaps, setKeywordGaps] = useState<string[]>([]);
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? []);
     const [projects, setProjects] = useState<ProjectEntry[]>(resume.projects ?? []);
@@ -493,6 +498,7 @@ export default function Edit({
     const templateRef = useRef(template); templateRef.current = template;
     const contactRef = useRef(contact); contactRef.current = contact;
     const summaryRef = useRef(summary); summaryRef.current = summary;
+    const targetJobDescriptionRef = useRef(targetJobDescription); targetJobDescriptionRef.current = targetJobDescription;
     const experienceRef = useRef(experience); experienceRef.current = experience;
     const educationRef = useRef(education); educationRef.current = education;
     const projectsRef = useRef(projects); projectsRef.current = projects;
@@ -524,6 +530,7 @@ export default function Edit({
         template: templateRef.current,
         contact: contactRef.current,
         summary: summaryRef.current,
+        target_job_description: targetJobDescriptionRef.current,
         experience: experienceRef.current,
         education: educationRef.current,
         projects: projectsRef.current,
@@ -561,19 +568,41 @@ export default function Edit({
     // ── AI suggestion handlers ──
     const handleGenerateSummary = async () => {
         const data = await ai.run<{ suggestion: string }>(route('builder.ai.summary', resume.id));
-        if (data?.suggestion) { setSummary(data.suggestion); setTimeout(save, 0); }
+        if (data?.suggestion) { setSummary(data.suggestion); markGenerated('summary'); setTimeout(save, 0); }
     };
     const handleImproveExperience = async (expId: string, bullets: string | null) => {
         if (!bullets?.trim()) { return; }
         const data = await ai.run<{ suggestion: string }>(route('builder.ai.rewrite-bullet', resume.id), { text: bullets });
         if (data?.suggestion) {
             setExperience(prev => prev.map(e => e.id === expId ? { ...e, bullets: data.suggestion } : e));
+            markGenerated(`exp:${expId}`);
             setTimeout(save, 0);
         }
     };
     const handleKeywordGaps = async () => {
-        const data = await ai.run<{ keywords: string[] }>(route('builder.ai.ats-keywords', resume.id));
+        const data = await ai.run<{ keywords: string[] }>(route('builder.ai.ats-keywords', resume.id), { job_description: targetJobDescription });
         if (data?.keywords) { setKeywordGaps(data.keywords); }
+    };
+
+    // When AI credits run out, the button becomes an upgrade CTA (free→Starter, Starter→Pro)
+    // instead of a dead disabled link — the moment users are most likely to convert.
+    const aiUpgrade = () => { if (aiNextTier) { triggerUpgradeModal('ai_suggest', aiNextTier); } };
+    const renderAiButton = (opts: { idle: string; onRun: () => void; regenerated?: boolean; extraDisabled?: boolean; className?: string }) => {
+        const exhausted = ai.remaining === 0;
+        const canUpgrade = exhausted && aiCanUpgrade && aiNextTier !== null;
+        const label = canUpgrade
+            ? '✨ Out of AI credits — Upgrade →'
+            : (opts.regenerated && !exhausted ? `↺ Regenerate · ${ai.remaining} left` : opts.idle);
+        return (
+            <button
+                type="button"
+                onClick={canUpgrade ? aiUpgrade : opts.onRun}
+                disabled={ai.loadingUrl !== null || opts.extraDisabled || (exhausted && !canUpgrade)}
+                className={`text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed ${canUpgrade ? 'text-amber-600 hover:text-amber-700' : 'text-[#4f46e5] hover:text-[#4338ca]'} ${opts.className ?? ''}`}
+            >
+                {label}
+            </button>
+        );
     };
 
     // First-run wizard: 0=welcome, 1=contact, 2=done
@@ -660,8 +689,15 @@ export default function Edit({
                                 <div className="space-y-1.5">
                                     <div className="flex items-center gap-1.5"><SwatchIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" /><span className="text-xs font-medium text-[#71717a]">Template</span></div>
                                     <select aria-label="Resume template" value={template} onChange={e => { setTemplate(e.target.value as ResumeTemplate); setTimeout(save, 0); }} className="w-full rounded-md border-[#eeeef5] text-xs text-[#0f0f1a] shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]">
-                                        {allowedTemplates.map(t => <option key={t} value={t}>{TEMPLATE_LABELS[t] ?? t}</option>)}
+                                        {Object.keys(TEMPLATE_LABELS).map(t => {
+                                            // Show every template so free users see what's behind the paywall; lock the unavailable ones (except one already in use).
+                                            const locked = !allowedTemplates.includes(t) && t !== template;
+                                            return <option key={t} value={t} disabled={locked}>{locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}</option>;
+                                        })}
                                     </select>
+                                    {allowedTemplates.length < Object.keys(TEMPLATE_LABELS).length && (
+                                        <button type="button" onClick={() => triggerUpgradeModal('template_access', 'starter')} className="text-[10px] font-medium text-amber-600 hover:text-amber-700">🔒 Unlock {Object.keys(TEMPLATE_LABELS).length - allowedTemplates.length} more templates →</button>
+                                    )}
                                     {NON_ATS_TEMPLATES.includes(template) && <p className="text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
                                 </div>
                             ) : (
@@ -733,7 +769,7 @@ export default function Edit({
                                 <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
                             )}
                         </div>
-                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} strengthHistoryEnabled={strengthHistoryEnabled} />}
+                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} strengthHistoryEnabled={strengthHistoryEnabled} aiRemaining={ai.remaining} onGenerateSummary={handleGenerateSummary} />}
                     </div>
                 </aside>
 
@@ -799,7 +835,12 @@ export default function Edit({
                             )}
                         </div>
 
-                        <div className="px-1 pb-1 text-xs text-[#a0a0b0]">✨ {ai.remaining} AI uses left this month</div>
+                        <div className="px-1 pb-1 text-xs text-[#a0a0b0]">
+                            ✨ {ai.remaining} AI uses left this month
+                            {ai.remaining === 0 && aiCanUpgrade && aiNextTier && (
+                                <> · <button type="button" onClick={aiUpgrade} className="font-medium text-amber-600 underline hover:text-amber-700">Upgrade for more</button></>
+                            )}
+                        </div>
 
                         {/* Draggable sections */}
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
@@ -818,7 +859,7 @@ export default function Edit({
                                                 rows={5}
                                             />
                                             <div className="flex items-center justify-between">
-                                                <button type="button" onClick={handleGenerateSummary} disabled={ai.remaining === 0 || ai.loadingUrl !== null} className="text-xs font-medium text-[#4f46e5] hover:text-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed">✨ Generate with AI</button>
+                                                {renderAiButton({ idle: '✨ Generate with AI', onRun: handleGenerateSummary, regenerated: aiGenerated.has('summary') })}
                                                 <p className="text-right text-xs text-[#a0a0b0]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
                                             </div>
                                         </DraggableSection>
@@ -842,7 +883,7 @@ export default function Edit({
                                                     <div>
                                                         <FLabel>Bullet Points <span className="text-[#a0a0b0] font-normal">(one per line)</span></FLabel>
                                                         <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
-                                                        <button type="button" onClick={() => handleImproveExperience(exp.id, exp.bullets)} disabled={ai.remaining === 0 || ai.loadingUrl !== null || !exp.bullets?.trim()} className="mt-1 text-xs font-medium text-[#4f46e5] hover:text-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed">✨ Improve with AI</button>
+                                                        {renderAiButton({ idle: '✨ Improve with AI', onRun: () => handleImproveExperience(exp.id, exp.bullets), regenerated: aiGenerated.has(`exp:${exp.id}`), extraDisabled: !exp.bullets?.trim(), className: 'mt-1' })}
                                                     </div>
                                                 </EntryCard>
                                             ))}
@@ -892,8 +933,16 @@ export default function Edit({
                                     // ── Skills ──
                                     if (key === 'skills') return (
                                         <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')}>
-                                            <div className="pb-1">
-                                                <button type="button" onClick={handleKeywordGaps} disabled={ai.remaining === 0 || ai.loadingUrl !== null} className="text-xs font-medium text-[#4f46e5] hover:text-[#4338ca] disabled:opacity-40 disabled:cursor-not-allowed">✨ Find ATS keyword gaps</button>
+                                            <div className="pb-1 space-y-1.5">
+                                                <FLabel>Target Job Description <span className="text-[#a0a0b0] font-normal">(optional — paste a posting to tailor keyword gaps)</span></FLabel>
+                                                <FTextarea
+                                                    value={targetJobDescription}
+                                                    onChange={setTargetJobDescription}
+                                                    onBlur={save}
+                                                    placeholder="Paste the job description you're targeting. AI will find which keywords from it are missing from your resume."
+                                                    rows={4}
+                                                />
+                                                {renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
                                                 {keywordGaps.length > 0 && (
                                                     <div className="mt-2 flex flex-wrap gap-1">
                                                         {keywordGaps.map(k => (
