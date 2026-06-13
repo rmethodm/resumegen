@@ -7,6 +7,7 @@ use App\Http\Middleware\EnsureOrgAdmin;
 use App\Http\Middleware\EnsureTwoFactorSetup;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RequiresTwoFactorChallenge;
+use App\Http\Middleware\TrackActivity;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+            TrackActivity::class,
         ]);
 
         $middleware->alias([
