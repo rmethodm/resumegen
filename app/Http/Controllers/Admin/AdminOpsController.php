@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdminAuditLog;
+use App\Models\SystemEvent;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Artisan;
@@ -25,6 +26,7 @@ class AdminOpsController extends Controller
             'failedJobs' => $this->failedJobs(),
             'schedule' => $this->schedule(),
             'health' => $this->health(),
+            'recentEvents' => $this->recentEvents(),
         ]);
     }
 
@@ -67,6 +69,26 @@ class AdminOpsController extends Controller
                     'exception_summary' => strtok((string) $row->exception, "\n") ?: '',
                 ];
             })
+            ->all();
+    }
+
+    /**
+     * @return array<int, array{id: int, channel: string, type: string, status: string, recipient: string|null, created_at: mixed}>
+     */
+    private function recentEvents(): array
+    {
+        return SystemEvent::query()
+            ->latest()
+            ->limit(50)
+            ->get()
+            ->map(fn (SystemEvent $e): array => [
+                'id' => $e->id,
+                'channel' => $e->channel,
+                'type' => $e->type,
+                'status' => $e->status,
+                'recipient' => $e->recipient,
+                'created_at' => $e->created_at,
+            ])
             ->all();
     }
 

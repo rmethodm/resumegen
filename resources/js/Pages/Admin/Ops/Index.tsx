@@ -14,9 +14,17 @@ type Props = {
     }[];
     schedule: { command: string; expression: string }[];
     health: { key: string; ok: boolean; detail: string }[];
+    recentEvents: {
+        id: number;
+        channel: string;
+        type: string;
+        status: string;
+        recipient: string | null;
+        created_at: string | null;
+    }[];
 };
 
-export default function OpsIndex({ queue, failedJobs, schedule, health }: Props) {
+export default function OpsIndex({ queue, failedJobs, schedule, health, recentEvents }: Props) {
     const retry = (uuid: string) => {
         if (confirm('Re-queue this job?')) router.post(route('admin.ops.retry', uuid), {}, { preserveScroll: true });
     };
@@ -72,6 +80,31 @@ export default function OpsIndex({ queue, failedJobs, schedule, health }: Props)
                         </tbody>
                     </table>
                     {failedJobs.length === 0 && <p className="mt-3 text-gray-400">No failed jobs. 🎉</p>}
+                </div>
+
+                <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4">
+                    <h2 className="mb-3 text-sm font-semibold text-gray-700">Recent deliveries</h2>
+                    <table className="w-full text-sm">
+                        <thead className="text-left text-gray-500">
+                            <tr><th className="py-1">Channel</th><th>Type</th><th>Recipient</th><th>Status</th><th>When</th></tr>
+                        </thead>
+                        <tbody>
+                            {recentEvents.map((e) => (
+                                <tr key={e.id} className="border-t border-gray-100">
+                                    <td className="py-2">
+                                        <span className={`rounded px-1.5 py-0.5 text-xs ${e.channel === 'mail' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+                                            {e.channel === 'mail' ? 'mail' : 'stripe'}
+                                        </span>
+                                    </td>
+                                    <td className="font-medium">{e.type}</td>
+                                    <td className="text-gray-500">{e.recipient ?? '—'}</td>
+                                    <td className="text-gray-500">{e.status}</td>
+                                    <td className="whitespace-nowrap text-gray-500">{e.created_at ? new Date(e.created_at).toLocaleString() : '—'}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {recentEvents.length === 0 && <p className="mt-3 text-gray-400">No deliveries recorded yet.</p>}
                 </div>
 
                 <div className="rounded-lg border border-gray-200 bg-white p-4">
