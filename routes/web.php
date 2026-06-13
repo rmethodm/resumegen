@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminContentController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
+use App\Http\Controllers\Admin\AdminOpsController;
 use App\Http\Controllers\Admin\AdminOrganizationController;
 use App\Http\Controllers\Admin\AdminReferralController;
 use App\Http\Controllers\Admin\AdminRevenueController;
@@ -232,6 +233,10 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::get('/referrals', [AdminReferralController::class, 'index'])->name('referrals.index');
     Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
     Route::get('/revenue', [AdminRevenueController::class, 'index'])->name('revenue.index');
+
+    Route::get('/ops', [AdminOpsController::class, 'index'])->name('ops.index');
+    Route::post('/ops/failed/{uuid}/retry', [AdminOpsController::class, 'retryFailed'])->name('ops.retry');
+    Route::delete('/ops/failed/{uuid}', [AdminOpsController::class, 'forgetFailed'])->name('ops.forget');
 
     Route::get('/content', [AdminContentController::class, 'index'])->name('content.index');
     Route::get('/content/resumes/{resume}', [AdminContentController::class, 'showResume'])->name('content.resume.show');
