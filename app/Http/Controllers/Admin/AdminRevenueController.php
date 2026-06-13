@@ -38,6 +38,7 @@ class AdminRevenueController extends Controller
             ],
             'tierBars' => $tierBars,
             'series' => $this->report->newSubscriptionsSeries($period),
+            'mrrSeries' => $this->report->mrrSeries($period),
             'recent' => $this->report->recentSubscriptions(),
             'liveActiveSubscriptions' => $this->report->liveActiveSubscriptions(),
         ]);

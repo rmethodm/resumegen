@@ -7,6 +7,7 @@ type Props = {
     kpis: { mrr_cents: number; active_subscriptions: number; paying_users: number; free_users: number };
     tierBars: { label: string; count: number; cost_cents: number }[];
     series: { date: string; count: number; cost_cents: number }[];
+    mrrSeries: { date: string; count: number; cost_cents: number }[];
     recent: {
         id: number;
         user_name: string | null;
@@ -24,7 +25,7 @@ const PERIODS = [
     { key: 'all', label: 'All time' },
 ];
 
-export default function RevenueIndex({ period, kpis, tierBars, series, recent, liveActiveSubscriptions }: Props) {
+export default function RevenueIndex({ period, kpis, tierBars, series, mrrSeries, recent, liveActiveSubscriptions }: Props) {
     return (
         <AdminLayout>
             <Head title="Revenue" />
@@ -67,6 +68,13 @@ export default function RevenueIndex({ period, kpis, tierBars, series, recent, l
                     <div className="rounded-lg border border-gray-200 bg-white p-4">
                         <h2 className="mb-3 text-sm font-semibold text-gray-700">New subscriptions</h2>
                         <LineChart series={series} />
+                    </div>
+                    <div className="rounded-lg border border-gray-200 bg-white p-4">
+                        <h2 className="mb-3 text-sm font-semibold text-gray-700">MRR over time</h2>
+                        <LineChart series={mrrSeries} />
+                        {mrrSeries.length === 0 && (
+                            <p className="mt-2 text-xs text-gray-400">Daily snapshots start accruing after the first <code>revenue:snapshot</code> run.</p>
+                        )}
                     </div>
                 </div>
 

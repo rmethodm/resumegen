@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\RevenueSnapshot;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -84,6 +85,27 @@ class RevenueReport
                 'date' => (string) $row->date,
                 'count' => (int) $row->count,
                 'cost_cents' => 0,
+            ])
+            ->all();
+    }
+
+    /**
+     * Historical MRR from daily snapshots, shaped for the shared LineChart.
+     *
+     * @return array<int, array{date: string, count: int, cost_cents: int}>
+     */
+    public function mrrSeries(string $period): array
+    {
+        $since = $this->since($period);
+
+        return RevenueSnapshot::query()
+            ->when($since, fn ($q) => $q->where('captured_on', '>=', $since->toDateString()))
+            ->orderBy('captured_on')
+            ->get()
+            ->map(fn (RevenueSnapshot $s): array => [
+                'date' => $s->captured_on->toDateString(),
+                'count' => (int) round($s->mrr_cents / 100),
+                'cost_cents' => (int) $s->mrr_cents,
             ])
             ->all();
     }

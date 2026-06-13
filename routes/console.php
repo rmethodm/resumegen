@@ -12,3 +12,4 @@ Schedule::command('resumes:nudge-stale')->dailyAt('09:00');
 Schedule::command('strength-snapshots:prune')->weekly();
 Schedule::command('ai:prune-flagged')->daily();
 Schedule::command('system-events:prune')->daily();
+Schedule::command('revenue:snapshot')->dailyAt('23:55');
