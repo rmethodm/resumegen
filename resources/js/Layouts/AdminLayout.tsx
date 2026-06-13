@@ -21,6 +21,7 @@ const NAV = [
     { label: 'Revenue',   href: safeRoute('admin.revenue.index', '/admin/revenue'),     pattern: 'admin.revenue.*' },
     { label: 'Content',   href: safeRoute('admin.content.index', '/admin/content'),     pattern: 'admin.content.*' },
     { label: 'Audit Log', href: safeRoute('admin.audit.index', '/admin/audit'),        pattern: 'admin.audit.*' },
+    { label: 'Ops',       href: safeRoute('admin.ops.index', '/admin/ops'),            pattern: 'admin.ops.*' },
     { label: 'Career',    href: safeRoute('admin.career.index', '/admin/career'),      pattern: 'admin.career.*' },
     { label: 'Usage',     href: safeRoute('admin.usage', '/admin/usage'),              pattern: 'admin.usage' },
 ];
