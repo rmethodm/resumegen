@@ -13,23 +13,37 @@ class UserLimits
         'skills-first', 'academic', 'bold',
     ];
 
+    /** Templates available on the free tier; Starter+ unlocks the rest. */
+    private const FREE_TEMPLATES = ['classic', 'modern', 'minimal', 'ats'];
+
     public static function resumeLimit(User $user): ?int
     {
         return match ($user->planTier()) {
-            'starter' => 5,
+            'starter' => 10,
             'pro', 'agency' => null,
-            default => 5, // free or unknown — cap at 5
+            default => 2, // free or unknown — cap at 2
         };
     }
 
     public static function coverLetterLimit(User $user): ?int
     {
         return match ($user->planTier()) {
-            'free' => 3,
-            'starter' => 5,
+            'free' => 1,
+            'starter' => 10,
             'pro', 'agency' => null,
-            default => 3, // unknown — most restrictive
+            default => 1, // unknown — most restrictive
         };
+    }
+
+    /** Team workspace + member seats are Agency-only. */
+    public static function canCreateOrg(User $user): bool
+    {
+        return $user->planTier() === 'agency';
+    }
+
+    public static function canUseOrg(User $user): bool
+    {
+        return $user->planTier() === 'agency';
     }
 
     public static function jobLimit(User $user): ?int
@@ -39,8 +53,7 @@ class UserLimits
 
     public static function allowedTemplates(User $user): array
     {
-        // All templates available to all tiers — kept for API compatibility
-        return self::ALL_TEMPLATES;
+        return $user->isAtLeastStarter() ? self::ALL_TEMPLATES : self::FREE_TEMPLATES;
     }
 
     public static function canDocx(User $user): bool

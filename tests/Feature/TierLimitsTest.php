@@ -13,16 +13,16 @@ class TierLimitsTest extends TestCase
 
     // ── resumeLimit ────────────────────────────────────────────────────────────
 
-    public function test_free_user_resume_limit_is_5(): void
+    public function test_free_user_resume_limit_is_2(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(5, UserLimits::resumeLimit($user));
+        $this->assertSame(2, UserLimits::resumeLimit($user));
     }
 
-    public function test_starter_user_resume_limit_is_5(): void
+    public function test_starter_user_resume_limit_is_10(): void
     {
         $user = User::factory()->starter()->create();
-        $this->assertSame(5, UserLimits::resumeLimit($user));
+        $this->assertSame(10, UserLimits::resumeLimit($user));
     }
 
     public function test_pro_user_resume_limit_is_null(): void
@@ -33,16 +33,16 @@ class TierLimitsTest extends TestCase
 
     // ── coverLetterLimit ───────────────────────────────────────────────────────
 
-    public function test_free_user_cover_letter_limit_is_3(): void
+    public function test_free_user_cover_letter_limit_is_1(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(3, UserLimits::coverLetterLimit($user));
+        $this->assertSame(1, UserLimits::coverLetterLimit($user));
     }
 
-    public function test_starter_user_cover_letter_limit_is_5(): void
+    public function test_starter_user_cover_letter_limit_is_10(): void
     {
         $user = User::factory()->starter()->create();
-        $this->assertSame(5, UserLimits::coverLetterLimit($user));
+        $this->assertSame(10, UserLimits::coverLetterLimit($user));
     }
 
     public function test_pro_user_cover_letter_limit_is_null(): void
@@ -67,17 +67,14 @@ class TierLimitsTest extends TestCase
 
     // ── allowedTemplates ──────────────────────────────────────────────────────
 
-    public function test_free_user_gets_all_templates(): void
+    public function test_free_user_gets_only_free_templates(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $allowed = UserLimits::allowedTemplates($user);
-        $this->assertCount(9, $allowed);
-        $this->assertContains('classic', $allowed);
-        $this->assertContains('modern', $allowed);
-        $this->assertContains('ats', $allowed);
-        $this->assertContains('skills-first', $allowed);
-        $this->assertContains('academic', $allowed);
-        $this->assertContains('bold', $allowed);
+        $this->assertEqualsCanonicalizing(['classic', 'modern', 'minimal', 'ats'], $allowed);
+        $this->assertNotContains('executive', $allowed);
+        $this->assertNotContains('academic', $allowed);
+        $this->assertNotContains('bold', $allowed);
     }
 
     public function test_starter_user_gets_all_templates(): void
@@ -108,10 +105,10 @@ class TierLimitsTest extends TestCase
 
     // ── planTier ──────────────────────────────────────────────────────────────
 
-    public function test_master_admin_always_returns_pro_tier(): void
+    public function test_master_admin_resolves_to_agency_tier(): void
     {
         $user = User::factory()->create(['is_master_admin' => true, 'plan_tier' => 'free']);
-        $this->assertSame('pro', $user->planTier());
+        $this->assertSame('agency', $user->planTier());
     }
 
     public function test_is_pro_flag_returns_pro_tier(): void
@@ -169,5 +166,30 @@ class TierLimitsTest extends TestCase
     public function test_unknown_price_resolves_to_free(): void
     {
         $this->assertSame('free', UserLimits::tierFromPriceId('price_unknown'));
+    }
+
+    // ── aiMonthlyLimit ────────────────────────────────────────────────────────
+
+    public function test_ai_monthly_limits_per_tier(): void
+    {
+        $this->assertSame(25, UserLimits::aiMonthlyLimit(User::factory()->create(['plan_tier' => 'free'])));
+        $this->assertSame(150, UserLimits::aiMonthlyLimit(User::factory()->starter()->create()));
+        $this->assertSame(500, UserLimits::aiMonthlyLimit(User::factory()->pro()->create()));
+        $this->assertSame(1000, UserLimits::aiMonthlyLimit(User::factory()->agency()->create()));
+    }
+
+    // ── canCreateOrg ──────────────────────────────────────────────────────────
+
+    public function test_only_agency_can_create_org(): void
+    {
+        $this->assertFalse(UserLimits::canCreateOrg(User::factory()->create(['plan_tier' => 'free'])));
+        $this->assertFalse(UserLimits::canCreateOrg(User::factory()->starter()->create()));
+        $this->assertFalse(UserLimits::canCreateOrg(User::factory()->pro()->create()));
+        $this->assertTrue(UserLimits::canCreateOrg(User::factory()->agency()->create()));
+    }
+
+    public function test_master_admin_can_create_org(): void
+    {
+        $this->assertTrue(UserLimits::canCreateOrg(User::factory()->create(['is_master_admin' => true])));
     }
 }

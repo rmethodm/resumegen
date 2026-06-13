@@ -41,12 +41,18 @@ class User extends Authenticatable
 
     public function isPro(): bool
     {
-        return $this->planTier() === 'pro' || $this->subscribed('default');
+        return $this->is_master_admin
+            || in_array($this->planTier(), ['pro', 'agency'], true)
+            || $this->subscribed('default');
     }
 
     public function planTier(): string
     {
-        if ($this->is_master_admin || $this->is_pro) {
+        if ($this->is_master_admin) {
+            return 'agency';
+        }
+
+        if ($this->is_pro) {
             return 'pro';
         }
 

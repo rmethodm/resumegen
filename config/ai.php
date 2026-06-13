@@ -11,10 +11,10 @@ return [
      * Not enforced on any route yet — foundation for a future feature.
      */
     'monthly_limits' => [
-        'free' => 10,
-        'starter' => 100,
-        'pro' => 1000,
-        'agency' => 5000,
+        'free' => 25,
+        'starter' => 150,
+        'pro' => 500,
+        'agency' => 1000,
     ],
 
     /*
