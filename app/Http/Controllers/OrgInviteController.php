@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\OrgInviteMail;
 use App\Models\Organization;
 use App\Models\OrganizationMember;
+use App\Services\UserLimits;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -17,6 +18,10 @@ class OrgInviteController extends Controller
     {
         $org = Organization::where('owner_id', $request->user()->id)->firstOrFail();
         $this->authorize('invite', $org);
+
+        if (! UserLimits::canUseOrg($request->user())) {
+            return back()->with('featureGate', ['feature' => 'team_workspace', 'requiredTier' => 'agency']);
+        }
 
         $request->validate(['email' => ['required', 'email', 'max:255']]);
 

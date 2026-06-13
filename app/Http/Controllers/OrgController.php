@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use App\Models\OrganizationMember;
+use App\Services\UserLimits;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -14,6 +15,10 @@ class OrgController extends Controller
 {
     public function show(Request $request): Response|RedirectResponse
     {
+        if (! UserLimits::canUseOrg($request->user())) {
+            return redirect()->route('dashboard')->with('featureGate', ['feature' => 'team_workspace', 'requiredTier' => 'agency']);
+        }
+
         $org = Organization::where('owner_id', $request->user()->id)->first();
 
         if (! $org) {
@@ -60,6 +65,10 @@ class OrgController extends Controller
 
     public function create(Request $request): Response|RedirectResponse
     {
+        if (! UserLimits::canCreateOrg($request->user())) {
+            return back()->with('featureGate', ['feature' => 'team_workspace', 'requiredTier' => 'agency']);
+        }
+
         if (Organization::where('owner_id', $request->user()->id)->exists()) {
             return redirect()->route('org.show');
         }
@@ -69,6 +78,10 @@ class OrgController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        if (! UserLimits::canCreateOrg($request->user())) {
+            return back()->with('featureGate', ['feature' => 'team_workspace', 'requiredTier' => 'agency']);
+        }
+
         if (Organization::where('owner_id', $request->user()->id)->exists()) {
             return redirect()->route('org.show');
         }
