@@ -274,6 +274,16 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                     ) : pageRows.map(r => (
                                         <tr key={r.id} className="border-b border-[#f5f5fb] transition-colors hover:bg-[#fafafe]">
                                             <td className="px-5 py-4">
+                                                <div className="flex items-start gap-3">
+                                                    <Link href={route('builder.edit', r.id)} className="shrink-0">
+                                                        <img
+                                                            src={route('builder.thumbnail', r.id)}
+                                                            loading="lazy"
+                                                            alt=""
+                                                            className="h-16 w-12 rounded border border-[#eeeef5] bg-[#fafafe] object-cover object-top"
+                                                        />
+                                                    </Link>
+                                                    <div className="min-w-0">
                                                 <div className="flex items-center gap-2">
                                                     <Link href={route('builder.edit', r.id)} className="font-bold text-[#0f0f1a] hover:text-[#4f46e5]">
                                                         {r.name}
@@ -350,6 +360,8 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                                     )}
                                                 </div>
                                                 {/* Linked job picker — only for tailored copies */}
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(r.updated_at)}</td>
                                             <td className="px-5 py-4">
