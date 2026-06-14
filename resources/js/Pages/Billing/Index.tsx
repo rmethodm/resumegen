@@ -12,7 +12,7 @@ type Props = {
 };
 
 const PLAN_FEATURES: Record<string, string[]> = {
-    free:    ['2 resumes', '1 cover letter', '3 job applications', '4 templates', '25 AI generations/month'],
+    free:    ['2 resumes', '1 cover letter', '3 job applications', '4 templates', '10 AI generations/month'],
     starter: ['10 resumes', '10 cover letters', 'Unlimited job tracking', 'All 9 templates', 'DOCX export', 'ATS scoring', '150 AI generations/month'],
     pro:     ['Unlimited resumes & cover letters', 'All templates (current + future)', 'DOCX export', 'ATS scoring', 'API access', '500 AI generations/month'],
     agency:  ['Team workspace + member seats', 'Everything in Pro', 'Invite candidates as members', 'Per-resume recruiter notes', 'Org dashboard with all member resumes', '1000 AI generations/month'],
@@ -75,7 +75,7 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, aiUsed, a
                                         <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed]" style={{ width: `${usagePct}%` }} />
                                     </div>
                                     {aiLimit !== null && (
-                                        <p className="mt-1 text-xs text-[#71717a]">{aiUsed} of {aiLimit} lifetime AI credits used</p>
+                                        <p className="mt-1 text-xs text-[#71717a]">{aiUsed} of {aiLimit} monthly AI credits used</p>
                                     )}
                                 </>
                             )}

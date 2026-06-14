@@ -107,7 +107,7 @@ export default function Welcome({ auth }: PageProps) {
 
                     {/* Subtext */}
                     <p className="mx-auto mb-8 max-w-lg text-base leading-relaxed text-[#6b7280] sm:text-lg">
-                        Build a polished resume with 8 ATS-friendly templates, track your applications, and share your resume with a link recruiters can actually find.
+                        Build a polished resume with 9 ATS-friendly templates, track your applications, and share your resume with a link recruiters can actually find.
                     </p>
 
                     {/* CTAs */}
@@ -315,9 +315,9 @@ export default function Welcome({ auth }: PageProps) {
                     <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-10 gap-y-3">
                         {[
                             { num: '2,400+', label: 'resumes built' },
-                            { num: '8',      label: 'ATS-ready templates' },
+                            { num: '9',      label: 'resume templates' },
                             { num: 'Free',   label: 'to get started' },
-                            { num: '13',     label: 'resume templates' },
+                            { num: '10',     label: 'free AI credits/mo' },
                         ].map(({ num, label }) => (
                             <div key={label} className="flex items-center gap-2">
                                 <span className="text-lg font-black text-[#0f172a]">{num}</span>
@@ -348,7 +348,7 @@ export default function Welcome({ auth }: PageProps) {
                                 {
                                     n: '2',
                                     title: 'Craft your content',
-                                    desc: 'Write strong bullet points and a compelling summary. Choose from 13 professional templates to make it stand out.',
+                                    desc: 'Write strong bullet points and a compelling summary. Choose from 9 professional templates to make it stand out.',
                                 },
                                 {
                                     n: '3',
@@ -381,9 +381,9 @@ export default function Welcome({ auth }: PageProps) {
                             {[
                                 {
                                     icon: '✦',
-                                    title: '13 Professional Templates',
-                                    desc: 'From Classic and ATS-optimized to Modern, Executive, and Creative — all templates included on every plan.',
-                                    tag: 'All templates free',
+                                    title: '9 Professional Templates',
+                                    desc: 'From Classic and ATS-optimized to Modern, Executive, and Bold — 4 free, all 9 unlocked on Starter.',
+                                    tag: '4 free · 9 total',
                                 },
                                 {
                                     icon: '◈',
@@ -441,7 +441,7 @@ export default function Welcome({ auth }: PageProps) {
                                 </div>
                                 <p className="mb-5 text-xs text-[#9ca3af]">Forever free</p>
                                 <ul className="mb-6 space-y-2">
-                                    {['5 resumes', '3 cover letters', 'All 13 templates', 'Public share links', 'Job tracker (3 apps)'].map((f) => (
+                                    {['2 resumes', '1 cover letter', '4 templates', '10 AI generations/mo', 'Public share links', 'Job tracker (3 apps)'].map((f) => (
                                         <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                             <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
                                         </li>
@@ -473,12 +473,14 @@ export default function Welcome({ auth }: PageProps) {
                                 <p className="mb-5 text-xs text-[#9ca3af]">Everything in Free, plus:</p>
                                 <ul className="mb-6 space-y-2">
                                     {[
+                                        '10 resumes',
+                                        '10 cover letters',
+                                        'All 9 templates',
+                                        '150 AI generations/mo',
                                         'DOCX export',
                                         'PDF import',
-                                        '5 cover letters',
                                         'Unlimited job apps',
                                         'Portfolio page',
-                                        'Referral rewards',
                                     ].map((f) => (
                                         <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                             <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
@@ -505,6 +507,8 @@ export default function Welcome({ auth }: PageProps) {
                                     {[
                                         'Unlimited resumes',
                                         'Unlimited cover letters',
+                                        '500 AI generations/mo',
+                                        'API access',
                                         'Priority support',
                                         'Early access to new features',
                                     ].map((f) => (
