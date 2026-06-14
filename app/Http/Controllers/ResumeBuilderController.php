@@ -149,6 +149,7 @@ class ResumeBuilderController extends Controller
             'threads' => $threads,
             'isFirstResume' => $isFirstResume,
             'canDocx' => UserLimits::canDocx($user),
+            'canAiTailoring' => UserLimits::canAiTailoring($user),
             'aiRemaining' => UserLimits::aiRemaining($user),
             'aiCanUpgrade' => UserLimits::aiCanUpgrade($user),
             'aiNextTier' => UserLimits::aiNextTier($user),
@@ -164,6 +165,7 @@ class ResumeBuilderController extends Controller
                 'years_experience' => $user->years_experience,
             ],
             'recruiterNote' => $this->getRecruiterNote($request->user(), $resume),
+            'isFreeTier' => $user->planTier() === 'free',
         ]);
     }
 
@@ -311,8 +313,10 @@ class ResumeBuilderController extends Controller
 
     private function buildPdf(Resume $resume): \Barryvdh\DomPDF\PDF
     {
-        return Pdf::loadView('resume-pdf', ['resume' => $resume])
-            ->setPaper('letter', 'portrait');
+        return Pdf::loadView('resume-pdf', [
+            'resume' => $resume,
+            'watermark' => $resume->user?->planTier() === 'free',
+        ])->setPaper('letter', 'portrait');
     }
 
     public function beacon(Request $request, Resume $resume)
