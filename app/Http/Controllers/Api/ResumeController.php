@@ -78,8 +78,10 @@ class ResumeController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $pdf = Pdf::loadView('resume-pdf', ['resume' => $resume])
-            ->setPaper('letter', 'portrait');
+        $pdf = Pdf::loadView('resume-pdf', [
+            'resume' => $resume,
+            'watermark' => $resume->user?->planTier() === 'free',
+        ])->setPaper('letter', 'portrait');
 
         return $pdf->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
     }
