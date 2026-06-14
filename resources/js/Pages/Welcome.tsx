@@ -314,7 +314,7 @@ export default function Welcome({ auth }: PageProps) {
                 <div className="border-y border-[#f1f5f9] bg-[#f8fafc] py-4 px-6">
                     <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-10 gap-y-3">
                         {[
-                            { num: '2,400+', label: 'resumes built' },
+                            { num: 'No card', label: 'needed to start' },
                             { num: '9',      label: 'resume templates' },
                             { num: 'Free',   label: 'to get started' },
                             { num: '10',     label: 'free AI credits/mo' },
