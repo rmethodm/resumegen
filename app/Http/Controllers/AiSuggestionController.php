@@ -42,6 +42,14 @@ class AiSuggestionController extends Controller
     public function atsKeywords(Request $request, Resume $resume): JsonResponse
     {
         $this->authorize('update', $resume);
+
+        if (! UserLimits::canAiTailoring($request->user())) {
+            return response()->json([
+                'error' => 'AI job tailoring is a Starter feature.',
+                'required_tier' => 'starter',
+            ], 402);
+        }
+
         $data = $request->validate([
             'role' => ['nullable', 'string', 'max:200'],
             'job_description' => ['nullable', 'string', 'max:10000'],

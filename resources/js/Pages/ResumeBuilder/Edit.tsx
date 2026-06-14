@@ -419,14 +419,15 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
-    isFirstResume, canDocx, allowedTemplates, strengthHistoryEnabled, photoUrl, completionScore, recruiterNote,
-    skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier,
+    isFirstResume, canDocx, canAiTailoring, allowedTemplates, strengthHistoryEnabled, photoUrl, completionScore, recruiterNote,
+    skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier, isFreeTier,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
     threads: { id: number; sender_name: string; sender_email: string; is_read: boolean; created_at: string }[];
     isFirstResume: boolean;
     canDocx: boolean;
+    canAiTailoring: boolean;
     allowedTemplates: string[];
     strengthHistoryEnabled: boolean;
     photoUrl: string | null;
@@ -436,6 +437,7 @@ export default function Edit({
     aiRemaining: number;
     aiCanUpgrade: boolean;
     aiNextTier: 'starter' | 'pro' | null;
+    isFreeTier: boolean;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -482,7 +484,7 @@ export default function Edit({
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
     const [showPreview, setShowPreview] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
     const [pdfSrc, setPdfSrc] = useState(() => freshPdfSrc(resume.id));
 
     const [openSections, setOpenSections] = useState({
@@ -741,6 +743,38 @@ export default function Edit({
                                 <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors" title="Font"><span className="text-sm font-bold">Aa</span></button>
                             )}
                         </div>
+                        {sidebarOpen && (
+                            <div>
+                                <button type="button" onClick={() => toggleSection('fontSizes')} className="flex w-full items-center justify-between text-left">
+                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#71717a]">↕</span><span className="text-xs font-medium text-[#71717a]">Text size</span></div>
+                                    <svg className={`h-3.5 w-3.5 text-[#a0a0b0] transition-transform ${openSections.fontSizes ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                                </button>
+                                {openSections.fontSizes && (
+                                    <div className="mt-2 space-y-2">
+                                        <div className="flex justify-end">
+                                            <button type="button" onClick={() => { setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#a0a0b0] hover:text-[#4f46e5] transition-colors">Reset</button>
+                                        </div>
+                                        {([
+                                            { label: 'Name', key: 'name', min: 12, max: 36 },
+                                            { label: 'Contact Info', key: 'contact', min: 6, max: 16 },
+                                            { label: 'Section Headings', key: 'heading', min: 8, max: 20 },
+                                            { label: 'Body Text', key: 'body', min: 8, max: 16 },
+                                            { label: 'Section Spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                            { label: 'Entry Spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                            <div key={key} className="flex items-center justify-between gap-1">
+                                                <span className="truncate text-xs text-[#71717a]">{label}</span>
+                                                <div className="flex shrink-0 items-center gap-0.5">
+                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.max(min, +(fontSizesRef.current[key] - 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#c7d2fe] bg-[#eef2ff] text-[#4f46e5] hover:bg-[#e0e7ff]">−</button>
+                                                    <span className="w-7 text-center text-xs font-medium tabular-nums text-[#23232d]">{fontSizes[key]}</span>
+                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.min(max, +(fontSizesRef.current[key] + 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#c7d2fe] bg-[#eef2ff] text-[#4f46e5] hover:bg-[#e0e7ff]">+</button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                         {sidebarOpen && template === 'executive' && (
                             <div>
                                 <p className="mb-2 text-xs font-medium text-[#71717a]">Profile Photo</p>
@@ -798,38 +832,6 @@ export default function Edit({
                 <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
                     <div className="mx-auto max-w-2xl space-y-4 px-4">
 
-                        {/* Font Sizes */}
-                        <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
-                            <button type="button" onClick={() => toggleSection('fontSizes')} className="flex w-full items-center justify-between px-5 py-4 text-left">
-                                <span className="text-sm font-semibold text-[#0f0f1a]">Font Sizes</span>
-                                <svg className={`h-4 w-4 text-[#a0a0b0] transition-transform ${openSections.fontSizes ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
-                            </button>
-                            {openSections.fontSizes && (
-                                <div className="space-y-3 border-t border-[#eeeef5] p-5">
-                                    <div className="flex justify-end">
-                                        <button type="button" onClick={() => { setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-xs text-[#a0a0b0] hover:text-[#4f46e5] transition-colors">Reset to defaults</button>
-                                    </div>
-                                    {([
-                                        { label: 'Name', key: 'name', min: 12, max: 36 },
-                                        { label: 'Contact Info', key: 'contact', min: 6, max: 16 },
-                                        { label: 'Section Headings', key: 'heading', min: 8, max: 20 },
-                                        { label: 'Body Text', key: 'body', min: 8, max: 16 },
-                                        { label: 'Section Spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                        { label: 'Entry Spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                    ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                        <div key={key} className="flex items-center justify-between gap-2">
-                                            <span className="shrink-0 text-sm text-[#71717a]">{label}</span>
-                                            <div className="flex shrink-0 items-center gap-1">
-                                                <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.max(min, +(fontSizesRef.current[key] - 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-7 w-7 items-center justify-center rounded-full border border-[#c7d2fe] bg-[#eef2ff] text-[#4f46e5] hover:bg-[#e0e7ff]">−</button>
-                                                <span className="w-10 text-center text-sm font-medium tabular-nums text-[#23232d]">{fontSizes[key]}</span>
-                                                <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.min(max, +(fontSizesRef.current[key] + 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-7 w-7 items-center justify-center rounded-full border border-[#c7d2fe] bg-[#eef2ff] text-[#4f46e5] hover:bg-[#e0e7ff]">+</button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
                         {/* Resume Name */}
                         <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
                             <FLabel>Resume Name</FLabel>
@@ -845,7 +847,7 @@ export default function Edit({
                                 <svg className={`h-4 w-4 text-[#a0a0b0] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
                             </button>
                             {openSections.contact && (
-                                <div className="grid grid-cols-2 gap-3 border-t border-[#eeeef5] p-5">
+                                <div className="grid grid-cols-1 gap-3 border-t border-[#eeeef5] p-5 sm:grid-cols-2">
                                     <div className="col-span-2"><FLabel>Full Name</FLabel><FInput value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} onBlur={save} placeholder="Jane Smith" /></div>
                                     <div><FLabel>Email</FLabel><FInput value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} onBlur={save} type="email" placeholder="jane@example.com" /></div>
                                     <div><FLabel>Phone</FLabel><FInput value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} onBlur={save} placeholder="(555) 555-5555" /></div>
@@ -891,7 +893,7 @@ export default function Edit({
                                         <DraggableSection key="experience" id="experience" title="Experience" open={openSections.experience} onToggle={() => toggleSection('experience')}>
                                             {experience.map((exp, i) => (
                                                 <EntryCard key={exp.id} label={exp.company || exp.title ? `${exp.title}${exp.company ? ' — ' + exp.company : ''}` : `Experience ${i + 1}`} onRemove={() => { setExperience(prev => prev.filter(e => e.id !== exp.id)); setTimeout(save, 0); }}>
-                                                    <div className="grid grid-cols-2 gap-3">
+                                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                                         <div><FLabel>Job Title</FLabel><FInput value={exp.title} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, title: v } : e))} onBlur={save} placeholder="Software Engineer" /></div>
                                                         <div><FLabel>Company</FLabel><FInput value={exp.company} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, company: v } : e))} onBlur={save} placeholder="Acme Corp" /></div>
                                                         <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
@@ -920,7 +922,7 @@ export default function Edit({
                                                     <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
                                                     <div><FLabel>Description <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
                                                     <div><FLabel>Project URL <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
-                                                    <div className="grid grid-cols-2 gap-3">
+                                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                                         <div><FLabel>Start Date <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
                                                         <div><FLabel>End Date <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
                                                     </div>
@@ -940,7 +942,7 @@ export default function Edit({
                                             {education.map((edu, i) => (
                                                 <EntryCard key={edu.id} label={edu.school || `Education ${i + 1}`} onRemove={() => { setEducation(prev => prev.filter(e => e.id !== edu.id)); setTimeout(save, 0); }}>
                                                     <div><FLabel>School / Institution</FLabel><FInput value={edu.school} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, school: v } : e))} onBlur={save} placeholder="University of Georgia" /></div>
-                                                    <div className="grid grid-cols-2 gap-3">
+                                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                                         <div><FLabel>Degree</FLabel><FInput value={edu.degree} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, degree: v } : e))} onBlur={save} placeholder="B.S." /></div>
                                                         <div><FLabel>Field of Study</FLabel><FInput value={edu.field} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, field: v } : e))} onBlur={save} placeholder="Computer Science" /></div>
                                                     </div>
@@ -963,7 +965,9 @@ export default function Edit({
                                                     placeholder="Paste the job description you're targeting. AI will find which keywords from it are missing from your resume."
                                                     rows={4}
                                                 />
-                                                {renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
+                                                {canAiTailoring
+                                                    ? renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })
+                                                    : <button type="button" onClick={() => triggerUpgradeModal('ai_tailoring', 'starter')} className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors">🔒 Tailor to this job (Starter)</button>}
                                                 {keywordGaps.length > 0 && (
                                                     <div className="mt-2 flex flex-wrap gap-1">
                                                         {keywordGaps.map(k => (
@@ -1132,7 +1136,7 @@ export default function Edit({
                                                 <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
                                                     <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
                                                     <div><FLabel>Issuing Organization <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
-                                                    <div className="grid grid-cols-2 gap-3">
+                                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                                         <div><FLabel>Date Obtained <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
                                                         <div><FLabel>Expiration <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
                                                     </div>
@@ -1183,7 +1187,7 @@ export default function Edit({
 
             {/* Floating Preview Panel */}
             {showPreview && (
-                <div className="fixed inset-y-0 right-0 z-40 flex w-[50%] min-w-[420px] flex-col border-l border-gray-200 bg-white shadow-2xl">
+                <div className="fixed inset-y-0 right-0 z-40 flex w-full flex-col border-l border-gray-200 bg-white shadow-2xl md:w-[50%] md:min-w-[420px]">
                     <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-4 py-3">
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-semibold text-gray-900">Preview</span>
@@ -1196,6 +1200,15 @@ export default function Edit({
                             </button>
                         </div>
                     </div>
+                    {isFreeTier && (
+                        <button
+                            type="button"
+                            onClick={() => triggerUpgradeModal('watermark_removal', 'starter')}
+                            className="flex shrink-0 items-center justify-center gap-1.5 border-b border-amber-200 bg-amber-50 px-4 py-2 text-xs font-medium text-amber-800 hover:bg-amber-100"
+                        >
+                            🔓 Your PDF includes a “Made with Resumegen” watermark — Upgrade to remove →
+                        </button>
+                    )}
                     <iframe src={pdfSrc} className="flex-1 w-full border-0" title="Resume PDF preview" />
                 </div>
             )}
