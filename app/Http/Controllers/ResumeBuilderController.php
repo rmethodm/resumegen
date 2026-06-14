@@ -14,12 +14,14 @@ use App\Services\DocxGenerator;
 use App\Services\ResumeCompletionScorer;
 use App\Services\ResumeCopier;
 use App\Services\ResumeStrengthScorer;
+use App\Services\ResumeThumbnailGenerator;
 use App\Services\UserLimits;
 use App\Services\WebhookDispatcher;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -261,6 +263,50 @@ class ResumeBuilderController extends Controller
         $this->authorize('update', $resume);
 
         return $this->buildPdf($resume)->stream('preview.pdf');
+    }
+
+    public function thumbnail(Resume $resume, ResumeThumbnailGenerator $generator)
+    {
+        $this->authorize('update', $resume);
+
+        $path = storage_path("app/thumbnails/{$resume->id}.png");
+        $isFresh = is_file($path) && filemtime($path) >= $resume->updated_at->getTimestamp();
+
+        if (! $isFresh) {
+            try {
+                $png = $generator->generate($resume);
+                if (! is_dir(dirname($path))) {
+                    mkdir(dirname($path), 0755, true);
+                }
+                file_put_contents($path, $png);
+            } catch (\Throwable $e) {
+                Log::warning('Resume thumbnail generation failed', [
+                    'resume_id' => $resume->id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                return $this->placeholderThumbnail($resume);
+            }
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'image/png',
+            'Cache-Control' => 'private, max-age=0, must-revalidate',
+        ]);
+    }
+
+    private function placeholderThumbnail(Resume $resume): \Illuminate\Http\Response
+    {
+        [$r, $g, $b] = sscanf(ltrim($resume->accent_color ?: '#4f46e5', '#'), '%02x%02x%02x');
+
+        $img = imagecreatetruecolor(400, 518);
+        imagefill($img, 0, 0, imagecolorallocate($img, $r ?? 79, $g ?? 70, $b ?? 229));
+        ob_start();
+        imagepng($img);
+        $blob = ob_get_clean();
+        imagedestroy($img);
+
+        return response($blob, 200, ['Content-Type' => 'image/png']);
     }
 
     private function buildPdf(Resume $resume): \Barryvdh\DomPDF\PDF
