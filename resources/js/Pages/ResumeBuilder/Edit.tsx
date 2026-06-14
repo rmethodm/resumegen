@@ -688,13 +688,34 @@ export default function Edit({
                             {sidebarOpen ? (
                                 <div className="space-y-1.5">
                                     <div className="flex items-center gap-1.5"><SwatchIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" /><span className="text-xs font-medium text-[#71717a]">Template</span></div>
-                                    <select aria-label="Resume template" value={template} onChange={e => { setTemplate(e.target.value as ResumeTemplate); setTimeout(save, 0); }} className="w-full rounded-md border-[#eeeef5] text-xs text-[#0f0f1a] shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]">
+                                    <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
                                         {Object.keys(TEMPLATE_LABELS).map(t => {
                                             // Show every template so free users see what's behind the paywall; lock the unavailable ones (except one already in use).
                                             const locked = !allowedTemplates.includes(t) && t !== template;
-                                            return <option key={t} value={t} disabled={locked}>{locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}</option>;
+                                            const selected = template === t;
+                                            return (
+                                                <button
+                                                    key={t}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (locked) { triggerUpgradeModal('template_access', 'starter'); return; }
+                                                        setTemplate(t as ResumeTemplate); setTimeout(save, 0);
+                                                    }}
+                                                    aria-pressed={selected}
+                                                    title={TEMPLATE_LABELS[t] ?? t}
+                                                    className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-[#4f46e5] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'} ${locked ? 'opacity-60' : ''}`}
+                                                >
+                                                    <img
+                                                        src={`/images/templates/${t}.png`}
+                                                        loading="lazy"
+                                                        alt=""
+                                                        className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
+                                                    />
+                                                    <span className="truncate text-[11px] font-medium text-[#0f0f1a]">{locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}</span>
+                                                </button>
+                                            );
                                         })}
-                                    </select>
+                                    </div>
                                     {allowedTemplates.length < Object.keys(TEMPLATE_LABELS).length && (
                                         <button type="button" onClick={() => triggerUpgradeModal('template_access', 'starter')} className="text-[10px] font-medium text-amber-600 hover:text-amber-700">🔒 Unlock {Object.keys(TEMPLATE_LABELS).length - allowedTemplates.length} more templates →</button>
                                     )}
