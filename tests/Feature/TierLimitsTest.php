@@ -172,7 +172,7 @@ class TierLimitsTest extends TestCase
 
     public function test_ai_monthly_limits_per_tier(): void
     {
-        $this->assertSame(25, UserLimits::aiMonthlyLimit(User::factory()->create(['plan_tier' => 'free'])));
+        $this->assertSame(10, UserLimits::aiMonthlyLimit(User::factory()->create(['plan_tier' => 'free'])));
         $this->assertSame(150, UserLimits::aiMonthlyLimit(User::factory()->starter()->create()));
         $this->assertSame(500, UserLimits::aiMonthlyLimit(User::factory()->pro()->create()));
         $this->assertSame(1000, UserLimits::aiMonthlyLimit(User::factory()->agency()->create()));

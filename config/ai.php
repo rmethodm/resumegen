@@ -24,7 +24,7 @@ return [
      * Not enforced on any route yet — foundation for a future feature.
      */
     'monthly_limits' => [
-        'free' => 25,
+        'free' => 10,
         'starter' => 150,
         'pro' => 500,
         'agency' => 1000,
