@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Console\Commands\GenerateTemplateThumbnails;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\ResumeThumbnailGenerator;
@@ -98,5 +99,18 @@ class ResumeThumbnailTest extends TestCase
         $resume->delete();
 
         $this->assertFileDoesNotExist($path);
+    }
+
+    public function test_template_thumbnail_command_writes_an_image_per_template(): void
+    {
+        if (! extension_loaded('imagick')) {
+            $this->markTestSkipped('Imagick not installed.');
+        }
+
+        $this->artisan('thumbnails:templates')->assertExitCode(0);
+
+        foreach (GenerateTemplateThumbnails::TEMPLATES as $template) {
+            $this->assertFileExists(public_path("images/templates/{$template}.png"));
+        }
     }
 }
