@@ -192,4 +192,14 @@ class TierLimitsTest extends TestCase
     {
         $this->assertTrue(UserLimits::canCreateOrg(User::factory()->create(['is_master_admin' => true])));
     }
+
+    // ── canAiTailoring ────────────────────────────────────────────────────────
+
+    public function test_ai_tailoring_gated_to_starter_and_above(): void
+    {
+        $this->assertFalse(UserLimits::canAiTailoring(User::factory()->create(['plan_tier' => 'free'])));
+        $this->assertTrue(UserLimits::canAiTailoring(User::factory()->starter()->create()));
+        $this->assertTrue(UserLimits::canAiTailoring(User::factory()->pro()->create()));
+        $this->assertTrue(UserLimits::canAiTailoring(User::factory()->agency()->create()));
+    }
 }
