@@ -24,7 +24,6 @@ const NAV = [
     { label: 'Audit Log', href: safeRoute('admin.audit.index', '/admin/audit'),        pattern: 'admin.audit.*' },
     { label: 'Ops',       href: safeRoute('admin.ops.index', '/admin/ops'),            pattern: 'admin.ops.*' },
     { label: 'Career',    href: safeRoute('admin.career.index', '/admin/career'),      pattern: 'admin.career.*' },
-    { label: 'Usage',     href: safeRoute('admin.usage', '/admin/usage'),              pattern: 'admin.usage' },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

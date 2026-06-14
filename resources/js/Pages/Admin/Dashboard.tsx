@@ -8,7 +8,6 @@ interface Stats {
     unread_messages: number;
     referral_conversions: number;
     job_titles_count: number;
-    ai_rates_count: number;
     published_articles: number;
 }
 
@@ -19,7 +18,6 @@ export default function AdminDashboard({ stats }: PageProps<{ stats: Stats }>) {
         { label: 'Unread Messages',      count: stats.unread_messages,       href: '/admin/messages',             description: 'Portfolio contact forms' },
         { label: 'Referral Conversions', count: stats.referral_conversions,  href: '/admin/referrals',            description: 'Upgrade events' },
         { label: 'Job Titles',           count: stats.job_titles_count,      href: '/admin/job-titles',           description: 'Roles + title entries' },
-        { label: 'AI Rates',             count: stats.ai_rates_count,        href: '/admin/ai-rates',             description: 'Model pricing rows' },
         { label: 'Published Articles',   count: stats.published_articles,    href: route('admin.career.index'),   description: 'Career hub articles' },
     ];
 
