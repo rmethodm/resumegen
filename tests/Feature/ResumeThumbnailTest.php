@@ -82,4 +82,21 @@ class ResumeThumbnailTest extends TestCase
             ->assertOk()
             ->assertHeader('Content-Type', 'image/png');
     }
+
+    public function test_deleting_a_resume_removes_its_cached_thumbnail(): void
+    {
+        $resume = Resume::factory()->for(User::factory())->create();
+
+        $dir = storage_path('app/thumbnails');
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        $path = "{$dir}/{$resume->id}.png";
+        file_put_contents($path, 'x');
+        $this->assertFileExists($path);
+
+        $resume->delete();
+
+        $this->assertFileDoesNotExist($path);
+    }
 }

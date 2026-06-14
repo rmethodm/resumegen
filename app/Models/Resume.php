@@ -19,6 +19,7 @@ class Resume extends Model implements HasMedia
         static::deleting(function (Resume $resume): void {
             $resume->abVariants()->delete();
             $resume->threads()->delete();
+            @unlink(storage_path("app/thumbnails/{$resume->id}.png"));
         });
     }
 
