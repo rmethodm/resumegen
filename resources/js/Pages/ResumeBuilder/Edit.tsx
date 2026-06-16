@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
+import InterviewCoachPanel from './Partials/InterviewCoachPanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
@@ -419,7 +420,8 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
-    isFirstResume, canDocx, canAiTailoring, allowedTemplates, strengthHistoryEnabled, photoUrl, completionScore, recruiterNote,
+    isFirstResume, canDocx, canAiTailoring, canInterviewCoach, interviewCoachUsesRemaining,
+    allowedTemplates, strengthHistoryEnabled, photoUrl, completionScore, recruiterNote,
     skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier, isFreeTier,
 }: {
     resume: ResumeData;
@@ -428,6 +430,8 @@ export default function Edit({
     isFirstResume: boolean;
     canDocx: boolean;
     canAiTailoring: boolean;
+    canInterviewCoach: boolean;
+    interviewCoachUsesRemaining: number | null;
     allowedTemplates: string[];
     strengthHistoryEnabled: boolean;
     photoUrl: string | null;
@@ -484,6 +488,7 @@ export default function Edit({
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
     const [showPreview, setShowPreview] = useState(false);
+    const [showInterviewCoach, setShowInterviewCoach] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
     const [pdfSrc, setPdfSrc] = useState(() => freshPdfSrc(resume.id));
 
@@ -824,6 +829,28 @@ export default function Edit({
                                 <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
                             )}
                         </div>
+                        {sidebarOpen && (
+                            <div>
+                                <div className="flex items-center gap-1.5 mb-1.5"><span className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Interview Prep</span></div>
+                                {canInterviewCoach ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowInterviewCoach(true)}
+                                        className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#4f46e5] hover:bg-[#f5f5fb] transition-colors"
+                                    >
+                                        ✨ Interview Coach
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => triggerUpgradeModal('interview_coach', 'starter')}
+                                        className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
+                                    >
+                                        🔒 Interview Coach
+                                    </button>
+                                )}
+                            </div>
+                        )}
                         {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} strengthHistoryEnabled={strengthHistoryEnabled} aiRemaining={ai.remaining} onGenerateSummary={handleGenerateSummary} />}
                     </div>
                 </aside>
@@ -1248,6 +1275,15 @@ export default function Edit({
                         )}
                     </div>
                 </div>
+            )}
+            {showInterviewCoach && (
+                <InterviewCoachPanel
+                    resumeId={resume.id}
+                    resumeName={name}
+                    canInterviewCoach={canInterviewCoach}
+                    interviewCoachUsesRemaining={interviewCoachUsesRemaining}
+                    onClose={() => setShowInterviewCoach(false)}
+                />
             )}
         </AuthenticatedLayout>
     );

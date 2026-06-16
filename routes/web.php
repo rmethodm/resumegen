@@ -25,6 +25,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
+use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\InterviewNoteController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\MessagesController;
@@ -116,6 +117,7 @@ Route::middleware(['auth', 'two_factor_challenge'])->group(function () {
         Route::post('/builder/{resume}/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])->name('builder.ai.rewrite-bullet');
         Route::post('/builder/{resume}/ai/summary', [AiSuggestionController::class, 'summary'])->name('builder.ai.summary');
         Route::post('/builder/{resume}/ai/ats-keywords', [AiSuggestionController::class, 'atsKeywords'])->name('builder.ai.ats-keywords');
+        Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
     });
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');

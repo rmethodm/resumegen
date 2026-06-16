@@ -17,6 +17,7 @@ class AiPrompts
             'rewrite_bullet' => self::rewriteBullet($input),
             'generate_summary' => self::generateSummary($input),
             'ats_keywords' => self::atsKeywords($input),
+            'interview_coach' => self::interviewCoach($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
     }
@@ -54,6 +55,53 @@ class AiPrompts
 
         Experience: {$experience}
         Skills: {$skills}
+        PROMPT;
+    }
+
+    /**
+     * @param  array{target_role?: string, job_description?: string, experience?: array<mixed>, skills?: array<mixed>, name?: string}  $input
+     */
+    private static function interviewCoach(array $input): string
+    {
+        $targetRole = $input['target_role'] ?? 'the target role';
+        $name = $input['name'] ?? 'Candidate';
+        $skills = implode(', ', array_slice($input['skills'] ?? [], 0, 10)) ?: 'No skills listed';
+
+        $experienceLines = [];
+        foreach (array_slice($input['experience'] ?? [], 0, 3) as $exp) {
+            $line = implode(' at ', array_filter([$exp['title'] ?? null, $exp['company'] ?? null]));
+            if ($line && ! empty($exp['bullets'])) {
+                $line .= ' — '.explode("\n", $exp['bullets'])[0];
+            }
+            if ($line) {
+                $experienceLines[] = $line;
+            }
+        }
+        $experienceText = $experienceLines ? implode("\n", $experienceLines) : 'No experience listed';
+
+        $jdSection = '';
+        if (! empty($input['job_description'])) {
+            $jd = $input['job_description'];
+            $jdSection = "\n\nJob Description:\n{$jd}";
+        }
+
+        return <<<PROMPT
+        You are an expert interview coach. Given the resume and target role below, generate exactly 8
+        interview questions this candidate is likely to be asked, along with a STAR-framework coaching
+        hint for each question.
+
+        Target role: {$targetRole}
+
+        Candidate profile:
+        - Name: {$name}
+        - Skills: {$skills}
+        - Recent experience:
+        {$experienceText}{$jdSection}
+
+        Return a JSON array of exactly 8 objects with this shape:
+        [{"question": "Tell me about...", "hint": "Think about a specific time when you..."}]
+
+        Return ONLY the JSON array. No markdown fences, no explanation, no preamble.
         PROMPT;
     }
 

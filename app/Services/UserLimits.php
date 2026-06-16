@@ -120,6 +120,35 @@ class UserLimits
         return max(0, self::aiMonthlyLimit($user) - self::aiRequestsThisMonth($user));
     }
 
+    private const FREE_INTERVIEW_COACH_MONTHLY_LIMIT = 3;
+
+    public static function canInterviewCoach(User $user): bool
+    {
+        if ($user->isAtLeastStarter()) {
+            return true;
+        }
+
+        return self::interviewCoachUsesThisMonth($user) < self::FREE_INTERVIEW_COACH_MONTHLY_LIMIT;
+    }
+
+    public static function interviewCoachUsesRemaining(User $user): ?int
+    {
+        if ($user->isAtLeastStarter()) {
+            return null;
+        }
+
+        return max(0, self::FREE_INTERVIEW_COACH_MONTHLY_LIMIT - self::interviewCoachUsesThisMonth($user));
+    }
+
+    private static function interviewCoachUsesThisMonth(User $user): int
+    {
+        return AiRequest::where('user_id', $user->id)
+            ->where('feature', 'interview_coach')
+            ->where('status', 'success')
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->count();
+    }
+
     public static function aiCanUpgrade(User $user): bool
     {
         return in_array($user->planTier(), ['free', 'starter'], true);

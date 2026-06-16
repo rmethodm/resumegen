@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Data\AiPrompts;
+use App\Exceptions\ModerationException;
+use App\Models\Resume;
+use App\Services\AiService;
+use App\Services\UserLimits;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Throwable;
+
+class InterviewCoachController extends Controller
+{
+    public function __construct(private AiService $ai) {}
+
+    public function coach(Request $request, Resume $resume): JsonResponse
+    {
+        $this->authorize('update', $resume);
+
+        $user = $request->user();
+
+        if (! UserLimits::canInterviewCoach($user)) {
+            return response()->json([
+                'error' => 'You have used your 3 free interview coach sessions this month. Upgrade to Starter for unlimited access.',
+                'required_tier' => 'starter',
+            ], 402);
+        }
+
+        if (! UserLimits::canUseAi($user)) {
+            return response()->json([
+                'error' => 'Monthly AI limit reached.',
+                'can_upgrade' => UserLimits::aiCanUpgrade($user),
+                'next_tier' => UserLimits::aiNextTier($user),
+                'limit' => UserLimits::aiMonthlyLimit($user),
+                'used' => UserLimits::aiRequestsThisMonth($user),
+                'resets_at' => now()->startOfMonth()->addMonth()->format('M j'),
+            ], 402);
+        }
+
+        $validated = $request->validate([
+            'target_role' => ['required', 'string', 'max:100'],
+            'job_description' => ['nullable', 'string', 'max:3000'],
+        ]);
+
+        try {
+            $reply = $this->ai->chat(
+                AiPrompts::build('interview_coach', [
+                    'target_role' => $validated['target_role'],
+                    'job_description' => $validated['job_description'] ?? null,
+                    'name' => $resume->contact['full_name'] ?? null,
+                    'experience' => $resume->experience ?? [],
+                    'skills' => $resume->skills ?? [],
+                ]),
+                ['user' => $user, 'feature' => 'interview_coach'],
+            );
+        } catch (ModerationException) {
+            return response()->json(['error' => ModerationException::USER_MESSAGE], 422);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
+        }
+
+        $questions = json_decode($reply, true);
+
+        if (! is_array($questions)) {
+            return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
+        }
+
+        return response()->json([
+            'questions' => array_slice(array_values($questions), 0, 8),
+            'remaining' => UserLimits::aiRemaining($user),
+            'coach_uses_remaining' => UserLimits::interviewCoachUsesRemaining($user),
+        ]);
+    }
+}
