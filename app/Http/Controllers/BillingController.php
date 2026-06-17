@@ -32,6 +32,8 @@ class BillingController extends Controller
         $key = $request->tier.'_'.$request->interval.'_price_id';
         $priceId = config("services.stripe.{$key}");
 
+        abort_if(! $priceId, 500, 'Stripe price not configured.');
+
         $checkout = $request->user()->newSubscription('default', $priceId)
             ->checkout([
                 'success_url' => route('builder.index'),

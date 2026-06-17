@@ -1,13 +1,14 @@
 # Resumegen Context
 
 ## Current Task
-Completed the full super-admin initiative: 8 sub-projects shipped to main (audit log, content mgmt, revenue, ops, delivery log, MRR snapshots, growth analytics, retention cohorts). 637 tests green.
+Interview Coach shipped (commit ee6c00c). Stripe webhook still pending DNS.
 
 ## Key Decisions
-- Each sub-project ran spec → plan → TDD → `--no-ff` merge on its own branch; specs/plans in docs/superpowers/. New admin nav: Revenue · Growth · Content · Audit Log · Ops.
-- Retention needs per-period activity, not just last_active_at → built `user_activity_days` table + `TrackActivity` middleware (session-gated, web group).
-- Two new crons: `revenue:snapshot` (daily 23:55, MRR history) + `system-events:prune` (daily, 30d). Need scheduler running in prod.
+- Stripe: API keys set, all 6 price IDs confirmed. `STRIPE_WEBHOOK_SECRET` still placeholder — blocked on `resumegen.app` DNS pointing at webserver.
+- Interview Coach uses `AiService` + `AiPrompts` pattern (not Anthropic direct), free users get 3/month via `AiRequest` feature filter.
 
 ## Next Steps
-- Optional: add OPENAI_ADMIN_KEY (OpenAI cost reconcile) — degrades gracefully without it.
-- No remaining flagged items; all spec "out of scope" notes are intentional deferrals.
+- **Stripe webhook** (blocked on DNS): create endpoint at `https://resumegen.app/stripe/webhook`, select Cashier events (`customer.subscription.created/updated/deleted`, `invoice.payment_succeeded`, `invoice.payment_failed`), paste `whsec_...` into `.env`, run `php artisan config:clear`.
+- **LinkedIn Import**: Tasks 2–3 in `docs/superpowers/plans/2026-06-06-pre-launch-feature-moat.md` (backend hint param + frontend tab). Plan code uses wrong class names — adapt to real `AiService`/`AiRequest` pattern.
+- **npm update axios vite**: security patch flagged in audit scan.
+- **Undo for AI bullet rewrite**: one bad rewrite loses original text permanently.

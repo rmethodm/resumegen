@@ -11,11 +11,19 @@ type Props = {
     byModel: BarRow[];
     byStatus: BarRow[];
     openAiCostCents: number | null;
+    mrrCents: number;
 };
 
 const PERIODS = ['7d', '30d', 'all'] as const;
 
-export default function AiOverview({ period, totals, series, byFeature, byModel, byStatus, openAiCostCents }: Props) {
+function CostVsMrr({ costCents, mrrCents }: { costCents: number; mrrCents: number }) {
+    if (mrrCents === 0) return <Stat label="Cost / MRR" value="no revenue yet" />;
+    const pct = (costCents / mrrCents) * 100;
+    const color = pct < 2 ? 'text-green-600' : pct < 5 ? 'text-amber-600' : 'text-red-600';
+    return <Stat label="Cost / MRR" value={<span className={color}>{pct.toFixed(1)}%</span>} />;
+}
+
+export default function AiOverview({ period, totals, series, byFeature, byModel, byStatus, openAiCostCents, mrrCents }: Props) {
     const successRate = totals.requests > 0 ? Math.round((totals.success / totals.requests) * 100) : 0;
     const go = (p: string) => router.get(route('admin.ai.overview'), { period: p }, { preserveState: true, replace: true });
 
@@ -46,6 +54,7 @@ export default function AiOverview({ period, totals, series, byFeature, byModel,
                 <Stat label="Tokens" value={totals.tokens.toLocaleString()} />
                 <Stat label="Flagged" value={totals.flagged} />
                 <Stat label="Active users" value={totals.active_users} />
+                <CostVsMrr costCents={totals.estimated_cost_cents} mrrCents={mrrCents} />
             </div>
 
             <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4">

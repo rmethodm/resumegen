@@ -8,6 +8,7 @@ use App\Models\AiRequest;
 use App\Models\User;
 use App\Services\AiUsageReport;
 use App\Services\OpenAiUsageService;
+use App\Services\RevenueReport;
 use App\Services\UserLimits;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class AdminAiController extends Controller
     public function __construct(
         private AiUsageReport $report,
         private OpenAiUsageService $openAi,
+        private RevenueReport $revenue,
     ) {}
 
     public function overview(Request $request): Response
@@ -34,6 +36,7 @@ class AdminAiController extends Controller
             'byModel' => $this->report->breakdown('model', $period),
             'byStatus' => $this->report->breakdown('status', $period),
             'openAiCostCents' => $this->openAi->totalCostCents($since, now()),
+            'mrrCents' => $this->revenue->mrrCents(),
         ]);
     }
 

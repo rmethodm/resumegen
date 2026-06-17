@@ -41,7 +41,7 @@ class AiSuggestionTest extends TestCase
         );
 
         $res->assertOk()
-            ->assertJson(['suggestion' => 'Led a team of five engineers to ship X.', 'remaining' => 24]);
+            ->assertJson(['suggestion' => 'Led a team of five engineers to ship X.', 'remaining' => 9]);
         $this->assertDatabaseHas('ai_requests', [
             'user_id' => $user->id,
             'feature' => 'rewrite_bullet',
@@ -65,7 +65,7 @@ class AiSuggestionTest extends TestCase
     public function test_ats_keywords_split_into_array(): void
     {
         $this->fakeReply("Kubernetes, Terraform\nObservability"); // double quotes: real newline
-        $user = User::factory()->free()->create();
+        $user = User::factory()->starter()->create();
         $resume = Resume::factory()->for($user)->create();
 
         $res = $this->actingAs($user)->postJson(
@@ -79,7 +79,7 @@ class AiSuggestionTest extends TestCase
     public function test_ats_keywords_accepts_a_target_job_description(): void
     {
         $this->fakeReply('GraphQL, Kafka');
-        $user = User::factory()->free()->create();
+        $user = User::factory()->starter()->create();
         $resume = Resume::factory()->for($user)->create();
 
         $this->actingAs($user)->postJson(
@@ -191,7 +191,7 @@ class AiSuggestionTest extends TestCase
 
         $this->actingAs($user)->get(route('builder.edit', $resume))
             ->assertInertia(fn (AssertableInertia $page) => $page
-                ->where('aiRemaining', 25)
+                ->where('aiRemaining', 10)
                 ->where('aiCanUpgrade', true)
             );
     }

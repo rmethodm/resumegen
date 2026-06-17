@@ -29,3 +29,4 @@ Thumbs.db
 .superpowers/
 .dual-graph/
 /storage/app/thumbnails
+.dual-graph-context/

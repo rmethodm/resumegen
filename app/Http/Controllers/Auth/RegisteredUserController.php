@@ -38,10 +38,18 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $ip = $request->ip();
+        if ($ip && User::where('registration_ip', $ip)->where('created_at', '>=', now()->subDay())->count() >= 5) {
+            throw ValidationException::withMessages([
+                'email' => 'Too many accounts created from this IP. Try again tomorrow.',
+            ]);
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'registration_ip' => $ip,
         ]);
 
         event(new Registered($user));

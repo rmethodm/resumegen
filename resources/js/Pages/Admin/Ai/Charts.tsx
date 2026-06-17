@@ -1,3 +1,5 @@
+import React from 'react';
+
 type SeriesPoint = { date: string; count: number; cost_cents: number };
 type BarRow = { label: string; count: number; cost_cents: number };
 
@@ -41,7 +43,7 @@ export function BarList({ rows, showCost = false }: { rows: BarRow[]; showCost?:
 }
 
 // KPI stat card.
-export function Stat({ label, value }: { label: string; value: string | number }) {
+export function Stat({ label, value }: { label: string; value: string | number | React.ReactNode }) {
     return (
         <div className="rounded-lg border border-gray-200 bg-white p-4">
             <div className="text-xs uppercase tracking-wide text-gray-500">{label}</div>

@@ -23,10 +23,10 @@ class UserLimitsAiTest extends TestCase
 
     public function test_remaining_is_limit_minus_successes(): void
     {
-        $user = User::factory()->free()->create(); // free limit = 25
+        $user = User::factory()->free()->create(); // free limit = 10
         AiRequest::factory()->count(4)->create(['user_id' => $user->id, 'status' => 'success']);
 
-        $this->assertSame(21, UserLimits::aiRemaining($user));
+        $this->assertSame(6, UserLimits::aiRemaining($user));
     }
 
     public function test_remaining_never_negative(): void
