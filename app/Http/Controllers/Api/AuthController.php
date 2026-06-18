@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules;
@@ -23,11 +24,27 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $ip = $request->ip();
+
+        $tooManyRegistrations = false;
+        $user = DB::transaction(function () use ($request, $ip, &$tooManyRegistrations) {
+            if (User::where('registration_ip', $ip)->where('created_at', '>=', now()->subDay())->count() >= 5) {
+                $tooManyRegistrations = true;
+
+                return null;
+            }
+
+            return User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'registration_ip' => $ip,
+            ]);
+        });
+
+        if ($tooManyRegistrations) {
+            return response()->json(['message' => 'Too many registrations from this IP. Please try again tomorrow.'], 429);
+        }
 
         event(new Registered($user));
 

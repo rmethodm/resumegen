@@ -114,4 +114,18 @@ class AuthApiTest extends ApiTestCase
         $this->withToken($token)->postJson('/api/auth/logout')->assertNoContent();
         $this->withToken($token)->getJson('/api/auth/me')->assertUnauthorized();
     }
+
+    public function test_ip_velocity_blocks_sixth_api_registration(): void
+    {
+        User::factory()->count(5)->create(['registration_ip' => '1.2.3.4']);
+
+        $this->withServerVariables(['REMOTE_ADDR' => '1.2.3.4'])
+            ->postJson('/api/auth/register', [
+                'name' => 'Attacker',
+                'email' => 'attacker@example.com',
+                'password' => 'password',
+                'password_confirmation' => 'password',
+            ])
+            ->assertStatus(429);
+    }
 }
