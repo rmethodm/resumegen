@@ -41,18 +41,20 @@ class RegisteredUserController extends Controller
 
         $ip = $request->ip();
 
-        if ($ip && User::where('registration_ip', $ip)->where('created_at', '>=', now()->subDay())->count() >= 5) {
-            return redirect(route('register', absolute: false))
-                ->withInput()
-                ->withErrors(['registration' => 'Too many accounts created from this IP. Try again tomorrow.']);
-        }
+        $user = DB::transaction(function () use ($request, $ip) {
+            if (User::where('registration_ip', $ip)->where('created_at', '>=', now()->subDay())->count() >= 5) {
+                throw ValidationException::withMessages([
+                    'registration' => 'Too many accounts created from this IP. Please try again tomorrow.',
+                ]);
+            }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'registration_ip' => $ip,
-        ]);
+            return User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'registration_ip' => $ip,
+            ]);
+        });
 
         event(new Registered($user));
 
