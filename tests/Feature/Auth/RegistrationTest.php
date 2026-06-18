@@ -53,7 +53,7 @@ class RegistrationTest extends TestCase
                 'password' => 'password',
                 'password_confirmation' => 'password',
             ])
-            ->assertSessionHasErrors('email');
+            ->assertSessionHasErrors('registration');
     }
 
     public function test_ip_velocity_allows_fifth_registration(): void

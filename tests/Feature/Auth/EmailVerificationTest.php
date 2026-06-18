@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -61,6 +62,15 @@ class EmailVerificationTest extends TestCase
         $user = User::factory()->unverified()->create();
 
         $this->actingAs($user)->get(route('dashboard'))
+            ->assertRedirect(route('verification.notice'));
+    }
+
+    public function test_unverified_user_cannot_access_builder(): void
+    {
+        $user = User::factory()->unverified()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)->get(route('builder.edit', $resume))
             ->assertRedirect(route('verification.notice'));
     }
 }

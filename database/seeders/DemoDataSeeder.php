@@ -17,13 +17,6 @@ class DemoDataSeeder extends Seeder
 {
     private const DOMAIN = '@demo.resumegen.test';
 
-    /** Sandbox price IDs created in the Resumegen Stripe sandbox. */
-    private const PRICES = [
-        'starter' => 'price_1TidM6CXfLCcPZ9hJwnPuNlZ', // Starter Monthly
-        'pro' => 'price_1TidM9CXfLCcPZ9hvdXUoyEz',     // Pro Monthly
-        'agency' => 'price_1TidMBCXfLCcPZ9hZ3MNbTMh',  // Agency Monthly
-    ];
-
     public function run(): void
     {
         $this->wipe();
@@ -37,6 +30,11 @@ class DemoDataSeeder extends Seeder
         $this->seedFree(activated: 8, dormant: 7);
 
         $this->command?->info('Demo data seeded: 23 paying + 15 free users.');
+    }
+
+    private function priceId(string $tier): string
+    {
+        return config("services.stripe.{$tier}_monthly_price_id", "price_demo_{$tier}");
     }
 
     private function seedPaying(string $tier, int $count): void
@@ -57,13 +55,14 @@ class DemoDataSeeder extends Seeder
             Resume::factory()->create(['user_id' => $user->id, 'created_at' => $createdAt]);
 
             // Subscription created 0-2 days after signup → realistic days-to-convert.
-            $subAt = $createdAt->copy()->addDays(rand(0, 2));
+            $subAt = $createdAt->addDays(rand(0, 2));
+            $subAt = $subAt->min(now());
             DB::table('subscriptions')->insert([
                 'user_id' => $user->id,
                 'type' => 'default',
                 'stripe_id' => 'sub_demo_'.$tier.$i,
                 'stripe_status' => 'active',
-                'stripe_price' => self::PRICES[$tier],
+                'stripe_price' => $this->priceId($tier),
                 'quantity' => 1,
                 'created_at' => $subAt,
                 'updated_at' => $subAt,
@@ -98,7 +97,7 @@ class DemoDataSeeder extends Seeder
         for ($w = 0; $w < rand(1, 5); $w++) {
             $rows[] = [
                 'user_id' => $userId,
-                'activity_date' => $from->copy()->addWeeks($w)->toDateString(),
+                'activity_date' => $from->addWeeks($w)->toDateString(),
             ];
         }
         DB::table('user_activity_days')->insertOrIgnore($rows);
