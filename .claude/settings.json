@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan test *)",
+      "Bash(php artisan route:list *)",
+      "Bash(npm run types:check)",
+      "mcp__dual-graph__graph_read",
+      "mcp__plugin_stripe_stripe__stripe_api_search",
+      "mcp__plugin_stripe_stripe__search_stripe_resources"
+    ]
+  }
+}
