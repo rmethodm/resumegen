@@ -5,8 +5,6 @@ interface AtsMatchPanelProps {
     onJobDescriptionChange: (jd: string) => void;
     onJobDescriptionBlur: () => void;
     keywordGaps: string[];
-    canAiTailoring: boolean;
-    onUpgrade: () => void;
     aiButton: React.ReactNode;
 }
 
