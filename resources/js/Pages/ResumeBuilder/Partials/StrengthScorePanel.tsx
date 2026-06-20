@@ -29,7 +29,7 @@ function Sparkline({ data }: { data: StrengthHistoryPoint[] }) {
         .join(' ');
     return (
         <svg viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: h }}>
-            <polyline points={pts} fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points={pts} fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     );
 }
@@ -90,7 +90,7 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                     className="flex w-full items-center justify-between text-xs font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-700"
                 >
                     <span>
-                        Strength Score
+                        Resume Checklist
                         {score !== null && (
                             <span className={`ml-1 ${color}`}>{score}%</span>
                         )}
@@ -117,10 +117,10 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
 
                                 {/* Next-step nudge — turns the score into an action (and an AI shortcut where it fits) */}
                                 {score < 100 && tip && (
-                                    <div className="rounded-lg bg-[#eef2ff] px-3 py-2">
-                                        <p className="text-xs font-medium text-[#3730a3]">Next: {tip}</p>
+                                    <div className="rounded-lg bg-[#dbeafe] px-3 py-2">
+                                        <p className="text-xs font-medium text-[#1e40af]">Next: {tip}</p>
                                         {tipKey === 'summary' && aiRemaining > 0 && (
-                                            <button type="button" onClick={onGenerateSummary} className="mt-1 text-xs font-semibold text-[#4f46e5] hover:text-[#4338ca]">✨ Generate it with AI →</button>
+                                            <button type="button" onClick={onGenerateSummary} className="mt-1 text-xs font-semibold text-[#2563eb] hover:text-[#1d4ed8]">✨ Generate it with AI →</button>
                                         )}
                                     </div>
                                 )}
