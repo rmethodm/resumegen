@@ -875,8 +875,6 @@ export default function Edit({
                                 onJobDescriptionChange={setTargetJobDescription}
                                 onJobDescriptionBlur={save}
                                 keywordGaps={keywordGaps}
-                                canAiTailoring={canAiTailoring}
-                                onUpgrade={() => triggerUpgradeModal('ai_tailoring', 'starter')}
                                 aiButton={
                                     canAiTailoring
                                         ? renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })
