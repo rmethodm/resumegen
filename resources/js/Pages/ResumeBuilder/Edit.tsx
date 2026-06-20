@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
+import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
 import InterviewCoachPanel from './Partials/InterviewCoachPanel';
@@ -64,11 +65,11 @@ function DragDots({ className = '' }: { className?: string }) {
 
 function TipBox({ children }: { children: React.ReactNode }) {
     return (
-        <div className="flex gap-2.5 rounded-xl bg-[#eef2ff] p-3.5">
-            <svg className="h-4 w-4 shrink-0 text-[#4f46e5] mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+        <div className="flex gap-2.5 rounded-xl bg-[#dbeafe] p-3.5">
+            <svg className="h-4 w-4 shrink-0 text-[#2563eb] mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM6.343 5.343a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zM15.657 5.343a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM7 16v-1h6v1a2 2 0 11-4 0zM10 4a4 4 0 00-1.446 7.724L8 13h4l-.554-1.276A4 4 0 0010 4z" />
             </svg>
-            <div className="text-sm text-[#3730a3]">{children}</div>
+            <div className="text-sm text-[#1e40af]">{children}</div>
         </div>
     );
 }
@@ -84,12 +85,12 @@ function SkillsLayoutCard({
             onClick={onClick}
             className={`flex flex-col gap-2 rounded-xl border p-2.5 text-left transition-colors ${
                 selected
-                    ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]'
-                    : 'border-[#eeeef5] bg-white hover:border-[#c7d2fe] hover:bg-[#f5f5fb]'
+                    ? 'border-[#2563eb] bg-[#dbeafe] ring-1 ring-[#2563eb]'
+                    : 'border-[#cbd5e1] bg-white hover:border-[#bfdbfe] hover:bg-[#f1f5f9]'
             }`}
         >
             <div className="flex h-11 w-full items-start">{children}</div>
-            <span className={`text-[10px] font-semibold uppercase tracking-wide ${selected ? 'text-[#4f46e5]' : 'text-[#a0a0b0]'}`}>
+            <span className={`text-[10px] font-semibold uppercase tracking-wide ${selected ? 'text-[#2563eb]' : 'text-[#94a3b8]'}`}>
                 {label}
             </span>
         </button>
@@ -101,7 +102,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
         <button
             type="button"
             onClick={onClick}
-            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-[#c7d2fe] py-3 text-sm font-medium text-[#4f46e5] transition-colors hover:border-[#4f46e5] hover:bg-[#eef2ff]"
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-[#bfdbfe] py-3 text-sm font-medium text-[#2563eb] transition-colors hover:border-[#2563eb] hover:bg-[#dbeafe]"
         >
             <span className="text-lg leading-none">+</span> {label}
         </button>
@@ -109,7 +110,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
 }
 
 function FLabel({ children }: { children: React.ReactNode }) {
-    return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#a0a0b0]">{children}</p>;
+    return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#94a3b8]">{children}</p>;
 }
 
 function FInput({ value, onChange, onBlur, placeholder, type = 'text' }: {
@@ -122,7 +123,7 @@ function FInput({ value, onChange, onBlur, placeholder, type = 'text' }: {
             onChange={e => onChange(e.target.value)}
             onBlur={onBlur}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-[#eeeef5] px-3 py-2 text-sm text-[#23232d] placeholder-[#a0a0b0] focus:border-[#4f46e5] focus:ring-[#4f46e5] focus:outline-none"
+            className="w-full rounded-lg border border-[#cbd5e1] px-3 py-2 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
     );
 }
@@ -138,7 +139,7 @@ function FTextarea({ value, onChange, onBlur, placeholder, rows = 4 }: {
             placeholder={placeholder}
             rows={rows}
             spellCheck
-            className="w-full resize-y rounded-lg border border-[#eeeef5] px-3 py-2 text-sm text-[#23232d] placeholder-[#a0a0b0] focus:border-[#4f46e5] focus:ring-[#4f46e5] focus:outline-none"
+            className="w-full resize-y rounded-lg border border-[#cbd5e1] px-3 py-2 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
     );
 }
@@ -156,13 +157,13 @@ function DraggableSection({
             ref={setNodeRef}
             style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
         >
-            <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                 <div className="flex items-center gap-3 px-4 py-4">
                     <button
                         type="button"
                         {...attributes}
                         {...listeners}
-                        className="touch-none cursor-grab text-[#a0a0b0] hover:text-[#71717a] active:cursor-grabbing"
+                        className="touch-none cursor-grab text-[#94a3b8] hover:text-[#475569] active:cursor-grabbing"
                         tabIndex={-1}
                         aria-label="Drag to reorder"
                         onClick={e => e.stopPropagation()}
@@ -174,12 +175,12 @@ function DraggableSection({
                         className="flex flex-1 items-center gap-3 text-left"
                         onClick={onToggle}
                     >
-                        <span className="flex-1 text-sm font-semibold text-[#0f0f1a]">{title}</span>
+                        <span className="flex-1 text-sm font-semibold text-[#0f172a]">{title}</span>
                         {optional && (
-                            <span className="text-[10px] font-medium uppercase tracking-widest text-[#a0a0b0]">Optional</span>
+                            <span className="text-[10px] font-medium uppercase tracking-widest text-[#94a3b8]">Optional</span>
                         )}
                         <svg
-                            className={`h-4 w-4 text-[#a0a0b0] transition-transform ${open ? '' : 'rotate-180'}`}
+                            className={`h-4 w-4 text-[#94a3b8] transition-transform ${open ? '' : 'rotate-180'}`}
                             fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
                         >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
@@ -187,7 +188,7 @@ function DraggableSection({
                     </button>
                 </div>
                 {open && (
-                    <div className="space-y-4 border-t border-[#eeeef5] px-5 py-5">
+                    <div className="space-y-4 border-t border-[#cbd5e1] px-5 py-5">
                         {children}
                     </div>
                 )}
@@ -204,10 +205,10 @@ function EntryCard({
     label: string; onRemove: () => void; children: React.ReactNode;
 }) {
     return (
-        <div className="overflow-hidden rounded-xl border border-[#eeeef5]">
-            <div className="flex items-center justify-between border-b border-[#eeeef5] bg-[#f5f5fb] px-4 py-2.5">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#a0a0b0]">{label}</span>
-                <button type="button" onClick={onRemove} className="text-[#a0a0b0] hover:text-red-500 transition-colors">
+        <div className="overflow-hidden rounded-xl border border-[#cbd5e1]">
+            <div className="flex items-center justify-between border-b border-[#cbd5e1] bg-[#f1f5f9] px-4 py-2.5">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">{label}</span>
+                <button type="button" onClick={onRemove} className="text-[#94a3b8] hover:text-red-500 transition-colors">
                     <TrashIcon className="h-4 w-4" />
                 </button>
             </div>
@@ -226,7 +227,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
     return (
         <>
             {text.slice(0, idx)}
-            <span className="font-semibold text-[#4f46e5]">{text.slice(idx, idx + q.length)}</span>
+            <span className="font-semibold text-[#2563eb]">{text.slice(idx, idx + q.length)}</span>
             {text.slice(idx + q.length)}
         </>
     );
@@ -315,15 +316,15 @@ function SkillTagInput({
 
     return (
         <div ref={containerRef} className="relative">
-            <div className="min-h-[44px] w-full rounded-lg border border-[#eeeef5] px-3 py-2 focus-within:border-[#4f46e5] focus-within:ring-1 focus-within:ring-[#4f46e5]">
+            <div className="min-h-[44px] w-full rounded-lg border border-[#cbd5e1] px-3 py-2 focus-within:border-[#2563eb] focus-within:ring-1 focus-within:ring-[#2563eb]">
                 <div className="flex flex-wrap gap-1.5">
                     {skills.map(s => (
-                        <span key={s} className="flex items-center gap-1 rounded-md bg-[#eef2ff] px-2 py-1 text-xs text-[#3730a3] border border-[#c7d2fe]">
+                        <span key={s} className="flex items-center gap-1 rounded-md bg-[#dbeafe] px-2 py-1 text-xs text-[#1e40af] border border-[#bfdbfe]">
                             {s}
                             <button
                                 type="button"
                                 onClick={() => onChange(skills.filter(x => x !== s))}
-                                className="text-[#6366f1] hover:text-red-500 leading-none"
+                                className="text-[#3b82f6] hover:text-red-500 leading-none"
                             >
                                 ×
                             </button>
@@ -365,11 +366,11 @@ function SkillTagInput({
                         }}
                         onBlur={() => { if (inputVal) { addSkill(inputVal); } }}
                         placeholder={skills.length === 0 ? placeholder : ''}
-                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-[#23232d] placeholder-[#a0a0b0] focus:ring-0 focus:outline-none"
+                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:ring-0 focus:outline-none"
                     />
                     {loading && (
                         <span className="self-center" aria-hidden="true">
-                            <svg className="h-3.5 w-3.5 animate-spin text-[#a0a0b0]" viewBox="0 0 24 24" fill="none">
+                            <svg className="h-3.5 w-3.5 animate-spin text-[#94a3b8]" viewBox="0 0 24 24" fill="none">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                             </svg>
@@ -378,7 +379,7 @@ function SkillTagInput({
                 </div>
             </div>
             {open && (suggestions.length > 0 || showEmpty) && (
-                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#e8e8f0] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#cbd5e1] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
@@ -387,14 +388,14 @@ function SkillTagInput({
                             aria-selected={i === activeIndex}
                             onMouseDown={() => addSkill(s.name)}
                             className={`px-3 py-2 text-sm cursor-pointer ${
-                                i === activeIndex ? 'bg-[#eef2ff] text-[#4f46e5]' : 'text-[#23232d] hover:bg-[#f5f5fb]'
+                                i === activeIndex ? 'bg-[#dbeafe] text-[#2563eb]' : 'text-[#1e293b] hover:bg-[#f1f5f9]'
                             }`}
                         >
                             {highlightMatch(s.name, inputVal)}
                         </li>
                     ))}
                     {showEmpty && (
-                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-[#a0a0b0]">
+                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-[#94a3b8]">
                             No matches — press Enter to add “{inputVal.trim()}”
                         </li>
                     )}
@@ -490,6 +491,7 @@ export default function Edit({
     const [showPreview, setShowPreview] = useState(false);
     const [showInterviewCoach, setShowInterviewCoach] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
+    const [templateOpen, setTemplateOpen] = useState(false);
     const [pdfSrc, setPdfSrc] = useState(() => freshPdfSrc(resume.id));
 
     const [openSections, setOpenSections] = useState({
@@ -605,7 +607,7 @@ export default function Edit({
                 type="button"
                 onClick={canUpgrade ? aiUpgrade : opts.onRun}
                 disabled={ai.loadingUrl !== null || opts.extraDisabled || (exhausted && !canUpgrade)}
-                className={`text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed ${canUpgrade ? 'text-amber-600 hover:text-amber-700' : 'text-[#4f46e5] hover:text-[#4338ca]'} ${opts.className ?? ''}`}
+                className={`text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed ${canUpgrade ? 'text-amber-600 hover:text-amber-700' : 'text-[#2563eb] hover:text-[#1d4ed8]'} ${opts.className ?? ''}`}
             >
                 {label}
             </button>
@@ -653,10 +655,10 @@ export default function Edit({
     return (
         <AuthenticatedLayout>
             {/* Top bar */}
-            <div className="flex items-center gap-3 border-b border-[#eeeef5] bg-white px-4 py-2">
-                <Link href={route('builder.index')} className="text-sm text-[#a0a0b0] hover:text-[#71717a]">← Resumes</Link>
-                <span className="text-[#eeeef5]">/</span>
-                <h2 className="text-sm font-semibold text-[#0f0f1a]">{name}</h2>
+            <div className="flex items-center gap-3 border-b border-[#cbd5e1] bg-white px-4 py-2">
+                <Link href={route('builder.index')} className="text-sm text-[#94a3b8] hover:text-[#475569]">← Resumes</Link>
+                <span className="text-[#cbd5e1]">/</span>
+                <h2 className="text-sm font-semibold text-[#0f172a]">{name}</h2>
                 {liveScore !== null && (
                     <span className={`ml-1 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${liveScore >= 80 ? 'bg-green-100 text-green-700' : liveScore >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
                         {liveScore}%
@@ -674,12 +676,12 @@ export default function Edit({
 
             <Head title={`Editing: ${name}`} />
 
-            <div className="flex items-start bg-[#f5f5fb]">
+            <div className="flex items-start bg-[#f1f5f9]">
 
                 {/* ── Sidebar ── */}
-                <aside className={`sticky top-0 self-start overflow-y-auto bg-white border-r border-[#eeeef5] transition-all duration-200 ${sidebarOpen ? 'w-56' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
-                    <div className="flex justify-end border-b border-[#eeeef5] px-2 py-2">
-                        <button type="button" onClick={() => setSidebarOpen(v => !v)} className="rounded-md p-1.5 text-[#a0a0b0] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors" title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}>
+                <aside className={`sticky top-0 self-start overflow-y-auto bg-white border-r border-[#cbd5e1] transition-all duration-200 ${sidebarOpen ? 'w-56' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+                    <div className="flex justify-end border-b border-[#cbd5e1] px-2 py-2">
+                        <button type="button" onClick={() => setSidebarOpen(v => !v)} className="rounded-md p-1.5 text-[#94a3b8] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}>
                             {sidebarOpen ? <ChevronLeftIcon className="h-4 w-4" /> : <ChevronRightIcon className="h-4 w-4" />}
                         </button>
                     </div>
@@ -690,74 +692,89 @@ export default function Edit({
                                 <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
                             </div>
                         )}
-                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Appearance</p>}
+                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Appearance</p>}
                         <div title={!sidebarOpen ? 'Template' : undefined}>
                             {sidebarOpen ? (
                                 <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><SwatchIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" /><span className="text-xs font-medium text-[#71717a]">Template</span></div>
-                                    <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
-                                        {Object.keys(TEMPLATE_LABELS).map(t => {
-                                            // Show every template so free users see what's behind the paywall; lock the unavailable ones (except one already in use).
-                                            const locked = !allowedTemplates.includes(t) && t !== template;
-                                            const selected = template === t;
-                                            return (
-                                                <button
-                                                    key={t}
-                                                    type="button"
-                                                    onClick={() => {
-                                                        if (locked) { triggerUpgradeModal('template_access', 'starter'); return; }
-                                                        setTemplate(t as ResumeTemplate); setTimeout(save, 0);
-                                                    }}
-                                                    aria-pressed={selected}
-                                                    title={TEMPLATE_LABELS[t] ?? t}
-                                                    className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-[#4f46e5] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'} ${locked ? 'opacity-60' : ''}`}
-                                                >
-                                                    <img
-                                                        src={`/images/templates/${t}.png`}
-                                                        loading="lazy"
-                                                        alt=""
-                                                        className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
-                                                    />
-                                                    <span className="truncate text-[11px] font-medium text-[#0f0f1a]">{locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                    {allowedTemplates.length < Object.keys(TEMPLATE_LABELS).length && (
-                                        <button type="button" onClick={() => triggerUpgradeModal('template_access', 'starter')} className="text-[10px] font-medium text-amber-600 hover:text-amber-700">🔒 Unlock {Object.keys(TEMPLATE_LABELS).length - allowedTemplates.length} more templates →</button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setTemplateOpen(v => !v)}
+                                        className="flex w-full items-center justify-between rounded-md px-1.5 py-1 hover:bg-[#f1f5f9] transition-colors"
+                                    >
+                                        <div className="flex items-center gap-1.5">
+                                            <SwatchIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" />
+                                            <span className="text-xs font-medium text-[#475569]">Template</span>
+                                            <span className="text-[10px] text-[#94a3b8]">({TEMPLATE_LABELS[template] ?? template})</span>
+                                        </div>
+                                        <svg className={`h-3.5 w-3.5 text-[#94a3b8] transition-transform ${templateOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                                    </button>
+                                    {templateOpen && (
+                                        <div className="space-y-1.5">
+                                            <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
+                                                {Object.keys(TEMPLATE_LABELS).map(t => {
+                                                    // Show every template so free users see what's behind the paywall; lock the unavailable ones (except one already in use).
+                                                    const locked = !allowedTemplates.includes(t) && t !== template;
+                                                    const selected = template === t;
+                                                    return (
+                                                        <button
+                                                            key={t}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                if (locked) { triggerUpgradeModal('template_access', 'starter'); return; }
+                                                                setTemplate(t as ResumeTemplate); setTimeout(save, 0);
+                                                            }}
+                                                            aria-pressed={selected}
+                                                            title={TEMPLATE_LABELS[t] ?? t}
+                                                            className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-[#2563eb] ring-1 ring-[#2563eb]' : 'border-[#cbd5e1] hover:border-[#c7c7d9]'} ${locked ? 'opacity-60' : ''}`}
+                                                        >
+                                                            <img
+                                                                src={`/images/templates/${t}.png`}
+                                                                loading="lazy"
+                                                                alt=""
+                                                                className="mb-1 h-28 w-full rounded border border-[#cbd5e1] bg-white object-cover object-top"
+                                                            />
+                                                            <span className="truncate text-[11px] font-medium text-[#0f172a]">{locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                            {allowedTemplates.length < Object.keys(TEMPLATE_LABELS).length && (
+                                                <button type="button" onClick={() => triggerUpgradeModal('template_access', 'starter')} className="text-[10px] font-medium text-amber-600 hover:text-amber-700">🔒 Unlock {Object.keys(TEMPLATE_LABELS).length - allowedTemplates.length} more templates →</button>
+                                            )}
+                                            {NON_ATS_TEMPLATES.includes(template) && <p className="text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
+                                        </div>
                                     )}
-                                    {NON_ATS_TEMPLATES.includes(template) && <p className="text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
                                 </div>
                             ) : (
-                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors" title="Template"><SwatchIcon className="h-4 w-4" /></button>
+                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Template"><SwatchIcon className="h-4 w-4" /></button>
                             )}
                         </div>
                         <div>
                             {sidebarOpen ? (
                                 <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#71717a]">Aa</span><span className="text-xs font-medium text-[#71717a]">Font</span></div>
-                                    <div className="flex overflow-hidden rounded-md border border-[#eeeef5] text-xs">
+                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#475569]">Aa</span><span className="text-xs font-medium text-[#475569]">Font</span></div>
+                                    <div className="flex overflow-hidden rounded-md border border-[#cbd5e1] text-xs">
                                         {(['sans', 'serif', 'mono'] as const).map(f => (
-                                            <button key={f} type="button" onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }} className={`flex-1 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-[#0f0f1a] text-white' : 'bg-white text-[#71717a] hover:bg-[#f5f5fb]'}`}>
+                                            <button key={f} type="button" onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }} className={`flex-1 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-[#0f172a] text-white' : 'bg-white text-[#475569] hover:bg-[#f1f5f9]'}`}>
                                                 {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
                             ) : (
-                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors" title="Font"><span className="text-sm font-bold">Aa</span></button>
+                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Font"><span className="text-sm font-bold">Aa</span></button>
                             )}
                         </div>
                         {sidebarOpen && (
                             <div>
                                 <button type="button" onClick={() => toggleSection('fontSizes')} className="flex w-full items-center justify-between text-left">
-                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#71717a]">↕</span><span className="text-xs font-medium text-[#71717a]">Text size</span></div>
-                                    <svg className={`h-3.5 w-3.5 text-[#a0a0b0] transition-transform ${openSections.fontSizes ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#475569]">↕</span><span className="text-xs font-medium text-[#475569]">Text size</span></div>
+                                    <svg className={`h-3.5 w-3.5 text-[#94a3b8] transition-transform ${openSections.fontSizes ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
                                 </button>
                                 {openSections.fontSizes && (
                                     <div className="mt-2 space-y-2">
                                         <div className="flex justify-end">
-                                            <button type="button" onClick={() => { setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#a0a0b0] hover:text-[#4f46e5] transition-colors">Reset</button>
+                                            <button type="button" onClick={() => { setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] hover:text-[#2563eb] transition-colors">Reset</button>
                                         </div>
                                         {([
                                             { label: 'Name', key: 'name', min: 12, max: 36 },
@@ -768,11 +785,11 @@ export default function Edit({
                                             { label: 'Entry Spacing', key: 'entrySpacing', min: 0, max: 20 },
                                         ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
                                             <div key={key} className="flex items-center justify-between gap-1">
-                                                <span className="truncate text-xs text-[#71717a]">{label}</span>
+                                                <span className="truncate text-xs text-[#475569]">{label}</span>
                                                 <div className="flex shrink-0 items-center gap-0.5">
-                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.max(min, +(fontSizesRef.current[key] - 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#c7d2fe] bg-[#eef2ff] text-[#4f46e5] hover:bg-[#e0e7ff]">−</button>
-                                                    <span className="w-7 text-center text-xs font-medium tabular-nums text-[#23232d]">{fontSizes[key]}</span>
-                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.min(max, +(fontSizesRef.current[key] + 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#c7d2fe] bg-[#eef2ff] text-[#4f46e5] hover:bg-[#e0e7ff]">+</button>
+                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.max(min, +(fontSizesRef.current[key] - 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#dbeafe] text-[#2563eb] hover:bg-[#dbeafe]">−</button>
+                                                    <span className="w-7 text-center text-xs font-medium tabular-nums text-[#1e293b]">{fontSizes[key]}</span>
+                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.min(max, +(fontSizesRef.current[key] + 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#dbeafe] text-[#2563eb] hover:bg-[#dbeafe]">+</button>
                                                 </div>
                                             </div>
                                         ))}
@@ -782,9 +799,9 @@ export default function Edit({
                         )}
                         {sidebarOpen && template === 'executive' && (
                             <div>
-                                <p className="mb-2 text-xs font-medium text-[#71717a]">Profile Photo</p>
+                                <p className="mb-2 text-xs font-medium text-[#475569]">Profile Photo</p>
                                 <div className="flex items-center gap-3">
-                                    {photoUrl ? <img src={photoUrl} alt="Profile" className="h-12 w-12 rounded-full object-cover ring-2 ring-indigo-100" /> : <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400"><svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>}
+                                    {photoUrl ? <img src={photoUrl} alt="Profile" className="h-12 w-12 rounded-full object-cover ring-2 ring-blue-100" /> : <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400"><svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>}
                                     <div className="flex flex-col gap-1">
                                         <label className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
                                             Upload Photo
@@ -795,48 +812,48 @@ export default function Edit({
                                 </div>
                             </div>
                         )}
-                        <div className="border-t border-[#eeeef5]" />
-                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Document</p>}
+                        <div className="border-t border-[#cbd5e1]" />
+                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Document</p>}
                         <div>
                             {sidebarOpen ? (
                                 <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><BookmarkSquareIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" /><span className="text-xs font-medium text-[#71717a]">Save</span></div>
-                                    <button type="button" onClick={save} disabled={saving} className="w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#4338ca] disabled:opacity-50 transition-colors">{saving ? 'Saving…' : 'Save'}</button>
+                                    <div className="flex items-center gap-1.5"><BookmarkSquareIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Save</span></div>
+                                    <button type="button" onClick={save} disabled={saving} className="w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1e293b] disabled:opacity-50 transition-colors">{saving ? 'Saving…' : 'Save'}</button>
                                     {saving ? <div className="flex items-center gap-1.5"><span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" /><span className="text-[10px] text-amber-600">Saving…</span></div> : savedAt ? <div className="flex items-center gap-1.5"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" /><span className="text-[10px] text-green-600">Saved {savedAt}</span></div> : null}
                                 </div>
                             ) : (
-                                <button type="button" onClick={save} disabled={saving} className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] disabled:opacity-50 transition-colors" title="Save"><BookmarkSquareIcon className="h-4 w-4" /></button>
+                                <button type="button" onClick={save} disabled={saving} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] disabled:opacity-50 transition-colors" title="Save"><BookmarkSquareIcon className="h-4 w-4" /></button>
                             )}
                         </div>
                         <div>
                             {sidebarOpen ? (
                                 <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><EyeIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" /><span className="text-xs font-medium text-[#71717a]">Preview</span></div>
-                                    <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`w-full rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${showPreview ? 'bg-[#4338ca] text-white hover:bg-[#3730a3]' : 'bg-[#4f46e5] text-white hover:bg-[#4338ca]'}`}>{showPreview ? 'Hide Preview' : 'Preview'}</button>
+                                    <div className="flex items-center gap-1.5"><EyeIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Preview</span></div>
+                                    <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`w-full rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${showPreview ? 'bg-[#1e293b] text-white hover:bg-[#1e3a8a]' : 'bg-[#0f172a] text-white hover:bg-[#1e293b]'}`}>{showPreview ? 'Hide Preview' : 'Preview'}</button>
                                 </div>
                             ) : (
-                                <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`flex w-full justify-center rounded-md p-2 transition-colors ${showPreview ? 'text-[#4f46e5] bg-[#eef2ff]' : 'text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5]'}`} title={showPreview ? 'Hide Preview' : 'Preview'}>{showPreview ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}</button>
+                                <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`flex w-full justify-center rounded-md p-2 transition-colors ${showPreview ? 'text-[#2563eb] bg-[#dbeafe]' : 'text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb]'}`} title={showPreview ? 'Hide Preview' : 'Preview'}>{showPreview ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}</button>
                             )}
                         </div>
                         <div>
                             {sidebarOpen ? (
                                 <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><ArrowDownTrayIcon className="h-3.5 w-3.5 shrink-0 text-[#71717a]" /><span className="text-xs font-medium text-[#71717a]">Download</span></div>
-                                    <a href={route('builder.pdf', resume.id)} className="block w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#4338ca] transition-colors">PDF</a>
-                                    {canDocx ? <a href={route('builder.docx', resume.id)} className="block w-full rounded-md bg-[#4f46e5] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#4338ca] transition-colors">DOCX</a> : <button type="button" onClick={() => triggerUpgradeModal('docx_export', 'starter')} className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors">🔒 DOCX</button>}
+                                    <div className="flex items-center gap-1.5"><ArrowDownTrayIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Download</span></div>
+                                    <a href={route('builder.pdf', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">PDF</a>
+                                    {canDocx ? <a href={route('builder.docx', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">DOCX</a> : <button type="button" onClick={() => triggerUpgradeModal('docx_export', 'starter')} className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors">🔒 DOCX</button>}
                                 </div>
                             ) : (
-                                <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#4f46e5] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
+                                <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
                             )}
                         </div>
                         {sidebarOpen && (
                             <div>
-                                <div className="flex items-center gap-1.5 mb-1.5"><span className="text-[10px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Interview Prep</span></div>
+                                <div className="flex items-center gap-1.5 mb-1.5"><span className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Interview Prep</span></div>
                                 {canInterviewCoach ? (
                                     <button
                                         type="button"
                                         onClick={() => setShowInterviewCoach(true)}
-                                        className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#4f46e5] hover:bg-[#f5f5fb] transition-colors"
+                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#2563eb] hover:bg-[#f1f5f9] transition-colors"
                                     >
                                         ✨ Interview Coach
                                     </button>
@@ -844,7 +861,7 @@ export default function Edit({
                                     <button
                                         type="button"
                                         onClick={() => triggerUpgradeModal('interview_coach', 'starter')}
-                                        className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors"
+                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors"
                                     >
                                         🔒 Interview Coach
                                     </button>
@@ -852,6 +869,21 @@ export default function Edit({
                             </div>
                         )}
                         {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} strengthHistoryEnabled={strengthHistoryEnabled} aiRemaining={ai.remaining} onGenerateSummary={handleGenerateSummary} />}
+                        {sidebarOpen && (
+                            <AtsMatchPanel
+                                jobDescription={targetJobDescription}
+                                onJobDescriptionChange={setTargetJobDescription}
+                                onJobDescriptionBlur={save}
+                                keywordGaps={keywordGaps}
+                                canAiTailoring={canAiTailoring}
+                                onUpgrade={() => triggerUpgradeModal('ai_tailoring', 'starter')}
+                                aiButton={
+                                    canAiTailoring
+                                        ? renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })
+                                        : <button type="button" onClick={() => triggerUpgradeModal('ai_tailoring', 'starter')} className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors">🔒 Tailor to this job (Starter)</button>
+                                }
+                            />
+                        )}
                     </div>
                 </aside>
 
@@ -860,21 +892,21 @@ export default function Edit({
                     <div className="mx-auto max-w-2xl space-y-4 px-4">
 
                         {/* Resume Name */}
-                        <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
+                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
                             <FLabel>Resume Name</FLabel>
                             <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
-                            <p className="text-xs text-[#a0a0b0]">File: <span className="font-mono">{pdfFilename}</span></p>
+                            <p className="text-xs text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
                         </div>
 
                         {/* Contact — pinned, not draggable */}
-                        <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                             <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => toggleSection('contact')}>
                                 <span className="w-[18px]" />
-                                <span className="flex-1 text-sm font-semibold text-[#0f0f1a]">Contact Information</span>
-                                <svg className={`h-4 w-4 text-[#a0a0b0] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                                <span className="flex-1 text-sm font-semibold text-[#0f172a]">Contact Information</span>
+                                <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
                             </button>
                             {openSections.contact && (
-                                <div className="grid grid-cols-1 gap-3 border-t border-[#eeeef5] p-5 sm:grid-cols-2">
+                                <div className="grid grid-cols-1 gap-3 border-t border-[#cbd5e1] p-5 sm:grid-cols-2">
                                     <div className="col-span-2"><FLabel>Full Name</FLabel><FInput value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} onBlur={save} placeholder="Jane Smith" /></div>
                                     <div><FLabel>Email</FLabel><FInput value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} onBlur={save} type="email" placeholder="jane@example.com" /></div>
                                     <div><FLabel>Phone</FLabel><FInput value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} onBlur={save} placeholder="(555) 555-5555" /></div>
@@ -885,7 +917,7 @@ export default function Edit({
                             )}
                         </div>
 
-                        <div className="px-1 pb-1 text-xs text-[#a0a0b0]">
+                        <div className="px-1 pb-1 text-xs text-[#94a3b8]">
                             ✨ {ai.remaining} AI uses left this month
                             {ai.remaining === 0 && aiCanUpgrade && aiNextTier && (
                                 <> · <button type="button" onClick={aiUpgrade} className="font-medium text-amber-600 underline hover:text-amber-700">Upgrade for more</button></>
@@ -910,7 +942,7 @@ export default function Edit({
                                             />
                                             <div className="flex items-center justify-between">
                                                 {renderAiButton({ idle: '✨ Generate with AI', onRun: handleGenerateSummary, regenerated: aiGenerated.has('summary') })}
-                                                <p className="text-right text-xs text-[#a0a0b0]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                                                <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
                                             </div>
                                         </DraggableSection>
                                     );
@@ -926,12 +958,12 @@ export default function Edit({
                                                         <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
                                                         <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
                                                     </div>
-                                                    <label className="flex items-center gap-2 text-sm text-[#71717a] cursor-pointer">
-                                                        <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#c7d2fe] text-[#4f46e5] focus:ring-[#4f46e5]" />
+                                                    <label className="flex items-center gap-2 text-sm text-[#475569] cursor-pointer">
+                                                        <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#bfdbfe] text-[#2563eb] focus:ring-[#3b82f6]" />
                                                         I currently work here
                                                     </label>
                                                     <div>
-                                                        <FLabel>Bullet Points <span className="text-[#a0a0b0] font-normal">(one per line)</span></FLabel>
+                                                        <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
                                                         <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
                                                         {renderAiButton({ idle: '✨ Improve with AI', onRun: () => handleImproveExperience(exp.id, exp.bullets), regenerated: aiGenerated.has(`exp:${exp.id}`), extraDisabled: !exp.bullets?.trim(), className: 'mt-1' })}
                                                     </div>
@@ -947,14 +979,14 @@ export default function Edit({
                                             {projects.map((proj, i) => (
                                                 <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
                                                     <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
-                                                    <div><FLabel>Description <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
-                                                    <div><FLabel>Project URL <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
+                                                    <div><FLabel>Description <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
+                                                    <div><FLabel>Project URL <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
                                                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                        <div><FLabel>Start Date <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
-                                                        <div><FLabel>End Date <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
+                                                        <div><FLabel>Start Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
+                                                        <div><FLabel>End Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
                                                     </div>
                                                     <div>
-                                                        <FLabel>Highlights <span className="text-[#a0a0b0] font-normal">(one per line, optional)</span></FLabel>
+                                                        <FLabel>Highlights <span className="text-[#94a3b8] font-normal">(one per line, optional)</span></FLabel>
                                                         <FTextarea value={proj.bullets} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, bullets: v } : p))} onBlur={save} placeholder={"• Built with React, Node.js, and PostgreSQL\n• Handles 10k+ daily users"} rows={3} />
                                                     </div>
                                                 </EntryCard>
@@ -983,34 +1015,14 @@ export default function Edit({
                                     // ── Skills ──
                                     if (key === 'skills') return (
                                         <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')}>
-                                            <div className="pb-1 space-y-1.5">
-                                                <FLabel>Target Job Description <span className="text-[#a0a0b0] font-normal">(optional — paste a posting to tailor keyword gaps)</span></FLabel>
-                                                <FTextarea
-                                                    value={targetJobDescription}
-                                                    onChange={setTargetJobDescription}
-                                                    onBlur={save}
-                                                    placeholder="Paste the job description you're targeting. AI will find which keywords from it are missing from your resume."
-                                                    rows={4}
-                                                />
-                                                {canAiTailoring
-                                                    ? renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })
-                                                    : <button type="button" onClick={() => triggerUpgradeModal('ai_tailoring', 'starter')} className="w-full rounded-md border border-[#eeeef5] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#a0a0b0] hover:bg-[#f5f5fb] transition-colors">🔒 Tailor to this job (Starter)</button>}
-                                                {keywordGaps.length > 0 && (
-                                                    <div className="mt-2 flex flex-wrap gap-1">
-                                                        {keywordGaps.map(k => (
-                                                            <span key={k} className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{k}</span>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
                                             {/* Layout picker cards */}
                                             <div className="grid grid-cols-3 gap-2 pb-1">
                                                 <SkillsLayoutCard label="Inline" selected={skillsLayout === 'inline'} onClick={() => { setSkillsLayout('inline'); setTimeout(save, 0); }}>
                                                     <div className="flex flex-wrap items-center gap-x-[3px] gap-y-1 pt-0.5">
                                                         {[28, 22, 32, 18, 26].map((w, i) => (
                                                             <span key={i} className="flex items-center gap-[3px]">
-                                                                <span className="inline-block h-[6px] rounded-full bg-[#c7d2fe]" style={{ width: w }} />
-                                                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-[#a0a0b0]" />}
+                                                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-[#94a3b8]" />}
                                                             </span>
                                                         ))}
                                                     </div>
@@ -1020,8 +1032,8 @@ export default function Edit({
                                                     <div className="flex flex-col gap-[5px] pt-0.5">
                                                         {[34, 26, 38, 22].map((w, i) => (
                                                             <div key={i} className="flex items-center gap-1">
-                                                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#4f46e5]" />
-                                                                <span className="inline-block h-[6px] rounded-full bg-[#c7d2fe]" style={{ width: w }} />
+                                                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#0f172a]" />
+                                                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                                                             </div>
                                                         ))}
                                                     </div>
@@ -1031,10 +1043,10 @@ export default function Edit({
                                                     <div className="flex flex-col gap-[6px] pt-0.5">
                                                         {[[20, [14, 12]], [16, [18, 10]], [22, [12, 14]]].map(([catW, items], i) => (
                                                             <div key={i} className="flex flex-wrap items-center gap-[3px]">
-                                                                <span className="inline-block h-[6px] rounded-full bg-[#4f46e5]" style={{ width: catW as number }} />
-                                                                <span className="text-[7px] leading-none text-[#a0a0b0]">:</span>
+                                                                <span className="inline-block h-[6px] rounded-full bg-[#0f172a]" style={{ width: catW as number }} />
+                                                                <span className="text-[7px] leading-none text-[#94a3b8]">:</span>
                                                                 {(items as number[]).map((w, j) => (
-                                                                    <span key={j} className="inline-block h-[6px] rounded-full bg-[#c7d2fe]" style={{ width: w }} />
+                                                                    <span key={j} className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                                                                 ))}
                                                             </div>
                                                         ))}
@@ -1045,9 +1057,9 @@ export default function Edit({
                                                     <div className="flex gap-2.5 pt-0.5">
                                                         {[[22, [18, 24, 16]], [18, [22, 14, 20]]].map(([catW, rows], ci) => (
                                                             <div key={ci} className="flex flex-col gap-[4px]">
-                                                                <span className="inline-block h-[7px] rounded bg-[#4f46e5]" style={{ width: catW as number }} />
+                                                                <span className="inline-block h-[7px] rounded bg-[#0f172a]" style={{ width: catW as number }} />
                                                                 {(rows as number[]).map((w, ri) => (
-                                                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-[#c7d2fe]" style={{ width: w }} />
+                                                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                                                                 ))}
                                                             </div>
                                                         ))}
@@ -1056,11 +1068,11 @@ export default function Edit({
 
                                                 <SkillsLayoutCard label="Narrative" selected={skillsLayout === 'narrative'} onClick={() => { setSkillsLayout('narrative'); setTimeout(save, 0); }}>
                                                     <div className="flex flex-col gap-[5px] pt-0.5">
-                                                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#4f46e5]" />
+                                                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#0f172a]" />
                                                         {[32, 24, 34, 20].map((w, i) => (
                                                             <div key={i} className="flex items-center gap-1 pl-1">
-                                                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[#a0a0b0]" />
-                                                                <span className="inline-block h-[5px] rounded-full bg-[#c7d2fe]" style={{ width: w }} />
+                                                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[#94a3b8]" />
+                                                                <span className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                                                             </div>
                                                         ))}
                                                     </div>
@@ -1080,9 +1092,9 @@ export default function Edit({
                                             {(skillsLayout === 'grouped-inline' || skillsLayout === 'grouped-vertical') && (
                                                 <>
                                                     {skillCategories.map(cat => (
-                                                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white">
-                                                            <div className="flex items-center gap-2 border-b border-[#eeeef5] bg-[#f5f5fb] px-3 py-2.5">
-                                                                <DragDots className="text-[#a0a0b0] shrink-0" />
+                                                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
+                                                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
+                                                                <DragDots className="text-[#94a3b8] shrink-0" />
                                                                 <select
                                                                     value={cat.category_type}
                                                                     onChange={e => {
@@ -1090,7 +1102,7 @@ export default function Edit({
                                                                         setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_type: type, category_name: type || c.category_name } : c));
                                                                     }}
                                                                     onBlur={save}
-                                                                    className="flex-1 min-w-0 rounded-lg border border-[#eeeef5] px-2 py-1.5 text-sm text-[#23232d] focus:border-[#4f46e5] focus:ring-1 focus:ring-[#4f46e5] focus:outline-none"
+                                                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] px-2 py-1.5 text-sm text-[#1e293b] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                                                 >
                                                                     <option value="">Select category...</option>
                                                                     {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
@@ -1101,9 +1113,9 @@ export default function Edit({
                                                                     onChange={e => setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_name: e.target.value } : c))}
                                                                     onBlur={save}
                                                                     placeholder="Or type custom..."
-                                                                    className="flex-1 min-w-0 rounded-lg border border-[#eeeef5] bg-white px-2 py-1.5 text-sm text-[#23232d] placeholder-[#a0a0b0] focus:border-[#4f46e5] focus:ring-1 focus:ring-[#4f46e5] focus:outline-none"
+                                                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                                                 />
-                                                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-[#a0a0b0] hover:text-red-500 transition-colors">
+                                                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
                                                                     <TrashIcon className="h-4 w-4" />
                                                                 </button>
                                                             </div>
@@ -1125,17 +1137,17 @@ export default function Edit({
                                             {skillsLayout === 'narrative' && (
                                                 <>
                                                     {skillNarratives.map(n => (
-                                                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white">
-                                                            <div className="flex items-center gap-2 border-b border-[#eeeef5] bg-[#f5f5fb] px-3 py-2.5">
+                                                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
+                                                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
                                                                 <input
                                                                     type="text"
                                                                     value={n.name}
                                                                     onChange={e => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, name: e.target.value } : x))}
                                                                     onBlur={save}
                                                                     placeholder="Skill area (e.g. Communication, Leadership)"
-                                                                    className="flex-1 rounded-lg border border-[#eeeef5] bg-white px-2 py-1.5 text-sm font-medium text-[#23232d] placeholder-[#a0a0b0] focus:border-[#4f46e5] focus:ring-1 focus:ring-[#4f46e5] focus:outline-none"
+                                                                    className="flex-1 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm font-medium text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                                                 />
-                                                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-[#a0a0b0] hover:text-red-500 transition-colors">
+                                                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
                                                                     <TrashIcon className="h-4 w-4" />
                                                                 </button>
                                                             </div>
@@ -1162,12 +1174,12 @@ export default function Edit({
                                             {certifications.map((cert, i) => (
                                                 <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
                                                     <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
-                                                    <div><FLabel>Issuing Organization <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
+                                                    <div><FLabel>Issuing Organization <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
                                                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                        <div><FLabel>Date Obtained <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
-                                                        <div><FLabel>Expiration <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
+                                                        <div><FLabel>Date Obtained <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
+                                                        <div><FLabel>Expiration <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
                                                     </div>
-                                                    <div><FLabel>Credential ID <span className="text-[#a0a0b0] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
+                                                    <div><FLabel>Credential ID <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
                                                 </EntryCard>
                                             ))}
                                             <AddButton label="Add Certificate" onClick={() => setCertifications(prev => [...prev, emptyCert()])} />
@@ -1181,28 +1193,28 @@ export default function Edit({
                         </DndContext>
 
                         {/* Share Links */}
-                        <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                             <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => toggleSection('share')}>
                                 <span className="w-[18px]" />
-                                <span className="flex-1 text-sm font-semibold text-[#0f0f1a]">Share Links</span>
-                                <svg className={`h-4 w-4 text-[#a0a0b0] transition-transform ${openSections.share ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                                <span className="flex-1 text-sm font-semibold text-[#0f172a]">Share Links</span>
+                                <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.share ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
                             </button>
                             {openSections.share && (
-                                <div className="border-t border-[#eeeef5]">
+                                <div className="border-t border-[#cbd5e1]">
                                     <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
                                 </div>
                             )}
                         </div>
 
                         {/* Messages */}
-                        <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                             <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => toggleSection('questions')}>
                                 <span className="w-[18px]" />
-                                <span className="flex-1 text-sm font-semibold text-[#0f0f1a]">Messages{unreadCount > 0 ? ` (${unreadCount} unread)` : ''}</span>
-                                <svg className={`h-4 w-4 text-[#a0a0b0] transition-transform ${openSections.questions ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                                <span className="flex-1 text-sm font-semibold text-[#0f172a]">Messages{unreadCount > 0 ? ` (${unreadCount} unread)` : ''}</span>
+                                <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.questions ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
                             </button>
                             {openSections.questions && (
-                                <div className="border-t border-[#eeeef5]">
+                                <div className="border-t border-[#cbd5e1]">
                                     <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
                                 </div>
                             )}
@@ -1246,14 +1258,14 @@ export default function Edit({
                     <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
                         <div className="mb-6 flex justify-center gap-2">
                             {([0, 1] as const).map(i => (
-                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-[#4f46e5]' : i < wizardStep ? 'bg-[#a5b4fc]' : 'bg-[#eeeef5]'}`} />
+                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-[#0f172a]' : i < wizardStep ? 'bg-[#93c5fd]' : 'bg-[#cbd5e1]'}`} />
                             ))}
                         </div>
                         {wizardStep === 0 && (
                             <div className="space-y-4 text-center">
                                 <h2 className="text-2xl font-semibold text-gray-900">Let's build your resume</h2>
                                 <p className="text-sm text-gray-600">It takes just a few minutes. We'll start with your contact details.</p>
-                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-[#4f46e5] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#4338ca]">Get started →</button>
+                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-[#0f172a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Get started →</button>
                             </div>
                         )}
                         {wizardStep === 1 && (
@@ -1269,7 +1281,7 @@ export default function Edit({
                                 </div>
                                 <div className="mt-4 flex items-center justify-between">
                                     <button type="button" onClick={finishWizard} className="text-sm text-gray-500 hover:text-gray-700">Skip</button>
-                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-[#4f46e5] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#4338ca]">Finish →</button>
+                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-[#0f172a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Finish →</button>
                                 </div>
                             </div>
                         )}
