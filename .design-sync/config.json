@@ -1,0 +1,35 @@
+{
+  "projectId": "294ecd74-b84a-4034-9675-19c32d9e5069",
+  "pkg": "resumegen",
+  "globalName": "Resumegen",
+  "shape": "package",
+  "srcDir": "resources/js/Components",
+  "cssEntry": ".design-sync/components.css",
+  "runtimeFontPrefixes": ["Figtree"],
+  "readmeHeader": ".design-sync/conventions.md",
+  "buildCmd": "npm run build && npx tailwindcss -i ./resources/css/app.css -o ./.design-sync/components.css --content './resources/js/Components/**/*.tsx'",
+  "overrides": {
+    "Modal": { "cardMode": "single", "viewport": "800x600" }
+  },
+  "componentSrcMap": {
+    "ApplicationLogo": "resources/js/Components/ApplicationLogo.tsx",
+    "AutocompleteInput": "resources/js/Components/AutocompleteInput.tsx",
+    "BulletEditor": "resources/js/Components/BulletEditor.tsx",
+    "Checkbox": "resources/js/Components/Checkbox.tsx",
+    "DangerButton": "resources/js/Components/DangerButton.tsx",
+    "Dropdown": "resources/js/Components/Dropdown.tsx",
+    "InputError": "resources/js/Components/InputError.tsx",
+    "InputLabel": "resources/js/Components/InputLabel.tsx",
+    "Modal": "resources/js/Components/Modal.tsx",
+    "PrimaryButton": "resources/js/Components/PrimaryButton.tsx",
+    "QRCodeDisplay": "resources/js/Components/QRCodeDisplay.tsx",
+    "SecondaryButton": "resources/js/Components/SecondaryButton.tsx",
+    "SkillGroupEditor": "resources/js/Components/SkillGroupEditor.tsx",
+    "SkillNarrativeEditor": "resources/js/Components/SkillNarrativeEditor.tsx",
+    "TagInput": "resources/js/Components/TagInput.tsx",
+    "TextInput": "resources/js/Components/TextInput.tsx",
+    "NavLink": null,
+    "ResponsiveNavLink": null,
+    "UpgradeModal": null
+  }
+}
