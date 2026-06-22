@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Data\ResumeRules;
 use App\Data\SkillCategories;
-use App\Models\OrganizationMember;
-use App\Models\RecruiterNote;
 use App\Models\Resume;
 use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
-use App\Models\User;
 use App\Services\DocxGenerator;
 use App\Services\ResumeCompletionScorer;
 use App\Services\ResumeCopier;
@@ -158,7 +155,7 @@ class ResumeBuilderController extends Controller
                 'industry' => $user->industry,
                 'years_experience' => $user->years_experience,
             ],
-            'recruiterNote' => $this->getRecruiterNote($request->user(), $resume),
+            'recruiterNote' => null,
             'isFreeTier' => $user->planTier() === 'free',
         ]);
     }
@@ -370,21 +367,5 @@ class ResumeBuilderController extends Controller
         $copy = ResumeCopier::copy($resume, $user, 'Copy of '.$resume->name);
 
         return redirect()->route('builder.edit', $copy->id);
-    }
-
-    private function getRecruiterNote(User $user, Resume $resume): ?string
-    {
-        $orgId = OrganizationMember::where('user_id', $user->id)
-            ->where('role', 'member')
-            ->whereNotNull('joined_at')
-            ->value('organization_id');
-
-        if (! $orgId) {
-            return null;
-        }
-
-        return RecruiterNote::where('organization_id', $orgId)
-            ->where('resume_id', $resume->id)
-            ->value('body');
     }
 }

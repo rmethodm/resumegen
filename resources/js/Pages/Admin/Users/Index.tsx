@@ -7,7 +7,6 @@ interface AdminUser {
     name: string;
     email: string;
     is_pro: boolean;
-    is_agency: boolean;
     is_master_admin: boolean;
     plan_tier: string;
     subscribed: boolean;
@@ -25,7 +24,6 @@ function PlanBadge({ user }: { user: AdminUser }) {
     const tier = user.plan_tier;
     const colors: Record<string, string> = {
         pro:     'bg-amber-50 text-amber-700',
-        agency:  'bg-violet-50 text-violet-700',
         starter: 'bg-blue-50 text-blue-700',
         free:    'bg-[#f5f5fb] text-[#71717a]',
     };
@@ -84,7 +82,7 @@ export default function AdminUsersIndex({ users, filters, flash }: Props) {
                             onChange={e => handlePlanFilter(e.target.value)}
                             className="rounded-lg border border-[#eeeef5] px-3 py-1.5 text-sm text-[#71717a] focus:border-[#4f46e5] focus:outline-none"
                         >
-                            {['all','free','starter','pro','agency'].map(p => (
+                            {['all','free','starter','pro'].map(p => (
                                 <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>
                             ))}
                         </select>
@@ -130,14 +128,6 @@ export default function AdminUsersIndex({ users, filters, flash }: Props) {
                                                             {user.is_pro ? 'Revoke Pro' : 'Grant Pro'}
                                                         </button>
                                                     )}
-                                                    <button
-                                                        type="button"
-                                                        disabled={isProtected}
-                                                        onClick={() => router.patch(route('admin.users.toggle-agency', user.id), {}, { preserveScroll: true })}
-                                                        className={`text-xs font-medium ${isProtected ? 'cursor-not-allowed text-[#c4c4d0]' : user.is_agency ? 'text-violet-600 hover:text-violet-800' : 'text-[#a0a0b0] hover:text-[#6b7280]'}`}
-                                                    >
-                                                        {user.is_agency ? 'Agency ✓' : 'Agency'}
-                                                    </button>
                                                     {!user.is_master_admin && (
                                                         <button
                                                             type="button"

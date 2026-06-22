@@ -11,7 +11,7 @@ export default function Authenticated({
     header: _header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
-    const { user, orgRole } = usePage().props.auth;
+    const { user } = usePage().props.auth;
     const { impersonating } = usePage().props as any;
     const [showingNav, setShowingNav] = useState(false);
     const { isDark, toggle } = useDarkMode();
@@ -46,9 +46,6 @@ export default function Authenticated({
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</NavLink>
                                 <NavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</NavLink>
                                 <NavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</NavLink>
-                                {orgRole === 'admin' && (
-                                    <NavLink href={route('org.show')} active={route().current('org.*')}>Org</NavLink>
-                                )}
                                 <NavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</NavLink>
                                 <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
                                 <NavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</NavLink>
@@ -109,9 +106,6 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</ResponsiveNavLink>
-                        {orgRole === 'admin' && (
-                            <ResponsiveNavLink href={route('org.show')} active={route().current('org.*')}>Org</ResponsiveNavLink>
-                        )}
                         <ResponsiveNavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</ResponsiveNavLink>

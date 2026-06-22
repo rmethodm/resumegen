@@ -13,7 +13,6 @@ const safeRoute = (name: string, fallback: string): string => {
 const NAV = [
     { label: 'Dashboard', href: safeRoute('admin.dashboard', '/admin'),               pattern: 'admin.dashboard' },
     { label: 'Users',     href: safeRoute('admin.users.index', '/admin/users'),        pattern: 'admin.users.*' },
-    { label: 'Orgs',      href: safeRoute('admin.organizations.index', '/admin/orgs'), pattern: 'admin.organizations.*' },
     { label: 'Messages',  href: safeRoute('admin.messages.index', '/admin/messages'),  pattern: 'admin.messages.*' },
     { label: 'Job Titles',href: safeRoute('admin.job-titles.index', '/admin/job-titles'), pattern: 'admin.job-titles.*' },
     { label: 'AI Usage',  href: safeRoute('admin.ai.overview', '/admin/ai'),           pattern: 'admin.ai.*' },

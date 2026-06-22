@@ -3,7 +3,7 @@ import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 type Props = {
-    plan: 'free' | 'starter' | 'pro' | 'agency';
+    plan: 'free' | 'starter' | 'pro';
     resumeCount: number;
     resumeLimit: number | null;
     aiUsed: number;
@@ -15,7 +15,6 @@ const PLAN_FEATURES: Record<string, string[]> = {
     free:    ['2 resumes', '1 cover letter', '3 job applications', '4 templates', '10 AI generations/month'],
     starter: ['10 resumes', '10 cover letters', 'Unlimited job tracking', 'All 9 templates', 'DOCX export', 'ATS scoring', '150 AI generations/month'],
     pro:     ['Unlimited resumes & cover letters', 'All templates (current + future)', 'DOCX export', 'ATS scoring', 'API access', '500 AI generations/month'],
-    agency:  ['Team workspace + member seats', 'Everything in Pro', 'Invite candidates as members', 'Per-resume recruiter notes', 'Org dashboard with all member resumes', '1000 AI generations/month'],
 };
 
 export default function BillingIndex({ plan, resumeCount, resumeLimit, aiUsed, aiLimit, limitReached }: Props) {
@@ -23,7 +22,7 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, aiUsed, a
 
     const usagePct = resumeLimit ? Math.min(100, Math.round((resumeCount / resumeLimit) * 100)) : 0;
 
-    const checkout = (tier: 'starter' | 'pro' | 'agency') =>
+    const checkout = (tier: 'starter' | 'pro') =>
         router.post(route('billing.checkout'), { interval, tier });
 
     const manageSubscription = () => { window.location.href = route('billing.portal'); };
@@ -61,7 +60,7 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, aiUsed, a
                     )}
 
                     {/* Plan cards */}
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
                         {/* Free */}
                         <div className={`rounded-xl border-2 p-5 ${plan === 'free' ? 'border-[#4f46e5] bg-[#eef2ff]' : 'border-[#eeeef5] bg-white'}`}>
@@ -132,29 +131,6 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, aiUsed, a
                             )}
                         </div>
 
-                        {/* Agency */}
-                        <div className={`rounded-xl border-2 p-5 ${plan === 'agency' ? 'border-[#4f46e5] bg-[#eef2ff]' : 'border-[#eeeef5] bg-white'}`}>
-                            {plan === 'agency' && <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[#4f46e5]">Current Plan</p>}
-                            <p className="text-2xl font-extrabold tracking-tight text-[#0f0f1a]">Agency</p>
-                            <p className="mt-0.5 text-sm text-[#a0a0b0]">
-                                {interval === 'monthly' ? '$49 / month' : '$399 / year'}
-                            </p>
-                            <ul className="mt-4 space-y-1.5 text-xs text-[#71717a]">
-                                {PLAN_FEATURES.agency.map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
-                            </ul>
-                            {(plan === 'free' || plan === 'starter' || plan === 'pro') && (
-                                <button type="button" onClick={() => checkout('agency')}
-                                    className="mt-5 w-full rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90">
-                                    Upgrade to Agency →
-                                </button>
-                            )}
-                            {plan === 'agency' && (
-                                <button type="button" onClick={manageSubscription}
-                                    className="mt-5 w-full rounded-lg border border-[#eeeef5] px-4 py-2 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe]">
-                                    Manage subscription →
-                                </button>
-                            )}
-                        </div>
 
                     </div>
 
