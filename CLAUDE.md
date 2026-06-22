@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Auth:** Laravel Breeze (session-based), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63).
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
 - **Media:** `spatie/laravel-medialibrary` (installed, migration exists, not yet used)
-- **Billing:** `laravel/cashier-stripe` v16 — `User` model uses `Billable` trait. Subscription name is `'default'`. Price IDs in `config/services.php`; see Stripe configuration below.
+- **Billing:** `laravel/cashier-stripe` v16 — `User` model uses `Billable` trait. Subscription name is `'default'`. Price IDs in `config/services.php`.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
 ## Commands
@@ -24,16 +24,11 @@ composer run dev
 # Production build (runs tsc then vite build)
 npm run build
 
-# Production deployment script (composer update + view cache + npm build)
-./build.sh
-
 # All tests
 composer run test
 
-# Single test file
+# Single test file or filter
 php artisan test tests/Feature/Auth/AuthenticationTest.php
-
-# Filter by test name
 php artisan test --filter=test_name
 
 # PHP code formatter (required before finalizing changes)
@@ -50,31 +45,18 @@ php artisan migrate:fresh --seed
 All routes return Inertia responses — no Blade views except the single root `resources/views/app.blade.php`. Laravel serializes props as JSON; Inertia hydrates the matching React page component at `resources/js/Pages/`.
 
 ### Resume data model
-Resume content is stored as JSON columns on a single `resumes` table (no separate section tables). Auto-cast columns: `contact`, `experience`, `education`, `skills`, `certifications`, `font_sizes` (arrays). Plain columns: `accent_color` (hex), `font_family`, `template` (string). Frontend owns JSON shape; backend validates as `nullable array`.
+Resume content is stored as JSON columns on a single `resumes` table (no separate section tables). Frontend owns JSON shape; backend validates as `nullable array`.
 
-**Cascade delete:** `Resume::booted()` has a `deleting` observer that deletes all:
-- A/B variants (`ab_parent_id = id`)
-- Snapshots (`parent_resume_id = id`, `is_snapshot = true`)
-- Tailored copies (`master_resume_id = id`)
-- Share links (`resume_id = id`)
-- Threads (`resume_id = id`)
-
-Model-level (not FK-level) so it works on SQLite and fires model events.
+**Cascade delete:** `Resume::booted()` has a `deleting` observer that handles all dependent records (variants, snapshots, tailored copies, share links, threads). Model-level (not FK-level) so it works on SQLite and fires model events.
 
 ### Authorization
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses `AuthorizesRequests` so `$this->authorize()` is available everywhere.
 
 ### Frontend page structure
-The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor + live preview iframe. Uses `onBlur` on every field to trigger `router.put` save (no debounce). State managed with `useState`; refs mirror state to prevent stale closures. The divider is draggable (`leftWidth` state, `handleDividerMouseDown`); widths tracked as percentages. The preview iframe loads `GET /builder/{resume}/preview` with a cache-busting `?t=<timestamp>` query param on each save.
+The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor + live preview iframe. Uses `onBlur` on every field to trigger `router.put` save (no debounce). The preview iframe loads `GET /builder/{resume}/preview` with a cache-busting `?t=<timestamp>` query param on each save.
 
 ### Shared Inertia props
-`HandleInertiaRequests::share()` passes `auth.user` and `featureGate` to every page. Access auth in React via `usePage().props.auth.user`. `featureGate` is a flash value (`session()->pull('featureGate')`) — any controller can flash it to trigger the `UpgradeModal` without per-page wiring.
-
-### Asset pipeline
-`npm run build` runs `tsc` (type-check) then `vite build`. Output lands in `public/build/`. Always rebuild after editing frontend files when not running `npm run dev` (HMR).
-
-### Frontend routing
-Use Ziggy's `route('named.route', params)` helper — never hardcode URL strings. Types are global via `resources/js/types/global.d.ts`.
+`HandleInertiaRequests::share()` passes `auth.user` and `featureGate` to every page. `featureGate` is a flash value (`session()->pull('featureGate')`) — any controller can flash it to trigger the `UpgradeModal` without per-page wiring.
 
 ## Pricing & Billing
 
@@ -93,295 +75,52 @@ Use Ziggy's `route('named.route', params)` helper — never hardcode URL strings
 
 **Tier detection:** `User::planTier()` resolves: `is_master_admin` → `'agency'`; `is_pro` → `'pro'`; `is_agency` → `'agency'`; else returns `plan_tier` column value. All `match` expressions in `UserLimits` have explicit arms for `'pro'`/`'agency'` and a restrictive `default` (free limits) so unknown tiers never grant elevated access.
 
-**Gate responses:** Inertia routes flash `featureGate` to the session, which `HandleInertiaRequests::share()` sends to every page. API/JSON routes return HTTP 402 with `{ error, required_tier }`. The `UpgradeModal` component handles both paths — flash-based (Inertia) and event-based (`triggerUpgradeModal(feature, requiredTier)` for XHR).
+**Gate responses:** Inertia routes flash `featureGate` to the session. API/JSON routes return HTTP 402 with `{ error, required_tier }`. The `UpgradeModal` handles both paths — flash-based (Inertia) and event-based (`triggerUpgradeModal(feature, requiredTier)` for XHR).
 
-**Enforcement examples:**
-- `UserLimits::canDocx()` — gates `GET /builder/{resume}/docx`
-- `UserLimits::canAiTailoring()` — gates ATS-keywords + target-job-description features
-- `UserLimits::canUseOrg()` — gates org workspace creation/membership
+**Subscription sync:** Cashier's `SubscriptionUpdated` observer in `AppServiceProvider` syncs `plan_tier` and `is_agency` from the active subscription's price ID on every subscription event.
 
-**Stripe configuration** (`config/services.php`):
-```
-services.stripe.starter_monthly_price_id    (env STRIPE_STARTER_MONTHLY_PRICE_ID)
-services.stripe.starter_yearly_price_id     (env STRIPE_STARTER_YEARLY_PRICE_ID)
-services.stripe.pro_monthly_price_id        (env STRIPE_PRO_MONTHLY_PRICE_ID)
-services.stripe.pro_yearly_price_id         (env STRIPE_PRO_YEARLY_PRICE_ID)
-services.stripe.agency_monthly_price_id     (env STRIPE_AGENCY_MONTHLY_PRICE_ID)
-services.stripe.agency_yearly_price_id      (env STRIPE_AGENCY_YEARLY_PRICE_ID)
-services.stripe.tier_prices.starter_cents   (env PRICE_STARTER_CENTS, default 900)
-services.stripe.tier_prices.pro_cents       (env PRICE_PRO_CENTS, default 1900)
-services.stripe.tier_prices.agency_cents    (env PRICE_AGENCY_CENTS, default 4900)
-```
-
-**Setup steps:** Create 6 Stripe price objects (monthly/yearly for starter/pro/agency). Set the 6 `STRIPE_*_PRICE_ID` env vars. Run `config:clear`. Set webhook secret (`STRIPE_WEBHOOK_SECRET`).
-
-**Subscription sync:** Cashier's `SubscriptionUpdated` observer in `AppServiceProvider` syncs `plan_tier` and `is_agency` columns from the active subscription's price ID on every subscription event.
-
-## Resumes & Templates
-
-Nine templates (committed as a string column): `classic`, `modern`, `minimal`, `minimal-ruled`, `executive`, `ats`, `skills-first`, `academic`, `bold`. The PDF Blade view (`resources/views/resume-pdf.blade.php`) is the single source of truth for template rendering. Template-picker static previews live at `public/images/templates/{template}.png`; regenerate with `php artisan thumbnails:templates` when a template's Blade changes.
-
-**Thumbnails:** `GET /builder/{resume}/thumbnail` serves a cached PNG of the resume's first PDF page (DomPDF → Imagick/Ghostscript, ~400px wide). Cache at `storage/app/thumbnails/{id}.png` (gitignored); regenerates lazily only when `resume->updated_at` is newer than the file mtime. Deleted in the `Resume` `deleting` observer. On generation failure, returns a GD-tinted placeholder (resume `accent_color`) so the UI never breaks. **Production requires Imagick PHP extension + Ghostscript binary.**
-
-**Font sizes:** `font_sizes` is a nullable JSON column. `DEFAULT_FONT_SIZES` constant defined at module scope in `Edit.tsx`. Sliders save on blur, triggering `pdfSrc` refresh.
-
-**DOCX export:** `GET /builder/{resume}/docx` streams a Word document via `DocxGenerator` (phpoffice/phpword). Gated to Starter+ via `UserLimits::canDocx()` — free users get a `featureGate` redirect.
-
-## Resume Variants & Master Resume Pattern
-
-**A/B testing:** `ab_parent_id` on `resumes` tracks A/B parent; `ab_variant` (string) marks the variant letter. Both are deleted when parent is deleted.
-
-**Snapshots:** `parent_resume_id` + `is_snapshot = true` marks a snapshot. Deleted when parent is deleted.
-
-**Master + Tailored Copies:** Three nullable columns on `resumes`: `is_master` (bool, default false), `master_resume_id` (FK→resumes, nullOnDelete), `master_synced_at` (timestamp). Any resume can be a master — no DB-level uniqueness. Tailored copies point to their master; stale detection compares `master.updated_at > copy.master_synced_at`.
-
-Routes (auth + policy-gated):
-- `PATCH /builder/{resume}/set-master` (`builder.set-master`) — toggle `is_master`
-- `POST /builder/{resume}/create-tailored-copy` (`builder.create-tailored-copy`) — replicate resume + set `master_resume_id`
-- `PATCH /builder/{resume}/sync-master` (`builder.sync-master`) — dismiss stale banner
-- `POST /builder/{resume}/pull-from-master` (`builder.pull-from-master`) — sync all content
-
-Dashboard shows violet "Master" badge and amber "⚠ Master updated" stale badge. Editor shows dismissible amber banner with "Pull from master" / "View master" / "Dismiss" actions.
-
-## Share Links & Public View
-
-`ResumeShareLink` stores a 48-char random token (auto-generated in `booted()`). The public route `/r/{token}` is unauthenticated and renders `ResumeBuilder/PublicView.tsx` via `PublicLayout`. `GET /r/{token}/pdf` serves a public PDF download. Expired or disabled links render `ResumeBuilder/LinkExpired.tsx`.
-
-Routes:
-- `PATCH /builder/{resume}/share/{link}` — update (e.g. toggle active)
-- `DELETE /builder/{resume}/share/{link}` — delete
-- `GET /builder/{resume}/share-url` — auto-create active link + return JSON with URL
-
-`PublicView.tsx` shows a sticky conversion header and fixed footer CTA ("Made with Resumegen · Build yours free →") to unauthenticated visitors only — hidden when `auth.user` is present. Share button opens a popover with read-only URL, copy button, LinkedIn share link, and X (Twitter) share link. The URL is fetched from `GET /builder/{resume}/share-url` on first click.
-
-## Threads & Messaging
-
-`ResumeThread` belongs to a resume and (optionally) a share link; `ResumeThreadMessage` belongs to a thread. `is_owner` boolean on messages distinguishes owner replies from visitor messages. `is_read` boolean on `ResumeThread` tracks unread state.
-
-**Public routes** (unauthenticated):
-- `POST /r/{token}/threads` — start a thread (visitor) — `throttle:5,1`
-- `POST /r/{token}/threads/{thread}/messages` — add message to thread (visitor) — `throttle:5,1`
-
-Visitor session tracks owned thread IDs in `owned_threads` session key. Fires `NewThreadStarted` / `NewVisitorReply` mailables to resume owner.
-
-**Owner routes** (auth + ownership-gated):
-- `GET /builder/{resume}/threads/{thread}` (`builder.thread`) — show thread
-- `POST /builder/{resume}/threads/{thread}/reply` (`builder.thread.reply`) — add owner message (fires `VisitorThreadReply` mailable)
-- `PATCH /builder/{resume}/threads/{thread}/read` (`builder.thread.read`) — mark read
-- `DELETE /builder/{resume}/threads/{thread}` (`builder.thread.destroy`) — delete
-
-**Messages inbox:** `GET /messages` → `MessagesController@index` → `Messages/Index.tsx` lists all threads across all resumes with unread badge. `PATCH /messages/read-all` marks all read.
-
-## Analytics & Heatmaps
-
-**Share Events:** `ResumeShareEvent` (append-only, no `updated_at`) logs `page_view`, `pdf_download`, `question_submitted`. Logging is best-effort (try/catch) so it never crashes. `AnalyticsController` aggregates stats; unique visitor count uses `COUNT(DISTINCT ip_hash || DATE(created_at))`.
-
-**Section Heatmaps:** `resume_section_events` (append-only) tracks visitor dwell time per section. Columns: `resume_id` FK cascade, `section` (string), `dwell_ms` (clamped to 120000), `ip_hash` (SHA-256 of visitor IP).
-
-Routes:
-- `POST /r/{token}/section-events` (`public.section-events`) — unauthenticated, `throttle:30,1`. Accepts `{ sections: [{ section, dwell_ms }] }` (max 20). Section regex: `^(summary|experience|education|skills|certifications|custom_[a-z0-9_]+)$`.
-- `GET /builder/{resume}/heatmap` (`builder.heatmap`) — auth + ownership. Optional `?period=7d|30d|all` (default 30d). Aggregates view count and average dwell per section.
-
-`PublicView.tsx` contains `useSectionHeatmap(token)` hook that attaches `IntersectionObserver` (threshold 0.25) to `[data-section]` elements, accumulates dwell time, fires `navigator.sendBeacon` on `beforeunload` (skipped if < 500ms total page time). `ResumeBuilder/Heatmap.tsx` renders a pure-CSS bar chart with period selector and total views.
-
-## Beacon Save
-
-`POST /builder/{resume}/beacon` accepts raw JSON from `navigator.sendBeacon` call in `Edit.tsx`. The `_token` field in the JSON body satisfies CSRF verification (Laravel reads it from the request body regardless of content-type). Root template includes `<meta name="csrf-token">` for this purpose.
-
-## Cover Letters & Job Applications
-
-**Cover letters:** Full CRUD at `/cover-letters` → `CoverLetterController`. Letters have `template_key`, `name`, `body` (raw text), optional `resume_id` FK. Created from pre-built templates via `App\Data\CoverLetterTemplates`.
-
-**Job applications:** Full CRUD at `/jobs` → `JobApplicationController`. Columns: `company`, `role`, `status` (enum via `JobApplication::STATUSES`), `resume_id`, `applied_at`, `notes`, `job_url`. Policy-gated on ownership.
-
-## Reference Data & Autocomplete
-
-Three seeded lookup tables: `job_roles` / `job_titles` (single `title` column each), `job_skills` (unique on `category`, `name` — 828 skills across 27 categories). Seed with `php artisan db:seed --class=JobRolesSeeder` / `JobTitlesSeeder` / `JobSkillsSeeder` (idempotent).
-
-**Autocomplete** (`AutocompleteController`, auth-gated):
-- `GET /autocomplete/job-roles` / `GET /autocomplete/job-titles` — `?q=` prefix search (min 2 chars), fallback to substring, returns up to 10 results
-- `POST /autocomplete/job-roles` / `POST /autocomplete/job-titles` — `firstOrCreate` a title-cased entry
-
-**Admin management** (`Admin\AdminJobTitleController`, master-admin gated): Tabbed CRUD (roles/titles), searchable, 50/page paginated, single-row + bulk delete. All writes title-case the input.
-
-## Onboarding
-
-New users redirect to `/onboarding` after registration. `OnboardingController` handles:
-- `GET /onboarding` — renders two-step wizard (career context, then contact info)
-- `POST /onboarding` — saves persona (`target_role`, `industry`, `years_experience`) + profile JSON, sets `has_completed_onboarding = true`
-- `PATCH /user/onboarding` — legacy endpoint; flips `has_completed_onboarding`
-
-Saved persona fields are exposed as `userPersona` props on dashboard + editor. Editor's template picker defaults new resume name to `"{target_role} Resume"` when set.
-
-## Career Hub
-
-Public resource library at `/career` for SEO (no auth required). `CareerArticle` model with `CATEGORIES` const, auto-generated `slug`, computed `reading_time_minutes` (word_count / 200), auto-set `published_at` when `is_published` flips to true.
-
-Routes:
-- `GET /career` → `CareerHub/Index.tsx` (published articles, client-side category filter)
-- `GET /career/{slug}` → `CareerHub/Show.tsx` (404 on unpublished)
-
-Both use `PublicLayout`. Show renders `body` as `dangerouslySetInnerHTML` with CTA footer linking to `/register`. A "Career" link is added to `Welcome.tsx` public nav.
-
-## Public Portfolio
-
-Personal micro-site at `/p/{slug}` combining identity landing page + resume hub. Users claim a custom vanity slug via `PATCH /user/portfolio` (`portfolio.update`). Live as soon as slug is set.
-
-**Columns on `users`:** `portfolio_slug` (string, unique, nullable, 3–30 chars `[a-z0-9-]`), `portfolio_headline`, `portfolio_bio`, `portfolio_links` (JSON array of `{ platform, url }`), `portfolio_is_public` (bool).
-
-**`portfolio_messages` table:** append-only. Columns: `user_id` FK cascade, `sender_name`, `sender_email`, `message`, `read_at` nullable.
-
-Routes:
-- `GET /p/{slug}` (`portfolio.show`) — public, unauthenticated
-- `POST /p/{slug}/contact` (`portfolio.contact`) — public, `throttle:5,1`
-- `GET /portfolio/check-slug` (`portfolio.check-slug`) — auth required, `throttle:10,1`
-- `PATCH /user/portfolio` (`portfolio.update`) — auth required
-
-**Reserved slugs** (brand protection): `admin, api, builder, career, jobs, cover-letters, billing, profile, onboarding, register, login, logout, p, r, password, dashboard, usage, webhooks, settings`.
-
-`Portfolio/Show.tsx` renders hero with `InitialsAvatar`, headline, bio, social pills, resume grid, contact form. Guest CTA fixed top-right (hidden when `auth.user` present). `Settings/Portfolio.tsx` has debounced slug availability check + social link inputs. `NewPortfolioMessageMail` queued when contact form submitted.
+**Stripe env vars:** `STRIPE_{STARTER,PRO,AGENCY}_{MONTHLY,YEARLY}_PRICE_ID` (6 total) + `STRIPE_WEBHOOK_SECRET` + `PRICE_{STARTER,PRO,AGENCY}_CENTS` (defaults 900/1900/4900). See `config/services.php`.
 
 ## AI (OpenAI)
 
-**Config:** `openai-php/laravel` reads `OPENAI_API_KEY` from env. `config/ai.php` holds default model (`env('OPENAI_MODEL', 'gpt-4o-mini')`), per-tier `monthly_limits`, and per-model `pricing` (cents per 1k tokens).
+`App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`OPENAI_MODEL`, per-tier limits, pricing). All AI routes consume quota tracked via `ai_usage`; exhausted quota shows upgrade prompt.
 
-**Service:** `App\Services\AiService::chat(string $prompt, array $options)` injects OpenAI `ClientContract`, sends single-prompt chat completion, logs to `ai_requests` (user_id, feature, model, token counts, estimated_cost_cents, status), returns reply text. On failure logs an `error` row then rethrows. `$options` accepts `model`, `user`, `feature`.
-
-**Moderation:** Pre-check flags disallowed input (logs a `flagged` row storing offending text in `ai_requests.flagged_text`, throws `ModerationException`).
-
-**Routes with AI:**
-- `POST /api/resumes/{id}/ai-suggest` — throttled 10/min, suggests improvements
-- `POST /builder/{resume}/ats-score` — analyzes resume against target JD, gated to Starter+
-- `POST /builder/{resume}/ats-keywords` — extracts ATS keywords, gated to Starter+
-- `GET /builder/{resume}/strength-score` — scores resume quality, returns top tip + nudge
-
-All consume AI quota tracked via `ai_usage` aggregation. Exhausted quota shows "Out of AI credits — Upgrade →" button.
-
-**Admin AI dashboard** (`/admin/ai`, master-admin gated): Overview (KPIs + CSS/SVG charts + 7d/30d/all period selector + OpenAI cost reconciliation via `OpenAiUsageService`), per-user usage table, per-user detail with controls (reset quota via `ai_usage_reset_at`, set `ai_limit_override`, toggle `ai_blocked`), flagged-content review queue. `AiUsageReport` centralizes aggregate queries. `UserLimits` honors per-user override/block/reset columns. Flagged text pruned after 90 days by `ai:prune-flagged` (scheduled daily).
+**Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `RegisteredUserController::store()` via `registration_ip` column on `users`.
 
 ## Admin Panel
 
-Routes under `/admin` guarded by `auth` + `master_admin` middleware (`EnsureMasterAdmin` — 403 if `User::is_master_admin` false). `is_master_admin` is non-editable; set directly in DB or via seeder. Owner account `rmethodm@outlook.com` is granted `is_master_admin` via migration for full access.
+Routes under `/admin` guarded by `auth` + `master_admin` middleware (`EnsureMasterAdmin` — 403 if `User::is_master_admin` false). `is_master_admin` is non-editable; set directly in DB or via seeder.
 
-### User management
-- `GET /admin/users` — paginated list with subscription status + resume count
-- `PATCH /admin/users/{user}/toggle-pro` — flip `is_pro` (not for master admins)
-- `DELETE /admin/users/{user}` — delete user + cancel Stripe subscription (not for master admins or self)
-
-### Career articles
-Full CRUD: `GET /admin/career`, `GET /admin/career/create`, `GET|PUT|DELETE /admin/career/{career}/edit`. Routes: `admin.career.{index,create,store,edit,update,destroy}`.
-
-### Growth analytics
-`GET /admin/growth` (`admin.growth.index`) backed by `App\Services\GrowthReport`: signups series, funnel (Signed up → Activated → Paying), conversion rates, avg days to convert, referral stats. `GrowthReport::retentionCohorts($weeks=6)` builds cohort matrix from `user_activity_days` (one row per user per active day, stamped by `TrackActivity` middleware, session-gated to one per day). Page reuses `Admin/Ai/Charts.tsx` with period selector.
-
-### Revenue reporting
-`GET /admin/revenue` (`admin.revenue.index`) from `App\Services\RevenueReport`: tier counts (zero-filled), MRR estimate, active subscriptions, new subscription series (90d cap), recent subscriptions. `liveActiveSubscriptions()` is optional fail-soft Stripe reconcile (cached 1h, null when empty secret). Page reuses `Admin/Ai/Charts.tsx`.
-
-**MRR snapshots:** `revenue_snapshots` (one row/day, `captured_on` unique) stores `mrr_cents`, `paying_users`, `free_users`, `active_subscriptions`, `tier_counts` (json). Written by `revenue:snapshot` command (idempotent `updateOrCreate` on `today()`) scheduled daily at 23:55.
-
-**Tier prices in `config/services.php`:** `stripe.tier_prices` (env `PRICE_{STARTER,PRO,AGENCY}_CENTS`, defaults 900/1900/4900). True historical MRR time-series out of scope.
-
-### Content moderation
-`GET /admin/content` (`admin.content.index`) — tabbed (resumes/cover-letters/jobs/portfolios), searchable, 25/page, per-type counts. `GET /admin/content/resumes/{resume}` read-only view. Destructive actions (all audited): `DELETE` resume/cover-letter/job, `PATCH content/share-links/{shareLink}/disable` (set `is_active=false`), `PATCH content/users/{user}/unpublish-portfolio` (set `portfolio_is_public=false`).
-
-### Audit log
-`admin_audit_logs` (append-only, `created_at` only) records privileged actions: `admin_user_id`, `action` (dot-namespaced), `target_type`/`target_id` (nullable morph), `description`, `meta` (json), `ip_address`. Use static `AdminAuditLog::record(string $action, ?Model $target, string $description, array $meta = [])` — reads `auth()->id()` + `request()->ip()`, swallows exceptions. Already wired into user/AI admin actions. **When adding privileged admin write actions, call `AdminAuditLog::record()` on success path.**
-
-View at `GET /admin/audit` — paginated feed filterable by `?action=` and `?admin=`.
-
-### Ops dashboard
-`GET /admin/ops` (`admin.ops.index`) — surfaces queue depth, failed-jobs table, scheduled-task inventory, config-health checks (queue/mail driver, Stripe + webhook secrets, OpenAI key). Actions: retry or forget failed jobs (audited). Webhook/mail delivery history intentionally not shown; dashboard reports config status only.
-
-## Referral Rewards
-
-`ReferralRewardService::grantIfEligible(User $upgradedUser)` completes referral loop. Guards: null `referred_by_user_id` → skip; existing `upgrade` `ReferralEvent` → skip (idempotency via `DB::transaction` + `lockForUpdate()`). Creates `ReferralEvent`, increments `referral_rewards_earned`, logs success. Then tries Stripe: if referrer has active `'default'` subscription, extends it 1 month; otherwise creates customer balance credit of -900 cents. Stripe calls wrapped in try/catch with `Log::warning` on failure — DB writes NOT wrapped. Wired in `AppServiceProvider` Subscription observer after plan_tier sync, gated on `['starter', 'pro']` tiers.
+**Audit log:** `AdminAuditLog::record(string $action, ?Model $target, string $description, array $meta = [])` — **call this on every privileged admin write action.** Reads `auth()->id()` + `request()->ip()`, swallows exceptions. Append-only `admin_audit_logs` table.
 
 ## API Layer
 
-Token-based API (Sanctum) at `/api` prefix alongside Inertia web layer. Auth uses personal access tokens — **not** session cookies.
+Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (intentionally empty) — only token-auth works, no session fallback.
 
-**Config:** `config/sanctum.php` sets `'guard' => []` (intentionally empty) to prevent web session fallback — only token-auth works for API.
+**Test base class:** All API tests extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). It calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum guard cache from masking token revocation.
 
-**Test base class:** All API test files extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). `ApiTestCase` calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum guard cache from masking token revocation.
+## Referral Rewards
 
-### Auth endpoints (no `auth:sanctum` required)
-- `POST /api/auth/login` — returns `{ token }` — `throttle:10,1`
-- `GET /api/auth/me` — returns authenticated user
-- `POST /api/auth/logout` — revokes current token
+`ReferralRewardService::grantIfEligible(User $upgradedUser)` — idempotent via `DB::transaction` + `lockForUpdate()`. On upgrade: creates `ReferralEvent`, increments `referral_rewards_earned`, then tries Stripe (extend subscription 1 month or -900 cents balance credit). Stripe calls are try/catch with `Log::warning`; DB writes are not wrapped. Wired in `AppServiceProvider` subscription observer, gated on `['starter', 'pro']` tiers.
 
-### Resume endpoints (all require `Authorization: Bearer {token}`)
-- `GET|POST /api/resumes` — index / store
-- `GET|PUT|DELETE /api/resumes/{id}` — show / update / destroy
-- `POST /api/resumes/{id}/duplicate`
-- `POST /api/resumes/{id}/ai-suggest` — `throttle:10,1`
-- `GET /api/resumes/{id}/ats-score` — `throttle:10,1`
+## System Events
 
-### Cover letter endpoints (all require `Authorization: Bearer {token}`)
-- `GET|POST /api/cover-letters` — index (no body) / store (renders body from template)
-- `GET|PUT|DELETE /api/cover-letters/{id}` — show (includes body) / update / destroy
-
-### Job application endpoints (all require `Authorization: Bearer {token}`)
-- `GET|POST /api/jobs` — index (eager-loads `resume:id,name`) / store
-- `GET|PUT|DELETE /api/jobs/{id}` — show / update / destroy
-
-## Rate Limiting
-
-- API login: `throttle:10,1`
-- Public thread form: `throttle:5,1`
-- Section events: `throttle:30,1`
-- Portfolio contact form: `throttle:5,1`
-- Portfolio slug check: `throttle:10,1`
-- AI suggest: `throttle:10,1`
-- ATS score: `throttle:10,1`
-- **Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `RegisteredUserController::store()` via `registration_ip` column on `users`. Throws a validation error on the 6th attempt.
-
-## System Events & Delivery Logging
-
-`system_events` (append-only, `created_at` only — model uses `public const UPDATED_AT = null`). Columns: `channel` (`mail`|`stripe_webhook`), `type` (mail subject or Stripe event type), `status`, `recipient`, `meta` (json). Written by best-effort `SystemEvent::record(...)` from two `Event::listen` closures in `AppServiceProvider::boot()` — `MessageSent` (outbound mail) and Cashier's `WebhookReceived` (inbound Stripe). Both swallow their own exceptions so logging never breaks sends/webhooks. Pruned after 30 days by `system-events:prune` (scheduled daily). Surfaced as "Recent deliveries" section on Ops dashboard — no separate route.
-
-## Development Guidelines
-
-### Code style
-- **PHP:** Always use curly braces for control structures, even single-line. Use constructor property promotion (`public function __construct(public Foo $foo) { }`). Explicit return types + type hints on all methods. TitleCase for Enum keys. Prefer PHPDoc blocks over inline comments; only inline comment for exceptionally complex logic.
-- **Frontend:** Use Ziggy `route()` helper, never hardcode URLs. Prefer existing components before writing new ones. Check sibling files for conventions.
-
-### Testing
-- Every change must be programmatically tested. Write new test or update existing one, then run affected tests.
-- Use `php artisan test --filter=testName` to run minimal tests needed.
-- Most tests should be feature tests (integration-level), not unit tests.
-- If you see Pest syntax, convert to PHPUnit.
-
-### Formatting
-- Run `./vendor/bin/pint` (or `./vendor/bin/pint --dirty --format agent`) before finalizing PHP changes to match project style.
-- Always rebuild frontend with `npm run build` when not running `npm run dev`.
-
-### Documentation
-- Create documentation files only if explicitly requested.
-- Be concise — focus on what's important, not obvious details.
-
-### Skills & Tools
-- Activate domain-specific skills (e.g., `inertia-react-development`, `laravel-best-practices`) when working in those areas.
-- Use Laravel Boost tools (`database-query`, `database-schema`, `search-docs`) over manual alternatives.
-- Always `search-docs` before making code changes — returns version-specific docs for installed packages.
-
-### Deployment
-- Laravel can be deployed via [Laravel Cloud](https://cloud.laravel.com/).
-- Production requires Imagick PHP extension + Ghostscript binary for resume thumbnails.
+`system_events` (append-only) logs outbound mail (`MessageSent`) and inbound Stripe webhooks (`WebhookReceived`) via `AppServiceProvider::boot()` listeners. Best-effort — exceptions swallowed. Pruned after 30 days. Surfaced on Ops dashboard.
 
 ## Key Design Decisions
 
-1. **Single `resumes` table with JSON columns** — frontend owns shape; backend validates as array. Simpler than separate section tables.
-2. **No template React components** — server renders PDF; iframe preview loads it. Keeps frontend simple, avoids duplication.
-3. **Beacon save on beforeunload** — catches unsaved changes when navigating away.
-4. **Master resume pattern** — allows coaches/recruiters to maintain one resume and create tailored copies for different job applications.
-5. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable, no update logic.
+1. **Single `resumes` table with JSON columns** — frontend owns shape; backend validates as array.
+2. **No template React components** — server renders PDF; iframe preview loads it.
+3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
+4. **Master resume pattern** — coaches/recruiters maintain one resume, create tailored copies per application.
+5. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable.
 6. **Model-level cascade delete** — fires on dependent models even on SQLite (FK-level cascade doesn't work).
-7. **Freemium 4-tier model** — tight free tier pushes conversions; Starter/Pro/Agency tiers target individual/team/enterprise. AI quota as key differentiator.
-8. **Best-effort system logging** — never crashes requests; `try/catch` swallows exceptions so logging is always opt-out.
+7. **Freemium 4-tier model** — tight free tier pushes conversions; AI quota as key differentiator.
+8. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 
 ---
 
-Last updated: 2026-06-16 (email verification enforced, IP velocity check, AI cost/MRR monitoring)
+Last updated: 2026-06-19
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
@@ -464,3 +203,218 @@ When the user signals they are done (e.g. "bye", "done", "wrap up", "end session
 - **Next Steps**: bullet list, max 3 items
 
 Keep `CONTEXT.md` under 20 lines total. Do NOT summarize the full conversation — only what's needed to resume next session.
+
+===
+
+<laravel-boost-guidelines>
+=== foundation rules ===
+
+# Laravel Boost Guidelines
+
+The Laravel Boost guidelines are specifically curated by Laravel maintainers for this application. These guidelines should be followed closely to ensure the best experience when building Laravel applications.
+
+## Foundational Context
+
+This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
+
+- php - 8.5
+- inertiajs/inertia-laravel (INERTIA_LARAVEL) - v2
+- laravel/cashier (CASHIER) - v16
+- laravel/framework (LARAVEL) - v13
+- laravel/prompts (PROMPTS) - v0
+- laravel/sanctum (SANCTUM) - v4
+- tightenco/ziggy (ZIGGY) - v2
+- laravel/boost (BOOST) - v2
+- laravel/breeze (BREEZE) - v2
+- laravel/mcp (MCP) - v0
+- laravel/pail (PAIL) - v1
+- laravel/pint (PINT) - v1
+- phpunit/phpunit (PHPUNIT) - v12
+- @inertiajs/react (INERTIA_REACT) - v2
+- react (REACT) - v18
+- tailwindcss (TAILWINDCSS) - v3
+
+## Skills Activation
+
+This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
+
+## Conventions
+
+- You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
+- Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
+- Check for existing components to reuse before writing a new one.
+
+## Verification Scripts
+
+- Do not create verification scripts or tinker when tests cover that functionality and prove they work. Unit and feature tests are more important.
+
+## Application Structure & Architecture
+
+- Stick to existing directory structure; don't create new base folders without approval.
+- Do not change the application's dependencies without approval.
+
+## Frontend Bundling
+
+- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
+
+## Documentation Files
+
+- You must only create documentation files if explicitly requested by the user.
+
+## Replies
+
+- Be concise in your explanations - focus on what's important rather than explaining obvious details.
+
+=== boost rules ===
+
+# Laravel Boost
+
+## Tools
+
+- Laravel Boost is an MCP server with tools designed specifically for this application. Prefer Boost tools over manual alternatives like shell commands or file reads.
+- Use `database-query` to run read-only queries against the database instead of writing raw SQL in tinker.
+- Use `database-schema` to inspect table structure before writing migrations or models.
+- Use `get-absolute-url` to resolve the correct scheme, domain, and port for project URLs. Always use this before sharing a URL with the user.
+- Use `browser-logs` to read browser logs, errors, and exceptions. Only recent logs are useful, ignore old entries.
+
+## Searching Documentation (IMPORTANT)
+
+- Always use `search-docs` before making code changes. Do not skip this step. It returns version-specific docs based on installed packages automatically.
+- Pass a `packages` array to scope results when you know which packages are relevant.
+- Use multiple broad, topic-based queries: `['rate limiting', 'routing rate limiting', 'routing']`. Expect the most relevant results first.
+- Do not add package names to queries because package info is already shared. Use `test resource table`, not `filament 4 test resource table`.
+
+### Search Syntax
+
+1. Use words for auto-stemmed AND logic: `rate limit` matches both "rate" AND "limit".
+2. Use `"quoted phrases"` for exact position matching: `"infinite scroll"` requires adjacent words in order.
+3. Combine words and phrases for mixed queries: `middleware "rate limit"`.
+4. Use multiple queries for OR logic: `queries=["authentication", "middleware"]`.
+
+## Artisan
+
+- Run Artisan commands directly via the command line (e.g., `php artisan route:list`). Use `php artisan list` to discover available commands and `php artisan [command] --help` to check parameters.
+- Inspect routes with `php artisan route:list`. Filter with: `--method=GET`, `--name=users`, `--path=api`, `--except-vendor`, `--only-vendor`.
+- Read configuration values using dot notation: `php artisan config:show app.name`, `php artisan config:show database.default`. Or read config files directly from the `config/` directory.
+
+## Tinker
+
+- Execute PHP in app context for debugging and testing code. Do not create models without user approval, prefer tests with factories instead. Prefer existing Artisan commands over custom tinker code.
+- Always use single quotes to prevent shell expansion: `php artisan tinker --execute 'Your::code();'`
+  - Double quotes for PHP strings inside: `php artisan tinker --execute 'User::where("active", true)->count();'`
+
+=== php rules ===
+
+# PHP
+
+- Always use curly braces for control structures, even for single-line bodies.
+- Use PHP 8 constructor property promotion: `public function __construct(public GitHub $github) { }`. Do not leave empty zero-parameter `__construct()` methods unless the constructor is private.
+- Use explicit return type declarations and type hints for all method parameters: `function isAccessible(User $user, ?string $path = null): bool`
+- Use TitleCase for Enum keys: `FavoritePerson`, `BestLake`, `Monthly`.
+- Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
+- Use array shape type definitions in PHPDoc blocks.
+
+=== deployments rules ===
+
+# Deployment
+
+- Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
+
+=== herd rules ===
+
+# Laravel Herd
+
+- The application is served by Laravel Herd at `https?://[kebab-case-project-dir].test`. Use the `get-absolute-url` tool to generate valid URLs. Never run commands to serve the site. It is always available.
+- Use the `herd` CLI to manage services, PHP versions, and sites (e.g. `herd sites`, `herd services:start <service>`, `herd php:list`). Run `herd list` to discover all available commands.
+
+=== tests rules ===
+
+# Test Enforcement
+
+- Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
+- Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
+
+=== inertia-laravel/core rules ===
+
+# Inertia
+
+- Inertia creates fully client-side rendered SPAs without modern SPA complexity, leveraging existing server-side patterns.
+- Components live in `resources/js/Pages` (unless specified in `vite.config.js`). Use `Inertia::render()` for server-side routing instead of Blade views.
+- ALWAYS use `search-docs` tool for version-specific Inertia documentation and updated code examples.
+- IMPORTANT: Activate `inertia-react-development` when working with Inertia client-side patterns.
+
+# Inertia v2
+
+- Use all Inertia features from v1 and v2. Check the documentation before making changes to ensure the correct approach.
+- New features: deferred props, infinite scroll, merging props, polling, prefetching, once props, flash data.
+- When using deferred props, add an empty state with a pulsing or animated skeleton.
+
+=== laravel/core rules ===
+
+# Do Things the Laravel Way
+
+- Use `php artisan make:` commands to create new files (i.e. migrations, controllers, models, etc.). You can list available Artisan commands using `php artisan list` and check their parameters with `php artisan [command] --help`.
+- If you're creating a generic PHP class, use `php artisan make:class`.
+- Pass `--no-interaction` to all Artisan commands to ensure they work without user input. You should also pass the correct `--options` to ensure correct behavior.
+
+### Model Creation
+
+- When creating new models, create useful factories and seeders for them too. Ask the user if they need any other things, using `php artisan make:model --help` to check the available options.
+
+## APIs & Eloquent Resources
+
+- For APIs, default to using Eloquent API Resources and API versioning unless existing API routes do not, then you should follow existing application convention.
+
+## URL Generation
+
+- When generating links to other pages, prefer named routes and the `route()` function.
+
+## Testing
+
+- When creating models for tests, use the factories for the models. Check if the factory has custom states that can be used before manually setting up the model.
+- Faker: Use methods such as `$this->faker->word()` or `fake()->randomDigit()`. Follow existing conventions whether to use `$this->faker` or `fake()`.
+- When creating tests, make use of `php artisan make:test [options] {name}` to create a feature test, and pass `--unit` to create a unit test. Most tests should be feature tests.
+
+## Vite Error
+
+- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
+
+=== pint/core rules ===
+
+# Laravel Pint Code Formatter
+
+- If you have modified any PHP files, you must run `vendor/bin/pint --dirty --format agent` before finalizing changes to ensure your code matches the project's expected style.
+- Do not run `vendor/bin/pint --test --format agent`, simply run `vendor/bin/pint --format agent` to fix any formatting issues.
+
+=== phpunit/core rules ===
+
+# PHPUnit
+
+- This application uses PHPUnit for testing. All tests must be written as PHPUnit classes. Use `php artisan make:test --phpunit {name}` to create a new test.
+- If you see a test using "Pest", convert it to PHPUnit.
+- Every time a test has been updated, run that singular test.
+- When the tests relating to your feature are passing, ask the user if they would like to also run the entire test suite to make sure everything is still passing.
+- Tests should cover all happy paths, failure paths, and edge cases.
+- You must not remove any tests or test files from the tests directory without approval. These are not temporary or helper files; these are core to the application.
+
+## Running Tests
+
+- Run the minimal number of tests, using an appropriate filter, before finalizing.
+- To run all tests: `php artisan test --compact`.
+- To run all tests in a file: `php artisan test --compact tests/Feature/ExampleTest.php`.
+- To filter on a particular test name: `php artisan test --compact --filter=testName` (recommended after making a change to a related file).
+
+=== inertia-react/core rules ===
+
+# Inertia + React
+
+- IMPORTANT: Activate `inertia-react-development` when working with Inertia React client-side patterns.
+
+=== spatie/laravel-medialibrary rules ===
+
+## Media Library
+
+- `spatie/laravel-medialibrary` associates files with Eloquent models, with support for collections, conversions, and responsive images.
+- Always activate the `medialibrary-development` skill when working with media uploads, conversions, collections, responsive images, or any code that uses the `HasMedia` interface or `InteractsWithMedia` trait.
+
+</laravel-boost-guidelines>

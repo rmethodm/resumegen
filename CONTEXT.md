@@ -1,7 +1,7 @@
 # Resumegen Context
 
 ## Current Task
-Interview Coach shipped (commit ee6c00c). Stripe webhook still pending DNS.
+Session focused on Claude Code housekeeping: cleaned old transcripts, reduced permission prompts.
 
 ## Key Decisions
 - Stripe: API keys set, all 6 price IDs confirmed. `STRIPE_WEBHOOK_SECRET` still placeholder — blocked on `resumegen.app` DNS pointing at webserver.
