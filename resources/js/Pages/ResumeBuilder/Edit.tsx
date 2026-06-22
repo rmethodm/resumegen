@@ -3,7 +3,6 @@ import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/Strengt
 import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
-import InterviewCoachPanel from './Partials/InterviewCoachPanel';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
@@ -488,7 +487,8 @@ export default function Edit({
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
     const [showPreview, setShowPreview] = useState(true);
-    const [showInterviewCoach, setShowInterviewCoach] = useState(false);
+    const [interviewQuestions, setInterviewQuestions] = useState<{question: string; hint: string}[]>([]);
+    const [interviewLoading, setInterviewLoading] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
     const [templateOpen, setTemplateOpen] = useState(false);
     const [pdfSrc, setPdfSrc] = useState(() => freshPdfSrc(resume.id));
@@ -851,10 +851,24 @@ export default function Edit({
                                 {canInterviewCoach ? (
                                     <button
                                         type="button"
-                                        onClick={() => setShowInterviewCoach(true)}
-                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#2563eb] hover:bg-[#f1f5f9] transition-colors"
+                                        disabled={interviewLoading}
+                                        onClick={async () => {
+                                            setInterviewLoading(true);
+                                            try {
+                                                const res = await fetch(route('builder.interview-coach', resume.id), {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '' },
+                                                    body: JSON.stringify({ target_role: name.replace(/\s*resume\s*$/i, '').trim() || 'this role' }),
+                                                });
+                                                const json = await res.json();
+                                                if (res.ok) setInterviewQuestions(json.questions ?? []);
+                                            } finally {
+                                                setInterviewLoading(false);
+                                            }
+                                        }}
+                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#2563eb] hover:bg-[#f1f5f9] transition-colors disabled:opacity-50"
                                     >
-                                        ✨ Interview Coach
+                                        {interviewLoading ? 'Generating…' : '✨ Interview Questions'}
                                     </button>
                                 ) : (
                                     <button
@@ -864,6 +878,16 @@ export default function Edit({
                                     >
                                         🔒 Interview Coach
                                     </button>
+                                )}
+                                {interviewQuestions.length > 0 && (
+                                    <div className="mt-2 space-y-2">
+                                        {interviewQuestions.map((q, i) => (
+                                            <div key={i} className="rounded border border-[#eeeef5] p-2">
+                                                <p className="text-xs font-medium text-[#0f0f1a]">{q.question}</p>
+                                                <p className="mt-1 text-[10px] italic text-[#94a3b8]">{q.hint}</p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 )}
                             </div>
                         )}
@@ -1284,15 +1308,6 @@ export default function Edit({
                         )}
                     </div>
                 </div>
-            )}
-            {showInterviewCoach && (
-                <InterviewCoachPanel
-                    resumeId={resume.id}
-                    resumeName={name}
-                    canInterviewCoach={canInterviewCoach}
-                    interviewCoachUsesRemaining={interviewCoachUsesRemaining}
-                    onClose={() => setShowInterviewCoach(false)}
-                />
             )}
         </AuthenticatedLayout>
     );
