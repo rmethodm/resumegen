@@ -422,7 +422,7 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
     isFirstResume, canDocx, canAiTailoring, canInterviewCoach, interviewCoachUsesRemaining,
-    allowedTemplates, strengthHistoryEnabled, photoUrl, completionScore, recruiterNote,
+    allowedTemplates, photoUrl, completionScore, recruiterNote,
     skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier, isFreeTier,
 }: {
     resume: ResumeData;
@@ -434,7 +434,6 @@ export default function Edit({
     canInterviewCoach: boolean;
     interviewCoachUsesRemaining: number | null;
     allowedTemplates: string[];
-    strengthHistoryEnabled: boolean;
     photoUrl: string | null;
     completionScore: number;
     recruiterNote?: string | null;
@@ -868,7 +867,7 @@ export default function Edit({
                                 )}
                             </div>
                         )}
-                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} strengthHistoryEnabled={strengthHistoryEnabled} aiRemaining={ai.remaining} onGenerateSummary={handleGenerateSummary} />}
+                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={ai.remaining} onGenerateSummary={handleGenerateSummary} />}
                         {sidebarOpen && (
                             <AtsMatchPanel
                                 jobDescription={targetJobDescription}

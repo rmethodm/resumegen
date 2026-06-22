@@ -1,4 +1,4 @@
-import type { StrengthChecklistItem, StrengthHistoryPoint } from '@/types';
+import type { StrengthChecklistItem } from '@/types';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 export interface StrengthPanelHandle {
@@ -7,40 +7,16 @@ export interface StrengthPanelHandle {
 
 interface Props {
     resumeId: number;
-    strengthHistoryEnabled: boolean;
     aiRemaining: number;
     onGenerateSummary: () => void;
 }
 
-function Sparkline({ data }: { data: StrengthHistoryPoint[] }) {
-    if (data.length < 2) return null;
-    const scores = data.map(d => d.score);
-    const max = Math.max(...scores, 100);
-    const min = Math.min(...scores, 0);
-    const range = max - min || 1;
-    const w = 200;
-    const h = 40;
-    const pts = scores
-        .map((v, i) => {
-            const x = (i / (scores.length - 1)) * w;
-            const y = h - ((v - min) / range) * (h - 4) - 2;
-            return `${x},${y}`;
-        })
-        .join(' ');
-    return (
-        <svg viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: h }}>
-            <polyline points={pts} fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    );
-}
-
 const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
-    function StrengthScorePanel({ resumeId, strengthHistoryEnabled, aiRemaining, onGenerateSummary }, ref) {
+    function StrengthScorePanel({ resumeId, aiRemaining, onGenerateSummary }, ref) {
         const [score, setScore] = useState<number | null>(null);
         const [tip, setTip] = useState<string | null>(null);
         const [tipKey, setTipKey] = useState<string | null>(null);
         const [checklist, setChecklist] = useState<StrengthChecklistItem[]>([]);
-        const [history, setHistory] = useState<StrengthHistoryPoint[] | null>(null);
         const [loading, setLoading] = useState(false);
         const [open, setOpen] = useState(true);
 
@@ -58,7 +34,6 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                 setTip(json.tip ?? null);
                 setTipKey(json.tipKey ?? null);
                 setChecklist(json.checklist ?? []);
-                setHistory(json.history ?? null);
             } finally {
                 setLoading(false);
             }
@@ -115,7 +90,7 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                                     </div>
                                 </div>
 
-                                {/* Next-step nudge — turns the score into an action (and an AI shortcut where it fits) */}
+                                {/* Next-step nudge */}
                                 {score < 100 && tip && (
                                     <div className="rounded-lg bg-[#dbeafe] px-3 py-2">
                                         <p className="text-xs font-medium text-[#1e40af]">Next: {tip}</p>
@@ -141,24 +116,6 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                                         </li>
                                     ))}
                                 </ul>
-
-                                {/* History */}
-                                {strengthHistoryEnabled ? (
-                                    history && history.length >= 2 && (
-                                        <div>
-                                            <p className="mb-1 text-xs font-semibold text-gray-400">Score History</p>
-                                            <Sparkline data={history} />
-                                            <div className="mt-0.5 flex justify-between text-xs text-gray-400">
-                                                <span>{history[0]?.date}</span>
-                                                <span>{history[history.length - 1]?.date}</span>
-                                            </div>
-                                        </div>
-                                    )
-                                ) : (
-                                    <p className="text-xs text-gray-400">
-                                        Upgrade to Starter to track score history over time.
-                                    </p>
-                                )}
                             </>
                         )}
                     </div>
