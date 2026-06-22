@@ -35,7 +35,7 @@ class ResumeBuilderController extends Controller
         $user = $request->user();
         $resumeCollection = $user->resumes()
             ->nonSnapshot()
-            ->with(['tags:id,resume_id,label,color', 'linkedJob:id,role,company'])
+            ->with(['tags:id,resume_id,label,color'])
             ->orderByDesc('updated_at')
             ->get();
 
@@ -70,10 +70,6 @@ class ResumeBuilderController extends Controller
                     'color' => $t->color,
                 ])->values()->all(),
                 'has_active_share_link' => isset($activeShareResumeIds[$resume->id]),
-                'job_application_id' => $resume->job_application_id,
-                'linked_job' => $resume->linkedJob
-                    ? ['id' => $resume->linkedJob->id, 'role' => $resume->linkedJob->role, 'company' => $resume->linkedJob->company]
-                    : null,
             ];
         });
 
@@ -87,9 +83,6 @@ class ResumeBuilderController extends Controller
                 'industry' => $user->industry,
                 'years_experience' => $user->years_experience,
             ],
-            'jobApplications' => $user->jobApplications()
-                ->orderByDesc('updated_at')
-                ->get(['id', 'role', 'company']),
         ]);
     }
 
@@ -358,27 +351,6 @@ class ResumeBuilderController extends Controller
         $variant->save();
 
         return redirect()->route('builder.edit', $variant->id);
-    }
-
-    public function linkJob(Request $request, Resume $resume): RedirectResponse
-    {
-        $this->authorize('update', $resume);
-
-        $validated = $request->validate([
-            'job_application_id' => ['nullable', 'integer'],
-        ]);
-
-        if ($validated['job_application_id'] !== null) {
-            $owns = $request->user()
-                ->jobApplications()
-                ->whereKey($validated['job_application_id'])
-                ->exists();
-            abort_if(! $owns, 403);
-        }
-
-        $resume->update(['job_application_id' => $validated['job_application_id']]);
-
-        return back();
     }
 
     public function duplicate(Resume $resume): RedirectResponse

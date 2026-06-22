@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\CoverLetter;
-use App\Models\JobApplication;
 use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +18,6 @@ class AdminUsersEnhancedTest extends TestCase
         $user = User::factory()->create();
         Resume::factory()->count(3)->create(['user_id' => $user->id]);
         CoverLetter::factory()->count(2)->create(['user_id' => $user->id]);
-        JobApplication::factory()->count(1)->create(['user_id' => $user->id]);
 
         $this->actingAs($admin)
             ->get(route('admin.users.index'))
@@ -29,7 +27,6 @@ class AdminUsersEnhancedTest extends TestCase
                 ->has('users.data', 2)
                 ->where('users.data.1.resumes_count', 3)
                 ->where('users.data.1.cover_letters_count', 2)
-                ->where('users.data.1.job_applications_count', 1)
             );
     }
 

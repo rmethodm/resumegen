@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AdminAuditLog;
 use App\Models\CoverLetter;
-use App\Models\JobApplication;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Models\User;
@@ -16,7 +15,7 @@ use Inertia\Response;
 
 class AdminContentController extends Controller
 {
-    private const TYPES = ['resumes', 'cover-letters', 'jobs', 'portfolios'];
+    private const TYPES = ['resumes', 'cover-letters', 'portfolios'];
 
     public function index(Request $request): Response
     {
@@ -25,7 +24,6 @@ class AdminContentController extends Controller
 
         $items = match ($type) {
             'cover-letters' => $this->coverLetters($q),
-            'jobs' => $this->jobs($q),
             'portfolios' => $this->portfolios($q),
             default => $this->resumes($q),
         };
@@ -36,7 +34,6 @@ class AdminContentController extends Controller
             'counts' => [
                 'resumes' => Resume::nonSnapshot()->count(),
                 'cover-letters' => CoverLetter::count(),
-                'jobs' => JobApplication::count(),
                 'portfolios' => User::whereNotNull('portfolio_slug')->count(),
             ],
             'filters' => ['q' => $q],
@@ -83,27 +80,6 @@ class AdminContentController extends Controller
                 'template_key' => $c->template_key,
                 'owner' => $this->owner($c->user),
                 'created_at' => $c->created_at,
-            ]);
-    }
-
-    private function jobs(string $q)
-    {
-        return JobApplication::with('user:id,name,email')
-            ->when($q !== '', fn ($query) => $query->where(fn ($w) => $w
-                ->where('company', 'like', "%{$q}%")
-                ->orWhere('role', 'like', "%{$q}%")
-                ->orWhereHas('user', fn ($u) => $u->where('email', 'like', "%{$q}%")->orWhere('name', 'like', "%{$q}%"))
-            ))
-            ->latest()
-            ->paginate(25)
-            ->withQueryString()
-            ->through(fn (JobApplication $j): array => [
-                'id' => $j->id,
-                'company' => $j->company,
-                'role' => $j->role,
-                'status' => $j->status,
-                'owner' => $this->owner($j->user),
-                'created_at' => $j->created_at,
             ]);
     }
 
@@ -161,14 +137,6 @@ class AdminContentController extends Controller
         $coverLetter->delete();
 
         return back()->with('success', 'Cover letter deleted.');
-    }
-
-    public function destroyJob(JobApplication $jobApplication): RedirectResponse
-    {
-        AdminAuditLog::record('content.job.delete', $jobApplication, "Deleted job application {$jobApplication->company} ({$jobApplication->user?->email})");
-        $jobApplication->delete();
-
-        return back()->with('success', 'Job application deleted.');
     }
 
     public function disableShareLink(ResumeShareLink $shareLink): RedirectResponse

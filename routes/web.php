@@ -16,7 +16,6 @@ use App\Http\Controllers\Admin\CareerController as AdminCareerController;
 use App\Http\Controllers\AdminImpersonationController;
 use App\Http\Controllers\AiSuggestionController;
 use App\Http\Controllers\AnalyticsController;
-use App\Http\Controllers\ApplicationContactController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
@@ -26,8 +25,6 @@ use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
 use App\Http\Controllers\InterviewCoachController;
-use App\Http\Controllers\InterviewNoteController;
-use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
@@ -103,7 +100,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
     Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
     Route::post('/builder/{resume}/create-variant', [ResumeBuilderController::class, 'createVariant'])->name('builder.create-variant');
-    Route::patch('/builder/{resume}/link-job', [ResumeBuilderController::class, 'linkJob'])->name('builder.link-job');
     Route::get('/builder/{resume}/heatmap', [HeatmapController::class, 'show'])->name('builder.heatmap');
     Route::get('/builder/{resume}/strength-score', [StrengthScoreController::class, 'show'])
         ->middleware('throttle:10,1')
@@ -134,16 +130,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/cover-letters/{letter}', [CoverLetterController::class, 'edit'])->name('cover-letters.edit');
     Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
     Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
-    Route::get('/jobs', [JobApplicationController::class, 'index'])->name('jobs.index');
-    Route::post('/jobs', [JobApplicationController::class, 'store'])->name('jobs.store');
     Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
-    Route::get('/jobs/{application}', [JobApplicationController::class, 'edit'])->name('jobs.edit');
-    Route::put('/jobs/{application}', [JobApplicationController::class, 'update'])->name('jobs.update');
-    Route::delete('/jobs/{application}', [JobApplicationController::class, 'destroy'])->name('jobs.destroy');
-    Route::post('/jobs/{application}/notes', [InterviewNoteController::class, 'store'])->name('jobs.notes.store');
-    Route::delete('/jobs/{application}/notes/{note}', [InterviewNoteController::class, 'destroy'])->name('jobs.notes.destroy');
-    Route::post('/jobs/{application}/contacts', [ApplicationContactController::class, 'store'])->name('jobs.contacts.store');
-    Route::delete('/jobs/{application}/contacts/{contact}', [ApplicationContactController::class, 'destroy'])->name('jobs.contacts.destroy');
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
@@ -248,7 +235,6 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::get('/content/resumes/{resume}', [AdminContentController::class, 'showResume'])->name('content.resume.show');
     Route::delete('/content/resumes/{resume}', [AdminContentController::class, 'destroyResume'])->name('content.resume.destroy');
     Route::delete('/content/cover-letters/{coverLetter}', [AdminContentController::class, 'destroyCoverLetter'])->name('content.cover-letter.destroy');
-    Route::delete('/content/jobs/{jobApplication}', [AdminContentController::class, 'destroyJob'])->name('content.job.destroy');
     Route::patch('/content/share-links/{shareLink}/disable', [AdminContentController::class, 'disableShareLink'])->name('content.share-link.disable');
     Route::patch('/content/users/{user}/unpublish-portfolio', [AdminContentController::class, 'unpublishPortfolio'])->name('content.portfolio.unpublish');
     Route::get('/job-titles', [AdminJobTitleController::class, 'index'])->name('job-titles.index');
