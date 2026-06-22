@@ -3,7 +3,6 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\CoverLetter;
-use App\Models\JobApplication;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Models\User;
@@ -39,19 +38,12 @@ class AdminContentTest extends TestCase
     {
         $owner = User::factory()->create();
         CoverLetter::factory()->for($owner)->create(['name' => 'Dear Hiring']);
-        JobApplication::factory()->for($owner)->create(['company' => 'Acme']);
 
         $this->actingAs($this->admin())->get(route('admin.content.index', ['type' => 'cover-letters']))
             ->assertInertia(fn (AssertableInertia $page) => $page
                 ->where('type', 'cover-letters')
                 ->has('items.data', 1)
                 ->where('items.data.0.name', 'Dear Hiring')
-            );
-
-        $this->actingAs($this->admin())->get(route('admin.content.index', ['type' => 'jobs']))
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->where('type', 'jobs')
-                ->where('items.data.0.company', 'Acme')
             );
 
         $portfolioUser = User::factory()->create(['portfolio_slug' => 'janedoe']);

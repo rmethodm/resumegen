@@ -46,7 +46,6 @@ export default function Authenticated({
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</NavLink>
                                 <NavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</NavLink>
                                 <NavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</NavLink>
-                                <NavLink href={route('jobs.index')} active={route().current('jobs.*')}>Jobs</NavLink>
                                 {orgRole === 'admin' && (
                                     <NavLink href={route('org.show')} active={route().current('org.*')}>Org</NavLink>
                                 )}
@@ -111,7 +110,6 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('jobs.index')} active={route().current('jobs.*')}>Jobs</ResponsiveNavLink>
                         {orgRole === 'admin' && (
                             <ResponsiveNavLink href={route('org.show')} active={route().current('org.*')}>Org</ResponsiveNavLink>
                         )}

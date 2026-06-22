@@ -31,7 +31,6 @@ class Resume extends Model implements HasMedia
         'skills', 'skills_layout', 'skills_groups', 'skill_narratives', 'certifications', 'font_sizes',
         'section_order', 'custom_sections',
         'ab_parent_id',
-        'job_application_id',
         'is_snapshot',
         'is_master',
         'master_resume_id',
@@ -101,10 +100,5 @@ class Resume extends Model implements HasMedia
     public function abVariants(): HasMany
     {
         return $this->hasMany(Resume::class, 'ab_parent_id');
-    }
-
-    public function linkedJob(): BelongsTo
-    {
-        return $this->belongsTo(JobApplication::class, 'job_application_id');
     }
 }

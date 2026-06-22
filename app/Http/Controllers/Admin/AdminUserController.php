@@ -16,7 +16,7 @@ class AdminUserController extends Controller
     {
         $query = User::query()
             ->with('subscriptions')
-            ->withCount(['resumes', 'coverLetters', 'jobApplications']);
+            ->withCount(['resumes', 'coverLetters']);
 
         if ($request->filled('q')) {
             $q = $request->string('q');
@@ -42,7 +42,6 @@ class AdminUserController extends Controller
                 'subscribed' => $user->subscribed('default'),
                 'resumes_count' => $user->resumes_count,
                 'cover_letters_count' => $user->cover_letters_count,
-                'job_applications_count' => $user->job_applications_count,
                 'portfolio_slug' => $user->portfolio_slug,
                 'created_at' => $user->created_at->toDateString(),
             ]);

@@ -106,11 +106,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(CoverLetter::class);
     }
 
-    public function jobApplications(): HasMany
-    {
-        return $this->hasMany(JobApplication::class);
-    }
-
     public function getReferralCodeAttribute(mixed $value): ?string
     {
         return $value;
