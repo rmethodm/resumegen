@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\SystemEvent;
 use App\Models\User;
-use App\Services\ReferralRewardService;
 use App\Services\UserLimits;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Support\Facades\Event;
@@ -73,12 +72,6 @@ class AppServiceProvider extends ServiceProvider
                 User::where('id', $subscription->user_id)->update(['plan_tier' => $tier, 'is_agency' => false]);
             }
 
-            if (in_array($tier, ['starter', 'pro', 'agency'])) {
-                $user = User::find($subscription->user_id);
-                if ($user) {
-                    ReferralRewardService::grantIfEligible($user);
-                }
-            }
         });
 
         Subscription::deleted(function (Subscription $subscription) {

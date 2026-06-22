@@ -98,19 +98,6 @@ class GrowthReport
     }
 
     /**
-     * @return array{referred_signups: int, referred_converted: int}
-     */
-    public function referral(): array
-    {
-        return [
-            'referred_signups' => User::whereNotNull('referred_by_user_id')->count(),
-            'referred_converted' => User::whereNotNull('referred_by_user_id')
-                ->whereIn('plan_tier', self::PAYING_TIERS)
-                ->count(),
-        ];
-    }
-
-    /**
      * Weekly retention cohorts for the most recent $weeks signup cohorts.
      *
      * @return array<int, array{cohort: string, size: int, retention: array<int, float>}>
