@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\CareerArticle;
-use App\Models\Organization;
 use App\Models\PortfolioMessage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +22,6 @@ class AdminDashboardTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->component('Admin/Dashboard')
                 ->has('stats.users')
-                ->has('stats.organizations')
                 ->has('stats.unread_messages')
                 ->has('stats.job_titles_count')
                 ->has('stats.published_articles')
@@ -34,7 +32,6 @@ class AdminDashboardTest extends TestCase
     {
         $admin = User::factory()->create(['is_master_admin' => true]);
         User::factory()->count(3)->create();
-        Organization::factory()->count(2)->create(['owner_id' => $admin->id]);
         PortfolioMessage::factory()->count(4)->create(['user_id' => $admin->id, 'read_at' => null]);
         PortfolioMessage::factory()->count(1)->create(['user_id' => $admin->id, 'read_at' => now()]);
         CareerArticle::factory()->count(2)->published()->create();
@@ -46,7 +43,6 @@ class AdminDashboardTest extends TestCase
 
         $response->assertInertia(fn ($page) => $page
             ->where('stats.users', 4) // admin + 3
-            ->where('stats.organizations', 2)
             ->where('stats.unread_messages', 4)
             ->where('stats.published_articles', 2)
         );

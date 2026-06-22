@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             if (in_array($subscription->stripe_status, ['canceled', 'incomplete_expired', 'unpaid'])) {
-                User::where('id', $subscription->user_id)->update(['plan_tier' => 'free', 'is_agency' => false]);
+                User::where('id', $subscription->user_id)->update(['plan_tier' => 'free']);
 
                 return;
             }
@@ -66,16 +66,11 @@ class AppServiceProvider extends ServiceProvider
 
             $tier = UserLimits::tierFromPriceId($item->stripe_price);
 
-            if ($tier === 'agency') {
-                User::where('id', $subscription->user_id)->update(['plan_tier' => $tier, 'is_agency' => true]);
-            } else {
-                User::where('id', $subscription->user_id)->update(['plan_tier' => $tier, 'is_agency' => false]);
-            }
-
+            User::where('id', $subscription->user_id)->update(['plan_tier' => $tier]);
         });
 
         Subscription::deleted(function (Subscription $subscription) {
-            User::where('id', $subscription->user_id)->update(['plan_tier' => 'free', 'is_agency' => false]);
+            User::where('id', $subscription->user_id)->update(['plan_tier' => 'free']);
         });
     }
 }

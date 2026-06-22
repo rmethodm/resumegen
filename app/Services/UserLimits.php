@@ -21,7 +21,7 @@ class UserLimits
         return match ($user->planTier()) {
             'starter' => 10,
             'pro', 'agency' => null,
-            default => 2, // free or unknown — cap at 2
+            default => 2,
         };
     }
 
@@ -31,24 +31,8 @@ class UserLimits
             'free' => 1,
             'starter' => 10,
             'pro', 'agency' => null,
-            default => 1, // unknown — most restrictive
+            default => 1,
         };
-    }
-
-    /** Team workspace + member seats are Agency-only. */
-    public static function canCreateOrg(User $user): bool
-    {
-        return $user->planTier() === 'agency';
-    }
-
-    public static function canUseOrg(User $user): bool
-    {
-        return $user->planTier() === 'agency';
-    }
-
-    public static function jobLimit(User $user): ?int
-    {
-        return $user->planTier() === 'free' ? 3 : null;
     }
 
     public static function allowedTemplates(User $user): array

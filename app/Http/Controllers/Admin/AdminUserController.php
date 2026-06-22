@@ -36,7 +36,6 @@ class AdminUserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'is_pro' => $user->is_pro,
-                'is_agency' => $user->is_agency,
                 'is_master_admin' => $user->is_master_admin,
                 'plan_tier' => $user->plan_tier ?? 'free',
                 'subscribed' => $user->subscribed('default'),
@@ -64,21 +63,6 @@ class AdminUserController extends Controller
         $label = $user->is_pro ? 'upgraded to Pro' : 'downgraded to Free';
 
         AdminAuditLog::record('user.toggle-pro', $user, "{$user->email} {$label}", ['is_pro' => $user->is_pro]);
-
-        return back()->with('success', "{$user->name} has been {$label}.");
-    }
-
-    public function toggleAgency(Request $request, User $user): RedirectResponse
-    {
-        if ($user->is_master_admin) {
-            return back()->with('error', 'Cannot modify a master admin.');
-        }
-
-        $user->update(['is_agency' => ! $user->is_agency]);
-
-        $label = $user->is_agency ? 'upgraded to Agency' : 'downgraded from Agency';
-
-        AdminAuditLog::record('user.toggle-agency', $user, "{$user->email} {$label}", ['is_agency' => $user->is_agency]);
 
         return back()->with('success', "{$user->name} has been {$label}.");
     }

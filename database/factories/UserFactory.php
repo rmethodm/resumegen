@@ -61,6 +61,6 @@ class UserFactory extends Factory
 
     public function agency(): static
     {
-        return $this->state(['is_agency' => true]);
+        return $this->state(['plan_tier' => 'agency']);
     }
 }

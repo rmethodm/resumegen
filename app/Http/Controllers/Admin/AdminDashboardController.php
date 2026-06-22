@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\CareerArticle;
 use App\Models\JobRole;
 use App\Models\JobTitle;
-use App\Models\Organization;
 use App\Models\PortfolioMessage;
 use App\Models\User;
 use Inertia\Inertia;
@@ -19,7 +18,6 @@ class AdminDashboardController extends Controller
         return Inertia::render('Admin/Dashboard', [
             'stats' => [
                 'users' => User::count(),
-                'organizations' => Organization::count(),
                 'unread_messages' => PortfolioMessage::whereNull('read_at')->count(),
                 'job_titles_count' => JobRole::count() + JobTitle::count(),
                 'published_articles' => CareerArticle::where('is_published', true)->count(),

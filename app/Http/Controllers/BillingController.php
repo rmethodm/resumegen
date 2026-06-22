@@ -14,8 +14,10 @@ class BillingController extends Controller
     {
         $user = $request->user();
 
+        $tier = $user->planTier();
+
         return Inertia::render('Billing/Index', [
-            'plan' => $user->planTier(),
+            'plan' => $tier === 'agency' ? 'pro' : $tier,
             'resumeCount' => $user->resumes()->count(),
             'resumeLimit' => UserLimits::resumeLimit($user),
             'limitReached' => session('limitReached', false),

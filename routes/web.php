@@ -8,7 +8,6 @@ use App\Http\Controllers\Admin\AdminGrowthController;
 use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOpsController;
-use App\Http\Controllers\Admin\AdminOrganizationController;
 use App\Http\Controllers\Admin\AdminRevenueController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CareerController as AdminCareerController;
@@ -27,10 +26,6 @@ use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
-use App\Http\Controllers\OrgController;
-use App\Http\Controllers\OrgInviteController;
-use App\Http\Controllers\OrgJoinController;
-use App\Http\Controllers\OrgResumeController;
 use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
@@ -152,25 +147,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         Route::post('/autocomplete/job-skills', [AutocompleteController::class, 'storeSkills'])->name('autocomplete.job-skills.store');
     });
 
-    // Org workspace
-    Route::get('/org/create', [OrgController::class, 'create'])->name('org.create');
-    Route::post('/org', [OrgController::class, 'store'])->name('org.store');
-    Route::get('/org', [OrgController::class, 'show'])->name('org.show');
-
-    Route::middleware('org.admin')->group(function () {
-        Route::patch('/org', [OrgController::class, 'update'])->name('org.update');
-        Route::post('/org/invite', [OrgInviteController::class, 'store'])->name('org.invite.store');
-        Route::delete('/org/members/{member}', [OrgInviteController::class, 'destroy'])->name('org.invite.destroy');
-        Route::get('/org/resumes/{resume}', [OrgResumeController::class, 'show'])->name('org.resume.show');
-        Route::get('/org/resumes/{resume}/preview', [OrgResumeController::class, 'preview'])->name('org.resume.preview');
-        Route::put('/org/resumes/{resume}/notes', [OrgResumeController::class, 'upsertNote'])->name('org.resume.notes');
-    });
-});
-
-// Org invite join — unauthenticated, token-based
-Route::middleware('throttle:10,1')->group(function () {
-    Route::get('/org/join/{token}', [OrgJoinController::class, 'show'])->name('org.join.show');
-    Route::post('/org/join/{token}', [OrgJoinController::class, 'store'])->name('org.join.store');
 });
 
 // Public (unauthenticated) portfolio page
@@ -208,12 +184,8 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::delete('/ai/flagged/{aiRequest}', [AdminAiController::class, 'destroyFlagged'])->name('ai.flagged.destroy');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
-    Route::patch('/users/{user}/toggle-agency', [AdminUserController::class, 'toggleAgency'])->name('users.toggle-agency');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
     Route::post('/users/{user}/impersonate', [AdminImpersonationController::class, 'store'])->name('users.impersonate');
-    Route::get('/organizations', [AdminOrganizationController::class, 'index'])->name('organizations.index');
-    Route::get('/organizations/{organization}', [AdminOrganizationController::class, 'show'])->name('organizations.show');
-    Route::delete('/organizations/{organization}', [AdminOrganizationController::class, 'destroy'])->name('organizations.destroy');
     Route::get('/messages', [AdminMessageController::class, 'index'])->name('messages.index');
     Route::patch('/messages/{message}/read', [AdminMessageController::class, 'markRead'])->name('messages.read');
     Route::delete('/messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');

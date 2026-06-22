@@ -51,20 +51,6 @@ class TierLimitsTest extends TestCase
         $this->assertNull(UserLimits::coverLetterLimit($user));
     }
 
-    // ── jobLimit ───────────────────────────────────────────────────────────────
-
-    public function test_free_user_job_limit_is_3(): void
-    {
-        $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(3, UserLimits::jobLimit($user));
-    }
-
-    public function test_starter_user_job_limit_is_null(): void
-    {
-        $user = User::factory()->starter()->create();
-        $this->assertNull(UserLimits::jobLimit($user));
-    }
-
     // ── allowedTemplates ──────────────────────────────────────────────────────
 
     public function test_free_user_gets_only_free_templates(): void
@@ -176,21 +162,6 @@ class TierLimitsTest extends TestCase
         $this->assertSame(150, UserLimits::aiMonthlyLimit(User::factory()->starter()->create()));
         $this->assertSame(500, UserLimits::aiMonthlyLimit(User::factory()->pro()->create()));
         $this->assertSame(1000, UserLimits::aiMonthlyLimit(User::factory()->agency()->create()));
-    }
-
-    // ── canCreateOrg ──────────────────────────────────────────────────────────
-
-    public function test_only_agency_can_create_org(): void
-    {
-        $this->assertFalse(UserLimits::canCreateOrg(User::factory()->create(['plan_tier' => 'free'])));
-        $this->assertFalse(UserLimits::canCreateOrg(User::factory()->starter()->create()));
-        $this->assertFalse(UserLimits::canCreateOrg(User::factory()->pro()->create()));
-        $this->assertTrue(UserLimits::canCreateOrg(User::factory()->agency()->create()));
-    }
-
-    public function test_master_admin_can_create_org(): void
-    {
-        $this->assertTrue(UserLimits::canCreateOrg(User::factory()->create(['is_master_admin' => true])));
     }
 
     // ── canAiTailoring ────────────────────────────────────────────────────────
