@@ -275,13 +275,12 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                         <tr key={r.id} className="border-b border-[#f5f5fb] transition-colors hover:bg-[#fafafe]">
                                             <td className="px-5 py-4">
                                                 <div className="flex items-start gap-3">
-                                                    <Link href={route('builder.edit', r.id)} className="shrink-0 block h-16 w-12 overflow-hidden rounded border border-[#eeeef5] bg-[#fafafe]">
-                                                        <iframe
-                                                            src={route('builder.html-preview', r.id)}
-                                                            scrolling="no"
-                                                            style={{ width: 816, height: 1056, transform: 'scale(0.0588)', transformOrigin: 'top left', pointerEvents: 'none', border: 'none' }}
-                                                            title=""
-                                                            aria-hidden="true"
+                                                    <Link href={route('builder.edit', r.id)} className="shrink-0">
+                                                        <img
+                                                            src={route('builder.thumbnail', r.id)}
+                                                            loading="lazy"
+                                                            alt=""
+                                                            className="h-16 w-12 rounded border border-[#eeeef5] bg-[#fafafe] object-cover object-top"
                                                         />
                                                     </Link>
                                                     <div className="min-w-0">

@@ -269,6 +269,14 @@ class ResumeBuilderController extends Controller
         return $this->buildPdf($resume)->stream('preview.pdf');
     }
 
+    public function htmlPreview(Resume $resume)
+    {
+        $this->authorize('update', $resume);
+
+        return response(view('resume-pdf', ['resume' => $resume])->render())
+            ->header('Content-Type', 'text/html');
+    }
+
     public function thumbnail(Resume $resume, ResumeThumbnailGenerator $generator)
     {
         $this->authorize('update', $resume);
