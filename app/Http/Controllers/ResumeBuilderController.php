@@ -159,7 +159,6 @@ class ResumeBuilderController extends Controller
             'allowedTemplates' => UserLimits::allowedTemplates($user),
             'completionScore' => ResumeCompletionScorer::score($resume),
             'skillCategoryOptions' => SkillCategories::labels(),
-            'strengthHistoryEnabled' => UserLimits::canStrengthHistory($user),
             'photoUrl' => $resume->getFirstMediaUrl('photo') ?: null,
             'userPersona' => [
                 'target_role' => $user->target_role,

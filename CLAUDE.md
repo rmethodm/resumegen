@@ -8,18 +8,29 @@ Bias: caution over speed on non-trivial work.
 ## Rule 1 — Think Before Coding
 State assumptions explicitly. Ask rather than guess.
 Push back when a simpler approach exists. Stop when confused.
+If something is unclear, ask before writing a single line. Never 
+make silent assumptions about intent, architecture, or requirements.
 
 ## Rule 2 — Simplicity First
 Minimum code that solves the problem. Nothing speculative.
-No abstractions for single-use code.
+No abstractions for single-use code. Simplest solution first. 
+Always implement the simplest thing that could work. Do not 
+add abstractions or flexibility that weren't explicitly requested.
 
 ## Rule 3 — Surgical Changes
 Touch only what you must. Don't improve adjacent code.
 Match existing style. Don't refactor what isn't broken.
+Don't touch unrelated code. If a file or function is 
+not directly part of the current task, do not modify it, 
+even if you think it could be improved.
 
 ## Rule 4 — Goal-Driven Execution
 Define success criteria. Loop until verified.
 Strong success criteria let Claude loop independently.
+Flag uncertainty explicitly. If you are not confident 
+about an approach or technical detail, say so before 
+proceeding. Confidence without certainty causes more 
+damage than admitting a gap.
 
 ## Rule 5 — Use the model only for judgment calls
 Use for: classification, drafting, summarization, extraction.
