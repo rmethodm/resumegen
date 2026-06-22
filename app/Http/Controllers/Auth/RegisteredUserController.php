@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\ReferralEvent;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -57,19 +56,6 @@ class RegisteredUserController extends Controller
         });
 
         event(new Registered($user));
-
-        $referralCode = $request->session()->pull('referral_code');
-        if ($referralCode) {
-            $referrer = User::where('referral_code', $referralCode)->first();
-            if ($referrer && $referrer->id !== $user->id) {
-                $user->update(['referred_by_user_id' => $referrer->id]);
-                ReferralEvent::create([
-                    'referrer_user_id' => $referrer->id,
-                    'referred_user_id' => $user->id,
-                    'event_type' => 'signup',
-                ]);
-            }
-        }
 
         Auth::login($user);
 

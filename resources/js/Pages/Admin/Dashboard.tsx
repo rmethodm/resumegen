@@ -6,7 +6,6 @@ interface Stats {
     users: number;
     organizations: number;
     unread_messages: number;
-    referral_conversions: number;
     job_titles_count: number;
     published_articles: number;
 }
@@ -16,7 +15,6 @@ export default function AdminDashboard({ stats }: PageProps<{ stats: Stats }>) {
         { label: 'Users',               count: stats.users,                href: route('admin.users.index'),    description: 'Registered accounts' },
         { label: 'Organizations',        count: stats.organizations,         href: '/admin/orgs',                 description: 'Agency workspaces' },
         { label: 'Unread Messages',      count: stats.unread_messages,       href: '/admin/messages',             description: 'Portfolio contact forms' },
-        { label: 'Referral Conversions', count: stats.referral_conversions,  href: '/admin/referrals',            description: 'Upgrade events' },
         { label: 'Job Titles',           count: stats.job_titles_count,      href: '/admin/job-titles',           description: 'Roles + title entries' },
         { label: 'Published Articles',   count: stats.published_articles,    href: route('admin.career.index'),   description: 'Career hub articles' },
     ];

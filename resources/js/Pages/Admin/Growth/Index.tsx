@@ -12,8 +12,7 @@ type Props = {
     };
     signups: { date: string; count: number; cost_cents: number }[];
     funnel: { label: string; count: number; cost_cents: number }[];
-    referral: { referred_signups: number; referred_converted: number };
-    retention: { cohort: string; size: number; retention: number[] }[];
+    retention:{ cohort: string; size: number; retention: number[] }[];
 };
 
 // Indigo background whose opacity scales with the retention percentage.
@@ -31,7 +30,7 @@ const PERIODS = [
     { key: 'all', label: 'All time' },
 ];
 
-export default function GrowthIndex({ period, kpis, signups, funnel, referral, retention }: Props) {
+export default function GrowthIndex({ period, kpis, signups, funnel, retention }: Props) {
     const maxWeeks = Math.max(0, ...retention.map((c) => c.retention.length));
     return (
         <AdminLayout>
@@ -105,13 +104,6 @@ export default function GrowthIndex({ period, kpis, signups, funnel, referral, r
                     )}
                 </div>
 
-                <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4">
-                    <h2 className="mb-2 text-sm font-semibold text-gray-700">Referrals</h2>
-                    <p className="text-sm text-gray-600">
-                        <span className="font-semibold">{referral.referred_signups}</span> referred signups ·{' '}
-                        <span className="font-semibold">{referral.referred_converted}</span> converted to paid
-                    </p>
-                </div>
             </div>
         </AdminLayout>
     );

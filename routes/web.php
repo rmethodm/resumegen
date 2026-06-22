@@ -9,7 +9,6 @@ use App\Http\Controllers\Admin\AdminJobTitleController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOpsController;
 use App\Http\Controllers\Admin\AdminOrganizationController;
-use App\Http\Controllers\Admin\AdminReferralController;
 use App\Http\Controllers\Admin\AdminRevenueController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CareerController as AdminCareerController;
@@ -37,7 +36,6 @@ use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
-use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
@@ -135,7 +133,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
 
-    Route::get('/settings/referral', [ReferralController::class, 'show'])->name('referral.show');
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
     Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');
 
@@ -169,8 +166,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         Route::put('/org/resumes/{resume}/notes', [OrgResumeController::class, 'upsertNote'])->name('org.resume.notes');
     });
 });
-
-Route::get('/ref/{code}', [ReferralController::class, 'redirect'])->name('referral.redirect');
 
 // Org invite join — unauthenticated, token-based
 Route::middleware('throttle:10,1')->group(function () {
@@ -222,7 +217,6 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
     Route::get('/messages', [AdminMessageController::class, 'index'])->name('messages.index');
     Route::patch('/messages/{message}/read', [AdminMessageController::class, 'markRead'])->name('messages.read');
     Route::delete('/messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
-    Route::get('/referrals', [AdminReferralController::class, 'index'])->name('referrals.index');
     Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
     Route::get('/revenue', [AdminRevenueController::class, 'index'])->name('revenue.index');
     Route::get('/growth', [AdminGrowthController::class, 'index'])->name('growth.index');

@@ -67,18 +67,6 @@ class AdminGrowthTest extends TestCase
         $this->assertSame(4.0, (new GrowthReport)->avgDaysToConvert());
     }
 
-    public function test_referral_counts(): void
-    {
-        $referrer = User::factory()->create();
-        User::factory()->pro()->create(['referred_by_user_id' => $referrer->id]);
-        User::factory()->create(['referred_by_user_id' => $referrer->id, 'plan_tier' => 'free']);
-
-        $referral = (new GrowthReport)->referral();
-
-        $this->assertSame(2, $referral['referred_signups']);
-        $this->assertSame(1, $referral['referred_converted']);
-    }
-
     public function test_index_renders(): void
     {
         $admin = User::factory()->create(['is_master_admin' => true]);
@@ -90,7 +78,6 @@ class AdminGrowthTest extends TestCase
                 ->has('kpis.activation_rate')
                 ->has('signups')
                 ->has('funnel')
-                ->has('referral')
             );
     }
 
