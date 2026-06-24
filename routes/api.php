@@ -24,5 +24,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('cover-letters', CoverLetterController::class)
         ->names('api.cover-letters');
     Route::get('/activity', [ActivityController::class, 'index']);
-    Route::post('/threads/{thread}/reply', [ThreadReplyController::class, 'store']);
+    Route::post('/threads/{thread}/reply', [ThreadReplyController::class, 'store'])->middleware('throttle:20,1');
 });

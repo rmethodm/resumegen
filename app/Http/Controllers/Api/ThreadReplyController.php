@@ -32,7 +32,8 @@ class ThreadReplyController extends Controller
 
         $thread->update(['is_read' => true]);
 
-        $shareLink = ResumeShareLink::find($thread->share_link_id)
+        $shareLink = ResumeShareLink::where('id', $thread->share_link_id)
+            ->where('is_active', true)->first()
             ?? $resume->shareLinks()->where('is_active', true)->first();
 
         if ($shareLink) {
