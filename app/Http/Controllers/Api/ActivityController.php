@@ -29,7 +29,7 @@ class ActivityController extends Controller
             ]);
 
         $threads = ResumeThread::whereIn('resume_id', $resumeIds)
-            ->with(['resume:id,name', 'messages'])
+            ->with(['resume:id,name', 'messages' => fn ($q) => $q->orderBy('created_at')])
             ->get()
             ->sortByDesc(fn ($t) => ($t->messages->sortByDesc('created_at')->first()?->created_at ?? $t->created_at)->getTimestamp())
             ->values()
