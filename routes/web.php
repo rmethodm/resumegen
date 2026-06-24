@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAiController;
+use App\Http\Controllers\ImportTestController;
 use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminContentController;
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -231,5 +232,11 @@ Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->gr
 });
 
 Route::middleware('auth')->delete('/admin/impersonate', [AdminImpersonationController::class, 'destroy'])->name('admin.impersonate.destroy');
+
+// ponytail: dev-only import test sandbox, remove before launch
+Route::middleware('auth')->prefix('import-test')->name('import-test.')->group(function () {
+    Route::get('/', [ImportTestController::class, 'index'])->name('index');
+    Route::post('/', [ImportTestController::class, 'extract'])->name('extract');
+});
 
 require __DIR__.'/auth.php';
