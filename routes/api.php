@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CoverLetterController;
 use App\Http\Controllers\Api\ResumeController;
@@ -21,4 +22,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('resumes/{resume}/pdf', [ResumeController::class, 'pdf']);
     Route::apiResource('cover-letters', CoverLetterController::class)
         ->names('api.cover-letters');
+    Route::get('/activity', [ActivityController::class, 'index']);
 });
