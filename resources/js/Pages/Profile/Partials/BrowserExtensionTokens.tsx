@@ -53,7 +53,7 @@ export default function BrowserExtensionTokens({
             <header>
                 <h2 className="text-base font-semibold text-[#0f0f1a]">Browser Extension</h2>
                 <p className="mt-1 text-sm text-[#a0a0b0]">
-                    Connect the Resumegen Chrome/Edge extension to save jobs from any site directly to your tracker.
+                    Connect the Resumegen Chrome/Edge extension to monitor who views or downloads your resumes and reply to visitor messages directly from your browser.
                 </p>
             </header>
 
