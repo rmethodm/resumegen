@@ -33,20 +33,24 @@ class ActivityController extends Controller
             ->get()
             ->sortByDesc(fn ($t) => ($t->messages->sortByDesc('created_at')->first()?->created_at ?? $t->created_at)->getTimestamp())
             ->values()
-            ->map(fn ($t) => [
-                'id' => $t->id,
-                'resume_id' => $t->resume_id,
-                'resume_name' => $t->resume->name,
-                'is_read' => $t->is_read,
-                'sender_name' => $t->sender_name,
-                'occurred_at' => ($t->messages->sortByDesc('created_at')->first()?->created_at ?? $t->created_at)->toISOString(),
-                'messages' => $t->messages->map(fn ($m) => [
-                    'id' => $m->id,
-                    'body' => $m->body,
-                    'is_owner' => $m->is_owner,
-                    'created_at' => $m->created_at->toISOString(),
-                ])->values(),
-            ]);
+            ->map(function ($t) {
+                $latestMessage = $t->messages->sortByDesc('created_at')->first();
+
+                return [
+                    'id' => $t->id,
+                    'resume_id' => $t->resume_id,
+                    'resume_name' => $t->resume->name,
+                    'is_read' => $t->is_read,
+                    'sender_name' => $t->sender_name,
+                    'occurred_at' => ($latestMessage?->created_at ?? $t->created_at)->toISOString(),
+                    'messages' => $t->messages->map(fn ($m) => [
+                        'id' => $m->id,
+                        'body' => $m->body,
+                        'is_owner' => $m->is_owner,
+                        'created_at' => $m->created_at->toISOString(),
+                    ])->values(),
+                ];
+            });
 
         return response()->json([
             'events' => $events,
