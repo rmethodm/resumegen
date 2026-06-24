@@ -37,6 +37,8 @@ class ThreadReplyApiTest extends ApiTestCase
             ->assertJsonPath('body', 'Thanks for reaching out!')
             ->assertJsonPath('is_owner', true);
 
+        Mail::assertNothingQueued();
+
         $this->assertDatabaseHas('resume_thread_messages', [
             'thread_id' => $thread->id,
             'body' => 'Thanks for reaching out!',

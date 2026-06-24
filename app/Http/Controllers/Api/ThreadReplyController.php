@@ -33,8 +33,7 @@ class ThreadReplyController extends Controller
         $thread->update(['is_read' => true]);
 
         $shareLink = ResumeShareLink::find($thread->share_link_id)
-            ?? $resume->shareLinks()->where('is_active', true)->first()
-            ?? $resume->shareLinks()->first();
+            ?? $resume->shareLinks()->where('is_active', true)->first();
 
         if ($shareLink) {
             try {
@@ -53,7 +52,7 @@ class ThreadReplyController extends Controller
         return response()->json([
             'id' => $message->id,
             'body' => $message->body,
-            'is_owner' => true,
+            'is_owner' => (bool) $message->is_owner,
             'created_at' => $message->created_at->toISOString(),
         ], 201);
     }
