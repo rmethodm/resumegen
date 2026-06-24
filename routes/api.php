@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CoverLetterController;
 use App\Http\Controllers\Api\ResumeController;
+use App\Http\Controllers\Api\ThreadReplyController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -23,4 +24,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('cover-letters', CoverLetterController::class)
         ->names('api.cover-letters');
     Route::get('/activity', [ActivityController::class, 'index']);
+    Route::post('/threads/{thread}/reply', [ThreadReplyController::class, 'store']);
 });
