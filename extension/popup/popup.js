@@ -35,7 +35,9 @@ async function dismissThread(id) {
 // ── Render feed ───────────────────────────────────────────────────────────────
 async function renderFeed() {
     const dismissed = await getDismissed();
-    const threads = (activityData.threads || []).filter((t) => !dismissed.has(t.id));
+    const threads = (activityData.threads || [])
+        .filter((t) => !dismissed.has(t.id))
+        .sort((a, b) => (a.is_read === b.is_read ? 0 : a.is_read ? 1 : -1));
     const events = activityData.events || [];
 
     // Threads
@@ -149,7 +151,7 @@ $('send-btn').addEventListener('click', async () => {
     $('send-btn').disabled = false;
     $('send-btn').textContent = 'Send';
 
-    if (res.status === 201) {
+    if (res?.status === 201) {
         // Append new message to local data and re-render
         const thread = activityData.threads.find((t) => t.id === activeThreadId);
         if (thread) {
@@ -158,11 +160,11 @@ $('send-btn').addEventListener('click', async () => {
             renderMessages(thread.messages);
         }
         $('reply-body').value = '';
-    } else if (res.status === 401) {
+    } else if (res?.status === 401) {
         $('reply-error').textContent = 'Token invalid — update in Settings.';
         $('reply-error').classList.remove('hidden');
     } else {
-        $('reply-error').textContent = `Failed to send (${res.status || 'network error'}). Try again.`;
+        $('reply-error').textContent = `Failed to send (${res?.status || 'network error'}). Try again.`;
         $('reply-error').classList.remove('hidden');
     }
 });
