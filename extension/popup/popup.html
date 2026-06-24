@@ -5,52 +5,50 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
+
+  <!-- Setup: no token -->
   <div id="setup-view" class="view hidden">
-    <div class="logo">Resumegen</div>
-    <p class="setup-msg">Paste your API token to get started.</p>
+    <div class="brand">Resumegen</div>
+    <p class="muted">Open Settings to connect your account.</p>
     <button id="open-options" class="btn-primary full">Open Settings</button>
   </div>
-  <div id="form-view" class="view hidden">
-    <div class="header">
-      <span class="logo-sm">Resumegen</span>
-      <span id="extracting-label" class="label-extracting hidden">Extracting…</span>
+
+  <!-- Feed: events + threads -->
+  <div id="feed-view" class="view hidden">
+    <div class="topbar">
+      <span class="brand-sm">Resumegen</span>
+      <button id="refresh-btn" class="btn-icon" title="Refresh">↻</button>
     </div>
-    <div class="field">
-      <label>Role</label>
-      <input type="text" id="role">
-    </div>
-    <div class="field">
-      <label>Company</label>
-      <input type="text" id="company">
-    </div>
-    <div class="field">
-      <label>Salary <span class="opt">optional</span></label>
-      <input type="text" id="salary">
-    </div>
-    <div class="field">
-      <label>Status</label>
-      <select id="status">
-        <option value="saved">Saved</option>
-        <option value="applied">Applied</option>
-        <option value="interviewing">Interviewing</option>
-        <option value="offered">Offered</option>
-        <option value="rejected">Rejected</option>
-        <option value="closed">Closed</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Notes <span class="opt">optional</span></label>
-      <textarea id="notes" rows="3"></textarea>
-    </div>
-    <input type="hidden" id="job-url">
-    <p class="error-msg hidden" id="error-msg"></p>
-    <button id="save-btn" class="btn-primary full">Save Job</button>
+    <div id="auth-error" class="notice error hidden">Token invalid — update in Settings.</div>
+    <div id="fetch-error" class="notice hidden">Could not refresh. Showing cached data.</div>
+
+    <section class="feed-section">
+      <div class="section-label">Messages</div>
+      <ul id="threads-list" class="item-list"></ul>
+      <p id="threads-empty" class="empty hidden">No messages yet.</p>
+    </section>
+
+    <section class="feed-section">
+      <div class="section-label">Activity</div>
+      <ul id="events-list" class="item-list"></ul>
+      <p id="events-empty" class="empty hidden">No activity yet.</p>
+    </section>
   </div>
-  <div id="success-view" class="view hidden">
-    <div class="success-icon">✓</div>
-    <p class="success-msg">Job saved!</p>
-    <a id="view-link" href="#" target="_blank" class="btn-secondary full">View in Resumegen →</a>
+
+  <!-- Conversation: full thread -->
+  <div id="convo-view" class="view hidden">
+    <div class="topbar">
+      <button id="back-btn" class="btn-back">← Back</button>
+    </div>
+    <div id="convo-header" class="convo-header"></div>
+    <div id="convo-messages" class="convo-messages"></div>
+    <div class="reply-area">
+      <textarea id="reply-body" placeholder="Write a reply…" rows="3"></textarea>
+      <p id="reply-error" class="reply-error hidden"></p>
+      <button id="send-btn" class="btn-primary full">Send</button>
+    </div>
   </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
