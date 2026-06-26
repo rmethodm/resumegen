@@ -31,6 +31,9 @@ Thumbs.db
 /storage/app/thumbnails
 .dual-graph-context/
 
+# internal dev docs (product roadmap, AI session notes)
+docs/superpowers/
+
 # design-sync (regenerated output, machine state)
 .ds-sync/
 ds-bundle/
