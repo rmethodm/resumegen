@@ -10,6 +10,7 @@ use App\Services\AiService;
 use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Throwable;
 
 class AiSuggestionController extends Controller
@@ -33,10 +34,17 @@ class AiSuggestionController extends Controller
             abort(422, 'Add experience or skills before generating a summary.');
         }
 
-        return $this->run($request->user(), 'generate_summary', [
+        $input = [
             'experience' => $resume->experience ?? [],
             'skills' => $resume->skills ?? [],
-        ], fn (string $reply): array => ['suggestion' => trim($reply)]);
+        ];
+
+        $cacheKey = 'ai_summary_'.$resume->id.'_'.md5(json_encode($input));
+
+        return $this->run($request->user(), 'generate_summary', $input,
+            fn (string $reply): array => ['suggestion' => trim($reply)],
+            $cacheKey,
+        );
     }
 
     public function atsKeywords(Request $request, Resume $resume): JsonResponse
@@ -57,12 +65,19 @@ class AiSuggestionController extends Controller
         $role = $data['role'] ?? $request->user()->target_role ?? '';
         $jobDescription = $data['job_description'] ?? $resume->target_job_description ?? '';
 
-        return $this->run($request->user(), 'ats_keywords', [
+        $input = [
             'role' => $role,
             'job_description' => $jobDescription,
             'experience' => $resume->experience ?? [],
             'skills' => $resume->skills ?? [],
-        ], fn (string $reply): array => ['keywords' => $this->splitKeywords($reply)]);
+        ];
+
+        $cacheKey = 'ai_ats_'.$resume->id.'_'.md5(json_encode($input));
+
+        return $this->run($request->user(), 'ats_keywords', $input,
+            fn (string $reply): array => ['keywords' => $this->splitKeywords($reply)],
+            $cacheKey,
+        );
     }
 
     /**
@@ -71,8 +86,14 @@ class AiSuggestionController extends Controller
      * @param  array<string, mixed>  $input
      * @param  callable(string): array<string, mixed>  $shape
      */
-    private function run(User $user, string $feature, array $input, callable $shape): JsonResponse
+    private function run(User $user, string $feature, array $input, callable $shape, ?string $cacheKey = null): JsonResponse
     {
+        if ($cacheKey && Cache::has($cacheKey)) {
+            return response()->json(array_merge($shape(Cache::get($cacheKey)), [
+                'remaining' => UserLimits::aiRemaining($user),
+            ]));
+        }
+
         if (! UserLimits::canUseAi($user)) {
             return response()->json([
                 'error' => 'Monthly AI limit reached.',
@@ -95,6 +116,10 @@ class AiSuggestionController extends Controller
             report($e);
 
             return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
+        }
+
+        if ($cacheKey) {
+            Cache::put($cacheKey, $reply, now()->addDay());
         }
 
         return response()->json(array_merge($shape($reply), [

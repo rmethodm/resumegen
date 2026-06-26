@@ -37,4 +37,10 @@ return [
     'pricing' => [
         'gpt-4o-mini' => ['input' => 0.015, 'output' => 0.06],
     ],
+
+    /*
+     * Daily spend threshold in cents. If the previous day's AI cost exceeds this,
+     * the ai:cost-alert command emails the admin address. Default $5.00.
+     */
+    'daily_alert_threshold_cents' => env('AI_DAILY_ALERT_CENTS', 500),
 ];
