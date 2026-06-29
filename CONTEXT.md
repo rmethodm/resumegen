@@ -1,15 +1,16 @@
 # Resumegen Context
 
 ## Current Task
-Filament admin migration merged to main. Billing WIP staged (BillingController, Index.tsx, routes/web.php).
+Filament admin migration merged to main. Blocked on production deployment — code not yet pushed to server.
 
 ## Key Decisions
-- Filament panel live on main: `admin.resumegen.test` (local) / `admin.resumegen.app` (prod), gated by `is_master_admin`.
-- Stripe: API keys set, all 6 price IDs confirmed. `STRIPE_WEBHOOK_SECRET` still placeholder — blocked on DNS.
-- Billing WIP (staged, not committed): subscription flow changes in BillingController, Index.tsx, routes/web.php.
+- Filament panel complete on main: gated by `is_master_admin`, domain `admin.resumegen.app`.
+- Apache vhost (`admin-resumegenapp.conf`) and SSL cert already configured on server.
+- `APP_ADMIN_DOMAIN` and `SESSION_DOMAIN` already set in server `.env`.
+- Blocker: local code not deployed — server still runs pre-Filament codebase.
 
 ## Next Steps
-1. **Commit or continue billing WIP** — BillingController + Index.tsx + routes/web.php are staged.
-2. **Production Filament setup**: set `SESSION_DOMAIN=.resumegen.app` + `APP_ADMIN_DOMAIN=admin.resumegen.app`, configure vhost for `admin.resumegen.app`, issue SSL cert.
-3. **Stripe webhook**: create endpoint, select Cashier events, paste `whsec_...` into `.env`.
-4. **Deploy backup script**: `scp scripts/server-backup.sh root@<server>:/root/server-backup.sh && chmod +x && ./server-backup.sh cron-install`.
+1. **Deploy code to server** — ask user how they deploy (git pull? rsync?), then run `php artisan migrate && php artisan config:clear`.
+2. **Commit billing WIP** — `BillingController.php`, `Index.tsx`, `routes/web.php` are staged but not committed.
+3. **Stripe webhook** — create endpoint at `https://resumegen.app/stripe/webhook`, paste `whsec_...` into `.env`.
+4. **Deploy backup script** — `scp scripts/server-backup.sh root@157.245.94.47:/root/server-backup.sh`.
