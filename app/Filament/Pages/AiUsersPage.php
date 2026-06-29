@@ -32,24 +32,28 @@ class AiUsersPage extends Page
             ->groupBy('user_id')
             ->orderByDesc('estimated_cost_cents')
             ->limit(100)
-            ->get()
-            ->map(function ($row) {
-                $user = User::find($row->user_id);
+            ->get();
 
-                return [
-                    'id' => $row->user_id,
-                    'name' => $user?->name,
-                    'email' => $user?->email,
-                    'tier' => $user?->planTier(),
-                    'requests' => (int) $row->requests,
-                    'tokens' => (int) $row->tokens,
-                    'estimated_cost_cents' => (int) $row->estimated_cost_cents,
-                    'flagged' => (int) $row->flagged,
-                    'limit' => $user ? UserLimits::aiMonthlyLimit($user) : null,
-                    'used' => $user ? UserLimits::aiRequestsThisMonth($user) : null,
-                    'last_used' => $row->last_used,
-                ];
-            });
+        $userIds = $rows->pluck('user_id')->filter()->all();
+        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
+
+        $rows = $rows->map(function ($row) use ($users) {
+            $user = $users->get($row->user_id);
+
+            return [
+                'id' => $row->user_id,
+                'name' => $user?->name,
+                'email' => $user?->email,
+                'tier' => $user?->planTier(),
+                'requests' => (int) $row->requests,
+                'tokens' => (int) $row->tokens,
+                'estimated_cost_cents' => (int) $row->estimated_cost_cents,
+                'flagged' => (int) $row->flagged,
+                'limit' => $user ? UserLimits::aiMonthlyLimit($user) : null,
+                'used' => $user ? UserLimits::aiRequestsThisMonth($user) : null,
+                'last_used' => $row->last_used,
+            ];
+        });
 
         return ['rows' => $rows];
     }
