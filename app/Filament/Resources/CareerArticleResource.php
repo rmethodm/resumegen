@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CareerArticleResource\Pages;
+use App\Models\AdminAuditLog;
 use App\Models\CareerArticle;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -47,7 +48,10 @@ class CareerArticleResource extends Resource
                 Tables\Actions\Action::make('togglePublish')
                     ->label(fn (CareerArticle $r) => $r->is_published ? 'Unpublish' : 'Publish')
                     ->icon(fn (CareerArticle $r) => $r->is_published ? 'heroicon-o-eye-slash' : 'heroicon-o-eye')
-                    ->action(fn (CareerArticle $r) => $r->update(['is_published' => ! $r->is_published])),
+                    ->action(function (CareerArticle $r) {
+                        $r->update(['is_published' => ! $r->is_published]);
+                        AdminAuditLog::record('article.publish.toggle', $r, ($r->is_published ? 'Published' : 'Unpublished')." article: {$r->title}");
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ]);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminAuditLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,11 +42,12 @@ class AdminImpersonationController extends Controller
         if ($impersonatorId) {
             $admin = User::find($impersonatorId);
             if ($admin && $admin->is_master_admin) {
+                AdminAuditLog::record('user.impersonate.stop', $admin, "Stopped impersonating user ID {$impersonatorId}");
                 auth()->login($admin);
                 session()->regenerate();
             }
         }
 
-        return redirect('http://'.config('app.admin_domain').'/resources/users');
+        return redirect('https://'.config('app.admin_domain').'/resources/users');
     }
 }

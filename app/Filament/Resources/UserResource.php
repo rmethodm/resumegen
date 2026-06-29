@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
@@ -71,6 +72,9 @@ class UserResource extends Resource
                     ->requiresConfirmation()
                     ->visible(fn (User $record): bool => ! $record->is_master_admin && $record->id !== Auth::id())
                     ->action(function (User $record) {
+                        if ($record->is_master_admin || $record->id === Auth::id()) {
+                            abort(403);
+                        }
                         session([
                             'impersonating_id' => $record->id,
                             'impersonator_id' => Auth::id(),
@@ -92,7 +96,16 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (Collection $records) {
+                            foreach ($records as $record) {
+                                if ($record->is_master_admin) {
+                                    throw new \Exception("Cannot delete master admin: {$record->email}");
+                                }
+                                $record->subscription('default')?->cancelNow();
+                                AdminAuditLog::record('user.delete', $record, "Bulk deleted user {$record->email}", ['name' => $record->name]);
+                            }
+                        }),
                 ]),
             ]);
     }

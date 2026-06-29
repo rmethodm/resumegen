@@ -58,7 +58,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->email === 'rmethodm@outlook.com';
+        return (bool) $this->is_master_admin;
     }
 
     public function planTier(): string

@@ -16,7 +16,7 @@ class FilamentAdminTest extends TestCase
     private function adminUser(): User
     {
         return User::factory()->create([
-            'email' => 'rmethodm@outlook.com',
+            'is_master_admin' => true,
             'email_verified_at' => now(),
         ]);
     }
@@ -31,7 +31,7 @@ class FilamentAdminTest extends TestCase
 
     // ─── canAccessPanel ────────────────────────────────────────────────────
 
-    public function test_admin_email_can_access_panel(): void
+    public function test_master_admin_can_access_panel(): void
     {
         $admin = $this->adminUser();
         $panel = Filament::getPanel('admin');
@@ -39,7 +39,7 @@ class FilamentAdminTest extends TestCase
         $this->assertTrue($admin->canAccessPanel($panel));
     }
 
-    public function test_other_emails_cannot_access_panel(): void
+    public function test_non_admin_cannot_access_panel(): void
     {
         $user = $this->regularUser();
         $panel = Filament::getPanel('admin');
