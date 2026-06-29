@@ -7,7 +7,7 @@ type Props = {
     resumeCount: number;
     resumeLimit: number | null;
     aiUsed: number;
-    aiLimit: number | null;
+    aiLimit: number;
     limitReached: boolean;
 };
 
@@ -73,7 +73,7 @@ export default function BillingIndex({ plan, resumeCount, resumeLimit, aiUsed, a
                                     <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#c7d2fe]">
                                         <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed]" style={{ width: `${usagePct}%` }} />
                                     </div>
-                                    {aiLimit !== null && (
+                                    {aiLimit > 0 && (
                                         <p className="mt-1 text-xs text-[#71717a]">{aiUsed} of {aiLimit} monthly AI credits used</p>
                                     )}
                                 </>
