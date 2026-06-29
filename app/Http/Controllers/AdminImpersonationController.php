@@ -46,6 +46,6 @@ class AdminImpersonationController extends Controller
             }
         }
 
-        return redirect()->route('admin.users.index');
+        return redirect('http://'.config('app.admin_domain').'/resources/users');
     }
 }
