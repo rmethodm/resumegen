@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -15,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'is_master_admin', 'is_pro', 'plan_tier', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at', 'profile', 'stale_nudge_sent_at', 'portfolio_slug', 'portfolio_headline', 'portfolio_bio', 'portfolio_is_public', 'portfolio_links', 'target_role', 'industry', 'years_experience', 'ai_limit_override', 'ai_blocked', 'ai_usage_reset_at', 'registration_ip'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use Billable, HasApiTokens, HasFactory, Notifiable;
@@ -52,6 +54,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->is_master_admin
             || in_array($this->planTier(), ['pro', 'agency'], true)
             || $this->subscribed('default');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->email === 'rmethodm@outlook.com';
     }
 
     public function planTier(): string
