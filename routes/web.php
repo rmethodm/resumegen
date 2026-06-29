@@ -1,17 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminAiController;
-use App\Http\Controllers\ImportTestController;
-use App\Http\Controllers\Admin\AdminAuditController;
-use App\Http\Controllers\Admin\AdminContentController;
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminGrowthController;
-use App\Http\Controllers\Admin\AdminJobTitleController;
-use App\Http\Controllers\Admin\AdminMessageController;
-use App\Http\Controllers\Admin\AdminOpsController;
-use App\Http\Controllers\Admin\AdminRevenueController;
-use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\CareerController as AdminCareerController;
 use App\Http\Controllers\AdminImpersonationController;
 use App\Http\Controllers\AiSuggestionController;
 use App\Http\Controllers\AnalyticsController;
@@ -23,6 +11,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
+use App\Http\Controllers\ImportTestController;
 use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
@@ -172,64 +161,6 @@ Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('pub
 Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'])
     ->middleware('throttle:30,1')
     ->name('public.section-events');
-
-Route::middleware(['auth', 'master_admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/ai', [AdminAiController::class, 'overview'])->name('ai.overview');
-    Route::get('/ai/users', [AdminAiController::class, 'users'])->name('ai.users');
-    Route::get('/ai/users/{user}', [AdminAiController::class, 'user'])->name('ai.user');
-    Route::patch('/ai/users/{user}/reset-quota', [AdminAiController::class, 'resetQuota'])->name('ai.reset-quota');
-    Route::patch('/ai/users/{user}/limit', [AdminAiController::class, 'setLimit'])->name('ai.limit');
-    Route::patch('/ai/users/{user}/block', [AdminAiController::class, 'toggleBlock'])->name('ai.block');
-    Route::get('/ai/flagged', [AdminAiController::class, 'flagged'])->name('ai.flagged');
-    Route::delete('/ai/flagged/{aiRequest}', [AdminAiController::class, 'destroyFlagged'])->name('ai.flagged.destroy');
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::patch('/users/{user}/toggle-pro', [AdminUserController::class, 'togglePro'])->name('users.toggle-pro');
-    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-    Route::post('/users/{user}/impersonate', [AdminImpersonationController::class, 'store'])->name('users.impersonate');
-    Route::get('/messages', [AdminMessageController::class, 'index'])->name('messages.index');
-    Route::patch('/messages/{message}/read', [AdminMessageController::class, 'markRead'])->name('messages.read');
-    Route::delete('/messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
-    Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
-    Route::get('/revenue', [AdminRevenueController::class, 'index'])->name('revenue.index');
-    Route::get('/growth', [AdminGrowthController::class, 'index'])->name('growth.index');
-
-    Route::get('/ops', [AdminOpsController::class, 'index'])->name('ops.index');
-    Route::post('/ops/failed/{uuid}/retry', [AdminOpsController::class, 'retryFailed'])->name('ops.retry');
-    Route::delete('/ops/failed/{uuid}', [AdminOpsController::class, 'forgetFailed'])->name('ops.forget');
-
-    Route::get('/content', [AdminContentController::class, 'index'])->name('content.index');
-    Route::get('/content/resumes/{resume}', [AdminContentController::class, 'showResume'])->name('content.resume.show');
-    Route::delete('/content/resumes/{resume}', [AdminContentController::class, 'destroyResume'])->name('content.resume.destroy');
-    Route::delete('/content/cover-letters/{coverLetter}', [AdminContentController::class, 'destroyCoverLetter'])->name('content.cover-letter.destroy');
-    Route::patch('/content/share-links/{shareLink}/disable', [AdminContentController::class, 'disableShareLink'])->name('content.share-link.disable');
-    Route::patch('/content/users/{user}/unpublish-portfolio', [AdminContentController::class, 'unpublishPortfolio'])->name('content.portfolio.unpublish');
-    Route::get('/job-titles', [AdminJobTitleController::class, 'index'])->name('job-titles.index');
-
-    Route::delete('/job-roles', [AdminJobTitleController::class, 'bulkDestroyRoles'])->name('job-roles.bulk-destroy');
-    Route::post('/job-roles', [AdminJobTitleController::class, 'storeRole'])->name('job-roles.store');
-    Route::patch('/job-roles/{role}', [AdminJobTitleController::class, 'updateRole'])->name('job-roles.update');
-    Route::delete('/job-roles/{role}', [AdminJobTitleController::class, 'destroyRole'])->name('job-roles.destroy');
-
-    Route::delete('/job-titles', [AdminJobTitleController::class, 'bulkDestroyTitles'])->name('job-titles.bulk-destroy');
-    Route::post('/job-titles', [AdminJobTitleController::class, 'storeTitle'])->name('job-titles.store');
-    Route::patch('/job-titles/{title}', [AdminJobTitleController::class, 'updateTitle'])->name('job-titles.update');
-    Route::delete('/job-titles/{title}', [AdminJobTitleController::class, 'destroyTitle'])->name('job-titles.destroy');
-
-    Route::delete('/job-skills', [AdminJobTitleController::class, 'bulkDestroySkills'])->name('job-skills.bulk-destroy');
-    Route::post('/job-skills', [AdminJobTitleController::class, 'storeSkill'])->name('job-skills.store');
-    Route::patch('/job-skills/{skill}', [AdminJobTitleController::class, 'updateSkill'])->name('job-skills.update');
-    Route::delete('/job-skills/{skill}', [AdminJobTitleController::class, 'destroySkill'])->name('job-skills.destroy');
-
-    Route::resource('career', AdminCareerController::class)->names([
-        'index' => 'career.index',
-        'create' => 'career.create',
-        'store' => 'career.store',
-        'edit' => 'career.edit',
-        'update' => 'career.update',
-        'destroy' => 'career.destroy',
-    ])->except(['show']);
-});
 
 Route::middleware('auth')->delete('/admin/impersonate', [AdminImpersonationController::class, 'destroy'])->name('admin.impersonate.destroy');
 
