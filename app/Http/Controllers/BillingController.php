@@ -20,6 +20,8 @@ class BillingController extends Controller
             'plan' => $tier === 'agency' ? 'pro' : $tier,
             'resumeCount' => $user->resumes()->count(),
             'resumeLimit' => UserLimits::resumeLimit($user),
+            'aiUsed' => UserLimits::aiRequestsThisMonth($user),
+            'aiLimit' => UserLimits::aiMonthlyLimit($user),
             'limitReached' => session('limitReached', false),
         ]);
     }
