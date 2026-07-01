@@ -49,6 +49,28 @@ class BillingController extends Controller
         return redirect($checkout->url);
     }
 
+    public function swapInterval(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'interval' => ['required', 'in:monthly,yearly'],
+        ]);
+
+        $user = $request->user();
+        $subscription = $user->subscription('default');
+
+        abort_if(! $subscription || ! $subscription->valid(), 422, 'No active subscription.');
+
+        $tier = UserLimits::tierFromPriceId($subscription->stripe_price);
+        $key = $tier.'_'.$request->interval.'_price_id';
+        $priceId = config("services.stripe.{$key}");
+
+        abort_if(! $priceId, 500, 'Stripe price not configured.');
+
+        $subscription->swap($priceId);
+
+        return redirect()->route('billing.index');
+    }
+
     public function portal(Request $request): RedirectResponse
     {
         return $request->user()->redirectToBillingPortal(route('billing.index'));

@@ -11,7 +11,6 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
-use App\Http\Controllers\ImportTestController;
 use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
@@ -116,6 +115,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
+    Route::post('/billing/swap-interval', [BillingController::class, 'swapInterval'])->name('billing.swap-interval');
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
 
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
@@ -163,6 +163,5 @@ Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'
     ->name('public.section-events');
 
 Route::middleware('auth')->delete('/admin/impersonate', [AdminImpersonationController::class, 'destroy'])->name('admin.impersonate.destroy');
-
 
 require __DIR__.'/auth.php';
