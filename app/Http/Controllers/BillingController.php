@@ -15,9 +15,11 @@ class BillingController extends Controller
         $user = $request->user();
 
         $tier = $user->planTier();
+        $subscription = $user->subscription('default');
 
         return Inertia::render('Billing/Index', [
-            'plan' => $tier === 'agency' ? 'pro' : $tier,
+            'plan' => $tier,
+            'currentInterval' => $subscription ? UserLimits::intervalFromPriceId($subscription->stripe_price) : null,
             'resumeCount' => $user->resumes()->count(),
             'resumeLimit' => UserLimits::resumeLimit($user),
             'aiUsed' => UserLimits::aiRequestsThisMonth($user),

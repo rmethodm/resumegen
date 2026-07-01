@@ -34,7 +34,7 @@ class AgencyBillingTest extends TestCase
             ->assertSessionHasErrors('tier');
     }
 
-    public function test_billing_page_shows_pro_plan_for_agency_user(): void
+    public function test_billing_page_shows_agency_plan_for_agency_user(): void
     {
         $user = User::factory()->agency()->create();
 
@@ -42,7 +42,7 @@ class AgencyBillingTest extends TestCase
             ->get(route('billing.index'))
             ->assertInertia(fn ($page) => $page
                 ->component('Billing/Index')
-                ->where('plan', 'pro')
+                ->where('plan', 'agency')
             );
     }
 

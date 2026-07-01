@@ -175,6 +175,41 @@ class BillingTest extends TestCase
         $this->assertSame('free', $user->fresh()->plan_tier);
     }
 
+    public function test_billing_page_passes_current_interval_for_subscriber(): void
+    {
+        config(['services.stripe.starter_monthly_price_id' => 'price_starter_monthly_test']);
+
+        $user = User::factory()->starter()->create();
+
+        $subscription = new Subscription([
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'sub_test_'.uniqid(),
+            'stripe_status' => 'active',
+            'stripe_price' => 'price_starter_monthly_test',
+        ]);
+        $subscription->save();
+
+        $this->actingAs($user)
+            ->get(route('billing.index'))
+            ->assertInertia(fn ($page) => $page
+                ->where('plan', 'starter')
+                ->where('currentInterval', 'monthly')
+            );
+    }
+
+    public function test_billing_page_passes_null_interval_for_free_user(): void
+    {
+        $user = User::factory()->free()->create();
+
+        $this->actingAs($user)
+            ->get(route('billing.index'))
+            ->assertInertia(fn ($page) => $page
+                ->where('plan', 'free')
+                ->where('currentInterval', null)
+            );
+    }
+
     public function test_interval_from_price_id_resolves_monthly_and_yearly(): void
     {
         config([
