@@ -39,7 +39,7 @@ export default function BillingIndex({ plan, currentInterval, resumeCount, resum
     const manageSubscription = () => { window.location.href = route('billing.portal'); };
 
     const currentPlanCta = (tier: 'starter' | 'pro' | 'agency') => {
-        if (interval === currentInterval) {
+        if (currentInterval === null || interval === currentInterval) {
             return (
                 <button type="button" onClick={manageSubscription}
                     className="mt-5 w-full rounded-lg border border-[#eeeef5] px-4 py-2 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe]">
