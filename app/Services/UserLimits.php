@@ -180,4 +180,29 @@ class UserLimits
 
         return 'free';
     }
+
+    public static function intervalFromPriceId(string $priceId): ?string
+    {
+        $monthlyPrices = array_filter([
+            config('services.stripe.starter_monthly_price_id'),
+            config('services.stripe.pro_monthly_price_id'),
+            config('services.stripe.agency_monthly_price_id'),
+        ]);
+
+        $yearlyPrices = array_filter([
+            config('services.stripe.starter_yearly_price_id'),
+            config('services.stripe.pro_yearly_price_id'),
+            config('services.stripe.agency_yearly_price_id'),
+        ]);
+
+        if (in_array($priceId, $monthlyPrices, true)) {
+            return 'monthly';
+        }
+
+        if (in_array($priceId, $yearlyPrices, true)) {
+            return 'yearly';
+        }
+
+        return null;
+    }
 }

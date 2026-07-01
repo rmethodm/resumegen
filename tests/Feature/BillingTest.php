@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\UserLimits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Cashier\Subscription;
 use Laravel\Cashier\SubscriptionItem;
@@ -172,5 +173,22 @@ class BillingTest extends TestCase
         $subscription->save();
 
         $this->assertSame('free', $user->fresh()->plan_tier);
+    }
+
+    public function test_interval_from_price_id_resolves_monthly_and_yearly(): void
+    {
+        config([
+            'services.stripe.starter_monthly_price_id' => 'price_starter_monthly_test',
+            'services.stripe.starter_yearly_price_id' => 'price_starter_yearly_test',
+            'services.stripe.pro_monthly_price_id' => 'price_pro_monthly_test',
+            'services.stripe.pro_yearly_price_id' => 'price_pro_yearly_test',
+            'services.stripe.agency_monthly_price_id' => 'price_agency_monthly_test',
+            'services.stripe.agency_yearly_price_id' => 'price_agency_yearly_test',
+        ]);
+
+        $this->assertSame('monthly', UserLimits::intervalFromPriceId('price_starter_monthly_test'));
+        $this->assertSame('yearly', UserLimits::intervalFromPriceId('price_pro_yearly_test'));
+        $this->assertSame('yearly', UserLimits::intervalFromPriceId('price_agency_yearly_test'));
+        $this->assertNull(UserLimits::intervalFromPriceId('price_unknown'));
     }
 }
