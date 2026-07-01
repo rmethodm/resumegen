@@ -108,14 +108,13 @@ class BillingTest extends TestCase
 
         $user = User::factory()->create();
 
-        // No Stripe key configured in test env, so checkout will fail at the Stripe
-        // API boundary — this test only confirms 'yearly' passes validation and
-        // routes to the price-id resolution, same pattern as
-        // AgencyBillingTest::test_agency_tier_accepted_in_checkout_validation.
         $response = $this->actingAs($user)
             ->post(route('billing.checkout'), ['interval' => 'yearly', 'tier' => 'starter']);
 
-        $this->assertNotEquals(422, $response->getStatusCode());
+        // 'yearly' passed validation (no session error on the interval field);
+        // the request instead fails downstream at the missing-price-id guard (500).
+        $response->assertSessionDoesntHaveErrors('interval');
+        $response->assertStatus(500);
     }
 
     public function test_checkout_rejects_invalid_interval(): void
