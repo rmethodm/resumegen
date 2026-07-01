@@ -226,4 +226,43 @@ class BillingTest extends TestCase
         $this->assertSame('yearly', UserLimits::intervalFromPriceId('price_agency_yearly_test'));
         $this->assertNull(UserLimits::intervalFromPriceId('price_unknown'));
     }
+
+    public function test_swap_interval_rejects_user_without_subscription(): void
+    {
+        $user = User::factory()->free()->create();
+
+        $this->actingAs($user)
+            ->post(route('billing.swap-interval'), ['interval' => 'yearly'])
+            ->assertStatus(422);
+    }
+
+    public function test_swap_interval_requires_valid_interval_param(): void
+    {
+        $user = User::factory()->starter()->create();
+
+        $this->actingAs($user)
+            ->post(route('billing.swap-interval'), ['interval' => 'weekly'])
+            ->assertSessionHasErrors('interval');
+    }
+
+    public function test_swap_interval_rejects_unconfigured_price(): void
+    {
+        // No starter_yearly_price_id configured — swap must fail loudly, not silently no-op.
+        config(['services.stripe.starter_yearly_price_id' => null]);
+
+        $user = User::factory()->starter()->create();
+
+        $subscription = new Subscription([
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'sub_test_'.uniqid(),
+            'stripe_status' => 'active',
+            'stripe_price' => 'price_starter_monthly_test',
+        ]);
+        $subscription->save();
+
+        $this->actingAs($user)
+            ->post(route('billing.swap-interval'), ['interval' => 'yearly'])
+            ->assertStatus(500);
+    }
 }
