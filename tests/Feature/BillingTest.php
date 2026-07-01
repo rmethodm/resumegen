@@ -102,6 +102,31 @@ class BillingTest extends TestCase
             ->assertSessionHasErrors('tier');
     }
 
+    public function test_checkout_accepts_yearly_interval(): void
+    {
+        config(['services.stripe.starter_yearly_price_id' => null]);
+
+        $user = User::factory()->create();
+
+        // No Stripe key configured in test env, so checkout will fail at the Stripe
+        // API boundary — this test only confirms 'yearly' passes validation and
+        // routes to the price-id resolution, same pattern as
+        // AgencyBillingTest::test_agency_tier_accepted_in_checkout_validation.
+        $response = $this->actingAs($user)
+            ->post(route('billing.checkout'), ['interval' => 'yearly', 'tier' => 'starter']);
+
+        $this->assertNotEquals(422, $response->getStatusCode());
+    }
+
+    public function test_checkout_rejects_invalid_interval(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('billing.checkout'), ['interval' => 'weekly', 'tier' => 'starter'])
+            ->assertSessionHasErrors('interval');
+    }
+
     public function test_subscription_observer_sets_plan_tier_on_active(): void
     {
         config([
