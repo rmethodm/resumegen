@@ -59,6 +59,28 @@ class AiPromptsTest extends TestCase
         $this->assertStringContainsString('no resume', strtolower($prompt));
     }
 
+    public function test_career_map_includes_experience_and_skills(): void
+    {
+        $prompt = AiPrompts::build('career_map', [
+            'experience' => [['title' => 'Backend Engineer', 'company' => 'Acme']],
+            'skills' => ['PHP', 'Laravel'],
+        ]);
+
+        $this->assertStringContainsString('Backend Engineer', $prompt);
+        $this->assertStringContainsString('PHP', $prompt);
+        $this->assertStringContainsString('title', $prompt);
+        $this->assertStringContainsString('reasoning', $prompt);
+        $this->assertStringContainsString('skill_gaps', $prompt);
+    }
+
+    public function test_career_map_handles_empty_input(): void
+    {
+        $prompt = AiPrompts::build('career_map', []);
+
+        $this->assertStringContainsString('No experience listed', $prompt);
+        $this->assertStringContainsString('No skills listed', $prompt);
+    }
+
     public function test_unknown_feature_throws(): void
     {
         $this->expectException(\InvalidArgumentException::class);
