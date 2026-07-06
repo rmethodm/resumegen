@@ -47,6 +47,7 @@ export default function Authenticated({
                                 <NavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</NavLink>
                                 <NavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</NavLink>
                                 <NavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</NavLink>
+                                <NavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</NavLink>
                                 <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
                                 <NavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</NavLink>
                                 {user.is_master_admin && (
@@ -107,6 +108,7 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</ResponsiveNavLink>
                         {user.is_master_admin && (
