@@ -18,6 +18,7 @@ class AiPrompts
             'generate_summary' => self::generateSummary($input),
             'ats_keywords' => self::atsKeywords($input),
             'interview_coach' => self::interviewCoach($input),
+            'career_coach' => self::careerCoach($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
     }
@@ -102,6 +103,48 @@ class AiPrompts
         [{"question": "Tell me about...", "hint": "Think about a specific time when you..."}]
 
         Return ONLY the JSON array. No markdown fences, no explanation, no preamble.
+        PROMPT;
+    }
+
+    /**
+     * @param  array{resume_context?: array{summary?: ?string, experience?: array<mixed>, skills?: array<mixed>}|null}  $input
+     */
+    private static function careerCoach(array $input): string
+    {
+        $context = $input['resume_context'] ?? null;
+
+        if ($context === null) {
+            $resumeSection = 'The candidate has no resume on file yet — ask about their background '
+                .'directly instead of assuming any prior experience.';
+        } else {
+            $summary = $context['summary'] ?? 'No summary provided.';
+            $skills = implode(', ', array_slice($context['skills'] ?? [], 0, 15)) ?: 'No skills listed';
+
+            $experienceLines = [];
+            foreach (array_slice($context['experience'] ?? [], 0, 5) as $exp) {
+                $line = implode(' at ', array_filter([$exp['title'] ?? null, $exp['company'] ?? null]));
+                if ($line) {
+                    $experienceLines[] = $line;
+                }
+            }
+            $experienceText = $experienceLines ? implode("\n", $experienceLines) : 'No experience listed';
+
+            $resumeSection = <<<CONTEXT
+            Candidate's most recent resume:
+            Summary: {$summary}
+            Skills: {$skills}
+            Experience:
+            {$experienceText}
+            CONTEXT;
+        }
+
+        return <<<PROMPT
+        You are a supportive, practical career coach having an ongoing conversation with this candidate.
+        Give specific, actionable advice grounded in their actual background below — do not invent
+        employers, titles, or accomplishments they haven't mentioned. Keep replies conversational and
+        concise (a few short paragraphs, not an essay).
+
+        {$resumeSection}
         PROMPT;
     }
 
