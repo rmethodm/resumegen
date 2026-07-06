@@ -12,7 +12,8 @@
     "nightwatch": false,
     "packages": [
         "spatie/laravel-medialibrary",
-        "barryvdh/laravel-debugbar"
+        "barryvdh/laravel-debugbar",
+        "filament/filament"
     ],
     "sail": false,
     "skills": [
