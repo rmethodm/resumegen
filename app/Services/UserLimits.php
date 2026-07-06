@@ -55,6 +55,11 @@ class UserLimits
         return in_array($user->planTier(), ['pro', 'agency'], true);
     }
 
+    public static function canCareerMap(User $user): bool
+    {
+        return in_array($user->planTier(), ['pro', 'agency'], true);
+    }
+
     public static function customSectionLimit(User $user): ?int
     {
         return $user->planTier() === 'free' ? 2 : null;
