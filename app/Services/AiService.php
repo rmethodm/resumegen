@@ -15,7 +15,7 @@ class AiService
     /**
      * Send a single-prompt chat completion, log the request, and return the reply text.
      *
-     * @param  array{model?: string, user?: User|null, feature?: string|null, response_format?: array<string,string>, max_tokens?: int}  $options
+     * @param  array{model?: string, user?: User|null, feature?: string|null, response_format?: array<string,string>, max_tokens?: int, messages?: array<array{role: string, content: string}>}  $options
      */
     public function chat(string $prompt, array $options = []): string
     {
@@ -29,7 +29,7 @@ class AiService
         try {
             $params = [
                 'model' => $model,
-                'messages' => [
+                'messages' => $options['messages'] ?? [
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'user' => $this->userId($user),
