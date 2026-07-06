@@ -80,6 +80,27 @@ class AiSuggestionController extends Controller
         );
     }
 
+    public function careerMap(Request $request, Resume $resume): JsonResponse
+    {
+        $this->authorize('update', $resume);
+        $user = $request->user();
+
+        if (! UserLimits::canCareerMap($user)) {
+            return response()->json([
+                'error' => 'Career Map is a Pro feature.',
+                'required_tier' => 'pro',
+            ], 402);
+        }
+
+        $input = [
+            'experience' => $resume->experience ?? [],
+            'skills' => $resume->skills ?? [],
+        ];
+
+        return $this->run($user, 'career_map', $input,
+            fn (string $reply): array => $this->shapeCareerMap($reply));
+    }
+
     /**
      * Gate, call OpenAI, and shape the JSON response. Shared by all three actions.
      *
@@ -110,6 +131,8 @@ class AiSuggestionController extends Controller
                 AiPrompts::build($feature, $input),
                 ['user' => $user, 'feature' => $feature],
             );
+
+            $shaped = $shape($reply);
         } catch (ModerationException) {
             return response()->json(['error' => ModerationException::USER_MESSAGE], 422);
         } catch (Throwable $e) {
@@ -122,7 +145,7 @@ class AiSuggestionController extends Controller
             Cache::put($cacheKey, $reply, now()->addDay());
         }
 
-        return response()->json(array_merge($shape($reply), [
+        return response()->json(array_merge($shaped, [
             'remaining' => UserLimits::aiRemaining($user),
         ]));
     }
@@ -138,5 +161,19 @@ class AiSuggestionController extends Controller
             ->take(20)
             ->values()
             ->all();
+    }
+
+    /**
+     * @return array{paths: array<int, mixed>}
+     */
+    private function shapeCareerMap(string $reply): array
+    {
+        $decoded = json_decode($reply, true);
+
+        if (! is_array($decoded) || $decoded === []) {
+            throw new \RuntimeException('Malformed career_map AI reply.');
+        }
+
+        return ['paths' => array_slice(array_values($decoded), 0, 3)];
     }
 }
