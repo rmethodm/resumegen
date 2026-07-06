@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use OpenAI\Contracts\ClientContract;
 use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Moderations\CreateResponse as ModerationResponse;
@@ -126,5 +127,14 @@ class CareerMapTest extends TestCase
 
         $this->actingAs($user)->postJson(route('builder.ai.career-map', $resume))
             ->assertStatus(503);
+    }
+
+    public function test_edit_page_exposes_can_career_map_prop(): void
+    {
+        $user = User::factory()->pro()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)->get(route('builder.edit', $resume))
+            ->assertInertia(fn (AssertableInertia $page) => $page->where('canCareerMap', true));
     }
 }

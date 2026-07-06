@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import AtsMatchPanel from './Partials/AtsMatchPanel';
+import CareerMapPanel from './Partials/CareerMapPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
@@ -420,7 +421,7 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
-    isFirstResume, canDocx, canAiTailoring, canInterviewCoach, interviewCoachUsesRemaining,
+    isFirstResume, canDocx, canAiTailoring, canCareerMap, canInterviewCoach, interviewCoachUsesRemaining,
     allowedTemplates, photoUrl, completionScore, recruiterNote,
     skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier, isFreeTier,
 }: {
@@ -430,6 +431,7 @@ export default function Edit({
     isFirstResume: boolean;
     canDocx: boolean;
     canAiTailoring: boolean;
+    canCareerMap: boolean;
     canInterviewCoach: boolean;
     interviewCoachUsesRemaining: number | null;
     allowedTemplates: string[];
@@ -453,6 +455,7 @@ export default function Edit({
     const [aiGenerated, setAiGenerated] = useState<Set<string>>(new Set());
     const markGenerated = (key: string) => setAiGenerated(prev => new Set(prev).add(key));
     const [keywordGaps, setKeywordGaps] = useState<string[]>([]);
+    const [careerPaths, setCareerPaths] = useState<{ title: string; reasoning: string; skill_gaps: string[] }[]>([]);
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? []);
     const [projects, setProjects] = useState<ProjectEntry[]>(resume.projects ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
@@ -590,6 +593,10 @@ export default function Edit({
     const handleKeywordGaps = async () => {
         const data = await ai.run<{ keywords: string[] }>(route('builder.ai.ats-keywords', resume.id), { job_description: targetJobDescription });
         if (data?.keywords) { setKeywordGaps(data.keywords); }
+    };
+    const handleCareerMap = async () => {
+        const data = await ai.run<{ paths: { title: string; reasoning: string; skill_gaps: string[] }[] }>(route('builder.ai.career-map', resume.id));
+        if (data?.paths) { setCareerPaths(data.paths); }
     };
 
     // When AI credits run out, the button becomes an upgrade CTA (free→Starter, Starter→Pro)
@@ -902,6 +909,16 @@ export default function Edit({
                                     canAiTailoring
                                         ? renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })
                                         : <button type="button" onClick={() => triggerUpgradeModal('ai_tailoring', 'starter')} className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors">🔒 Tailor to this job (Starter)</button>
+                                }
+                            />
+                        )}
+                        {sidebarOpen && (
+                            <CareerMapPanel
+                                paths={careerPaths}
+                                aiButton={
+                                    canCareerMap
+                                        ? renderAiButton({ idle: '✨ Suggest career paths', onRun: handleCareerMap })
+                                        : <button type="button" onClick={() => triggerUpgradeModal('career_map', 'pro')} className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors">🔒 Career Map (Pro)</button>
                                 }
                             />
                         )}
