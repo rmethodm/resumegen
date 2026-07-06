@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\CareerCoachController;
 use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
@@ -98,6 +99,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         Route::post('/builder/{resume}/ai/ats-keywords', [AiSuggestionController::class, 'atsKeywords'])->name('builder.ai.ats-keywords');
         Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
     });
+
+    Route::get('/career-coach', [CareerCoachController::class, 'index'])->name('career-coach.index');
+    Route::middleware('throttle:20,1')->post('/career-coach/messages', [CareerCoachController::class, 'send'])->name('career-coach.send');
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
