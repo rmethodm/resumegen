@@ -37,6 +37,14 @@ class CareerCoachTest extends TestCase
         ]));
     }
 
+    private function fakeServiceFailure(): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
+            new \Exception('OpenAI service unavailable'),
+        ]));
+    }
+
     public function test_index_returns_402_for_starter_user(): void
     {
         $user = User::factory()->starter()->create();
@@ -129,6 +137,20 @@ class CareerCoachTest extends TestCase
         $response = $this->actingAs($user)->postJson(route('career-coach.send'), ['message' => 'Hi']);
 
         $response->assertStatus(402);
+        $this->assertDatabaseHas('career_coach_messages', ['user_id' => $user->id, 'role' => 'user']);
+        $this->assertDatabaseMissing('career_coach_messages', ['user_id' => $user->id, 'role' => 'assistant']);
+    }
+
+    public function test_ai_service_failure_returns_503_keeping_user_message_without_assistant_reply(): void
+    {
+        $this->fakeServiceFailure();
+        $user = User::factory()->pro()->create();
+
+        $response = $this->actingAs($user)->postJson(route('career-coach.send'), [
+            'message' => 'How do I pivot into backend roles?',
+        ]);
+
+        $response->assertStatus(503);
         $this->assertDatabaseHas('career_coach_messages', ['user_id' => $user->id, 'role' => 'user']);
         $this->assertDatabaseMissing('career_coach_messages', ['user_id' => $user->id, 'role' => 'assistant']);
     }
