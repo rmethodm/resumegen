@@ -97,6 +97,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         Route::post('/builder/{resume}/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])->name('builder.ai.rewrite-bullet');
         Route::post('/builder/{resume}/ai/summary', [AiSuggestionController::class, 'summary'])->name('builder.ai.summary');
         Route::post('/builder/{resume}/ai/ats-keywords', [AiSuggestionController::class, 'atsKeywords'])->name('builder.ai.ats-keywords');
+        Route::post('/builder/{resume}/ai/career-map', [AiSuggestionController::class, 'careerMap'])->name('builder.ai.career-map');
         Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
     });
 
