@@ -275,13 +275,23 @@ copy its signing secret into `STRIPE_WEBHOOK_SECRET`, then `php artisan config:c
 
 ## Part 11 — Deploying updates
 
-On the laptop: commit and push to `main`. On the server, run the deploy script:
+Deploys are build-once-in-CI, then rsynced to the server — the server never runs
+Composer or npm itself.
 
-```bash
-cd /var/www/resumegen
-./deploy.sh
-```
+Push to `main`. The `deploy` job in `.github/workflows/ci.yml` waits for the `test`
+job to pass, then pauses for manual approval (the `production` GitHub Environment
+has a required reviewer — approve it from the Actions tab). Once approved, it:
 
-`deploy.sh` pulls `main`, runs `composer install --no-dev`, `npm ci && npm run build`,
-`migrate --force`, re-caches config/routes/views, restarts the queue worker if present,
-and toggles maintenance mode around the whole run.
+1. Builds `vendor/` (`composer install --no-dev`) and `public/build` (`npm ci && npm run build`) on the runner.
+2. `rsync`s the result to `/var/www/resumegen` on the server, excluding `.env`,
+   `storage/app/` (user-uploaded media — never deleted), `storage/logs/`,
+   `storage/framework/{cache,sessions,views}/`, `node_modules/`, and `.git/`.
+3. SSHes in and runs `./deploy.sh`, which migrates, re-caches config/routes/views,
+   restarts the queue worker if present, and toggles maintenance mode around the run
+   (staying down on failure rather than serving broken code).
+
+Requires repo secrets `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` and a `production`
+environment with a required reviewer configured in GitHub repo settings.
+
+**Manual deploy (no CI):** build locally the same way, rsync with the same excludes,
+then SSH in and run `./deploy.sh` yourself.
