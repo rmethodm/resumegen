@@ -37,6 +37,28 @@ class AiPromptsTest extends TestCase
         $this->assertStringContainsString('Senior Backend Engineer', $prompt);
     }
 
+    public function test_career_coach_includes_resume_context(): void
+    {
+        $prompt = AiPrompts::build('career_coach', [
+            'resume_context' => [
+                'summary' => 'Senior backend engineer.',
+                'experience' => [['title' => 'Engineer', 'company' => 'Acme']],
+                'skills' => ['PHP', 'Laravel'],
+            ],
+        ]);
+
+        $this->assertStringContainsString('Senior backend engineer.', $prompt);
+        $this->assertStringContainsString('Engineer', $prompt);
+        $this->assertStringContainsString('PHP', $prompt);
+    }
+
+    public function test_career_coach_handles_missing_resume(): void
+    {
+        $prompt = AiPrompts::build('career_coach', ['resume_context' => null]);
+
+        $this->assertStringContainsString('no resume', strtolower($prompt));
+    }
+
     public function test_unknown_feature_throws(): void
     {
         $this->expectException(\InvalidArgumentException::class);
