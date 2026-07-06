@@ -22,7 +22,7 @@ class CareerCoachController extends Controller
         $user = $request->user();
 
         $messages = CareerCoachMessage::where('user_id', $user->id)
-            ->orderBy('created_at')
+            ->orderBy('id')
             ->get(['id', 'role', 'content', 'created_at']);
 
         return Inertia::render('CareerCoach/Index', [
@@ -65,7 +65,7 @@ class CareerCoachController extends Controller
         }
 
         $history = CareerCoachMessage::where('user_id', $user->id)
-            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->limit(20)
             ->get(['role', 'content'])
             ->reverse()
