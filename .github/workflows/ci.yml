@@ -3,6 +3,7 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -59,7 +60,10 @@ jobs:
   deploy:
     name: Deploy to production
     needs: test
-    if: github.ref == 'refs/heads/main'
+    # ponytail: required-reviewer environment protection needs GitHub Team; this
+    # is a free-plan substitute — deploy only fires when manually triggered
+    # (Actions tab "Run workflow" or `gh workflow run ci.yml`), never on a bare push.
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
 
