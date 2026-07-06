@@ -19,6 +19,7 @@ class AiPrompts
             'ats_keywords' => self::atsKeywords($input),
             'interview_coach' => self::interviewCoach($input),
             'career_coach' => self::careerCoach($input),
+            'career_map' => self::careerMap($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
     }
@@ -145,6 +146,38 @@ class AiPrompts
         concise (a few short paragraphs, not an essay).
 
         {$resumeSection}
+        PROMPT;
+    }
+
+    /**
+     * @param  array{experience?: array<mixed>, skills?: array<mixed>}  $input
+     */
+    private static function careerMap(array $input): string
+    {
+        $skills = implode(', ', array_slice($input['skills'] ?? [], 0, 15)) ?: 'No skills listed';
+
+        $experienceLines = [];
+        foreach (array_slice($input['experience'] ?? [], 0, 5) as $exp) {
+            $line = implode(' at ', array_filter([$exp['title'] ?? null, $exp['company'] ?? null]));
+            if ($line) {
+                $experienceLines[] = $line;
+            }
+        }
+        $experienceText = $experienceLines ? implode("\n", $experienceLines) : 'No experience listed';
+
+        return <<<PROMPT
+        You are a career-path advisor. Based strictly on the candidate's skills and experience below,
+        suggest exactly 3 realistic career-path directions they could grow into next. Do not invent
+        employers, titles, or skills they haven't demonstrated.
+
+        Skills: {$skills}
+        Experience:
+        {$experienceText}
+
+        Return a JSON array of exactly 3 objects with this shape:
+        [{"title": "Engineering Manager", "reasoning": "...", "skill_gaps": ["...", "..."]}]
+
+        Return ONLY the JSON array. No markdown fences, no explanation, no preamble.
         PROMPT;
     }
 
