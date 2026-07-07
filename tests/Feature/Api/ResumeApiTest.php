@@ -118,6 +118,25 @@ class ResumeApiTest extends ApiTestCase
             ->assertJsonPath('name', 'New Name');
     }
 
+    public function test_can_update_resume_projects(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $projects = [[
+            'id' => 'p1', 'name' => 'Side Project', 'description' => 'Built a thing',
+            'url' => null, 'start_date' => null, 'end_date' => null, 'bullets' => null,
+        ]];
+
+        $this->withToken($this->token($user))
+            ->putJson("/api/resumes/{$resume->id}", ['projects' => $projects])
+            ->assertOk()
+            ->assertJsonPath('projects', $projects);
+
+        $this->assertDatabaseHas('resumes', ['id' => $resume->id]);
+        $this->assertEquals($projects, $resume->fresh()->projects);
+    }
+
     public function test_can_delete_resume(): void
     {
         $user = User::factory()->create();
