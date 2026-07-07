@@ -37,7 +37,7 @@
     "web": "expo start --web",
     "test": "jest",
     "prebuild:ios": "expo prebuild --platform ios",
-    "build:ios:local": "expo prebuild --platform ios && (xattr -cr ios node_modules/expo-modules-jsi 2>/dev/null; true) && open ios/mobile.xcworkspace"
+    "build:ios:local": "expo prebuild --platform ios && open ios/mobile.xcworkspace"
   },
   "jest": {
     "preset": "jest-expo",
