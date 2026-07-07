@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import AtsMatchPanel from './Partials/AtsMatchPanel';
 import CareerMapPanel from './Partials/CareerMapPanel';
+import TranslatePanel from './Partials/TranslatePanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
@@ -421,7 +422,7 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
-    isFirstResume, canDocx, canAiTailoring, canCareerMap, canInterviewCoach, interviewCoachUsesRemaining,
+    isFirstResume, canDocx, canAiTailoring, canCareerMap, canTranslate, canInterviewCoach, interviewCoachUsesRemaining,
     allowedTemplates, photoUrl, completionScore, recruiterNote,
     skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier, isFreeTier,
 }: {
@@ -432,6 +433,7 @@ export default function Edit({
     canDocx: boolean;
     canAiTailoring: boolean;
     canCareerMap: boolean;
+    canTranslate: boolean;
     canInterviewCoach: boolean;
     interviewCoachUsesRemaining: number | null;
     allowedTemplates: string[];
@@ -922,6 +924,7 @@ export default function Edit({
                                 }
                             />
                         )}
+                        {sidebarOpen && <TranslatePanel resumeId={resume.id} canTranslate={canTranslate} />}
                     </div>
                 </aside>
 
