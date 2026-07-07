@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CoverLetterController;
+use App\Http\Controllers\Api\PushTokenController;
 use App\Http\Controllers\Api\ResumeController;
 use App\Http\Controllers\Api\ThreadReplyController;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ->names('api.cover-letters');
     Route::get('/activity', [ActivityController::class, 'index']);
     Route::post('/threads/{thread}/reply', [ThreadReplyController::class, 'store'])->middleware('throttle:20,1');
+    Route::post('/push-tokens', [PushTokenController::class, 'store']);
+    Route::delete('/push-tokens', [PushTokenController::class, 'destroy']);
 });
