@@ -53,7 +53,7 @@ class ResumeController extends Controller
     {
         $this->authorize('update', $resume);
 
-        return response()->json($resume);
+        return response()->json($resume->toArray() + ['photo_url' => $resume->getFirstMediaUrl('photo') ?: null]);
     }
 
     public function update(Request $request, Resume $resume): JsonResponse

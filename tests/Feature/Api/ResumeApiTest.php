@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 
 class ResumeApiTest extends ApiTestCase
 {
@@ -94,6 +95,35 @@ class ResumeApiTest extends ApiTestCase
             ->getJson("/api/resumes/{$resume->id}")
             ->assertOk()
             ->assertJsonPath('id', $resume->id);
+    }
+
+    public function test_show_includes_null_photo_url_when_no_photo_attached(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->withToken($this->token($user))
+            ->getJson("/api/resumes/{$resume->id}")
+            ->assertOk()
+            ->assertJsonPath('photo_url', null);
+    }
+
+    public function test_show_includes_photo_url_when_photo_attached(): void
+    {
+        $user = User::factory()->create();
+        $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
+
+        $this->withToken($this->token($user))
+            ->post("/api/resumes/{$resume->id}/photo", [
+                'photo' => UploadedFile::fake()->image('photo.jpg'),
+            ])
+            ->assertOk();
+
+        $response = $this->withToken($this->token($user))
+            ->getJson("/api/resumes/{$resume->id}")
+            ->assertOk();
+
+        $this->assertNotNull($response->json('photo_url'));
     }
 
     public function test_cannot_show_other_users_resume(): void

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import DraggableFlatList, { RenderItemParams, ScaleDecorator } from 'react-native-draggable-flatlist';
 
 type SectionOrderSectionProps = {
@@ -12,9 +12,9 @@ export default function SectionOrderSection({ sectionOrder, onSave }: SectionOrd
 
     const renderItem = ({ item, drag, isActive }: RenderItemParams<string>) => (
         <ScaleDecorator>
-            <View style={[styles.row, isActive && styles.rowActive]} onTouchStart={drag}>
+            <TouchableOpacity style={[styles.row, isActive && styles.rowActive]} onLongPress={drag}>
                 <Text>{item}</Text>
-            </View>
+            </TouchableOpacity>
         </ScaleDecorator>
     );
 

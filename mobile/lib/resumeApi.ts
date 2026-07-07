@@ -125,7 +125,7 @@ export type ResumeSummary = {
     updated_at: string;
 };
 
-export type ResumeDetail = ResumeSummary & ResumeFields;
+export type ResumeDetail = ResumeSummary & ResumeFields & { photo_url: string | null };
 
 export async function listResumes(): Promise<ResumeSummary[]> {
     const { data } = await apiFetch<{ data: ResumeSummary[] }>('/api/resumes');

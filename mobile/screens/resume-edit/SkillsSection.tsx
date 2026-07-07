@@ -11,6 +11,7 @@ type SkillsSectionProps = {
 
 export default function SkillsSection({ skills, skillsGroups, skillNarratives, onSave }: SkillsSectionProps) {
     const [newSkill, setNewSkill] = useState('');
+    const [draft, setDraft] = useState<Record<string, string>>({});
     const flatSkills = skills ?? [];
     const groups = skillsGroups ?? [];
     const narratives = skillNarratives ?? [];
@@ -28,12 +29,38 @@ export default function SkillsSection({ skills, skillsGroups, skillNarratives, o
         onSave({ skills: flatSkills.filter((s) => s !== skill) });
     };
 
-    const updateGroupCategory = (id: string | undefined, category: string) => {
-        onSave({ skills_groups: groups.map((g) => (g.id === id ? { ...g, category } : g)) });
+    const groupCategoryValue = (id: string | undefined, currentCategory: string): string => {
+        const draftKey = `${id}:category`;
+        return draftKey in draft ? draft[draftKey] : currentCategory;
     };
 
-    const updateNarrativeName = (id: string, name: string) => {
-        onSave({ skill_narratives: narratives.map((n) => (n.id === id ? { ...n, name } : n)) });
+    const handleGroupCategoryChange = (id: string | undefined, category: string) => {
+        setDraft((prev) => ({ ...prev, [`${id}:category`]: category }));
+    };
+
+    const handleGroupCategoryBlur = (id: string | undefined) => {
+        const draftKey = `${id}:category`;
+        if (!(draftKey in draft)) {
+            return;
+        }
+        onSave({ skills_groups: groups.map((g) => (g.id === id ? { ...g, category: draft[draftKey] } : g)) });
+    };
+
+    const narrativeNameValue = (id: string, currentName: string): string => {
+        const draftKey = `${id}:name`;
+        return draftKey in draft ? draft[draftKey] : currentName;
+    };
+
+    const handleNarrativeNameChange = (id: string, name: string) => {
+        setDraft((prev) => ({ ...prev, [`${id}:name`]: name }));
+    };
+
+    const handleNarrativeNameBlur = (id: string) => {
+        const draftKey = `${id}:name`;
+        if (!(draftKey in draft)) {
+            return;
+        }
+        onSave({ skill_narratives: narratives.map((n) => (n.id === id ? { ...n, name: draft[draftKey] } : n)) });
     };
 
     return (
@@ -61,9 +88,9 @@ export default function SkillsSection({ skills, skillsGroups, skillNarratives, o
                         <TextInput
                             key={group.id}
                             style={styles.input}
-                            value={group.category}
-                            onChangeText={(text) => updateGroupCategory(group.id, text)}
-                            onBlur={() => onSave({ skills_groups: groups })}
+                            value={groupCategoryValue(group.id, group.category)}
+                            onChangeText={(text) => handleGroupCategoryChange(group.id, text)}
+                            onBlur={() => handleGroupCategoryBlur(group.id)}
                         />
                     ))}
                 </>
@@ -76,9 +103,9 @@ export default function SkillsSection({ skills, skillsGroups, skillNarratives, o
                         <TextInput
                             key={narrative.id}
                             style={styles.input}
-                            value={narrative.name}
-                            onChangeText={(text) => updateNarrativeName(narrative.id, text)}
-                            onBlur={() => onSave({ skill_narratives: narratives })}
+                            value={narrativeNameValue(narrative.id, narrative.name)}
+                            onChangeText={(text) => handleNarrativeNameChange(narrative.id, text)}
+                            onBlur={() => handleNarrativeNameBlur(narrative.id)}
                         />
                     ))}
                 </>

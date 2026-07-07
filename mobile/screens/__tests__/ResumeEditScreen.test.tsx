@@ -25,7 +25,7 @@ const fullResume = {
     contact: { full_name: 'Jane', email: 'jane@example.com', phone: '', location: '', linkedin: '', website: '' },
     experience: [], education: [], projects: [], skills: [], skills_layout: null,
     skills_groups: [], skill_narratives: [], certifications: [], font_sizes: null,
-    section_order: ['summary', 'experience'], custom_sections: [],
+    section_order: ['summary', 'experience'], custom_sections: [], photo_url: null,
 };
 
 describe('ResumeEditScreen', () => {
@@ -53,6 +53,17 @@ describe('ResumeEditScreen', () => {
 
         await waitFor(() => expect(resumeApi.updateResume).toHaveBeenCalledWith(1, { name: 'Renamed CV' }));
         await waitFor(() => expect(screen.getByDisplayValue('Renamed CV')).toBeTruthy());
+    });
+
+    it('hydrates the photo state from the loaded resume, showing Remove photo for an existing photo', async () => {
+        (resumeApi.getResume as jest.Mock).mockResolvedValue({
+            ...fullResume,
+            photo_url: 'https://example.test/photo.jpg',
+        });
+
+        await render(<ResumeEditScreen route={{ params: { resumeId: 1 } }} />);
+
+        await waitFor(() => expect(screen.getByText('Remove photo')).toBeTruthy());
     });
 
     it('shows a retry option when loading fails', async () => {
