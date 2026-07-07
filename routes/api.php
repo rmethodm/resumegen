@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CoverLetterController;
 use App\Http\Controllers\Api\PushTokenController;
 use App\Http\Controllers\Api\ResignationLetterController;
 use App\Http\Controllers\Api\ResumeController;
+use App\Http\Controllers\Api\ResumePhotoController;
 use App\Http\Controllers\Api\ThreadReplyController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('resumes', ResumeController::class);
     Route::post('resumes/{resume}/duplicate', [ResumeController::class, 'duplicate']);
     Route::get('resumes/{resume}/pdf', [ResumeController::class, 'pdf']);
+    Route::post('resumes/{resume}/photo', [ResumePhotoController::class, 'store']);
+    Route::delete('resumes/{resume}/photo', [ResumePhotoController::class, 'destroy']);
     Route::apiResource('cover-letters', CoverLetterController::class)
         ->names('api.cover-letters');
     Route::post('cover-letters/{coverLetter}/generate', [CoverLetterController::class, 'generate']);
