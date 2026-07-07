@@ -21,6 +21,7 @@ class AiPrompts
             'career_coach' => self::careerCoach($input),
             'career_map' => self::careerMap($input),
             'resignation_letter' => self::resignationLetter($input),
+            'cover_letter' => self::coverLetter($input),
             'translate_resume' => self::translateResume($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
@@ -241,6 +242,52 @@ class AiPrompts
         the user will add those manually; write only the letter's message paragraphs.
 
         {$context}
+
+        Return ONLY the letter body text. No markdown fences, no explanation, no preamble.
+        PROMPT;
+    }
+
+    /**
+     * @param  array{tone?: string, job_description?: ?string, role?: ?string, company?: ?string, experience?: ?array<mixed>, skills?: ?array<mixed>}  $input
+     */
+    private static function coverLetter(array $input): string
+    {
+        $tone = $input['tone'] ?? 'formal';
+        $role = $input['role'] ?? null;
+        $company = $input['company'] ?? null;
+        $jobDescription = $input['job_description'] ?? null;
+        $skills = implode(', ', array_slice($input['skills'] ?? [], 0, 15)) ?: 'No skills listed';
+
+        $experienceLines = [];
+        foreach (array_slice($input['experience'] ?? [], 0, 5) as $exp) {
+            $line = implode(' at ', array_filter([$exp['title'] ?? null, $exp['company'] ?? null]));
+            if ($line) {
+                $experienceLines[] = $line;
+            }
+        }
+        $experienceText = $experienceLines ? implode("\n", $experienceLines) : 'No experience listed';
+
+        $contextLines = [];
+        if ($role) {
+            $contextLines[] = "Target role: {$role}";
+        }
+        if ($company) {
+            $contextLines[] = "Company: {$company}";
+        }
+        $context = $contextLines ? implode("\n", $contextLines) : 'No target role/company provided.';
+
+        $jdSection = $jobDescription ? "\n\nJob description:\n{$jobDescription}" : '';
+
+        return <<<PROMPT
+        Write a complete, professional cover letter body in a {$tone} tone, grounded strictly in the
+        candidate's experience and skills below — do not invent employers, titles, or accomplishments.
+        Reference the job description if provided. Do not include a date header or salutation/signature
+        block — the user will add those manually; write only the letter's message paragraphs.
+
+        {$context}
+        Skills: {$skills}
+        Experience:
+        {$experienceText}{$jdSection}
 
         Return ONLY the letter body text. No markdown fences, no explanation, no preamble.
         PROMPT;
