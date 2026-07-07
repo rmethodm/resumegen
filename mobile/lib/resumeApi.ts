@@ -13,3 +13,15 @@ export async function listResumes(): Promise<ResumeSummary[]> {
 
     return data;
 }
+
+export type ResumeDetail = ResumeSummary & {
+    contact: Record<string, string> | null;
+    summary: string | null;
+    experience: unknown[] | null;
+    education: unknown[] | null;
+    skills: unknown[] | null;
+};
+
+export async function getResume(id: number): Promise<ResumeDetail> {
+    return apiFetch<ResumeDetail>(`/api/resumes/${id}`);
+}
