@@ -32,12 +32,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
             try {
                 setUser(await authApi.fetchMe());
-                currentPushToken = await registerForPushNotifications();
             } catch {
                 setUser(null);
-            } finally {
                 setLoading(false);
+                return;
             }
+            currentPushToken = await registerForPushNotifications().catch(() => null);
+            setLoading(false);
         })();
     }, []);
 
@@ -46,11 +47,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         login: async (email, password) => {
             setUser(await authApi.login(email, password));
-            currentPushToken = await registerForPushNotifications();
+            currentPushToken = await registerForPushNotifications().catch(() => null);
         },
         register: async (name, email, password, passwordConfirmation) => {
             setUser(await authApi.register(name, email, password, passwordConfirmation));
-            currentPushToken = await registerForPushNotifications();
+            currentPushToken = await registerForPushNotifications().catch(() => null);
         },
         logout: async () => {
             if (currentPushToken) {
