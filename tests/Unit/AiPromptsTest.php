@@ -81,6 +81,29 @@ class AiPromptsTest extends TestCase
         $this->assertStringContainsString('No skills listed', $prompt);
     }
 
+    public function test_translate_resume_includes_language_and_content(): void
+    {
+        $prompt = AiPrompts::build('translate_resume', [
+            'language' => 'spanish',
+            'content' => ['summary' => 'Senior backend engineer.', 'skills' => ['PHP', 'Laravel']],
+        ]);
+
+        $this->assertStringContainsString('Spanish', $prompt);
+        $this->assertStringContainsString('Senior backend engineer.', $prompt);
+        $this->assertStringContainsString('PHP', $prompt);
+        $this->assertStringContainsString('proper nouns', $prompt);
+    }
+
+    public function test_translate_resume_labels_mandarin(): void
+    {
+        $prompt = AiPrompts::build('translate_resume', [
+            'language' => 'mandarin',
+            'content' => ['summary' => 'Engineer.'],
+        ]);
+
+        $this->assertStringContainsString('Mandarin', $prompt);
+    }
+
     public function test_unknown_feature_throws(): void
     {
         $this->expectException(\InvalidArgumentException::class);
