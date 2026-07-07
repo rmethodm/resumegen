@@ -7,10 +7,12 @@ use App\Mail\NewVisitorReply;
 use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
 use App\Models\ResumeThread;
+use App\Services\PushNotifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class PublicThreadController extends Controller
 {
@@ -59,6 +61,13 @@ class PublicThreadController extends Controller
             ]);
         }
 
+        PushNotifier::notify(
+            $link->resume->user,
+            'New message about '.$link->resume->name,
+            Str::limit($validated['message'], 100),
+            ['thread_id' => $thread->id],
+        );
+
         return back()->with('threadStarted', true);
     }
 
@@ -96,6 +105,13 @@ class PublicThreadController extends Controller
                 'error' => $e->getMessage(),
             ]);
         }
+
+        PushNotifier::notify(
+            $link->resume->user,
+            'New message about '.$link->resume->name,
+            Str::limit($validated['message'], 100),
+            ['thread_id' => $thread->id],
+        );
 
         return back()->with('messageSent', true);
     }
