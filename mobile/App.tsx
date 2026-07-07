@@ -10,6 +10,11 @@ import RegisterScreen from './screens/RegisterScreen';
 import ResumeListScreen from './screens/ResumeListScreen';
 import ResumeDetailScreen from './screens/ResumeDetailScreen';
 import ActivityScreen from './screens/ActivityScreen';
+import ResumeEditScreen from './screens/ResumeEditScreen';
+import CoverLetterListScreen from './screens/CoverLetterListScreen';
+import CoverLetterEditScreen from './screens/CoverLetterEditScreen';
+import ResignationLetterListScreen from './screens/ResignationLetterListScreen';
+import ResignationLetterEditScreen from './screens/ResignationLetterEditScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +45,11 @@ function RootNavigator() {
                     <>
                         <Stack.Screen name="Resumes" component={ResumeListScreen} />
                         <Stack.Screen name="ResumeDetail" component={ResumeDetailScreen} options={{ title: 'Resume' }} />
+                        <Stack.Screen name="ResumeEdit" component={ResumeEditScreen} options={{ title: 'Edit Resume' }} />
+                        <Stack.Screen name="CoverLetters" component={CoverLetterListScreen} options={{ title: 'Cover Letters' }} />
+                        <Stack.Screen name="CoverLetterEdit" component={CoverLetterEditScreen} options={{ title: 'Edit Cover Letter' }} />
+                        <Stack.Screen name="ResignationLetters" component={ResignationLetterListScreen} options={{ title: 'Resignation Letters' }} />
+                        <Stack.Screen name="ResignationLetterEdit" component={ResignationLetterEditScreen} options={{ title: 'Edit Resignation Letter' }} />
                         <Stack.Screen name="Activity" component={ActivityScreen} />
                     </>
                 ) : (

@@ -63,4 +63,19 @@ describe('ResumeDetailScreen', () => {
         await waitFor(() => expect(api.handleUnauthorizedResponse).toHaveBeenCalled());
         expect(screen.queryByText("Couldn't download the PDF. Try again.")).toBeNull();
     });
+
+    it('navigates to ResumeEdit when Edit is pressed', async () => {
+        (resumeApi.getResume as jest.Mock).mockResolvedValue({
+            id: 1, name: 'My CV', template: 'classic', pdf_filename: 'x.pdf', updated_at: '2026-07-01T00:00:00Z',
+            contact: null, summary: null, experience: [], education: [], skills: [],
+        });
+        const navigation = { navigate: jest.fn() };
+
+        render(<ResumeDetailScreen route={{ params: { resumeId: 1 } }} navigation={navigation} />);
+
+        await waitFor(() => expect(screen.getByText('My CV')).toBeTruthy());
+        await fireEvent.press(screen.getByText('Edit'));
+
+        expect(navigation.navigate).toHaveBeenCalledWith('ResumeEdit', { resumeId: 1 });
+    });
 });
