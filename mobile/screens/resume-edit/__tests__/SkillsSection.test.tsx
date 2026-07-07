@@ -50,4 +50,50 @@ describe('SkillsSection', () => {
 
         expect(screen.getByDisplayValue('Leadership')).toBeTruthy();
     });
+
+    it('does not save a skill group category change on keystroke, only on blur', async () => {
+        const onSave = jest.fn();
+        await render(
+            <SkillsSection
+                skills={null}
+                skillsGroups={[{ id: 'g1', category: 'Languages', items: ['PHP'] }]}
+                skillNarratives={null}
+                onSave={onSave}
+            />,
+        );
+
+        const input = screen.getByDisplayValue('Languages');
+        await fireEvent.changeText(input, 'Programming Languages');
+
+        expect(onSave).not.toHaveBeenCalled();
+
+        await fireEvent(input, 'blur');
+
+        expect(onSave).toHaveBeenCalledWith({
+            skills_groups: [{ id: 'g1', category: 'Programming Languages', items: ['PHP'] }],
+        });
+    });
+
+    it('does not save a skill narrative name change on keystroke, only on blur', async () => {
+        const onSave = jest.fn();
+        await render(
+            <SkillsSection
+                skills={null}
+                skillsGroups={null}
+                skillNarratives={[{ id: 'n1', name: 'Leadership', bullets: ['Led a team of 5'] }]}
+                onSave={onSave}
+            />,
+        );
+
+        const input = screen.getByDisplayValue('Leadership');
+        await fireEvent.changeText(input, 'Team Leadership');
+
+        expect(onSave).not.toHaveBeenCalled();
+
+        await fireEvent(input, 'blur');
+
+        expect(onSave).toHaveBeenCalledWith({
+            skill_narratives: [{ id: 'n1', name: 'Team Leadership', bullets: ['Led a team of 5'] }],
+        });
+    });
 });

@@ -22,7 +22,9 @@ export default function ResumeEditScreen({ route }: any) {
     const load = useCallback(async () => {
         setError(false);
         try {
-            setResume(await getResume(resumeId));
+            const data = await getResume(resumeId);
+            setResume(data);
+            setPhotoUrl(data.photo_url);
         } catch {
             setError(true);
         }
@@ -55,23 +57,25 @@ export default function ResumeEditScreen({ route }: any) {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <BasicsSection resume={resume} onSave={save} />
-            <TemplateSection resume={resume} onSave={save} />
-            <PhotoSection resumeId={resumeId} photoUrl={photoUrl} onPhotoChange={setPhotoUrl} />
-            <ExperienceSection items={resume.experience} onSave={(experience) => save({ experience })} />
-            <EducationSection items={resume.education} onSave={(education) => save({ education })} />
-            <CertificationsSection items={resume.certifications} onSave={(certifications) => save({ certifications })} />
-            <ProjectsSection items={resume.projects} onSave={(projects) => save({ projects })} />
-            <SkillsSection
-                skills={resume.skills}
-                skillsGroups={resume.skills_groups}
-                skillNarratives={resume.skill_narratives}
-                onSave={save}
-            />
-            <CustomSectionsSection items={resume.custom_sections} onSave={(custom_sections) => save({ custom_sections })} />
+        <View style={styles.container}>
+            <ScrollView>
+                <BasicsSection resume={resume} onSave={save} />
+                <TemplateSection resume={resume} onSave={save} />
+                <PhotoSection resumeId={resumeId} photoUrl={photoUrl} onPhotoChange={setPhotoUrl} />
+                <ExperienceSection items={resume.experience} onSave={(experience) => save({ experience })} />
+                <EducationSection items={resume.education} onSave={(education) => save({ education })} />
+                <CertificationsSection items={resume.certifications} onSave={(certifications) => save({ certifications })} />
+                <ProjectsSection items={resume.projects} onSave={(projects) => save({ projects })} />
+                <SkillsSection
+                    skills={resume.skills}
+                    skillsGroups={resume.skills_groups}
+                    skillNarratives={resume.skill_narratives}
+                    onSave={save}
+                />
+                <CustomSectionsSection items={resume.custom_sections} onSave={(custom_sections) => save({ custom_sections })} />
+            </ScrollView>
             <SectionOrderSection sectionOrder={resume.section_order} onSave={(section_order) => save({ section_order })} />
-        </ScrollView>
+        </View>
     );
 }
 
