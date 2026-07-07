@@ -77,6 +77,7 @@ Default to surfacing uncertainty, not hiding it.
 - **Media:** `spatie/laravel-medialibrary` (installed, migration exists, not yet used)
 - **Billing:** `laravel/cashier-stripe` v16 — `User` model uses `Billable` trait. Subscription name is `'default'`. Price IDs in `config/services.php`.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
+- **Mobile:** `/mobile` — Expo (managed workflow) + React Native + TypeScript companion app (iOS, read-only auth/resumes/activity via the Sanctum API). Read `mobile/AGENTS.md` before writing any Expo/React Native code — Expo has changed since training data; verify against the versioned docs (https://docs.expo.dev/versions/v57.0.0/) rather than assuming API shapes.
 
 ## Commands
 
@@ -186,7 +187,7 @@ Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (in
 
 ---
 
-Last updated: 2026-06-19
+Last updated: 2026-07-07
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
