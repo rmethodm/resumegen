@@ -5,6 +5,20 @@ import * as resumeApi from '../../lib/resumeApi';
 
 jest.mock('../../lib/resumeApi');
 
+// Avoid pulling in react-native-draggable-flatlist (and its Reanimated/
+// gesture-handler dependencies) into this screen's test. The real component
+// is covered by its own test in screens/resume-edit/__tests__/SectionOrderSection.test.tsx.
+jest.mock('../resume-edit/SectionOrderSection', () => {
+    const { View, Text } = require('react-native');
+    return function MockSectionOrderSection() {
+        return (
+            <View>
+                <Text>Section order (mocked)</Text>
+            </View>
+        );
+    };
+});
+
 const fullResume = {
     id: 1, name: 'My CV', template: 'classic', pdf_filename: 'x.pdf', updated_at: '2026-07-01T00:00:00Z',
     accent_color: null, font_family: null, summary: 'A summary',

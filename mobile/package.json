@@ -39,8 +39,8 @@
   "jest": {
     "preset": "jest-expo",
     "resolver": "react-native-worklets/jest/resolver.js",
-    "setupFilesAfterEnv": [
-      "<rootDir>/jest.setup.js"
+    "setupFiles": [
+      "react-native-gesture-handler/jestSetup.js"
     ]
   },
   "private": true
