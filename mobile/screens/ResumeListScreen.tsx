@@ -38,6 +38,8 @@ export default function ResumeListScreen({ navigation }: any) {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Button title="Activity" onPress={() => navigation.navigate('Activity')} />
+                <Button title="Cover Letters" onPress={() => navigation.navigate('CoverLetters')} />
+                <Button title="Resignation Letters" onPress={() => navigation.navigate('ResignationLetters')} />
                 <Button title="Log out" onPress={logout} />
             </View>
             <FlatList

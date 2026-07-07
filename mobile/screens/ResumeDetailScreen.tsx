@@ -8,7 +8,7 @@ import { API_BASE_URL } from '../lib/config';
 import { getToken } from '../lib/auth';
 import { handleUnauthorizedResponse } from '../lib/api';
 
-export default function ResumeDetailScreen({ route }: any) {
+export default function ResumeDetailScreen({ route, navigation }: any) {
     const { resumeId } = route.params as { resumeId: number };
     const [resume, setResume] = useState<ResumeDetail | null>(null);
     const [error, setError] = useState(false);
@@ -85,6 +85,7 @@ export default function ResumeDetailScreen({ route }: any) {
             <Text style={styles.sectionCount}>{(resume.education ?? []).length} education entries</Text>
             <Text style={styles.sectionCount}>{(resume.skills ?? []).length} skills listed</Text>
             {shareError && <Text style={styles.error}>{shareError}</Text>}
+            <Button title="Edit" onPress={() => navigation.navigate('ResumeEdit', { resumeId })} />
             <Button title={sharing ? 'Preparing…' : 'Download / Share PDF'} onPress={downloadAndShare} disabled={sharing} />
         </ScrollView>
     );

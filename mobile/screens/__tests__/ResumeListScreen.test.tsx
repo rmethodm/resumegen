@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react-native';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react-native';
 import ResumeListScreen from '../ResumeListScreen';
 import * as resumeApi from '../../lib/resumeApi';
 
@@ -30,5 +30,29 @@ describe('ResumeListScreen', () => {
         render(<ResumeListScreen navigation={{ navigate: jest.fn() }} />);
 
         await waitFor(() => expect(screen.getByText("Couldn't load your resumes.")).toBeTruthy());
+    });
+
+    it('navigates to CoverLetters when the Cover Letters button is pressed', async () => {
+        (resumeApi.listResumes as jest.Mock).mockResolvedValue([]);
+        const navigation = { navigate: jest.fn() };
+
+        render(<ResumeListScreen navigation={navigation} />);
+        await waitFor(() => expect(screen.getByText('No resumes yet.')).toBeTruthy());
+
+        await fireEvent.press(screen.getByText('Cover Letters'));
+
+        expect(navigation.navigate).toHaveBeenCalledWith('CoverLetters');
+    });
+
+    it('navigates to ResignationLetters when the Resignation Letters button is pressed', async () => {
+        (resumeApi.listResumes as jest.Mock).mockResolvedValue([]);
+        const navigation = { navigate: jest.fn() };
+
+        render(<ResumeListScreen navigation={navigation} />);
+        await waitFor(() => expect(screen.getByText('No resumes yet.')).toBeTruthy());
+
+        await fireEvent.press(screen.getByText('Resignation Letters'));
+
+        expect(navigation.navigate).toHaveBeenCalledWith('ResignationLetters');
     });
 });
