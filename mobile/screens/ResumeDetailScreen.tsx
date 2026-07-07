@@ -6,6 +6,7 @@ import { getResume } from '../lib/resumeApi';
 import type { ResumeDetail } from '../lib/resumeApi';
 import { API_BASE_URL } from '../lib/config';
 import { getToken } from '../lib/auth';
+import { handleUnauthorizedResponse } from '../lib/api';
 
 export default function ResumeDetailScreen({ route }: any) {
     const { resumeId } = route.params as { resumeId: number };
@@ -36,6 +37,11 @@ export default function ResumeDetailScreen({ route }: any) {
             const result = await FileSystem.downloadAsync(`${API_BASE_URL}/api/resumes/${resumeId}/pdf`, destination, {
                 headers: token ? { Authorization: `Bearer ${token}` } : {},
             });
+
+            if (result.status === 401) {
+                await handleUnauthorizedResponse();
+                return;
+            }
 
             if (result.status !== 200) {
                 throw new Error('Download failed');

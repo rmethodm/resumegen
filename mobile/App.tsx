@@ -21,7 +21,7 @@ function RootNavigator() {
         const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
             const threadId = response.notification.request.content.data?.thread_id;
             if (threadId) {
-                navigationRef.current?.navigate('Activity');
+                navigationRef.current?.navigate('Activity', { threadId });
             }
         });
 
