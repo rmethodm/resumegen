@@ -1,17 +1,17 @@
 import { Alert } from 'react-native';
 import { showUpgradeAlert } from '../upgradeAlert';
 
-jest.mock('react-native', () => ({
-    Alert: { alert: jest.fn() },
-}));
-
 describe('showUpgradeAlert', () => {
     it('shows an alert naming the feature and required tier', () => {
+        const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+
         showUpgradeAlert('cover_letter_generate', 'starter');
 
-        expect(Alert.alert).toHaveBeenCalledWith(
+        expect(alertSpy).toHaveBeenCalledWith(
             'Upgrade required',
-            expect.stringContaining('starter'),
+            expect.stringContaining('Starter'),
         );
+
+        alertSpy.mockRestore();
     });
 });
