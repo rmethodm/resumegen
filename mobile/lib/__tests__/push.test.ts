@@ -6,6 +6,7 @@ jest.mock('expo-notifications', () => ({
     getPermissionsAsync: jest.fn(),
     requestPermissionsAsync: jest.fn(),
     getExpoPushTokenAsync: jest.fn(),
+    setNotificationHandler: jest.fn(),
 }));
 jest.mock('../api');
 
@@ -43,6 +44,21 @@ describe('unregisterPushToken', () => {
         expect(api.apiFetch).toHaveBeenCalledWith('/api/push-tokens', {
             method: 'DELETE',
             body: JSON.stringify({ expo_push_token: 'ExponentPushToken[xyz]' }),
+        });
+    });
+});
+
+describe('foreground notification handler', () => {
+    it('registers a handler that shows alerts and sound but not a badge', async () => {
+        expect(Notifications.setNotificationHandler).toHaveBeenCalledTimes(1);
+
+        const [{ handleNotification }] = (Notifications.setNotificationHandler as jest.Mock).mock.calls[0];
+        const behavior = await handleNotification();
+
+        expect(behavior).toEqual({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: false,
         });
     });
 });
