@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import CardListEditor from '../../components/CardListEditor';
 import type { CustomSection, CustomSectionEntry } from '../../lib/resumeApi';
@@ -17,13 +17,28 @@ function generateId(): string {
 
 export default function CustomSectionsSection({ items, onSave }: CustomSectionsSectionProps) {
     const sections = items ?? [];
+    const [draft, setDraft] = useState<Record<string, string>>({});
 
     const addSection = () => {
         onSave([...sections, { id: generateId(), name: '', entries: [] }]);
     };
 
-    const renameSection = (id: string, name: string) => {
-        onSave(sections.map((s) => (s.id === id ? { ...s, name } : s)));
+    const sectionNameValue = (sectionId: string, currentName: string): string => {
+        const draftKey = `${sectionId}:name`;
+        return draftKey in draft ? draft[draftKey] : currentName;
+    };
+
+    const handleSectionNameChange = (sectionId: string, text: string) => {
+        setDraft((prev) => ({ ...prev, [`${sectionId}:name`]: text }));
+    };
+
+    const handleSectionNameBlur = (sectionId: string) => {
+        const draftKey = `${sectionId}:name`;
+        if (!(draftKey in draft)) {
+            return;
+        }
+        const updated = sections.map((s) => (s.id === sectionId ? { ...s, name: draft[draftKey] } : s));
+        onSave(updated);
     };
 
     const updateEntries = (id: string, entries: CustomSectionEntry[]) => {
@@ -42,9 +57,9 @@ export default function CustomSectionsSection({ items, onSave }: CustomSectionsS
                     <TextInput
                         style={styles.input}
                         placeholder="Section name"
-                        value={section.name}
-                        onChangeText={(text) => renameSection(section.id, text)}
-                        onBlur={() => onSave(sections)}
+                        value={sectionNameValue(section.id, section.name)}
+                        onChangeText={(text) => handleSectionNameChange(section.id, text)}
+                        onBlur={() => handleSectionNameBlur(section.id)}
                     />
                     <CardListEditor<CustomSectionEntry>
                         title={section.name || 'Entries'}
