@@ -56,7 +56,8 @@ describe('foreground notification handler', () => {
         const behavior = await handleNotification();
 
         expect(behavior).toEqual({
-            shouldShowAlert: true,
+            shouldShowBanner: true,
+            shouldShowList: true,
             shouldPlaySound: true,
             shouldSetBadge: false,
         });
