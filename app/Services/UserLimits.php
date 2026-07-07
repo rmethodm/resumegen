@@ -35,6 +35,16 @@ class UserLimits
         };
     }
 
+    public static function resignationLetterLimit(User $user): ?int
+    {
+        return match ($user->planTier()) {
+            'free' => 1,
+            'starter' => 10,
+            'pro', 'agency' => null,
+            default => 1,
+        };
+    }
+
     public static function allowedTemplates(User $user): array
     {
         return $user->isAtLeastStarter() ? self::ALL_TEMPLATES : self::FREE_TEMPLATES;
