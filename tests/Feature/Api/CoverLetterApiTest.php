@@ -2,8 +2,13 @@
 
 namespace Tests\Feature\Api;
 
+use App\Exceptions\ModerationException;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use OpenAI\Contracts\ClientContract;
+use OpenAI\Responses\Chat\CreateResponse;
+use OpenAI\Responses\Moderations\CreateResponse as ModerationResponse;
+use OpenAI\Testing\ClientFake;
 
 class CoverLetterApiTest extends ApiTestCase
 {
@@ -12,6 +17,39 @@ class CoverLetterApiTest extends ApiTestCase
     private function token(User $user): string
     {
         return $user->createToken('test')->plainTextToken;
+    }
+
+    private function fakeReply(string $content): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
+            CreateResponse::fake([
+                'model' => 'gpt-4o-mini',
+                'choices' => [['index' => 0, 'message' => ['role' => 'assistant', 'content' => $content]]],
+                'usage' => ['prompt_tokens' => 5, 'completion_tokens' => 5, 'total_tokens' => 10],
+            ]),
+        ]));
+    }
+
+    public function test_can_update_template_key(): void
+    {
+        $user = User::factory()->create();
+        $letter = $user->coverLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->putJson("/api/cover-letters/{$letter->id}", ['template_key' => 'modern'])
+            ->assertOk()
+            ->assertJsonPath('template_key', 'modern');
+    }
+
+    public function test_update_rejects_unknown_template_key(): void
+    {
+        $user = User::factory()->create();
+        $letter = $user->coverLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->putJson("/api/cover-letters/{$letter->id}", ['template_key' => 'bogus'])
+            ->assertStatus(422);
     }
 
     public function test_can_list_cover_letters(): void
@@ -111,5 +149,70 @@ class CoverLetterApiTest extends ApiTestCase
         $this->withToken($this->token($other))
             ->putJson("/api/cover-letters/{$letter->id}", ['name' => 'Hijacked'])
             ->assertForbidden();
+    }
+
+    public function test_generate_returns_body_and_remaining(): void
+    {
+        $this->fakeReply('Dear Hiring Manager, I am excited to apply.');
+        $user = User::factory()->pro()->create();
+        $letter = $user->coverLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->postJson("/api/cover-letters/{$letter->id}/generate", ['tone' => 'formal'])
+            ->assertOk()
+            ->assertJsonStructure(['body', 'remaining'])
+            ->assertJsonPath('body', 'Dear Hiring Manager, I am excited to apply.');
+
+        $this->assertDatabaseHas('cover_letters', [
+            'id' => $letter->id,
+            'body' => 'Dear Hiring Manager, I am excited to apply.',
+        ]);
+    }
+
+    public function test_generate_other_users_letter_forbidden(): void
+    {
+        $owner = User::factory()->pro()->create();
+        $other = User::factory()->pro()->create();
+        $letter = $owner->coverLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($other))
+            ->postJson("/api/cover-letters/{$letter->id}/generate", ['tone' => 'formal'])
+            ->assertForbidden();
+    }
+
+    public function test_generate_quota_exhausted_returns_402(): void
+    {
+        config()->set('ai.monthly_limits.pro', 0);
+        $user = User::factory()->pro()->create();
+        $letter = $user->coverLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->postJson("/api/cover-letters/{$letter->id}/generate", ['tone' => 'formal'])
+            ->assertStatus(402)
+            ->assertJsonStructure(['error', 'can_upgrade', 'next_tier', 'limit', 'used', 'resets_at']);
+    }
+
+    public function test_generate_moderation_rejection_returns_422(): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => true]]]),
+        ]));
+        $user = User::factory()->pro()->create();
+        $letter = $user->coverLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->postJson("/api/cover-letters/{$letter->id}/generate", ['tone' => 'formal'])
+            ->assertStatus(422)
+            ->assertJsonPath('error', ModerationException::USER_MESSAGE);
+    }
+
+    public function test_generate_validates_tone(): void
+    {
+        $user = User::factory()->pro()->create();
+        $letter = $user->coverLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->postJson("/api/cover-letters/{$letter->id}/generate", ['tone' => 'sarcastic'])
+            ->assertStatus(422);
     }
 }

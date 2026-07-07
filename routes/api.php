@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('resumes/{resume}/pdf', [ResumeController::class, 'pdf']);
     Route::apiResource('cover-letters', CoverLetterController::class)
         ->names('api.cover-letters');
+    Route::post('cover-letters/{coverLetter}/generate', [CoverLetterController::class, 'generate']);
     Route::get('/activity', [ActivityController::class, 'index']);
     Route::post('/threads/{thread}/reply', [ThreadReplyController::class, 'store'])->middleware('throttle:20,1');
     Route::post('/push-tokens', [PushTokenController::class, 'store']);
