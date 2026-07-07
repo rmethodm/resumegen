@@ -24,7 +24,13 @@
     "plugins": [
       "expo-secure-store",
       "expo-sharing",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to set a resume profile picture."
+        }
+      ]
     ]
   }
 }
