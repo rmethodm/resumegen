@@ -21,6 +21,7 @@ class AiPrompts
             'career_coach' => self::careerCoach($input),
             'career_map' => self::careerMap($input),
             'resignation_letter' => self::resignationLetter($input),
+            'translate_resume' => self::translateResume($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
     }
@@ -179,6 +180,34 @@ class AiPrompts
         [{"title": "Engineering Manager", "reasoning": "...", "skill_gaps": ["...", "..."]}]
 
         Return ONLY the JSON array. No markdown fences, no explanation, no preamble.
+        PROMPT;
+    }
+
+    /**
+     * @param  array{language?: string, content?: array<string, mixed>}  $input
+     */
+    private static function translateResume(array $input): string
+    {
+        $labels = [
+            'spanish' => 'Spanish', 'french' => 'French', 'german' => 'German',
+            'portuguese' => 'Portuguese', 'italian' => 'Italian',
+            'mandarin' => 'Mandarin (Simplified Chinese)', 'japanese' => 'Japanese',
+        ];
+        $language = $input['language'] ?? 'spanish';
+        $languageLabel = $labels[$language] ?? ucfirst($language);
+        $content = json_encode($input['content'] ?? [], JSON_PRETTY_PRINT);
+
+        return <<<PROMPT
+        Translate the following resume content JSON into {$languageLabel}. Translate every string
+        value into {$languageLabel}. Preserve the exact key structure, nesting, and array ordering
+        of the input JSON exactly — do not add, remove, or reorder any keys. Do NOT translate proper nouns:
+        company names, school names, product names, or people's names — leave those exactly as written.
+
+        Content:
+        {$content}
+
+        Return ONLY the translated JSON object with the same structure as the input. No markdown
+        fences, no explanation, no preamble.
         PROMPT;
     }
 
