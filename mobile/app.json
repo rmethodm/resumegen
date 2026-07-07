@@ -1,14 +1,17 @@
 {
   "expo": {
     "name": "mobile",
-    "slug": "mobile",
+    "slug": "resumegen-resume",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.resumegen.mobile"
+      "bundleIdentifier": "com.resumegen.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +20,10 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +38,12 @@
           "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to set a resume profile picture."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7e6eb482-a2eb-4c1c-8e1c-a5ee8d4b235f"
+      }
+    },
+    "owner": "rmethodman"
   }
 }
