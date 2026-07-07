@@ -2,8 +2,13 @@
 
 namespace Tests\Feature\Api;
 
+use App\Exceptions\ModerationException;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use OpenAI\Contracts\ClientContract;
+use OpenAI\Responses\Chat\CreateResponse;
+use OpenAI\Responses\Moderations\CreateResponse as ModerationResponse;
+use OpenAI\Testing\ClientFake;
 
 class ResignationLetterApiTest extends ApiTestCase
 {
@@ -12,6 +17,18 @@ class ResignationLetterApiTest extends ApiTestCase
     private function token(User $user): string
     {
         return $user->createToken('test')->plainTextToken;
+    }
+
+    private function fakeReply(string $content): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
+            CreateResponse::fake([
+                'model' => 'gpt-4o-mini',
+                'choices' => [['index' => 0, 'message' => ['role' => 'assistant', 'content' => $content]]],
+                'usage' => ['prompt_tokens' => 5, 'completion_tokens' => 5, 'total_tokens' => 10],
+            ]),
+        ]));
     }
 
     public function test_can_list_resignation_letters(): void
@@ -130,5 +147,63 @@ class ResignationLetterApiTest extends ApiTestCase
         $this->withToken($this->token($user))
             ->putJson("/api/resignation-letters/{$letter->id}", ['resume_id' => $othersResume->id])
             ->assertForbidden();
+    }
+
+    public function test_generate_returns_body_and_remaining(): void
+    {
+        $this->fakeReply('I am writing to inform you of my resignation.');
+        $user = User::factory()->pro()->create();
+        $letter = $user->resignationLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->postJson("/api/resignation-letters/{$letter->id}/generate", [
+                'tone' => 'formal',
+                'last_day' => now()->addWeeks(2)->format('Y-m-d'),
+            ])
+            ->assertOk()
+            ->assertJsonStructure(['body', 'remaining'])
+            ->assertJsonPath('body', 'I am writing to inform you of my resignation.');
+    }
+
+    public function test_generate_other_users_letter_forbidden(): void
+    {
+        $owner = User::factory()->pro()->create();
+        $other = User::factory()->pro()->create();
+        $letter = $owner->resignationLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($other))
+            ->postJson("/api/resignation-letters/{$letter->id}/generate", [
+                'tone' => 'formal', 'last_day' => now()->addWeeks(2)->format('Y-m-d'),
+            ])
+            ->assertForbidden();
+    }
+
+    public function test_generate_quota_exhausted_returns_402(): void
+    {
+        config()->set('ai.monthly_limits.pro', 0);
+        $user = User::factory()->pro()->create();
+        $letter = $user->resignationLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->postJson("/api/resignation-letters/{$letter->id}/generate", [
+                'tone' => 'formal', 'last_day' => now()->addWeeks(2)->format('Y-m-d'),
+            ])
+            ->assertStatus(402);
+    }
+
+    public function test_generate_moderation_rejection_returns_422(): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => true]]]),
+        ]));
+        $user = User::factory()->pro()->create();
+        $letter = $user->resignationLetters()->create(['name' => 'L', 'template_key' => 'standard', 'body' => 'x']);
+
+        $this->withToken($this->token($user))
+            ->postJson("/api/resignation-letters/{$letter->id}/generate", [
+                'tone' => 'formal', 'last_day' => now()->addWeeks(2)->format('Y-m-d'),
+            ])
+            ->assertStatus(422)
+            ->assertJsonPath('error', ModerationException::USER_MESSAGE);
     }
 }

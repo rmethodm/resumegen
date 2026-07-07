@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('cover-letters/{coverLetter}/generate', [CoverLetterController::class, 'generate']);
     Route::apiResource('resignation-letters', ResignationLetterController::class)
         ->names('api.resignation-letters');
+    Route::post('resignation-letters/{resignationLetter}/generate', [ResignationLetterController::class, 'generate']);
     Route::get('/activity', [ActivityController::class, 'index']);
     Route::post('/threads/{thread}/reply', [ThreadReplyController::class, 'store'])->middleware('throttle:20,1');
     Route::post('/push-tokens', [PushTokenController::class, 'store']);
