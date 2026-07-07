@@ -141,6 +141,7 @@ class ResumeBuilderController extends Controller
             'canDocx' => UserLimits::canDocx($user),
             'canAiTailoring' => UserLimits::canAiTailoring($user),
             'canCareerMap' => UserLimits::canCareerMap($user),
+            'canTranslate' => UserLimits::canTranslate($user),
             'canInterviewCoach' => UserLimits::canInterviewCoach($user),
             'interviewCoachUsesRemaining' => UserLimits::interviewCoachUsesRemaining($user),
             'aiRemaining' => UserLimits::aiRemaining($user),
