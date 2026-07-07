@@ -7,6 +7,7 @@ use App\Exceptions\ModerationException;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\AiService;
+use App\Services\ResumeCopier;
 use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -99,6 +100,87 @@ class AiSuggestionController extends Controller
 
         return $this->run($user, 'career_map', $input,
             fn (string $reply): array => $this->shapeCareerMap($reply));
+    }
+
+    public function translate(Request $request, Resume $resume): JsonResponse
+    {
+        $this->authorize('update', $resume);
+        $user = $request->user();
+
+        $data = $request->validate([
+            'language' => ['required', 'string', 'in:spanish,french,german,portuguese,italian,mandarin,japanese'],
+        ]);
+        $language = $data['language'];
+
+        if (! UserLimits::canTranslate($user)) {
+            return response()->json([
+                'error' => 'Resume translation is a Starter feature.',
+                'required_tier' => 'starter',
+            ], 402);
+        }
+
+        $limit = UserLimits::resumeLimit($user);
+        if ($limit !== null && $user->resumes()->nonSnapshot()->count() >= $limit) {
+            return response()->json([
+                'error' => 'Resume limit reached.',
+                'required_tier' => $user->planTier() === 'free' ? 'starter' : 'pro',
+            ], 402);
+        }
+
+        if (! UserLimits::canUseAi($user)) {
+            return response()->json([
+                'error' => 'Monthly AI limit reached.',
+                'can_upgrade' => UserLimits::aiCanUpgrade($user),
+                'next_tier' => UserLimits::aiNextTier($user),
+                'limit' => UserLimits::aiMonthlyLimit($user),
+                'used' => UserLimits::aiRequestsThisMonth($user),
+                'resets_at' => now()->startOfMonth()->addMonth()->format('M j'),
+            ], 402);
+        }
+
+        $content = [
+            'summary' => $resume->summary,
+            'experience' => $resume->experience ?? [],
+            'education' => $resume->education ?? [],
+            'skills' => $resume->skills ?? [],
+            'skills_groups' => $resume->skills_groups ?? [],
+            'skill_narratives' => $resume->skill_narratives ?? [],
+            'custom_sections' => $resume->custom_sections ?? [],
+        ];
+
+        try {
+            $reply = $this->ai->chat(
+                AiPrompts::build('translate_resume', ['language' => $language, 'content' => $content]),
+                ['user' => $user, 'feature' => 'translate_resume'],
+            );
+        } catch (ModerationException) {
+            return response()->json(['error' => ModerationException::USER_MESSAGE], 422);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
+        }
+
+        $translated = json_decode($reply, true);
+        $sameShape = is_array($translated)
+            && array_diff(array_keys($content), array_keys($translated)) === []
+            && array_diff(array_keys($translated), array_keys($content)) === [];
+
+        if (! $sameShape) {
+            return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
+        }
+
+        $labels = [
+            'spanish' => 'Spanish', 'french' => 'French', 'german' => 'German',
+            'portuguese' => 'Portuguese', 'italian' => 'Italian', 'mandarin' => 'Mandarin', 'japanese' => 'Japanese',
+        ];
+        $copy = ResumeCopier::copy($resume, $user, "{$resume->name} ({$labels[$language]})");
+        $copy->update($translated);
+
+        return response()->json([
+            'resume_id' => $copy->id,
+            'remaining' => UserLimits::aiRemaining($user),
+        ]);
     }
 
     /**
