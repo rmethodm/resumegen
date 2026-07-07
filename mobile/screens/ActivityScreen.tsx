@@ -3,7 +3,7 @@ import { View, Text, SectionList, Button, StyleSheet } from 'react-native';
 import { fetchActivity } from '../lib/activityApi';
 import type { ActivityFeed, ActivityThread } from '../lib/activityApi';
 
-export default function ActivityScreen() {
+export default function ActivityScreen({ route }: any) {
     const [feed, setFeed] = useState<ActivityFeed | null>(null);
     const [error, setError] = useState(false);
     const [expandedThreadId, setExpandedThreadId] = useState<number | null>(null);
@@ -20,6 +20,13 @@ export default function ActivityScreen() {
     useEffect(() => {
         load();
     }, [load]);
+
+    useEffect(() => {
+        const threadId = route?.params?.threadId;
+        if (threadId != null) {
+            setExpandedThreadId(threadId);
+        }
+    }, [route?.params?.threadId]);
 
     if (error) {
         return (

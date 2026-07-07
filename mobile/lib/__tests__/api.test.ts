@@ -1,4 +1,4 @@
-import { apiFetch, ApiError, setUnauthorizedHandler } from '../api';
+import { apiFetch, ApiError, setUnauthorizedHandler, handleUnauthorizedResponse } from '../api';
 import { setToken, getToken } from '../auth';
 
 jest.mock('../config', () => ({ API_BASE_URL: 'https://api.test' }));
@@ -34,6 +34,17 @@ describe('apiFetch', () => {
         global.fetch.mockResolvedValue({ ok: false, status: 401, json: async () => ({}) });
 
         await expect(apiFetch('/api/resumes')).rejects.toThrow(ApiError);
+
+        expect(handler).toHaveBeenCalled();
+        expect(await getToken()).toBeNull();
+    });
+
+    it('handleUnauthorizedResponse clears the token and calls the handler', async () => {
+        await setToken('secret-token');
+        const handler = jest.fn();
+        setUnauthorizedHandler(handler);
+
+        await handleUnauthorizedResponse();
 
         expect(handler).toHaveBeenCalled();
         expect(await getToken()).toBeNull();

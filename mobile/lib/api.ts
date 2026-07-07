@@ -16,6 +16,11 @@ export function setUnauthorizedHandler(handler: () => void): void {
     onUnauthorized = handler;
 }
 
+export async function handleUnauthorizedResponse(): Promise<void> {
+    await clearToken();
+    onUnauthorized?.();
+}
+
 export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
     const token = await getToken();
     const headers: Record<string, string> = {
@@ -34,8 +39,7 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
     const response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
 
     if (response.status === 401) {
-        await clearToken();
-        onUnauthorized?.();
+        await handleUnauthorizedResponse();
         throw new ApiError(401, 'Unauthorized');
     }
 

@@ -2,6 +2,15 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { apiFetch } from './api';
 
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+    }),
+});
+
 export async function registerForPushNotifications(): Promise<string | null> {
     const existing = await Notifications.getPermissionsAsync();
     let status = existing.status;
