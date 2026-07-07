@@ -1,6 +1,8 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useEffect, useRef } from 'react';
+import * as Notifications from 'expo-notifications';
 import { AuthProvider, useAuth } from './navigation/AuthContext';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -13,12 +15,25 @@ const Stack = createNativeStackNavigator();
 function RootNavigator() {
     const { user, loading } = useAuth();
 
+    const navigationRef = useRef<NavigationContainerRef<any>>(null);
+
+    useEffect(() => {
+        const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+            const threadId = response.notification.request.content.data?.thread_id;
+            if (threadId) {
+                navigationRef.current?.navigate('Activity');
+            }
+        });
+
+        return () => subscription.remove();
+    }, []);
+
     if (loading) {
         return null;
     }
 
     return (
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
             <Stack.Navigator>
                 {user ? (
                     <>
