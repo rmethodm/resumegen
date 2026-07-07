@@ -58,4 +58,20 @@ describe('PhotoSection', () => {
         await waitFor(() => expect(onPhotoChange).toHaveBeenCalledWith(null));
         expect(resumeApi.deleteResumePhoto).toHaveBeenCalledWith(1);
     });
+
+    it('displays an error message when photo upload fails', async () => {
+        (ImagePicker.launchImageLibraryAsync as jest.Mock).mockResolvedValue({
+            canceled: false,
+            assets: [{ uri: 'file:///tmp/photo.jpg' }],
+        });
+        (resumeApi.uploadResumePhoto as jest.Mock).mockRejectedValue(new Error('Upload failed'));
+
+        const onPhotoChange = jest.fn();
+        await render(<PhotoSection resumeId={1} photoUrl={null} onPhotoChange={onPhotoChange} />);
+
+        await fireEvent.press(screen.getByText('Add photo'));
+
+        await waitFor(() => expect(screen.getByText("Couldn't upload the photo. Try again.")).toBeTruthy());
+        expect(onPhotoChange).not.toHaveBeenCalled();
+    });
 });

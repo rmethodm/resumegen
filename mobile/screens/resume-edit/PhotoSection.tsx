@@ -11,6 +11,7 @@ type PhotoSectionProps = {
 
 export default function PhotoSection({ resumeId, photoUrl, onPhotoChange }: PhotoSectionProps) {
     const [busy, setBusy] = useState(false);
+    const [photoError, setPhotoError] = useState<string | null>(null);
 
     const pickAndUpload = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -23,9 +24,12 @@ export default function PhotoSection({ resumeId, photoUrl, onPhotoChange }: Phot
         }
 
         setBusy(true);
+        setPhotoError(null);
         try {
             const { photo_url } = await uploadResumePhoto(resumeId, result.assets[0].uri);
             onPhotoChange(photo_url);
+        } catch {
+            setPhotoError("Couldn't upload the photo. Try again.");
         } finally {
             setBusy(false);
         }
@@ -33,9 +37,12 @@ export default function PhotoSection({ resumeId, photoUrl, onPhotoChange }: Phot
 
     const remove = async () => {
         setBusy(true);
+        setPhotoError(null);
         try {
             await deleteResumePhoto(resumeId);
             onPhotoChange(null);
+        } catch {
+            setPhotoError("Couldn't remove the photo. Try again.");
         } finally {
             setBusy(false);
         }
@@ -56,6 +63,7 @@ export default function PhotoSection({ resumeId, photoUrl, onPhotoChange }: Phot
                     <Text style={styles.addText}>Add photo</Text>
                 </TouchableOpacity>
             )}
+            {photoError && <Text style={styles.error}>{photoError}</Text>}
         </View>
     );
 }
@@ -66,4 +74,5 @@ const styles = StyleSheet.create({
     photo: { width: 100, height: 100, borderRadius: 50, marginBottom: 8 },
     deleteText: { color: 'red' },
     addText: { color: '#4f46e5', fontWeight: '600' },
+    error: { color: 'red', marginTop: 12 },
 });
