@@ -19,8 +19,10 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProofreadingController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
+use App\Http\Controllers\ResignationLetterController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
@@ -117,6 +119,17 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/cover-letters/{letter}', [CoverLetterController::class, 'edit'])->name('cover-letters.edit');
     Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
     Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
+
+    Route::get('/resignation-letters', [ResignationLetterController::class, 'index'])->name('resignation-letters.index');
+    Route::post('/resignation-letters', [ResignationLetterController::class, 'store'])->name('resignation-letters.store');
+    Route::get('/resignation-letters/{letter}', [ResignationLetterController::class, 'edit'])->name('resignation-letters.edit');
+    Route::put('/resignation-letters/{letter}', [ResignationLetterController::class, 'update'])->name('resignation-letters.update');
+    Route::delete('/resignation-letters/{letter}', [ResignationLetterController::class, 'destroy'])->name('resignation-letters.destroy');
+    Route::post('/resignation-letters/{letter}/generate', [ResignationLetterController::class, 'generate'])->name('resignation-letters.generate');
+
+    Route::get('/proofreading', [ProofreadingController::class, 'index'])->name('proofreading.index');
+    Route::post('/proofreading', [ProofreadingController::class, 'store'])->name('proofreading.store');
+
     Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');

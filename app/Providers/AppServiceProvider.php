@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\ProofreadingRequest;
 use App\Models\SystemEvent;
 use App\Models\User;
 use App\Services\UserLimits;
@@ -41,6 +42,14 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(WebhookReceived::class, function (WebhookReceived $event): void {
             SystemEvent::record('stripe_webhook', $event->payload['type'] ?? 'unknown', 'received', null, ['id' => $event->payload['id'] ?? null]);
+
+            if (($event->payload['type'] ?? null) === 'checkout.session.completed') {
+                $requestId = $event->payload['data']['object']['metadata']['proofreading_request_id'] ?? null;
+
+                if ($requestId) {
+                    ProofreadingRequest::whereKey($requestId)->where('status', 'pending')->update(['status' => 'paid']);
+                }
+            }
         });
 
         Subscription::saved(function (Subscription $subscription) {

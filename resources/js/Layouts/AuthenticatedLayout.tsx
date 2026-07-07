@@ -46,6 +46,8 @@ export default function Authenticated({
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</NavLink>
                                 <NavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</NavLink>
                                 <NavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</NavLink>
+                                <NavLink href={route('resignation-letters.index')} active={route().current('resignation-letters.*')}>Resignation Letters</NavLink>
+                                <NavLink href={route('proofreading.index')} active={route().current('proofreading.*')}>Proofreading</NavLink>
                                 <NavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</NavLink>
                                 <NavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</NavLink>
                                 <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
@@ -107,6 +109,8 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('resignation-letters.index')} active={route().current('resignation-letters.*')}>Resignation Letters</ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('proofreading.index')} active={route().current('proofreading.*')}>Proofreading</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>

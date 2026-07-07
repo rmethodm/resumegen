@@ -20,6 +20,7 @@ class AiPrompts
             'interview_coach' => self::interviewCoach($input),
             'career_coach' => self::careerCoach($input),
             'career_map' => self::careerMap($input),
+            'resignation_letter' => self::resignationLetter($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
     }
@@ -178,6 +179,41 @@ class AiPrompts
         [{"title": "Engineering Manager", "reasoning": "...", "skill_gaps": ["...", "..."]}]
 
         Return ONLY the JSON array. No markdown fences, no explanation, no preamble.
+        PROMPT;
+    }
+
+    /**
+     * @param  array{tone?: string, last_day?: string, reason?: ?string, role?: ?string, company?: ?string, experience?: ?array<mixed>}  $input
+     */
+    private static function resignationLetter(array $input): string
+    {
+        $tone = $input['tone'] ?? 'formal';
+        $lastDay = $input['last_day'] ?? '';
+        $role = $input['role'] ?? null;
+        $company = $input['company'] ?? null;
+        $reason = $input['reason'] ?? null;
+
+        $contextLines = [];
+        if ($role) {
+            $contextLines[] = "Role: {$role}";
+        }
+        if ($company) {
+            $contextLines[] = "Company: {$company}";
+        }
+        if ($reason) {
+            $contextLines[] = "Reason for leaving: {$reason}";
+        }
+        $context = $contextLines ? implode("\n", $contextLines) : 'No additional context provided.';
+
+        return <<<PROMPT
+        Write a complete, professional resignation letter body in a {$tone} tone. Mention the last
+        working day ({$lastDay}) and reference the role/company naturally if provided below. Do not
+        invent facts beyond what is given. Do not include a date header or greeting/signature block —
+        the user will add those manually; write only the letter's message paragraphs.
+
+        {$context}
+
+        Return ONLY the letter body text. No markdown fences, no explanation, no preamble.
         PROMPT;
     }
 

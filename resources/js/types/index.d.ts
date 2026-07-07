@@ -242,6 +242,41 @@ export interface CoverLetterSuggestion {
     reason: string;
 }
 
+export interface ResignationLetterRow {
+    id: number;
+    name: string;
+    template_key: string;
+    resume_id: number | null;
+    updated_at: string;
+}
+
+export interface ResignationLetterTemplateOption {
+    key: string;
+    label: string;
+    description: string;
+}
+
+export interface ResignationLetter {
+    id: number;
+    user_id: number;
+    resume_id: number | null;
+    name: string;
+    template_key: string;
+    body: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ProofreadingRequestRow {
+    id: number;
+    resume_id: number | null;
+    resume: { id: number; name: string } | null;
+    status: 'pending' | 'paid' | 'completed';
+    price_cents: number;
+    feedback: string | null;
+    created_at: string;
+}
+
 export interface InterviewQuestion {
     question: string;
     hint: string;
