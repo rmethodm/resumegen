@@ -53,14 +53,10 @@ class TierLimitsTest extends TestCase
 
     // ── allowedTemplates ──────────────────────────────────────────────────────
 
-    public function test_free_user_gets_only_free_templates(): void
+    public function test_free_user_gets_all_templates(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $allowed = UserLimits::allowedTemplates($user);
-        $this->assertEqualsCanonicalizing(['classic', 'modern', 'minimal', 'ats'], $allowed);
-        $this->assertNotContains('executive', $allowed);
-        $this->assertNotContains('academic', $allowed);
-        $this->assertNotContains('bold', $allowed);
+        $this->assertCount(9, UserLimits::allowedTemplates($user));
     }
 
     public function test_starter_user_gets_all_templates(): void
