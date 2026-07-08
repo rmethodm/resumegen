@@ -33,10 +33,10 @@ class TierLimitsTest extends TestCase
 
     // ── coverLetterLimit ───────────────────────────────────────────────────────
 
-    public function test_free_user_cover_letter_limit_is_1(): void
+    public function test_free_user_cover_letter_limit_is_2(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(1, UserLimits::coverLetterLimit($user));
+        $this->assertSame(2, UserLimits::coverLetterLimit($user));
     }
 
     public function test_starter_user_cover_letter_limit_is_10(): void

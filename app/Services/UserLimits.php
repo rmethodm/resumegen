@@ -28,10 +28,10 @@ class UserLimits
     public static function coverLetterLimit(User $user): ?int
     {
         return match ($user->planTier()) {
-            'free' => 1,
+            'free' => 2,
             'starter' => 10,
             'pro', 'agency' => null,
-            default => 1,
+            default => 2,
         };
     }
 
