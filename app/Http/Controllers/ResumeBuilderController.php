@@ -101,10 +101,16 @@ class ResumeBuilderController extends Controller
 
         $name = $validated['name'] ?? ($user->target_role ? $user->target_role.' Resume' : 'My Resume');
 
-        $resume = $user->resumes()->create([
+        $attributes = [
             'name' => $name,
             'pdf_filename' => Str::uuid().'.pdf',
-        ]);
+        ];
+
+        if ($user->preferred_template && in_array($user->preferred_template, UserLimits::allowedTemplates($user), true)) {
+            $attributes['template'] = $user->preferred_template;
+        }
+
+        $resume = $user->resumes()->create($attributes);
 
         if ($user->profile) {
             $resume->update(['contact' => $user->profile]);

@@ -45,7 +45,11 @@ class OnboardingTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('onboarding.show'))
-            ->assertInertia(fn ($page) => $page->component('Onboarding/Wizard'));
+            ->assertInertia(fn ($page) => $page
+                ->component('Onboarding/Wizard')
+                ->has('allTemplates', 9)
+                ->has('allowedTemplates', 9)
+            );
     }
 
     public function test_already_onboarded_user_is_redirected_to_dashboard(): void
@@ -91,6 +95,46 @@ class OnboardingTest extends TestCase
         $this->assertEquals('Austin, TX', $user->profile['location']);
         $this->assertEquals('https://linkedin.com/in/janedoe', $user->profile['linkedin_url']);
         $this->assertEquals('https://janedoe.com', $user->profile['website']);
+    }
+
+    public function test_post_saves_valid_preferred_template(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false, 'plan_tier' => 'starter']);
+
+        $this->actingAs($user)->post(route('onboarding.store'), [
+            'preferred_template' => 'modern',
+        ]);
+
+        $this->assertEquals('modern', $user->fresh()->preferred_template);
+    }
+
+    public function test_post_rejects_invalid_preferred_template(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+        $this->actingAs($user)->post(route('onboarding.store'), [
+            'preferred_template' => 'not-a-real-template',
+        ])->assertSessionHasErrors('preferred_template');
+    }
+
+    public function test_post_leaves_preferred_template_null_when_omitted(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
+
+        $this->actingAs($user)->post(route('onboarding.store'), []);
+
+        $this->assertNull($user->fresh()->preferred_template);
+    }
+
+    public function test_post_saves_locked_preferred_template_as_intent(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => false, 'plan_tier' => 'free']);
+
+        $this->actingAs($user)->post(route('onboarding.store'), [
+            'preferred_template' => 'bold',
+        ]);
+
+        $this->assertEquals('bold', $user->fresh()->preferred_template);
     }
 
     public function test_post_sets_has_completed_onboarding_true(): void

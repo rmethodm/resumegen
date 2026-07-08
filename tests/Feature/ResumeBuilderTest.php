@@ -93,6 +93,29 @@ class ResumeBuilderTest extends TestCase
         $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'name' => 'Renamed', 'template' => 'executive']);
     }
 
+    public function test_store_defaults_new_resume_to_preferred_template(): void
+    {
+        $user = User::factory()->create(['preferred_template' => 'modern']);
+
+        $response = $this->actingAs($user)->post(route('builder.store'));
+
+        $resume = Resume::where('user_id', $user->id)->first();
+        $response->assertRedirect(route('builder.edit', $resume->id));
+        $this->assertSame('modern', $resume->template);
+    }
+
+    public function test_store_falls_back_to_default_when_preferred_template_is_not_allowed(): void
+    {
+        $user = User::factory()->create();
+        User::where('id', $user->id)->update(['preferred_template' => 'not-a-real-template']);
+        $user->refresh();
+
+        $this->actingAs($user)->post(route('builder.store'));
+
+        $resume = Resume::where('user_id', $user->id)->first();
+        $this->assertSame('classic', $resume->template);
+    }
+
     public function test_user_can_duplicate_their_own_resume(): void
     {
         $user = User::factory()->create();

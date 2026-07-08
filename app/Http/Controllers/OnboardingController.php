@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UserLimits;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +16,10 @@ class OnboardingController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return Inertia::render('Onboarding/Wizard');
+        return Inertia::render('Onboarding/Wizard', [
+            'allowedTemplates' => UserLimits::allowedTemplates($request->user()),
+            'allTemplates' => UserLimits::allTemplates(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -29,6 +33,7 @@ class OnboardingController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'linkedin_url' => ['nullable', 'url', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
+            'preferred_template' => ['nullable', 'string', 'in:classic,modern,minimal,minimal-ruled,executive,ats,skills-first,academic,bold'],
         ]);
 
         $user = $request->user();
@@ -37,6 +42,10 @@ class OnboardingController extends Controller
             $request->only(['target_role', 'industry', 'years_experience']),
             fn ($v) => $v !== null && $v !== '',
         );
+
+        if ($request->filled('preferred_template')) {
+            $personaFields['preferred_template'] = $request->input('preferred_template');
+        }
 
         $user->update(array_merge($personaFields, ['has_completed_onboarding' => true]));
 
