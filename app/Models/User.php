@@ -117,11 +117,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return $this->hasMany(ProofreadingRequest::class);
     }
 
-    public function deviceTokens(): HasMany
-    {
-        return $this->hasMany(DeviceToken::class);
-    }
-
     public function webhookEndpoints(): HasMany
     {
         return $this->hasMany(WebhookEndpoint::class);
