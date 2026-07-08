@@ -33,10 +33,8 @@ class InterviewCoachTest extends TestCase
         ]));
     }
 
-    public function test_free_user_can_use_interview_coach_within_limit(): void
+    public function test_free_user_is_blocked_by_zero_ai_quota_before_reaching_the_3_session_limit(): void
     {
-        $this->fakeQuestions();
-
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
@@ -44,9 +42,8 @@ class InterviewCoachTest extends TestCase
             'target_role' => 'Product Manager',
         ]);
 
-        $response->assertStatus(200);
-        $response->assertJsonCount(8, 'questions');
-        $response->assertJsonStructure(['questions' => [['question', 'hint']]]);
+        $response->assertStatus(402);
+        $response->assertJsonPath('error', 'Monthly AI limit reached.');
     }
 
     public function test_free_user_blocked_after_3_uses(): void

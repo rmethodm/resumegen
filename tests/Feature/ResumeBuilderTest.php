@@ -67,7 +67,7 @@ class ResumeBuilderTest extends TestCase
         ]);
     }
 
-    public function test_free_user_cannot_switch_to_locked_template(): void
+    public function test_free_user_can_switch_to_any_template(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $resume = $user->resumes()->create(['name' => 'Test', 'template' => 'classic', 'pdf_filename' => 'test.pdf']);
@@ -75,9 +75,9 @@ class ResumeBuilderTest extends TestCase
         $this->actingAs($user)->put(route('builder.update', $resume->id), [
             'name' => 'Test',
             'template' => 'executive',
-        ])->assertSessionHas('featureGate');
+        ])->assertSessionMissing('featureGate');
 
-        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'classic']);
+        $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'executive']);
     }
 
     public function test_free_user_can_keep_grandfathered_locked_template(): void
@@ -377,28 +377,28 @@ class ResumeBuilderTest extends TestCase
             ->assertSessionHas('featureGate.feature', 'resume_limit');
     }
 
-    public function test_free_user_cannot_use_skills_first_template(): void
+    public function test_free_user_can_use_skills_first_template(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id, 'template' => 'classic']);
 
         $this->actingAs($user)
             ->put(route('builder.update', $resume), ['template' => 'skills-first'])
-            ->assertSessionHas('featureGate');
+            ->assertSessionMissing('featureGate');
 
-        $this->assertSame('classic', $resume->fresh()->template);
+        $this->assertSame('skills-first', $resume->fresh()->template);
     }
 
-    public function test_free_user_cannot_use_bold_template(): void
+    public function test_free_user_can_use_bold_template(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id, 'template' => 'classic']);
 
         $this->actingAs($user)
             ->put(route('builder.update', $resume), ['template' => 'bold'])
-            ->assertSessionHas('featureGate');
+            ->assertSessionMissing('featureGate');
 
-        $this->assertSame('classic', $resume->fresh()->template);
+        $this->assertSame('bold', $resume->fresh()->template);
     }
 
     public function test_free_user_can_use_minimal_template(): void
@@ -413,16 +413,16 @@ class ResumeBuilderTest extends TestCase
         $this->assertSame('minimal', $resume->fresh()->template);
     }
 
-    public function test_free_user_cannot_use_academic_template(): void
+    public function test_free_user_can_use_academic_template(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id, 'template' => 'classic']);
 
         $this->actingAs($user)
             ->put(route('builder.update', $resume), ['template' => 'academic'])
-            ->assertSessionHas('featureGate');
+            ->assertSessionMissing('featureGate');
 
-        $this->assertSame('classic', $resume->fresh()->template);
+        $this->assertSame('academic', $resume->fresh()->template);
     }
 
     public function test_free_user_can_use_classic_template(): void

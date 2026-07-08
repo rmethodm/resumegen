@@ -39,13 +39,23 @@ class AiTailoringGateTest extends TestCase
             ->assertJsonStructure(['keywords', 'remaining']);
     }
 
-    public function test_free_user_can_still_rewrite_a_bullet(): void
+    public function test_free_user_is_blocked_from_rewriting_a_bullet(): void
+    {
+        $user = User::factory()->create(['plan_tier' => 'free']);
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->postJson(route('builder.ai.rewrite-bullet', $resume), ['text' => 'did stuff'])
+            ->assertStatus(402);
+    }
+
+    public function test_starter_user_can_still_rewrite_a_bullet(): void
     {
         $mock = Mockery::mock(AiService::class);
         $mock->shouldReceive('chat')->once()->andReturn('Improved bullet.');
         $this->app->instance(AiService::class, $mock);
 
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->starter()->create();
         $resume = Resume::factory()->for($user)->create();
 
         $this->actingAs($user)
