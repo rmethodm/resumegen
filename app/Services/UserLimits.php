@@ -13,9 +13,6 @@ class UserLimits
         'skills-first', 'academic', 'bold',
     ];
 
-    /** Templates available on the free tier; Starter+ unlocks the rest. */
-    private const FREE_TEMPLATES = ['classic', 'modern', 'minimal', 'ats'];
-
     public static function resumeLimit(User $user): ?int
     {
         return match ($user->planTier()) {
@@ -47,7 +44,7 @@ class UserLimits
 
     public static function allowedTemplates(User $user): array
     {
-        return $user->isAtLeastStarter() ? self::ALL_TEMPLATES : self::FREE_TEMPLATES;
+        return self::ALL_TEMPLATES;
     }
 
     public static function canDocx(User $user): bool
