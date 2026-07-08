@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import Modal from '@/Components/Modal';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { PageProps, ResumeStat, TemplateStatRow } from '@/types';
 import { useMemo, useState } from 'react';
@@ -56,6 +57,8 @@ export default function Dashboard() {
     const totalDownloads = resumeStats.reduce((s, r) => s + r.pdf_downloads, 0);
     const totalMessages  = resumeStats.reduce((s, r) => s + r.questions_submitted, 0);
 
+    const [showNudge, setShowNudge] = useState(resumeCount === 0);
+
     const [search, setSearch]       = useState('');
     const [pageSize, setPageSize]   = useState(10);
     const [page, setPage]           = useState(1);
@@ -101,6 +104,16 @@ export default function Dashboard() {
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard" />
+
+            <Modal show={showNudge} onClose={() => setShowNudge(false)} maxWidth="md">
+                <div className="p-6 text-center">
+                    <h2 className="text-lg font-semibold text-gray-900">Create your first resume</h2>
+                    <p className="mt-2 text-sm text-gray-500">You haven't created a resume yet — build one to start tracking views and applications.</p>
+                    <Link href={route('builder.index')} className="mt-4 inline-block rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
+                        Create a resume
+                    </Link>
+                </div>
+            </Modal>
 
             <div className="py-8">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

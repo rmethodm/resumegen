@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
     Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
+    Route::get('/onboarding/template-preview/{template}', [OnboardingController::class, 'templatePreview'])->name('onboarding.template-preview');
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
     Route::patch('/user/profile-info', [ProfileController::class, 'updatePersona'])->name('profile.persona');
 

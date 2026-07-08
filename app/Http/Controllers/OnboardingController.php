@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Console\Commands\GenerateTemplateThumbnails;
+use App\Data\SampleResume;
+use App\Models\Resume;
 use App\Services\UserLimits;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -59,6 +63,18 @@ class OnboardingController extends Controller
         }
 
         return redirect()->route('dashboard');
+    }
+
+    public function templatePreview(string $template)
+    {
+        abort_unless(in_array($template, GenerateTemplateThumbnails::TEMPLATES, true), 404);
+
+        $resume = new Resume(SampleResume::data());
+        $resume->template = $template;
+
+        return Pdf::loadView('resume-pdf', ['resume' => $resume, 'watermark' => false])
+            ->setPaper('letter', 'portrait')
+            ->stream('preview.pdf');
     }
 
     public function complete(Request $request): RedirectResponse
