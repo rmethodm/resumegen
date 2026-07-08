@@ -441,7 +441,7 @@ export default function Welcome({ auth }: PageProps) {
                                 </div>
                                 <p className="mb-5 text-xs text-[#9ca3af]">Forever free</p>
                                 <ul className="mb-6 space-y-2">
-                                    {['2 resumes', '1 cover letter', '4 templates', '10 AI generations/mo', 'Public share links', 'Job tracker (3 apps)'].map((f) => (
+                                    {['2 resumes', '2 cover letters', 'All 9 templates', 'Public share links', 'Job tracker (3 apps)'].map((f) => (
                                         <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                             <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
                                         </li>
