@@ -1,14 +1,21 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import AutocompleteInput from '@/Components/AutocompleteInput';
+import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 
-type Step = 1 | 2;
+type Step = 1 | 2 | 3;
+
+const TEMPLATE_LABELS: Record<string, string> = {
+    classic: 'Classic', modern: 'Modern', minimal: 'Minimal', 'minimal-ruled': 'Minimal Ruled',
+    executive: 'Executive', ats: 'ATS',
+    'skills-first': 'Skills-First', academic: 'Academic CV', bold: 'Minimalist Bold',
+};
 
 function StepDots({ step }: { step: Step }) {
     return (
         <div className="mb-6 flex items-center justify-center gap-2">
-            {([1, 2] as Step[]).map((s) => (
+            {([1, 2, 3] as Step[]).map((s) => (
                 <div
                     key={s}
                     className={`h-2.5 w-2.5 rounded-full transition-colors ${
@@ -24,7 +31,7 @@ function StepDots({ step }: { step: Step }) {
     );
 }
 
-export default function Wizard() {
+export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemplates: string[]; allTemplates: string[] }) {
     const [step, setStep] = useState<Step>(1);
 
     const { data, setData, post, processing, errors } = useForm({
@@ -36,6 +43,7 @@ export default function Wizard() {
         location: '',
         linkedin_url: '',
         website: '',
+        preferred_template: '',
     });
 
     const handleSkip = () => post(route('onboarding.store'));
@@ -43,6 +51,11 @@ export default function Wizard() {
     const next: FormEventHandler = (e) => {
         e.preventDefault();
         setStep(2);
+    };
+
+    const continueToStep3: FormEventHandler = (e) => {
+        e.preventDefault();
+        setStep(3);
     };
 
     const submit: FormEventHandler = (e) => {
@@ -57,12 +70,14 @@ export default function Wizard() {
             <div className="w-full max-w-md">
                 <div className="mb-6 text-center">
                     <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
-                        {step === 1 ? 'What are you aiming for?' : 'How should we reach you?'}
+                        {step === 1 ? 'What are you aiming for?' : step === 2 ? 'How should we reach you?' : 'Pick a starting template'}
                     </h1>
                     <p className="mt-1 text-sm text-gray-500">
                         {step === 1
                             ? "We'll use this to pre-fill your resumes and personalize your experience."
-                            : 'Pre-fills your resume contact section automatically.'}
+                            : step === 2
+                              ? 'Pre-fills your resume contact section automatically.'
+                              : "You can always change this later — it's just a starting point."}
                     </p>
                 </div>
 
@@ -154,7 +169,7 @@ export default function Wizard() {
                 )}
 
                 {step === 2 && (
-                    <form onSubmit={submit} className="space-y-4">
+                    <form onSubmit={continueToStep3} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="col-span-2">
                                 <label
@@ -249,6 +264,65 @@ export default function Wizard() {
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
+                                    className="text-sm text-gray-400 hover:text-gray-600"
+                                >
+                                    ← Back
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleSkip}
+                                    className="text-sm text-gray-400 hover:text-gray-600"
+                                >
+                                    Skip for now
+                                </button>
+                            </div>
+                            <button
+                                type="submit"
+                                className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                Continue →
+                            </button>
+                        </div>
+                    </form>
+                )}
+
+                {step === 3 && (
+                    <form onSubmit={submit} className="space-y-4">
+                        <div className="grid grid-cols-3 gap-2">
+                            {allTemplates.map((t) => {
+                                const locked = !allowedTemplates.includes(t);
+                                const selected = data.preferred_template === t;
+                                return (
+                                    <button
+                                        key={t}
+                                        type="button"
+                                        onClick={() => {
+                                            if (locked) { triggerUpgradeModal('template_access', 'starter'); return; }
+                                            setData('preferred_template', selected ? '' : t);
+                                        }}
+                                        aria-pressed={selected}
+                                        title={TEMPLATE_LABELS[t] ?? t}
+                                        className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-indigo-600 ring-1 ring-indigo-600' : 'border-gray-200 hover:border-gray-300'} ${locked ? 'opacity-60' : ''}`}
+                                    >
+                                        <img
+                                            src={`/images/templates/${t}.png`}
+                                            loading="lazy"
+                                            alt=""
+                                            className="mb-1 h-24 w-full rounded border border-gray-200 bg-white object-cover object-top"
+                                        />
+                                        <span className="truncate text-[11px] font-medium text-gray-900">
+                                            {locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2">
+                            <div className="flex items-center gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setStep(2)}
                                     className="text-sm text-gray-400 hover:text-gray-600"
                                 >
                                     ← Back

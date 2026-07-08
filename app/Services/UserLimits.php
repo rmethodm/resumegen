@@ -47,6 +47,11 @@ class UserLimits
         return self::ALL_TEMPLATES;
     }
 
+    public static function allTemplates(): array
+    {
+        return self::ALL_TEMPLATES;
+    }
+
     public static function canDocx(User $user): bool
     {
         return $user->isAtLeastStarter();
