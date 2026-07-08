@@ -278,9 +278,11 @@ copy its signing secret into `STRIPE_WEBHOOK_SECRET`, then `php artisan config:c
 Deploys are build-once-in-CI, then rsynced to the server — the server never runs
 Composer or npm itself.
 
-Push to `main`. The `deploy` job in `.github/workflows/ci.yml` waits for the `test`
-job to pass, then pauses for manual approval (the `production` GitHub Environment
-has a required reviewer — approve it from the Actions tab). Once approved, it:
+Deploy only fires from a manual trigger — Actions tab "Run workflow" or
+`gh workflow run ci.yml` — never from a bare push to `main`. (Required-reviewer
+environment protection needs a paid GitHub plan; manual `workflow_dispatch` is
+the free-plan substitute, per the comment in `.github/workflows/ci.yml`.) The
+`deploy` job needs the `test` job to pass first, then:
 
 1. Builds `vendor/` (`composer install --no-dev`) and `public/build` (`npm ci && npm run build`) on the runner.
 2. `rsync`s the result to `/var/www/resumegen` on the server, excluding `.env`,
@@ -291,7 +293,12 @@ has a required reviewer — approve it from the Actions tab). Once approved, it:
    (staying down on failure rather than serving broken code).
 
 Requires repo secrets `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` and a `production`
-environment with a required reviewer configured in GitHub repo settings.
+environment configured in GitHub repo settings.
+
+**Admin subdomain:** the Filament admin panel is served on `APP_ADMIN_DOMAIN`
+(`.env`, default `admin.resumegen.app`), not a `/admin` path — point DNS/reverse
+proxy at that subdomain too, and make sure `SESSION_DOMAIN` (`.resumegen.app`)
+covers it so admin auth shares cookies with the main app.
 
 **Manual deploy (no CI):** build locally the same way, rsync with the same excludes,
 then SSH in and run `./deploy.sh` yourself.

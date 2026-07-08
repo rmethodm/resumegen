@@ -2,24 +2,33 @@
 A JSON API lives under the `/api` prefix alongside the Inertia web layer. Auth uses Laravel Sanctum personal access tokens — **not** session cookies.
 
 **Auth endpoints** (no `auth:sanctum` required):
+- `POST /api/auth/register` — throttled 10/min
 - `POST /api/auth/login` — returns `{ token }`, throttled 10/min
-- `GET /api/auth/me` — returns authenticated user
-- `POST /api/auth/logout` — revokes current token
+- `POST /api/auth/forgot-password` — throttled 5/min
+- `GET /api/auth/me` — returns authenticated user (requires `auth:sanctum`)
+- `POST /api/auth/logout` — revokes current token (requires `auth:sanctum`)
 
 **Resume endpoints** (all require `Authorization: Bearer {token}`):
 - `GET|POST /api/resumes` — index / store
 - `GET|PUT|DELETE /api/resumes/{id}` — show / update / destroy
 - `POST /api/resumes/{id}/duplicate`
-- `POST /api/resumes/{id}/ai-suggest` — throttled 10/min
-- `GET /api/resumes/{id}/ats-score` — throttled 10/min
+- `GET /api/resumes/{id}/pdf`
+- `POST|DELETE /api/resumes/{id}/photo`
 
 **Cover letter endpoints** (all require `Authorization: Bearer {token}`):
-- `GET|POST /api/cover-letters` — index (no body field) / store (renders body from template)
-- `GET|PUT|DELETE /api/cover-letters/{id}` — show (includes body) / update / destroy
+- `GET|POST /api/cover-letters` — index / store
+- `GET|PUT|DELETE /api/cover-letters/{id}` — show / update / destroy
+- `POST /api/cover-letters/{id}/generate`
 
-**Job application endpoints** (all require `Authorization: Bearer {token}`):
-- `GET|POST /api/jobs` — index (eager-loads `resume:id,name`) / store
-- `GET|PUT|DELETE /api/jobs/{id}` — show / update / destroy
+**Resignation letter endpoints** (all require `Authorization: Bearer {token}`):
+- `GET|POST /api/resignation-letters` — index / store
+- `GET|PUT|DELETE /api/resignation-letters/{id}` — show / update / destroy
+- `POST /api/resignation-letters/{id}/generate`
+
+**Other endpoints** (all require `Authorization: Bearer {token}`):
+- `GET /api/activity`
+- `POST /api/threads/{thread}/reply` — throttled 20/min
+- `POST|DELETE /api/push-tokens`
 
 **Sanctum config:** `config/sanctum.php` sets `'guard' => []` (intentionally empty) to prevent web session fallback so only token-auth works for API requests.
 
