@@ -1,5 +1,10 @@
 # Plan: Fix Code-Review Findings
 
+> **Status (2026-07-07):** Tasks 3, 4, and 5 are already implemented in code
+> (`RegisteredUserController`, `Api/AuthController`, and the `verified`
+> middleware on the main route group) — kept here for historical reference,
+> not as pending work.
+
 ## Global Constraints
 - Stack: Laravel 13, PHP 8.4, SQLite, React 18, TypeScript, Tailwind CSS v3, Inertia.js v2
 - PHP style: curly braces always, explicit return types, constructor property promotion

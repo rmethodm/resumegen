@@ -156,7 +156,7 @@ The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor 
 
 ## Admin Panel
 
-Routes under `/admin` guarded by `auth` + `master_admin` middleware (`EnsureMasterAdmin` — 403 if `User::is_master_admin` false). `is_master_admin` is non-editable; set directly in DB or via seeder.
+Filament v3 panel mounted via `app/Providers/Filament/AdminPanelProvider.php` on a separate subdomain (`config('app.admin_domain')`, `.env` `APP_ADMIN_DOMAIN`, default `admin.resumegen.app`) — not a `/admin` path prefix. Access gated by `User::canAccessPanel()` (implements `FilamentUser`), checking `is_master_admin`. Resources/pages/widgets live in `app/Filament/{Resources,Pages,Widgets}`. `is_master_admin` is non-editable; set directly in DB or via seeder.
 
 **Audit log:** `AdminAuditLog::record(string $action, ?Model $target, string $description, array $meta = [])` — **call this on every privileged admin write action.** Reads `auth()->id()` + `request()->ip()`, swallows exceptions. Append-only `admin_audit_logs` table.
 
@@ -284,7 +284,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.5
+- php - 8.4
 - filament/filament (FILAMENT) - v3
 - inertiajs/inertia-laravel (INERTIA_LARAVEL) - v2
 - laravel/cashier (CASHIER) - v16

@@ -8,7 +8,7 @@ The app enforces a 4-tier model: **Free** / **Starter** ($9/mo) / **Pro** ($19/m
 | Job applications | 3 | unlimited | unlimited | unlimited |
 | Templates | 4 (classic, modern, minimal, ats) | all 9 | all 9 | all 9 |
 | DOCX export | ✗ | ✓ | ✓ | ✓ |
-| AI generations/mo | 25 | 150 | 500 | 1000 |
+| AI generations/mo | 10 | 150 | 500 | 1000 |
 | Team workspace (orgs + seats) | ✗ | ✗ | ✗ | ✓ |
 
 New caps are hard-enforced at creation time via `UserLimits` gates (no destructive lock-out of existing content). Org creation and member seats are gated to Agency via `UserLimits::canCreateOrg()` / `canUseOrg()`.
