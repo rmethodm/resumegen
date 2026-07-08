@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\SystemEventFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SystemEvent extends Model
 {
-    /** @use HasFactory<\Database\Factories\SystemEventFactory> */
+    /** @use HasFactory<SystemEventFactory> */
     use HasFactory;
 
     public const UPDATED_AT = null; // append-only, no updated_at column

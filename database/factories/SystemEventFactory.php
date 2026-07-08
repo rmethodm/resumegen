@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\SystemEvent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\SystemEvent>
+ * @extends Factory<SystemEvent>
  */
 class SystemEventFactory extends Factory
 {
