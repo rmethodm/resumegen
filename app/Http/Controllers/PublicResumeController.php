@@ -13,14 +13,26 @@ use Inertia\Inertia;
 
 class PublicResumeController extends Controller
 {
+    private const FREE_TIER_VIEW_CAP = 25;
+
     public function show(Request $request, string $token)
     {
-        $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
+        $link = ResumeShareLink::with('resume.user')->where('token', $token)->firstOrFail();
 
         if (! $link->is_active || ($link->expires_at && $link->expires_at->isPast())) {
             return Inertia::render('ResumeBuilder/LinkExpired', [
                 'reason' => ! $link->is_active ? 'deactivated' : 'expired',
             ])->toResponse($request)->setStatusCode(410);
+        }
+
+        if ($link->resume->user?->planTier() === 'free') {
+            $viewCount = $link->events()->where('event', 'page_view')->count();
+
+            if ($viewCount >= self::FREE_TIER_VIEW_CAP) {
+                return Inertia::render('ResumeBuilder/LinkExpired', [
+                    'reason' => 'view_limit',
+                ])->toResponse($request)->setStatusCode(410);
+            }
         }
 
         ResumeShareEvent::log($request, $link, 'page_view');

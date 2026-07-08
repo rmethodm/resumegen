@@ -31,6 +31,7 @@ class AiSuggestionTest extends TestCase
 
     public function test_rewrite_bullet_returns_suggestion_and_logs_success(): void
     {
+        config()->set('ai.monthly_limits.free', 10);
         $this->fakeReply('Led a team of five engineers to ship X.');
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->for($user)->create();
@@ -51,6 +52,7 @@ class AiSuggestionTest extends TestCase
 
     public function test_rewrite_bullet_accepts_a_long_bullets_block(): void
     {
+        config()->set('ai.monthly_limits.free', 10);
         $this->fakeReply('Rewritten.');
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->for($user)->create();
@@ -118,6 +120,7 @@ class AiSuggestionTest extends TestCase
 
     public function test_openai_failure_returns_503_and_does_not_count(): void
     {
+        config()->set('ai.monthly_limits.free', 10);
         $mock = \Mockery::mock(ClientContract::class);
         $mock->shouldReceive('moderations->create')
             ->andReturn(ModerationResponse::fake(['results' => [['flagged' => false]]]));
@@ -168,6 +171,7 @@ class AiSuggestionTest extends TestCase
 
     public function test_flagged_input_returns_422_and_does_not_count_quota(): void
     {
+        config()->set('ai.monthly_limits.free', 10);
         $this->app->instance(ClientContract::class, new ClientFake([
             ModerationResponse::fake(['results' => [['flagged' => true]]]),
         ]));
