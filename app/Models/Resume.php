@@ -87,6 +87,11 @@ class Resume extends Model implements HasMedia
         return $this->hasMany(ResumeShareEvent::class);
     }
 
+    public function sectionEvents(): HasMany
+    {
+        return $this->hasMany(ResumeSectionEvent::class);
+    }
+
     public function tags(): HasMany
     {
         return $this->hasMany(ResumeTag::class)->orderBy('created_at');
