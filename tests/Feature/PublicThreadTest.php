@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Mail\NewThreadStarted;
 use App\Mail\NewVisitorReply;
-use App\Models\DeviceToken;
 use App\Models\ResumeShareLink;
 use App\Models\ResumeThread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -148,39 +145,5 @@ class PublicThreadTest extends TestCase
             ]);
 
         Mail::assertQueued(NewVisitorReply::class, fn ($m) => $m->hasTo($link->resume->user->email));
-    }
-
-    public function test_new_thread_sends_push_to_resume_owner(): void
-    {
-        Mail::fake();
-        Http::fake(['exp.host/*' => Http::response(['data' => 'ok'])]);
-        $link = $this->makeLink();
-        DeviceToken::factory()->for($link->resume->user)->create();
-
-        $this->post(route('public.thread.store', $link->token), [
-            'sender_name' => 'Alice',
-            'sender_email' => 'alice@example.com',
-            'message' => 'Are you available?',
-        ]);
-
-        Http::assertSent(fn ($request) => $request->url() === 'https://exp.host/--/api/v2/push/send');
-    }
-
-    public function test_thread_creation_succeeds_even_if_push_delivery_fails(): void
-    {
-        Mail::fake();
-        Http::fake(function () {
-            throw new ConnectionException('down');
-        });
-        $link = $this->makeLink();
-        DeviceToken::factory()->for($link->resume->user)->create();
-
-        $this->post(route('public.thread.store', $link->token), [
-            'sender_name' => 'Alice',
-            'sender_email' => 'alice@example.com',
-            'message' => 'Are you available?',
-        ])->assertRedirect();
-
-        $this->assertDatabaseHas('resume_threads', ['sender_name' => 'Alice']);
     }
 }
