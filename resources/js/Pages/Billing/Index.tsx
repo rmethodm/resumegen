@@ -13,7 +13,7 @@ type Props = {
 };
 
 const PLAN_FEATURES: Record<string, string[]> = {
-    free:    ['2 resumes', '1 cover letter', '3 job applications', '4 templates', '10 AI generations/month'],
+    free:    ['2 resumes', '2 cover letters', '3 job applications', 'All 9 templates'],
     starter: ['10 resumes', '10 cover letters', 'Unlimited job tracking', 'All 9 templates', 'DOCX export', 'ATS scoring', '150 AI generations/month'],
     pro:     ['Unlimited resumes & cover letters', 'All templates (current + future)', 'DOCX export', 'ATS scoring', 'API access', '500 AI generations/month'],
     agency:  ['Everything in Pro', 'Team workspace', '1000 AI generations/month'],

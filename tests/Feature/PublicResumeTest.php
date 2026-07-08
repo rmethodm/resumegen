@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,6 +19,17 @@ class PublicResumeTest extends TestCase
         $resume = $user->resumes()->create(['name' => 'My CV', 'pdf_filename' => 'cv.pdf']);
 
         return $resume->shareLinks()->create(['is_active' => $active]);
+    }
+
+    private function seedPageViews(ResumeShareLink $link, int $count): void
+    {
+        for ($i = 0; $i < $count; $i++) {
+            ResumeShareEvent::create([
+                'resume_share_link_id' => $link->id,
+                'resume_id' => $link->resume_id,
+                'event' => 'page_view',
+            ]);
+        }
     }
 
     public function test_active_link_returns_200(): void
@@ -127,6 +139,44 @@ class PublicResumeTest extends TestCase
         // Should not redirect (stream response, assertOk not applicable for streams — just assert not a redirect)
         $response = $this->get(route('public.docx', $link->token));
         $response->assertSuccessful();
+    }
+
+    public function test_free_tier_link_is_viewable_under_25_views(): void
+    {
+        $link = $this->makeLink(true, 'free');
+        $this->seedPageViews($link, 24);
+
+        $this->get(route('public.resume', $link->token))->assertOk();
+    }
+
+    public function test_free_tier_link_returns_410_at_25_views(): void
+    {
+        $link = $this->makeLink(true, 'free');
+        $this->seedPageViews($link, 25);
+
+        $this->get(route('public.resume', $link->token))->assertStatus(410);
+    }
+
+    public function test_pdf_downloads_do_not_count_toward_view_cap(): void
+    {
+        $link = $this->makeLink(true, 'free');
+        for ($i = 0; $i < 25; $i++) {
+            ResumeShareEvent::create([
+                'resume_share_link_id' => $link->id,
+                'resume_id' => $link->resume_id,
+                'event' => 'pdf_download',
+            ]);
+        }
+
+        $this->get(route('public.resume', $link->token))->assertOk();
+    }
+
+    public function test_paid_tier_link_has_no_view_cap(): void
+    {
+        $link = $this->makeLink(true, 'starter');
+        $this->seedPageViews($link, 30);
+
+        $this->get(route('public.resume', $link->token))->assertOk();
     }
 
     public function test_public_thread_form_is_rate_limited(): void

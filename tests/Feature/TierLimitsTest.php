@@ -33,10 +33,10 @@ class TierLimitsTest extends TestCase
 
     // ── coverLetterLimit ───────────────────────────────────────────────────────
 
-    public function test_free_user_cover_letter_limit_is_1(): void
+    public function test_free_user_cover_letter_limit_is_2(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertSame(1, UserLimits::coverLetterLimit($user));
+        $this->assertSame(2, UserLimits::coverLetterLimit($user));
     }
 
     public function test_starter_user_cover_letter_limit_is_10(): void
@@ -53,14 +53,10 @@ class TierLimitsTest extends TestCase
 
     // ── allowedTemplates ──────────────────────────────────────────────────────
 
-    public function test_free_user_gets_only_free_templates(): void
+    public function test_free_user_gets_all_templates(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $allowed = UserLimits::allowedTemplates($user);
-        $this->assertEqualsCanonicalizing(['classic', 'modern', 'minimal', 'ats'], $allowed);
-        $this->assertNotContains('executive', $allowed);
-        $this->assertNotContains('academic', $allowed);
-        $this->assertNotContains('bold', $allowed);
+        $this->assertCount(9, UserLimits::allowedTemplates($user));
     }
 
     public function test_starter_user_gets_all_templates(): void
@@ -158,7 +154,7 @@ class TierLimitsTest extends TestCase
 
     public function test_ai_monthly_limits_per_tier(): void
     {
-        $this->assertSame(10, UserLimits::aiMonthlyLimit(User::factory()->create(['plan_tier' => 'free'])));
+        $this->assertSame(0, UserLimits::aiMonthlyLimit(User::factory()->create(['plan_tier' => 'free'])));
         $this->assertSame(150, UserLimits::aiMonthlyLimit(User::factory()->starter()->create()));
         $this->assertSame(500, UserLimits::aiMonthlyLimit(User::factory()->pro()->create()));
         $this->assertSame(1000, UserLimits::aiMonthlyLimit(User::factory()->agency()->create()));
