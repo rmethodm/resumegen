@@ -69,6 +69,28 @@ class ResumeBuilderEditPropsTest extends TestCase
             ->assertInertia(fn ($page) => $page->where('canAiTailoring', true));
     }
 
+    public function test_edit_passes_can_view_strength_detail_false_for_free_user(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->get(route('builder.edit', $resume))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->where('canViewStrengthDetail', false));
+    }
+
+    public function test_edit_passes_can_view_strength_detail_true_for_starter(): void
+    {
+        $user = User::factory()->starter()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->get(route('builder.edit', $resume))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->where('canViewStrengthDetail', true));
+    }
+
     public function test_pdf_blade_renders_watermark_when_flagged(): void
     {
         $resume = Resume::factory()->create();

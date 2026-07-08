@@ -1,3 +1,4 @@
+import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import type { StrengthChecklistItem } from '@/types';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
@@ -8,11 +9,12 @@ export interface StrengthPanelHandle {
 interface Props {
     resumeId: number;
     aiRemaining: number;
+    canViewStrengthDetail: boolean;
     onGenerateSummary: () => void;
 }
 
 const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
-    function StrengthScorePanel({ resumeId, aiRemaining, onGenerateSummary }, ref) {
+    function StrengthScorePanel({ resumeId, aiRemaining, canViewStrengthDetail, onGenerateSummary }, ref) {
         const [score, setScore] = useState<number | null>(null);
         const [tip, setTip] = useState<string | null>(null);
         const [tipKey, setTipKey] = useState<string | null>(null);
@@ -21,7 +23,7 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
         const [open, setOpen] = useState(true);
 
         const load = async () => {
-            if (loading) return;
+            if (loading || !canViewStrengthDetail) return;
             setLoading(true);
             try {
                 const res = await fetch(route('builder.strength-score', resumeId), {
@@ -73,7 +75,27 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                     <span>{open ? '−' : '+'}</span>
                 </button>
 
-                {open && (
+                {open && !canViewStrengthDetail && (
+                    <div className="mt-3 space-y-3">
+                        <ul className="space-y-1 opacity-60">
+                            {['Summary', 'Work experience', 'Skills', 'Education'].map((label) => (
+                                <li key={label} className="flex items-center gap-2 text-xs">
+                                    <span className="text-gray-300">○</span>
+                                    <span className="text-gray-400">{label}</span>
+                                </li>
+                            ))}
+                        </ul>
+                        <button
+                            type="button"
+                            onClick={() => triggerUpgradeModal('strength_detail', 'starter')}
+                            className="text-xs font-semibold text-amber-600 hover:text-amber-700"
+                        >
+                            🔒 See your full strength breakdown — Upgrade to Starter
+                        </button>
+                    </div>
+                )}
+
+                {open && canViewStrengthDetail && (
                     <div className="mt-3 space-y-3">
                         {loading && <p className="text-xs text-gray-400">Analyzing…</p>}
 

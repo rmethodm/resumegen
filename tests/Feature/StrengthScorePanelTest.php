@@ -13,7 +13,7 @@ class StrengthScorePanelTest extends TestCase
 
     public function test_endpoint_returns_score_and_checklist(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->starter()->create();
         $resume = Resume::factory()->create([
             'user_id' => $user->id,
             'summary' => 'Experienced engineer.',
@@ -33,12 +33,22 @@ class StrengthScorePanelTest extends TestCase
 
     public function test_top_tip_is_the_highest_value_gap(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->starter()->create();
         // Empty resume: the missing summary (15pts) should be the top tip.
         $resume = Resume::factory()->create(['user_id' => $user->id, 'summary' => null]);
 
         $this->actingAs($user)->get(route('builder.strength-score', $resume))
             ->assertJson(['tipKey' => 'summary']);
+    }
+
+    public function test_free_user_is_blocked_with_402(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)->get(route('builder.strength-score', $resume))
+            ->assertStatus(402)
+            ->assertJson(['required_tier' => 'starter']);
     }
 
     public function test_cannot_score_another_users_resume(): void

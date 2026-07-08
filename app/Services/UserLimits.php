@@ -57,6 +57,11 @@ class UserLimits
         return $user->isAtLeastStarter();
     }
 
+    public static function canViewStrengthDetail(User $user): bool
+    {
+        return $user->isAtLeastStarter();
+    }
+
     public static function canCareerCoach(User $user): bool
     {
         return in_array($user->planTier(), ['pro', 'agency'], true);
