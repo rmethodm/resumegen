@@ -23,7 +23,8 @@ class UserLimitsAiTest extends TestCase
 
     public function test_remaining_is_limit_minus_successes(): void
     {
-        $user = User::factory()->free()->create(); // free limit = 10
+        config()->set('ai.monthly_limits.free', 10);
+        $user = User::factory()->free()->create();
         AiRequest::factory()->count(4)->create(['user_id' => $user->id, 'status' => 'success']);
 
         $this->assertSame(6, UserLimits::aiRemaining($user));
