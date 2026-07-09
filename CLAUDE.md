@@ -113,7 +113,7 @@ All routes return Inertia responses — no Blade views except the single root `r
 ### Resume data model
 Resume content is stored as JSON columns on a single `resumes` table (no separate section tables). Frontend owns JSON shape; backend validates as `nullable array`.
 
-**Cascade delete:** Most dependents (share links, snapshots, threads, section/share events, tags) are removed by `cascadeOnDelete` FKs. `Resume::booted()`'s `deleting` observer covers only what FKs can't: it deletes A/B variants per-model (so nested variant trees recurse) and unlinks the resume's thumbnail. Tailored copies (`master_resume_id`) and orphaned variants (`ab_parent_id`) are `nullOnDelete` by design — they survive the parent.
+**Cascade delete:** Most dependents (share links, snapshots, threads, section/share events, tags) are removed by `cascadeOnDelete` FKs. `Resume::booted()`'s `deleting` observer covers only what FKs can't: it deletes A/B variants per-model (so nested variant trees recurse) and unlinks the resume's thumbnail. Because the `resumes.user_id` FK would cascade rows away without firing model events, `User::booted()` deletes its resumes per-model — otherwise account deletion would leak every thumbnail on disk.
 
 ### Authorization
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses `AuthorizesRequests` so `$this->authorize()` is available everywhere.
@@ -178,11 +178,10 @@ Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (in
 1. **Single `resumes` table with JSON columns** — frontend owns shape; backend validates as array.
 2. **No template React components** — server renders PDF; iframe preview loads it.
 3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
-4. **Master resume pattern** — coaches/recruiters maintain one resume, create tailored copies per application.
-5. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable.
-6. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup.
-7. **Freemium 4-tier model** — tight free tier pushes conversions; AI quota as key differentiator.
-8. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
+4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable.
+5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
+6. **Freemium 4-tier model** — tight free tier pushes conversions; AI quota as key differentiator.
+7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 
 ---
 

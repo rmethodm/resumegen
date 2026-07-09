@@ -29,6 +29,16 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'ai_blocked' => false,
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user): void {
+            // The resumes.user_id FK would cascade these rows away without
+            // firing model events, so Resume's `deleting` observer — which
+            // unlinks thumbnails and recurses A/B variants — would never run.
+            $user->resumes->each->delete();
+        });
+    }
+
     protected function casts(): array
     {
         return [
