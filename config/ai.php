@@ -20,8 +20,9 @@ return [
     'max_completion_tokens' => 1000,
 
     /*
-     * Per-tier monthly AI request caps. Consumed by App\Services\UserLimits.
-     * Not enforced on any route yet — foundation for a future feature.
+     * Per-tier monthly AI request caps. Consumed by App\Services\UserLimits and
+     * enforced on every AI route via UserLimits::canUseAi(). Interview coach is
+     * the exception: free users get 3 sessions/month metered separately.
      */
     'monthly_limits' => [
         'free' => 0,

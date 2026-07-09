@@ -52,4 +52,22 @@ class UserLimitsAiTest extends TestCase
         $this->assertSame('pro', UserLimits::aiNextTier(User::factory()->starter()->create()));
         $this->assertNull(UserLimits::aiNextTier(User::factory()->pro()->create()));
     }
+
+    /**
+     * A free user has a quota of 0, so "limit reached" tells them they used up
+     * something they never had — it reads as a bug, not a paywall. Tiers with a
+     * real quota keep the accurate message.
+     */
+    public function test_limit_message_distinguishes_no_quota_from_exhausted_quota(): void
+    {
+        $this->assertSame(
+            'AI features require a paid plan.',
+            UserLimits::aiLimitMessage(User::factory()->free()->create())
+        );
+
+        $this->assertSame(
+            'Monthly AI limit reached.',
+            UserLimits::aiLimitMessage(User::factory()->starter()->create())
+        );
+    }
 }
