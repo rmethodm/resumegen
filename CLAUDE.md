@@ -70,11 +70,11 @@ Default to surfacing uncertainty, not hiding it.
 
 ## Stack
 
-- **Backend:** Laravel 13, PHP 8.4, SQLite (default), Inertia.js v2
+- **Backend:** Laravel 13, PHP 8.4, PostgreSQL (`DB_CONNECTION=pgsql`; tests run on in-memory SQLite), Inertia.js v2
 - **Frontend:** React 18, TypeScript, Tailwind CSS v3, Vite 8
 - **Auth:** Laravel Breeze (session-based), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63).
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
-- **Media:** `spatie/laravel-medialibrary` (installed, migration exists, not yet used)
+- **Media:** `spatie/laravel-medialibrary` — `Resume` implements `HasMedia` with a single-file `photo` collection.
 - **Billing:** `laravel/cashier-stripe` v16 — `User` model uses `Billable` trait. Subscription name is `'default'`. Price IDs in `config/services.php`.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
@@ -113,7 +113,7 @@ All routes return Inertia responses — no Blade views except the single root `r
 ### Resume data model
 Resume content is stored as JSON columns on a single `resumes` table (no separate section tables). Frontend owns JSON shape; backend validates as `nullable array`.
 
-**Cascade delete:** `Resume::booted()` has a `deleting` observer that handles all dependent records (variants, snapshots, tailored copies, share links, threads). Model-level (not FK-level) so it works on SQLite and fires model events.
+**Cascade delete:** Most dependents (share links, snapshots, threads, section/share events, tags) are removed by `cascadeOnDelete` FKs. `Resume::booted()`'s `deleting` observer covers only what FKs can't: it deletes A/B variants per-model (so nested variant trees recurse) and unlinks the resume's thumbnail. Tailored copies (`master_resume_id`) and orphaned variants (`ab_parent_id`) are `nullOnDelete` by design — they survive the parent.
 
 ### Authorization
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses `AuthorizesRequests` so `$this->authorize()` is available everywhere.
@@ -180,13 +180,13 @@ Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (in
 3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
 4. **Master resume pattern** — coaches/recruiters maintain one resume, create tailored copies per application.
 5. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable.
-6. **Model-level cascade delete** — fires on dependent models even on SQLite (FK-level cascade doesn't work).
+6. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup.
 7. **Freemium 4-tier model** — tight free tier pushes conversions; AI quota as key differentiator.
 8. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 
 ---
 
-Last updated: 2026-07-07
+Last updated: 2026-07-09
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy

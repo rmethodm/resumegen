@@ -17,8 +17,9 @@ class Resume extends Model implements HasMedia
     protected static function booted(): void
     {
         static::deleting(function (Resume $resume): void {
-            $resume->abVariants()->delete();
-            $resume->threads()->delete();
+            // Per-model delete so each variant runs this hook too: nested A/B
+            // trees recurse, and every level unlinks its own thumbnail.
+            $resume->abVariants->each->delete();
             @unlink(storage_path("app/thumbnails/{$resume->id}.png"));
         });
     }
