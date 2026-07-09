@@ -21,6 +21,12 @@ class InterviewCoachController extends Controller
 
         $user = $request->user();
 
+        if ($user->ai_blocked) {
+            return response()->json([
+                'error' => 'AI features are disabled for this account.',
+            ], 402);
+        }
+
         if (! UserLimits::canInterviewCoach($user)) {
             return response()->json([
                 'error' => 'You have used your 3 free interview coach sessions this month. Upgrade to Starter for unlimited access.',
@@ -28,9 +34,12 @@ class InterviewCoachController extends Controller
             ], 402);
         }
 
-        if (! UserLimits::canUseAi($user)) {
+        // Free tier's 3 sessions are metered by canInterviewCoach() above. Its
+        // monthly AI quota is 0, so canUseAi() would reject every free session
+        // before one was ever used.
+        if ($user->isAtLeastStarter() && ! UserLimits::canUseAi($user)) {
             return response()->json([
-                'error' => 'Monthly AI limit reached.',
+                'error' => UserLimits::aiLimitMessage($user),
                 'can_upgrade' => UserLimits::aiCanUpgrade($user),
                 'next_tier' => UserLimits::aiNextTier($user),
                 'limit' => UserLimits::aiMonthlyLimit($user),

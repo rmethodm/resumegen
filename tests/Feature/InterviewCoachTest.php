@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\AiRequest;
 use App\Models\Resume;
 use App\Models\User;
+use App\Services\UserLimits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenAI\Contracts\ClientContract;
 use OpenAI\Responses\Chat\CreateResponse;
@@ -33,8 +34,17 @@ class InterviewCoachTest extends TestCase
         ]));
     }
 
-    public function test_free_user_is_blocked_by_zero_ai_quota_before_reaching_the_3_session_limit(): void
+    /**
+     * The free tier's monthly AI quota is 0, but interview coach is metered
+     * separately at 3 sessions/month — it is the one AI feature a free user is
+     * meant to experience. If the global quota check ever gates this route for
+     * free users again, those 3 sessions become unreachable and the tier loses
+     * its only taste of the product's core value.
+     */
+    public function test_free_user_can_use_interview_coach_despite_zero_ai_quota(): void
     {
+        $this->fakeQuestions();
+
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
@@ -42,8 +52,21 @@ class InterviewCoachTest extends TestCase
             'target_role' => 'Product Manager',
         ]);
 
+        $response->assertStatus(200);
+        $this->assertSame(0, UserLimits::aiMonthlyLimit($user->fresh()));
+    }
+
+    public function test_ai_blocked_free_user_cannot_use_interview_coach(): void
+    {
+        $user = User::factory()->free()->create(['ai_blocked' => true]);
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user)->postJson(route('builder.interview-coach', $resume), [
+            'target_role' => 'Product Manager',
+        ]);
+
         $response->assertStatus(402);
-        $response->assertJsonPath('error', 'Monthly AI limit reached.');
+        $response->assertJsonPath('error', 'AI features are disabled for this account.');
     }
 
     public function test_free_user_blocked_after_3_uses(): void

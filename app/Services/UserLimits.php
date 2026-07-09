@@ -131,6 +131,17 @@ class UserLimits
         return max(0, self::aiMonthlyLimit($user) - self::aiRequestsThisMonth($user));
     }
 
+    /**
+     * A tier with a zero quota never had a limit to "reach" — saying so reads
+     * as a bug to the user. Distinguish never-had-access from used-it-up.
+     */
+    public static function aiLimitMessage(User $user): string
+    {
+        return self::aiMonthlyLimit($user) === 0
+            ? 'AI features require a paid plan.'
+            : 'Monthly AI limit reached.';
+    }
+
     private const FREE_INTERVIEW_COACH_MONTHLY_LIMIT = 3;
 
     public static function canInterviewCoach(User $user): bool

@@ -195,7 +195,7 @@ class AiSuggestionTest extends TestCase
 
         $this->actingAs($user)->get(route('builder.edit', $resume))
             ->assertInertia(fn (AssertableInertia $page) => $page
-                ->where('aiRemaining', 10)
+                ->where('aiRemaining', 0)
                 ->where('aiCanUpgrade', true)
             );
     }

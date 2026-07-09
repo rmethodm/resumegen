@@ -55,7 +55,7 @@ class CareerCoachController extends Controller
 
         if (! UserLimits::canUseAi($user)) {
             return response()->json([
-                'error' => 'Monthly AI limit reached.',
+                'error' => UserLimits::aiLimitMessage($user),
                 'can_upgrade' => UserLimits::aiCanUpgrade($user),
                 'next_tier' => UserLimits::aiNextTier($user),
                 'limit' => UserLimits::aiMonthlyLimit($user),

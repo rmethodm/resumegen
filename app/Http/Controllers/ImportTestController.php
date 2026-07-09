@@ -38,7 +38,7 @@ class ImportTestController extends Controller
 
         if (! UserLimits::canUseAi($user)) {
             return response()->json([
-                'error' => 'Monthly AI limit reached.',
+                'error' => UserLimits::aiLimitMessage($user),
                 'limit' => UserLimits::aiMonthlyLimit($user),
             ], 402);
         }
