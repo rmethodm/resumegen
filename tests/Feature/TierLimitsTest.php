@@ -73,10 +73,14 @@ class TierLimitsTest extends TestCase
 
     // ── canDocx ──────────────────────────────────────────────────────────────
 
-    public function test_free_user_cannot_docx(): void
+    /**
+     * DOCX export was opened to every tier — it is no longer a paid upsell.
+     * If this fails, the free tier silently lost a promised feature.
+     */
+    public function test_free_user_can_docx(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
-        $this->assertFalse(UserLimits::canDocx($user));
+        $this->assertTrue(UserLimits::canDocx($user));
     }
 
     public function test_starter_user_can_docx(): void

@@ -2,6 +2,13 @@
 
 return [
     /*
+     * Master switch for every AI-backed feature. When false, AI routes 404 and
+     * all AI affordances disappear from the UI; the code stays in place so the
+     * features can be turned back on by flipping AI_ENABLED.
+     */
+    'enabled' => env('AI_ENABLED', false),
+
+    /*
      * Default chat model used by App\Services\AiService when no model is passed.
      */
     'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),

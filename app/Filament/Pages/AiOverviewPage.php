@@ -17,6 +17,11 @@ class AiOverviewPage extends Page
 
     protected static string $view = 'filament.pages.ai-overview-page';
 
+    public static function canAccess(): bool
+    {
+        return (bool) config('ai.enabled');
+    }
+
     protected function getViewData(): array
     {
         $report = app(AiUsageReport::class);

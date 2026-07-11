@@ -364,15 +364,19 @@ class ResumeBuilderTest extends TestCase
         $this->assertDatabaseHas('resumes', ['id' => $resume->id, 'template' => 'executive']);
     }
 
-    public function test_free_user_cannot_download_docx(): void
+    /**
+     * DOCX is included on every tier. A free user must get the file rather
+     * than be pushed into the upgrade modal.
+     */
+    public function test_free_user_can_download_docx(): void
     {
         $user = User::factory()->create(['plan_tier' => 'free']);
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
 
         $this->actingAs($user)
             ->get(route('builder.docx', $resume->id))
-            ->assertRedirect()
-            ->assertSessionHas('featureGate.feature', 'docx_export');
+            ->assertOk()
+            ->assertSessionMissing('featureGate');
     }
 
     public function test_starter_user_can_download_docx(): void

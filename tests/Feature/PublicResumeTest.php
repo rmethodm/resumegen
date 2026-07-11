@@ -127,10 +127,14 @@ class PublicResumeTest extends TestCase
         $this->get(route('public.docx', $link->token))->assertStatus(429);
     }
 
-    public function test_free_tier_owner_public_docx_is_blocked(): void
+    /**
+     * DOCX is included on every tier, so a share link published by a free-tier
+     * owner must offer the DOCX download just like a paid owner's link does.
+     */
+    public function test_free_tier_owner_public_docx_is_accessible(): void
     {
         $link = $this->makeLink(true, 'free');
-        $this->get(route('public.docx', $link->token))->assertRedirect();
+        $this->get(route('public.docx', $link->token))->assertSuccessful();
     }
 
     public function test_starter_tier_owner_public_docx_is_accessible(): void

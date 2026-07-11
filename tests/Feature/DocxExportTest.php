@@ -38,14 +38,18 @@ class DocxExportTest extends TestCase
         $this->get(route('builder.docx', $resume))->assertRedirect(route('login'));
     }
 
-    public function test_free_user_is_blocked_from_docx(): void
+    /**
+     * DOCX is now included on every tier, so a free user must get the file
+     * itself — not a redirect into the upgrade modal.
+     */
+    public function test_free_user_can_download_docx(): void
     {
         $user = User::factory()->free()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $response = $this->actingAs($user)->get(route('builder.docx', $resume));
 
-        $response->assertRedirect();
-        $response->assertSessionHas('featureGate');
+        $response->assertOk();
+        $response->assertSessionMissing('featureGate');
     }
 }

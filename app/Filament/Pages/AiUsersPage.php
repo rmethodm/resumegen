@@ -21,6 +21,11 @@ class AiUsersPage extends Page
 
     protected static string $view = 'filament.pages.ai-users-page';
 
+    public static function canAccess(): bool
+    {
+        return (bool) config('ai.enabled');
+    }
+
     protected function getViewData(): array
     {
         $rows = AiRequest::query()

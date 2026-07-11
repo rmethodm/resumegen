@@ -13,7 +13,7 @@ import {
     BookmarkSquareIcon, EyeIcon, EyeSlashIcon,
     ArrowDownTrayIcon, TrashIcon,
 } from '@heroicons/react/24/outline';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors,
     type DragEndEvent,
@@ -453,6 +453,7 @@ export default function Edit({
     const [summary, setSummary] = useState(resume.summary ?? '');
     const [targetJobDescription, setTargetJobDescription] = useState(resume.target_job_description ?? '');
     const [experience, setExperience] = useState<ExperienceEntry[]>(resume.experience ?? []);
+    const { aiEnabled } = usePage().props;
     const ai = useAiSuggestion(aiRemaining);
     // Tracks fields already rewritten by AI this session, so the button reads "Regenerate". Keys: 'summary', `exp:${id}`.
     const [aiGenerated, setAiGenerated] = useState<Set<string>>(new Set());
@@ -606,6 +607,9 @@ export default function Edit({
     // instead of a dead disabled link — the moment users are most likely to convert.
     const aiUpgrade = () => { if (aiNextTier) { triggerUpgradeModal('ai_suggest', aiNextTier); } };
     const renderAiButton = (opts: { idle: string; onRun: () => void; regenerated?: boolean; extraDisabled?: boolean; className?: string }) => {
+        if (!aiEnabled) {
+            return null;
+        }
         const exhausted = ai.remaining === 0;
         const canUpgrade = exhausted && aiCanUpgrade && aiNextTier !== null;
         const label = canUpgrade
@@ -855,7 +859,7 @@ export default function Edit({
                                 <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
                             )}
                         </div>
-                        {sidebarOpen && (
+                        {sidebarOpen && aiEnabled && (
                             <div>
                                 <div className="flex items-center gap-1.5 mb-1.5"><span className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Interview Prep</span></div>
                                 {canInterviewCoach ? (
@@ -901,8 +905,8 @@ export default function Edit({
                                 )}
                             </div>
                         )}
-                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={ai.remaining} canViewStrengthDetail={canViewStrengthDetail} onGenerateSummary={handleGenerateSummary} />}
-                        {sidebarOpen && (
+                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} canViewStrengthDetail={canViewStrengthDetail} onGenerateSummary={handleGenerateSummary} />}
+                        {sidebarOpen && aiEnabled && (
                             <AtsMatchPanel
                                 jobDescription={targetJobDescription}
                                 onJobDescriptionChange={setTargetJobDescription}
@@ -915,7 +919,7 @@ export default function Edit({
                                 }
                             />
                         )}
-                        {sidebarOpen && (
+                        {sidebarOpen && aiEnabled && (
                             <CareerMapPanel
                                 paths={careerPaths}
                                 aiButton={
@@ -925,7 +929,7 @@ export default function Edit({
                                 }
                             />
                         )}
-                        {sidebarOpen && <TranslatePanel resumeId={resume.id} canTranslate={canTranslate} />}
+                        {sidebarOpen && aiEnabled && <TranslatePanel resumeId={resume.id} canTranslate={canTranslate} />}
                     </div>
                 </aside>
 
@@ -959,12 +963,14 @@ export default function Edit({
                             )}
                         </div>
 
-                        <div className="px-1 pb-1 text-xs text-[#94a3b8]">
-                            ✨ {ai.remaining} AI uses left this month
-                            {ai.remaining === 0 && aiCanUpgrade && aiNextTier && (
-                                <> · <button type="button" onClick={aiUpgrade} className="font-medium text-amber-600 underline hover:text-amber-700">Upgrade for more</button></>
-                            )}
-                        </div>
+                        {aiEnabled && (
+                            <div className="px-1 pb-1 text-xs text-[#94a3b8]">
+                                ✨ {ai.remaining} AI uses left this month
+                                {ai.remaining === 0 && aiCanUpgrade && aiNextTier && (
+                                    <> · <button type="button" onClick={aiUpgrade} className="font-medium text-amber-600 underline hover:text-amber-700">Upgrade for more</button></>
+                                )}
+                            </div>
+                        )}
 
                         {/* Draggable sections */}
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
