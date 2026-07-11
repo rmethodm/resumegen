@@ -8,7 +8,7 @@ const SLIDES = [
     { tab: 'Jobs',          label: 'Job Tracker'    },
 ] as const;
 
-export default function Welcome({ auth }: PageProps) {
+export default function Welcome({ auth, aiEnabled }: PageProps) {
     const isLoggedIn = !!auth.user;
     const ctaHref = route(isLoggedIn ? 'dashboard' : 'register');
 
@@ -317,7 +317,9 @@ export default function Welcome({ auth }: PageProps) {
                             { num: 'No card', label: 'needed to start' },
                             { num: '9',      label: 'resume templates' },
                             { num: 'Free',   label: 'to get started' },
-                            { num: '10',     label: 'free AI credits/mo' },
+                            aiEnabled
+                                ? { num: '10',    label: 'free AI credits/mo' }
+                                : { num: 'PDF + DOCX', label: 'export on every plan' },
                         ].map(({ num, label }) => (
                             <div key={label} className="flex items-center gap-2">
                                 <span className="text-lg font-black text-[#0f172a]">{num}</span>
@@ -441,14 +443,9 @@ export default function Welcome({ auth }: PageProps) {
                                 </div>
                                 <p className="mb-5 text-xs text-[#9ca3af]">Forever free</p>
                                 <ul className="mb-6 space-y-2">
-                                    {['2 resumes', '2 cover letters', 'All 9 templates', 'Public share links', 'Job tracker (3 apps)'].map((f) => (
+                                    {['2 resumes', '2 cover letters', 'All 9 templates', 'PDF + DOCX export', 'Public share links', 'Job tracker (3 apps)'].map((f) => (
                                         <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                             <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
-                                        </li>
-                                    ))}
-                                    {['DOCX export', 'PDF import'].map((f) => (
-                                        <li key={f} className="flex items-center gap-2 text-sm text-[#d1d5db]">
-                                            <span className="text-[11px] font-black text-[#d1d5db]">✓</span> {f}
                                         </li>
                                     ))}
                                 </ul>
@@ -476,9 +473,7 @@ export default function Welcome({ auth }: PageProps) {
                                         '10 resumes',
                                         '10 cover letters',
                                         'All 9 templates',
-                                        '150 AI generations/mo',
-                                        'DOCX export',
-                                        'PDF import',
+                                        ...(aiEnabled ? ['150 AI generations/mo'] : []),
                                         'Unlimited job apps',
                                         'Portfolio page',
                                     ].map((f) => (
@@ -507,7 +502,7 @@ export default function Welcome({ auth }: PageProps) {
                                     {[
                                         'Unlimited resumes',
                                         'Unlimited cover letters',
-                                        '500 AI generations/mo',
+                                        ...(aiEnabled ? ['500 AI generations/mo'] : []),
                                         'API access',
                                         'Priority support',
                                         'Early access to new features',

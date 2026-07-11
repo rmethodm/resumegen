@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 type Props = {
@@ -13,11 +13,22 @@ type Props = {
 };
 
 const PLAN_FEATURES: Record<string, string[]> = {
-    free:    ['2 resumes', '2 cover letters', '3 job applications', 'All 9 templates'],
-    starter: ['10 resumes', '10 cover letters', 'Unlimited job tracking', 'All 9 templates', 'DOCX export', 'ATS scoring', '150 AI generations/month'],
-    pro:     ['Unlimited resumes & cover letters', 'All templates (current + future)', 'DOCX export', 'ATS scoring', 'API access', '500 AI generations/month'],
-    agency:  ['Everything in Pro', 'Team workspace', '1000 AI generations/month'],
+    free:    ['2 resumes', '2 cover letters', '3 job applications', 'All 9 templates', 'DOCX export'],
+    starter: ['10 resumes', '10 cover letters', 'Unlimited job tracking', 'All 9 templates', 'DOCX export'],
+    pro:     ['Unlimited resumes & cover letters', 'All templates (current + future)', 'DOCX export', 'API access'],
+    agency:  ['Everything in Pro', 'Team workspace'],
 };
+
+/** Appended to PLAN_FEATURES only while `aiEnabled` is true. */
+const PLAN_AI_FEATURES: Record<string, string[]> = {
+    free:    [],
+    starter: ['ATS scoring', '150 AI generations/month'],
+    pro:     ['ATS scoring', '500 AI generations/month'],
+    agency:  ['1000 AI generations/month'],
+};
+
+const planFeatures = (plan: string, aiEnabled: boolean): string[] =>
+    aiEnabled ? [...PLAN_FEATURES[plan], ...PLAN_AI_FEATURES[plan]] : PLAN_FEATURES[plan];
 
 const ANNUAL_PRICE: Record<'starter' | 'pro' | 'agency', number> = {
     starter: 84,
@@ -26,6 +37,7 @@ const ANNUAL_PRICE: Record<'starter' | 'pro' | 'agency', number> = {
 };
 
 export default function BillingIndex({ plan, currentInterval, resumeCount, resumeLimit, aiUsed, aiLimit, limitReached }: Props) {
+    const { aiEnabled } = usePage().props;
     const [interval, setInterval] = useState<'monthly' | 'yearly'>(currentInterval ?? 'monthly');
 
     const usagePct = resumeLimit ? Math.min(100, Math.round((resumeCount / resumeLimit) * 100)) : 0;
@@ -100,13 +112,13 @@ export default function BillingIndex({ plan, currentInterval, resumeCount, resum
                                     <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#c7d2fe]">
                                         <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed]" style={{ width: `${usagePct}%` }} />
                                     </div>
-                                    {aiLimit > 0 && (
+                                    {aiEnabled && aiLimit > 0 && (
                                         <p className="mt-1 text-xs text-[#71717a]">{aiUsed} of {aiLimit} monthly AI credits used</p>
                                     )}
                                 </>
                             )}
                             <ul className="mt-4 space-y-1.5 text-xs text-[#71717a]">
-                                {PLAN_FEATURES.free.map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
+                                {planFeatures('free', aiEnabled).map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
                             </ul>
                         </div>
 
@@ -118,7 +130,7 @@ export default function BillingIndex({ plan, currentInterval, resumeCount, resum
                                 {interval === 'monthly' ? '$9 / month' : `$${ANNUAL_PRICE.starter} / year`}
                             </p>
                             <ul className="mt-4 space-y-1.5 text-xs text-[#71717a]">
-                                {PLAN_FEATURES.starter.map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
+                                {planFeatures('starter', aiEnabled).map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
                             </ul>
                             {plan === 'free' && (
                                 <button type="button" onClick={() => checkout('starter')}
@@ -137,7 +149,7 @@ export default function BillingIndex({ plan, currentInterval, resumeCount, resum
                                 {interval === 'monthly' ? '$19 / month' : `$${ANNUAL_PRICE.pro} / year`}
                             </p>
                             <ul className="mt-4 space-y-1.5 text-xs text-[#71717a]">
-                                {PLAN_FEATURES.pro.map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
+                                {planFeatures('pro', aiEnabled).map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
                             </ul>
                             {(plan === 'free' || plan === 'starter') && (
                                 <button type="button" onClick={() => checkout('pro')}
@@ -156,7 +168,7 @@ export default function BillingIndex({ plan, currentInterval, resumeCount, resum
                                 {interval === 'monthly' ? '$49 / month' : `$${ANNUAL_PRICE.agency} / year`}
                             </p>
                             <ul className="mt-4 space-y-1.5 text-xs text-[#71717a]">
-                                {PLAN_FEATURES.agency.map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
+                                {planFeatures('agency', aiEnabled).map(f => <li key={f} className="flex items-center gap-1.5"><span className="text-[#4f46e5]">✓</span>{f}</li>)}
                             </ul>
                             {(plan === 'free' || plan === 'starter' || plan === 'pro') && (
                                 <button type="button" onClick={() => checkout('agency')}

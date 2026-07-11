@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import type { ResignationLetter } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 type ResumeOpt = { id: number; name: string };
@@ -15,6 +15,7 @@ export default function Edit({ letter, resumes, aiRemaining }: Props) {
     const [lastDay, setLastDay] = useState('');
     const [tone, setTone] = useState<'formal' | 'warm' | 'brief'>('formal');
     const [reason, setReason] = useState('');
+    const { aiEnabled } = usePage().props;
     const { run, loadingUrl } = useAiSuggestion(aiRemaining);
 
     const save = (patch: Record<string, unknown>) => {
@@ -81,6 +82,7 @@ export default function Edit({ letter, resumes, aiRemaining }: Props) {
                     </div>
 
                     {/* AI generation controls */}
+                    {aiEnabled && (
                     <div className="mb-4 grid gap-3 rounded-xl border border-[#eeeef5] p-4 sm:grid-cols-3">
                         <div>
                             <label className="mb-1 block text-xs font-semibold text-[#71717a]">Last working day</label>
@@ -122,6 +124,7 @@ export default function Edit({ letter, resumes, aiRemaining }: Props) {
                             </button>
                         </div>
                     </div>
+                    )}
 
                     {/* Body editor */}
                     <textarea

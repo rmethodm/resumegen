@@ -96,7 +96,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/builder/{resume}/tags', [ResumeTagController::class, 'store'])->name('builder.tags.store');
     Route::delete('/builder/{resume}/tags/{tag}', [ResumeTagController::class, 'destroy'])->name('builder.tags.destroy');
 
-    Route::middleware('throttle:20,1')->group(function () {
+    Route::middleware(['ai_enabled', 'throttle:20,1'])->group(function () {
         Route::post('/builder/{resume}/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])->name('builder.ai.rewrite-bullet');
         Route::post('/builder/{resume}/ai/summary', [AiSuggestionController::class, 'summary'])->name('builder.ai.summary');
         Route::post('/builder/{resume}/ai/ats-keywords', [AiSuggestionController::class, 'atsKeywords'])->name('builder.ai.ats-keywords');
@@ -105,8 +105,10 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
     });
 
-    Route::get('/career-coach', [CareerCoachController::class, 'index'])->name('career-coach.index');
-    Route::middleware('throttle:20,1')->post('/career-coach/messages', [CareerCoachController::class, 'send'])->name('career-coach.send');
+    Route::middleware('ai_enabled')->group(function () {
+        Route::get('/career-coach', [CareerCoachController::class, 'index'])->name('career-coach.index');
+        Route::middleware('throttle:20,1')->post('/career-coach/messages', [CareerCoachController::class, 'send'])->name('career-coach.send');
+    });
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
@@ -127,7 +129,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/resignation-letters/{letter}', [ResignationLetterController::class, 'edit'])->name('resignation-letters.edit');
     Route::put('/resignation-letters/{letter}', [ResignationLetterController::class, 'update'])->name('resignation-letters.update');
     Route::delete('/resignation-letters/{letter}', [ResignationLetterController::class, 'destroy'])->name('resignation-letters.destroy');
-    Route::post('/resignation-letters/{letter}/generate', [ResignationLetterController::class, 'generate'])->name('resignation-letters.generate');
+    Route::post('/resignation-letters/{letter}/generate', [ResignationLetterController::class, 'generate'])
+        ->middleware('ai_enabled')
+        ->name('resignation-letters.generate');
 
     Route::get('/proofreading', [ProofreadingController::class, 'index'])->name('proofreading.index');
     Route::post('/proofreading', [ProofreadingController::class, 'store'])->name('proofreading.store');

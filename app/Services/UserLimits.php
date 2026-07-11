@@ -54,7 +54,7 @@ class UserLimits
 
     public static function canDocx(User $user): bool
     {
-        return $user->isAtLeastStarter();
+        return true;
     }
 
     public static function canAiTailoring(User $user): bool

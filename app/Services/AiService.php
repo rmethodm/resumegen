@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\AiDisabledException;
 use App\Exceptions\ModerationException;
 use App\Models\AiRequest;
 use App\Models\User;
@@ -19,6 +20,10 @@ class AiService
      */
     public function chat(string $prompt, array $options = []): string
     {
+        if (! config('ai.enabled')) {
+            throw new AiDisabledException;
+        }
+
         $model = $options['model'] ?? config('ai.model');
         $user = $options['user'] ?? null;
         $feature = $options['feature'] ?? null;

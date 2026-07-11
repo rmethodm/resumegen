@@ -12,6 +12,7 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const { user } = usePage().props.auth;
+    const { aiEnabled } = usePage().props;
     const { impersonating } = usePage().props as any;
     const [showingNav, setShowingNav] = useState(false);
     const { isDark, toggle } = useDarkMode();
@@ -49,7 +50,7 @@ export default function Authenticated({
                                 <NavLink href={route('resignation-letters.index')} active={route().current('resignation-letters.*')}>Resignation Letters</NavLink>
                                 <NavLink href={route('proofreading.index')} active={route().current('proofreading.*')}>Proofreading</NavLink>
                                 <NavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</NavLink>
-                                <NavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</NavLink>
+                                {aiEnabled && <NavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</NavLink>}
                                 <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
                                 <NavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</NavLink>
                                 {user.is_master_admin && (
@@ -112,7 +113,7 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('resignation-letters.index')} active={route().current('resignation-letters.*')}>Resignation Letters</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('proofreading.index')} active={route().current('proofreading.*')}>Proofreading</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</ResponsiveNavLink>
+                        {aiEnabled && <ResponsiveNavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</ResponsiveNavLink>}
                         <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</ResponsiveNavLink>
                         {user.is_master_admin && (
