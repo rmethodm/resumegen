@@ -6,7 +6,17 @@ return [
      * all AI affordances disappear from the UI; the code stays in place so the
      * features can be turned back on by flipping AI_ENABLED.
      */
-    'enabled' => env('AI_ENABLED', false),
+    'enabled' => env('AI_ENABLED', true),
+
+    /*
+     * Per-feature switches layered on top of the master switch above. A feature listed
+     * here stays dark even when AI_ENABLED is true, via the `ai_enabled:<feature>`
+     * middleware. Career coach is off pending a decision on its unbounded token cost:
+     * every turn resends the whole conversation history.
+     */
+    'features' => [
+        'career_coach' => env('AI_CAREER_COACH_ENABLED', false),
+    ],
 
     /*
      * Default chat model used by App\Services\AiService when no model is passed.

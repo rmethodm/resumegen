@@ -2,22 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Data\AiPrompts;
 use App\Data\ResignationLetterTemplates;
-use App\Exceptions\ModerationException;
 use App\Models\ResignationLetter;
-use App\Services\AiService;
 use App\Services\UserLimits;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Throwable;
 
 class ResignationLetterController extends Controller
 {
-    public function __construct(private AiService $ai) {}
-
     public function index(Request $request): Response
     {
         $user = $request->user();
@@ -75,7 +68,6 @@ class ResignationLetterController extends Controller
         return Inertia::render('ResignationLetter/Edit', [
             'letter' => $letter,
             'resumes' => $resumes,
-            'aiRemaining' => UserLimits::aiRemaining($request->user()),
         ]);
     }
 
@@ -107,58 +99,5 @@ class ResignationLetterController extends Controller
         $letter->delete();
 
         return redirect()->route('resignation-letters.index');
-    }
-
-    public function generate(Request $request, ResignationLetter $letter): JsonResponse
-    {
-        $this->authorize('update', $letter);
-
-        $user = $request->user();
-
-        if (! UserLimits::canUseAi($user)) {
-            return response()->json([
-                'error' => UserLimits::aiLimitMessage($user),
-                'can_upgrade' => UserLimits::aiCanUpgrade($user),
-                'next_tier' => UserLimits::aiNextTier($user),
-                'limit' => UserLimits::aiMonthlyLimit($user),
-                'used' => UserLimits::aiRequestsThisMonth($user),
-                'resets_at' => now()->startOfMonth()->addMonth()->format('M j'),
-            ], 402);
-        }
-
-        $validated = $request->validate([
-            'last_day' => ['required', 'date'],
-            'tone' => ['required', 'in:formal,warm,brief'],
-            'reason' => ['nullable', 'string', 'max:500'],
-        ]);
-
-        $resume = $letter->resume;
-
-        try {
-            $reply = $this->ai->chat(
-                AiPrompts::build('resignation_letter', [
-                    'tone' => $validated['tone'],
-                    'last_day' => $validated['last_day'],
-                    'reason' => $validated['reason'] ?? null,
-                    'role' => $resume?->experience[0]['title'] ?? null,
-                    'company' => $resume?->experience[0]['company'] ?? null,
-                    'experience' => $resume?->experience ?? [],
-                ]),
-                ['user' => $user, 'feature' => 'resignation_letter'],
-            );
-        } catch (ModerationException) {
-            return response()->json(['error' => ModerationException::USER_MESSAGE], 422);
-        } catch (Throwable $e) {
-            report($e);
-
-            return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
-        }
-
-        $letter->update(['body' => $reply]);
-
-        return response()->json([
-            'body' => $reply,
-            'remaining' => UserLimits::aiRemaining($user),
-        ]);
     }
 }

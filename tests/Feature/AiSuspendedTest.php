@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Exceptions\AiDisabledException;
-use App\Models\ResignationLetter;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\AiService;
@@ -38,10 +37,9 @@ class AiSuspendedTest extends TestCase
     {
         return [
             'rewrite bullet' => ['builder.ai.rewrite-bullet'],
+            'critique bullet' => ['builder.ai.critique-bullet'],
             'summary' => ['builder.ai.summary'],
             'ats keywords' => ['builder.ai.ats-keywords'],
-            'career map' => ['builder.ai.career-map'],
-            'translate' => ['builder.ai.translate'],
             'interview coach' => ['builder.interview-coach'],
         ];
     }
@@ -68,14 +66,28 @@ class AiSuspendedTest extends TestCase
         $this->actingAs($user)->get(route('career-coach.index'))->assertNotFound();
     }
 
-    public function test_resignation_letter_generate_is_gone_while_suspended(): void
+    /**
+     * Career coach is dark on its own switch, independent of the master one: it resends the whole
+     * conversation history every turn, so it must not come back just because AI came back.
+     */
+    public function test_career_coach_stays_gone_even_when_ai_is_enabled(): void
     {
+        config(['ai.enabled' => true, 'ai.features.career_coach' => false]);
         $user = User::factory()->pro()->create();
-        $letter = ResignationLetter::factory()->create(['user_id' => $user->id]);
 
-        $this->actingAs($user)
-            ->post(route('resignation-letters.generate', $letter))
-            ->assertNotFound();
+        $this->actingAs($user)->get(route('career-coach.index'))->assertNotFound();
+    }
+
+    /**
+     * The feature switch is additive, never a bypass: with the master switch off, a feature
+     * flipped on must still be unreachable.
+     */
+    public function test_feature_switch_cannot_reopen_a_route_while_ai_is_suspended(): void
+    {
+        config(['ai.features.career_coach' => true]);
+        $user = User::factory()->pro()->create();
+
+        $this->actingAs($user)->get(route('career-coach.index'))->assertNotFound();
     }
 
     /**

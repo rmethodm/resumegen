@@ -64,6 +64,90 @@ class AiSuggestionTest extends TestCase
         )->assertOk()->assertJson(['suggestion' => 'Rewritten.']);
     }
 
+    public function test_critique_bullet_returns_questions_and_logs_success(): void
+    {
+        config()->set('ai.monthly_limits.free', 10);
+        $this->fakeReply("How many people were on the team?\nDid revenue move — by how much?");
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $res = $this->actingAs($user)->postJson(
+            route('builder.ai.critique-bullet', $resume),
+            ['text' => 'Responsible for managing the sales team.']
+        );
+
+        $res->assertOk()->assertJson([
+            'questions' => ['How many people were on the team?', 'Did revenue move — by how much?'],
+            'remaining' => 9,
+        ]);
+        $this->assertDatabaseHas('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'critique_bullet',
+            'status' => 'success',
+        ]);
+    }
+
+    /**
+     * The model is told to return nothing when a bullet is already specific. An empty list must
+     * surface as "no questions", not as a broken response — the UI shows no coach card at all.
+     */
+    public function test_critique_bullet_returns_no_questions_for_an_already_strong_bullet(): void
+    {
+        config()->set('ai.monthly_limits.free', 10);
+        $this->fakeReply('');
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)->postJson(
+            route('builder.ai.critique-bullet', $resume),
+            ['text' => 'Grew regional ARR from $1.2M to $1.9M across 2 years leading an 8-person team.']
+        )->assertOk()->assertJson(['questions' => []]);
+    }
+
+    /**
+     * Models like to number their lists. The bullets the user sees must not come back as
+     * "1. How many people?" — the numbering is stripped server-side.
+     */
+    public function test_critique_bullet_strips_numbering_and_caps_at_three_questions(): void
+    {
+        config()->set('ai.monthly_limits.free', 10);
+        $this->fakeReply("1. How many people?\n2. Over what period?\n3. Did revenue move?\n4. Anything else?");
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $res = $this->actingAs($user)->postJson(
+            route('builder.ai.critique-bullet', $resume),
+            ['text' => 'Managed the team.']
+        );
+
+        $res->assertOk()->assertJson([
+            'questions' => ['How many people?', 'Over what period?', 'Did revenue move?'],
+        ]);
+    }
+
+    public function test_critique_bullet_is_forbidden_on_another_users_resume(): void
+    {
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for(User::factory()->free()->create())->create();
+
+        $this->actingAs($user)->postJson(
+            route('builder.ai.critique-bullet', $resume),
+            ['text' => 'Managed the team.']
+        )->assertForbidden();
+    }
+
+    public function test_critique_bullet_returns_402_when_quota_is_exhausted(): void
+    {
+        config()->set('ai.monthly_limits.free', 0);
+        $user = User::factory()->free()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)->postJson(
+            route('builder.ai.critique-bullet', $resume),
+            ['text' => 'Managed the team.']
+        )->assertStatus(402);
+    }
+
     public function test_ats_keywords_split_into_array(): void
     {
         $this->fakeReply("Kubernetes, Terraform\nObservability"); // double quotes: real newline

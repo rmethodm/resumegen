@@ -59,49 +59,26 @@ class AiPromptsTest extends TestCase
         $this->assertStringContainsString('no resume', strtolower($prompt));
     }
 
-    public function test_career_map_includes_experience_and_skills(): void
+    /**
+     * The whole point of critique mode is that the model does NOT supply the words. If this
+     * instruction ever falls out of the prompt, the feature silently becomes a second rewrite
+     * button and the resume stops being the candidate's own.
+     */
+    public function test_critique_bullet_forbids_writing_replacement_text(): void
     {
-        $prompt = AiPrompts::build('career_map', [
-            'experience' => [['title' => 'Backend Engineer', 'company' => 'Acme']],
-            'skills' => ['PHP', 'Laravel'],
-        ]);
+        $prompt = AiPrompts::build('critique_bullet', ['text' => 'Responsible for managing the sales team.']);
 
-        $this->assertStringContainsString('Backend Engineer', $prompt);
-        $this->assertStringContainsString('PHP', $prompt);
-        $this->assertStringContainsString('title', $prompt);
-        $this->assertStringContainsString('reasoning', $prompt);
-        $this->assertStringContainsString('skill_gaps', $prompt);
+        $this->assertStringContainsString('Responsible for managing the sales team.', $prompt);
+        $this->assertStringContainsString('Do NOT rewrite', $prompt);
+        $this->assertStringContainsString('themselves', $prompt);
     }
 
-    public function test_career_map_handles_empty_input(): void
+    public function test_critique_bullet_asks_for_the_facts_a_recruiter_needs(): void
     {
-        $prompt = AiPrompts::build('career_map', []);
+        $prompt = AiPrompts::build('critique_bullet', ['text' => 'Did some work.']);
 
-        $this->assertStringContainsString('No experience listed', $prompt);
-        $this->assertStringContainsString('No skills listed', $prompt);
-    }
-
-    public function test_translate_resume_includes_language_and_content(): void
-    {
-        $prompt = AiPrompts::build('translate_resume', [
-            'language' => 'spanish',
-            'content' => ['summary' => 'Senior backend engineer.', 'skills' => ['PHP', 'Laravel']],
-        ]);
-
-        $this->assertStringContainsString('Spanish', $prompt);
-        $this->assertStringContainsString('Senior backend engineer.', $prompt);
-        $this->assertStringContainsString('PHP', $prompt);
-        $this->assertStringContainsString('proper nouns', $prompt);
-    }
-
-    public function test_translate_resume_labels_mandarin(): void
-    {
-        $prompt = AiPrompts::build('translate_resume', [
-            'language' => 'mandarin',
-            'content' => ['summary' => 'Engineer.'],
-        ]);
-
-        $this->assertStringContainsString('Mandarin', $prompt);
+        $this->assertStringContainsString('at most 3', $prompt);
+        $this->assertStringContainsString('one per line', $prompt);
     }
 
     public function test_cover_letter_prompt_includes_tone_and_role_and_company(): void

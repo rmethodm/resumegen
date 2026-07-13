@@ -14,8 +14,6 @@ const FEATURE_LABELS: Record<string, string> = {
     ai_suggest:         'AI suggestions',
     cover_letter_limit: 'creating more cover letters',
     job_limit:          'tracking more job applications',
-    translate:          'translating resumes',
-    career_map:         'career mapping',
 };
 
 const TIER_NAMES: Record<string, string> = {
