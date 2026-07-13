@@ -1,8 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import AtsMatchPanel from './Partials/AtsMatchPanel';
-import CareerMapPanel from './Partials/CareerMapPanel';
-import TranslatePanel from './Partials/TranslatePanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
 import { triggerUpgradeModal } from '@/Components/UpgradeModal';
@@ -422,7 +420,7 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
-    isFirstResume, canDocx, canAiTailoring, canViewStrengthDetail, canCareerMap, canTranslate, canInterviewCoach, interviewCoachUsesRemaining,
+    isFirstResume, canDocx, canAiTailoring, canViewStrengthDetail, canInterviewCoach, interviewCoachUsesRemaining,
     allowedTemplates, photoUrl, completionScore, recruiterNote,
     skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier, isFreeTier,
 }: {
@@ -433,8 +431,6 @@ export default function Edit({
     canDocx: boolean;
     canAiTailoring: boolean;
     canViewStrengthDetail: boolean;
-    canCareerMap: boolean;
-    canTranslate: boolean;
     canInterviewCoach: boolean;
     interviewCoachUsesRemaining: number | null;
     allowedTemplates: string[];
@@ -459,7 +455,8 @@ export default function Edit({
     const [aiGenerated, setAiGenerated] = useState<Set<string>>(new Set());
     const markGenerated = (key: string) => setAiGenerated(prev => new Set(prev).add(key));
     const [keywordGaps, setKeywordGaps] = useState<string[]>([]);
-    const [careerPaths, setCareerPaths] = useState<{ title: string; reasoning: string; skill_gaps: string[] }[]>([]);
+    const [coachQuestions, setCoachQuestions] = useState<Record<string, string[]>>({});
+    const [coachAnswers, setCoachAnswers] = useState<Record<string, string>>({});
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? []);
     const [projects, setProjects] = useState<ProjectEntry[]>(resume.projects ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
@@ -598,9 +595,25 @@ export default function Edit({
         const data = await ai.run<{ keywords: string[] }>(route('builder.ai.ats-keywords', resume.id), { job_description: targetJobDescription });
         if (data?.keywords) { setKeywordGaps(data.keywords); }
     };
-    const handleCareerMap = async () => {
-        const data = await ai.run<{ paths: { title: string; reasoning: string; skill_gaps: string[] }[] }>(route('builder.ai.career-map', resume.id));
-        if (data?.paths) { setCareerPaths(data.paths); }
+    // The coach half of the bullet tools: ask the user for the facts the bullet is missing,
+    // then rebuild the bullet from their answer so the content is theirs, not the model's.
+    const handleCoachBullet = async (expId: string, bullets: string | null) => {
+        if (!bullets?.trim()) { return; }
+        const data = await ai.run<{ questions: string[] }>(route('builder.ai.critique-bullet', resume.id), { text: bullets });
+        if (data?.questions) { setCoachQuestions(prev => ({ ...prev, [expId]: data.questions })); }
+    };
+    const handleRebuildFromAnswer = async (expId: string, bullets: string | null) => {
+        const answer = coachAnswers[expId]?.trim();
+        if (!bullets?.trim() || !answer) { return; }
+        const data = await ai.run<{ suggestion: string }>(route('builder.ai.rewrite-bullet', resume.id), {
+            text: `${bullets}\n\nFacts the candidate supplied — use these, invent nothing else:\n${answer}`,
+        });
+        if (data?.suggestion) {
+            setExperience(prev => prev.map(e => e.id === expId ? { ...e, bullets: data.suggestion } : e));
+            setCoachQuestions(prev => { const next = { ...prev }; delete next[expId]; return next; });
+            setCoachAnswers(prev => { const next = { ...prev }; delete next[expId]; return next; });
+            setTimeout(save, 0);
+        }
     };
 
     // When AI credits run out, the button becomes an upgrade CTA (free→Starter, Starter→Pro)
@@ -919,17 +932,6 @@ export default function Edit({
                                 }
                             />
                         )}
-                        {sidebarOpen && aiEnabled && (
-                            <CareerMapPanel
-                                paths={careerPaths}
-                                aiButton={
-                                    canCareerMap
-                                        ? renderAiButton({ idle: '✨ Suggest career paths', onRun: handleCareerMap })
-                                        : <button type="button" onClick={() => triggerUpgradeModal('career_map', 'pro')} className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors">🔒 Career Map (Pro)</button>
-                                }
-                            />
-                        )}
-                        {sidebarOpen && aiEnabled && <TranslatePanel resumeId={resume.id} canTranslate={canTranslate} />}
                     </div>
                 </aside>
 
@@ -1013,7 +1015,27 @@ export default function Edit({
                                                     <div>
                                                         <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
                                                         <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
-                                                        {renderAiButton({ idle: '✨ Improve with AI', onRun: () => handleImproveExperience(exp.id, exp.bullets), regenerated: aiGenerated.has(`exp:${exp.id}`), extraDisabled: !exp.bullets?.trim(), className: 'mt-1' })}
+                                                        {aiEnabled && (
+                                                            <div className="mt-1 grid grid-cols-2 gap-2">
+                                                                {renderAiButton({ idle: '🎯 Coach me', onRun: () => handleCoachBullet(exp.id, exp.bullets), extraDisabled: !exp.bullets?.trim(), className: 'rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5' })}
+                                                                {renderAiButton({ idle: '✨ Write it for me', onRun: () => handleImproveExperience(exp.id, exp.bullets), regenerated: aiGenerated.has(`exp:${exp.id}`), extraDisabled: !exp.bullets?.trim(), className: 'rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5' })}
+                                                            </div>
+                                                        )}
+                                                        {coachQuestions[exp.id]?.length > 0 && (
+                                                            <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-3">
+                                                                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">This bullet doesn&apos;t say enough</p>
+                                                                <ul className="mt-1.5 list-disc pl-4 text-xs text-[#475569] space-y-0.5">
+                                                                    {coachQuestions[exp.id].map(q => <li key={q}>{q}</li>)}
+                                                                </ul>
+                                                                <FTextarea
+                                                                    value={coachAnswers[exp.id] ?? ''}
+                                                                    onChange={v => setCoachAnswers(prev => ({ ...prev, [exp.id]: v }))}
+                                                                    placeholder="Answer in your own words — the real numbers only you know"
+                                                                    rows={2}
+                                                                />
+                                                                {renderAiButton({ idle: '↩ Rebuild bullet from my answer', onRun: () => handleRebuildFromAnswer(exp.id, exp.bullets), extraDisabled: !coachAnswers[exp.id]?.trim(), className: 'mt-1' })}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </EntryCard>
                                             ))}

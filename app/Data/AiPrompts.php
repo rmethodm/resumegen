@@ -15,14 +15,12 @@ class AiPrompts
     {
         return match ($feature) {
             'rewrite_bullet' => self::rewriteBullet($input),
+            'critique_bullet' => self::critiqueBullet($input),
             'generate_summary' => self::generateSummary($input),
             'ats_keywords' => self::atsKeywords($input),
             'interview_coach' => self::interviewCoach($input),
             'career_coach' => self::careerCoach($input),
-            'career_map' => self::careerMap($input),
-            'resignation_letter' => self::resignationLetter($input),
             'cover_letter' => self::coverLetter($input),
-            'translate_resume' => self::translateResume($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
     }
@@ -41,6 +39,29 @@ class AiPrompts
         ONLY the rewritten bullet(s) with no quotes, numbering, or preamble.
 
         Bullets:
+        {$text}
+        PROMPT;
+    }
+
+    /**
+     * @param  array{text?: string}  $input
+     */
+    private static function critiqueBullet(array $input): string
+    {
+        $text = $input['text'] ?? '';
+
+        return <<<PROMPT
+        You are a resume coach. Do NOT rewrite the bullet below and do NOT write any replacement
+        text — the candidate must write it themselves, in their own words, using facts only they know.
+
+        Identify what a recruiter would need to know that this bullet fails to say: missing numbers,
+        missing scale, missing outcome, missing timeframe. Ask at most 3 short, specific questions
+        that would force those facts out of the candidate. Ask only about things the bullet actually
+        leaves unanswered. If the bullet is already specific and quantified, return nothing at all.
+
+        Return ONLY the questions, one per line, with no numbering, preamble, or commentary.
+
+        Bullet:
         {$text}
         PROMPT;
     }
@@ -149,101 +170,6 @@ class AiPrompts
         concise (a few short paragraphs, not an essay).
 
         {$resumeSection}
-        PROMPT;
-    }
-
-    /**
-     * @param  array{experience?: array<mixed>, skills?: array<mixed>}  $input
-     */
-    private static function careerMap(array $input): string
-    {
-        $skills = implode(', ', array_slice($input['skills'] ?? [], 0, 15)) ?: 'No skills listed';
-
-        $experienceLines = [];
-        foreach (array_slice($input['experience'] ?? [], 0, 5) as $exp) {
-            $line = implode(' at ', array_filter([$exp['title'] ?? null, $exp['company'] ?? null]));
-            if ($line) {
-                $experienceLines[] = $line;
-            }
-        }
-        $experienceText = $experienceLines ? implode("\n", $experienceLines) : 'No experience listed';
-
-        return <<<PROMPT
-        You are a career-path advisor. Based strictly on the candidate's skills and experience below,
-        suggest exactly 3 realistic career-path directions they could grow into next. Do not invent
-        employers, titles, or skills they haven't demonstrated.
-
-        Skills: {$skills}
-        Experience:
-        {$experienceText}
-
-        Return a JSON array of exactly 3 objects with this shape:
-        [{"title": "Engineering Manager", "reasoning": "...", "skill_gaps": ["...", "..."]}]
-
-        Return ONLY the JSON array. No markdown fences, no explanation, no preamble.
-        PROMPT;
-    }
-
-    /**
-     * @param  array{language?: string, content?: array<string, mixed>}  $input
-     */
-    private static function translateResume(array $input): string
-    {
-        $labels = [
-            'spanish' => 'Spanish', 'french' => 'French', 'german' => 'German',
-            'portuguese' => 'Portuguese', 'italian' => 'Italian',
-            'mandarin' => 'Mandarin (Simplified Chinese)', 'japanese' => 'Japanese',
-        ];
-        $language = $input['language'] ?? 'spanish';
-        $languageLabel = $labels[$language] ?? ucfirst($language);
-        $content = json_encode($input['content'] ?? [], JSON_PRETTY_PRINT);
-
-        return <<<PROMPT
-        Translate the following resume content JSON into {$languageLabel}. Translate every string
-        value into {$languageLabel}. Preserve the exact key structure, nesting, and array ordering
-        of the input JSON exactly — do not add, remove, or reorder any keys. Do NOT translate proper nouns:
-        company names, school names, product names, or people's names — leave those exactly as written.
-
-        Content:
-        {$content}
-
-        Return ONLY the translated JSON object with the same structure as the input. No markdown
-        fences, no explanation, no preamble.
-        PROMPT;
-    }
-
-    /**
-     * @param  array{tone?: string, last_day?: string, reason?: ?string, role?: ?string, company?: ?string, experience?: ?array<mixed>}  $input
-     */
-    private static function resignationLetter(array $input): string
-    {
-        $tone = $input['tone'] ?? 'formal';
-        $lastDay = $input['last_day'] ?? '';
-        $role = $input['role'] ?? null;
-        $company = $input['company'] ?? null;
-        $reason = $input['reason'] ?? null;
-
-        $contextLines = [];
-        if ($role) {
-            $contextLines[] = "Role: {$role}";
-        }
-        if ($company) {
-            $contextLines[] = "Company: {$company}";
-        }
-        if ($reason) {
-            $contextLines[] = "Reason for leaving: {$reason}";
-        }
-        $context = $contextLines ? implode("\n", $contextLines) : 'No additional context provided.';
-
-        return <<<PROMPT
-        Write a complete, professional resignation letter body in a {$tone} tone. Mention the last
-        working day ({$lastDay}) and reference the role/company naturally if provided below. Do not
-        invent facts beyond what is given. Do not include a date header or greeting/signature block —
-        the user will add those manually; write only the letter's message paragraphs.
-
-        {$context}
-
-        Return ONLY the letter body text. No markdown fences, no explanation, no preamble.
         PROMPT;
     }
 
