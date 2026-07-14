@@ -3,6 +3,7 @@ import Dropdown from '@/Components/Dropdown';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import {
     Bars3Icon,
+    ChatBubbleLeftRightIcon,
     DocumentTextIcon,
     EnvelopeIcon,
     HomeIcon,
@@ -62,7 +63,7 @@ export default function Authenticated({
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
         { label: 'Resumes', href: route('builder.index'), active: route().current('builder.*'), icon: DocumentTextIcon },
         { label: 'Cover Letters', href: route('cover-letters.index'), active: route().current('cover-letters.*'), icon: EnvelopeIcon },
-        { label: 'Messages', href: route('messages.index'), active: route().current('messages.*'), icon: EnvelopeIcon },
+        { label: 'Messages', href: route('messages.index'), active: route().current('messages.*'), icon: ChatBubbleLeftRightIcon },
     ];
     if (user.is_master_admin) {
         workspace.push({ label: 'Admin', href: adminHref(), active: route().current('admin.*'), icon: ShieldCheckIcon });
@@ -72,7 +73,7 @@ export default function Authenticated({
         { label: 'Portfolio', href: route('portfolio.edit'), active: route().current('portfolio.edit'), icon: GlobeAltIcon },
     ];
 
-    const renderNav = (items: NavItem[]) =>
+    const renderNav = (items: NavItem[], rail: boolean) =>
         items.map((item) => (
             <Link
                 key={item.label}
@@ -83,24 +84,24 @@ export default function Authenticated({
                         ? 'bg-[#eef2ff] text-[#4f46e5] dark:bg-gray-700 dark:text-white'
                         : 'text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#0f0f1a] dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white')
                 }
-                title={collapsed ? item.label : undefined}
+                title={rail ? item.label : undefined}
             >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
-                {!collapsed && <span>{item.label}</span>}
+                {!rail && <span>{item.label}</span>}
             </Link>
         ));
 
-    const sidebarInner = (
+    const renderSidebar = (rail: boolean) => (
         <>
             <Link href={route('dashboard')} className="flex items-center gap-2.5 px-3 py-4">
                 <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed]" />
-                {!collapsed && <span className="text-[15px] font-extrabold tracking-tight text-[#0f0f1a] dark:text-white">Resumegen</span>}
+                {!rail && <span className="text-[15px] font-extrabold tracking-tight text-[#0f0f1a] dark:text-white">Resumegen</span>}
             </Link>
             <nav className="flex flex-col gap-1 px-2">
-                {!collapsed && <div className="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Workspace</div>}
-                {renderNav(workspace)}
-                {!collapsed && <div className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Account</div>}
-                {renderNav(account)}
+                {!rail && <div className="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Workspace</div>}
+                {renderNav(workspace, rail)}
+                {!rail && <div className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Account</div>}
+                {renderNav(account, rail)}
             </nav>
         </>
     );
@@ -125,7 +126,7 @@ export default function Authenticated({
                         (collapsed ? 'w-[64px]' : 'w-64')
                     }
                 >
-                    {sidebarInner}
+                    {renderSidebar(collapsed)}
                 </aside>
 
                 {/* Mobile drawer */}
@@ -133,7 +134,7 @@ export default function Authenticated({
                     <div className="fixed inset-0 z-40 lg:hidden">
                         <div className="absolute inset-0 bg-black/30" onClick={() => setDrawerOpen(false)} />
                         <aside className="absolute left-0 top-0 h-full w-64 border-r border-[#eeeef5] bg-white dark:border-gray-700 dark:bg-gray-800">
-                            {sidebarInner}
+                            {renderSidebar(false)}
                         </aside>
                     </div>
                 )}
