@@ -92,7 +92,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/builder/{resume}/tags', [ResumeTagController::class, 'store'])->name('builder.tags.store');
     Route::delete('/builder/{resume}/tags/{tag}', [ResumeTagController::class, 'destroy'])->name('builder.tags.destroy');
 
-    Route::get('/search', SearchController::class)->name('search');
+    Route::get('/search', SearchController::class)->name('search')->middleware('throttle:30,1');
 
     Route::middleware(['ai_enabled', 'throttle:20,1'])->group(function () {
         Route::post('/builder/{resume}/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])->name('builder.ai.rewrite-bullet');

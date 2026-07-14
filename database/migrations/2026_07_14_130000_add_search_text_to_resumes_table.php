@@ -14,9 +14,13 @@ return new class extends Migration
         });
 
         // Backfill existing rows by re-saving through the model hook.
+        // Must fire events (saveQuietly() would skip the `saving` hook that
+        // populates search_text, leaving every backfilled row NULL).
+        // timestamps = false avoids bumping updated_at on backfill.
         Resume::query()->chunkById(200, function ($resumes) {
             foreach ($resumes as $resume) {
-                $resume->saveQuietly();
+                $resume->timestamps = false;
+                $resume->save();
             }
         });
     }
