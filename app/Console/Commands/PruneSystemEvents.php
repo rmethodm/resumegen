@@ -9,7 +9,7 @@ class PruneSystemEvents extends Command
 {
     protected $signature = 'system-events:prune {--days=30 : Age in days after which delivery events are deleted}';
 
-    protected $description = 'Delete system delivery events (mail/webhook) older than the retention window.';
+    protected $description = 'Delete system delivery events (mail) older than the retention window.';
 
     public function handle(): int
     {

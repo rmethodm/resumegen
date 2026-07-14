@@ -1,0 +1,2262 @@
+{
+  "app/Console/Commands/AiCostAlert.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "2c30e3229681c863d0c2e29d0a5da49b",
+    "semantic_hash": "2c30e3229681c863d0c2e29d0a5da49b"
+  },
+  "app/Console/Commands/CaptureRevenueSnapshot.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "916f52624cbeef2639ea043b922f411e",
+    "semantic_hash": "916f52624cbeef2639ea043b922f411e"
+  },
+  "app/Console/Commands/GenerateTemplateThumbnails.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "9af86eb2ecefd2326c3a3100ba226b39",
+    "semantic_hash": "9af86eb2ecefd2326c3a3100ba226b39"
+  },
+  "app/Console/Commands/NudgeResumeViewsCommand.php": {
+    "mtime": 1783511339.9941847,
+    "ast_hash": "68027af180a0bd34e315537e0d1cc8b5",
+    "semantic_hash": "68027af180a0bd34e315537e0d1cc8b5"
+  },
+  "app/Console/Commands/NudgeStaleResumesCommand.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "8ded04979a4aaa0b375382e84aa5c6c4",
+    "semantic_hash": "8ded04979a4aaa0b375382e84aa5c6c4"
+  },
+  "app/Console/Commands/PruneFlaggedAiText.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "60d9ae6c6d44f17856a9872b53246108",
+    "semantic_hash": "60d9ae6c6d44f17856a9872b53246108"
+  },
+  "app/Console/Commands/PruneSystemEvents.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "c07a9c767e6436444e7743c9956a829e",
+    "semantic_hash": "c07a9c767e6436444e7743c9956a829e"
+  },
+  "app/Data/AiPrompts.php": {
+    "mtime": 1783472189.7858756,
+    "ast_hash": "be5ed4d314c7d8717b4b14a55a8ce992",
+    "semantic_hash": "be5ed4d314c7d8717b4b14a55a8ce992"
+  },
+  "app/Data/AtsKeywords.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "8285be07cd65042aa9bd9e402e9e7c88",
+    "semantic_hash": "8285be07cd65042aa9bd9e402e9e7c88"
+  },
+  "app/Data/CoverLetterTemplates.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "836ecf33f97f34f01bab9fdb185a3732",
+    "semantic_hash": "836ecf33f97f34f01bab9fdb185a3732"
+  },
+  "app/Data/ResignationLetterTemplates.php": {
+    "mtime": 1783472189.7860467,
+    "ast_hash": "757eafd0d4fcf6a93e0746a41559b70e",
+    "semantic_hash": "757eafd0d4fcf6a93e0746a41559b70e"
+  },
+  "app/Data/ResumeRules.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "74101d0c5a13bedbd8d2ed112004e4bf",
+    "semantic_hash": "74101d0c5a13bedbd8d2ed112004e4bf"
+  },
+  "app/Data/SalaryRanges.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "369b8c77da6dd6eb0f41fde7f82a24be",
+    "semantic_hash": "369b8c77da6dd6eb0f41fde7f82a24be"
+  },
+  "app/Data/SampleResume.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "e1dd273eb2e769ac462fe2da10036779",
+    "semantic_hash": "e1dd273eb2e769ac462fe2da10036779"
+  },
+  "app/Data/SkillCategories.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "e38814aff0d5779db08446c6e013bb3e",
+    "semantic_hash": "e38814aff0d5779db08446c6e013bb3e"
+  },
+  "app/Exceptions/AiDisabledException.php": {
+    "mtime": 1783675787.6023986,
+    "ast_hash": "aaa097e5663103152cf8051be95da453",
+    "semantic_hash": "aaa097e5663103152cf8051be95da453"
+  },
+  "app/Exceptions/ModerationException.php": {
+    "mtime": 1782464292.2722476,
+    "ast_hash": "336b586fedc7ac1a8cb68abb89d3a8a1",
+    "semantic_hash": "336b586fedc7ac1a8cb68abb89d3a8a1"
+  },
+  "app/Filament/Pages/AiOverviewPage.php": {
+    "mtime": 1783676094.1910634,
+    "ast_hash": "9a98beccf4719869b8d95a6cd7dc372f",
+    "semantic_hash": "9a98beccf4719869b8d95a6cd7dc372f"
+  },
+  "app/Filament/Pages/AiUsersPage.php": {
+    "mtime": 1783676102.934848,
+    "ast_hash": "e80869da99d59f893deb8fe671a18e3c",
+    "semantic_hash": "e80869da99d59f893deb8fe671a18e3c"
+  },
+  "app/Filament/Pages/AuditPage.php": {
+    "mtime": 1783472189.7868817,
+    "ast_hash": "759c96f28621798cddddcef55f68c800",
+    "semantic_hash": "759c96f28621798cddddcef55f68c800"
+  },
+  "app/Filament/Pages/ContentPage.php": {
+    "mtime": 1783472189.7869852,
+    "ast_hash": "36ac72ff65b36a5db62b10e6291c5b78",
+    "semantic_hash": "36ac72ff65b36a5db62b10e6291c5b78"
+  },
+  "app/Filament/Pages/GrowthPage.php": {
+    "mtime": 1783472189.7870798,
+    "ast_hash": "2ed09bf73a53fc5a1f4f2bc14704ef61",
+    "semantic_hash": "2ed09bf73a53fc5a1f4f2bc14704ef61"
+  },
+  "app/Filament/Pages/OpsPage.php": {
+    "mtime": 1783472189.7871387,
+    "ast_hash": "4dd7b88ac57a2fa32ddb251c28948668",
+    "semantic_hash": "4dd7b88ac57a2fa32ddb251c28948668"
+  },
+  "app/Filament/Pages/RevenuePage.php": {
+    "mtime": 1783472189.787193,
+    "ast_hash": "c8a4f1082da8a8fe9033ab279f89b80f",
+    "semantic_hash": "c8a4f1082da8a8fe9033ab279f89b80f"
+  },
+  "app/Filament/Resources/CareerArticleResource.php": {
+    "mtime": 1783472189.787307,
+    "ast_hash": "c7fdc3b9d21d470148c2024d836d6dc6",
+    "semantic_hash": "c7fdc3b9d21d470148c2024d836d6dc6"
+  },
+  "app/Filament/Resources/CareerArticleResource/Pages/CreateCareerArticle.php": {
+    "mtime": 1783472189.7874978,
+    "ast_hash": "57d1d9b988997953783edef6addf40de",
+    "semantic_hash": "57d1d9b988997953783edef6addf40de"
+  },
+  "app/Filament/Resources/CareerArticleResource/Pages/EditCareerArticle.php": {
+    "mtime": 1783472189.787552,
+    "ast_hash": "093c24553c2d5f0936e3d1b5a8c92fca",
+    "semantic_hash": "093c24553c2d5f0936e3d1b5a8c92fca"
+  },
+  "app/Filament/Resources/CareerArticleResource/Pages/ListCareerArticles.php": {
+    "mtime": 1783472189.7877724,
+    "ast_hash": "6c42c13dbc2ede84ceb867ee119e678f",
+    "semantic_hash": "6c42c13dbc2ede84ceb867ee119e678f"
+  },
+  "app/Filament/Resources/JobRoleResource.php": {
+    "mtime": 1783472189.787846,
+    "ast_hash": "3b6a9d7aaf43bf7e862c4f14c42e9351",
+    "semantic_hash": "3b6a9d7aaf43bf7e862c4f14c42e9351"
+  },
+  "app/Filament/Resources/JobRoleResource/Pages/CreateJobRole.php": {
+    "mtime": 1783472189.7880487,
+    "ast_hash": "91c2af4b4be4dd0a0eb2825e6acb5550",
+    "semantic_hash": "91c2af4b4be4dd0a0eb2825e6acb5550"
+  },
+  "app/Filament/Resources/JobRoleResource/Pages/EditJobRole.php": {
+    "mtime": 1783472189.7881987,
+    "ast_hash": "b2a7365cb83a0895faec7f3e9fe3a16a",
+    "semantic_hash": "b2a7365cb83a0895faec7f3e9fe3a16a"
+  },
+  "app/Filament/Resources/JobRoleResource/Pages/ListJobRoles.php": {
+    "mtime": 1783472189.788534,
+    "ast_hash": "ff73012c122f94fa6afe4775c0cf1dac",
+    "semantic_hash": "ff73012c122f94fa6afe4775c0cf1dac"
+  },
+  "app/Filament/Resources/JobSkillResource.php": {
+    "mtime": 1783472189.7888806,
+    "ast_hash": "734d7729ed173572bf6cb4822436eeb5",
+    "semantic_hash": "734d7729ed173572bf6cb4822436eeb5"
+  },
+  "app/Filament/Resources/JobSkillResource/Pages/CreateJobSkill.php": {
+    "mtime": 1783472189.7893827,
+    "ast_hash": "a7dc6871c56629e673c7bc202906c50a",
+    "semantic_hash": "a7dc6871c56629e673c7bc202906c50a"
+  },
+  "app/Filament/Resources/JobSkillResource/Pages/EditJobSkill.php": {
+    "mtime": 1783472189.7895503,
+    "ast_hash": "4c9b582c804e8ed19175b1cf54fe603f",
+    "semantic_hash": "4c9b582c804e8ed19175b1cf54fe603f"
+  },
+  "app/Filament/Resources/JobSkillResource/Pages/ListJobSkills.php": {
+    "mtime": 1783472189.7896743,
+    "ast_hash": "1d53d03de62deb3c0dfdb028aeda2399",
+    "semantic_hash": "1d53d03de62deb3c0dfdb028aeda2399"
+  },
+  "app/Filament/Resources/JobTitleResource.php": {
+    "mtime": 1783472189.7898328,
+    "ast_hash": "77038174067a5dd6126dd7313409a1ea",
+    "semantic_hash": "77038174067a5dd6126dd7313409a1ea"
+  },
+  "app/Filament/Resources/JobTitleResource/Pages/CreateJobTitle.php": {
+    "mtime": 1783472189.790176,
+    "ast_hash": "20bd41b7ade075ba95ebd2e56d707dee",
+    "semantic_hash": "20bd41b7ade075ba95ebd2e56d707dee"
+  },
+  "app/Filament/Resources/JobTitleResource/Pages/EditJobTitle.php": {
+    "mtime": 1783472189.7903605,
+    "ast_hash": "08ccfbe034631cf7b361aae737985dea",
+    "semantic_hash": "08ccfbe034631cf7b361aae737985dea"
+  },
+  "app/Filament/Resources/JobTitleResource/Pages/ListJobTitles.php": {
+    "mtime": 1783472189.7905583,
+    "ast_hash": "a29e590dcea7182ca0959e98aef0430f",
+    "semantic_hash": "a29e590dcea7182ca0959e98aef0430f"
+  },
+  "app/Filament/Resources/MessageResource.php": {
+    "mtime": 1783472189.79079,
+    "ast_hash": "4b0d5c0c291d2bf4a3068adc784eb4f5",
+    "semantic_hash": "4b0d5c0c291d2bf4a3068adc784eb4f5"
+  },
+  "app/Filament/Resources/MessageResource/Pages/ListPortfolioMessages.php": {
+    "mtime": 1783472189.791116,
+    "ast_hash": "e67e6d672dd662f8ab40af9ca18f7b6b",
+    "semantic_hash": "e67e6d672dd662f8ab40af9ca18f7b6b"
+  },
+  "app/Filament/Resources/MessageResource/Pages/ViewPortfolioMessage.php": {
+    "mtime": 1783472189.791224,
+    "ast_hash": "6a067cd6dfa75621fa3afe7f11bd7e73",
+    "semantic_hash": "6a067cd6dfa75621fa3afe7f11bd7e73"
+  },
+  "app/Filament/Resources/ProofreadingRequestResource.php": {
+    "mtime": 1783472189.791279,
+    "ast_hash": "0336ffd61f8b886e8f9f36c8ab8cbe6d",
+    "semantic_hash": "0336ffd61f8b886e8f9f36c8ab8cbe6d"
+  },
+  "app/Filament/Resources/ProofreadingRequestResource/Pages/ListProofreadingRequests.php": {
+    "mtime": 1783472189.7914681,
+    "ast_hash": "0e57c7711ac0fc13c58348f28d73e767",
+    "semantic_hash": "0e57c7711ac0fc13c58348f28d73e767"
+  },
+  "app/Filament/Resources/ProofreadingRequestResource/Pages/ViewProofreadingRequest.php": {
+    "mtime": 1783472189.791604,
+    "ast_hash": "f2cd74dae001004f825098eeda2797f8",
+    "semantic_hash": "f2cd74dae001004f825098eeda2797f8"
+  },
+  "app/Filament/Resources/UserResource.php": {
+    "mtime": 1783472189.7916896,
+    "ast_hash": "a739eba6816d795234597131431ba5f0",
+    "semantic_hash": "a739eba6816d795234597131431ba5f0"
+  },
+  "app/Filament/Resources/UserResource/Pages/CreateUser.php": {
+    "mtime": 1783472189.7922547,
+    "ast_hash": "742e2aa502b43e0a976678d65fe907d8",
+    "semantic_hash": "742e2aa502b43e0a976678d65fe907d8"
+  },
+  "app/Filament/Resources/UserResource/Pages/EditUser.php": {
+    "mtime": 1783472189.7924314,
+    "ast_hash": "29ccbd448a310e73ba8c9cbbbc71a8c3",
+    "semantic_hash": "29ccbd448a310e73ba8c9cbbbc71a8c3"
+  },
+  "app/Filament/Resources/UserResource/Pages/ListUsers.php": {
+    "mtime": 1783472189.7925875,
+    "ast_hash": "8fc76ef7ee0e819ec1db174d465aaca0",
+    "semantic_hash": "8fc76ef7ee0e819ec1db174d465aaca0"
+  },
+  "app/Filament/Widgets/AdminStatsOverview.php": {
+    "mtime": 1783676114.4731266,
+    "ast_hash": "1ab0e10a63b9fe0b434896c8abf6e33d",
+    "semantic_hash": "1ab0e10a63b9fe0b434896c8abf6e33d"
+  },
+  "app/Http/Controllers/AdminImpersonationController.php": {
+    "mtime": 1783472189.792818,
+    "ast_hash": "d3cf621953fa4b346e64de0372a81ffa",
+    "semantic_hash": "d3cf621953fa4b346e64de0372a81ffa"
+  },
+  "app/Http/Controllers/AiSuggestionController.php": {
+    "mtime": 1783640514.5595722,
+    "ast_hash": "04cdecad17c6dbc56051054f3f16377d",
+    "semantic_hash": "04cdecad17c6dbc56051054f3f16377d"
+  },
+  "app/Http/Controllers/AnalyticsController.php": {
+    "mtime": 1783550671.1857276,
+    "ast_hash": "83bb2bb0b03b9a9575f5b4b00d5c5191",
+    "semantic_hash": "83bb2bb0b03b9a9575f5b4b00d5c5191"
+  },
+  "app/Http/Controllers/Api/ActivityController.php": {
+    "mtime": 1782464292.2742476,
+    "ast_hash": "a78126a97a3929838a508ec674ab7b97",
+    "semantic_hash": "a78126a97a3929838a508ec674ab7b97"
+  },
+  "app/Http/Controllers/Api/ThreadReplyController.php": {
+    "mtime": 1782464292.2742476,
+    "ast_hash": "65e5a145a56e4c4c5aa3c14818e96b23",
+    "semantic_hash": "65e5a145a56e4c4c5aa3c14818e96b23"
+  },
+  "app/Http/Controllers/Auth/AuthenticatedSessionController.php": {
+    "mtime": 1782464292.2742476,
+    "ast_hash": "0902e75d7201abdb88c72ec60e376950",
+    "semantic_hash": "0902e75d7201abdb88c72ec60e376950"
+  },
+  "app/Http/Controllers/Auth/ConfirmablePasswordController.php": {
+    "mtime": 1782464292.2742476,
+    "ast_hash": "fee3d986bfe89938af1bc3ed87537728",
+    "semantic_hash": "fee3d986bfe89938af1bc3ed87537728"
+  },
+  "app/Http/Controllers/Auth/ConfirmedTwoFactorController.php": {
+    "mtime": 1782464292.2742476,
+    "ast_hash": "3b3ac53f7192d5d1e7ea4d65ddd3eca7",
+    "semantic_hash": "3b3ac53f7192d5d1e7ea4d65ddd3eca7"
+  },
+  "app/Http/Controllers/Auth/EmailVerificationNotificationController.php": {
+    "mtime": 1782464292.2742476,
+    "ast_hash": "68ced5fefa7a2362391bc17048d150a4",
+    "semantic_hash": "68ced5fefa7a2362391bc17048d150a4"
+  },
+  "app/Http/Controllers/Auth/EmailVerificationPromptController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "c873b98fe182689691921ec87a6e3893",
+    "semantic_hash": "c873b98fe182689691921ec87a6e3893"
+  },
+  "app/Http/Controllers/Auth/NewPasswordController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "60a63805bd41f2e742cccaeca37b6c79",
+    "semantic_hash": "60a63805bd41f2e742cccaeca37b6c79"
+  },
+  "app/Http/Controllers/Auth/PasswordController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "1462f1e00bbf125e74e9f4ab59bf7a55",
+    "semantic_hash": "1462f1e00bbf125e74e9f4ab59bf7a55"
+  },
+  "app/Http/Controllers/Auth/PasswordResetLinkController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "ebd707bf4b1d4f66ac29dcb137fdb35b",
+    "semantic_hash": "ebd707bf4b1d4f66ac29dcb137fdb35b"
+  },
+  "app/Http/Controllers/Auth/RegisteredUserController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "c9f5868fce6b59c3fbf8072ed1133484",
+    "semantic_hash": "c9f5868fce6b59c3fbf8072ed1133484"
+  },
+  "app/Http/Controllers/Auth/TwoFactorChallengeController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "81905e8571e0d8e6b6a82d1efa59ce97",
+    "semantic_hash": "81905e8571e0d8e6b6a82d1efa59ce97"
+  },
+  "app/Http/Controllers/Auth/TwoFactorController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "4a032b7f3dd8a14880d078a1fc68d27c",
+    "semantic_hash": "4a032b7f3dd8a14880d078a1fc68d27c"
+  },
+  "app/Http/Controllers/Auth/TwoFactorRecoveryCodesController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "41088234c20a58fb174d28271894ec35",
+    "semantic_hash": "41088234c20a58fb174d28271894ec35"
+  },
+  "app/Http/Controllers/Auth/VerifyEmailController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "f7ba8245c1fa0f3e7d8591364c8f8943",
+    "semantic_hash": "f7ba8245c1fa0f3e7d8591364c8f8943"
+  },
+  "app/Http/Controllers/AutocompleteController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "35cb855db980f8bd365e6f2fcdab6904",
+    "semantic_hash": "35cb855db980f8bd365e6f2fcdab6904"
+  },
+  "app/Http/Controllers/BillingController.php": {
+    "mtime": 1783472189.794377,
+    "ast_hash": "3d568543b24d5b13b1894788f970de26",
+    "semantic_hash": "3d568543b24d5b13b1894788f970de26"
+  },
+  "app/Http/Controllers/CareerCoachController.php": {
+    "mtime": 1783640514.559799,
+    "ast_hash": "743d8391d7441d0b414df52cb54459f7",
+    "semantic_hash": "743d8391d7441d0b414df52cb54459f7"
+  },
+  "app/Http/Controllers/CareerHubController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "fc21c1c2b6d2b4164752cfc1b76d3620",
+    "semantic_hash": "fc21c1c2b6d2b4164752cfc1b76d3620"
+  },
+  "app/Http/Controllers/Controller.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "27901d57a11cae63eb649a00dba8a400",
+    "semantic_hash": "27901d57a11cae63eb649a00dba8a400"
+  },
+  "app/Http/Controllers/CoverLetterController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "399555ba8c87d76862e42a9ec5eae1c9",
+    "semantic_hash": "399555ba8c87d76862e42a9ec5eae1c9"
+  },
+  "app/Http/Controllers/HeatmapController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "d5855c0ddb455a8520ec2c3e78148b0e",
+    "semantic_hash": "d5855c0ddb455a8520ec2c3e78148b0e"
+  },
+  "app/Http/Controllers/ImportTestController.php": {
+    "mtime": 1783640514.5600293,
+    "ast_hash": "1698a6afa3f65d1c1d238ef8e0231ead",
+    "semantic_hash": "1698a6afa3f65d1c1d238ef8e0231ead"
+  },
+  "app/Http/Controllers/InterviewCoachController.php": {
+    "mtime": 1783640514.5602057,
+    "ast_hash": "ba55dae9b574ce383af5f0e8ae97c198",
+    "semantic_hash": "ba55dae9b574ce383af5f0e8ae97c198"
+  },
+  "app/Http/Controllers/MessagesController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "7edcce63b9bd7416d5ded0baff4041af",
+    "semantic_hash": "7edcce63b9bd7416d5ded0baff4041af"
+  },
+  "app/Http/Controllers/OgImageController.php": {
+    "mtime": 1782464292.2752476,
+    "ast_hash": "373457e1d4f9f7a52371d1088c8d99b5",
+    "semantic_hash": "373457e1d4f9f7a52371d1088c8d99b5"
+  },
+  "app/Http/Controllers/OnboardingController.php": {
+    "mtime": 1783552466.8067136,
+    "ast_hash": "cf367c43c9f62479acaf861d52931a64",
+    "semantic_hash": "cf367c43c9f62479acaf861d52931a64"
+  },
+  "app/Http/Controllers/PersonalTokenController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "174a248d48b61922223744555eeeac1e",
+    "semantic_hash": "174a248d48b61922223744555eeeac1e"
+  },
+  "app/Http/Controllers/PortfolioController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "f73590f77164dab0c604136b75790f39",
+    "semantic_hash": "f73590f77164dab0c604136b75790f39"
+  },
+  "app/Http/Controllers/ProfileController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "6b27c3308465181ae3c22020033de7ff",
+    "semantic_hash": "6b27c3308465181ae3c22020033de7ff"
+  },
+  "app/Http/Controllers/ProofreadingController.php": {
+    "mtime": 1783472189.794569,
+    "ast_hash": "c0e58b27a334a42d6ae9c39d20f23d01",
+    "semantic_hash": "c0e58b27a334a42d6ae9c39d20f23d01"
+  },
+  "app/Http/Controllers/PublicResumeController.php": {
+    "mtime": 1783551197.6278148,
+    "ast_hash": "0b68416e1f2c2f89d6ba9a31ff67ad42",
+    "semantic_hash": "0b68416e1f2c2f89d6ba9a31ff67ad42"
+  },
+  "app/Http/Controllers/PublicThreadController.php": {
+    "mtime": 1783473713.7551928,
+    "ast_hash": "3ef81a50f35f2d2b8441aef525145bea",
+    "semantic_hash": "3ef81a50f35f2d2b8441aef525145bea"
+  },
+  "app/Http/Controllers/ResignationLetterController.php": {
+    "mtime": 1783640514.5604477,
+    "ast_hash": "93a0799a170acf887ffb03c9e8ebe029",
+    "semantic_hash": "93a0799a170acf887ffb03c9e8ebe029"
+  },
+  "app/Http/Controllers/ResumeBuilderController.php": {
+    "mtime": 1783552301.6806917,
+    "ast_hash": "7e52d5e2a1d69ac543f415db1ff3e487",
+    "semantic_hash": "7e52d5e2a1d69ac543f415db1ff3e487"
+  },
+  "app/Http/Controllers/ResumePhotoController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "aad2f339575baa0ad568aac58651311e",
+    "semantic_hash": "aad2f339575baa0ad568aac58651311e"
+  },
+  "app/Http/Controllers/ResumeTagController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "53c1859b86a27e6b38e74649dd26d17e",
+    "semantic_hash": "53c1859b86a27e6b38e74649dd26d17e"
+  },
+  "app/Http/Controllers/ResumeThreadController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "221fe92dfeb152488f2171740b85f34f",
+    "semantic_hash": "221fe92dfeb152488f2171740b85f34f"
+  },
+  "app/Http/Controllers/SalaryController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "59c260dda4afb00299ea4db71a9991e9",
+    "semantic_hash": "59c260dda4afb00299ea4db71a9991e9"
+  },
+  "app/Http/Controllers/SectionEventController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "a60add5c8861a3e6b693c9a3e17cba5d",
+    "semantic_hash": "a60add5c8861a3e6b693c9a3e17cba5d"
+  },
+  "app/Http/Controllers/ShareLinkController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "2b34d555a0ea227542343003b3cdcaec",
+    "semantic_hash": "2b34d555a0ea227542343003b3cdcaec"
+  },
+  "app/Http/Controllers/StrengthScoreController.php": {
+    "mtime": 1783551916.181221,
+    "ast_hash": "cf8e34877c8b8c405dbb8e08364b2b16",
+    "semantic_hash": "cf8e34877c8b8c405dbb8e08364b2b16"
+  },
+  "app/Http/Controllers/WebhookController.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "75965b64c31027f66d9e2715273cab3e",
+    "semantic_hash": "75965b64c31027f66d9e2715273cab3e"
+  },
+  "app/Http/Middleware/EnsureAiEnabled.php": {
+    "mtime": 1783675735.9355989,
+    "ast_hash": "7b2614153072fbee7ee58080f888fb18",
+    "semantic_hash": "7b2614153072fbee7ee58080f888fb18"
+  },
+  "app/Http/Middleware/EnsureTwoFactorSetup.php": {
+    "mtime": 1782464292.2762477,
+    "ast_hash": "80eb79df3a531dbd51468c4b39d912ee",
+    "semantic_hash": "80eb79df3a531dbd51468c4b39d912ee"
+  },
+  "app/Http/Middleware/HandleInertiaRequests.php": {
+    "mtime": 1783675816.5247834,
+    "ast_hash": "8146fd4a3f8e0441c30535e04087b682",
+    "semantic_hash": "8146fd4a3f8e0441c30535e04087b682"
+  },
+  "app/Http/Middleware/RequiresTwoFactorChallenge.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "317fcaff0f0d06e4a2376f75890423f4",
+    "semantic_hash": "317fcaff0f0d06e4a2376f75890423f4"
+  },
+  "app/Http/Middleware/TrackActivity.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "d3cce9edc2eac111ae15f2c2d0712208",
+    "semantic_hash": "d3cce9edc2eac111ae15f2c2d0712208"
+  },
+  "app/Http/Requests/Auth/LoginRequest.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "21107567fe3fc4fa4f0adf159dc2269f",
+    "semantic_hash": "21107567fe3fc4fa4f0adf159dc2269f"
+  },
+  "app/Http/Requests/ProfileUpdateRequest.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "80a73e67db650b32485bc84687e5b634",
+    "semantic_hash": "80a73e67db650b32485bc84687e5b634"
+  },
+  "app/Jobs/DeliverWebhook.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "6ab49c553e9707a6a7fd086b1bdf89f2",
+    "semantic_hash": "6ab49c553e9707a6a7fd086b1bdf89f2"
+  },
+  "app/Mail/NewPortfolioMessageMail.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "8fcdbe4dfb61afd7110f6bfb31cf5f06",
+    "semantic_hash": "8fcdbe4dfb61afd7110f6bfb31cf5f06"
+  },
+  "app/Mail/NewThreadStarted.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "973a9e834111a0b9aa638e9e3b778232",
+    "semantic_hash": "973a9e834111a0b9aa638e9e3b778232"
+  },
+  "app/Mail/NewVisitorReply.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "3750272f5a5c492d5fe448af448ca90d",
+    "semantic_hash": "3750272f5a5c492d5fe448af448ca90d"
+  },
+  "app/Mail/ResumeViewNudgeMail.php": {
+    "mtime": 1783511347.9957883,
+    "ast_hash": "683d83f2aee739c2e798c6d68fb4c864",
+    "semantic_hash": "683d83f2aee739c2e798c6d68fb4c864"
+  },
+  "app/Mail/StaleResumeNudgeMail.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "7e19376f131902116a5183bd94d3bb46",
+    "semantic_hash": "7e19376f131902116a5183bd94d3bb46"
+  },
+  "app/Mail/TwoFactorCodeMail.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "eb7d21f96b0956f3672ed7dd26243c35",
+    "semantic_hash": "eb7d21f96b0956f3672ed7dd26243c35"
+  },
+  "app/Mail/VisitorThreadReply.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "22d62cb289567a1deea1110d081ed9cd",
+    "semantic_hash": "22d62cb289567a1deea1110d081ed9cd"
+  },
+  "app/Models/AdminAuditLog.php": {
+    "mtime": 1783553273.430582,
+    "ast_hash": "198bb590742c8388dbe5f91e6650f2f5",
+    "semantic_hash": "198bb590742c8388dbe5f91e6650f2f5"
+  },
+  "app/Models/AiRequest.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "db95bc4ef15714b71096ba7938231401",
+    "semantic_hash": "db95bc4ef15714b71096ba7938231401"
+  },
+  "app/Models/CareerArticle.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "3716441aad8a6328e3965a7bae02babc",
+    "semantic_hash": "3716441aad8a6328e3965a7bae02babc"
+  },
+  "app/Models/CareerCoachMessage.php": {
+    "mtime": 1783472189.7951624,
+    "ast_hash": "6aa8db7e40d90636d5a2d64b98b08be6",
+    "semantic_hash": "6aa8db7e40d90636d5a2d64b98b08be6"
+  },
+  "app/Models/CoverLetter.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "8d5659e7670ed3961a56cc6f88c722a6",
+    "semantic_hash": "8d5659e7670ed3961a56cc6f88c722a6"
+  },
+  "app/Models/JobRole.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "1aef7c89bb193cd3ac67f686d5377603",
+    "semantic_hash": "1aef7c89bb193cd3ac67f686d5377603"
+  },
+  "app/Models/JobSkill.php": {
+    "mtime": 1782464292.2772477,
+    "ast_hash": "43e9846da10707007154f1324b9eb21a",
+    "semantic_hash": "43e9846da10707007154f1324b9eb21a"
+  },
+  "app/Models/JobTitle.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "b6bd526c89ba3992ce3243da35def014",
+    "semantic_hash": "b6bd526c89ba3992ce3243da35def014"
+  },
+  "app/Models/PortfolioMessage.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "9af94d974db51e2d7294d85862516d30",
+    "semantic_hash": "9af94d974db51e2d7294d85862516d30"
+  },
+  "app/Models/ProofreadingRequest.php": {
+    "mtime": 1783472189.7954268,
+    "ast_hash": "0f925734f65a3187f37c1994a0f4b392",
+    "semantic_hash": "0f925734f65a3187f37c1994a0f4b392"
+  },
+  "app/Models/ResignationLetter.php": {
+    "mtime": 1783472189.7955759,
+    "ast_hash": "e55936dcffeb8e547dcb1113b1fde75e",
+    "semantic_hash": "e55936dcffeb8e547dcb1113b1fde75e"
+  },
+  "app/Models/Resume.php": {
+    "mtime": 1783640514.5606716,
+    "ast_hash": "4b636345e97808e81527aaea56c595dd",
+    "semantic_hash": "4b636345e97808e81527aaea56c595dd"
+  },
+  "app/Models/ResumeSectionEvent.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "f774438d502fa4652c7871661de8e8ce",
+    "semantic_hash": "f774438d502fa4652c7871661de8e8ce"
+  },
+  "app/Models/ResumeShareEvent.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "7b6c831e954cd4822e4fd3e97dce88ef",
+    "semantic_hash": "7b6c831e954cd4822e4fd3e97dce88ef"
+  },
+  "app/Models/ResumeShareLink.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "34f67fba36bc27e77f0b0e185f560330",
+    "semantic_hash": "34f67fba36bc27e77f0b0e185f560330"
+  },
+  "app/Models/ResumeTag.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "827c5dca276f03c1df00f85c2a8ca08c",
+    "semantic_hash": "827c5dca276f03c1df00f85c2a8ca08c"
+  },
+  "app/Models/ResumeThread.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "ec76d1003db79f2fe2aa3f8d625a6b1f",
+    "semantic_hash": "ec76d1003db79f2fe2aa3f8d625a6b1f"
+  },
+  "app/Models/ResumeThreadMessage.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "9bf71de081c5a0250c02c0c68ebee8b9",
+    "semantic_hash": "9bf71de081c5a0250c02c0c68ebee8b9"
+  },
+  "app/Models/RevenueSnapshot.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "bf801cd2064595ab6c2c9375468e7009",
+    "semantic_hash": "bf801cd2064595ab6c2c9375468e7009"
+  },
+  "app/Models/SystemEvent.php": {
+    "mtime": 1783553273.4215388,
+    "ast_hash": "a794d887e0b54b55b04dc26ef3c26721",
+    "semantic_hash": "a794d887e0b54b55b04dc26ef3c26721"
+  },
+  "app/Models/User.php": {
+    "mtime": 1783640514.56088,
+    "ast_hash": "aaf8c5da292d64d592f35eb71e450e50",
+    "semantic_hash": "aaf8c5da292d64d592f35eb71e450e50"
+  },
+  "app/Models/UserActivityDay.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "6afa3f5073fdabab2bbb94d94988bbb8",
+    "semantic_hash": "6afa3f5073fdabab2bbb94d94988bbb8"
+  },
+  "app/Models/WebhookEndpoint.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "7a5b2edabeddcab4a15bf961dd7db3e3",
+    "semantic_hash": "7a5b2edabeddcab4a15bf961dd7db3e3"
+  },
+  "app/Policies/CoverLetterPolicy.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "7324291813d1ff9866212bf278ee14db",
+    "semantic_hash": "7324291813d1ff9866212bf278ee14db"
+  },
+  "app/Policies/ResignationLetterPolicy.php": {
+    "mtime": 1783472189.795853,
+    "ast_hash": "170c0fff3dc5457ebe33fb1bd3b58355",
+    "semantic_hash": "170c0fff3dc5457ebe33fb1bd3b58355"
+  },
+  "app/Policies/ResumePolicy.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "7f6bdd171d39aad46e6249d126bba677",
+    "semantic_hash": "7f6bdd171d39aad46e6249d126bba677"
+  },
+  "app/Policies/ResumeShareLinkPolicy.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "45a1360d4b9119fac54ba77cf768921f",
+    "semantic_hash": "45a1360d4b9119fac54ba77cf768921f"
+  },
+  "app/Providers/AppServiceProvider.php": {
+    "mtime": 1783472189.7960787,
+    "ast_hash": "303e7e6d9cba88c22d15b09a44a7cd38",
+    "semantic_hash": "303e7e6d9cba88c22d15b09a44a7cd38"
+  },
+  "app/Providers/Filament/AdminPanelProvider.php": {
+    "mtime": 1783472189.7962852,
+    "ast_hash": "92108fb60eb61bf902d7c6167f2cb36d",
+    "semantic_hash": "92108fb60eb61bf902d7c6167f2cb36d"
+  },
+  "app/Rules/PublicUrl.php": {
+    "mtime": 1782464292.2782476,
+    "ast_hash": "c20e8942472716b7184254a4aa21573b",
+    "semantic_hash": "c20e8942472716b7184254a4aa21573b"
+  },
+  "app/Services/AiService.php": {
+    "mtime": 1783675781.9382536,
+    "ast_hash": "c52831298d5ef99aacc68925b1956afe",
+    "semantic_hash": "c52831298d5ef99aacc68925b1956afe"
+  },
+  "app/Services/AiUsageReport.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "4b3b697c7c6da4b9dd87cb4a8e30361a",
+    "semantic_hash": "4b3b697c7c6da4b9dd87cb4a8e30361a"
+  },
+  "app/Services/DocxGenerator.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "c352ed70fd3056c5414a2ff7b10a8248",
+    "semantic_hash": "c352ed70fd3056c5414a2ff7b10a8248"
+  },
+  "app/Services/GrowthReport.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "dd2470dfa1103407eba1bcbc4f42a53a",
+    "semantic_hash": "dd2470dfa1103407eba1bcbc4f42a53a"
+  },
+  "app/Services/OpenAiUsageService.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "72976c45a926bd66e590b6cf01b35821",
+    "semantic_hash": "72976c45a926bd66e590b6cf01b35821"
+  },
+  "app/Services/ResumeCompletionScorer.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "ade2c3c7d0941ee2085016e1fc55ef58",
+    "semantic_hash": "ade2c3c7d0941ee2085016e1fc55ef58"
+  },
+  "app/Services/ResumeCopier.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "feaba63feac96cb04260821ecdbdcc88",
+    "semantic_hash": "feaba63feac96cb04260821ecdbdcc88"
+  },
+  "app/Services/ResumeStrengthScorer.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "d1117064c169ebd9f0b5493e50803e81",
+    "semantic_hash": "d1117064c169ebd9f0b5493e50803e81"
+  },
+  "app/Services/ResumeThumbnailGenerator.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "215404454571f2ab548c16f94bf58fbd",
+    "semantic_hash": "215404454571f2ab548c16f94bf58fbd"
+  },
+  "app/Services/RevenueReport.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "39ab3d183fd5f81285306b435066ed02",
+    "semantic_hash": "39ab3d183fd5f81285306b435066ed02"
+  },
+  "app/Services/UserLimits.php": {
+    "mtime": 1783675809.8613484,
+    "ast_hash": "fe346467851720d6d7439e52510ea131",
+    "semantic_hash": "fe346467851720d6d7439e52510ea131"
+  },
+  "app/Services/WebhookDispatcher.php": {
+    "mtime": 1782464292.2792478,
+    "ast_hash": "260200f29e49d284be7e4acfbac298db",
+    "semantic_hash": "260200f29e49d284be7e4acfbac298db"
+  },
+  "database/data/job_roles_extras.json": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "d751713988987e9331980363e24189ce",
+    "semantic_hash": "d751713988987e9331980363e24189ce"
+  },
+  "database/data/job_titles_extras.json": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "d751713988987e9331980363e24189ce",
+    "semantic_hash": "d751713988987e9331980363e24189ce"
+  },
+  "database/factories/AdminAuditLogFactory.php": {
+    "mtime": 1783553273.4126487,
+    "ast_hash": "8fd7f8c3dd9b4507ed51dd6340d68d23",
+    "semantic_hash": "8fd7f8c3dd9b4507ed51dd6340d68d23"
+  },
+  "database/factories/AiRequestFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "ab5aa4f5e2d846b29673b435b52fd0ee",
+    "semantic_hash": "ab5aa4f5e2d846b29673b435b52fd0ee"
+  },
+  "database/factories/ApplicationContactFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "96df27ceb29c7063579ee2e9f3373104",
+    "semantic_hash": "96df27ceb29c7063579ee2e9f3373104"
+  },
+  "database/factories/CareerArticleFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "d9a3c6f28f839a9f833f686f2e1c5bbc",
+    "semantic_hash": "d9a3c6f28f839a9f833f686f2e1c5bbc"
+  },
+  "database/factories/CareerCoachMessageFactory.php": {
+    "mtime": 1783472189.7995167,
+    "ast_hash": "242fbd63df4781109f94a50771883ea2",
+    "semantic_hash": "242fbd63df4781109f94a50771883ea2"
+  },
+  "database/factories/CoverLetterFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "3d8eb285c1beaf1f8162c71ce53e6d36",
+    "semantic_hash": "3d8eb285c1beaf1f8162c71ce53e6d36"
+  },
+  "database/factories/JobApplicationFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "546600ca81d7f1ed83e77c95e291b357",
+    "semantic_hash": "546600ca81d7f1ed83e77c95e291b357"
+  },
+  "database/factories/JobSkillFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "9343c08505b5f08b37735020b945e173",
+    "semantic_hash": "9343c08505b5f08b37735020b945e173"
+  },
+  "database/factories/OrganizationFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "32a7656d6262247599a244aba58ffb2c",
+    "semantic_hash": "32a7656d6262247599a244aba58ffb2c"
+  },
+  "database/factories/PortfolioMessageFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "4da4b1d398ec3f7f9f7c3927d86c3503",
+    "semantic_hash": "4da4b1d398ec3f7f9f7c3927d86c3503"
+  },
+  "database/factories/ProofreadingRequestFactory.php": {
+    "mtime": 1783472189.7997234,
+    "ast_hash": "e86b9ebae00421d8bdbd2087584afcc3",
+    "semantic_hash": "e86b9ebae00421d8bdbd2087584afcc3"
+  },
+  "database/factories/ResignationLetterFactory.php": {
+    "mtime": 1783472189.7998343,
+    "ast_hash": "6fc25389ed2c07bbd13fcc644b1a4f48",
+    "semantic_hash": "6fc25389ed2c07bbd13fcc644b1a4f48"
+  },
+  "database/factories/ResumeFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "f321ef0786c61d72b47837d530a6833b",
+    "semantic_hash": "f321ef0786c61d72b47837d530a6833b"
+  },
+  "database/factories/ResumeShareLinkFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "32d3eca2f2d30df4aa96f47fd6c24a09",
+    "semantic_hash": "32d3eca2f2d30df4aa96f47fd6c24a09"
+  },
+  "database/factories/ResumeTagFactory.php": {
+    "mtime": 1782464292.2842479,
+    "ast_hash": "ec1ef0ab86314bae56b8fd9cb76568bd",
+    "semantic_hash": "ec1ef0ab86314bae56b8fd9cb76568bd"
+  },
+  "database/factories/SystemEventFactory.php": {
+    "mtime": 1783553273.408352,
+    "ast_hash": "10a4bc73637f021c3351ff7cb8861dad",
+    "semantic_hash": "10a4bc73637f021c3351ff7cb8861dad"
+  },
+  "database/factories/UserFactory.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "c36151cd6d9b08df9583b7782ec77f37",
+    "semantic_hash": "c36151cd6d9b08df9583b7782ec77f37"
+  },
+  "database/factories/WebhookEndpointFactory.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "0e49e276c11706d7ea1d3263f805b333",
+    "semantic_hash": "0e49e276c11706d7ea1d3263f805b333"
+  },
+  "database/migrations/0001_01_01_000000_create_users_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "138280095e9d19f2ba6fb830415602e2",
+    "semantic_hash": "138280095e9d19f2ba6fb830415602e2"
+  },
+  "database/migrations/0001_01_01_000001_create_cache_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "6952fb360e8d8b84e6f47573e4459d48",
+    "semantic_hash": "6952fb360e8d8b84e6f47573e4459d48"
+  },
+  "database/migrations/0001_01_01_000002_create_jobs_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "b0603b9fa0a27473971da76bb0c42ee1",
+    "semantic_hash": "b0603b9fa0a27473971da76bb0c42ee1"
+  },
+  "database/migrations/2026_05_26_105258_create_media_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "429b548bed56fe7fda23b2d5b0c258ac",
+    "semantic_hash": "429b548bed56fe7fda23b2d5b0c258ac"
+  },
+  "database/migrations/2026_05_26_110736_create_resumes_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "0b546e51820a96af8109770808c6f6b6",
+    "semantic_hash": "0b546e51820a96af8109770808c6f6b6"
+  },
+  "database/migrations/2026_05_26_200000_add_template_to_resumes_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "25faed4734b3d08632f908062cdb3c1b",
+    "semantic_hash": "25faed4734b3d08632f908062cdb3c1b"
+  },
+  "database/migrations/2026_05_26_200001_create_resume_share_links_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "905b3d4d2429c64b92434e6aec39ad54",
+    "semantic_hash": "905b3d4d2429c64b92434e6aec39ad54"
+  },
+  "database/migrations/2026_05_26_200002_create_resume_questions_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "4fbb10a53ad08882727eb88da9c5ae16",
+    "semantic_hash": "4fbb10a53ad08882727eb88da9c5ae16"
+  },
+  "database/migrations/2026_05_27_231056_add_font_sizes_to_resumes_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "376c5cdd35179d3a7f4420a55cbd6eb0",
+    "semantic_hash": "376c5cdd35179d3a7f4420a55cbd6eb0"
+  },
+  "database/migrations/2026_05_27_300000_create_resume_share_events_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "7946ebd0452f5c0a80980e078c5f70a8",
+    "semantic_hash": "7946ebd0452f5c0a80980e078c5f70a8"
+  },
+  "database/migrations/2026_05_28_033340_make_sender_phone_nullable_in_resume_questions_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "0ab1e1923c07064c07ba83648288966d",
+    "semantic_hash": "0ab1e1923c07064c07ba83648288966d"
+  },
+  "database/migrations/2026_05_28_100716_add_expires_at_to_resume_share_links_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "ac125bc349175651b3264f26ba7dfd58",
+    "semantic_hash": "ac125bc349175651b3264f26ba7dfd58"
+  },
+  "database/migrations/2026_05_28_120000_add_accent_color_and_font_family_to_resumes_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "7fd87fc3088caff42d9299a8f0e12baa",
+    "semantic_hash": "7fd87fc3088caff42d9299a8f0e12baa"
+  },
+  "database/migrations/2026_05_28_120000_add_has_completed_onboarding_to_users_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "908f590edf53bbc2af9b9a42f655563c",
+    "semantic_hash": "908f590edf53bbc2af9b9a42f655563c"
+  },
+  "database/migrations/2026_05_28_130000_create_cover_letters_table.php": {
+    "mtime": 1782464292.2852478,
+    "ast_hash": "8f099b31eef14486651dba964d8285b9",
+    "semantic_hash": "8f099b31eef14486651dba964d8285b9"
+  },
+  "database/migrations/2026_05_28_140000_create_job_applications_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "28e62d2c41e02e38174edc698c960c72",
+    "semantic_hash": "28e62d2c41e02e38174edc698c960c72"
+  },
+  "database/migrations/2026_05_28_165635_create_customer_columns.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "a47ec2d274b49b8938b3abcf224b5f44",
+    "semantic_hash": "a47ec2d274b49b8938b3abcf224b5f44"
+  },
+  "database/migrations/2026_05_28_165636_create_subscriptions_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "7bc56db9721f085e4d6fb40ef0b8ae3f",
+    "semantic_hash": "7bc56db9721f085e4d6fb40ef0b8ae3f"
+  },
+  "database/migrations/2026_05_28_165637_create_subscription_items_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "8c23116b43d160359183240d9935521e",
+    "semantic_hash": "8c23116b43d160359183240d9935521e"
+  },
+  "database/migrations/2026_05_28_165638_add_meter_id_to_subscription_items_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "7ed182b8b2ec5b61e9f539c642237332",
+    "semantic_hash": "7ed182b8b2ec5b61e9f539c642237332"
+  },
+  "database/migrations/2026_05_28_165639_add_meter_event_name_to_subscription_items_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "f820c0c9fa660f044ae258a2aefc62f9",
+    "semantic_hash": "f820c0c9fa660f044ae258a2aefc62f9"
+  },
+  "database/migrations/2026_05_28_200000_add_admin_flags_to_users_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "afdf775efdc6bf72d72bb83a26bf83b3",
+    "semantic_hash": "afdf775efdc6bf72d72bb83a26bf83b3"
+  },
+  "database/migrations/2026_05_28_210000_add_two_factor_columns_to_users_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "469b345b8cb271a4484300d0998d7441",
+    "semantic_hash": "469b345b8cb271a4484300d0998d7441"
+  },
+  "database/migrations/2026_05_29_173250_create_personal_access_tokens_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "eb77af89d184f92ec893eff344c34999",
+    "semantic_hash": "eb77af89d184f92ec893eff344c34999"
+  },
+  "database/migrations/2026_06_02_100000_add_ats_cache_to_resumes_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "3f5c1ba735ba784c053891e758e9df01",
+    "semantic_hash": "3f5c1ba735ba784c053891e758e9df01"
+  },
+  "database/migrations/2026_06_02_100001_create_ai_model_rates_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "2fb717f96b89d0d6c3c3b5eda30ef30e",
+    "semantic_hash": "2fb717f96b89d0d6c3c3b5eda30ef30e"
+  },
+  "database/migrations/2026_06_02_100002_create_ai_usage_logs_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "f56739f32d8eb7a3b16afa7ba91191a3",
+    "semantic_hash": "f56739f32d8eb7a3b16afa7ba91191a3"
+  },
+  "database/migrations/2026_06_05_120345_add_plan_tier_to_users_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "72af1a0a469caf69c6f7e076202a4c61",
+    "semantic_hash": "72af1a0a469caf69c6f7e076202a4c61"
+  },
+  "database/migrations/2026_06_05_214859_add_section_order_and_custom_sections_to_resumes_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "a99dc843b2ffc96637d8e7b5ae538093",
+    "semantic_hash": "a99dc843b2ffc96637d8e7b5ae538093"
+  },
+  "database/migrations/2026_06_06_070302_add_profile_to_users_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "0296af41578f83c52a9db58163a4a366",
+    "semantic_hash": "0296af41578f83c52a9db58163a4a366"
+  },
+  "database/migrations/2026_06_06_114404_add_feature_index_to_ai_usage_logs_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "6d0945343654bcded129b937bffda7db",
+    "semantic_hash": "6d0945343654bcded129b937bffda7db"
+  },
+  "database/migrations/2026_06_07_142617_add_follow_up_at_to_job_applications_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "76f153b5743e92a93e1269ae50411961",
+    "semantic_hash": "76f153b5743e92a93e1269ae50411961"
+  },
+  "database/migrations/2026_06_07_144816_add_versioning_to_resumes_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "a6c925898eb49cf68cfae1965a95aef2",
+    "semantic_hash": "a6c925898eb49cf68cfae1965a95aef2"
+  },
+  "database/migrations/2026_06_07_151817_create_resume_strength_snapshots_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "7b4463eb0ea5ae35f92c4d11210f85ed",
+    "semantic_hash": "7b4463eb0ea5ae35f92c4d11210f85ed"
+  },
+  "database/migrations/2026_06_07_154328_create_interview_notes_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "dcb3d534904cda251540100224a622d7",
+    "semantic_hash": "dcb3d534904cda251540100224a622d7"
+  },
+  "database/migrations/2026_06_07_162420_create_resume_tags_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "4f559e8cd7b4999dfceddad4b042c46c",
+    "semantic_hash": "4f559e8cd7b4999dfceddad4b042c46c"
+  },
+  "database/migrations/2026_06_07_170242_add_referral_fields_to_users_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "09cabe233aea198f41fac1c5146b6a21",
+    "semantic_hash": "09cabe233aea198f41fac1c5146b6a21"
+  },
+  "database/migrations/2026_06_07_170258_create_referral_events_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "bc6811c085ddacf069b78d32d9413147",
+    "semantic_hash": "bc6811c085ddacf069b78d32d9413147"
+  },
+  "database/migrations/2026_06_07_170745_add_ab_parent_id_to_resumes_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "99896e0b0896332f0be64363ddd36ce2",
+    "semantic_hash": "99896e0b0896332f0be64363ddd36ce2"
+  },
+  "database/migrations/2026_06_07_171307_add_portfolio_fields_to_users_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "cfe64cf1ea9dee2adf110326aa507505",
+    "semantic_hash": "cfe64cf1ea9dee2adf110326aa507505"
+  },
+  "database/migrations/2026_06_07_173928_add_stale_nudge_sent_at_to_users_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "72e283b2ad88e50c0d2214ccd37504e4",
+    "semantic_hash": "72e283b2ad88e50c0d2214ccd37504e4"
+  },
+  "database/migrations/2026_06_07_185418_create_application_contacts_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "6e4d826ca129a2765fd0d6e501dadcb2",
+    "semantic_hash": "6e4d826ca129a2765fd0d6e501dadcb2"
+  },
+  "database/migrations/2026_06_07_185913_create_webhook_endpoints_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "3096934c602fe74b9edc831f108eed1a",
+    "semantic_hash": "3096934c602fe74b9edc831f108eed1a"
+  },
+  "database/migrations/2026_06_07_213731_add_persona_columns_to_users_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "20dcde2cb73a50dde64f4020a1c02738",
+    "semantic_hash": "20dcde2cb73a50dde64f4020a1c02738"
+  },
+  "database/migrations/2026_06_07_215730_create_career_articles_table.php": {
+    "mtime": 1782464292.286248,
+    "ast_hash": "f3b63d5455776576b6976e4c0ac38cfd",
+    "semantic_hash": "f3b63d5455776576b6976e4c0ac38cfd"
+  },
+  "database/migrations/2026_06_08_005650_add_master_resume_fields_to_resumes_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "743daa541fdc4eb6e20cfcea838d4bf0",
+    "semantic_hash": "743daa541fdc4eb6e20cfcea838d4bf0"
+  },
+  "database/migrations/2026_06_08_011427_create_resume_section_events_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "530e48093d625e8a17849e7f040ca996",
+    "semantic_hash": "530e48093d625e8a17849e7f040ca996"
+  },
+  "database/migrations/2026_06_08_110905_create_job_roles_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "5b361c2bcae9a33cea0d0eeab53b393d",
+    "semantic_hash": "5b361c2bcae9a33cea0d0eeab53b393d"
+  },
+  "database/migrations/2026_06_08_110906_create_job_titles_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "652ddf24118f2d06b93ed0fee23c71e1",
+    "semantic_hash": "652ddf24118f2d06b93ed0fee23c71e1"
+  },
+  "database/migrations/2026_06_08_120000_add_is_agency_to_users_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "36682110f418a2c2a101c720943f9a1e",
+    "semantic_hash": "36682110f418a2c2a101c720943f9a1e"
+  },
+  "database/migrations/2026_06_08_120001_create_organizations_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "a40e9cbe76bfb08979b3788b91e3d97a",
+    "semantic_hash": "a40e9cbe76bfb08979b3788b91e3d97a"
+  },
+  "database/migrations/2026_06_08_120002_create_organization_members_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "7fe761c91f4736f42ad1a94e8ff18d8f",
+    "semantic_hash": "7fe761c91f4736f42ad1a94e8ff18d8f"
+  },
+  "database/migrations/2026_06_08_120003_create_recruiter_notes_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "52b1f3a055bf9661a5cdf4cd58d03c91",
+    "semantic_hash": "52b1f3a055bf9661a5cdf4cd58d03c91"
+  },
+  "database/migrations/2026_06_08_144306_add_job_application_id_to_resumes_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "36b095733933b8540ba48e92d66f1714",
+    "semantic_hash": "36b095733933b8540ba48e92d66f1714"
+  },
+  "database/migrations/2026_06_08_200000_add_portfolio_links_to_users_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "a17fc92fec162d6372ea9c6a1d43c5c0",
+    "semantic_hash": "a17fc92fec162d6372ea9c6a1d43c5c0"
+  },
+  "database/migrations/2026_06_08_200001_create_portfolio_messages_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "f5976228392756c8e20375ba740a785e",
+    "semantic_hash": "f5976228392756c8e20375ba740a785e"
+  },
+  "database/migrations/2026_06_09_235041_create_resume_threads_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "bab94c186f193520997c90830a31868c",
+    "semantic_hash": "bab94c186f193520997c90830a31868c"
+  },
+  "database/migrations/2026_06_09_235103_create_resume_thread_messages_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "9f47af9be59b1f11031bc53bb89f1640",
+    "semantic_hash": "9f47af9be59b1f11031bc53bb89f1640"
+  },
+  "database/migrations/2026_06_09_235125_migrate_resume_questions_to_threads.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "cd961ce351383c15ab4785aae0306431",
+    "semantic_hash": "cd961ce351383c15ab4785aae0306431"
+  },
+  "database/migrations/2026_06_10_113108_drop_dead_ai_tables.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "6952cbe4c3c2821fc1ae646f7aab2571",
+    "semantic_hash": "6952cbe4c3c2821fc1ae646f7aab2571"
+  },
+  "database/migrations/2026_06_10_113722_add_missing_indexes.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "64471f8f22f6620d703074c774b9a88f",
+    "semantic_hash": "64471f8f22f6620d703074c774b9a88f"
+  },
+  "database/migrations/2026_06_10_181911_add_skills_layout_and_groups_to_resumes.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "a3397771e7eed24f388553e794e9dd6a",
+    "semantic_hash": "a3397771e7eed24f388553e794e9dd6a"
+  },
+  "database/migrations/2026_06_10_223714_add_skill_narratives_to_resumes.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "e75c59ceb345c7276ef7a3f14e42d940",
+    "semantic_hash": "e75c59ceb345c7276ef7a3f14e42d940"
+  },
+  "database/migrations/2026_06_10_224847_create_job_skills_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "f4638739d7d373fd44e1e4022fa2d611",
+    "semantic_hash": "f4638739d7d373fd44e1e4022fa2d611"
+  },
+  "database/migrations/2026_06_11_191711_create_saved_sections_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "7d21de5712e7912ebfa50784272c4b72",
+    "semantic_hash": "7d21de5712e7912ebfa50784272c4b72"
+  },
+  "database/migrations/2026_06_11_211613_add_projects_to_resumes_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "e17f9406e3ad17fc13bcbe85f58a5313",
+    "semantic_hash": "e17f9406e3ad17fc13bcbe85f58a5313"
+  },
+  "database/migrations/2026_06_12_125116_create_ai_requests_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "93be2af857aa83a0c7982669fa874b78",
+    "semantic_hash": "93be2af857aa83a0c7982669fa874b78"
+  },
+  "database/migrations/2026_06_13_161641_add_target_job_description_to_resumes_table.php": {
+    "mtime": 1782464292.287248,
+    "ast_hash": "439d916e749cf776d0ec076063147108",
+    "semantic_hash": "439d916e749cf776d0ec076063147108"
+  },
+  "database/migrations/2026_06_13_180000_grant_master_admin_to_owner.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "b3f24c7388229b0b5b7b3af63bb2e498",
+    "semantic_hash": "b3f24c7388229b0b5b7b3af63bb2e498"
+  },
+  "database/migrations/2026_06_13_190000_add_ai_admin_columns.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "631d99d862bb93a46510ba8c6adec5fc",
+    "semantic_hash": "631d99d862bb93a46510ba8c6adec5fc"
+  },
+  "database/migrations/2026_06_13_200000_create_admin_audit_logs_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "118dae2da8dbc84109b36b6f4f1da81a",
+    "semantic_hash": "118dae2da8dbc84109b36b6f4f1da81a"
+  },
+  "database/migrations/2026_06_13_210000_create_system_events_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "0795e54887a6338f31537d0026575ff0",
+    "semantic_hash": "0795e54887a6338f31537d0026575ff0"
+  },
+  "database/migrations/2026_06_13_220000_create_revenue_snapshots_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "6c7c24a8de5ce63f8a49a916e4fede40",
+    "semantic_hash": "6c7c24a8de5ce63f8a49a916e4fede40"
+  },
+  "database/migrations/2026_06_13_230000_create_user_activity_days_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "0a64ddb747d958f20df5c66b4d85f98f",
+    "semantic_hash": "0a64ddb747d958f20df5c66b4d85f98f"
+  },
+  "database/migrations/2026_06_16_202652_add_registration_ip_to_users_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "f214a625742c007530a4243e52843673",
+    "semantic_hash": "f214a625742c007530a4243e52843673"
+  },
+  "database/migrations/2026_06_18_111510_add_index_to_registration_ip_on_users_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "08524b4e6dfeffd12a8e718885872393",
+    "semantic_hash": "08524b4e6dfeffd12a8e718885872393"
+  },
+  "database/migrations/2026_06_22_153955_drop_resume_strength_snapshots_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "82c7905a8dd7a840d1ab4297710ee512",
+    "semantic_hash": "82c7905a8dd7a840d1ab4297710ee512"
+  },
+  "database/migrations/2026_06_22_154436_drop_job_application_id_from_resumes_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "a165f3b15cc7944829022ca2b1e8ef37",
+    "semantic_hash": "a165f3b15cc7944829022ca2b1e8ef37"
+  },
+  "database/migrations/2026_06_22_160048_drop_referral_fields_from_users_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "8595917b01fbe6050f2d3fa95d1d8c3d",
+    "semantic_hash": "8595917b01fbe6050f2d3fa95d1d8c3d"
+  },
+  "database/migrations/2026_06_22_160947_drop_interview_notes_table.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "ab5e632b2cb723ea8a330c66dc8edb61",
+    "semantic_hash": "ab5e632b2cb723ea8a330c66dc8edb61"
+  },
+  "database/migrations/2026_06_22_161159_drop_agency_org_tables.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "a3fcb20dc514ab0228e6286186ab87e7",
+    "semantic_hash": "a3fcb20dc514ab0228e6286186ab87e7"
+  },
+  "database/migrations/2026_07_06_000001_create_career_coach_messages_table.php": {
+    "mtime": 1783472189.8001435,
+    "ast_hash": "b99800e8d90a291431423d487e6084f1",
+    "semantic_hash": "b99800e8d90a291431423d487e6084f1"
+  },
+  "database/migrations/2026_07_07_004907_create_resignation_letters_table.php": {
+    "mtime": 1783472189.8006217,
+    "ast_hash": "829f079e17bfa2fefd3a946f13345b1a",
+    "semantic_hash": "829f079e17bfa2fefd3a946f13345b1a"
+  },
+  "database/migrations/2026_07_07_010919_create_proofreading_requests_table.php": {
+    "mtime": 1783472189.8008223,
+    "ast_hash": "d4cc00df5305023a7ec9f6982f393c96",
+    "semantic_hash": "d4cc00df5305023a7ec9f6982f393c96"
+  },
+  "database/migrations/2026_07_07_014613_create_device_tokens_table.php": {
+    "mtime": 1783472189.8008754,
+    "ast_hash": "aa30e1d3ded2f1ecfba22f38ec6684e8",
+    "semantic_hash": "aa30e1d3ded2f1ecfba22f38ec6684e8"
+  },
+  "database/migrations/2026_07_08_012111_drop_device_tokens_table.php": {
+    "mtime": 1783473679.9656549,
+    "ast_hash": "1a8a06e88cdc786fe9f52e2e7d657d88",
+    "semantic_hash": "1a8a06e88cdc786fe9f52e2e7d657d88"
+  },
+  "database/migrations/2026_07_08_114722_add_view_nudge_sent_at_to_users_table.php": {
+    "mtime": 1783511274.8405871,
+    "ast_hash": "d8d36f3f180f671d0a7c5388e263285b",
+    "semantic_hash": "d8d36f3f180f671d0a7c5388e263285b"
+  },
+  "database/migrations/2026_07_08_115615_add_preferred_template_to_users_table.php": {
+    "mtime": 1783511780.9143405,
+    "ast_hash": "15ebcc4bdf5e65137ea5c63e5d1f2a07",
+    "semantic_hash": "15ebcc4bdf5e65137ea5c63e5d1f2a07"
+  },
+  "database/migrations/2026_07_09_233450_drop_master_resume_fields_from_resumes_table.php": {
+    "mtime": 1783640514.5616717,
+    "ast_hash": "d1ae1f28fc9e6acf6f569534c631ee54",
+    "semantic_hash": "d1ae1f28fc9e6acf6f569534c631ee54"
+  },
+  "database/seeders/AiModelRatesSeeder.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "57a9e782a4a3fb8f03f9ed3986c6ef54",
+    "semantic_hash": "57a9e782a4a3fb8f03f9ed3986c6ef54"
+  },
+  "database/seeders/DatabaseSeeder.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "8e8b0c543631fb4ec1a32306f41be522",
+    "semantic_hash": "8e8b0c543631fb4ec1a32306f41be522"
+  },
+  "database/seeders/DemoDataSeeder.php": {
+    "mtime": 1782464292.2882478,
+    "ast_hash": "574f0f94a5168951317122d9f058fd63",
+    "semantic_hash": "574f0f94a5168951317122d9f058fd63"
+  },
+  "database/seeders/JobRolesSeeder.php": {
+    "mtime": 1782464292.289248,
+    "ast_hash": "d8bca5915bd32eb5f0b70a51030853f8",
+    "semantic_hash": "d8bca5915bd32eb5f0b70a51030853f8"
+  },
+  "database/seeders/JobSkillsSeeder.php": {
+    "mtime": 1782464292.289248,
+    "ast_hash": "aad7c48673413d79b55a831a762601ed",
+    "semantic_hash": "aad7c48673413d79b55a831a762601ed"
+  },
+  "database/seeders/JobTitlesSeeder.php": {
+    "mtime": 1782464292.289248,
+    "ast_hash": "8f6acc588ebcd2ab40ffdc9cd70b5583",
+    "semantic_hash": "8f6acc588ebcd2ab40ffdc9cd70b5583"
+  },
+  "database/seeders/TestAnalyticsDataSeeder.php": {
+    "mtime": 1782464292.289248,
+    "ast_hash": "2812cad07d5da6e246a444929a18a551",
+    "semantic_hash": "2812cad07d5da6e246a444929a18a551"
+  },
+  "database/seeders/TestResumesSeeder.php": {
+    "mtime": 1782464292.289248,
+    "ast_hash": "202d2b2d25095021e43e469e11e2f4d3",
+    "semantic_hash": "202d2b2d25095021e43e469e11e2f4d3"
+  },
+  "database/seeders/TestShareLinksAndQuestionsSeeder.php": {
+    "mtime": 1782464292.290248,
+    "ast_hash": "81b1443b41a735378c1cb8537b6c25cc",
+    "semantic_hash": "81b1443b41a735378c1cb8537b6c25cc"
+  },
+  "resources/js/Components/ApplicationLogo.tsx": {
+    "mtime": 1782464292.3132484,
+    "ast_hash": "e1a7d5ce01956a9935eeeae0a374ae14",
+    "semantic_hash": "e1a7d5ce01956a9935eeeae0a374ae14"
+  },
+  "resources/js/Components/AutocompleteInput.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "aadd0d21ae335482c8658180cfb518e1",
+    "semantic_hash": "aadd0d21ae335482c8658180cfb518e1"
+  },
+  "resources/js/Components/BulletEditor.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "dc5d54755aa947266a2f362c97fb16cb",
+    "semantic_hash": "dc5d54755aa947266a2f362c97fb16cb"
+  },
+  "resources/js/Components/Checkbox.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "b1e5e6d98239eb28b6d4255cfa7cf699",
+    "semantic_hash": "b1e5e6d98239eb28b6d4255cfa7cf699"
+  },
+  "resources/js/Components/DangerButton.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "b7cc9c328024c89625d314648a882169",
+    "semantic_hash": "b7cc9c328024c89625d314648a882169"
+  },
+  "resources/js/Components/Dropdown.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "270e1a415a4e4009710bcbd7a087654f",
+    "semantic_hash": "270e1a415a4e4009710bcbd7a087654f"
+  },
+  "resources/js/Components/InputError.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "ba6cd29271c60226bf4a1f6712597525",
+    "semantic_hash": "ba6cd29271c60226bf4a1f6712597525"
+  },
+  "resources/js/Components/InputLabel.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "156eb7779296650477025cb6183e5588",
+    "semantic_hash": "156eb7779296650477025cb6183e5588"
+  },
+  "resources/js/Components/Modal.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "d8e75f67a1df8bb47b5c60e3bb9a8b34",
+    "semantic_hash": "d8e75f67a1df8bb47b5c60e3bb9a8b34"
+  },
+  "resources/js/Components/NavLink.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "3e9a5d7ad0159a4dd1ca98c93c5005cf",
+    "semantic_hash": "3e9a5d7ad0159a4dd1ca98c93c5005cf"
+  },
+  "resources/js/Components/PrimaryButton.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "e08c719a464051460f01234f3133719f",
+    "semantic_hash": "e08c719a464051460f01234f3133719f"
+  },
+  "resources/js/Components/QRCodeDisplay.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "8bb14d9c38e22c8ce2a9432e02e505cc",
+    "semantic_hash": "8bb14d9c38e22c8ce2a9432e02e505cc"
+  },
+  "resources/js/Components/ResponsiveNavLink.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "5c62a4b14475a5c679b1d1f29c437615",
+    "semantic_hash": "5c62a4b14475a5c679b1d1f29c437615"
+  },
+  "resources/js/Components/SecondaryButton.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "1d950815b71adef262b595232d10aa0a",
+    "semantic_hash": "1d950815b71adef262b595232d10aa0a"
+  },
+  "resources/js/Components/SkillGroupEditor.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "fed8c5281583ce0f38d72616a2049a76",
+    "semantic_hash": "fed8c5281583ce0f38d72616a2049a76"
+  },
+  "resources/js/Components/SkillNarrativeEditor.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "9a35badbc60fbadc865078a150bb4097",
+    "semantic_hash": "9a35badbc60fbadc865078a150bb4097"
+  },
+  "resources/js/Components/TagInput.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "83ea32fa3781a8612be6ff029a665f01",
+    "semantic_hash": "83ea32fa3781a8612be6ff029a665f01"
+  },
+  "resources/js/Components/TextInput.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "b40d74a72aa0660c5ad78ccbf2c1b27f",
+    "semantic_hash": "b40d74a72aa0660c5ad78ccbf2c1b27f"
+  },
+  "resources/js/Components/UpgradeModal.tsx": {
+    "mtime": 1783472189.8653498,
+    "ast_hash": "fb8bf8181ed3b027c8e3a0bc9246b770",
+    "semantic_hash": "fb8bf8181ed3b027c8e3a0bc9246b770"
+  },
+  "resources/js/Layouts/AdminLayout.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "cac012e0bbfd2f42366a51ab05f3a3af",
+    "semantic_hash": "cac012e0bbfd2f42366a51ab05f3a3af"
+  },
+  "resources/js/Layouts/AuthenticatedLayout.tsx": {
+    "mtime": 1783675952.2356029,
+    "ast_hash": "7ad91109966965aaa6a71959a48e1725",
+    "semantic_hash": "7ad91109966965aaa6a71959a48e1725"
+  },
+  "resources/js/Layouts/GuestLayout.tsx": {
+    "mtime": 1782464292.3142486,
+    "ast_hash": "962e773b08c81bb563f85d7855128b10",
+    "semantic_hash": "962e773b08c81bb563f85d7855128b10"
+  },
+  "resources/js/Layouts/PublicLayout.tsx": {
+    "mtime": 1782464292.3152485,
+    "ast_hash": "8172e19805db8aba2b616c834ea166f5",
+    "semantic_hash": "8172e19805db8aba2b616c834ea166f5"
+  },
+  "resources/js/Pages/Auth/ConfirmPassword.tsx": {
+    "mtime": 1782464292.3162487,
+    "ast_hash": "f72fee7e0b1de8785ee63164c735d7a4",
+    "semantic_hash": "f72fee7e0b1de8785ee63164c735d7a4"
+  },
+  "resources/js/Pages/Auth/ForgotPassword.tsx": {
+    "mtime": 1782464292.3162487,
+    "ast_hash": "40e2e14cfadfd7c0e9b81a2e0f27f78e",
+    "semantic_hash": "40e2e14cfadfd7c0e9b81a2e0f27f78e"
+  },
+  "resources/js/Pages/Auth/Login.tsx": {
+    "mtime": 1783550671.1911895,
+    "ast_hash": "5bec04e66c652054a22302712164a2ec",
+    "semantic_hash": "5bec04e66c652054a22302712164a2ec"
+  },
+  "resources/js/Pages/Auth/Register.tsx": {
+    "mtime": 1782464292.3162487,
+    "ast_hash": "65ebe90181246491335037c4b6b37ad4",
+    "semantic_hash": "65ebe90181246491335037c4b6b37ad4"
+  },
+  "resources/js/Pages/Auth/ResetPassword.tsx": {
+    "mtime": 1782464292.3162487,
+    "ast_hash": "896f458066f1795ad5db0bad34c3c244",
+    "semantic_hash": "896f458066f1795ad5db0bad34c3c244"
+  },
+  "resources/js/Pages/Auth/TwoFactorChallenge.tsx": {
+    "mtime": 1782464292.3162487,
+    "ast_hash": "1c2fd5d60fbdac07154cdfe81b728e56",
+    "semantic_hash": "1c2fd5d60fbdac07154cdfe81b728e56"
+  },
+  "resources/js/Pages/Auth/VerifyEmail.tsx": {
+    "mtime": 1782464292.3162487,
+    "ast_hash": "d5ba998457c569c1f2eadfba0e865033",
+    "semantic_hash": "d5ba998457c569c1f2eadfba0e865033"
+  },
+  "resources/js/Pages/Billing/Index.tsx": {
+    "mtime": 1783676021.2270093,
+    "ast_hash": "ed7e997286c41a0b620409fd8a5ce404",
+    "semantic_hash": "ed7e997286c41a0b620409fd8a5ce404"
+  },
+  "resources/js/Pages/CareerCoach/Index.tsx": {
+    "mtime": 1783472189.866332,
+    "ast_hash": "e457018b4345453345891c6e06d12ee8",
+    "semantic_hash": "e457018b4345453345891c6e06d12ee8"
+  },
+  "resources/js/Pages/CareerHub/Index.tsx": {
+    "mtime": 1782464292.3172486,
+    "ast_hash": "2205077ea31fa29cb1c02fd7b778a538",
+    "semantic_hash": "2205077ea31fa29cb1c02fd7b778a538"
+  },
+  "resources/js/Pages/CareerHub/Show.tsx": {
+    "mtime": 1782464292.3172486,
+    "ast_hash": "1b4d3e747419b55e2920b2641fbdbcab",
+    "semantic_hash": "1b4d3e747419b55e2920b2641fbdbcab"
+  },
+  "resources/js/Pages/CoverLetter/Edit.tsx": {
+    "mtime": 1782464292.3172486,
+    "ast_hash": "8df2ead32375c11c1dd130a5f768e2de",
+    "semantic_hash": "8df2ead32375c11c1dd130a5f768e2de"
+  },
+  "resources/js/Pages/CoverLetter/Index.tsx": {
+    "mtime": 1782464292.3172486,
+    "ast_hash": "56c216c7d489a7cedf93b4fe4271ed43",
+    "semantic_hash": "56c216c7d489a7cedf93b4fe4271ed43"
+  },
+  "resources/js/Pages/Dashboard.tsx": {
+    "mtime": 1783552535.7790976,
+    "ast_hash": "35b18f8e8220e1724e92ffe23da0f529",
+    "semantic_hash": "35b18f8e8220e1724e92ffe23da0f529"
+  },
+  "resources/js/Pages/ImportTest.tsx": {
+    "mtime": 1782464292.3172486,
+    "ast_hash": "d64106bede20afe4dcedb25ab0774a33",
+    "semantic_hash": "d64106bede20afe4dcedb25ab0774a33"
+  },
+  "resources/js/Pages/Jobs/jobStatuses.ts": {
+    "mtime": 1782464292.3172486,
+    "ast_hash": "b50ddb9ff1b67aeaf2058b613562776f",
+    "semantic_hash": "b50ddb9ff1b67aeaf2058b613562776f"
+  },
+  "resources/js/Pages/Messages/Index.tsx": {
+    "mtime": 1782464292.3172486,
+    "ast_hash": "54eb4e8f613c4c426978b0b9c15dcc61",
+    "semantic_hash": "54eb4e8f613c4c426978b0b9c15dcc61"
+  },
+  "resources/js/Pages/Onboarding/Wizard.tsx": {
+    "mtime": 1783552512.3178444,
+    "ast_hash": "04bcf9c55cd92da8b85eaca64f245480",
+    "semantic_hash": "04bcf9c55cd92da8b85eaca64f245480"
+  },
+  "resources/js/Pages/Portfolio/Show.tsx": {
+    "mtime": 1782464292.3172486,
+    "ast_hash": "a504d5e3daa7f0b62474d86618161741",
+    "semantic_hash": "a504d5e3daa7f0b62474d86618161741"
+  },
+  "resources/js/Pages/Profile/Edit.tsx": {
+    "mtime": 1782464292.3182485,
+    "ast_hash": "f4c446da414162eb58cd4d47f00d29cf",
+    "semantic_hash": "f4c446da414162eb58cd4d47f00d29cf"
+  },
+  "resources/js/Pages/Profile/Partials/BrowserExtensionTokens.tsx": {
+    "mtime": 1782464292.3182485,
+    "ast_hash": "5eb90b7c24e4e773664cd14def9409b1",
+    "semantic_hash": "5eb90b7c24e4e773664cd14def9409b1"
+  },
+  "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx": {
+    "mtime": 1782464292.3182485,
+    "ast_hash": "cb55270cb5bf483f4b58cf8827276ef4",
+    "semantic_hash": "cb55270cb5bf483f4b58cf8827276ef4"
+  },
+  "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx": {
+    "mtime": 1782464292.3182485,
+    "ast_hash": "98ca1932dc583ed6c6047864cff132a5",
+    "semantic_hash": "98ca1932dc583ed6c6047864cff132a5"
+  },
+  "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx": {
+    "mtime": 1782464292.3182485,
+    "ast_hash": "007d3a6ad39c17306ae625a794eff394",
+    "semantic_hash": "007d3a6ad39c17306ae625a794eff394"
+  },
+  "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx": {
+    "mtime": 1782464292.3182485,
+    "ast_hash": "e084779e07f097c5a675722ecb6f5186",
+    "semantic_hash": "e084779e07f097c5a675722ecb6f5186"
+  },
+  "resources/js/Pages/Proofreading/Index.tsx": {
+    "mtime": 1783472189.8664436,
+    "ast_hash": "e52aa6a372c174eb272f2eca000f2b1e",
+    "semantic_hash": "e52aa6a372c174eb272f2eca000f2b1e"
+  },
+  "resources/js/Pages/ResignationLetter/Edit.tsx": {
+    "mtime": 1783675976.615758,
+    "ast_hash": "62e81654dc321eb8fd3ce73c12c8b098",
+    "semantic_hash": "62e81654dc321eb8fd3ce73c12c8b098"
+  },
+  "resources/js/Pages/ResignationLetter/Index.tsx": {
+    "mtime": 1783472189.8665917,
+    "ast_hash": "deb2863f4c61970f73f451b5f9abd540",
+    "semantic_hash": "deb2863f4c61970f73f451b5f9abd540"
+  },
+  "resources/js/Pages/ResumeBuilder/Edit.tsx": {
+    "mtime": 1783675939.4256785,
+    "ast_hash": "bae69c93b22e69777558045a1b430235",
+    "semantic_hash": "bae69c93b22e69777558045a1b430235"
+  },
+  "resources/js/Pages/ResumeBuilder/Heatmap.tsx": {
+    "mtime": 1782464292.3202486,
+    "ast_hash": "89cfd5e0ede4d60fd2105b77271bbfff",
+    "semantic_hash": "89cfd5e0ede4d60fd2105b77271bbfff"
+  },
+  "resources/js/Pages/ResumeBuilder/Index.tsx": {
+    "mtime": 1782464292.3202486,
+    "ast_hash": "377faa2957ab19bb03431507fce01c93",
+    "semantic_hash": "377faa2957ab19bb03431507fce01c93"
+  },
+  "resources/js/Pages/ResumeBuilder/LinkExpired.tsx": {
+    "mtime": 1783551197.6301074,
+    "ast_hash": "8fd5af1590bddd02500830f336019c75",
+    "semantic_hash": "8fd5af1590bddd02500830f336019c75"
+  },
+  "resources/js/Pages/ResumeBuilder/Partials/AtsMatchPanel.tsx": {
+    "mtime": 1782464292.3202486,
+    "ast_hash": "cfbde45d9d091f3a0b75d89a7b2fbdb5",
+    "semantic_hash": "cfbde45d9d091f3a0b75d89a7b2fbdb5"
+  },
+  "resources/js/Pages/ResumeBuilder/Partials/CareerMapPanel.tsx": {
+    "mtime": 1783472189.8670573,
+    "ast_hash": "3d93aa0836d6bf68faf7d815b86e5ab6",
+    "semantic_hash": "3d93aa0836d6bf68faf7d815b86e5ab6"
+  },
+  "resources/js/Pages/ResumeBuilder/Partials/PdfImportModal.tsx": {
+    "mtime": 1782464292.3212488,
+    "ast_hash": "6a8d80931166879d36cb081a30e9870f",
+    "semantic_hash": "6a8d80931166879d36cb081a30e9870f"
+  },
+  "resources/js/Pages/ResumeBuilder/Partials/SharePopover.tsx": {
+    "mtime": 1782464292.3212488,
+    "ast_hash": "d8281d7925df7fb19a4da2146fbc4d7d",
+    "semantic_hash": "d8281d7925df7fb19a4da2146fbc4d7d"
+  },
+  "resources/js/Pages/ResumeBuilder/Partials/StrengthScorePanel.tsx": {
+    "mtime": 1783551983.8179445,
+    "ast_hash": "106f9d8d9ebd1708d64a94de6d88fabb",
+    "semantic_hash": "106f9d8d9ebd1708d64a94de6d88fabb"
+  },
+  "resources/js/Pages/ResumeBuilder/Partials/ThreadsPanel.tsx": {
+    "mtime": 1782464292.3212488,
+    "ast_hash": "19f5aacb2350c189173152247a862bb1",
+    "semantic_hash": "19f5aacb2350c189173152247a862bb1"
+  },
+  "resources/js/Pages/ResumeBuilder/Partials/TranslatePanel.tsx": {
+    "mtime": 1783472189.8671703,
+    "ast_hash": "5715e8d95743d4c6653ed2587d1cedf2",
+    "semantic_hash": "5715e8d95743d4c6653ed2587d1cedf2"
+  },
+  "resources/js/Pages/ResumeBuilder/PublicView.tsx": {
+    "mtime": 1782464292.3212488,
+    "ast_hash": "6685cea246b2eb110ec08ac55b11aa06",
+    "semantic_hash": "6685cea246b2eb110ec08ac55b11aa06"
+  },
+  "resources/js/Pages/ResumeBuilder/Thread.tsx": {
+    "mtime": 1782464292.3212488,
+    "ast_hash": "bc08bb3096797dc233232ef93d3c1694",
+    "semantic_hash": "bc08bb3096797dc233232ef93d3c1694"
+  },
+  "resources/js/Pages/Settings/Portfolio.tsx": {
+    "mtime": 1782464292.3212488,
+    "ast_hash": "2e9be45163088fccf3e4faec86ca3322",
+    "semantic_hash": "2e9be45163088fccf3e4faec86ca3322"
+  },
+  "resources/js/Pages/Webhooks/Index.tsx": {
+    "mtime": 1782464292.3212488,
+    "ast_hash": "eb8ad372ded2ddc1b0b84087c1f205ff",
+    "semantic_hash": "eb8ad372ded2ddc1b0b84087c1f205ff"
+  },
+  "resources/js/Pages/Welcome.tsx": {
+    "mtime": 1783676068.6115618,
+    "ast_hash": "b9a19d33ab9c814c0dfd79032bf48f95",
+    "semantic_hash": "b9a19d33ab9c814c0dfd79032bf48f95"
+  },
+  "resources/js/app.tsx": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "3c1a4a1a9eb169d4c6fac30e36dd5d50",
+    "semantic_hash": "3c1a4a1a9eb169d4c6fac30e36dd5d50"
+  },
+  "resources/js/bootstrap.ts": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "eddcd185160c7007e9abb7c27107d97a",
+    "semantic_hash": "eddcd185160c7007e9abb7c27107d97a"
+  },
+  "resources/js/hooks/useAiSuggestion.ts": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "a505d5598ecc2891a1d97cd6867185be",
+    "semantic_hash": "a505d5598ecc2891a1d97cd6867185be"
+  },
+  "resources/js/hooks/useDarkMode.ts": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "1cb65f6786238c00ec87516b1f985cbc",
+    "semantic_hash": "1cb65f6786238c00ec87516b1f985cbc"
+  },
+  "resources/js/hooks/useHistory.ts": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "c96696f1ddc2335ac64efd49f5007037",
+    "semantic_hash": "c96696f1ddc2335ac64efd49f5007037"
+  },
+  "resources/js/types/global.d.ts": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "dca7559e7a53ecc2a12060058483c481",
+    "semantic_hash": "dca7559e7a53ecc2a12060058483c481"
+  },
+  "resources/js/types/index.d.ts": {
+    "mtime": 1783675833.6919901,
+    "ast_hash": "c8ff0a8728f46e519d96437498a2b9c0",
+    "semantic_hash": "c8ff0a8728f46e519d96437498a2b9c0"
+  },
+  "resources/js/types/vite-env.d.ts": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "0352474ba2918efe13895edbc3780d94",
+    "semantic_hash": "0352474ba2918efe13895edbc3780d94"
+  },
+  "resources/views/app.blade.php": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "88116c28a917facc2a05cf51afc00855",
+    "semantic_hash": "88116c28a917facc2a05cf51afc00855"
+  },
+  "resources/views/emails/resume-view-nudge.blade.php": {
+    "mtime": 1783511356.9605975,
+    "ast_hash": "77a8afc9f2d04095ec1e94b56e34c4fe",
+    "semantic_hash": "77a8afc9f2d04095ec1e94b56e34c4fe"
+  },
+  "resources/views/emails/stale-resume-nudge.blade.php": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "df4e4bc272c85c89c1f580dea3650ece",
+    "semantic_hash": "df4e4bc272c85c89c1f580dea3650ece"
+  },
+  "resources/views/emails/two-factor-code.blade.php": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "e7ed733d2c547d5ecec974eda82dfb66",
+    "semantic_hash": "e7ed733d2c547d5ecec974eda82dfb66"
+  },
+  "resources/views/filament/pages/ai-overview-page.blade.php": {
+    "mtime": 1783472189.8677654,
+    "ast_hash": "bc10fbf092b089e4e9707cc888774f91",
+    "semantic_hash": "bc10fbf092b089e4e9707cc888774f91"
+  },
+  "resources/views/filament/pages/ai-users-page.blade.php": {
+    "mtime": 1783472189.8678212,
+    "ast_hash": "984a76feefbe64c5f49288ccec1822d2",
+    "semantic_hash": "984a76feefbe64c5f49288ccec1822d2"
+  },
+  "resources/views/filament/pages/audit-page.blade.php": {
+    "mtime": 1783472189.8679612,
+    "ast_hash": "0266a108de24e4d537d4d81c1c71b831",
+    "semantic_hash": "0266a108de24e4d537d4d81c1c71b831"
+  },
+  "resources/views/filament/pages/content-page.blade.php": {
+    "mtime": 1783472189.868463,
+    "ast_hash": "9d8dc2ce92b622d8ddea65aab0217c6c",
+    "semantic_hash": "9d8dc2ce92b622d8ddea65aab0217c6c"
+  },
+  "resources/views/filament/pages/growth-page.blade.php": {
+    "mtime": 1783472189.8686306,
+    "ast_hash": "da2103a9d036de0e31dc73a09ede65c7",
+    "semantic_hash": "da2103a9d036de0e31dc73a09ede65c7"
+  },
+  "resources/views/filament/pages/ops-page.blade.php": {
+    "mtime": 1783472189.8687286,
+    "ast_hash": "a89052e8dacee8b8356f8396029b5634",
+    "semantic_hash": "a89052e8dacee8b8356f8396029b5634"
+  },
+  "resources/views/filament/pages/revenue-page.blade.php": {
+    "mtime": 1783472189.8687825,
+    "ast_hash": "a551c761b7764dea9d5b1896650da8d3",
+    "semantic_hash": "a551c761b7764dea9d5b1896650da8d3"
+  },
+  "resources/views/mail/follow-up-reminder.blade.php": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "1d5135741c6a682e4ef0e65217de6f84",
+    "semantic_hash": "1d5135741c6a682e4ef0e65217de6f84"
+  },
+  "resources/views/mail/new-portfolio-message.blade.php": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "ba2a22da0df60fd736c4d348bab5f7dc",
+    "semantic_hash": "ba2a22da0df60fd736c4d348bab5f7dc"
+  },
+  "resources/views/mail/new-question.blade.php": {
+    "mtime": 1782464292.3222487,
+    "ast_hash": "59be1c4c769150ceaac8a66e9ee638bd",
+    "semantic_hash": "59be1c4c769150ceaac8a66e9ee638bd"
+  },
+  "resources/views/mail/new-thread-started.blade.php": {
+    "mtime": 1782464292.3232486,
+    "ast_hash": "5217b5574770bcfeabb6b9816234d1e2",
+    "semantic_hash": "5217b5574770bcfeabb6b9816234d1e2"
+  },
+  "resources/views/mail/new-visitor-reply.blade.php": {
+    "mtime": 1782464292.3232486,
+    "ast_hash": "9b606d83fa4a42e1567a3bf18b570701",
+    "semantic_hash": "9b606d83fa4a42e1567a3bf18b570701"
+  },
+  "resources/views/mail/org-invite.blade.php": {
+    "mtime": 1782464292.3232486,
+    "ast_hash": "d8d35268e4c68f6837d50ab515e99766",
+    "semantic_hash": "d8d35268e4c68f6837d50ab515e99766"
+  },
+  "resources/views/mail/visitor-thread-reply.blade.php": {
+    "mtime": 1782464292.3232486,
+    "ast_hash": "516605e92e93b6621c35d3d9b0563a3f",
+    "semantic_hash": "516605e92e93b6621c35d3d9b0563a3f"
+  },
+  "resources/views/partials/resume-body.blade.php": {
+    "mtime": 1782464292.3232486,
+    "ast_hash": "60fa5c01c370d7b67e751dba6e91badf",
+    "semantic_hash": "60fa5c01c370d7b67e751dba6e91badf"
+  },
+  "resources/views/resume-pdf.blade.php": {
+    "mtime": 1782464292.3232486,
+    "ast_hash": "6334a9c2ea7f4e67f5b8716ef7ad75ee",
+    "semantic_hash": "6334a9c2ea7f4e67f5b8716ef7ad75ee"
+  },
+  "tests/Feature/Admin/AiAdminSchemaTest.php": {
+    "mtime": 1782464292.3252487,
+    "ast_hash": "3ed8eea3d80b2e0fa5bb1b00eda6e236",
+    "semantic_hash": "3ed8eea3d80b2e0fa5bb1b00eda6e236"
+  },
+  "tests/Feature/Admin/FilamentAdminTest.php": {
+    "mtime": 1783472189.8698847,
+    "ast_hash": "fd0aa5a74c394228219b9a8d19674185",
+    "semantic_hash": "fd0aa5a74c394228219b9a8d19674185"
+  },
+  "tests/Feature/AgencyBillingTest.php": {
+    "mtime": 1783472189.870338,
+    "ast_hash": "d027382f5fb0ec3671d6da3223a9b93a",
+    "semantic_hash": "d027382f5fb0ec3671d6da3223a9b93a"
+  },
+  "tests/Feature/AiServiceFlaggedTextTest.php": {
+    "mtime": 1782464292.3252487,
+    "ast_hash": "28ec100a7939e4eea83aaf3388154ea0",
+    "semantic_hash": "28ec100a7939e4eea83aaf3388154ea0"
+  },
+  "tests/Feature/AiServiceTest.php": {
+    "mtime": 1782464292.3252487,
+    "ast_hash": "0914ad66663e9a05826f32d1140a20a1",
+    "semantic_hash": "0914ad66663e9a05826f32d1140a20a1"
+  },
+  "tests/Feature/AiSuggestionTest.php": {
+    "mtime": 1783640514.562142,
+    "ast_hash": "9c8c14d85192bf520b8b1c2a77795109",
+    "semantic_hash": "9c8c14d85192bf520b8b1c2a77795109"
+  },
+  "tests/Feature/AiSuspendedTest.php": {
+    "mtime": 1783676194.4002378,
+    "ast_hash": "33f35a0f9c81a83df50cdaecb5805887",
+    "semantic_hash": "33f35a0f9c81a83df50cdaecb5805887"
+  },
+  "tests/Feature/AiTailoringGateTest.php": {
+    "mtime": 1783551595.6809707,
+    "ast_hash": "6aa72ee9e25ce3bbceed63ef66083aca",
+    "semantic_hash": "6aa72ee9e25ce3bbceed63ef66083aca"
+  },
+  "tests/Feature/AiUsageReportTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "73174f961ae145a1952bbb7f7c941afb",
+    "semantic_hash": "73174f961ae145a1952bbb7f7c941afb"
+  },
+  "tests/Feature/AiUserLimitsTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "938d9a0b359cabb2362bb346c7f76eee",
+    "semantic_hash": "938d9a0b359cabb2362bb346c7f76eee"
+  },
+  "tests/Feature/AnalyticsControllerTest.php": {
+    "mtime": 1783550671.1934814,
+    "ast_hash": "b9ccb535fda47f1037394ac4abd65295",
+    "semantic_hash": "b9ccb535fda47f1037394ac4abd65295"
+  },
+  "tests/Feature/AnalyticsTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "8bd606d415066b37b1747aa8838e1f78",
+    "semantic_hash": "8bd606d415066b37b1747aa8838e1f78"
+  },
+  "tests/Feature/Api/ActivityTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "b302aee9b71c8607d2e3a172bf436738",
+    "semantic_hash": "b302aee9b71c8607d2e3a172bf436738"
+  },
+  "tests/Feature/Api/ApiTestCase.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "1837dcc45cdb8b0b12d0a2ab14f6f2f3",
+    "semantic_hash": "1837dcc45cdb8b0b12d0a2ab14f6f2f3"
+  },
+  "tests/Feature/Api/ThreadReplyApiTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "230351542812ea873cb96c1c366d0fdc",
+    "semantic_hash": "230351542812ea873cb96c1c366d0fdc"
+  },
+  "tests/Feature/Auth/AuthenticationTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "c1abfe5086c9a104684b216ecce18935",
+    "semantic_hash": "c1abfe5086c9a104684b216ecce18935"
+  },
+  "tests/Feature/Auth/EmailVerificationTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "984f06482cee06496e43dcafb1b78f1b",
+    "semantic_hash": "984f06482cee06496e43dcafb1b78f1b"
+  },
+  "tests/Feature/Auth/PasswordConfirmationTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "09d4aff025e225f393864cfad9401b1a",
+    "semantic_hash": "09d4aff025e225f393864cfad9401b1a"
+  },
+  "tests/Feature/Auth/PasswordResetTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "095a86f1a541cae609d0696adda02d51",
+    "semantic_hash": "095a86f1a541cae609d0696adda02d51"
+  },
+  "tests/Feature/Auth/PasswordUpdateTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "4887faf7baa3359c26a6bd90c9fd8028",
+    "semantic_hash": "4887faf7baa3359c26a6bd90c9fd8028"
+  },
+  "tests/Feature/Auth/RegistrationTest.php": {
+    "mtime": 1782464292.326249,
+    "ast_hash": "a95ef25b70a2bdf4368200f0496c4846",
+    "semantic_hash": "a95ef25b70a2bdf4368200f0496c4846"
+  },
+  "tests/Feature/Auth/TwoFactorChallengeTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "d44fb2e4dfcafca01ded4c84b13ba758",
+    "semantic_hash": "d44fb2e4dfcafca01ded4c84b13ba758"
+  },
+  "tests/Feature/Auth/TwoFactorEnforcementTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "db8ddf1b3cd0c38a196a78ce850837b3",
+    "semantic_hash": "db8ddf1b3cd0c38a196a78ce850837b3"
+  },
+  "tests/Feature/Auth/TwoFactorSetupTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "cf2714b26754d646040b86f25500cbb6",
+    "semantic_hash": "cf2714b26754d646040b86f25500cbb6"
+  },
+  "tests/Feature/AutocompleteSkillsTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "9234a5b5addfca57afd298533ac58295",
+    "semantic_hash": "9234a5b5addfca57afd298533ac58295"
+  },
+  "tests/Feature/AutocompleteTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "d18b407d6c2150eca075e35cb122b821",
+    "semantic_hash": "d18b407d6c2150eca075e35cb122b821"
+  },
+  "tests/Feature/BillingTest.php": {
+    "mtime": 1783472189.871067,
+    "ast_hash": "d812775900d8a3015d513862bd1d99b7",
+    "semantic_hash": "d812775900d8a3015d513862bd1d99b7"
+  },
+  "tests/Feature/CareerCoachTest.php": {
+    "mtime": 1783472189.8711247,
+    "ast_hash": "3c2b0bddaf151ae9934f950f9153b832",
+    "semantic_hash": "3c2b0bddaf151ae9934f950f9153b832"
+  },
+  "tests/Feature/CareerHubTest.php": {
+    "mtime": 1783472189.8711996,
+    "ast_hash": "18772e7c2e394dbbafdd7f1198f5dbd4",
+    "semantic_hash": "18772e7c2e394dbbafdd7f1198f5dbd4"
+  },
+  "tests/Feature/CareerMapTest.php": {
+    "mtime": 1783472189.8712566,
+    "ast_hash": "cbb417135235d51045ae36e72af4e7c0",
+    "semantic_hash": "cbb417135235d51045ae36e72af4e7c0"
+  },
+  "tests/Feature/CompletionScoreTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "c2620066c6dec0a2b78d1ac931aea87b",
+    "semantic_hash": "c2620066c6dec0a2b78d1ac931aea87b"
+  },
+  "tests/Feature/Console/NudgeResumeViewsCommandTest.php": {
+    "mtime": 1783511333.1521246,
+    "ast_hash": "784104344da2c904843dd34c80460f28",
+    "semantic_hash": "784104344da2c904843dd34c80460f28"
+  },
+  "tests/Feature/CoverLetterTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "34458c8e871ac98a829f8c0574800f58",
+    "semantic_hash": "34458c8e871ac98a829f8c0574800f58"
+  },
+  "tests/Feature/CustomSectionsTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "0b98a6ee28908374bcbf01afebaa91e7",
+    "semantic_hash": "0b98a6ee28908374bcbf01afebaa91e7"
+  },
+  "tests/Feature/DocxExportTest.php": {
+    "mtime": 1783676160.705565,
+    "ast_hash": "d7d62cd8fb91654b9f5f233f1ae33739",
+    "semantic_hash": "d7d62cd8fb91654b9f5f233f1ae33739"
+  },
+  "tests/Feature/ExampleTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "0f4d91c9c5bbcd4e2f46cf885acb7fb6",
+    "semantic_hash": "0f4d91c9c5bbcd4e2f46cf885acb7fb6"
+  },
+  "tests/Feature/HeatmapTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "c165411274421dd30f889107a397058a",
+    "semantic_hash": "c165411274421dd30f889107a397058a"
+  },
+  "tests/Feature/InterviewCoachTest.php": {
+    "mtime": 1783640514.5623763,
+    "ast_hash": "7dc382d7434aaa21ca424476c5e3d12d",
+    "semantic_hash": "7dc382d7434aaa21ca424476c5e3d12d"
+  },
+  "tests/Feature/OgImageTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "b81e297341c2e043948c2d8021869600",
+    "semantic_hash": "b81e297341c2e043948c2d8021869600"
+  },
+  "tests/Feature/OnboardingTest.php": {
+    "mtime": 1783552460.2634225,
+    "ast_hash": "8bbc62133ae571db398806a17f579177",
+    "semantic_hash": "8bbc62133ae571db398806a17f579177"
+  },
+  "tests/Feature/OpenAiUsageServiceTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "fc64b38ddee2213b977bf9cc35dc9778",
+    "semantic_hash": "fc64b38ddee2213b977bf9cc35dc9778"
+  },
+  "tests/Feature/PersonaProfileTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "1a17d88b641ab25641d958e050c6d647",
+    "semantic_hash": "1a17d88b641ab25641d958e050c6d647"
+  },
+  "tests/Feature/PersonalTokenTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "55b0d98799e060a68c96ff8951793003",
+    "semantic_hash": "55b0d98799e060a68c96ff8951793003"
+  },
+  "tests/Feature/PortfolioTest.php": {
+    "mtime": 1782464292.3272488,
+    "ast_hash": "6c895039506d6bd1ce4ad8d9f8f4f4d8",
+    "semantic_hash": "6c895039506d6bd1ce4ad8d9f8f4f4d8"
+  },
+  "tests/Feature/ProfileTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "436a090e874e5964375f6a3291ee1336",
+    "semantic_hash": "436a090e874e5964375f6a3291ee1336"
+  },
+  "tests/Feature/ProofreadingTest.php": {
+    "mtime": 1783472189.8713055,
+    "ast_hash": "f50fd9e33174a0c0c1af013289471acc",
+    "semantic_hash": "f50fd9e33174a0c0c1af013289471acc"
+  },
+  "tests/Feature/PublicResumeTest.php": {
+    "mtime": 1783676244.7665534,
+    "ast_hash": "a6480438cf9ac6869986526d1860140b",
+    "semantic_hash": "a6480438cf9ac6869986526d1860140b"
+  },
+  "tests/Feature/PublicThreadTest.php": {
+    "mtime": 1783473832.8971875,
+    "ast_hash": "7f1f568cd56728d8f1dec32af0b681af",
+    "semantic_hash": "7f1f568cd56728d8f1dec32af0b681af"
+  },
+  "tests/Feature/ResignationLetterTest.php": {
+    "mtime": 1783472189.8714957,
+    "ast_hash": "8dc16c412860055cacb90cd20d0ba775",
+    "semantic_hash": "8dc16c412860055cacb90cd20d0ba775"
+  },
+  "tests/Feature/ResumeBuilderEditPropsTest.php": {
+    "mtime": 1783551929.1348207,
+    "ast_hash": "fd24d93b86aa4d44ef8969e35cc2845b",
+    "semantic_hash": "fd24d93b86aa4d44ef8969e35cc2845b"
+  },
+  "tests/Feature/ResumeBuilderTest.php": {
+    "mtime": 1783676252.504188,
+    "ast_hash": "27dbb2b1f4d187e64ead2806f1b69978",
+    "semantic_hash": "27dbb2b1f4d187e64ead2806f1b69978"
+  },
+  "tests/Feature/ResumeCascadeDeleteTest.php": {
+    "mtime": 1783640514.5625887,
+    "ast_hash": "067678fd6f4efec9ca9fd4fb85ac5099",
+    "semantic_hash": "067678fd6f4efec9ca9fd4fb85ac5099"
+  },
+  "tests/Feature/ResumePhotoTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "8aa480e281a0f12e87e2b77ea21fbeac",
+    "semantic_hash": "8aa480e281a0f12e87e2b77ea21fbeac"
+  },
+  "tests/Feature/ResumeScopeNonSnapshotTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "38a1883bbc17568d5d919722717f5df6",
+    "semantic_hash": "38a1883bbc17568d5d919722717f5df6"
+  },
+  "tests/Feature/ResumeShareEventTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "db92bc0ee662743b78568309fca8db22",
+    "semantic_hash": "db92bc0ee662743b78568309fca8db22"
+  },
+  "tests/Feature/ResumeShareLinkTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "6c36413528c60efe9c9150d8bd239719",
+    "semantic_hash": "6c36413528c60efe9c9150d8bd239719"
+  },
+  "tests/Feature/ResumeTagTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "8724a0f740445c66d564b21b8d5f27a9",
+    "semantic_hash": "8724a0f740445c66d564b21b8d5f27a9"
+  },
+  "tests/Feature/ResumeThreadTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "0008bc416b1039a7b819781dc7aa1bcd",
+    "semantic_hash": "0008bc416b1039a7b819781dc7aa1bcd"
+  },
+  "tests/Feature/ResumeThumbnailTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "60aba4d2702d94c798049aa9219cf5d9",
+    "semantic_hash": "60aba4d2702d94c798049aa9219cf5d9"
+  },
+  "tests/Feature/ResumeTranslateTest.php": {
+    "mtime": 1783472189.8715694,
+    "ast_hash": "bd73235757512349071478d447a1d7c6",
+    "semantic_hash": "bd73235757512349071478d447a1d7c6"
+  },
+  "tests/Feature/ResumeVariantTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "53cd2d347eb5ef0778edc0aa8dfd3991",
+    "semantic_hash": "53cd2d347eb5ef0778edc0aa8dfd3991"
+  },
+  "tests/Feature/SalaryIntelligenceTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "ba6eb16c3bd3d7e3722b3dd2d092a705",
+    "semantic_hash": "ba6eb16c3bd3d7e3722b3dd2d092a705"
+  },
+  "tests/Feature/SectionOrderTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "36418c1eaf9db3999f8fd9986a1d22f3",
+    "semantic_hash": "36418c1eaf9db3999f8fd9986a1d22f3"
+  },
+  "tests/Feature/ShareUrlTest.php": {
+    "mtime": 1782464292.3282487,
+    "ast_hash": "53962bd17e0c3cbd96939c7d1311da6d",
+    "semantic_hash": "53962bd17e0c3cbd96939c7d1311da6d"
+  },
+  "tests/Feature/SkillCategoriesTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "11383970bd3414fa42ec333b319da18d",
+    "semantic_hash": "11383970bd3414fa42ec333b319da18d"
+  },
+  "tests/Feature/SkillsLayoutTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "4eec80b237f09dacac345f8c0360b212",
+    "semantic_hash": "4eec80b237f09dacac345f8c0360b212"
+  },
+  "tests/Feature/StaleNudgeTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "31349983d6900aad58dce7b18ddf5450",
+    "semantic_hash": "31349983d6900aad58dce7b18ddf5450"
+  },
+  "tests/Feature/StrengthScorePanelTest.php": {
+    "mtime": 1783551904.079513,
+    "ast_hash": "704a488b40791ed1f415c7ff04617c6c",
+    "semantic_hash": "704a488b40791ed1f415c7ff04617c6c"
+  },
+  "tests/Feature/TierLimitsTest.php": {
+    "mtime": 1783676153.2102795,
+    "ast_hash": "8a96b14dc2ac64ca5799cb8b66836541",
+    "semantic_hash": "8a96b14dc2ac64ca5799cb8b66836541"
+  },
+  "tests/Feature/UserDeletionCleanupTest.php": {
+    "mtime": 1783640514.5627377,
+    "ast_hash": "40cf0bff42a5e63f850e5b18e7be9369",
+    "semantic_hash": "40cf0bff42a5e63f850e5b18e7be9369"
+  },
+  "tests/Feature/UserLimitsAiAdminTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "9f65876f91772b7872f7f25276b38b0a",
+    "semantic_hash": "9f65876f91772b7872f7f25276b38b0a"
+  },
+  "tests/Feature/UserLimitsAiTest.php": {
+    "mtime": 1783640514.5629551,
+    "ast_hash": "a02d28d3299a2e316ea08291e8651cc7",
+    "semantic_hash": "a02d28d3299a2e316ea08291e8651cc7"
+  },
+  "tests/Feature/ViewCountBadgeTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "41361e369dd41801b3e14f8d21d3ed0a",
+    "semantic_hash": "41361e369dd41801b3e14f8d21d3ed0a"
+  },
+  "tests/Feature/WebhookTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "f2bd1c8dce9c28c1ac6b40563ddc85d7",
+    "semantic_hash": "f2bd1c8dce9c28c1ac6b40563ddc85d7"
+  },
+  "tests/Feature/WelcomePageTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "51768d5cc615f41d6e7fe8b2fe4457d9",
+    "semantic_hash": "51768d5cc615f41d6e7fe8b2fe4457d9"
+  },
+  "tests/TestCase.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "7e567dc27e68d5b57bae16af07f68907",
+    "semantic_hash": "7e567dc27e68d5b57bae16af07f68907"
+  },
+  "tests/Unit/AiPromptsTest.php": {
+    "mtime": 1783472189.871668,
+    "ast_hash": "08b2768850cd625b2b1ab877b312cf52",
+    "semantic_hash": "08b2768850cd625b2b1ab877b312cf52"
+  },
+  "tests/Unit/AiServiceTest.php": {
+    "mtime": 1783472189.871787,
+    "ast_hash": "f9c02cf8d701f07bb9dd6b7310e82dac",
+    "semantic_hash": "f9c02cf8d701f07bb9dd6b7310e82dac"
+  },
+  "tests/Unit/CareerCoachMessageTest.php": {
+    "mtime": 1783472189.871843,
+    "ast_hash": "80b733c6c9af4f863ff72f9f7ee4bcec",
+    "semantic_hash": "80b733c6c9af4f863ff72f9f7ee4bcec"
+  },
+  "tests/Unit/ExampleTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "3f679e9508c834f0ad95943455fcd836",
+    "semantic_hash": "3f679e9508c834f0ad95943455fcd836"
+  },
+  "tests/Unit/ResignationLetterTemplatesTest.php": {
+    "mtime": 1783472189.8721695,
+    "ast_hash": "db19793697fcb8387542ddde15b6d7dd",
+    "semantic_hash": "db19793697fcb8387542ddde15b6d7dd"
+  },
+  "tests/Unit/ResumeCompletionScorerTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "865c5ad965900cd03f1968c7dafaafe1",
+    "semantic_hash": "865c5ad965900cd03f1968c7dafaafe1"
+  },
+  "tests/Unit/ResumeStrengthScorerTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "64680e3e8fd2c3c6baebefc6493a0469",
+    "semantic_hash": "64680e3e8fd2c3c6baebefc6493a0469"
+  },
+  "tests/Unit/ResumeThumbnailGeneratorTest.php": {
+    "mtime": 1782464292.329249,
+    "ast_hash": "59d3fe3efbb1f6ab3e8a98564494f372",
+    "semantic_hash": "59d3fe3efbb1f6ab3e8a98564494f372"
+  },
+  "tests/Unit/UserLimitsTest.php": {
+    "mtime": 1783551869.3330672,
+    "ast_hash": "9bfd85b625bc4533707cbd5f1af5757c",
+    "semantic_hash": "9bfd85b625bc4533707cbd5f1af5757c"
+  }
+}

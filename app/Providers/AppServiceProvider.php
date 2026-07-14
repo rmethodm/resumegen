@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\ProofreadingRequest;
 use App\Models\SystemEvent;
 use App\Models\User;
 use App\Services\UserLimits;
@@ -10,7 +9,7 @@ use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Cashier\Events\WebhookReceived;
+use Laravel\Cashier\Cashier;
 use Laravel\Cashier\Subscription;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,7 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Webhooks are removed from this app: Cashier must not register POST /stripe/webhook.
+        // Subscription tier changes therefore only sync when the app itself writes a Subscription.
+        Cashier::ignoreRoutes();
     }
 
     /**
@@ -30,25 +31,13 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
 
-        // Delivery log: record outbound mail + inbound Stripe webhooks (best-effort).
+        // Delivery log: record outbound mail (best-effort).
         Event::listen(MessageSent::class, function (MessageSent $event): void {
             try {
                 $email = $event->message; // Symfony\Component\Mime\Email
                 $to = collect($email->getTo())->map->getAddress()->implode(', ');
                 SystemEvent::record('mail', $email->getSubject() ?: '(no subject)', 'sent', $to ?: null);
             } catch (\Throwable) {
-            }
-        });
-
-        Event::listen(WebhookReceived::class, function (WebhookReceived $event): void {
-            SystemEvent::record('stripe_webhook', $event->payload['type'] ?? 'unknown', 'received', null, ['id' => $event->payload['id'] ?? null]);
-
-            if (($event->payload['type'] ?? null) === 'checkout.session.completed') {
-                $requestId = $event->payload['data']['object']['metadata']['proofreading_request_id'] ?? null;
-
-                if ($requestId) {
-                    ProofreadingRequest::whereKey($requestId)->where('status', 'pending')->update(['status' => 'paid']);
-                }
             }
         });
 

@@ -20,7 +20,7 @@ class PortfolioController extends Controller
     private const RESERVED_SLUGS = [
         'admin', 'api', 'builder', 'career', 'jobs', 'cover-letters', 'billing',
         'profile', 'onboarding', 'register', 'login', 'logout', 'p', 'r',
-        'password', 'dashboard', 'usage', 'webhooks', 'settings',
+        'password', 'dashboard', 'usage', 'settings',
     ];
 
     public function show(Request $request, string $slug): Response

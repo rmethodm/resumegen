@@ -13,7 +13,7 @@ class SystemEventFactory extends Factory
     public function definition(): array
     {
         return [
-            'channel' => $this->faker->randomElement(['mail', 'stripe_webhook']),
+            'channel' => 'mail',
             'type' => $this->faker->randomElement(['Welcome email', 'invoice.paid', 'customer.subscription.updated']),
             'status' => $this->faker->randomElement(['sent', 'received']),
             'recipient' => $this->faker->optional()->safeEmail(),

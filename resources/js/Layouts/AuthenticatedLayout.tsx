@@ -12,7 +12,6 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const { user } = usePage().props.auth;
-    const { aiEnabled } = usePage().props;
     const { impersonating } = usePage().props as any;
     const [showingNav, setShowingNav] = useState(false);
     const { isDark, toggle } = useDarkMode();
@@ -47,12 +46,8 @@ export default function Authenticated({
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</NavLink>
                                 <NavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</NavLink>
                                 <NavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</NavLink>
-                                <NavLink href={route('resignation-letters.index')} active={route().current('resignation-letters.*')}>Resignation Letters</NavLink>
-                                <NavLink href={route('proofreading.index')} active={route().current('proofreading.*')}>Proofreading</NavLink>
                                 <NavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</NavLink>
-                                {aiEnabled && <NavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</NavLink>}
                                 <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
-                                <NavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</NavLink>
                                 {user.is_master_admin && (
                                     <NavLink href={(() => { try { return route('admin.dashboard'); } catch { return route('admin.users.index'); } })()} active={route().current('admin.*')}>Admin</NavLink>
                                 )}
@@ -110,12 +105,8 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('resignation-letters.index')} active={route().current('resignation-letters.*')}>Resignation Letters</ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('proofreading.index')} active={route().current('proofreading.*')}>Proofreading</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</ResponsiveNavLink>
-                        {aiEnabled && <ResponsiveNavLink href={route('career-coach.index')} active={route().current('career-coach.*')}>Career Coach</ResponsiveNavLink>}
                         <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('webhooks.index')} active={route().current('webhooks.*')}>Webhooks</ResponsiveNavLink>
                         {user.is_master_admin && (
                             <ResponsiveNavLink href={(() => { try { return route('admin.dashboard'); } catch { return route('admin.users.index'); } })()} active={route().current('admin.*')}>Admin</ResponsiveNavLink>
                         )}

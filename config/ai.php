@@ -9,16 +9,6 @@ return [
     'enabled' => env('AI_ENABLED', true),
 
     /*
-     * Per-feature switches layered on top of the master switch above. A feature listed
-     * here stays dark even when AI_ENABLED is true, via the `ai_enabled:<feature>`
-     * middleware. Career coach is off pending a decision on its unbounded token cost:
-     * every turn resends the whole conversation history.
-     */
-    'features' => [
-        'career_coach' => env('AI_CAREER_COACH_ENABLED', false),
-    ],
-
-    /*
      * Default chat model used by App\Services\AiService when no model is passed.
      */
     'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
