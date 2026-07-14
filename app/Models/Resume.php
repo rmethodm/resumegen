@@ -16,6 +16,30 @@ class Resume extends Model implements HasMedia
 
     protected static function booted(): void
     {
+        static::saving(function (Resume $resume): void {
+            $flatten = function ($value) use (&$flatten): array {
+                if (is_array($value)) {
+                    return collect($value)->flatMap($flatten)->all();
+                }
+
+                return is_scalar($value) ? [(string) $value] : [];
+            };
+
+            $resume->search_text = collect([
+                $resume->name,
+                $resume->summary,
+                $resume->experience,
+                $resume->education,
+                $resume->projects,
+                $resume->skills,
+                $resume->skills_groups,
+                $resume->certifications,
+                $resume->custom_sections,
+            ])->flatMap($flatten)->filter()->implode(' ');
+
+            $resume->search_text = mb_strtolower($resume->search_text);
+        });
+
         static::deleting(function (Resume $resume): void {
             // Per-model delete so each variant runs this hook too: nested A/B
             // trees recurse, and every level unlinks its own thumbnail.
@@ -26,7 +50,7 @@ class Resume extends Model implements HasMedia
 
     protected $fillable = [
         'user_id',
-        'name', 'pdf_filename', 'template',
+        'name', 'search_text', 'pdf_filename', 'template',
         'accent_color', 'font_family',
         'contact', 'summary', 'target_job_description', 'experience', 'education', 'projects',
         'skills', 'skills_layout', 'skills_groups', 'skill_narratives', 'certifications', 'font_sizes',
