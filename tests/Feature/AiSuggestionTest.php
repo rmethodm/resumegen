@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\CoverLetter;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\UserLimits;
@@ -48,6 +49,61 @@ class AiSuggestionTest extends TestCase
             'feature' => 'rewrite_bullet',
             'status' => 'success',
         ]);
+    }
+
+    public function test_cover_letter_draft_returns_body_and_logs_success(): void
+    {
+        config()->set('ai.monthly_limit', 10);
+        $this->fakeReply("Dear hiring team,\n\nI led the platform rebuild…");
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'experience' => [['title' => 'Staff Engineer', 'company' => 'Acme']],
+            'skills' => ['Go', 'Postgres'],
+        ]);
+        $letter = CoverLetter::factory()->for($user)->create(['resume_id' => $resume->id]);
+
+        $this->actingAs($user)->postJson(
+            route('cover-letters.ai.draft', $letter),
+            ['role' => 'Staff Engineer', 'company' => 'Globex']
+        )->assertOk()->assertJson([
+            'body' => "Dear hiring team,\n\nI led the platform rebuild…",
+            'remaining' => 9,
+        ]);
+
+        $this->assertDatabaseHas('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'cover_letter',
+            'status' => 'success',
+        ]);
+    }
+
+    /**
+     * The prompt forbids inventing employers or accomplishments, so a letter with no linked
+     * resume has nothing truthful to say — refuse rather than let the model make it up.
+     */
+    public function test_cover_letter_draft_requires_a_linked_resume(): void
+    {
+        config()->set('ai.monthly_limit', 10);
+        $this->fakeReply('Should never be called.');
+        $user = User::factory()->create();
+        $letter = CoverLetter::factory()->for($user)->create(['resume_id' => null]);
+
+        $this->actingAs($user)
+            ->postJson(route('cover-letters.ai.draft', $letter))
+            ->assertStatus(422);
+
+        $this->assertDatabaseCount('ai_requests', 0);
+    }
+
+    public function test_cover_letter_draft_is_denied_for_another_users_letter(): void
+    {
+        config()->set('ai.monthly_limit', 10);
+        $user = User::factory()->create();
+        $letter = CoverLetter::factory()->for(User::factory()->create())->create();
+
+        $this->actingAs($user)
+            ->postJson(route('cover-letters.ai.draft', $letter))
+            ->assertForbidden();
     }
 
     public function test_rewrite_bullet_accepts_a_long_bullets_block(): void

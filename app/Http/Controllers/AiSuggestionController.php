@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Data\AiPrompts;
 use App\Exceptions\ModerationException;
+use App\Models\CoverLetter;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\AiService;
@@ -84,6 +85,42 @@ class AiSuggestionController extends Controller
             fn (string $reply): array => ['keywords' => $this->splitKeywords($reply)],
             $cacheKey,
         );
+    }
+
+    /**
+     * Draft a cover letter body from the letter's linked resume.
+     *
+     * The linked resume is required, not optional: the prompt forbids inventing employers or
+     * accomplishments, so with no resume there is nothing to ground the letter in.
+     */
+    public function coverLetterDraft(Request $request, CoverLetter $letter): JsonResponse
+    {
+        $this->authorize('update', $letter);
+
+        $data = $request->validate([
+            'role' => ['nullable', 'string', 'max:200'],
+            'company' => ['nullable', 'string', 'max:200'],
+            'job_description' => ['nullable', 'string', 'max:10000'],
+            'tone' => ['nullable', 'in:formal,friendly,confident'],
+        ]);
+
+        $resume = $letter->resume;
+
+        if ($resume === null) {
+            abort(422, 'Link a resume first — the letter is written from its experience and skills.');
+        }
+
+        $input = [
+            'tone' => $data['tone'] ?? 'formal',
+            'role' => ($data['role'] ?? null) ?: $request->user()->target_role,
+            'company' => ($data['company'] ?? null) ?: null,
+            'job_description' => ($data['job_description'] ?? null) ?: $resume->target_job_description,
+            'experience' => $resume->experience ?? [],
+            'skills' => $resume->skills ?? [],
+        ];
+
+        return $this->run($request->user(), 'cover_letter', $input,
+            fn (string $reply): array => ['body' => trim($reply)]);
     }
 
     /**
