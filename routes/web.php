@@ -24,6 +24,7 @@ use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\ResumeThreadController;
 use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SectionEventController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
@@ -90,6 +91,8 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::delete('/builder/{resume}/photo', [ResumePhotoController::class, 'destroy'])->name('builder.photo.destroy');
     Route::post('/builder/{resume}/tags', [ResumeTagController::class, 'store'])->name('builder.tags.store');
     Route::delete('/builder/{resume}/tags/{tag}', [ResumeTagController::class, 'destroy'])->name('builder.tags.destroy');
+
+    Route::get('/search', SearchController::class)->name('search');
 
     Route::middleware(['ai_enabled', 'throttle:20,1'])->group(function () {
         Route::post('/builder/{resume}/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])->name('builder.ai.rewrite-bullet');
