@@ -688,221 +688,6 @@ export default function Edit({
             <Head title={`Editing: ${name}`} />
 
             <div className="flex items-start bg-[#f1f5f9]">
-
-                {/* ── Sidebar ── */}
-                <aside className={`sticky top-0 self-start overflow-y-auto bg-white border-r border-[#cbd5e1] transition-all duration-200 ${sidebarOpen ? 'w-56' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
-                    <div className="flex justify-end border-b border-[#cbd5e1] px-2 py-2">
-                        <button type="button" onClick={() => setSidebarOpen(v => !v)} className="rounded-md p-1.5 text-[#94a3b8] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}>
-                            {sidebarOpen ? <ChevronLeftIcon className="h-4 w-4" /> : <ChevronRightIcon className="h-4 w-4" />}
-                        </button>
-                    </div>
-                    <div className="space-y-5 px-3 py-4">
-                        {recruiterNote && (
-                            <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
-                                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
-                                <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
-                            </div>
-                        )}
-                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Appearance</p>}
-                        <div title={!sidebarOpen ? 'Template' : undefined}>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <button
-                                        type="button"
-                                        onClick={() => setTemplateOpen(v => !v)}
-                                        className="flex w-full items-center justify-between rounded-md px-1.5 py-1 hover:bg-[#f1f5f9] transition-colors"
-                                    >
-                                        <div className="flex items-center gap-1.5">
-                                            <SwatchIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" />
-                                            <span className="text-xs font-medium text-[#475569]">Template</span>
-                                            <span className="text-[10px] text-[#94a3b8]">({TEMPLATE_LABELS[template] ?? template})</span>
-                                        </div>
-                                        <svg className={`h-3.5 w-3.5 text-[#94a3b8] transition-transform ${templateOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                                    </button>
-                                    {templateOpen && (
-                                        <div className="space-y-1.5">
-                                            <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
-                                                {Object.keys(TEMPLATE_LABELS).map(t => {
-                                                    const locked = false;
-                                                    const selected = template === t;
-                                                    return (
-                                                        <button
-                                                            key={t}
-                                                            type="button"
-                                                            onClick={() => {
-                                                                setTemplate(t as ResumeTemplate); setTimeout(save, 0);
-                                                            }}
-                                                            aria-pressed={selected}
-                                                            title={TEMPLATE_LABELS[t] ?? t}
-                                                            className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-[#2563eb] ring-1 ring-[#2563eb]' : 'border-[#cbd5e1] hover:border-[#c7c7d9]'} ${locked ? 'opacity-60' : ''}`}
-                                                        >
-                                                            <img
-                                                                src={`/images/templates/${t}.png`}
-                                                                loading="lazy"
-                                                                alt=""
-                                                                className="mb-1 h-28 w-full rounded border border-[#cbd5e1] bg-white object-cover object-top"
-                                                            />
-                                                            <span className="truncate text-[11px] font-medium text-[#0f172a]">{locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}</span>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                            {NON_ATS_TEMPLATES.includes(template) && <p className="text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Template"><SwatchIcon className="h-4 w-4" /></button>
-                            )}
-                        </div>
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#475569]">Aa</span><span className="text-xs font-medium text-[#475569]">Font</span></div>
-                                    <div className="flex overflow-hidden rounded-md border border-[#cbd5e1] text-xs">
-                                        {(['sans', 'serif', 'mono'] as const).map(f => (
-                                            <button key={f} type="button" onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }} className={`flex-1 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-[#0f172a] text-white' : 'bg-white text-[#475569] hover:bg-[#f1f5f9]'}`}>
-                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : (
-                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Font"><span className="text-sm font-bold">Aa</span></button>
-                            )}
-                        </div>
-                        {sidebarOpen && (
-                            <div>
-                                <button type="button" onClick={() => toggleSection('fontSizes')} className="flex w-full items-center justify-between text-left">
-                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#475569]">↕</span><span className="text-xs font-medium text-[#475569]">Text size</span></div>
-                                    <svg className={`h-3.5 w-3.5 text-[#94a3b8] transition-transform ${openSections.fontSizes ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
-                                </button>
-                                {openSections.fontSizes && (
-                                    <div className="mt-2 space-y-2">
-                                        <div className="flex justify-end">
-                                            <button type="button" onClick={() => { setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] hover:text-[#2563eb] transition-colors">Reset</button>
-                                        </div>
-                                        {([
-                                            { label: 'Name', key: 'name', min: 12, max: 36 },
-                                            { label: 'Contact Info', key: 'contact', min: 6, max: 16 },
-                                            { label: 'Section Headings', key: 'heading', min: 8, max: 20 },
-                                            { label: 'Body Text', key: 'body', min: 8, max: 16 },
-                                            { label: 'Section Spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                            { label: 'Entry Spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                            <div key={key} className="flex items-center justify-between gap-1">
-                                                <span className="truncate text-xs text-[#475569]">{label}</span>
-                                                <div className="flex shrink-0 items-center gap-0.5">
-                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.max(min, +(fontSizesRef.current[key] - 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#dbeafe] text-[#2563eb] hover:bg-[#dbeafe]">−</button>
-                                                    <span className="w-7 text-center text-xs font-medium tabular-nums text-[#1e293b]">{fontSizes[key]}</span>
-                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.min(max, +(fontSizesRef.current[key] + 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#dbeafe] text-[#2563eb] hover:bg-[#dbeafe]">+</button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                        {sidebarOpen && template === 'executive' && (
-                            <div>
-                                <p className="mb-2 text-xs font-medium text-[#475569]">Profile Photo</p>
-                                <div className="flex items-center gap-3">
-                                    {photoUrl ? <img src={photoUrl} alt="Profile" className="h-12 w-12 rounded-full object-cover ring-2 ring-blue-100" /> : <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400"><svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>}
-                                    <div className="flex flex-col gap-1">
-                                        <label className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
-                                            Upload Photo
-                                            <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (!f) return; const fd = new FormData(); fd.append('photo', f); router.post(route('builder.photo.store', resume.id), fd, { forceFormData: true, preserveScroll: true }); }} />
-                                        </label>
-                                        {photoUrl && <button type="button" onClick={() => router.delete(route('builder.photo.destroy', resume.id), { preserveScroll: true })} className="text-xs text-red-500 hover:text-red-700">Remove</button>}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                        <div className="border-t border-[#cbd5e1]" />
-                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Document</p>}
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><BookmarkSquareIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Save</span></div>
-                                    <button type="button" onClick={save} disabled={saving} className="w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1e293b] disabled:opacity-50 transition-colors">{saving ? 'Saving…' : 'Save'}</button>
-                                    {saving ? <div className="flex items-center gap-1.5"><span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" /><span className="text-[10px] text-amber-600">Saving…</span></div> : savedAt ? <div className="flex items-center gap-1.5"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" /><span className="text-[10px] text-green-600">Saved {savedAt}</span></div> : null}
-                                </div>
-                            ) : (
-                                <button type="button" onClick={save} disabled={saving} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] disabled:opacity-50 transition-colors" title="Save"><BookmarkSquareIcon className="h-4 w-4" /></button>
-                            )}
-                        </div>
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><EyeIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Preview</span></div>
-                                    <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`w-full rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${showPreview ? 'bg-[#1e293b] text-white hover:bg-[#1e3a8a]' : 'bg-[#0f172a] text-white hover:bg-[#1e293b]'}`}>{showPreview ? 'Hide Preview' : 'Preview'}</button>
-                                </div>
-                            ) : (
-                                <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`flex w-full justify-center rounded-md p-2 transition-colors ${showPreview ? 'text-[#2563eb] bg-[#dbeafe]' : 'text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb]'}`} title={showPreview ? 'Hide Preview' : 'Preview'}>{showPreview ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}</button>
-                            )}
-                        </div>
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><ArrowDownTrayIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Download</span></div>
-                                    <a href={route('builder.pdf', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">PDF</a>
-                                    <a href={route('builder.docx', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">DOCX</a>
-                                </div>
-                            ) : (
-                                <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
-                            )}
-                        </div>
-                        {sidebarOpen && aiEnabled && (
-                            <div>
-                                <div className="flex items-center gap-1.5 mb-1.5"><span className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Interview Prep</span></div>
-                                {(
-                                    <button
-                                        type="button"
-                                        disabled={interviewLoading}
-                                        onClick={async () => {
-                                            setInterviewLoading(true);
-                                            try {
-                                                const res = await fetch(route('builder.interview-coach', resume.id), {
-                                                    method: 'POST',
-                                                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '' },
-                                                    body: JSON.stringify({ target_role: name.replace(/\s*resume\s*$/i, '').trim() || 'this role' }),
-                                                });
-                                                const json = await res.json();
-                                                if (res.ok) setInterviewQuestions(json.questions ?? []);
-                                            } finally {
-                                                setInterviewLoading(false);
-                                            }
-                                        }}
-                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#2563eb] hover:bg-[#f1f5f9] transition-colors disabled:opacity-50"
-                                    >
-                                        {interviewLoading ? 'Generating…' : '✨ Interview Questions'}
-                                    </button>
-                                )}
-                                {interviewQuestions.length > 0 && (
-                                    <div className="mt-2 space-y-2">
-                                        {interviewQuestions.map((q, i) => (
-                                            <div key={i} className="rounded border border-[#eeeef5] p-2">
-                                                <p className="text-xs font-medium text-[#0f0f1a]">{q.question}</p>
-                                                <p className="mt-1 text-[10px] italic text-[#94a3b8]">{q.hint}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />}
-                        {sidebarOpen && aiEnabled && (
-                            <AtsMatchPanel
-                                jobDescription={targetJobDescription}
-                                onJobDescriptionChange={setTargetJobDescription}
-                                onJobDescriptionBlur={save}
-                                keywordGaps={keywordGaps}
-                                aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
-                            />
-                        )}
-                    </div>
-                </aside>
-
                 {/* ── Form ── */}
                 <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
                     <div className="mx-auto max-w-2xl space-y-4 px-4">
@@ -1257,6 +1042,221 @@ export default function Edit({
 
                     </div>
                 </div>
+
+                {/* ── Sidebar ── */}
+                <aside className={`sticky top-0 self-start overflow-y-auto bg-white border-l border-[#cbd5e1] transition-all duration-200 ${sidebarOpen ? 'w-56' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+                    <div className="flex justify-start border-b border-[#cbd5e1] px-2 py-2">
+                        <button type="button" onClick={() => setSidebarOpen(v => !v)} className="rounded-md p-1.5 text-[#94a3b8] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}>
+                            {sidebarOpen ? <ChevronLeftIcon className="h-4 w-4" /> : <ChevronRightIcon className="h-4 w-4" />}
+                        </button>
+                    </div>
+                    <div className="space-y-5 px-3 py-4">
+                        {recruiterNote && (
+                            <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
+                                <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
+                            </div>
+                        )}
+                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Appearance</p>}
+                        <div title={!sidebarOpen ? 'Template' : undefined}>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <button
+                                        type="button"
+                                        onClick={() => setTemplateOpen(v => !v)}
+                                        className="flex w-full items-center justify-between rounded-md px-1.5 py-1 hover:bg-[#f1f5f9] transition-colors"
+                                    >
+                                        <div className="flex items-center gap-1.5">
+                                            <SwatchIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" />
+                                            <span className="text-xs font-medium text-[#475569]">Template</span>
+                                            <span className="text-[10px] text-[#94a3b8]">({TEMPLATE_LABELS[template] ?? template})</span>
+                                        </div>
+                                        <svg className={`h-3.5 w-3.5 text-[#94a3b8] transition-transform ${templateOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                                    </button>
+                                    {templateOpen && (
+                                        <div className="space-y-1.5">
+                                            <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
+                                                {Object.keys(TEMPLATE_LABELS).map(t => {
+                                                    const locked = false;
+                                                    const selected = template === t;
+                                                    return (
+                                                        <button
+                                                            key={t}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setTemplate(t as ResumeTemplate); setTimeout(save, 0);
+                                                            }}
+                                                            aria-pressed={selected}
+                                                            title={TEMPLATE_LABELS[t] ?? t}
+                                                            className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-[#2563eb] ring-1 ring-[#2563eb]' : 'border-[#cbd5e1] hover:border-[#c7c7d9]'} ${locked ? 'opacity-60' : ''}`}
+                                                        >
+                                                            <img
+                                                                src={`/images/templates/${t}.png`}
+                                                                loading="lazy"
+                                                                alt=""
+                                                                className="mb-1 h-28 w-full rounded border border-[#cbd5e1] bg-white object-cover object-top"
+                                                            />
+                                                            <span className="truncate text-[11px] font-medium text-[#0f172a]">{locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                            {NON_ATS_TEMPLATES.includes(template) && <p className="text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Template"><SwatchIcon className="h-4 w-4" /></button>
+                            )}
+                        </div>
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#475569]">Aa</span><span className="text-xs font-medium text-[#475569]">Font</span></div>
+                                    <div className="flex overflow-hidden rounded-md border border-[#cbd5e1] text-xs">
+                                        {(['sans', 'serif', 'mono'] as const).map(f => (
+                                            <button key={f} type="button" onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }} className={`flex-1 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-[#0f172a] text-white' : 'bg-white text-[#475569] hover:bg-[#f1f5f9]'}`}>
+                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Font"><span className="text-sm font-bold">Aa</span></button>
+                            )}
+                        </div>
+                        {sidebarOpen && (
+                            <div>
+                                <button type="button" onClick={() => toggleSection('fontSizes')} className="flex w-full items-center justify-between text-left">
+                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#475569]">↕</span><span className="text-xs font-medium text-[#475569]">Text size</span></div>
+                                    <svg className={`h-3.5 w-3.5 text-[#94a3b8] transition-transform ${openSections.fontSizes ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                                </button>
+                                {openSections.fontSizes && (
+                                    <div className="mt-2 space-y-2">
+                                        <div className="flex justify-end">
+                                            <button type="button" onClick={() => { setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] hover:text-[#2563eb] transition-colors">Reset</button>
+                                        </div>
+                                        {([
+                                            { label: 'Name', key: 'name', min: 12, max: 36 },
+                                            { label: 'Contact Info', key: 'contact', min: 6, max: 16 },
+                                            { label: 'Section Headings', key: 'heading', min: 8, max: 20 },
+                                            { label: 'Body Text', key: 'body', min: 8, max: 16 },
+                                            { label: 'Section Spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                            { label: 'Entry Spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                            <div key={key} className="flex items-center justify-between gap-1">
+                                                <span className="truncate text-xs text-[#475569]">{label}</span>
+                                                <div className="flex shrink-0 items-center gap-0.5">
+                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.max(min, +(fontSizesRef.current[key] - 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#dbeafe] text-[#2563eb] hover:bg-[#dbeafe]">−</button>
+                                                    <span className="w-7 text-center text-xs font-medium tabular-nums text-[#1e293b]">{fontSizes[key]}</span>
+                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.min(max, +(fontSizesRef.current[key] + 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#dbeafe] text-[#2563eb] hover:bg-[#dbeafe]">+</button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                        {sidebarOpen && template === 'executive' && (
+                            <div>
+                                <p className="mb-2 text-xs font-medium text-[#475569]">Profile Photo</p>
+                                <div className="flex items-center gap-3">
+                                    {photoUrl ? <img src={photoUrl} alt="Profile" className="h-12 w-12 rounded-full object-cover ring-2 ring-blue-100" /> : <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400"><svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>}
+                                    <div className="flex flex-col gap-1">
+                                        <label className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                                            Upload Photo
+                                            <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (!f) return; const fd = new FormData(); fd.append('photo', f); router.post(route('builder.photo.store', resume.id), fd, { forceFormData: true, preserveScroll: true }); }} />
+                                        </label>
+                                        {photoUrl && <button type="button" onClick={() => router.delete(route('builder.photo.destroy', resume.id), { preserveScroll: true })} className="text-xs text-red-500 hover:text-red-700">Remove</button>}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        <div className="border-t border-[#cbd5e1]" />
+                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Document</p>}
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5"><BookmarkSquareIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Save</span></div>
+                                    <button type="button" onClick={save} disabled={saving} className="w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1e293b] disabled:opacity-50 transition-colors">{saving ? 'Saving…' : 'Save'}</button>
+                                    {saving ? <div className="flex items-center gap-1.5"><span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" /><span className="text-[10px] text-amber-600">Saving…</span></div> : savedAt ? <div className="flex items-center gap-1.5"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" /><span className="text-[10px] text-green-600">Saved {savedAt}</span></div> : null}
+                                </div>
+                            ) : (
+                                <button type="button" onClick={save} disabled={saving} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] disabled:opacity-50 transition-colors" title="Save"><BookmarkSquareIcon className="h-4 w-4" /></button>
+                            )}
+                        </div>
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5"><EyeIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Preview</span></div>
+                                    <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`w-full rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${showPreview ? 'bg-[#1e293b] text-white hover:bg-[#1e3a8a]' : 'bg-[#0f172a] text-white hover:bg-[#1e293b]'}`}>{showPreview ? 'Hide Preview' : 'Preview'}</button>
+                                </div>
+                            ) : (
+                                <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`flex w-full justify-center rounded-md p-2 transition-colors ${showPreview ? 'text-[#2563eb] bg-[#dbeafe]' : 'text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb]'}`} title={showPreview ? 'Hide Preview' : 'Preview'}>{showPreview ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}</button>
+                            )}
+                        </div>
+                        <div>
+                            {sidebarOpen ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5"><ArrowDownTrayIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Download</span></div>
+                                    <a href={route('builder.pdf', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">PDF</a>
+                                    <a href={route('builder.docx', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">DOCX</a>
+                                </div>
+                            ) : (
+                                <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
+                            )}
+                        </div>
+                        {sidebarOpen && aiEnabled && (
+                            <div>
+                                <div className="flex items-center gap-1.5 mb-1.5"><span className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Interview Prep</span></div>
+                                {(
+                                    <button
+                                        type="button"
+                                        disabled={interviewLoading}
+                                        onClick={async () => {
+                                            setInterviewLoading(true);
+                                            try {
+                                                const res = await fetch(route('builder.interview-coach', resume.id), {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '' },
+                                                    body: JSON.stringify({ target_role: name.replace(/\s*resume\s*$/i, '').trim() || 'this role' }),
+                                                });
+                                                const json = await res.json();
+                                                if (res.ok) setInterviewQuestions(json.questions ?? []);
+                                            } finally {
+                                                setInterviewLoading(false);
+                                            }
+                                        }}
+                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#2563eb] hover:bg-[#f1f5f9] transition-colors disabled:opacity-50"
+                                    >
+                                        {interviewLoading ? 'Generating…' : '✨ Interview Questions'}
+                                    </button>
+                                )}
+                                {interviewQuestions.length > 0 && (
+                                    <div className="mt-2 space-y-2">
+                                        {interviewQuestions.map((q, i) => (
+                                            <div key={i} className="rounded border border-[#eeeef5] p-2">
+                                                <p className="text-xs font-medium text-[#0f0f1a]">{q.question}</p>
+                                                <p className="mt-1 text-[10px] italic text-[#94a3b8]">{q.hint}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />}
+                        {sidebarOpen && aiEnabled && (
+                            <AtsMatchPanel
+                                jobDescription={targetJobDescription}
+                                onJobDescriptionChange={setTargetJobDescription}
+                                onJobDescriptionBlur={save}
+                                keywordGaps={keywordGaps}
+                                aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
+                            />
+                        )}
+                    </div>
+                </aside>
+
             </div>
 
             {/* Floating Preview Panel */}
