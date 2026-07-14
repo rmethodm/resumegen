@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Data\CoverLetterTemplates;
 use App\Models\CoverLetter;
+use App\Services\UserLimits;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -59,6 +60,7 @@ class CoverLetterController extends Controller
         return Inertia::render('CoverLetter/Edit', [
             'letter' => $letter,
             'resumes' => $resumes,
+            'aiRemaining' => UserLimits::aiRemaining($request->user()),
         ]);
     }
 

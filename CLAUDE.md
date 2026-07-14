@@ -122,7 +122,7 @@ Resume content is stored as JSON columns on a single `resumes` table (no separat
 The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor + live preview iframe. Uses `onBlur` on every field to trigger `router.put` save (no debounce). The preview iframe loads `GET /builder/{resume}/preview` with a cache-busting `?t=<timestamp>` query param on each save.
 
 ### Shared Inertia props
-`HandleInertiaRequests::share()` passes `auth.user` and `featureGate` to every page. `featureGate` is a flash value (`session()->pull('featureGate')`) — any controller can flash it to trigger the `UpgradeModal` without per-page wiring.
+`HandleInertiaRequests::share()` passes `auth.user`, `flash.{success,error}`, `aiEnabled` (mirrors `config('ai.enabled')` so the UI can hide AI affordances), and `impersonating`. There is no `featureGate` — see "Billing".
 
 ## Billing — there is none
 
@@ -134,7 +134,17 @@ Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` 
 
 ## AI (OpenAI)
 
-`App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
+`App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`AI_ENABLED`, `OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
+
+**Master switch:** `AI_ENABLED` (default true). The `ai_enabled` middleware (`EnsureAiEnabled`, aliased in `bootstrap/app.php`) **404s** every AI route when it's false — 404 not 403, so a suspended feature looks absent rather than like a plan restriction. The `aiEnabled` Inertia prop hides the matching UI.
+
+**Prompts:** `App\Data\AiPrompts::build(string $feature, array $input)` — one `match` over the feature key, throws on unknown. Keys: `rewrite_bullet`, `critique_bullet`, `generate_summary`, `ats_keywords`, `interview_coach`, `cover_letter`.
+
+**Routes** (all under `['ai_enabled', 'throttle:20,1']` in `web.php`): `builder/{resume}/ai/{rewrite-bullet,critique-bullet,summary,ats-keywords}`, `builder/{resume}/interview-coach`, `cover-letters/{letter}/ai/draft`.
+
+**Cover letter draft** (`cover-letters.ai.draft`) requires the letter to have a linked resume — the prompt forbids inventing employers or accomplishments, so with no resume there is nothing to ground the letter in; it 422s rather than let the model make one up. Role/company come from the request, falling back to `users.target_role` and the resume's `target_job_description`.
+
+**Bullet coach:** the bullet editor offers two equal-weight actions — "Coach me" (`critique_bullet`: the model asks what the weak bullet fails to say, the user answers in their own words, and the bullet is rebuilt from *their* facts) and "Write it for me" (`rewrite_bullet`). Deliberate 50/50 — do not demote either to a secondary affordance without asking.
 
 **Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `RegisteredUserController::store()` via `registration_ip` column on `users`.
 
@@ -159,6 +169,7 @@ Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (in
 Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 
 - **Resignation letters, proofreading, career coach chat, outbound user webhooks.** Their tables (`resignation_letters`, `proofreading_requests`, `career_coach_messages`, `webhook_endpoints`) may linger as orphans in databases that ran the old migrations — the create-migrations were deleted rather than superseded by a drop, so a fresh `migrate` will not recreate them.
+- **Resume translation and career map** — the two most expensive AI features per unit of value. Deleted outright (routes, prompts, controllers, tests), not flagged off.
 - **All billing** (see above). Here the create-migrations were kept and a drop migration (`2026_07_14_120000_drop_billing_tables_and_columns`) removes the tables and columns, so both fresh and existing databases converge.
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
 
@@ -171,6 +182,7 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
 6. **No monetization** — every feature is free and unlimited; AI is metered only to cap OpenAI spend.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
+8. **AI coaches as often as it ghostwrites** — the coach path (ask the user for the missing facts, then rebuild the bullet from their answer) is offered at equal weight to the write-it-for-me path, so the resume stays the candidate's own words.
 
 ---
 
