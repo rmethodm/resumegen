@@ -8,7 +8,6 @@ use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\BillingController;
-use App\Http\Controllers\CareerCoachController;
 use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
@@ -19,10 +18,8 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProofreadingController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
-use App\Http\Controllers\ResignationLetterController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
@@ -31,7 +28,6 @@ use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\SectionEventController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
-use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -104,11 +100,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
     });
 
-    Route::middleware('ai_enabled:career_coach')->group(function () {
-        Route::get('/career-coach', [CareerCoachController::class, 'index'])->name('career-coach.index');
-        Route::middleware('throttle:20,1')->post('/career-coach/messages', [CareerCoachController::class, 'send'])->name('career-coach.send');
-    });
-
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
@@ -123,15 +114,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
     Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
 
-    Route::get('/resignation-letters', [ResignationLetterController::class, 'index'])->name('resignation-letters.index');
-    Route::post('/resignation-letters', [ResignationLetterController::class, 'store'])->name('resignation-letters.store');
-    Route::get('/resignation-letters/{letter}', [ResignationLetterController::class, 'edit'])->name('resignation-letters.edit');
-    Route::put('/resignation-letters/{letter}', [ResignationLetterController::class, 'update'])->name('resignation-letters.update');
-    Route::delete('/resignation-letters/{letter}', [ResignationLetterController::class, 'destroy'])->name('resignation-letters.destroy');
-
-    Route::get('/proofreading', [ProofreadingController::class, 'index'])->name('proofreading.index');
-    Route::post('/proofreading', [ProofreadingController::class, 'store'])->name('proofreading.store');
-
     Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
     Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
@@ -140,10 +122,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
     Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');
-
-    Route::get('/webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
-    Route::post('/webhooks', [WebhookController::class, 'store'])->name('webhooks.store');
-    Route::delete('/webhooks/{endpoint}', [WebhookController::class, 'destroy'])->name('webhooks.destroy');
 
     // Autocomplete lookup
     Route::middleware('throttle:60,1')->group(function () {

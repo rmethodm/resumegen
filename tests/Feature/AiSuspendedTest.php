@@ -59,37 +59,6 @@ class AiSuspendedTest extends TestCase
             ->assertNotFound();
     }
 
-    public function test_career_coach_page_is_gone_while_suspended(): void
-    {
-        $user = User::factory()->pro()->create();
-
-        $this->actingAs($user)->get(route('career-coach.index'))->assertNotFound();
-    }
-
-    /**
-     * Career coach is dark on its own switch, independent of the master one: it resends the whole
-     * conversation history every turn, so it must not come back just because AI came back.
-     */
-    public function test_career_coach_stays_gone_even_when_ai_is_enabled(): void
-    {
-        config(['ai.enabled' => true, 'ai.features.career_coach' => false]);
-        $user = User::factory()->pro()->create();
-
-        $this->actingAs($user)->get(route('career-coach.index'))->assertNotFound();
-    }
-
-    /**
-     * The feature switch is additive, never a bypass: with the master switch off, a feature
-     * flipped on must still be unreachable.
-     */
-    public function test_feature_switch_cannot_reopen_a_route_while_ai_is_suspended(): void
-    {
-        config(['ai.features.career_coach' => true]);
-        $user = User::factory()->pro()->create();
-
-        $this->actingAs($user)->get(route('career-coach.index'))->assertNotFound();
-    }
-
     /**
      * The route gate cannot protect queued jobs or console commands, so the
      * service itself must refuse before any request is built.

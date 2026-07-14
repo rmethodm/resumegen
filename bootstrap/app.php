@@ -31,10 +31,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'two_factor_challenge' => RequiresTwoFactorChallenge::class,
             'two_factor_setup' => EnsureTwoFactorSetup::class,
         ]);
-
-        $middleware->validateCsrfTokens(except: [
-            'stripe/webhook',
-        ]);
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command(NudgeStaleResumesCommand::class)->daily();

@@ -29,7 +29,7 @@ class SystemEvent extends Model
     }
 
     /**
-     * Record a delivery/event. Best-effort: never breaks the send or webhook it observes.
+     * Record a delivery/event. Best-effort: never breaks the send it observes.
      *
      * @param  array<string, mixed>  $meta
      */

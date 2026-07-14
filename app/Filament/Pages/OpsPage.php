@@ -49,7 +49,6 @@ class OpsPage extends Page
             ['key' => 'Queue connection', 'ok' => config('queue.default') !== 'sync', 'detail' => config('queue.default')],
             ['key' => 'Mail mailer', 'ok' => true, 'detail' => config('mail.default')],
             ['key' => 'Stripe secret', 'ok' => ! empty(config('cashier.secret')), 'detail' => empty(config('cashier.secret')) ? 'missing' : 'configured'],
-            ['key' => 'Stripe webhook secret', 'ok' => ! empty(config('cashier.webhook.secret')), 'detail' => empty(config('cashier.webhook.secret')) ? 'missing' : 'configured'],
             ['key' => 'OpenAI key', 'ok' => ! empty(config('openai.api_key')), 'detail' => empty(config('openai.api_key')) ? 'missing' : 'configured'],
         ];
 

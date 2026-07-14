@@ -32,16 +32,6 @@ class UserLimits
         };
     }
 
-    public static function resignationLetterLimit(User $user): ?int
-    {
-        return match ($user->planTier()) {
-            'free' => 1,
-            'starter' => 10,
-            'pro', 'agency' => null,
-            default => 1,
-        };
-    }
-
     public static function allowedTemplates(User $user): array
     {
         return self::ALL_TEMPLATES;
@@ -65,11 +55,6 @@ class UserLimits
     public static function canViewStrengthDetail(User $user): bool
     {
         return $user->isAtLeastStarter();
-    }
-
-    public static function canCareerCoach(User $user): bool
-    {
-        return in_array($user->planTier(), ['pro', 'agency'], true);
     }
 
     public static function customSectionLimit(User $user): ?int
