@@ -1,5 +1,4 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { ResumeRow, ResumeTag } from '@/types';
 import { DocumentDuplicateIcon, EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
@@ -7,7 +6,7 @@ import { FormEvent, useMemo, useState } from 'react';
 import PdfImportModal from './Partials/PdfImportModal';
 
 type JobApplicationOpt = { id: number; role: string; company: string };
-type Props = { resumes: ResumeRow[]; resumeCount: number; resumeLimit: number | null; canPdfImport: boolean; jobApplications: JobApplicationOpt[] };
+type Props = { resumes: ResumeRow[]; resumeCount: number; canPdfImport: boolean; jobApplications: JobApplicationOpt[] };
 type SortKey = 'name' | 'updated_at';
 
 const TAG_COLORS = [
@@ -96,8 +95,8 @@ function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortD
     );
 }
 
-export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport, jobApplications }: Props) {
-    const atLimit = resumeLimit !== null && resumeCount >= resumeLimit;
+export default function Index({ resumes, resumeCount, canPdfImport, jobApplications }: Props) {
+    const atLimit = false;
     const [creating, setCreating] = useState(false);
     const [showPdfImport, setShowPdfImport] = useState(false);
     const [search, setSearch] = useState('');
@@ -176,7 +175,6 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                 ) : (
                                     <button
                                         type="button"
-                                        onClick={() => triggerUpgradeModal('pdf_import', 'starter')}
                                         className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 transition"
                                     >
                                         🔒 Import PDF
@@ -184,10 +182,9 @@ export default function Index({ resumes, resumeCount, resumeLimit, canPdfImport,
                                 )}
                                 <button
                                     onClick={() => atLimit ? undefined : setCreating(true)}
-                                    title={atLimit ? `Upgrade to unlock more resumes (${resumeCount}/${resumeLimit} used)` : undefined}
                                     className={`rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition ${atLimit ? 'cursor-not-allowed bg-[#a0a0b0]' : 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] hover:opacity-90'}`}
                                 >
-                                    {atLimit ? `+ New Resume (${resumeCount}/${resumeLimit})` : '+ New Resume'}
+                                    + New Resume
                                 </button>
                             </div>
                         )}

@@ -1,7 +1,6 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import AutocompleteInput from '@/Components/AutocompleteInput';
 import Modal from '@/Components/Modal';
-import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 
@@ -292,14 +291,13 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                     <form onSubmit={submit} className="space-y-4">
                         <div className="grid grid-cols-3 gap-2">
                             {allTemplates.map((t) => {
-                                const locked = !allowedTemplates.includes(t);
+                                const locked = false;
                                 const selected = data.preferred_template === t;
                                 return (
                                     <button
                                         key={t}
                                         type="button"
                                         onClick={() => {
-                                            if (locked) { triggerUpgradeModal('template_access', 'starter'); return; }
                                             setData('preferred_template', selected ? '' : t);
                                         }}
                                         onDoubleClick={(e) => { e.preventDefault(); setPreviewTemplate(t); }}

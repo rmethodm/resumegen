@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 
 // Read the fresh XSRF-TOKEN cookie Laravel refreshes on every response — the
 // same token Inertia/axios send. The <meta> CSRF token goes stale in an SPA.
@@ -10,8 +9,6 @@ const xsrfToken = (): string => {
 
 interface OverQuota {
     error: string;
-    can_upgrade: boolean;
-    next_tier: 'starter' | 'pro' | null;
     limit: number;
     used: number;
     resets_at: string;
@@ -48,14 +45,10 @@ export function useAiSuggestion(initialRemaining: number) {
 
                 if (res.status === 402) {
                     const q = data as OverQuota;
-                    if (q.can_upgrade && q.next_tier) {
-                        triggerUpgradeModal('ai', q.next_tier);
-                    } else {
-                        // Replace with the app's toast helper if one is adopted later.
-                        window.alert(
-                            `You've used all ${q.limit} AI requests this month. Resets ${q.resets_at}.`,
-                        );
-                    }
+                    // Replace with the app's toast helper if one is adopted later.
+                    window.alert(
+                        `You've used all ${q.limit} AI requests this month. Resets ${q.resets_at}.`,
+                    );
                     return null;
                 }
 

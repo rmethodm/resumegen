@@ -17,10 +17,6 @@
                 <div class="text-sm text-gray-500">OpenAI Actual Cost</div>
                 <div class="text-2xl font-bold">${{ number_format($openAiCostCents / 100, 2) }}</div>
             </div>
-            <div class="rounded-xl border bg-white p-4 shadow-sm dark:bg-gray-900">
-                <div class="text-sm text-gray-500">MRR</div>
-                <div class="text-2xl font-bold">${{ number_format($mrrCents / 100, 2) }}</div>
-            </div>
         </div>
 
         <div class="grid grid-cols-2 gap-6">

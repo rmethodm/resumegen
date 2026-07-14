@@ -2,7 +2,6 @@
 
 use App\Console\Commands\NudgeStaleResumesCommand;
 use App\Http\Middleware\EnsureAiEnabled;
-use App\Http\Middleware\EnsureTwoFactorSetup;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RequiresTwoFactorChallenge;
 use App\Http\Middleware\TrackActivity;
@@ -29,7 +28,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'ai_enabled' => EnsureAiEnabled::class,
             'two_factor_challenge' => RequiresTwoFactorChallenge::class,
-            'two_factor_setup' => EnsureTwoFactorSetup::class,
         ]);
     })
     ->withSchedule(function (Schedule $schedule): void {

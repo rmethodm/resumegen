@@ -40,7 +40,7 @@ class ResumeVariantTest extends TestCase
 
     public function test_snapshot_resumes_are_excluded_from_resume_count_limit(): void
     {
-        $user = User::factory()->free()->create();
+        $user = User::factory()->create();
 
         // Free limit is 2 non-snapshots. 1 normal + 3 snapshots: if snapshots counted,
         // the 4 rows would block creation. They must not.

@@ -51,7 +51,7 @@ class AiSuspendedTest extends TestCase
     #[DataProvider('aiRouteProvider')]
     public function test_resume_ai_route_is_gone_while_suspended(string $routeName): void
     {
-        $user = User::factory()->pro()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)

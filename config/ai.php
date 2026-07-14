@@ -27,16 +27,12 @@ return [
     'max_completion_tokens' => 1000,
 
     /*
-     * Per-tier monthly AI request caps. Consumed by App\Services\UserLimits and
-     * enforced on every AI route via UserLimits::canUseAi(). Interview coach is
-     * the exception: free users get 3 sessions/month metered separately.
+     * Flat monthly AI request cap applied to every account. This is a cost control,
+     * not a plan gate — OpenAI spend scales with usage, so an unbounded quota would
+     * let one account run up an arbitrary bill. Override per-user via
+     * users.ai_limit_override; kill a specific account with users.ai_blocked.
      */
-    'monthly_limits' => [
-        'free' => 0,
-        'starter' => 150,
-        'pro' => 500,
-        'agency' => 1000,
-    ],
+    'monthly_limit' => (int) env('AI_MONTHLY_LIMIT', 150),
 
     /*
      * Per-model pricing in cents per 1,000 tokens. Used to estimate request cost.

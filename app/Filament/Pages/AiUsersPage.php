@@ -49,7 +49,6 @@ class AiUsersPage extends Page
                 'id' => $row->user_id,
                 'name' => $user?->name,
                 'email' => $user?->email,
-                'tier' => $user?->planTier(),
                 'requests' => (int) $row->requests,
                 'tokens' => (int) $row->tokens,
                 'estimated_cost_cents' => (int) $row->estimated_cost_cents,

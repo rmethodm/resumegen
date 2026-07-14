@@ -22,10 +22,6 @@ class NudgeResumeViewsCommand extends Command
         })
             ->with(['resumes.shareEvents', 'resumes.sectionEvents'])
             ->each(function (User $user) use ($lookback) {
-                if ($user->isAtLeastStarter()) {
-                    return;
-                }
-
                 $cutoff = $user->view_nudge_sent_at?->greaterThan($lookback)
                     ? $user->view_nudge_sent_at
                     : $lookback;

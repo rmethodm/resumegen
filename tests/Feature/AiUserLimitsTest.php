@@ -12,13 +12,22 @@ class AiUserLimitsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_monthly_limit_resolves_per_tier(): void
+    public function test_monthly_limit_is_flat_for_every_account(): void
     {
-        config()->set('ai.monthly_limits', ['free' => 10, 'starter' => 100, 'pro' => 1000, 'agency' => 5000]);
+        config()->set('ai.monthly_limit', 150);
 
-        $this->assertSame(10, UserLimits::aiMonthlyLimit(User::factory()->free()->create()));
-        $this->assertSame(100, UserLimits::aiMonthlyLimit(User::factory()->starter()->create()));
-        $this->assertSame(1000, UserLimits::aiMonthlyLimit(User::factory()->pro()->create()));
+        $this->assertSame(150, UserLimits::aiMonthlyLimit(User::factory()->create()));
+        $this->assertSame(150, UserLimits::aiMonthlyLimit(User::factory()->create()));
+    }
+
+    /** The per-user override is the only thing that moves the cap off the flat default. */
+    public function test_limit_override_beats_the_flat_default(): void
+    {
+        config()->set('ai.monthly_limit', 150);
+
+        $user = User::factory()->create(['ai_limit_override' => 5]);
+
+        $this->assertSame(5, UserLimits::aiMonthlyLimit($user));
     }
 
     public function test_requests_this_month_counts_only_current_month(): void
@@ -32,8 +41,8 @@ class AiUserLimitsTest extends TestCase
 
     public function test_can_use_ai_respects_the_limit(): void
     {
-        config()->set('ai.monthly_limits', ['free' => 2, 'starter' => 100, 'pro' => 1000, 'agency' => 5000]);
-        $user = User::factory()->free()->create();
+        config()->set('ai.monthly_limit', 2);
+        $user = User::factory()->create();
 
         $this->assertTrue(UserLimits::canUseAi($user));
 

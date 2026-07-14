@@ -30,7 +30,7 @@ class NudgeResumeViewsCommandTest extends TestCase
     public function test_sends_mail_for_free_user_with_new_views(): void
     {
         Mail::fake();
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
         $this->logView($resume);
 
@@ -43,20 +43,8 @@ class NudgeResumeViewsCommandTest extends TestCase
     public function test_skips_free_user_with_no_views(): void
     {
         Mail::fake();
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->create();
         Resume::factory()->create(['user_id' => $user->id]);
-
-        $this->artisan('resumes:nudge-views')->assertSuccessful();
-
-        Mail::assertNothingQueued();
-    }
-
-    public function test_skips_starter_user(): void
-    {
-        Mail::fake();
-        $user = User::factory()->create(['plan_tier' => 'starter']);
-        $resume = Resume::factory()->create(['user_id' => $user->id]);
-        $this->logView($resume);
 
         $this->artisan('resumes:nudge-views')->assertSuccessful();
 
@@ -66,7 +54,7 @@ class NudgeResumeViewsCommandTest extends TestCase
     public function test_respects_cooldown(): void
     {
         Mail::fake();
-        $user = User::factory()->create(['plan_tier' => 'free', 'view_nudge_sent_at' => now()]);
+        $user = User::factory()->create(['view_nudge_sent_at' => now()]);
         $resume = Resume::factory()->create(['user_id' => $user->id]);
         $this->logView($resume);
 
@@ -78,7 +66,7 @@ class NudgeResumeViewsCommandTest extends TestCase
     public function test_includes_top_section_by_dwell_time(): void
     {
         Mail::fake();
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
         $this->logView($resume);
 

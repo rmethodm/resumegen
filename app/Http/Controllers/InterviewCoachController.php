@@ -27,21 +27,9 @@ class InterviewCoachController extends Controller
             ], 402);
         }
 
-        if (! UserLimits::canInterviewCoach($user)) {
-            return response()->json([
-                'error' => 'You have used your 3 free interview coach sessions this month. Upgrade to Starter for unlimited access.',
-                'required_tier' => 'starter',
-            ], 402);
-        }
-
-        // Free tier's 3 sessions are metered by canInterviewCoach() above. Its
-        // monthly AI quota is 0, so canUseAi() would reject every free session
-        // before one was ever used.
-        if ($user->isAtLeastStarter() && ! UserLimits::canUseAi($user)) {
+        if (! UserLimits::canUseAi($user)) {
             return response()->json([
                 'error' => UserLimits::aiLimitMessage($user),
-                'can_upgrade' => UserLimits::aiCanUpgrade($user),
-                'next_tier' => UserLimits::aiNextTier($user),
                 'limit' => UserLimits::aiMonthlyLimit($user),
                 'used' => UserLimits::aiRequestsThisMonth($user),
                 'resets_at' => now()->startOfMonth()->addMonth()->format('M j'),
@@ -81,7 +69,6 @@ class InterviewCoachController extends Controller
         return response()->json([
             'questions' => array_slice(array_values($questions), 0, 8),
             'remaining' => UserLimits::aiRemaining($user),
-            'coach_uses_remaining' => UserLimits::interviewCoachUsesRemaining($user),
         ]);
     }
 }

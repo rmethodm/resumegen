@@ -3,14 +3,10 @@
 namespace App\Providers;
 
 use App\Models\SystemEvent;
-use App\Models\User;
-use App\Services\UserLimits;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Cashier\Cashier;
-use Laravel\Cashier\Subscription;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,9 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Webhooks are removed from this app: Cashier must not register POST /stripe/webhook.
-        // Subscription tier changes therefore only sync when the app itself writes a Subscription.
-        Cashier::ignoreRoutes();
+        //
     }
 
     /**
@@ -39,36 +33,6 @@ class AppServiceProvider extends ServiceProvider
                 SystemEvent::record('mail', $email->getSubject() ?: '(no subject)', 'sent', $to ?: null);
             } catch (\Throwable) {
             }
-        });
-
-        Subscription::saved(function (Subscription $subscription) {
-            if (! $subscription->isDirty(['stripe_status', 'stripe_price'])) {
-                return;
-            }
-
-            if (in_array($subscription->stripe_status, ['canceled', 'incomplete_expired', 'unpaid'])) {
-                User::where('id', $subscription->user_id)->update(['plan_tier' => 'free']);
-
-                return;
-            }
-
-            if (! in_array($subscription->stripe_status, ['active', 'trialing'])) {
-                return;
-            }
-
-            $item = $subscription->items()->first();
-
-            if (! $item) {
-                return;
-            }
-
-            $tier = UserLimits::tierFromPriceId($item->stripe_price);
-
-            User::where('id', $subscription->user_id)->update(['plan_tier' => $tier]);
-        });
-
-        Subscription::deleted(function (Subscription $subscription) {
-            User::where('id', $subscription->user_id)->update(['plan_tier' => 'free']);
         });
     }
 }
