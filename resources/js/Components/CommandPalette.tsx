@@ -38,15 +38,16 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
             setResults({ resumes: [], coverLetters: [] });
             return;
         }
+        let ignore = false;
         const id = setTimeout(() => {
             fetch(`${route('search')}?q=${encodeURIComponent(q)}`, {
                 headers: { Accept: 'application/json' },
             })
                 .then((r) => r.json() as Promise<Results>)
-                .then(setResults)
-                .catch(() => setResults({ resumes: [], coverLetters: [] }));
+                .then((d) => { if (!ignore) setResults(d); })
+                .catch(() => { if (!ignore) setResults({ resumes: [], coverLetters: [] }); });
         }, 150);
-        return () => clearTimeout(id);
+        return () => { ignore = true; clearTimeout(id); };
     }, [query, open]);
 
     const navMatches =
