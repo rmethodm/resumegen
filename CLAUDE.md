@@ -143,9 +143,9 @@ The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor 
 
 **Gate responses:** Inertia routes flash `featureGate` to the session. API/JSON routes return HTTP 402 with `{ error, required_tier }`. The `UpgradeModal` handles both paths — flash-based (Inertia) and event-based (`triggerUpgradeModal(feature, requiredTier)` for XHR).
 
-**Subscription sync:** Cashier's `SubscriptionUpdated` observer in `AppServiceProvider` syncs `plan_tier` and `is_agency` from the active subscription's price ID on every subscription event.
+**Subscription sync — READ THIS BEFORE TOUCHING BILLING:** `AppServiceProvider::register()` calls `Cashier::ignoreRoutes()`, so **there is no `POST /stripe/webhook` route and Stripe cannot call this app.** The `Subscription::saved`/`Subscription::deleted` observers in `AppServiceProvider::boot()` still sync `plan_tier` from the price ID, but they only fire when *this app* writes a `Subscription` row (i.e. during checkout). A tier change originating in Stripe — cancellation, failed payment, plan swap from the billing portal — never reaches the app, so `plan_tier` goes stale. Reconciling that needs a scheduled poll of the Stripe API or the webhook route put back.
 
-**Stripe env vars:** `STRIPE_{STARTER,PRO,AGENCY}_{MONTHLY,YEARLY}_PRICE_ID` (6 total) + `STRIPE_WEBHOOK_SECRET` + `PRICE_{STARTER,PRO,AGENCY}_CENTS` (defaults 900/1900/4900). See `config/services.php`.
+**Stripe env vars:** `STRIPE_{STARTER,PRO,AGENCY}_{MONTHLY,YEARLY}_PRICE_ID` (6 total) + `PRICE_{STARTER,PRO,AGENCY}_CENTS` (defaults 900/1900/4900). See `config/services.php`. No webhook secret — see above.
 
 ## AI (OpenAI)
 
@@ -171,7 +171,11 @@ Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (in
 
 ## System Events
 
-`system_events` (append-only) logs outbound mail (`MessageSent`) and inbound Stripe webhooks (`WebhookReceived`) via `AppServiceProvider::boot()` listeners. Best-effort — exceptions swallowed. Pruned after 30 days. Surfaced on Ops dashboard.
+`system_events` (append-only) logs outbound mail (`MessageSent`) via an `AppServiceProvider::boot()` listener. Best-effort — exceptions swallowed. Pruned after 30 days. Surfaced on Ops dashboard. The `channel` column is a holdover from when webhooks were also logged here; `'mail'` is the only value written now.
+
+## Removed Features (do not reintroduce without asking)
+
+Resignation letters, proofreading, career coach chat, and outbound user webhooks were deleted on 2026-07-14 — code, routes, models, migrations, and tests. Cashier's inbound webhook route went with them (see Subscription sync above). Their DB tables (`resignation_letters`, `proofreading_requests`, `career_coach_messages`, `webhook_endpoints`) may still exist as orphans in databases that ran the old migrations; the create-migrations were deleted rather than superseded by a drop, so a fresh `migrate` will not recreate them.
 
 ## Key Design Decisions
 
@@ -185,7 +189,7 @@ Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (in
 
 ---
 
-Last updated: 2026-07-09
+Last updated: 2026-07-14
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
