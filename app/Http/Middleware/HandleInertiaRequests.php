@@ -29,7 +29,6 @@ class HandleInertiaRequests extends Middleware
                 'error' => session('error'),
             ],
             'aiEnabled' => (bool) config('ai.enabled'),
-            'featureGate' => session()->pull('featureGate'),
             'impersonating' => session()->has('impersonating_id') ? [
                 'name' => $request->user()?->name,
             ] : null,

@@ -23,33 +23,6 @@ class TwoFactorSetupTest extends TestCase
         $this->assertTrue($user->hasTwoFactorEnabled());
     }
 
-    public function test_requires_two_factor_true_for_pro_without_2fa(): void
-    {
-        $user = User::factory()->create([
-            'is_pro' => true,
-            'two_factor_confirmed_at' => null,
-        ]);
-        $this->assertTrue($user->requiresTwoFactor());
-    }
-
-    public function test_requires_two_factor_false_for_pro_with_2fa(): void
-    {
-        $user = User::factory()->create([
-            'is_pro' => true,
-            'two_factor_confirmed_at' => now(),
-        ]);
-        $this->assertFalse($user->requiresTwoFactor());
-    }
-
-    public function test_requires_two_factor_false_for_free_user(): void
-    {
-        $user = User::factory()->create([
-            'is_pro' => false,
-            'two_factor_confirmed_at' => null,
-        ]);
-        $this->assertFalse($user->requiresTwoFactor());
-    }
-
     public function test_enable_generates_secret_but_not_confirmed(): void
     {
         $user = User::factory()->create(['two_factor_confirmed_at' => null]);

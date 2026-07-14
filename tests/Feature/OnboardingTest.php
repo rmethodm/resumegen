@@ -99,7 +99,7 @@ class OnboardingTest extends TestCase
 
     public function test_post_saves_valid_preferred_template(): void
     {
-        $user = User::factory()->create(['has_completed_onboarding' => false, 'plan_tier' => 'starter']);
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
 
         $this->actingAs($user)->post(route('onboarding.store'), [
             'preferred_template' => 'modern',
@@ -128,7 +128,7 @@ class OnboardingTest extends TestCase
 
     public function test_post_saves_locked_preferred_template_as_intent(): void
     {
-        $user = User::factory()->create(['has_completed_onboarding' => false, 'plan_tier' => 'free']);
+        $user = User::factory()->create(['has_completed_onboarding' => false]);
 
         $this->actingAs($user)->post(route('onboarding.store'), [
             'preferred_template' => 'bold',

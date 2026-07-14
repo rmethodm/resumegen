@@ -21,7 +21,7 @@ class OnboardingController extends Controller
         }
 
         return Inertia::render('Onboarding/Wizard', [
-            'allowedTemplates' => UserLimits::allowedTemplates($request->user()),
+            'allowedTemplates' => UserLimits::allTemplates(),
             'allTemplates' => UserLimits::allTemplates(),
         ]);
     }

@@ -48,7 +48,6 @@ class OpsPage extends Page
         $health = [
             ['key' => 'Queue connection', 'ok' => config('queue.default') !== 'sync', 'detail' => config('queue.default')],
             ['key' => 'Mail mailer', 'ok' => true, 'detail' => config('mail.default')],
-            ['key' => 'Stripe secret', 'ok' => ! empty(config('cashier.secret')), 'detail' => empty(config('cashier.secret')) ? 'missing' : 'configured'],
             ['key' => 'OpenAI key', 'ok' => ! empty(config('openai.api_key')), 'detail' => empty(config('openai.api_key')) ? 'missing' : 'configured'],
         ];
 

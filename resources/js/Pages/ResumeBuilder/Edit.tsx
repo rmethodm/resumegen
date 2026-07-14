@@ -3,7 +3,6 @@ import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/Strengt
 import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
-import { triggerUpgradeModal } from '@/Components/UpgradeModal';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
@@ -420,28 +419,20 @@ const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.
 
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
-    isFirstResume, canDocx, canAiTailoring, canViewStrengthDetail, canInterviewCoach, interviewCoachUsesRemaining,
+    isFirstResume,
     allowedTemplates, photoUrl, completionScore, recruiterNote,
-    skillCategoryOptions, aiRemaining, aiCanUpgrade, aiNextTier, isFreeTier,
+    skillCategoryOptions, aiRemaining,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
     threads: { id: number; sender_name: string; sender_email: string; is_read: boolean; created_at: string }[];
     isFirstResume: boolean;
-    canDocx: boolean;
-    canAiTailoring: boolean;
-    canViewStrengthDetail: boolean;
-    canInterviewCoach: boolean;
-    interviewCoachUsesRemaining: number | null;
     allowedTemplates: string[];
     photoUrl: string | null;
     completionScore: number;
     recruiterNote?: string | null;
     skillCategoryOptions: string[];
     aiRemaining: number;
-    aiCanUpgrade: boolean;
-    aiNextTier: 'starter' | 'pro' | null;
-    isFreeTier: boolean;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -616,24 +607,18 @@ export default function Edit({
         }
     };
 
-    // When AI credits run out, the button becomes an upgrade CTA (free→Starter, Starter→Pro)
-    // instead of a dead disabled link — the moment users are most likely to convert.
-    const aiUpgrade = () => { if (aiNextTier) { triggerUpgradeModal('ai_suggest', aiNextTier); } };
     const renderAiButton = (opts: { idle: string; onRun: () => void; regenerated?: boolean; extraDisabled?: boolean; className?: string }) => {
         if (!aiEnabled) {
             return null;
         }
         const exhausted = ai.remaining === 0;
-        const canUpgrade = exhausted && aiCanUpgrade && aiNextTier !== null;
-        const label = canUpgrade
-            ? '✨ Out of AI credits — Upgrade →'
-            : (opts.regenerated && !exhausted ? `↺ Regenerate · ${ai.remaining} left` : opts.idle);
+        const label = opts.regenerated && !exhausted ? `↺ Regenerate · ${ai.remaining} left` : opts.idle;
         return (
             <button
                 type="button"
-                onClick={canUpgrade ? aiUpgrade : opts.onRun}
-                disabled={ai.loadingUrl !== null || opts.extraDisabled || (exhausted && !canUpgrade)}
-                className={`text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed ${canUpgrade ? 'text-amber-600 hover:text-amber-700' : 'text-[#2563eb] hover:text-[#1d4ed8]'} ${opts.className ?? ''}`}
+                onClick={opts.onRun}
+                disabled={ai.loadingUrl !== null || opts.extraDisabled || exhausted}
+                className={`text-xs font-medium text-[#2563eb] hover:text-[#1d4ed8] disabled:opacity-40 disabled:cursor-not-allowed ${opts.className ?? ''}`}
             >
                 {label}
             </button>
@@ -738,15 +723,13 @@ export default function Edit({
                                         <div className="space-y-1.5">
                                             <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
                                                 {Object.keys(TEMPLATE_LABELS).map(t => {
-                                                    // Show every template so free users see what's behind the paywall; lock the unavailable ones (except one already in use).
-                                                    const locked = !allowedTemplates.includes(t) && t !== template;
+                                                    const locked = false;
                                                     const selected = template === t;
                                                     return (
                                                         <button
                                                             key={t}
                                                             type="button"
                                                             onClick={() => {
-                                                                if (locked) { triggerUpgradeModal('template_access', 'starter'); return; }
                                                                 setTemplate(t as ResumeTemplate); setTimeout(save, 0);
                                                             }}
                                                             aria-pressed={selected}
@@ -764,9 +747,6 @@ export default function Edit({
                                                     );
                                                 })}
                                             </div>
-                                            {allowedTemplates.length < Object.keys(TEMPLATE_LABELS).length && (
-                                                <button type="button" onClick={() => triggerUpgradeModal('template_access', 'starter')} className="text-[10px] font-medium text-amber-600 hover:text-amber-700">🔒 Unlock {Object.keys(TEMPLATE_LABELS).length - allowedTemplates.length} more templates →</button>
-                                            )}
                                             {NON_ATS_TEMPLATES.includes(template) && <p className="text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
                                         </div>
                                     )}
@@ -866,7 +846,7 @@ export default function Edit({
                                 <div className="space-y-1.5">
                                     <div className="flex items-center gap-1.5"><ArrowDownTrayIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Download</span></div>
                                     <a href={route('builder.pdf', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">PDF</a>
-                                    {canDocx ? <a href={route('builder.docx', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">DOCX</a> : <button type="button" onClick={() => triggerUpgradeModal('docx_export', 'starter')} className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors">🔒 DOCX</button>}
+                                    <a href={route('builder.docx', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">DOCX</a>
                                 </div>
                             ) : (
                                 <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
@@ -875,7 +855,7 @@ export default function Edit({
                         {sidebarOpen && aiEnabled && (
                             <div>
                                 <div className="flex items-center gap-1.5 mb-1.5"><span className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Interview Prep</span></div>
-                                {canInterviewCoach ? (
+                                {(
                                     <button
                                         type="button"
                                         disabled={interviewLoading}
@@ -897,14 +877,6 @@ export default function Edit({
                                     >
                                         {interviewLoading ? 'Generating…' : '✨ Interview Questions'}
                                     </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        onClick={() => triggerUpgradeModal('interview_coach', 'starter')}
-                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors"
-                                    >
-                                        🔒 Interview Coach
-                                    </button>
                                 )}
                                 {interviewQuestions.length > 0 && (
                                     <div className="mt-2 space-y-2">
@@ -918,18 +890,14 @@ export default function Edit({
                                 )}
                             </div>
                         )}
-                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} canViewStrengthDetail={canViewStrengthDetail} onGenerateSummary={handleGenerateSummary} />}
+                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />}
                         {sidebarOpen && aiEnabled && (
                             <AtsMatchPanel
                                 jobDescription={targetJobDescription}
                                 onJobDescriptionChange={setTargetJobDescription}
                                 onJobDescriptionBlur={save}
                                 keywordGaps={keywordGaps}
-                                aiButton={
-                                    canAiTailoring
-                                        ? renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })
-                                        : <button type="button" onClick={() => triggerUpgradeModal('ai_tailoring', 'starter')} className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#94a3b8] hover:bg-[#f1f5f9] transition-colors">🔒 Tailor to this job (Starter)</button>
-                                }
+                                aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
                             />
                         )}
                     </div>
@@ -968,9 +936,6 @@ export default function Edit({
                         {aiEnabled && (
                             <div className="px-1 pb-1 text-xs text-[#94a3b8]">
                                 ✨ {ai.remaining} AI uses left this month
-                                {ai.remaining === 0 && aiCanUpgrade && aiNextTier && (
-                                    <> · <button type="button" onClick={aiUpgrade} className="font-medium text-amber-600 underline hover:text-amber-700">Upgrade for more</button></>
-                                )}
                             </div>
                         )}
 
@@ -1309,15 +1274,6 @@ export default function Edit({
                             </button>
                         </div>
                     </div>
-                    {isFreeTier && (
-                        <button
-                            type="button"
-                            onClick={() => triggerUpgradeModal('watermark_removal', 'starter')}
-                            className="flex shrink-0 items-center justify-center gap-1.5 border-b border-amber-200 bg-amber-50 px-4 py-2 text-xs font-medium text-amber-800 hover:bg-amber-100"
-                        >
-                            🔓 Your PDF includes a “Made with Resumegen” watermark — Upgrade to remove →
-                        </button>
-                    )}
                     <iframe src={pdfSrc} className="flex-1 w-full border-0" title="Resume PDF preview" />
                 </div>
             )}

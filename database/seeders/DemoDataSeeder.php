@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Local demo data so the admin Revenue / Growth dashboards look populated.
+ * Local demo data so the admin Growth dashboard looks populated.
  * Idempotent: wipes prior demo rows (email @demo.resumegen.test) and reseeds.
  * NOT for production — sandbox/dev only.
  */
@@ -21,63 +21,20 @@ class DemoDataSeeder extends Seeder
     {
         $this->wipe();
 
-        // Paying users per tier, spread across the last 60 days for the time series.
-        $this->seedPaying('starter', 12);
-        $this->seedPaying('pro', 8);
-        $this->seedPaying('agency', 3);
+        // 23 activated (have a resume), 15 dormant — drives the activation funnel.
+        $this->seedUsers(activated: 23, dormant: 15);
 
-        // Free users: 8 activated (have a resume), 7 not — drives the funnel.
-        $this->seedFree(activated: 8, dormant: 7);
-
-        $this->command?->info('Demo data seeded: 23 paying + 15 free users.');
+        $this->command?->info('Demo data seeded: 38 users (23 activated, 15 dormant).');
     }
 
-    private function priceId(string $tier): string
+    private function seedUsers(int $activated, int $dormant): void
     {
-        return config("services.stripe.{$tier}_monthly_price_id", "price_demo_{$tier}");
-    }
-
-    private function seedPaying(string $tier, int $count): void
-    {
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $activated + $dormant; $i++) {
             $createdAt = now()->subDays(rand(1, 60))->subHours(rand(0, 23));
 
             $user = User::factory()->create([
-                'email' => "{$tier}{$i}".self::DOMAIN,
-                'plan_tier' => $tier,
-                'is_agency' => $tier === 'agency',
-                'stripe_id' => 'cus_demo_'.$tier.$i,
-                'has_completed_onboarding' => true,
-                'created_at' => $createdAt,
-                'updated_at' => $createdAt,
-            ]);
-
-            Resume::factory()->create(['user_id' => $user->id, 'created_at' => $createdAt]);
-
-            // Subscription created 0-2 days after signup → realistic days-to-convert.
-            $subAt = $createdAt->addDays(rand(0, 2));
-            $subAt = $subAt->min(now());
-            DB::table('subscriptions')->insert([
-                'user_id' => $user->id,
-                'type' => 'default',
-                'stripe_id' => 'sub_demo_'.$tier.$i,
-                'stripe_status' => 'active',
-                'stripe_price' => $this->priceId($tier),
-                'quantity' => 1,
-                'created_at' => $subAt,
-                'updated_at' => $subAt,
-            ]);
-
-            $this->stampActivity($user->id, $createdAt);
-        }
-    }
-
-    private function seedFree(int $activated, int $dormant): void
-    {
-        for ($i = 0; $i < $activated + $dormant; $i++) {
-            $createdAt = now()->subDays(rand(1, 60));
-            $user = User::factory()->free()->create([
-                'email' => "free{$i}".self::DOMAIN,
+                'email' => "demo{$i}".self::DOMAIN,
+                'has_completed_onboarding' => $i < $activated,
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,
             ]);
@@ -109,7 +66,6 @@ class DemoDataSeeder extends Seeder
         if ($ids->isEmpty()) {
             return;
         }
-        DB::table('subscriptions')->whereIn('user_id', $ids)->delete();
         DB::table('user_activity_days')->whereIn('user_id', $ids)->delete();
         User::whereIn('id', $ids)->each(fn (User $u) => $u->delete()); // cascades resumes via observer
     }

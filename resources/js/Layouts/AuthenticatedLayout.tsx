@@ -1,7 +1,6 @@
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import UpgradeModal from '@/Components/UpgradeModal';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
@@ -47,7 +46,6 @@ export default function Authenticated({
                                 <NavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</NavLink>
                                 <NavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</NavLink>
                                 <NavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</NavLink>
-                                <NavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</NavLink>
                                 {user.is_master_admin && (
                                     <NavLink href={(() => { try { return route('admin.dashboard'); } catch { return route('admin.users.index'); } })()} active={route().current('admin.*')}>Admin</NavLink>
                                 )}
@@ -106,7 +104,6 @@ export default function Authenticated({
                         <ResponsiveNavLink href={route('builder.index')} active={route().current('builder.*')}>Resumes</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('cover-letters.index')} active={route().current('cover-letters.*')}>Cover Letters</ResponsiveNavLink>
                         <ResponsiveNavLink href={route('messages.index')} active={route().current('messages.*')}>Messages</ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('billing.index')} active={route().current('billing.*')}>Billing</ResponsiveNavLink>
                         {user.is_master_admin && (
                             <ResponsiveNavLink href={(() => { try { return route('admin.dashboard'); } catch { return route('admin.users.index'); } })()} active={route().current('admin.*')}>Admin</ResponsiveNavLink>
                         )}
@@ -134,7 +131,6 @@ export default function Authenticated({
             </nav>
 
             <main>{children}</main>
-            <UpgradeModal />
         </div>
     );
 }

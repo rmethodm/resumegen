@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Data\CoverLetterTemplates;
 use App\Models\CoverLetter;
-use App\Services\UserLimits;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,7 +26,6 @@ class CoverLetterController extends Controller
                 'label' => $t['label'],
                 'description' => $t['description'],
             ])->values(),
-            'coverLetterLimit' => UserLimits::coverLetterLimit($user),
             'coverLetterCount' => $user->coverLetters()->count(),
         ]);
     }
@@ -35,13 +33,6 @@ class CoverLetterController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        $limit = UserLimits::coverLetterLimit($user);
-        if ($limit !== null && $user->coverLetters()->count() >= $limit) {
-            return back()->with('featureGate', [
-                'feature' => 'cover_letter_limit',
-                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
-            ]);
-        }
 
         $validated = $request->validate([
             'template_key' => ['required', 'in:'.implode(',', CoverLetterTemplates::keys())],

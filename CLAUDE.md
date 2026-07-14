@@ -75,7 +75,7 @@ Default to surfacing uncertainty, not hiding it.
 - **Auth:** Laravel Breeze (session-based), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63).
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
 - **Media:** `spatie/laravel-medialibrary` — `Resume` implements `HasMedia` with a single-file `photo` collection.
-- **Billing:** `laravel/cashier-stripe` v16 — `User` model uses `Billable` trait. Subscription name is `'default'`. Price IDs in `config/services.php`.
+- **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
 ## Commands
@@ -124,32 +124,17 @@ The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor 
 ### Shared Inertia props
 `HandleInertiaRequests::share()` passes `auth.user` and `featureGate` to every page. `featureGate` is a flash value (`session()->pull('featureGate')`) — any controller can flash it to trigger the `UpgradeModal` without per-page wiring.
 
-## Pricing & Billing
+## Billing — there is none
 
-**4-tier model:** Free / Starter ($9/mo) / Pro ($19/mo) / Agency ($49/mo). All limits enforced via `App\Services\UserLimits` — the single source of truth.
+**The app is free and unlimited.** Billing was removed on 2026-07-14: Cashier is uninstalled, there are no plan tiers, no Stripe, no payments, no `UpgradeModal`, no `featureGate`. Do not add a paywall, a tier check, or an upgrade CTA without asking first.
 
-| Feature | Free | Starter | Pro | Agency |
-|---------|------|---------|-----|--------|
-| Resumes | 2 | 10 | unlimited | unlimited |
-| Cover letters | 1 | 10 | unlimited | unlimited |
-| Job applications | 3 | unlimited | unlimited | unlimited |
-| Templates | 4 (classic, modern, minimal, ats) | all 9 | all 9 | all 9 |
-| DOCX export | ✗ | ✓ | ✓ | ✓ |
-| AI generations/month | 10 | 150 | 500 | 1000 |
-| AI tailoring (ATS/JD) | ✗ | ✓ | ✓ | ✓ |
-| Team workspace | ✗ | ✗ | ✗ | ✓ |
+`App\Services\UserLimits` survives, but it now meters **only AI** — every other limit (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
 
-**Tier detection:** `User::planTier()` resolves: `is_master_admin` → `'agency'`; `is_pro` → `'pro'`; `is_agency` → `'agency'`; else returns `plan_tier` column value. All `match` expressions in `UserLimits` have explicit arms for `'pro'`/`'agency'` and a restrictive `default` (free limits) so unknown tiers never grant elevated access.
-
-**Gate responses:** Inertia routes flash `featureGate` to the session. API/JSON routes return HTTP 402 with `{ error, required_tier }`. The `UpgradeModal` handles both paths — flash-based (Inertia) and event-based (`triggerUpgradeModal(feature, requiredTier)` for XHR).
-
-**Subscription sync — READ THIS BEFORE TOUCHING BILLING:** `AppServiceProvider::register()` calls `Cashier::ignoreRoutes()`, so **there is no `POST /stripe/webhook` route and Stripe cannot call this app.** The `Subscription::saved`/`Subscription::deleted` observers in `AppServiceProvider::boot()` still sync `plan_tier` from the price ID, but they only fire when *this app* writes a `Subscription` row (i.e. during checkout). A tier change originating in Stripe — cancellation, failed payment, plan swap from the billing portal — never reaches the app, so `plan_tier` goes stale. Reconciling that needs a scheduled poll of the Stripe API or the webhook route put back.
-
-**Stripe env vars:** `STRIPE_{STARTER,PRO,AGENCY}_{MONTHLY,YEARLY}_PRICE_ID` (6 total) + `PRICE_{STARTER,PRO,AGENCY}_CENTS` (defaults 900/1900/4900). See `config/services.php`. No webhook secret — see above.
+Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
 ## AI (OpenAI)
 
-`App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`OPENAI_MODEL`, per-tier limits, pricing). All AI routes consume quota tracked via `ai_usage`; exhausted quota shows upgrade prompt.
+`App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
 
 **Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `RegisteredUserController::store()` via `registration_ip` column on `users`.
 
@@ -165,17 +150,17 @@ Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (in
 
 **Test base class:** All API tests extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). It calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum guard cache from masking token revocation.
 
-## Referral Rewards
-
-`ReferralRewardService::grantIfEligible(User $upgradedUser)` — idempotent via `DB::transaction` + `lockForUpdate()`. On upgrade: creates `ReferralEvent`, increments `referral_rewards_earned`, then tries Stripe (extend subscription 1 month or -900 cents balance credit). Stripe calls are try/catch with `Log::warning`; DB writes are not wrapped. Wired in `AppServiceProvider` subscription observer, gated on `['starter', 'pro']` tiers.
-
 ## System Events
 
 `system_events` (append-only) logs outbound mail (`MessageSent`) via an `AppServiceProvider::boot()` listener. Best-effort — exceptions swallowed. Pruned after 30 days. Surfaced on Ops dashboard. The `channel` column is a holdover from when webhooks were also logged here; `'mail'` is the only value written now.
 
 ## Removed Features (do not reintroduce without asking)
 
-Resignation letters, proofreading, career coach chat, and outbound user webhooks were deleted on 2026-07-14 — code, routes, models, migrations, and tests. Cashier's inbound webhook route went with them (see Subscription sync above). Their DB tables (`resignation_letters`, `proofreading_requests`, `career_coach_messages`, `webhook_endpoints`) may still exist as orphans in databases that ran the old migrations; the create-migrations were deleted rather than superseded by a drop, so a fresh `migrate` will not recreate them.
+Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
+
+- **Resignation letters, proofreading, career coach chat, outbound user webhooks.** Their tables (`resignation_letters`, `proofreading_requests`, `career_coach_messages`, `webhook_endpoints`) may linger as orphans in databases that ran the old migrations — the create-migrations were deleted rather than superseded by a drop, so a fresh `migrate` will not recreate them.
+- **All billing** (see above). Here the create-migrations were kept and a drop migration (`2026_07_14_120000_drop_billing_tables_and_columns`) removes the tables and columns, so both fresh and existing databases converge.
+- **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
 
 ## Key Design Decisions
 
@@ -184,7 +169,7 @@ Resignation letters, proofreading, career coach chat, and outbound user webhooks
 3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
 4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable.
 5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
-6. **Freemium 4-tier model** — tight free tier pushes conversions; AI quota as key differentiator.
+6. **No monetization** — every feature is free and unlimited; AI is metered only to cap OpenAI spend.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 
 ---

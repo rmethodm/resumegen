@@ -51,7 +51,6 @@ export default function Welcome({ auth, aiEnabled }: PageProps) {
                         <div className="hidden items-center gap-7 md:flex">
                             <a href="#features" className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">Features</a>
                             <a href="#how-it-works" className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">How it works</a>
-                            <a href="#pricing" className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">Pricing</a>
                             <Link href={route('career.index')} className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">Career</Link>
                         </div>
                         {/* Actions */}
@@ -318,7 +317,7 @@ export default function Welcome({ auth, aiEnabled }: PageProps) {
                             { num: '9',      label: 'resume templates' },
                             { num: 'Free',   label: 'to get started' },
                             aiEnabled
-                                ? { num: '10',    label: 'free AI credits/mo' }
+                                ? { num: '∞',    label: 'free — no plans' }
                                 : { num: 'PDF + DOCX', label: 'export on every plan' },
                         ].map(({ num, label }) => (
                             <div key={label} className="flex items-center gap-2">
@@ -384,26 +383,26 @@ export default function Welcome({ auth, aiEnabled }: PageProps) {
                                 {
                                     icon: '✦',
                                     title: '9 Professional Templates',
-                                    desc: 'From Classic and ATS-optimized to Modern, Executive, and Bold — 4 free, all 9 unlocked on Starter.',
-                                    tag: '4 free · 9 total',
+                                    desc: 'From Classic and ATS-optimized to Modern, Executive, and Bold — all 9 free.',
+                                    tag: 'All 9 free',
                                 },
                                 {
                                     icon: '◈',
                                     title: 'PDF & LinkedIn Import',
                                     desc: 'Upload your existing resume or LinkedIn PDF and we\'ll parse your experience to pre-fill your new resume instantly.',
-                                    tag: 'Starter+',
+                                    tag: 'Free',
                                 },
                                 {
                                     icon: '⇗',
                                     title: 'Public Share Links',
                                     desc: 'Share a live link to your resume. Recruiters can view, leave questions, and download — you get notified instantly.',
-                                    tag: 'Free on all plans',
+                                    tag: 'Free',
                                 },
                                 {
                                     icon: '📊',
                                     title: 'Job Application Tracker',
                                     desc: 'Track every application from saved to offer in one place. Link resumes to jobs and stay organized through your search.',
-                                    tag: 'Free on all plans',
+                                    tag: 'Free',
                                 },
                             ].map(({ icon, title, desc, tag }) => (
                                 <div
@@ -426,99 +425,41 @@ export default function Welcome({ auth, aiEnabled }: PageProps) {
 
                 {/* ── Pricing ───────────────────────────────────── */}
                 <section id="pricing" className="border-t border-[#e5e7eb] bg-white px-6 py-20">
-                    <div className="mx-auto max-w-4xl">
-                        <h2 className="mb-2 text-center text-3xl font-black tracking-tight text-[#0f172a]">
-                            Simple, transparent pricing
+                    <div className="mx-auto max-w-2xl text-center">
+                        <h2 className="mb-2 text-3xl font-black tracking-tight text-[#0f172a]">
+                            Free. All of it.
                         </h2>
-                        <p className="mb-14 text-center text-sm text-[#6b7280]">
-                            Start free — upgrade when you need more
+                        <p className="mb-10 text-sm text-[#6b7280]">
+                            Every feature, every template, no plan to pick and nothing to pay.
                         </p>
 
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                            {/* Free */}
-                            <div className="rounded-2xl border border-[#e5e7eb] p-6">
-                                <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#6b7280]">Free</p>
-                                <div className="mb-1 flex items-end gap-1">
-                                    <span className="text-4xl font-black leading-none text-[#0f172a]">$0</span>
-                                </div>
-                                <p className="mb-5 text-xs text-[#9ca3af]">Forever free</p>
-                                <ul className="mb-6 space-y-2">
-                                    {['2 resumes', '2 cover letters', 'All 9 templates', 'PDF + DOCX export', 'Public share links', 'Job tracker (3 apps)'].map((f) => (
-                                        <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
-                                            <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Link
-                                    href={ctaHref}
-                                    className="block rounded-lg bg-[#f3f4f6] py-2.5 text-center text-sm font-bold text-[#374151] hover:bg-[#e5e7eb] transition"
-                                >
-                                    Get started free
-                                </Link>
+                        <div className="rounded-2xl border-2 border-[#4f46e5] p-8 shadow-lg shadow-[#4f46e5]/10">
+                            <div className="mb-1 flex items-end justify-center gap-1">
+                                <span className="text-5xl font-black leading-none text-[#0f172a]">$0</span>
                             </div>
-
-                            {/* Starter — highlighted */}
-                            <div className="relative rounded-2xl border-2 border-[#4f46e5] p-6 shadow-lg shadow-[#4f46e5]/10">
-                                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] px-4 py-1 text-[11px] font-black text-white">
-                                    ⭐ Most Popular
-                                </div>
-                                <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#6b7280]">Starter</p>
-                                <div className="mb-1 flex items-end gap-1">
-                                    <span className="text-4xl font-black leading-none text-[#0f172a]">$9</span>
-                                    <span className="mb-1 text-sm text-[#9ca3af]">/mo</span>
-                                </div>
-                                <p className="mb-5 text-xs text-[#9ca3af]">Everything in Free, plus:</p>
-                                <ul className="mb-6 space-y-2">
-                                    {[
-                                        '10 resumes',
-                                        '10 cover letters',
-                                        'All 9 templates',
-                                        ...(aiEnabled ? ['150 AI generations/mo'] : []),
-                                        'Unlimited job apps',
-                                        'Portfolio page',
-                                    ].map((f) => (
-                                        <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
-                                            <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Link
-                                    href={ctaHref}
-                                    className="block rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] py-2.5 text-center text-sm font-bold text-white shadow-md shadow-[#4f46e5]/30 hover:opacity-90 transition"
-                                >
-                                    Start for $9/mo
-                                </Link>
-                            </div>
-
-                            {/* Pro */}
-                            <div className="rounded-2xl border border-[#e5e7eb] p-6">
-                                <p className="mb-1 text-xs font-black uppercase tracking-wider text-[#6b7280]">Pro</p>
-                                <div className="mb-1 flex items-end gap-1">
-                                    <span className="text-4xl font-black leading-none text-[#0f172a]">$19</span>
-                                    <span className="mb-1 text-sm text-[#9ca3af]">/mo</span>
-                                </div>
-                                <p className="mb-5 text-xs text-[#9ca3af]">Everything in Starter, plus:</p>
-                                <ul className="mb-6 space-y-2">
-                                    {[
-                                        'Unlimited resumes',
-                                        'Unlimited cover letters',
-                                        ...(aiEnabled ? ['500 AI generations/mo'] : []),
-                                        'API access',
-                                        'Priority support',
-                                        'Early access to new features',
-                                    ].map((f) => (
-                                        <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
-                                            <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Link
-                                    href={ctaHref}
-                                    className="block rounded-lg bg-[#f3f4f6] py-2.5 text-center text-sm font-bold text-[#374151] hover:bg-[#e5e7eb] transition"
-                                >
-                                    Go Pro
-                                </Link>
-                            </div>
+                            <p className="mb-6 text-xs text-[#9ca3af]">No card, no trial, no upsell</p>
+                            <ul className="mx-auto mb-8 grid max-w-md grid-cols-1 gap-2 text-left sm:grid-cols-2">
+                                {[
+                                    'Unlimited resumes',
+                                    'Unlimited cover letters',
+                                    'All 9 templates',
+                                    'PDF + DOCX export',
+                                    'Public share links',
+                                    'Portfolio page',
+                                    'Job tracker',
+                                    ...(aiEnabled ? ['AI writing tools'] : []),
+                                ].map((f) => (
+                                    <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
+                                        <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}
+                                    </li>
+                                ))}
+                            </ul>
+                            <Link
+                                href={ctaHref}
+                                className="block rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] py-2.5 text-center text-sm font-bold text-white shadow-md shadow-[#4f46e5]/30 hover:opacity-90 transition"
+                            >
+                                Get started free
+                            </Link>
                         </div>
                     </div>
                 </section>

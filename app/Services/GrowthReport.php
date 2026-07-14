@@ -5,12 +5,9 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\UserActivityDay;
 use Illuminate\Support\Carbon;
-use Laravel\Cashier\Subscription;
 
 class GrowthReport
 {
-    private const PAYING_TIERS = ['starter', 'pro', 'agency'];
-
     public function totalUsers(): int
     {
         return User::count();
@@ -42,11 +39,6 @@ class GrowthReport
         return User::has('resumes')->count();
     }
 
-    private function payingCount(): int
-    {
-        return User::whereIn('plan_tier', self::PAYING_TIERS)->count();
-    }
-
     /**
      * @return array<int, array{label: string, count: int, cost_cents: int}>
      */
@@ -55,7 +47,6 @@ class GrowthReport
         return [
             ['label' => 'Signed up', 'count' => $this->totalUsers(), 'cost_cents' => 0],
             ['label' => 'Activated', 'count' => $this->activatedCount(), 'cost_cents' => 0],
-            ['label' => 'Paying', 'count' => $this->payingCount(), 'cost_cents' => 0],
         ];
     }
 
@@ -64,37 +55,6 @@ class GrowthReport
         $total = $this->totalUsers();
 
         return $total === 0 ? 0.0 : round($this->activatedCount() / $total * 100, 1);
-    }
-
-    public function conversionRate(): float
-    {
-        $total = $this->totalUsers();
-
-        return $total === 0 ? 0.0 : round($this->payingCount() / $total * 100, 1);
-    }
-
-    public function avgDaysToConvert(): ?float
-    {
-        $firstSubs = Subscription::query()
-            ->selectRaw('user_id, MIN(created_at) as first_sub')
-            ->groupBy('user_id')
-            ->pluck('first_sub', 'user_id');
-
-        if ($firstSubs->isEmpty()) {
-            return null;
-        }
-
-        $users = User::whereIn('id', $firstSubs->keys())->get(['id', 'created_at'])->keyBy('id');
-
-        $diffs = [];
-        foreach ($firstSubs as $userId => $firstSub) {
-            $user = $users->get($userId);
-            if ($user && $user->created_at) {
-                $diffs[] = $user->created_at->diffInDays(Carbon::parse($firstSub));
-            }
-        }
-
-        return empty($diffs) ? null : round(array_sum($diffs) / count($diffs), 1);
     }
 
     /**

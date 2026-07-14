@@ -64,13 +64,6 @@ class AiSuggestionController extends Controller
     {
         $this->authorize('update', $resume);
 
-        if (! UserLimits::canAiTailoring($request->user())) {
-            return response()->json([
-                'error' => 'AI job tailoring is a Starter feature.',
-                'required_tier' => 'starter',
-            ], 402);
-        }
-
         $data = $request->validate([
             'role' => ['nullable', 'string', 'max:200'],
             'job_description' => ['nullable', 'string', 'max:10000'],
@@ -110,8 +103,6 @@ class AiSuggestionController extends Controller
         if (! UserLimits::canUseAi($user)) {
             return response()->json([
                 'error' => UserLimits::aiLimitMessage($user),
-                'can_upgrade' => UserLimits::aiCanUpgrade($user),
-                'next_tier' => UserLimits::aiNextTier($user),
                 'limit' => UserLimits::aiMonthlyLimit($user),
                 'used' => UserLimits::aiRequestsThisMonth($user),
                 'resets_at' => now()->startOfMonth()->addMonth()->format('M j'),

@@ -29,8 +29,6 @@ class GrowthPage extends Page
             'kpis' => [
                 'total_users' => $report->totalUsers(),
                 'activation_rate' => $report->activationRate(),
-                'conversion_rate' => $report->conversionRate(),
-                'avg_days_to_convert' => $report->avgDaysToConvert(),
             ],
             'funnel' => $report->funnel(),
             'retention' => $report->retentionCohorts(),

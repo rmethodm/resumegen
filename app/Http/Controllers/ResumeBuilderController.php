@@ -72,8 +72,7 @@ class ResumeBuilderController extends Controller
         return Inertia::render('ResumeBuilder/Index', [
             'resumes' => $resumes,
             'resumeCount' => $resumes->count(),
-            'resumeLimit' => UserLimits::resumeLimit($user),
-            'allowedTemplates' => UserLimits::allowedTemplates($user),
+            'allowedTemplates' => UserLimits::allTemplates(),
             'userPersona' => [
                 'target_role' => $user->target_role,
                 'industry' => $user->industry,
@@ -85,14 +84,6 @@ class ResumeBuilderController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        $limit = UserLimits::resumeLimit($user);
-
-        if ($limit !== null && $user->resumes()->nonSnapshot()->count() >= $limit) {
-            return back()->with('featureGate', [
-                'feature' => 'resume_limit',
-                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
-            ]);
-        }
 
         $validated = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
@@ -105,7 +96,7 @@ class ResumeBuilderController extends Controller
             'pdf_filename' => Str::uuid().'.pdf',
         ];
 
-        if ($user->preferred_template && in_array($user->preferred_template, UserLimits::allowedTemplates($user), true)) {
+        if ($user->preferred_template && in_array($user->preferred_template, UserLimits::allTemplates(), true)) {
             $attributes['template'] = $user->preferred_template;
         }
 
@@ -141,16 +132,8 @@ class ResumeBuilderController extends Controller
             'shareLinks' => $resume->shareLinks,
             'threads' => $threads,
             'isFirstResume' => $isFirstResume,
-            'canDocx' => UserLimits::canDocx($user),
-            'canAiTailoring' => UserLimits::canAiTailoring($user),
-            'canViewStrengthDetail' => UserLimits::canViewStrengthDetail($user),
-            'canInterviewCoach' => UserLimits::canInterviewCoach($user),
-            'interviewCoachUsesRemaining' => UserLimits::interviewCoachUsesRemaining($user),
             'aiRemaining' => UserLimits::aiRemaining($user),
-            'aiCanUpgrade' => UserLimits::aiCanUpgrade($user),
-            'aiNextTier' => UserLimits::aiNextTier($user),
-            'customSectionLimit' => UserLimits::customSectionLimit($user),
-            'allowedTemplates' => UserLimits::allowedTemplates($user),
+            'allowedTemplates' => UserLimits::allTemplates(),
             'completionScore' => ResumeCompletionScorer::score($resume),
             'skillCategoryOptions' => SkillCategories::labels(),
             'photoUrl' => $resume->getFirstMediaUrl('photo') ?: null,
@@ -160,7 +143,6 @@ class ResumeBuilderController extends Controller
                 'years_experience' => $user->years_experience,
             ],
             'recruiterNote' => null,
-            'isFreeTier' => $user->planTier() === 'free',
         ]);
     }
 
@@ -169,28 +151,6 @@ class ResumeBuilderController extends Controller
         $this->authorize('update', $resume);
 
         $validated = $request->validate(ResumeRules::rules());
-
-        if (isset($validated['custom_sections'])) {
-            $limit = UserLimits::customSectionLimit($request->user());
-            if ($limit !== null && count($validated['custom_sections']) > $limit) {
-                return back()->with('featureGate', [
-                    'feature' => 'custom_sections',
-                    'requiredTier' => 'starter',
-                    'message' => "Free accounts are limited to {$limit} custom sections.",
-                ]);
-            }
-        }
-
-        if (isset($validated['template'])) {
-            $allowed = UserLimits::allowedTemplates($request->user());
-            // Grandfather the resume's existing template so a tier change never bounces a saved selection.
-            if ($validated['template'] !== $resume->template && ! in_array($validated['template'], $allowed, true)) {
-                return back()->with('featureGate', [
-                    'feature' => 'template_access',
-                    'requiredTier' => 'starter',
-                ]);
-            }
-        }
 
         $resume->update($validated);
 
@@ -230,13 +190,6 @@ class ResumeBuilderController extends Controller
     public function downloadDocx(Request $request, Resume $resume): StreamedResponse|RedirectResponse
     {
         $this->authorize('update', $resume);
-
-        if (! UserLimits::canDocx($request->user())) {
-            return back()->with('featureGate', [
-                'feature' => 'docx_export',
-                'requiredTier' => 'starter',
-            ]);
-        }
 
         $word = app(DocxGenerator::class)->generate($resume);
 
@@ -316,7 +269,7 @@ class ResumeBuilderController extends Controller
     {
         return Pdf::loadView('resume-pdf', [
             'resume' => $resume,
-            'watermark' => $resume->user?->planTier() === 'free',
+            'watermark' => false,
         ])->setPaper('letter', 'portrait');
     }
 
@@ -327,13 +280,6 @@ class ResumeBuilderController extends Controller
         $data = json_decode($request->getContent(), true) ?? [];
 
         $validated = validator($data, ResumeRules::rules())->validate();
-
-        if (isset($validated['custom_sections'])) {
-            $limit = UserLimits::customSectionLimit($request->user());
-            if ($limit !== null && count($validated['custom_sections']) > $limit) {
-                return response()->noContent();
-            }
-        }
 
         $resume->update($validated);
 
@@ -357,14 +303,6 @@ class ResumeBuilderController extends Controller
         $this->authorize('update', $resume);
 
         $user = $resume->user;
-        $limit = UserLimits::resumeLimit($user);
-
-        if ($limit !== null && $user->resumes()->nonSnapshot()->count() >= $limit) {
-            return back()->with('featureGate', [
-                'feature' => 'resume_limit',
-                'requiredTier' => $user->planTier() === 'free' ? 'starter' : 'pro',
-            ]);
-        }
 
         $copy = ResumeCopier::copy($resume, $user, 'Copy of '.$resume->name);
 

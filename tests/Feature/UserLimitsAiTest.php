@@ -14,7 +14,7 @@ class UserLimitsAiTest extends TestCase
 
     public function test_monthly_count_ignores_error_rows(): void
     {
-        $user = User::factory()->free()->create();
+        $user = User::factory()->create();
         AiRequest::factory()->count(2)->create(['user_id' => $user->id, 'status' => 'success']);
         AiRequest::factory()->count(3)->create(['user_id' => $user->id, 'status' => 'error']);
 
@@ -23,8 +23,8 @@ class UserLimitsAiTest extends TestCase
 
     public function test_remaining_is_limit_minus_successes(): void
     {
-        config()->set('ai.monthly_limits.free', 10);
-        $user = User::factory()->free()->create();
+        config()->set('ai.monthly_limit', 10);
+        $user = User::factory()->create();
         AiRequest::factory()->count(4)->create(['user_id' => $user->id, 'status' => 'success']);
 
         $this->assertSame(6, UserLimits::aiRemaining($user));
@@ -32,42 +32,32 @@ class UserLimitsAiTest extends TestCase
 
     public function test_remaining_never_negative(): void
     {
-        config()->set('ai.monthly_limits.free', 1);
-        $user = User::factory()->free()->create();
+        config()->set('ai.monthly_limit', 1);
+        $user = User::factory()->create();
         AiRequest::factory()->count(3)->create(['user_id' => $user->id, 'status' => 'success']);
 
         $this->assertSame(0, UserLimits::aiRemaining($user));
     }
 
-    public function test_can_upgrade_by_tier(): void
-    {
-        $this->assertTrue(UserLimits::aiCanUpgrade(User::factory()->free()->create()));
-        $this->assertTrue(UserLimits::aiCanUpgrade(User::factory()->starter()->create()));
-        $this->assertFalse(UserLimits::aiCanUpgrade(User::factory()->pro()->create()));
-    }
-
-    public function test_next_tier_by_tier(): void
-    {
-        $this->assertSame('starter', UserLimits::aiNextTier(User::factory()->free()->create()));
-        $this->assertSame('pro', UserLimits::aiNextTier(User::factory()->starter()->create()));
-        $this->assertNull(UserLimits::aiNextTier(User::factory()->pro()->create()));
-    }
-
     /**
-     * A free user has a quota of 0, so "limit reached" tells them they used up
-     * something they never had — it reads as a bug, not a paywall. Tiers with a
-     * real quota keep the accurate message.
+     * A zero quota means AI is switched off for that account — it never had a limit to
+     * "reach", so "limit reached" reads as a bug. An account with a real quota gets the
+     * accurate message once it exhausts it.
      */
     public function test_limit_message_distinguishes_no_quota_from_exhausted_quota(): void
     {
+        config()->set('ai.monthly_limit', 0);
+
         $this->assertSame(
-            'AI features require a paid plan.',
-            UserLimits::aiLimitMessage(User::factory()->free()->create())
+            'AI features are unavailable on this account.',
+            UserLimits::aiLimitMessage(User::factory()->create())
         );
+
+        config()->set('ai.monthly_limit', 150);
 
         $this->assertSame(
             'Monthly AI limit reached.',
-            UserLimits::aiLimitMessage(User::factory()->starter()->create())
+            UserLimits::aiLimitMessage(User::factory()->create())
         );
     }
 }

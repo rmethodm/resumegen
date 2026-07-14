@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Resume;
 use App\Models\User;
-use App\Services\UserLimits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,7 +13,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_can_save_minimal_ruled_template(): void
     {
-        $user = User::factory()->starter()->create();
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         $response = $this->actingAs($user)->put(route('builder.update', $resume->id), [
@@ -69,7 +68,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_free_user_can_switch_to_any_template(): void
     {
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'Test', 'template' => 'classic', 'pdf_filename' => 'test.pdf']);
 
         $this->actingAs($user)->put(route('builder.update', $resume->id), [
@@ -82,7 +81,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_free_user_can_keep_grandfathered_locked_template(): void
     {
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'Old', 'template' => 'executive', 'pdf_filename' => 'test.pdf']);
 
         $this->actingAs($user)->put(route('builder.update', $resume->id), [
@@ -189,7 +188,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_new_templates_are_accepted(): void
     {
-        $user = User::factory()->starter()->create();
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'Test', 'pdf_filename' => 'test.pdf']);
 
         foreach (['minimal-ruled', 'executive', 'ats', 'bold'] as $template) {
@@ -254,7 +253,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_duplicate_copies_new_style_fields(): void
     {
-        $user = User::factory()->starter()->create();
+        $user = User::factory()->create();
         $resume = $user->resumes()->create([
             'name' => 'Orig',
             'pdf_filename' => 'orig.pdf',
@@ -341,7 +340,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_free_user_can_use_modern_template(): void
     {
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
 
         $this->actingAs($user)
@@ -354,7 +353,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_starter_user_can_use_any_template(): void
     {
-        $user = User::factory()->starter()->create();
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
 
         $this->actingAs($user)
@@ -370,7 +369,7 @@ class ResumeBuilderTest extends TestCase
      */
     public function test_free_user_can_download_docx(): void
     {
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
 
         $this->actingAs($user)
@@ -381,7 +380,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_starter_user_can_download_docx(): void
     {
-        $user = User::factory()->starter()->create();
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'CV', 'pdf_filename' => 'cv.pdf']);
 
         $this->actingAs($user)
@@ -389,24 +388,29 @@ class ResumeBuilderTest extends TestCase
             ->assertOk();
     }
 
-    public function test_free_user_at_resume_limit_cannot_duplicate(): void
+    /**
+     * Resumes are unlimited now that billing is gone. Duplicating from a large pile must
+     * still work — a featureGate here means a paywall has crept back in.
+     */
+    public function test_resumes_are_unlimited_when_duplicating(): void
     {
-        $user = User::factory()->create(['plan_tier' => 'free']);
+        $user = User::factory()->create();
         $r1 = $user->resumes()->create(['name' => 'A', 'pdf_filename' => 'a.pdf']);
-        $user->resumes()->create(['name' => 'B', 'pdf_filename' => 'b.pdf']);
-        $user->resumes()->create(['name' => 'C', 'pdf_filename' => 'c.pdf']);
-        $user->resumes()->create(['name' => 'D', 'pdf_filename' => 'd.pdf']);
-        $user->resumes()->create(['name' => 'E', 'pdf_filename' => 'e.pdf']);
+        foreach (range('B', 'J') as $letter) {
+            $user->resumes()->create(['name' => $letter, 'pdf_filename' => strtolower($letter).'.pdf']);
+        }
 
         $this->actingAs($user)
             ->post(route('builder.duplicate', $r1->id))
             ->assertRedirect()
-            ->assertSessionHas('featureGate.feature', 'resume_limit');
+            ->assertSessionMissing('featureGate');
+
+        $this->assertSame(11, $user->resumes()->count());
     }
 
     public function test_free_user_can_use_skills_first_template(): void
     {
-        $user = User::factory()->free()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id, 'template' => 'classic']);
 
         $this->actingAs($user)
@@ -418,7 +422,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_free_user_can_use_bold_template(): void
     {
-        $user = User::factory()->free()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id, 'template' => 'classic']);
 
         $this->actingAs($user)
@@ -430,7 +434,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_free_user_can_use_minimal_template(): void
     {
-        $user = User::factory()->free()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
@@ -442,7 +446,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_free_user_can_use_academic_template(): void
     {
-        $user = User::factory()->free()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id, 'template' => 'classic']);
 
         $this->actingAs($user)
@@ -454,7 +458,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_free_user_can_use_classic_template(): void
     {
-        $user = User::factory()->free()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
@@ -466,7 +470,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_starter_user_can_use_all_templates(): void
     {
-        $user = User::factory()->starter()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         foreach (['skills-first', 'minimal-ruled', 'academic', 'bold', 'ats'] as $tpl) {
@@ -479,7 +483,7 @@ class ResumeBuilderTest extends TestCase
 
     public function test_custom_sections_are_saved_on_update(): void
     {
-        $user = User::factory()->pro()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
         $customSections = [
@@ -510,26 +514,26 @@ class ResumeBuilderTest extends TestCase
         $this->assertEquals($customSections, $resume->fresh()->custom_sections);
     }
 
-    public function test_free_user_cannot_exceed_custom_section_limit(): void
+    /** Custom sections are unlimited now that billing is gone. */
+    public function test_custom_sections_are_unlimited(): void
     {
-        $user = User::factory()->free()->create();
+        $user = User::factory()->create();
         $resume = Resume::factory()->create(['user_id' => $user->id]);
 
-        $limit = UserLimits::customSectionLimit($user);
-        $this->assertNotNull($limit, 'Free users should have a custom section limit');
-
-        $tooMany = array_map(fn ($i) => [
+        $many = array_map(fn ($i) => [
             'id' => "id-{$i}",
             'name' => "Section {$i}",
             'entries' => [],
-        ], range(1, $limit + 1));
+        ], range(1, 10));
 
         $this->actingAs($user)
             ->put(route('builder.update', $resume), [
                 'name' => $resume->name,
-                'custom_sections' => $tooMany,
+                'custom_sections' => $many,
             ])
-            ->assertSessionHas('featureGate');
+            ->assertSessionMissing('featureGate');
+
+        $this->assertCount(10, $resume->fresh()->custom_sections);
     }
 
     public function test_section_order_is_saved_on_update(): void

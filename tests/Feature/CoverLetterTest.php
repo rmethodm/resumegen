@@ -95,24 +95,15 @@ class CoverLetterTest extends TestCase
         $this->assertDatabaseMissing('cover_letters', ['id' => $letter->id]);
     }
 
-    public function test_free_user_at_cover_letter_limit_is_blocked(): void
+    /**
+     * Cover letters are unlimited now that billing is gone. A user sitting on a pile of
+     * them must still be able to make another — a featureGate here means a paywall
+     * has crept back in.
+     */
+    public function test_cover_letters_are_unlimited(): void
     {
-        $user = User::factory()->create(['plan_tier' => 'free']);
-        CoverLetter::factory()->count(3)->create(['user_id' => $user->id]);
-
-        $this->actingAs($user)
-            ->post(route('cover-letters.store'), [
-                'name' => 'My Letter',
-                'template_key' => 'standard',
-            ])
-            ->assertRedirect()
-            ->assertSessionHas('featureGate.feature', 'cover_letter_limit');
-    }
-
-    public function test_starter_user_can_create_up_to_five_cover_letters(): void
-    {
-        $user = User::factory()->starter()->create();
-        CoverLetter::factory()->count(4)->create(['user_id' => $user->id]);
+        $user = User::factory()->create();
+        CoverLetter::factory()->count(50)->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
             ->post(route('cover-letters.store'), [
@@ -121,33 +112,7 @@ class CoverLetterTest extends TestCase
             ])
             ->assertRedirect()
             ->assertSessionMissing('featureGate');
-    }
 
-    public function test_starter_user_at_cover_letter_limit_is_blocked(): void
-    {
-        $user = User::factory()->starter()->create();
-        CoverLetter::factory()->count(10)->create(['user_id' => $user->id]);
-
-        $this->actingAs($user)
-            ->post(route('cover-letters.store'), [
-                'name' => 'My Letter',
-                'template_key' => 'standard',
-            ])
-            ->assertRedirect()
-            ->assertSessionHas('featureGate.feature', 'cover_letter_limit');
-    }
-
-    public function test_pro_user_has_unlimited_cover_letters(): void
-    {
-        $user = User::factory()->pro()->create();
-        CoverLetter::factory()->count(20)->create(['user_id' => $user->id]);
-
-        $this->actingAs($user)
-            ->post(route('cover-letters.store'), [
-                'name' => 'My Letter',
-                'template_key' => 'standard',
-            ])
-            ->assertRedirect()
-            ->assertSessionMissing('featureGate');
+        $this->assertSame(51, $user->coverLetters()->count());
     }
 }

@@ -26,10 +26,6 @@ class UserResource extends Resource
         return $form->schema([
             Forms\Components\TextInput::make('name')->required()->maxLength(255),
             Forms\Components\TextInput::make('email')->email()->required()->maxLength(255),
-            Forms\Components\Select::make('plan_tier')
-                ->options(['free' => 'Free', 'starter' => 'Starter', 'pro' => 'Pro', 'agency' => 'Agency'])
-                ->default('free'),
-            Forms\Components\Toggle::make('is_pro')->label('Legacy Pro'),
             Forms\Components\Toggle::make('ai_blocked')->label('AI Blocked'),
             Forms\Components\TextInput::make('ai_limit_override')
                 ->label('AI Limit Override')
@@ -44,22 +40,12 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('email')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('plan_tier')->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'agency' => 'danger',
-                        'pro' => 'warning',
-                        'starter' => 'success',
-                        default => 'gray',
-                    }),
                 Tables\Columns\IconColumn::make('email_verified_at')->label('Verified')->boolean()
                     ->getStateUsing(fn (User $r) => $r->email_verified_at !== null),
                 Tables\Columns\TextColumn::make('created_at')->since()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
-            ->filters([
-                Tables\Filters\SelectFilter::make('plan_tier')
-                    ->options(['free' => 'Free', 'starter' => 'Starter', 'pro' => 'Pro', 'agency' => 'Agency']),
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->after(function (User $record, array $data) {
@@ -90,7 +76,6 @@ class UserResource extends Resource
                         if ($record->is_master_admin) {
                             throw new \Exception('Cannot delete a master admin.');
                         }
-                        $record->subscription('default')?->cancelNow();
                         AdminAuditLog::record('user.delete', $record, "Deleted user {$record->email}", ['name' => $record->name]);
                     }),
             ])
@@ -102,7 +87,6 @@ class UserResource extends Resource
                                 if ($record->is_master_admin) {
                                     throw new \Exception("Cannot delete master admin: {$record->email}");
                                 }
-                                $record->subscription('default')?->cancelNow();
                                 AdminAuditLog::record('user.delete', $record, "Bulk deleted user {$record->email}", ['name' => $record->name]);
                             }
                         }),

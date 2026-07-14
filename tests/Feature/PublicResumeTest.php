@@ -13,9 +13,9 @@ class PublicResumeTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function makeLink(bool $active = true, string $tier = 'free'): ResumeShareLink
+    private function makeLink(bool $active = true): ResumeShareLink
     {
-        $user = User::factory()->create(['plan_tier' => $tier]);
+        $user = User::factory()->create();
         $resume = $user->resumes()->create(['name' => 'My CV', 'pdf_filename' => 'cv.pdf']);
 
         return $resume->shareLinks()->create(['is_active' => $active]);
@@ -118,7 +118,7 @@ class PublicResumeTest extends TestCase
     public function test_public_docx_route_is_rate_limited(): void
     {
         RateLimiter::clear('public-docx');
-        $link = $this->makeLink(true, 'starter');
+        $link = $this->makeLink();
 
         for ($i = 0; $i < 20; $i++) {
             $this->get(route('public.docx', $link->token));
@@ -127,57 +127,20 @@ class PublicResumeTest extends TestCase
         $this->get(route('public.docx', $link->token))->assertStatus(429);
     }
 
-    /**
-     * DOCX is included on every tier, so a share link published by a free-tier
-     * owner must offer the DOCX download just like a paid owner's link does.
-     */
-    public function test_free_tier_owner_public_docx_is_accessible(): void
+    public function test_public_docx_is_accessible(): void
     {
-        $link = $this->makeLink(true, 'free');
+        $link = $this->makeLink();
+
         $this->get(route('public.docx', $link->token))->assertSuccessful();
     }
 
-    public function test_starter_tier_owner_public_docx_is_accessible(): void
+    /**
+     * View caps died with the plan tiers. A share link stays live no matter how many
+     * times it is opened — if this ever 410s on view count again, a paywall crept back in.
+     */
+    public function test_share_link_has_no_view_cap(): void
     {
-        $link = $this->makeLink(true, 'starter');
-        // Should not redirect (stream response, assertOk not applicable for streams — just assert not a redirect)
-        $response = $this->get(route('public.docx', $link->token));
-        $response->assertSuccessful();
-    }
-
-    public function test_free_tier_link_is_viewable_under_25_views(): void
-    {
-        $link = $this->makeLink(true, 'free');
-        $this->seedPageViews($link, 24);
-
-        $this->get(route('public.resume', $link->token))->assertOk();
-    }
-
-    public function test_free_tier_link_returns_410_at_25_views(): void
-    {
-        $link = $this->makeLink(true, 'free');
-        $this->seedPageViews($link, 25);
-
-        $this->get(route('public.resume', $link->token))->assertStatus(410);
-    }
-
-    public function test_pdf_downloads_do_not_count_toward_view_cap(): void
-    {
-        $link = $this->makeLink(true, 'free');
-        for ($i = 0; $i < 25; $i++) {
-            ResumeShareEvent::create([
-                'resume_share_link_id' => $link->id,
-                'resume_id' => $link->resume_id,
-                'event' => 'pdf_download',
-            ]);
-        }
-
-        $this->get(route('public.resume', $link->token))->assertOk();
-    }
-
-    public function test_paid_tier_link_has_no_view_cap(): void
-    {
-        $link = $this->makeLink(true, 'starter');
+        $link = $this->makeLink();
         $this->seedPageViews($link, 30);
 
         $this->get(route('public.resume', $link->token))->assertOk();
