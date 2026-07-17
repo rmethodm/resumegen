@@ -1,5 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
+import PlainTextView, { type ResumeContent } from './Partials/PlainTextView';
+import JdMatcher from './Partials/JdMatcher';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
@@ -436,6 +438,15 @@ const TEMPLATE_LABELS: Record<string, string> = {
 const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'projects', 'education', 'skills', 'certifications'];
 const freshPdfSrc = (id: number) => route('builder.html-preview', id) + '?t=' + Date.now();
 
+// Lab views selectable from the sidebar; the chosen one renders in the preview column.
+// Add new panels here — 'resume' is the live HTML render; everything else is a scaffold stub for now.
+const LAB_VIEWS: { key: string; label: string }[] = [
+    { key: 'resume', label: 'Current resume' },
+    { key: 'plaintext', label: 'Plain text / ATS' },
+    { key: 'jd-match', label: 'JD matcher' },
+    { key: 'checklist', label: 'Resume checklist' },
+];
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function Edit({
@@ -501,8 +512,10 @@ export default function Edit({
     const pendingSave = useRef(false);
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
-    const [showPreview, setShowPreview] = useState(true);
-    const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
+    // Preview column and sidebar both start hidden; the user reveals them from the sidebar chooser.
+    const [showPreview, setShowPreview] = useState(false);
+    const [labView, setLabView] = useState('resume');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [templateOpen, setTemplateOpen] = useState(false);
     // Double-buffered preview: two iframes ping-pong so the current PDF stays on
     // screen while the next one loads, then we swap on its onLoad — no reload flash.
@@ -518,6 +531,15 @@ export default function Edit({
         clearTimeout(pdfSwapTimer.current);
         pdfSwapTimer.current = setTimeout(() => setActivePdfFrame(back), 1500);
     }, [resume.id]);
+
+    // Sidebar chooser → pick what renders in the lab/preview column and reveal it.
+    const openLab = (key: string) => {
+        setLabView(key);
+        if (!showPreview) {
+            if (key === 'resume') { refreshPreview(); }
+            setShowPreview(true);
+        }
+    };
 
     const [openSections, setOpenSections] = useState({
         fontSizes: false, contact: true,
@@ -689,6 +711,14 @@ export default function Edit({
 
     const pdfFilename = resume.pdf_filename ?? `${resume.id}.pdf`;
 
+    // Live resume content shared by the read-only lab panels (plain text, JD matcher).
+    const resumeContent: ResumeContent = {
+        contact, summary, experience, projects, education, certifications, flatSkills,
+        skillGroups: skillCategories.map(c => ({ category: c.category_name, items: c.skills })),
+        skillNarratives: skillNarratives.map(n => ({ name: n.name, bullets: n.bulletsText.split('\n').filter(Boolean) })),
+        sectionOrder,
+    };
+
     return (
         <AuthenticatedLayout>
             {/* Top bar */}
@@ -728,6 +758,99 @@ export default function Edit({
                 <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
                     <div className="mx-auto max-w-2xl space-y-4 px-4">
 
+                        {/* Design controls — collapsed by default; expanding pushes the form down */}
+                        <div>
+                            <PanelCard
+                                title="Template"
+                                icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
+                                pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
+                                open={templateOpen}
+                                onToggle={() => setTemplateOpen(v => !v)}
+                            >
+                                <div className="px-3 pb-3">
+                                    <div aria-label="Resume template" className="grid grid-cols-3 gap-2">
+                                        {Object.keys(TEMPLATE_LABELS).map(t => {
+                                            const selected = template === t;
+                                            return (
+                                                <button
+                                                    key={t}
+                                                    type="button"
+                                                    onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
+                                                    aria-pressed={selected}
+                                                    title={TEMPLATE_LABELS[t] ?? t}
+                                                    className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
+                                                >
+                                                    <img
+                                                        src={`/images/templates/${t}.png`}
+                                                        loading="lazy"
+                                                        alt=""
+                                                        className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
+                                                    />
+                                                    <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
+                                </div>
+                            </PanelCard>
+
+                            <PanelCard
+                                title="Font"
+                                open={openSections.fontSizes}
+                                onToggle={() => toggleSection('fontSizes')}
+                            >
+                                <div className="px-3 pb-3">
+                                    <div className="mb-3.5 flex gap-1.5">
+                                        {(['sans', 'serif', 'mono'] as const).map(f => (
+                                            <button
+                                                key={f}
+                                                type="button"
+                                                onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
+                                                className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
+                                            >
+                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="flex flex-col gap-2.5">
+                                        {([
+                                            { label: 'Name size', key: 'name', min: 12, max: 36 },
+                                            { label: 'Contact size', key: 'contact', min: 6, max: 16 },
+                                            { label: 'Heading size', key: 'heading', min: 8, max: 20 },
+                                            { label: 'Body size', key: 'body', min: 8, max: 16 },
+                                            { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                            { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                            <div key={key}>
+                                                <div className="mb-1 flex justify-between">
+                                                    <span className="text-[11px] text-[#71717a]">{label}</span>
+                                                    <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min={min}
+                                                    max={max}
+                                                    step={0.5}
+                                                    value={fontSizes[key]}
+                                                    aria-label={label}
+                                                    onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
+                                                    onMouseUp={save}
+                                                    onTouchEnd={save}
+                                                    onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
+                                                    className="w-full"
+                                                    style={{ accentColor: '#4f46e5' }}
+                                                />
+                                            </div>
+                                        ))}
+                                        <div className="flex justify-end">
+                                            <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelCard>
+                        </div>
+
                         {/* Resume Name */}
                         <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
                             <FLabel>Resume Name</FLabel>
@@ -754,12 +877,6 @@ export default function Edit({
                             )}
                         </div>
 
-                        {aiEnabled && (
-                            <div className="px-1 pb-1 text-xs text-[#94a3b8]">
-                                ✨ {ai.remaining} AI uses left this month
-                            </div>
-                        )}
-
                         {/* Draggable sections */}
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
                             <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
@@ -776,10 +893,7 @@ export default function Edit({
                                                 placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
                                                 rows={5}
                                             />
-                                            <div className="flex items-center justify-between">
-                                                {renderAiButton({ idle: '✨ Generate with AI', onRun: handleGenerateSummary, regenerated: aiGenerated.has('summary') })}
-                                                <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
-                                            </div>
+                                            <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
                                         </DraggableSection>
                                     );
 
@@ -801,27 +915,6 @@ export default function Edit({
                                                     <div>
                                                         <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
                                                         <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
-                                                        {aiEnabled && (
-                                                            <div className="mt-1 grid grid-cols-2 gap-2">
-                                                                {renderAiButton({ idle: '🎯 Coach me', onRun: () => handleCoachBullet(exp.id, exp.bullets), extraDisabled: !exp.bullets?.trim(), className: 'rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5' })}
-                                                                {renderAiButton({ idle: '✨ Write it for me', onRun: () => handleImproveExperience(exp.id, exp.bullets), regenerated: aiGenerated.has(`exp:${exp.id}`), extraDisabled: !exp.bullets?.trim(), className: 'rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5' })}
-                                                            </div>
-                                                        )}
-                                                        {coachQuestions[exp.id]?.length > 0 && (
-                                                            <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-3">
-                                                                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">This bullet doesn&apos;t say enough</p>
-                                                                <ul className="mt-1.5 list-disc pl-4 text-xs text-[#475569] space-y-0.5">
-                                                                    {coachQuestions[exp.id].map(q => <li key={q}>{q}</li>)}
-                                                                </ul>
-                                                                <FTextarea
-                                                                    value={coachAnswers[exp.id] ?? ''}
-                                                                    onChange={v => setCoachAnswers(prev => ({ ...prev, [exp.id]: v }))}
-                                                                    placeholder="Answer in your own words — the real numbers only you know"
-                                                                    rows={2}
-                                                                />
-                                                                {renderAiButton({ idle: '↩ Rebuild bullet from my answer', onRun: () => handleRebuildFromAnswer(exp.id, exp.bullets), extraDisabled: !coachAnswers[exp.id]?.trim(), className: 'mt-1' })}
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 </EntryCard>
                                             ))}
@@ -1056,20 +1149,34 @@ export default function Edit({
                     <div className="sticky top-0 flex h-[70vh] w-full flex-col p-4 md:h-screen md:w-[42%] md:min-w-[320px] md:max-w-[560px] md:pl-0">
                         <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
                             <div className="flex shrink-0 items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
-                                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
-                                <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+                                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">{LAB_VIEWS.find(v => v.key === labView)?.label ?? 'Live preview'}</span>
+                                {labView === 'resume' && <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>}
                             </div>
                             <div className="relative flex-1">
-                                {([0, 1] as const).map(i => (
-                                    <iframe
-                                        key={i}
-                                        src={pdfFrames[i] || undefined}
-                                        onLoad={() => { if (i !== activePdfFrame && pdfFrames[i]) { clearTimeout(pdfSwapTimer.current); setActivePdfFrame(i); } }}
-                                        className="absolute inset-0 h-full w-full border-0 transition-opacity duration-150"
-                                        style={{ opacity: i === activePdfFrame ? 1 : 0, zIndex: i === activePdfFrame ? 1 : 0 }}
-                                        title="Resume preview"
-                                    />
-                                ))}
+                                {labView === 'resume' ? (
+                                    ([0, 1] as const).map(i => (
+                                        <iframe
+                                            key={i}
+                                            src={pdfFrames[i] || undefined}
+                                            onLoad={() => { if (i !== activePdfFrame && pdfFrames[i]) { clearTimeout(pdfSwapTimer.current); setActivePdfFrame(i); } }}
+                                            className="absolute inset-0 h-full w-full border-0 transition-opacity duration-150"
+                                            style={{ opacity: i === activePdfFrame ? 1 : 0, zIndex: i === activePdfFrame ? 1 : 0 }}
+                                            title="Resume preview"
+                                        />
+                                    ))
+                                ) : labView === 'plaintext' ? (
+                                    <PlainTextView {...resumeContent} />
+                                ) : labView === 'jd-match' ? (
+                                    <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
+                                ) : labView === 'checklist' ? (
+                                    <div className="absolute inset-0 overflow-auto p-4">
+                                        <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={0} onGenerateSummary={handleGenerateSummary} />
+                                    </div>
+                                ) : (
+                                    <div className="flex h-full items-center justify-center p-6 text-center text-sm text-[#94a3b8]">
+                                        This panel is coming soon.
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -1092,6 +1199,32 @@ export default function Edit({
                             </div>
                         )}
 
+                        {/* Preview / lab chooser */}
+                        <div>
+                            <PanelGroupLabel>Preview</PanelGroupLabel>
+                            <div className="flex flex-col gap-1.5">
+                                {LAB_VIEWS.filter(v => v.key !== 'resume').map(v => {
+                                    const active = showPreview && labView === v.key;
+                                    return (
+                                        <button
+                                            key={v.key}
+                                            type="button"
+                                            onClick={() => openLab(v.key)}
+                                            aria-pressed={active}
+                                            className={`rounded-lg border px-3 py-2 text-left text-xs font-semibold transition-colors ${active ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc] hover:bg-[#f8fafc]'}`}
+                                        >
+                                            {v.label}
+                                        </button>
+                                    );
+                                })}
+                                {showPreview && (
+                                    <button type="button" onClick={() => setShowPreview(false)} className="mt-0.5 text-left text-[11px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">
+                                        Hide preview
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
                         {/* Export */}
                         <div className="flex gap-2">
                             <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
@@ -1102,116 +1235,6 @@ export default function Edit({
                             </a>
                         </div>
 
-                        {/* Design */}
-                        <div>
-                            <PanelGroupLabel>Design</PanelGroupLabel>
-
-                            <PanelCard
-                                title="Template"
-                                icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
-                                pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
-                                open={templateOpen}
-                                onToggle={() => setTemplateOpen(v => !v)}
-                            >
-                                <div className="px-3 pb-3">
-                                    <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
-                                        {Object.keys(TEMPLATE_LABELS).map(t => {
-                                            const selected = template === t;
-                                            return (
-                                                <button
-                                                    key={t}
-                                                    type="button"
-                                                    onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
-                                                    aria-pressed={selected}
-                                                    title={TEMPLATE_LABELS[t] ?? t}
-                                                    className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
-                                                >
-                                                    <img
-                                                        src={`/images/templates/${t}.png`}
-                                                        loading="lazy"
-                                                        alt=""
-                                                        className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
-                                                    />
-                                                    <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                    {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
-                                </div>
-                            </PanelCard>
-
-                            <PanelCard
-                                title="Font"
-                                open={openSections.fontSizes}
-                                onToggle={() => toggleSection('fontSizes')}
-                            >
-                                <div className="px-3 pb-3">
-                                    <div className="mb-3.5 flex gap-1.5">
-                                        {(['sans', 'serif', 'mono'] as const).map(f => (
-                                            <button
-                                                key={f}
-                                                type="button"
-                                                onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
-                                                className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
-                                            >
-                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <div className="flex flex-col gap-2.5">
-                                        {([
-                                            { label: 'Name size', key: 'name', min: 12, max: 36 },
-                                            { label: 'Contact size', key: 'contact', min: 6, max: 16 },
-                                            { label: 'Heading size', key: 'heading', min: 8, max: 20 },
-                                            { label: 'Body size', key: 'body', min: 8, max: 16 },
-                                            { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                            { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                            <div key={key}>
-                                                <div className="mb-1 flex justify-between">
-                                                    <span className="text-[11px] text-[#71717a]">{label}</span>
-                                                    <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
-                                                </div>
-                                                <input
-                                                    type="range"
-                                                    min={min}
-                                                    max={max}
-                                                    step={0.5}
-                                                    value={fontSizes[key]}
-                                                    aria-label={label}
-                                                    onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
-                                                    onMouseUp={save}
-                                                    onTouchEnd={save}
-                                                    onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
-                                                    className="w-full"
-                                                    style={{ accentColor: '#4f46e5' }}
-                                                />
-                                            </div>
-                                        ))}
-                                        <div className="flex justify-end">
-                                            <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </PanelCard>
-
-                        </div>
-
-                        {/* Optimize */}
-                        <div>
-                            <PanelGroupLabel>Optimize</PanelGroupLabel>
-                            <PanelCard
-                                title="Resume checklist"
-                                pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
-                                open={openSections.strength}
-                                onToggle={() => toggleSection('strength')}
-                            >
-                                <div className="px-3 pb-3">
-                                    <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
-                                </div>
-                            </PanelCard>
-                        </div>
                     </div>
                     )}
                 </aside>
