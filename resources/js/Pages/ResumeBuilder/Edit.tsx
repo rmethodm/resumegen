@@ -7,7 +7,7 @@ import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
     SwatchIcon,
-    BookmarkSquareIcon, EyeIcon, EyeSlashIcon,
+    EyeIcon, EyeSlashIcon,
     ArrowDownTrayIcon, TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -92,6 +92,30 @@ function SkillsLayoutCard({
                 {label}
             </span>
         </button>
+    );
+}
+
+function PanelGroupLabel({ children }: { children: React.ReactNode }) {
+    return <p className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#4f46e5]">{children}</p>;
+}
+
+function PanelCard({
+    title, icon, pill, open, onToggle, children,
+}: {
+    title: string; icon?: React.ReactNode; pill?: React.ReactNode; open: boolean; onToggle: () => void; children: React.ReactNode;
+}) {
+    return (
+        <div className="mb-2.5 overflow-hidden rounded-[10px] border border-[#eeeef5] bg-white">
+            <button type="button" onClick={onToggle} className="flex w-full items-center gap-2 px-3 py-2.5 transition-colors hover:bg-[#fafafe]">
+                {icon}
+                <span className="flex-1 text-left text-[13px] font-semibold text-[#0f172a]">{title}</span>
+                {pill}
+                <svg className={`h-3.5 w-3.5 shrink-0 text-[#94a3b8] transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            {open && children}
+        </div>
     );
 }
 
@@ -666,28 +690,38 @@ export default function Edit({
     return (
         <AuthenticatedLayout>
             {/* Top bar */}
-            <div className="flex items-center gap-3 border-b border-[#cbd5e1] bg-white px-4 py-2">
-                <Link href={route('builder.index')} className="text-sm text-[#94a3b8] hover:text-[#475569]">← Resumes</Link>
-                <span className="text-[#cbd5e1]">/</span>
-                <h2 className="text-sm font-semibold text-[#0f172a]">{name}</h2>
+            <div className="flex flex-wrap items-center gap-3 border-b border-[#cbd5e1] bg-white px-4 py-2">
+                <Link href={route('builder.index')} className="shrink-0 text-sm text-[#94a3b8] hover:text-[#475569]">← Resumes</Link>
+                <span className="shrink-0 text-[#cbd5e1]">/</span>
+                <h2 className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold text-[#0f172a]">{name}</h2>
                 {liveScore !== null && (
-                    <span className={`ml-1 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${liveScore >= 80 ? 'bg-green-100 text-green-700' : liveScore >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
+                    <span className="inline-flex shrink-0 items-center rounded-full bg-[#eef2ff] px-2.5 py-0.5 text-xs font-bold text-[#4f46e5]">
                         {liveScore}%
                     </span>
                 )}
+                <span className="shrink-0 text-[11px] text-[#a0a0b0]">
+                    {saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}
+                </span>
+                <button
+                    type="button"
+                    onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }}
+                    className={`ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-semibold transition hover:border-[#a5b4fc] ${showPreview ? 'border-[#cbd5e1] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] bg-white text-[#475569]'}`}
+                >
+                    {showPreview ? <EyeSlashIcon className="h-3.5 w-3.5" /> : <EyeIcon className="h-3.5 w-3.5" />}
+                    {showPreview ? 'Hide preview' : 'Show preview'}
+                </button>
             </div>
 
             {/* Completion bar */}
-            <div className="flex items-center gap-2 border-b border-gray-100 bg-white px-4 py-1.5">
-                <div className="flex-1 overflow-hidden rounded-full bg-gray-100" style={{ height: 4 }}>
-                    <div className={`h-full rounded-full transition-all ${completionScore >= 70 ? 'bg-green-500' : completionScore >= 40 ? 'bg-amber-400' : 'bg-red-400'}`} style={{ width: `${completionScore}%` }} />
+            <div className="border-b border-gray-100 bg-white px-4 py-2">
+                <div className="max-w-[220px] overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] transition-all" style={{ width: `${completionScore}%` }} />
                 </div>
-                <span className="w-20 shrink-0 text-right text-xs text-gray-400">{completionScore}% complete</span>
             </div>
 
             <Head title={`Editing: ${name}`} />
 
-            <div className="flex items-start bg-[#f1f5f9]">
+            <div className="flex flex-wrap items-start bg-[#f1f5f9]">
                 {/* ── Form ── */}
                 <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
                     <div className="mx-auto max-w-2xl space-y-4 px-4">
@@ -1012,204 +1046,174 @@ export default function Edit({
                             </SortableContext>
                         </DndContext>
 
-                        {/* Share Links */}
-                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
-                            <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => toggleSection('share')}>
-                                <span className="w-[18px]" />
-                                <span className="flex-1 text-sm font-semibold text-[#0f172a]">Share Links</span>
-                                <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.share ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
-                            </button>
-                            {openSections.share && (
-                                <div className="border-t border-[#cbd5e1]">
-                                    <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Messages */}
-                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
-                            <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => toggleSection('questions')}>
-                                <span className="w-[18px]" />
-                                <span className="flex-1 text-sm font-semibold text-[#0f172a]">Messages{unreadCount > 0 ? ` (${unreadCount} unread)` : ''}</span>
-                                <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.questions ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
-                            </button>
-                            {openSections.questions && (
-                                <div className="border-t border-[#cbd5e1]">
-                                    <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
-                                </div>
-                            )}
-                        </div>
-
                     </div>
                 </div>
 
+                {/* ── Live preview column ── */}
+                {showPreview && (
+                    <div className="sticky top-0 flex h-[70vh] w-full flex-col p-4 md:h-screen md:w-[42%] md:min-w-[320px] md:max-w-[560px] md:pl-0">
+                        <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
+                            <div className="flex shrink-0 items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
+                                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
+                                <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+                            </div>
+                            <iframe src={pdfSrc} className="w-full flex-1 border-0" title="Resume PDF preview" />
+                        </div>
+                    </div>
+                )}
+
                 {/* ── Sidebar ── */}
-                <aside className={`sticky top-0 self-start overflow-y-auto bg-white border-l border-[#cbd5e1] transition-all duration-200 ${sidebarOpen ? 'w-56' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
-                    <div className="flex justify-start border-b border-[#cbd5e1] px-2 py-2">
-                        <button type="button" onClick={() => setSidebarOpen(v => !v)} className="rounded-md p-1.5 text-[#94a3b8] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}>
-                            {sidebarOpen ? <ChevronLeftIcon className="h-4 w-4" /> : <ChevronRightIcon className="h-4 w-4" />}
+                <aside className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white transition-all duration-200 ${sidebarOpen ? 'w-72' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+                    <div className="flex items-center justify-between border-b border-[#eeeef5] px-4 py-3">
+                        {sidebarOpen && <span className="text-xs font-bold text-[#0f172a]">Panel</span>}
+                        <button type="button" onClick={() => setSidebarOpen(v => !v)} className="ml-auto rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]" title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}>
+                            {sidebarOpen ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
                         </button>
                     </div>
-                    <div className="space-y-5 px-3 py-4">
+                    {sidebarOpen && (
+                    <div className="flex flex-col gap-6 p-4">
                         {recruiterNote && (
-                            <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
                                 <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
                                 <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
                             </div>
                         )}
-                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Appearance</p>}
-                        <div title={!sidebarOpen ? 'Template' : undefined}>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <button
-                                        type="button"
-                                        onClick={() => setTemplateOpen(v => !v)}
-                                        className="flex w-full items-center justify-between rounded-md px-1.5 py-1 hover:bg-[#f1f5f9] transition-colors"
-                                    >
-                                        <div className="flex items-center gap-1.5">
-                                            <SwatchIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" />
-                                            <span className="text-xs font-medium text-[#475569]">Template</span>
-                                            <span className="text-[10px] text-[#94a3b8]">({TEMPLATE_LABELS[template] ?? template})</span>
-                                        </div>
-                                        <svg className={`h-3.5 w-3.5 text-[#94a3b8] transition-transform ${templateOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                                    </button>
-                                    {templateOpen && (
-                                        <div className="space-y-1.5">
-                                            <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
-                                                {Object.keys(TEMPLATE_LABELS).map(t => {
-                                                    const locked = false;
-                                                    const selected = template === t;
-                                                    return (
-                                                        <button
-                                                            key={t}
-                                                            type="button"
-                                                            onClick={() => {
-                                                                setTemplate(t as ResumeTemplate); setTimeout(save, 0);
-                                                            }}
-                                                            aria-pressed={selected}
-                                                            title={TEMPLATE_LABELS[t] ?? t}
-                                                            className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-[#2563eb] ring-1 ring-[#2563eb]' : 'border-[#cbd5e1] hover:border-[#c7c7d9]'} ${locked ? 'opacity-60' : ''}`}
-                                                        >
-                                                            <img
-                                                                src={`/images/templates/${t}.png`}
-                                                                loading="lazy"
-                                                                alt=""
-                                                                className="mb-1 h-28 w-full rounded border border-[#cbd5e1] bg-white object-cover object-top"
-                                                            />
-                                                            <span className="truncate text-[11px] font-medium text-[#0f172a]">{locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}</span>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                            {NON_ATS_TEMPLATES.includes(template) && <p className="text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Template"><SwatchIcon className="h-4 w-4" /></button>
-                            )}
+
+                        {/* Export */}
+                        <div className="flex gap-2">
+                            <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
+                                <ArrowDownTrayIcon className="h-3.5 w-3.5" /> DOCX
+                            </a>
+                            <a href={route('builder.pdf', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#cbd5e1] py-2 text-xs font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:bg-[#f8fafc] hover:text-[#4f46e5]">
+                                <ArrowDownTrayIcon className="h-3.5 w-3.5" /> PDF
+                            </a>
                         </div>
+
+                        {/* Design */}
                         <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#475569]">Aa</span><span className="text-xs font-medium text-[#475569]">Font</span></div>
-                                    <div className="flex overflow-hidden rounded-md border border-[#cbd5e1] text-xs">
-                                        {(['sans', 'serif', 'mono'] as const).map(f => (
-                                            <button key={f} type="button" onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }} className={`flex-1 py-1.5 font-medium transition-colors ${fontFamily === f ? 'bg-[#0f172a] text-white' : 'bg-white text-[#475569] hover:bg-[#f1f5f9]'}`}>
-                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
-                                            </button>
-                                        ))}
+                            <PanelGroupLabel>Design</PanelGroupLabel>
+
+                            <PanelCard
+                                title="Template"
+                                icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
+                                pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
+                                open={templateOpen}
+                                onToggle={() => setTemplateOpen(v => !v)}
+                            >
+                                <div className="px-3 pb-3">
+                                    <div aria-label="Resume template" className="grid grid-cols-2 gap-1.5">
+                                        {Object.keys(TEMPLATE_LABELS).map(t => {
+                                            const selected = template === t;
+                                            return (
+                                                <button
+                                                    key={t}
+                                                    type="button"
+                                                    onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
+                                                    aria-pressed={selected}
+                                                    title={TEMPLATE_LABELS[t] ?? t}
+                                                    className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
+                                                >
+                                                    <img
+                                                        src={`/images/templates/${t}.png`}
+                                                        loading="lazy"
+                                                        alt=""
+                                                        className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
+                                                    />
+                                                    <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
+                                                </button>
+                                            );
+                                        })}
                                     </div>
+                                    {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
                                 </div>
-                            ) : (
-                                <button type="button" onClick={() => setSidebarOpen(true)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Font"><span className="text-sm font-bold">Aa</span></button>
-                            )}
-                        </div>
-                        {sidebarOpen && (
-                            <div>
-                                <button type="button" onClick={() => toggleSection('fontSizes')} className="flex w-full items-center justify-between text-left">
-                                    <div className="flex items-center gap-1.5"><span className="text-xs font-bold text-[#475569]">↕</span><span className="text-xs font-medium text-[#475569]">Text size</span></div>
-                                    <svg className={`h-3.5 w-3.5 text-[#94a3b8] transition-transform ${openSections.fontSizes ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
-                                </button>
-                                {openSections.fontSizes && (
-                                    <div className="mt-2 space-y-2">
-                                        <div className="flex justify-end">
-                                            <button type="button" onClick={() => { setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] hover:text-[#2563eb] transition-colors">Reset</button>
-                                        </div>
-                                        {([
-                                            { label: 'Name', key: 'name', min: 12, max: 36 },
-                                            { label: 'Contact Info', key: 'contact', min: 6, max: 16 },
-                                            { label: 'Section Headings', key: 'heading', min: 8, max: 20 },
-                                            { label: 'Body Text', key: 'body', min: 8, max: 16 },
-                                            { label: 'Section Spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                            { label: 'Entry Spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                            <div key={key} className="flex items-center justify-between gap-1">
-                                                <span className="truncate text-xs text-[#475569]">{label}</span>
-                                                <div className="flex shrink-0 items-center gap-0.5">
-                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.max(min, +(fontSizesRef.current[key] - 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#dbeafe] text-[#2563eb] hover:bg-[#dbeafe]">−</button>
-                                                    <span className="w-7 text-center text-xs font-medium tabular-nums text-[#1e293b]">{fontSizes[key]}</span>
-                                                    <button type="button" onClick={() => { const n = { ...fontSizesRef.current, [key]: Math.min(max, +(fontSizesRef.current[key] + 0.5).toFixed(1)) }; fontSizesRef.current = n; setFontSizes(n); save(); }} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#dbeafe] text-[#2563eb] hover:bg-[#dbeafe]">+</button>
-                                                </div>
+                            </PanelCard>
+
+                            <div className="mb-2.5 rounded-[10px] border border-[#eeeef5] p-3">
+                                <p className="mb-2.5 text-[13px] font-semibold text-[#0f172a]">Font</p>
+                                <div className="mb-3.5 flex gap-1.5">
+                                    {(['sans', 'serif', 'mono'] as const).map(f => (
+                                        <button
+                                            key={f}
+                                            type="button"
+                                            onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
+                                            className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
+                                        >
+                                            {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="flex flex-col gap-2.5">
+                                    {([
+                                        { label: 'Name size', key: 'name', min: 12, max: 36 },
+                                        { label: 'Contact size', key: 'contact', min: 6, max: 16 },
+                                        { label: 'Heading size', key: 'heading', min: 8, max: 20 },
+                                        { label: 'Body size', key: 'body', min: 8, max: 16 },
+                                        { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                        { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                    ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                        <div key={key}>
+                                            <div className="mb-1 flex justify-between">
+                                                <span className="text-[11px] text-[#71717a]">{label}</span>
+                                                <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
                                             </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                        {sidebarOpen && template === 'executive' && (
-                            <div>
-                                <p className="mb-2 text-xs font-medium text-[#475569]">Profile Photo</p>
-                                <div className="flex items-center gap-3">
-                                    {photoUrl ? <img src={photoUrl} alt="Profile" className="h-12 w-12 rounded-full object-cover ring-2 ring-blue-100" /> : <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400"><svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>}
-                                    <div className="flex flex-col gap-1">
-                                        <label className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
-                                            Upload Photo
-                                            <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (!f) return; const fd = new FormData(); fd.append('photo', f); router.post(route('builder.photo.store', resume.id), fd, { forceFormData: true, preserveScroll: true }); }} />
-                                        </label>
-                                        {photoUrl && <button type="button" onClick={() => router.delete(route('builder.photo.destroy', resume.id), { preserveScroll: true })} className="text-xs text-red-500 hover:text-red-700">Remove</button>}
+                                            <input
+                                                type="range"
+                                                min={min}
+                                                max={max}
+                                                step={0.5}
+                                                value={fontSizes[key]}
+                                                aria-label={label}
+                                                onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
+                                                onMouseUp={save}
+                                                onTouchEnd={save}
+                                                onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
+                                                className="w-full"
+                                                style={{ accentColor: '#4f46e5' }}
+                                            />
+                                        </div>
+                                    ))}
+                                    <div className="flex justify-end">
+                                        <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
                                     </div>
                                 </div>
                             </div>
-                        )}
-                        <div className="border-t border-[#cbd5e1]" />
-                        {sidebarOpen && <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Document</p>}
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><BookmarkSquareIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Save</span></div>
-                                    <button type="button" onClick={save} disabled={saving} className="w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1e293b] disabled:opacity-50 transition-colors">{saving ? 'Saving…' : 'Save'}</button>
-                                    {saving ? <div className="flex items-center gap-1.5"><span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" /><span className="text-[10px] text-amber-600">Saving…</span></div> : savedAt ? <div className="flex items-center gap-1.5"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" /><span className="text-[10px] text-green-600">Saved {savedAt}</span></div> : null}
-                                </div>
-                            ) : (
-                                <button type="button" onClick={save} disabled={saving} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] disabled:opacity-50 transition-colors" title="Save"><BookmarkSquareIcon className="h-4 w-4" /></button>
-                            )}
+
+                            <div className="flex items-center gap-2.5 rounded-[10px] border border-[#eeeef5] p-3">
+                                {photoUrl
+                                    ? <img src={photoUrl} alt="Profile" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
+                                    : <div className="h-9 w-9 shrink-0 rounded-lg bg-[#f1f5f9]" />}
+                                <span className="min-w-0 flex-1 text-xs text-[#71717a]">
+                                    {photoUrl ? 'Profile photo' : 'No photo added'}
+                                    {template !== 'executive' && <span className="block text-[10px] text-[#a0a0b0]">Shown on the Executive template</span>}
+                                </span>
+                                <label className="shrink-0 cursor-pointer text-xs font-semibold text-[#4f46e5] hover:text-[#4338ca]">
+                                    Upload
+                                    <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (!f) return; const fd = new FormData(); fd.append('photo', f); router.post(route('builder.photo.store', resume.id), fd, { forceFormData: true, preserveScroll: true }); }} />
+                                </label>
+                                {photoUrl && <button type="button" onClick={() => router.delete(route('builder.photo.destroy', resume.id), { preserveScroll: true })} className="shrink-0 text-xs text-red-500 hover:text-red-700">Remove</button>}
+                            </div>
                         </div>
+
+                        {/* Optimize */}
                         <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><EyeIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Preview</span></div>
-                                    <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`w-full rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${showPreview ? 'bg-[#1e293b] text-white hover:bg-[#1e3a8a]' : 'bg-[#0f172a] text-white hover:bg-[#1e293b]'}`}>{showPreview ? 'Hide Preview' : 'Preview'}</button>
+                            <PanelGroupLabel>Optimize</PanelGroupLabel>
+                            <div className="mb-2.5 rounded-[10px] border border-[#eeeef5] px-3 py-3">
+                                <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
+                            </div>
+                            {aiEnabled && (
+                                <div className="mb-2.5 rounded-[10px] border border-[#eeeef5] px-3 py-3">
+                                    <AtsMatchPanel
+                                        jobDescription={targetJobDescription}
+                                        onJobDescriptionChange={setTargetJobDescription}
+                                        onJobDescriptionBlur={save}
+                                        keywordGaps={keywordGaps}
+                                        aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
+                                    />
                                 </div>
-                            ) : (
-                                <button type="button" onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }} className={`flex w-full justify-center rounded-md p-2 transition-colors ${showPreview ? 'text-[#2563eb] bg-[#dbeafe]' : 'text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb]'}`} title={showPreview ? 'Hide Preview' : 'Preview'}>{showPreview ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}</button>
                             )}
-                        </div>
-                        <div>
-                            {sidebarOpen ? (
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center gap-1.5"><ArrowDownTrayIcon className="h-3.5 w-3.5 shrink-0 text-[#475569]" /><span className="text-xs font-medium text-[#475569]">Download</span></div>
-                                    <a href={route('builder.pdf', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">PDF</a>
-                                    <a href={route('builder.docx', resume.id)} className="block w-full rounded-md bg-[#0f172a] px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-[#1e293b] transition-colors">DOCX</a>
-                                </div>
-                            ) : (
-                                <a href={route('builder.pdf', resume.id)} className="flex w-full justify-center rounded-md p-2 text-[#475569] hover:bg-[#f1f5f9] hover:text-[#2563eb] transition-colors" title="Download PDF"><ArrowDownTrayIcon className="h-4 w-4" /></a>
-                            )}
-                        </div>
-                        {sidebarOpen && aiEnabled && (
-                            <div>
-                                <div className="flex items-center gap-1.5 mb-1.5"><span className="text-[10px] font-semibold uppercase tracking-wider text-[#94a3b8]">Interview Prep</span></div>
-                                {(
+                            {aiEnabled && (
+                                <div className="rounded-[10px] border border-[#eeeef5] px-3 py-3">
+                                    <p className="mb-1.5 text-xs font-semibold text-[#0f172a]">Interview prep</p>
                                     <button
                                         type="button"
                                         disabled={interviewLoading}
@@ -1227,56 +1231,51 @@ export default function Edit({
                                                 setInterviewLoading(false);
                                             }
                                         }}
-                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#2563eb] hover:bg-[#f1f5f9] transition-colors disabled:opacity-50"
+                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#4f46e5] transition-colors hover:bg-[#f1f5f9] disabled:opacity-50"
                                     >
                                         {interviewLoading ? 'Generating…' : '✨ Interview Questions'}
                                     </button>
-                                )}
-                                {interviewQuestions.length > 0 && (
-                                    <div className="mt-2 space-y-2">
-                                        {interviewQuestions.map((q, i) => (
-                                            <div key={i} className="rounded border border-[#eeeef5] p-2">
-                                                <p className="text-xs font-medium text-[#0f0f1a]">{q.question}</p>
-                                                <p className="mt-1 text-[10px] italic text-[#94a3b8]">{q.hint}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                        {sidebarOpen && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />}
-                        {sidebarOpen && aiEnabled && (
-                            <AtsMatchPanel
-                                jobDescription={targetJobDescription}
-                                onJobDescriptionChange={setTargetJobDescription}
-                                onJobDescriptionBlur={save}
-                                keywordGaps={keywordGaps}
-                                aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
-                            />
-                        )}
+                                    {interviewQuestions.length > 0 && (
+                                        <div className="mt-2 space-y-2">
+                                            {interviewQuestions.map((q, i) => (
+                                                <div key={i} className="rounded border border-[#eeeef5] p-2">
+                                                    <p className="text-xs font-medium text-[#0f0f1a]">{q.question}</p>
+                                                    <p className="mt-1 text-[10px] italic text-[#94a3b8]">{q.hint}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Share */}
+                        <div>
+                            <PanelGroupLabel>Share</PanelGroupLabel>
+                            <PanelCard
+                                title="Share links"
+                                pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
+                                open={openSections.share}
+                                onToggle={() => toggleSection('share')}
+                            >
+                                <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
+                            </PanelCard>
+                            <PanelCard
+                                title="Messages"
+                                pill={unreadCount > 0
+                                    ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
+                                    : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
+                                open={openSections.questions}
+                                onToggle={() => toggleSection('questions')}
+                            >
+                                <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                            </PanelCard>
+                        </div>
                     </div>
+                    )}
                 </aside>
 
             </div>
-
-            {/* Floating Preview Panel */}
-            {showPreview && (
-                <div className="fixed inset-y-0 right-0 z-40 flex w-full flex-col border-l border-gray-200 bg-white shadow-2xl md:w-[50%] md:min-w-[420px]">
-                    <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-4 py-3">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm font-semibold text-gray-900">Preview</span>
-                            <span className="truncate text-xs text-gray-400">{pdfFilename}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <a href={route('builder.pdf', resume.id)} className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700">Download</a>
-                            <button type="button" onClick={() => setShowPreview(false)} className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600" aria-label="Close preview">
-                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <iframe src={pdfSrc} className="flex-1 w-full border-0" title="Resume PDF preview" />
-                </div>
-            )}
 
             {/* First-run wizard */}
             {wizardStep < 2 && (

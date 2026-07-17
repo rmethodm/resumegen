@@ -57,7 +57,7 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
         const barColor = score === null ? 'bg-gray-200' : score <= 40 ? 'bg-red-400' : score <= 70 ? 'bg-amber-400' : 'bg-green-500';
 
         return (
-            <div className="border-t border-gray-100 pt-3">
+            <div>
                 <button
                     type="button"
                     onClick={toggle}

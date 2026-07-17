@@ -18,7 +18,7 @@ export default function AtsMatchPanel({
     const [open, setOpen] = useState(true);
 
     return (
-        <div className="border-t border-gray-100 pt-3">
+        <div>
             <button
                 type="button"
                 onClick={() => setOpen(o => !o)}
