@@ -184,6 +184,16 @@ export interface TemplateStatRow {
     downloads: number;
 }
 
+export interface ResumeCard {
+    id: number;
+    name: string;
+    updated_at: string;
+    strength: number;
+    has_active_share_link: boolean;
+    variant_count: number;
+    active_applications: number;
+}
+
 export interface ResumeStat {
     resume_id: number;
     resume_name: string;
