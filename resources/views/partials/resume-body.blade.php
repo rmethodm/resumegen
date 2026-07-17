@@ -15,11 +15,11 @@
     @if (in_array($sectionKey, $skipSections)) @continue @endif
 
     @if ($sectionKey === 'summary' && $resume->summary)
-        <h2>Summary</h2>
+        <h2 data-sec="{{ $sectionKey }}">Summary</h2>
         <p>{{ $resume->summary }}</p>
 
     @elseif ($sectionKey === 'experience' && $resume->experience && count(array_filter($resume->experience, fn($e) => !empty($e['company']) || !empty($e['title']))))
-        <h2>Work Experience</h2>
+        <h2 data-sec="{{ $sectionKey }}">Work Experience</h2>
         @foreach($resume->experience as $exp)
           @if(!empty($exp['company']) || !empty($exp['title']))
           <div class="entry">
@@ -36,7 +36,7 @@
         @endforeach
 
     @elseif ($sectionKey === 'education' && $resume->education && count(array_filter($resume->education, fn($e) => !empty($e['school']))))
-        <h2>Education</h2>
+        <h2 data-sec="{{ $sectionKey }}">Education</h2>
         @foreach($resume->education as $edu)
           @if(!empty($edu['school']))
           <div class="entry row">
@@ -57,7 +57,7 @@
             $hasFlat = $resume->skills && count($resume->skills);
         @endphp
         @if ($hasGroups || $hasNarratives || $hasFlat)
-        <h2>Skills</h2>
+        <h2 data-sec="{{ $sectionKey }}">Skills</h2>
         @if ($hasNarratives)
             @foreach ($resume->skill_narratives as $narrative)
                 @if (!empty($narrative['name']))
@@ -112,7 +112,7 @@
         @endif
 
     @elseif ($sectionKey === 'certifications' && $resume->certifications && count(array_filter($resume->certifications, fn($c2) => !empty($c2['name']))))
-        <h2>Certifications</h2>
+        <h2 data-sec="{{ $sectionKey }}">Certifications</h2>
         @foreach($resume->certifications as $cert)
           @if(!empty($cert['name']))
           <div class="entry row">
@@ -126,7 +126,7 @@
         @php $customId = substr($sectionKey, 7); @endphp
         @foreach (($resume->custom_sections ?? []) as $cs)
             @if ($cs['id'] === $customId)
-                <h2>{{ $cs['name'] }}</h2>
+                <h2 data-sec="{{ $sectionKey }}">{{ $cs['name'] }}</h2>
                 @foreach ($cs['entries'] ?? [] as $entry)
                     <div class="entry">
                         <div class="row">
