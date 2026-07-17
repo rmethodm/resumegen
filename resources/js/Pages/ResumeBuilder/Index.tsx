@@ -1,8 +1,13 @@
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import Modal from '@/Components/Modal';
+import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { ResumeRow, ResumeTag } from '@/types';
-import { DocumentDuplicateIcon, EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { EllipsisVerticalIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import PdfImportModal from './Partials/PdfImportModal';
 
 type JobApplicationOpt = { id: number; role: string; company: string };
@@ -13,6 +18,68 @@ const TAG_COLORS = [
     '#6366f1', '#8b5cf6', '#10b981', '#f59e0b',
     '#ef4444', '#0ea5e9', '#64748b', '#f97316',
 ];
+
+const MENU_WIDTH = 176;
+
+type RowAction = { label: string; href?: string; onClick?: () => void; danger?: boolean };
+
+// ponytail: portal + fixed positioning because the table's overflow-x-auto container clips absolute dropdowns
+function RowActionsMenu({ actions }: { actions: RowAction[] }) {
+    const [open, setOpen] = useState(false);
+    const [pos, setPos] = useState({ top: 0, left: 0 });
+    const btnRef = useRef<HTMLButtonElement>(null);
+
+    const toggle = () => {
+        if (!open && btnRef.current) {
+            const rect = btnRef.current.getBoundingClientRect();
+            const menuHeight = actions.length * 36 + 8;
+            const flipUp = rect.bottom + 4 + menuHeight > window.innerHeight;
+            setPos({
+                top: flipUp ? rect.top - menuHeight - 4 : rect.bottom + 4,
+                left: rect.right - MENU_WIDTH,
+            });
+        }
+        setOpen(v => !v);
+    };
+
+    return (
+        <>
+            <button
+                ref={btnRef}
+                onClick={toggle}
+                aria-label="Resume actions"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[#71717a] transition hover:bg-[#eef2ff]"
+            >
+                <EllipsisVerticalIcon className="h-[18px] w-[18px]" />
+            </button>
+            {open && createPortal(
+                <>
+                    <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+                    <div
+                        className="fixed z-50 rounded-lg border border-[#eeeef5] bg-white py-1 shadow-lg"
+                        style={{ top: pos.top, left: pos.left, width: MENU_WIDTH }}
+                        onClick={() => setOpen(false)}
+                    >
+                        {actions.map(a => a.href ? (
+                            <Link key={a.label} href={a.href} className="block px-4 py-2 text-sm text-[#374151] transition hover:bg-[#fafafe]">
+                                {a.label}
+                            </Link>
+                        ) : (
+                            <button
+                                key={a.label}
+                                onClick={a.onClick}
+                                className={`block w-full px-4 py-2 text-left text-sm transition hover:bg-[#fafafe] ${a.danger ? 'text-red-600' : 'text-[#374151]'}`}
+                            >
+                                {a.label}
+                            </button>
+                        ))}
+                    </div>
+                </>,
+                document.body,
+            )}
+        </>
+    );
+}
 
 function AddTagPopover({ resumeId }: { resumeId: number }) {
     const [open, setOpen] = useState(false);
@@ -162,8 +229,7 @@ export default function Index({ resumes, resumeCount, canPdfImport, jobApplicati
                             <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Resumes</h1>
                             <p className="mt-1 text-sm text-[#a0a0b0]">{resumeCount} resume{resumeCount !== 1 ? 's' : ''}</p>
                         </div>
-                        {!creating && (
-                            <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
                                 {canPdfImport ? (
                                     <button
                                         type="button"
@@ -186,23 +252,45 @@ export default function Index({ resumes, resumeCount, canPdfImport, jobApplicati
                                 >
                                     + New Resume
                                 </button>
-                            </div>
-                        )}
-                        {creating && (
-                            <form onSubmit={submit} className="flex items-center gap-2">
-                                <input
+                        </div>
+                    </div>
+
+                    {/* New resume modal */}
+                    <Modal show={creating} onClose={() => { setCreating(false); form.reset(); }} maxWidth="md">
+                        <form onSubmit={submit} className="p-6">
+                            <h2 className="text-base font-extrabold text-[#0f0f1a]">New resume</h2>
+                            <p className="mt-1 text-sm text-[#71717a]">Give it a name — you can change this later.</p>
+                            <div className="mt-4">
+                                <InputLabel htmlFor="new-resume-name" value="Resume name" />
+                                <TextInput
+                                    id="new-resume-name"
                                     type="text"
-                                    autoFocus
+                                    isFocused
                                     value={form.data.name}
                                     onChange={e => form.setData('name', e.target.value)}
-                                    placeholder="Resume name…"
-                                    className="rounded-lg border border-[#eeeef5] text-sm shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                    placeholder="e.g. Product Manager — Meta"
+                                    className="mt-1.5 block w-full"
                                 />
-                                <button type="submit" disabled={form.processing || !form.data.name.trim()} className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">Create</button>
-                                <button type="button" onClick={() => { setCreating(false); form.reset(); }} className="rounded-lg px-3 py-2 text-sm text-[#71717a] hover:text-[#0f0f1a]">Cancel</button>
-                            </form>
-                        )}
-                    </div>
+                                <InputError message={form.errors.name} className="mt-2" />
+                            </div>
+                            <div className="mt-5 flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => { setCreating(false); form.reset(); }}
+                                    className="rounded-lg border border-[#eeeef5] px-4 py-2 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe]"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={form.processing || !form.data.name.trim()}
+                                    className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:opacity-50"
+                                >
+                                    Create
+                                </button>
+                            </div>
+                        </form>
+                    </Modal>
 
                     {/* Resume table */}
                     <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
@@ -363,26 +451,14 @@ export default function Index({ resumes, resumeCount, canPdfImport, jobApplicati
                                             </td>
                                             <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(r.updated_at)}</td>
                                             <td className="px-5 py-4">
-                                                <div className="flex items-center justify-end gap-1">
-                                                    <Link href={route('builder.edit', r.id)} title="Edit" className="rounded-lg p-1.5 text-[#4338ca] hover:bg-[#eef2ff] transition"><PencilSquareIcon className="h-4 w-4" /></Link>
-                                                    <button onClick={() => duplicate(r.id)} title="Duplicate" className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition"><DocumentDuplicateIcon className="h-4 w-4" /></button>
-                                                    <button
-                                                        onClick={() => router.post(route('builder.create-variant', r.id), {}, { preserveScroll: false })}
-                                                        title="Create A/B Variant"
-                                                        className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition text-xs font-semibold"
-                                                    >
-                                                        A/B
-                                                    </button>
-                                                    {r.has_active_share_link && (
-                                                        <Link
-                                                            href={route('builder.heatmap', r.id)}
-                                                            title="View section heatmap"
-                                                            className="rounded-lg p-1.5 text-[#71717a] hover:bg-[#f5f5fb] transition text-xs"
-                                                        >
-                                                            Heatmap
-                                                        </Link>
-                                                    )}
-                                                    <button onClick={() => destroy(r.id, r.name)} title="Delete" className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 transition"><TrashIcon className="h-4 w-4" /></button>
+                                                <div className="flex justify-end">
+                                                    <RowActionsMenu actions={[
+                                                        { label: 'Edit', href: route('builder.edit', r.id) },
+                                                        { label: 'Duplicate', onClick: () => duplicate(r.id) },
+                                                        { label: 'Create A/B Variant', onClick: () => router.post(route('builder.create-variant', r.id), {}, { preserveScroll: false }) },
+                                                        ...(r.has_active_share_link ? [{ label: 'Heatmap', href: route('builder.heatmap', r.id) }] : []),
+                                                        { label: 'Delete', onClick: () => destroy(r.id, r.name), danger: true },
+                                                    ]} />
                                                 </div>
                                             </td>
                                         </tr>
