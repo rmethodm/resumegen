@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use PhpOffice\PhpWord\IOFactory;
@@ -81,12 +82,25 @@ class ResumeBuilderController extends Controller
         ]);
     }
 
+    public function create(Request $request): Response
+    {
+        $user = $request->user();
+        $resumes = $user->resumes()->nonSnapshot()->orderByDesc('updated_at')->get(['id', 'name']);
+
+        return Inertia::render('ResumeBuilder/Create', [
+            'resumes' => $resumes,
+            'resumeCount' => $resumes->count(),
+            'allowedTemplates' => UserLimits::allTemplates(),
+        ]);
+    }
+
     public function store(Request $request)
     {
         $user = $request->user();
 
         $validated = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
+            'template' => ['nullable', 'string', Rule::in(UserLimits::allTemplates())],
         ]);
 
         $name = $validated['name'] ?? ($user->target_role ? $user->target_role.' Resume' : 'My Resume');
@@ -96,7 +110,9 @@ class ResumeBuilderController extends Controller
             'pdf_filename' => Str::uuid().'.pdf',
         ];
 
-        if ($user->preferred_template && in_array($user->preferred_template, UserLimits::allTemplates(), true)) {
+        if (! empty($validated['template'])) {
+            $attributes['template'] = $validated['template'];
+        } elseif ($user->preferred_template && in_array($user->preferred_template, UserLimits::allTemplates(), true)) {
             $attributes['template'] = $user->preferred_template;
         }
 

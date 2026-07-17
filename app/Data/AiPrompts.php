@@ -20,6 +20,7 @@ class AiPrompts
             'ats_keywords' => self::atsKeywords($input),
             'interview_coach' => self::interviewCoach($input),
             'cover_letter' => self::coverLetter($input),
+            'import_resume' => self::importResume($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
     }
@@ -173,6 +174,85 @@ class AiPrompts
         {$experienceText}{$jdSection}
 
         Return ONLY the letter body text. No markdown fences, no explanation, no preamble.
+        PROMPT;
+    }
+
+    /**
+     * @param  array{text?: string}  $input
+     */
+    private static function importResume(array $input): string
+    {
+        // ponytail: cap prevents runaway costs on multi-page resumes; ~3000 tokens fits any single resume
+        $text = mb_substr($input['text'] ?? '', 0, 12000);
+
+        return <<<PROMPT
+        You are a resume parser. Extract all information from the resume text below and return it as a single JSON object.
+
+        Required JSON structure:
+        {
+          "contact": {
+            "full_name": "",
+            "email": "",
+            "phone": "",
+            "location": "",
+            "linkedin": "",
+            "github": "",
+            "website": ""
+          },
+          "summary": "",
+          "experience": [
+            {
+              "id": "exp-1",
+              "company": "",
+              "title": "",
+              "start_date": "",
+              "end_date": "",
+              "current": false,
+              "bullets": "First bullet\\nSecond bullet"
+            }
+          ],
+          "education": [
+            {
+              "id": "edu-1",
+              "school": "",
+              "degree": "",
+              "field": "",
+              "grad_year": ""
+            }
+          ],
+          "projects": [
+            {
+              "id": "proj-1",
+              "name": "",
+              "description": "",
+              "url": "",
+              "start_date": "",
+              "end_date": "",
+              "bullets": "First bullet\\nSecond bullet"
+            }
+          ],
+          "skills": ["skill1", "skill2"],
+          "certifications": [
+            {
+              "id": "cert-1",
+              "name": "",
+              "issuer": "",
+              "date": "",
+              "expiration": "",
+              "credential_id": ""
+            }
+          ]
+        }
+
+        Rules:
+        - Use null for any field that is absent from the resume
+        - bullets: each bullet point on its own line, no leading dash or symbol
+        - skills: flat array of individual skill strings
+        - IDs: sequential strings like exp-1, exp-2, edu-1, proj-1, cert-1, etc.
+        - Return ONLY the JSON object, no prose or markdown
+
+        RESUME TEXT:
+        {$text}
         PROMPT;
     }
 

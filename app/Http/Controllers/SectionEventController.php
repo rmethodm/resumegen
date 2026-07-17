@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ResumeSectionEvent;
+use App\Models\ResumeShareEvent;
 use App\Models\ResumeShareLink;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,10 +21,17 @@ class SectionEventController extends Controller
         }
 
         $validated = $request->validate([
-            'sections' => ['required', 'array', 'max:20'],
+            'sections' => ['present', 'array', 'max:20'],
             'sections.*.section' => ['required', 'string', 'max:50', 'regex:/^(summary|experience|education|skills|certifications|custom_[a-z0-9_]+)$/'],
             'sections.*.dwell_ms' => ['required', 'integer', 'min:0'],
+            'duration_ms' => ['sometimes', 'integer', 'min:0'],
         ]);
+
+        if (isset($validated['duration_ms'])) {
+            ResumeShareEvent::log($request, $link, 'view_duration', [
+                'duration_ms' => min((int) $validated['duration_ms'], 1800000), // cap at 30 min
+            ]);
+        }
 
         $ipHash = hash('sha256', $request->ip() ?? '');
         $now = now();

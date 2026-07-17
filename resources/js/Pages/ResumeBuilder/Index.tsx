@@ -1,17 +1,11 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import Modal from '@/Components/Modal';
-import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { ResumeRow, ResumeTag } from '@/types';
 import { EllipsisVerticalIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { FormEvent, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import PdfImportModal from './Partials/PdfImportModal';
 
-type JobApplicationOpt = { id: number; role: string; company: string };
-type Props = { resumes: ResumeRow[]; resumeCount: number; canPdfImport: boolean; jobApplications: JobApplicationOpt[] };
+type Props = { resumes: ResumeRow[]; resumeCount: number };
 type SortKey = 'name' | 'updated_at';
 
 const TAG_COLORS = [
@@ -162,10 +156,7 @@ function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortD
     );
 }
 
-export default function Index({ resumes, resumeCount, canPdfImport, jobApplications }: Props) {
-    const atLimit = false;
-    const [creating, setCreating] = useState(false);
-    const [showPdfImport, setShowPdfImport] = useState(false);
+export default function Index({ resumes, resumeCount }: Props) {
     const [search, setSearch] = useState('');
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
@@ -177,11 +168,6 @@ export default function Index({ resumes, resumeCount, canPdfImport, jobApplicati
         if (sortKey === k) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
         else { setSortKey(k); setSortDir('desc'); }
         setPage(1);
-    };
-
-    const submit = (e: FormEvent) => {
-        e.preventDefault();
-        form.post(route('builder.store'), { onSuccess: () => { form.reset(); setCreating(false); } });
     };
 
     const duplicate = (id: number) => form.post(route('builder.duplicate', id));
@@ -229,68 +215,13 @@ export default function Index({ resumes, resumeCount, canPdfImport, jobApplicati
                             <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Resumes</h1>
                             <p className="mt-1 text-sm text-[#a0a0b0]">{resumeCount} resume{resumeCount !== 1 ? 's' : ''}</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                                {canPdfImport ? (
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPdfImport(true)}
-                                        className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 transition"
-                                    >
-                                        ⬆ Import PDF
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-400 transition"
-                                    >
-                                        🔒 Import PDF
-                                    </button>
-                                )}
-                                <button
-                                    onClick={() => atLimit ? undefined : setCreating(true)}
-                                    className={`rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition ${atLimit ? 'cursor-not-allowed bg-[#a0a0b0]' : 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] hover:opacity-90'}`}
-                                >
-                                    + New Resume
-                                </button>
-                        </div>
+                        <Link
+                            href={route('builder.create')}
+                            className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+                        >
+                            + New Resume
+                        </Link>
                     </div>
-
-                    {/* New resume modal */}
-                    <Modal show={creating} onClose={() => { setCreating(false); form.reset(); }} maxWidth="md">
-                        <form onSubmit={submit} className="p-6">
-                            <h2 className="text-base font-extrabold text-[#0f0f1a]">New resume</h2>
-                            <p className="mt-1 text-sm text-[#71717a]">Give it a name — you can change this later.</p>
-                            <div className="mt-4">
-                                <InputLabel htmlFor="new-resume-name" value="Resume name" />
-                                <TextInput
-                                    id="new-resume-name"
-                                    type="text"
-                                    isFocused
-                                    value={form.data.name}
-                                    onChange={e => form.setData('name', e.target.value)}
-                                    placeholder="e.g. Product Manager — Meta"
-                                    className="mt-1.5 block w-full"
-                                />
-                                <InputError message={form.errors.name} className="mt-2" />
-                            </div>
-                            <div className="mt-5 flex justify-end gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => { setCreating(false); form.reset(); }}
-                                    className="rounded-lg border border-[#eeeef5] px-4 py-2 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe]"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={form.processing || !form.data.name.trim()}
-                                    className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:opacity-50"
-                                >
-                                    Create
-                                </button>
-                            </div>
-                        </form>
-                    </Modal>
 
                     {/* Resume table */}
                     <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
@@ -504,12 +435,6 @@ export default function Index({ resumes, resumeCount, canPdfImport, jobApplicati
                     </div>
                 </div>
             </div>
-            {showPdfImport && (
-                <PdfImportModal
-                    resumes={resumes.map(r => ({ id: r.id, name: r.name }))}
-                    onClose={() => setShowPdfImport(false)}
-                />
-            )}
         </AuthenticatedLayout>
     );
 }

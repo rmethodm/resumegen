@@ -33,10 +33,9 @@ function useSectionHeatmap(token: string): void {
                 accumulated.current[section] = (accumulated.current[section] ?? 0) + (Date.now() - start);
             });
             const sections = Object.entries(accumulated.current).map(([section, dwell_ms]) => ({ section, dwell_ms }));
-            if (sections.length === 0) { return; }
             navigator.sendBeacon(
                 route('public.section-events', token),
-                JSON.stringify({ sections }),
+                JSON.stringify({ sections, duration_ms: Date.now() - pageStart.current }),
             );
         };
 

@@ -109,7 +109,7 @@ export default function Dashboard() {
                 <div className="p-6 text-center">
                     <h2 className="text-lg font-semibold text-gray-900">Create your first resume</h2>
                     <p className="mt-2 text-sm text-gray-500">You haven't created a resume yet — build one to start tracking views and applications.</p>
-                    <Link href={route('builder.index')} className="mt-4 inline-block rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
+                    <Link href={route('builder.create')} className="mt-4 inline-block rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
                         Create a resume
                     </Link>
                 </div>
