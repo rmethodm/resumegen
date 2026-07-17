@@ -1,8 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
-import AtsMatchPanel from './Partials/AtsMatchPanel';
-import ThreadsPanel from './Partials/ThreadsPanel';
-import SharePopover from './Partials/SharePopover';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
@@ -469,7 +466,6 @@ export default function Edit({
     // Tracks fields already rewritten by AI this session, so the button reads "Regenerate". Keys: 'summary', `exp:${id}`.
     const [aiGenerated, setAiGenerated] = useState<Set<string>>(new Set());
     const markGenerated = (key: string) => setAiGenerated(prev => new Set(prev).add(key));
-    const [keywordGaps, setKeywordGaps] = useState<string[]>([]);
     const [coachQuestions, setCoachQuestions] = useState<Record<string, string[]>>({});
     const [coachAnswers, setCoachAnswers] = useState<Record<string, string>>({});
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? []);
@@ -506,8 +502,6 @@ export default function Edit({
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
     const [showPreview, setShowPreview] = useState(true);
-    const [interviewQuestions, setInterviewQuestions] = useState<{question: string; hint: string}[]>([]);
-    const [interviewLoading, setInterviewLoading] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
     const [templateOpen, setTemplateOpen] = useState(false);
     const [pdfSrc, setPdfSrc] = useState(() => freshPdfSrc(resume.id));
@@ -515,7 +509,7 @@ export default function Edit({
     const [openSections, setOpenSections] = useState({
         fontSizes: false, contact: true,
         summary: true, experience: true, projects: true, education: true, skills: true, certifications: true,
-        share: false, questions: false,
+        strength: false,
     });
     const toggleSection = (key: keyof typeof openSections) =>
         setOpenSections(s => ({ ...s, [key]: !s[key] }));
@@ -606,10 +600,6 @@ export default function Edit({
             setTimeout(save, 0);
         }
     };
-    const handleKeywordGaps = async () => {
-        const data = await ai.run<{ keywords: string[] }>(route('builder.ai.ats-keywords', resume.id), { job_description: targetJobDescription });
-        if (data?.keywords) { setKeywordGaps(data.keywords); }
-    };
     // The coach half of the bullet tools: ask the user for the facts the bullet is missing,
     // then rebuild the bullet from their answer so the content is theirs, not the model's.
     const handleCoachBullet = async (expId: string, bullets: string | null) => {
@@ -685,7 +675,6 @@ export default function Edit({
     };
 
     const pdfFilename = resume.pdf_filename ?? `${resume.id}.pdf`;
-    const unreadCount = initialThreads.filter(t => !t.is_read).length;
 
     return (
         <AuthenticatedLayout>
@@ -1128,147 +1117,75 @@ export default function Edit({
                                 </div>
                             </PanelCard>
 
-                            <div className="mb-2.5 rounded-[10px] border border-[#eeeef5] p-3">
-                                <p className="mb-2.5 text-[13px] font-semibold text-[#0f172a]">Font</p>
-                                <div className="mb-3.5 flex gap-1.5">
-                                    {(['sans', 'serif', 'mono'] as const).map(f => (
-                                        <button
-                                            key={f}
-                                            type="button"
-                                            onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
-                                            className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
-                                        >
-                                            {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
-                                        </button>
-                                    ))}
-                                </div>
-                                <div className="flex flex-col gap-2.5">
-                                    {([
-                                        { label: 'Name size', key: 'name', min: 12, max: 36 },
-                                        { label: 'Contact size', key: 'contact', min: 6, max: 16 },
-                                        { label: 'Heading size', key: 'heading', min: 8, max: 20 },
-                                        { label: 'Body size', key: 'body', min: 8, max: 16 },
-                                        { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                        { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                    ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                        <div key={key}>
-                                            <div className="mb-1 flex justify-between">
-                                                <span className="text-[11px] text-[#71717a]">{label}</span>
-                                                <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
+                            <PanelCard
+                                title="Font"
+                                open={openSections.fontSizes}
+                                onToggle={() => toggleSection('fontSizes')}
+                            >
+                                <div className="px-3 pb-3">
+                                    <div className="mb-3.5 flex gap-1.5">
+                                        {(['sans', 'serif', 'mono'] as const).map(f => (
+                                            <button
+                                                key={f}
+                                                type="button"
+                                                onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
+                                                className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
+                                            >
+                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="flex flex-col gap-2.5">
+                                        {([
+                                            { label: 'Name size', key: 'name', min: 12, max: 36 },
+                                            { label: 'Contact size', key: 'contact', min: 6, max: 16 },
+                                            { label: 'Heading size', key: 'heading', min: 8, max: 20 },
+                                            { label: 'Body size', key: 'body', min: 8, max: 16 },
+                                            { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                            { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                            <div key={key}>
+                                                <div className="mb-1 flex justify-between">
+                                                    <span className="text-[11px] text-[#71717a]">{label}</span>
+                                                    <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min={min}
+                                                    max={max}
+                                                    step={0.5}
+                                                    value={fontSizes[key]}
+                                                    aria-label={label}
+                                                    onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
+                                                    onMouseUp={save}
+                                                    onTouchEnd={save}
+                                                    onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
+                                                    className="w-full"
+                                                    style={{ accentColor: '#4f46e5' }}
+                                                />
                                             </div>
-                                            <input
-                                                type="range"
-                                                min={min}
-                                                max={max}
-                                                step={0.5}
-                                                value={fontSizes[key]}
-                                                aria-label={label}
-                                                onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
-                                                onMouseUp={save}
-                                                onTouchEnd={save}
-                                                onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
-                                                className="w-full"
-                                                style={{ accentColor: '#4f46e5' }}
-                                            />
+                                        ))}
+                                        <div className="flex justify-end">
+                                            <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
                                         </div>
-                                    ))}
-                                    <div className="flex justify-end">
-                                        <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
                                     </div>
                                 </div>
-                            </div>
+                            </PanelCard>
 
-                            <div className="flex items-center gap-2.5 rounded-[10px] border border-[#eeeef5] p-3">
-                                {photoUrl
-                                    ? <img src={photoUrl} alt="Profile" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
-                                    : <div className="h-9 w-9 shrink-0 rounded-lg bg-[#f1f5f9]" />}
-                                <span className="min-w-0 flex-1 text-xs text-[#71717a]">
-                                    {photoUrl ? 'Profile photo' : 'No photo added'}
-                                    {template !== 'executive' && <span className="block text-[10px] text-[#a0a0b0]">Shown on the Executive template</span>}
-                                </span>
-                                <label className="shrink-0 cursor-pointer text-xs font-semibold text-[#4f46e5] hover:text-[#4338ca]">
-                                    Upload
-                                    <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (!f) return; const fd = new FormData(); fd.append('photo', f); router.post(route('builder.photo.store', resume.id), fd, { forceFormData: true, preserveScroll: true }); }} />
-                                </label>
-                                {photoUrl && <button type="button" onClick={() => router.delete(route('builder.photo.destroy', resume.id), { preserveScroll: true })} className="shrink-0 text-xs text-red-500 hover:text-red-700">Remove</button>}
-                            </div>
                         </div>
 
                         {/* Optimize */}
                         <div>
                             <PanelGroupLabel>Optimize</PanelGroupLabel>
-                            <div className="mb-2.5 rounded-[10px] border border-[#eeeef5] px-3 py-3">
-                                <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
-                            </div>
-                            {aiEnabled && (
-                                <div className="mb-2.5 rounded-[10px] border border-[#eeeef5] px-3 py-3">
-                                    <AtsMatchPanel
-                                        jobDescription={targetJobDescription}
-                                        onJobDescriptionChange={setTargetJobDescription}
-                                        onJobDescriptionBlur={save}
-                                        keywordGaps={keywordGaps}
-                                        aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
-                                    />
-                                </div>
-                            )}
-                            {aiEnabled && (
-                                <div className="rounded-[10px] border border-[#eeeef5] px-3 py-3">
-                                    <p className="mb-1.5 text-xs font-semibold text-[#0f172a]">Interview prep</p>
-                                    <button
-                                        type="button"
-                                        disabled={interviewLoading}
-                                        onClick={async () => {
-                                            setInterviewLoading(true);
-                                            try {
-                                                const res = await fetch(route('builder.interview-coach', resume.id), {
-                                                    method: 'POST',
-                                                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '' },
-                                                    body: JSON.stringify({ target_role: name.replace(/\s*resume\s*$/i, '').trim() || 'this role' }),
-                                                });
-                                                const json = await res.json();
-                                                if (res.ok) setInterviewQuestions(json.questions ?? []);
-                                            } finally {
-                                                setInterviewLoading(false);
-                                            }
-                                        }}
-                                        className="w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#4f46e5] transition-colors hover:bg-[#f1f5f9] disabled:opacity-50"
-                                    >
-                                        {interviewLoading ? 'Generating…' : '✨ Interview Questions'}
-                                    </button>
-                                    {interviewQuestions.length > 0 && (
-                                        <div className="mt-2 space-y-2">
-                                            {interviewQuestions.map((q, i) => (
-                                                <div key={i} className="rounded border border-[#eeeef5] p-2">
-                                                    <p className="text-xs font-medium text-[#0f0f1a]">{q.question}</p>
-                                                    <p className="mt-1 text-[10px] italic text-[#94a3b8]">{q.hint}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Share */}
-                        <div>
-                            <PanelGroupLabel>Share</PanelGroupLabel>
                             <PanelCard
-                                title="Share links"
-                                pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
-                                open={openSections.share}
-                                onToggle={() => toggleSection('share')}
+                                title="Resume checklist"
+                                pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
+                                open={openSections.strength}
+                                onToggle={() => toggleSection('strength')}
                             >
-                                <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
-                            </PanelCard>
-                            <PanelCard
-                                title="Messages"
-                                pill={unreadCount > 0
-                                    ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
-                                    : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
-                                open={openSections.questions}
-                                onToggle={() => toggleSection('questions')}
-                            >
-                                <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                                <div className="px-3 pb-3">
+                                    <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
+                                </div>
                             </PanelCard>
                         </div>
                     </div>

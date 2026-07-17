@@ -18,7 +18,6 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
         const [tipKey, setTipKey] = useState<string | null>(null);
         const [checklist, setChecklist] = useState<StrengthChecklistItem[]>([]);
         const [loading, setLoading] = useState(false);
-        const [open, setOpen] = useState(true);
 
         const load = async () => {
             if (loading) return;
@@ -42,39 +41,15 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
         useEffect(() => { void load(); }, []);
 
         useImperativeHandle(ref, () => ({
-            refresh: () => {
-                if (open) void load();
-            },
+            refresh: () => { void load(); },
         }));
-
-        const toggle = () => {
-            const next = !open;
-            setOpen(next);
-            if (next && score === null) void load();
-        };
 
         const color = score === null ? 'text-gray-400' : score <= 40 ? 'text-red-600' : score <= 70 ? 'text-amber-600' : 'text-green-600';
         const barColor = score === null ? 'bg-gray-200' : score <= 40 ? 'bg-red-400' : score <= 70 ? 'bg-amber-400' : 'bg-green-500';
 
         return (
             <div>
-                <button
-                    type="button"
-                    onClick={toggle}
-                    aria-expanded={open}
-                    className="flex w-full items-center justify-between text-xs font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-700"
-                >
-                    <span>
-                        Resume Checklist
-                        {score !== null && (
-                            <span className={`ml-1 ${color}`}>{score}%</span>
-                        )}
-                    </span>
-                    <span>{open ? '−' : '+'}</span>
-                </button>
-
-                {open && (
-                    <div className="mt-3 space-y-3">
+                <div className="space-y-3">
                         {loading && <p className="text-xs text-gray-400">Analyzing…</p>}
 
                         {score !== null && (
@@ -119,7 +94,6 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                             </>
                         )}
                     </div>
-                )}
             </div>
         );
     }
