@@ -1,12 +1,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
-import PlainTextView, { type ResumeContent } from './Partials/PlainTextView';
+import { type ResumeContent } from './Partials/PlainTextView';
 import JdMatcher from './Partials/JdMatcher';
+import AtsMatchPanel from './Partials/AtsMatchPanel';
+import ThreadsPanel from './Partials/ThreadsPanel';
+import SharePopover from './Partials/SharePopover';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
     SwatchIcon,
-    EyeIcon, EyeSlashIcon,
+    EyeIcon,
     ArrowDownTrayIcon, TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -438,14 +441,23 @@ const TEMPLATE_LABELS: Record<string, string> = {
 const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'projects', 'education', 'skills', 'certifications'];
 const freshPdfSrc = (id: number) => route('builder.html-preview', id) + '?t=' + Date.now();
 
-// Lab views selectable from the sidebar; the chosen one renders in the preview column.
-// Add new panels here — 'resume' is the live HTML render; everything else is a scaffold stub for now.
-const LAB_VIEWS: { key: string; label: string }[] = [
-    { key: 'resume', label: 'Current resume' },
-    { key: 'plaintext', label: 'Plain text / ATS' },
-    { key: 'jd-match', label: 'JD matcher' },
-    { key: 'checklist', label: 'Resume checklist' },
+// Right-panel tabs. Preview shows the live HTML render; Design/Optimize/Share group the tools.
+type RightTab = 'preview' | 'design' | 'optimize' | 'share';
+const RIGHT_TABS: { key: RightTab; label: string }[] = [
+    { key: 'preview', label: 'Preview' },
+    { key: 'design', label: 'Design' },
+    { key: 'optimize', label: 'Optimize' },
+    { key: 'share', label: 'Share' },
 ];
+
+// Sparkle glyph for the "Coach me" action (matches the design's summary card).
+function SparkIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
+    return (
+        <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+        </svg>
+    );
+}
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -477,6 +489,7 @@ export default function Edit({
     // Tracks fields already rewritten by AI this session, so the button reads "Regenerate". Keys: 'summary', `exp:${id}`.
     const [aiGenerated, setAiGenerated] = useState<Set<string>>(new Set());
     const markGenerated = (key: string) => setAiGenerated(prev => new Set(prev).add(key));
+    const [keywordGaps, setKeywordGaps] = useState<string[]>([]);
     const [coachQuestions, setCoachQuestions] = useState<Record<string, string[]>>({});
     const [coachAnswers, setCoachAnswers] = useState<Record<string, string>>({});
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? []);
@@ -512,11 +525,13 @@ export default function Edit({
     const pendingSave = useRef(false);
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
-    // Preview column and sidebar both start hidden; the user reveals them from the sidebar chooser.
-    const [showPreview, setShowPreview] = useState(false);
-    const [labView, setLabView] = useState('resume');
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    // Right panel: collapsible, tabbed. Open by default on wide screens.
+    const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
+    const [rightTab, setRightTab] = useState<RightTab>('preview');
     const [templateOpen, setTemplateOpen] = useState(false);
+    // Section-click → highlight in the live-preview iframe.
+    const activeSectionRef = useRef<string | null>(null);
+    const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
     // Double-buffered preview: two iframes ping-pong so the current PDF stays on
     // screen while the next one loads, then we swap on its onLoad — no reload flash.
     const [pdfFrames, setPdfFrames] = useState<[string, string]>(() => [freshPdfSrc(resume.id), '']);
@@ -532,19 +547,40 @@ export default function Edit({
         pdfSwapTimer.current = setTimeout(() => setActivePdfFrame(back), 1500);
     }, [resume.id]);
 
-    // Sidebar chooser → pick what renders in the lab/preview column and reveal it.
-    const openLab = (key: string) => {
-        setLabView(key);
-        if (!showPreview) {
-            if (key === 'resume') { refreshPreview(); }
-            setShowPreview(true);
-        }
+    // Header button / tab switch → open the panel on the live Preview tab and refresh it.
+    const jumpToPreview = () => {
+        setSidebarOpen(true);
+        setRightTab('preview');
+        refreshPreview();
+    };
+
+    // Toggle the .rg-hl outline (from resume-pdf.blade) on the clicked section inside the
+    // same-origin preview iframe, and scroll it into view. No-op when the iframe isn't mounted.
+    const applyHighlight = useCallback((frame?: number) => {
+        try {
+            const idx = frame ?? activePdfFrameRef.current;
+            const doc = iframeRefs.current[idx]?.contentDocument;
+            if (!doc) { return; }
+            doc.querySelectorAll('.rg-hl').forEach(el => el.classList.remove('rg-hl'));
+            const key = activeSectionRef.current;
+            if (!key) { return; }
+            const target = key === 'contact' ? doc.querySelector('h1') : doc.querySelector(`[data-sec="${key}"]`);
+            if (target) {
+                target.classList.add('rg-hl');
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        } catch { /* cross-frame access can throw mid-navigation; ignore */ }
+    }, []);
+
+    const highlightSection = (key: string) => {
+        activeSectionRef.current = key;
+        applyHighlight();
     };
 
     const [openSections, setOpenSections] = useState({
         fontSizes: false, contact: true,
         summary: true, experience: true, projects: true, education: true, skills: true, certifications: true,
-        strength: false,
+        strength: false, share: false, messages: false,
     });
     const toggleSection = (key: keyof typeof openSections) =>
         setOpenSections(s => ({ ...s, [key]: !s[key] }));
@@ -635,23 +671,28 @@ export default function Edit({
             setTimeout(save, 0);
         }
     };
-    // The coach half of the bullet tools: ask the user for the facts the bullet is missing,
-    // then rebuild the bullet from their answer so the content is theirs, not the model's.
-    const handleCoachBullet = async (expId: string, bullets: string | null) => {
-        if (!bullets?.trim()) { return; }
-        const data = await ai.run<{ questions: string[] }>(route('builder.ai.critique-bullet', resume.id), { text: bullets });
-        if (data?.questions) { setCoachQuestions(prev => ({ ...prev, [expId]: data.questions })); }
+    const handleKeywordGaps = async () => {
+        const data = await ai.run<{ keywords: string[] }>(route('builder.ai.ats-keywords', resume.id), { job_description: targetJobDescription });
+        if (data?.keywords) { setKeywordGaps(data.keywords); }
     };
-    const handleRebuildFromAnswer = async (expId: string, bullets: string | null) => {
-        const answer = coachAnswers[expId]?.trim();
-        if (!bullets?.trim() || !answer) { return; }
+    // The coach half of the bullet tools, keyed so it drives both the summary and each
+    // experience entry: ask what the text is missing, then rebuild it from the user's own answer.
+    const runCoach = async (key: string, text: string) => {
+        if (!text.trim()) { return; }
+        const data = await ai.run<{ questions: string[] }>(route('builder.ai.critique-bullet', resume.id), { text });
+        if (data?.questions) { setCoachQuestions(prev => ({ ...prev, [key]: data.questions })); }
+    };
+    const runRebuild = async (key: string, text: string, apply: (suggestion: string) => void) => {
+        const answer = coachAnswers[key]?.trim();
+        if (!text.trim() || !answer) { return; }
         const data = await ai.run<{ suggestion: string }>(route('builder.ai.rewrite-bullet', resume.id), {
-            text: `${bullets}\n\nFacts the candidate supplied — use these, invent nothing else:\n${answer}`,
+            text: `${text}\n\nFacts the candidate supplied — use these, invent nothing else:\n${answer}`,
         });
         if (data?.suggestion) {
-            setExperience(prev => prev.map(e => e.id === expId ? { ...e, bullets: data.suggestion } : e));
-            setCoachQuestions(prev => { const next = { ...prev }; delete next[expId]; return next; });
-            setCoachAnswers(prev => { const next = { ...prev }; delete next[expId]; return next; });
+            apply(data.suggestion);
+            markGenerated(key);
+            setCoachQuestions(prev => { const next = { ...prev }; delete next[key]; return next; });
+            setCoachAnswers(prev => { const next = { ...prev }; delete next[key]; return next; });
             setTimeout(save, 0);
         }
     };
@@ -671,6 +712,74 @@ export default function Edit({
             >
                 {label}
             </button>
+        );
+    };
+
+    // The 50/50 coach ↔ ghostwrite pair, rendered under the summary and each experience bullet.
+    // `onWrite` differs per field (summary vs. bullet route); the coach flow is shared via runCoach/runRebuild.
+    const renderBulletTools = (
+        key: string,
+        text: string,
+        apply: (suggestion: string) => void,
+        onWrite: () => void,
+    ) => {
+        if (!aiEnabled) { return null; }
+        const exhausted = ai.remaining === 0;
+        const busy = ai.loadingUrl !== null;
+        const questions = coachQuestions[key];
+        return (
+            <div>
+                <div className="flex items-center gap-4">
+                    <button
+                        type="button"
+                        onClick={() => runCoach(key, text)}
+                        disabled={busy || exhausted || !text.trim()}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] px-3.5 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                        <SparkIcon /> Coach me
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onWrite}
+                        disabled={busy || exhausted}
+                        className="text-xs font-semibold text-[#71717a] transition-colors hover:text-[#475569] disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                        Write it for me{exhausted ? '' : ` · ${ai.remaining} left`}
+                    </button>
+                </div>
+                {questions && (
+                    <div className="mt-3 rounded-lg border border-[#e0e7ff] bg-[#eef2ff] p-3">
+                        <p className="mb-1.5 text-[11px] font-semibold text-[#4338ca]">Answer in your own words — we'll rebuild it from your facts:</p>
+                        <ul className="mb-2 list-disc space-y-0.5 pl-4 text-xs text-[#4338ca]">
+                            {questions.map((q, i) => <li key={i}>{q}</li>)}
+                        </ul>
+                        <textarea
+                            value={coachAnswers[key] ?? ''}
+                            onChange={e => setCoachAnswers(prev => ({ ...prev, [key]: e.target.value }))}
+                            rows={3}
+                            placeholder="e.g. cut load time from 4s to 1.2s for 50k monthly users"
+                            className="w-full resize-y rounded-md border border-[#c7d2fe] px-2.5 py-2 text-xs text-[#1e293b] placeholder-[#94a3b8] focus:border-[#4f46e5] focus:outline-none focus:ring-1 focus:ring-[#4f46e5]"
+                        />
+                        <div className="mt-2 flex justify-end gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setCoachQuestions(prev => { const next = { ...prev }; delete next[key]; return next; })}
+                                className="text-xs text-[#94a3b8] hover:text-[#475569]"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => runRebuild(key, text, apply)}
+                                disabled={busy || !(coachAnswers[key]?.trim())}
+                                className="rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                Rebuild
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         );
     };
 
@@ -710,6 +819,7 @@ export default function Edit({
     };
 
     const pdfFilename = resume.pdf_filename ?? `${resume.id}.pdf`;
+    const unreadCount = initialThreads.filter(t => !t.is_read).length;
 
     // Live resume content shared by the read-only lab panels (plain text, JD matcher).
     const resumeContent: ResumeContent = {
@@ -736,11 +846,11 @@ export default function Edit({
                 </span>
                 <button
                     type="button"
-                    onClick={() => { if (!showPreview) refreshPreview(); setShowPreview(v => !v); }}
-                    className={`ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-semibold transition hover:border-[#a5b4fc] ${showPreview ? 'border-[#cbd5e1] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] bg-white text-[#475569]'}`}
+                    onClick={jumpToPreview}
+                    className="ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-[#cbd5e1] bg-white px-3 py-1.5 text-xs font-semibold text-[#475569] transition hover:border-[#a5b4fc]"
                 >
-                    {showPreview ? <EyeSlashIcon className="h-3.5 w-3.5" /> : <EyeIcon className="h-3.5 w-3.5" />}
-                    {showPreview ? 'Hide preview' : 'Show preview'}
+                    <EyeIcon className="h-3.5 w-3.5" />
+                    Jump to preview
                 </button>
             </div>
 
@@ -758,99 +868,7 @@ export default function Edit({
                 <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
                     <div className="mx-auto max-w-2xl space-y-4 px-4">
 
-                        {/* Design controls — collapsed by default; expanding pushes the form down */}
-                        <div>
-                            <PanelCard
-                                title="Template"
-                                icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
-                                pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
-                                open={templateOpen}
-                                onToggle={() => setTemplateOpen(v => !v)}
-                            >
-                                <div className="px-3 pb-3">
-                                    <div aria-label="Resume template" className="grid grid-cols-3 gap-2">
-                                        {Object.keys(TEMPLATE_LABELS).map(t => {
-                                            const selected = template === t;
-                                            return (
-                                                <button
-                                                    key={t}
-                                                    type="button"
-                                                    onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
-                                                    aria-pressed={selected}
-                                                    title={TEMPLATE_LABELS[t] ?? t}
-                                                    className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
-                                                >
-                                                    <img
-                                                        src={`/images/templates/${t}.png`}
-                                                        loading="lazy"
-                                                        alt=""
-                                                        className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
-                                                    />
-                                                    <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                    {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
-                                </div>
-                            </PanelCard>
-
-                            <PanelCard
-                                title="Font"
-                                open={openSections.fontSizes}
-                                onToggle={() => toggleSection('fontSizes')}
-                            >
-                                <div className="px-3 pb-3">
-                                    <div className="mb-3.5 flex gap-1.5">
-                                        {(['sans', 'serif', 'mono'] as const).map(f => (
-                                            <button
-                                                key={f}
-                                                type="button"
-                                                onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
-                                                className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
-                                            >
-                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <div className="flex flex-col gap-2.5">
-                                        {([
-                                            { label: 'Name size', key: 'name', min: 12, max: 36 },
-                                            { label: 'Contact size', key: 'contact', min: 6, max: 16 },
-                                            { label: 'Heading size', key: 'heading', min: 8, max: 20 },
-                                            { label: 'Body size', key: 'body', min: 8, max: 16 },
-                                            { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                            { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                            <div key={key}>
-                                                <div className="mb-1 flex justify-between">
-                                                    <span className="text-[11px] text-[#71717a]">{label}</span>
-                                                    <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
-                                                </div>
-                                                <input
-                                                    type="range"
-                                                    min={min}
-                                                    max={max}
-                                                    step={0.5}
-                                                    value={fontSizes[key]}
-                                                    aria-label={label}
-                                                    onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
-                                                    onMouseUp={save}
-                                                    onTouchEnd={save}
-                                                    onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
-                                                    className="w-full"
-                                                    style={{ accentColor: '#4f46e5' }}
-                                                />
-                                            </div>
-                                        ))}
-                                        <div className="flex justify-end">
-                                            <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </PanelCard>
-                        </div>
-
+                        {/* Template, Font & Photo controls now live in the right panel's Design tab */}
                         {/* Resume Name */}
                         <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
                             <FLabel>Resume Name</FLabel>
@@ -860,7 +878,7 @@ export default function Edit({
 
                         {/* Contact — pinned, not draggable */}
                         <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
-                            <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => toggleSection('contact')}>
+                            <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => { toggleSection('contact'); highlightSection('contact'); }}>
                                 <span className="w-[18px]" />
                                 <span className="flex-1 text-sm font-semibold text-[#0f172a]">Contact Information</span>
                                 <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
@@ -885,7 +903,7 @@ export default function Edit({
 
                                     // ── Summary ──
                                     if (key === 'summary') return (
-                                        <DraggableSection key="summary" id="summary" title="Professional Summary" optional open={openSections.summary} onToggle={() => toggleSection('summary')}>
+                                        <DraggableSection key="summary" id="summary" title="Professional Summary" optional open={openSections.summary} onToggle={() => { toggleSection('summary'); highlightSection('summary'); }}>
                                             <FTextarea
                                                 value={summary}
                                                 onChange={setSummary}
@@ -894,12 +912,18 @@ export default function Edit({
                                                 rows={5}
                                             />
                                             <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                                            {renderBulletTools(
+                                                'summary',
+                                                summary,
+                                                s => { setSummary(s); markGenerated('summary'); setTimeout(save, 0); },
+                                                handleGenerateSummary,
+                                            )}
                                         </DraggableSection>
                                     );
 
                                     // ── Experience ──
                                     if (key === 'experience') return (
-                                        <DraggableSection key="experience" id="experience" title="Experience" open={openSections.experience} onToggle={() => toggleSection('experience')}>
+                                        <DraggableSection key="experience" id="experience" title="Experience" open={openSections.experience} onToggle={() => { toggleSection('experience'); highlightSection('experience'); }}>
                                             {experience.map((exp, i) => (
                                                 <EntryCard key={exp.id} label={exp.company || exp.title ? `${exp.title}${exp.company ? ' — ' + exp.company : ''}` : `Experience ${i + 1}`} onRemove={() => { setExperience(prev => prev.filter(e => e.id !== exp.id)); setTimeout(save, 0); }}>
                                                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -916,6 +940,12 @@ export default function Edit({
                                                         <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
                                                         <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
                                                     </div>
+                                                    {renderBulletTools(
+                                                        `exp:${exp.id}`,
+                                                        exp.bullets ?? '',
+                                                        s => { setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: s } : e)); markGenerated(`exp:${exp.id}`); setTimeout(save, 0); },
+                                                        () => handleImproveExperience(exp.id, exp.bullets),
+                                                    )}
                                                 </EntryCard>
                                             ))}
                                             <AddButton label="Add Experience" onClick={() => setExperience(prev => [...prev, emptyExp()])} />
@@ -924,7 +954,7 @@ export default function Edit({
 
                                     // ── Projects ──
                                     if (key === 'projects') return (
-                                        <DraggableSection key="projects" id="projects" title="Project" optional open={openSections.projects} onToggle={() => toggleSection('projects')}>
+                                        <DraggableSection key="projects" id="projects" title="Project" optional open={openSections.projects} onToggle={() => { toggleSection('projects'); highlightSection('projects'); }}>
                                             {projects.map((proj, i) => (
                                                 <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
                                                     <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
@@ -946,7 +976,7 @@ export default function Edit({
 
                                     // ── Education ──
                                     if (key === 'education') return (
-                                        <DraggableSection key="education" id="education" title="Education" open={openSections.education} onToggle={() => toggleSection('education')}>
+                                        <DraggableSection key="education" id="education" title="Education" open={openSections.education} onToggle={() => { toggleSection('education'); highlightSection('education'); }}>
                                             {education.map((edu, i) => (
                                                 <EntryCard key={edu.id} label={edu.school || `Education ${i + 1}`} onRemove={() => { setEducation(prev => prev.filter(e => e.id !== edu.id)); setTimeout(save, 0); }}>
                                                     <div><FLabel>School / Institution</FLabel><FInput value={edu.school} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, school: v } : e))} onBlur={save} placeholder="University of Georgia" /></div>
@@ -963,7 +993,7 @@ export default function Edit({
 
                                     // ── Skills ──
                                     if (key === 'skills') return (
-                                        <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => toggleSection('skills')}>
+                                        <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => { toggleSection('skills'); highlightSection('skills'); }}>
                                             {/* Layout picker cards */}
                                             <div className="grid grid-cols-3 gap-2 pb-1">
                                                 <SkillsLayoutCard label="Inline" selected={skillsLayout === 'inline'} onClick={() => { setSkillsLayout('inline'); setTimeout(save, 0); }}>
@@ -1119,7 +1149,7 @@ export default function Edit({
 
                                     // ── Certifications ──
                                     if (key === 'certifications') return (
-                                        <DraggableSection key="certifications" id="certifications" title="Certificate" optional open={openSections.certifications} onToggle={() => toggleSection('certifications')}>
+                                        <DraggableSection key="certifications" id="certifications" title="Certificate" optional open={openSections.certifications} onToggle={() => { toggleSection('certifications'); highlightSection('certifications'); }}>
                                             {certifications.map((cert, i) => (
                                                 <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
                                                     <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
@@ -1144,46 +1174,8 @@ export default function Edit({
                     </div>
                 </div>
 
-                {/* ── Live preview column ── */}
-                {showPreview && (
-                    <div className="sticky top-0 flex h-[70vh] w-full flex-col p-4 md:h-screen md:w-[42%] md:min-w-[320px] md:max-w-[560px] md:pl-0">
-                        <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
-                            <div className="flex shrink-0 items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
-                                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">{LAB_VIEWS.find(v => v.key === labView)?.label ?? 'Live preview'}</span>
-                                {labView === 'resume' && <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>}
-                            </div>
-                            <div className="relative flex-1">
-                                {labView === 'resume' ? (
-                                    ([0, 1] as const).map(i => (
-                                        <iframe
-                                            key={i}
-                                            src={pdfFrames[i] || undefined}
-                                            onLoad={() => { if (i !== activePdfFrame && pdfFrames[i]) { clearTimeout(pdfSwapTimer.current); setActivePdfFrame(i); } }}
-                                            className="absolute inset-0 h-full w-full border-0 transition-opacity duration-150"
-                                            style={{ opacity: i === activePdfFrame ? 1 : 0, zIndex: i === activePdfFrame ? 1 : 0 }}
-                                            title="Resume preview"
-                                        />
-                                    ))
-                                ) : labView === 'plaintext' ? (
-                                    <PlainTextView {...resumeContent} />
-                                ) : labView === 'jd-match' ? (
-                                    <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
-                                ) : labView === 'checklist' ? (
-                                    <div className="absolute inset-0 overflow-auto p-4">
-                                        <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={0} onGenerateSummary={handleGenerateSummary} />
-                                    </div>
-                                ) : (
-                                    <div className="flex h-full items-center justify-center p-6 text-center text-sm text-[#94a3b8]">
-                                        This panel is coming soon.
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* ── Sidebar ── */}
-                <aside className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white transition-all duration-200 ${sidebarOpen ? 'w-72' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+                {/* ── Right panel (Preview / Design / Optimize / Share) ── */}
+                <aside className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white transition-all duration-200 ${sidebarOpen ? 'w-full md:w-[440px]' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
                     <div className="flex items-center justify-between border-b border-[#eeeef5] px-4 py-3">
                         {sidebarOpen && <span className="text-xs font-bold text-[#0f172a]">Panel</span>}
                         <button type="button" onClick={() => setSidebarOpen(v => !v)} className="ml-auto rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]" title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}>
@@ -1191,42 +1183,26 @@ export default function Edit({
                         </button>
                     </div>
                     {sidebarOpen && (
-                    <div className="flex flex-col gap-6 p-4">
-                        {recruiterNote && (
-                            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-                                <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
-                                <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
-                            </div>
-                        )}
-
-                        {/* Preview / lab chooser */}
-                        <div>
-                            <PanelGroupLabel>Preview</PanelGroupLabel>
-                            <div className="flex flex-col gap-1.5">
-                                {LAB_VIEWS.filter(v => v.key !== 'resume').map(v => {
-                                    const active = showPreview && labView === v.key;
-                                    return (
-                                        <button
-                                            key={v.key}
-                                            type="button"
-                                            onClick={() => openLab(v.key)}
-                                            aria-pressed={active}
-                                            className={`rounded-lg border px-3 py-2 text-left text-xs font-semibold transition-colors ${active ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc] hover:bg-[#f8fafc]'}`}
-                                        >
-                                            {v.label}
-                                        </button>
-                                    );
-                                })}
-                                {showPreview && (
-                                    <button type="button" onClick={() => setShowPreview(false)} className="mt-0.5 text-left text-[11px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">
-                                        Hide preview
+                    <div className="flex flex-col">
+                        {/* Tabs */}
+                        <div className="flex border-b border-[#eeeef5]">
+                            {RIGHT_TABS.map(t => {
+                                const active = rightTab === t.key;
+                                return (
+                                    <button
+                                        key={t.key}
+                                        type="button"
+                                        onClick={() => { setRightTab(t.key); if (t.key === 'preview') { refreshPreview(); } }}
+                                        className={`flex-1 border-b-2 py-3 text-center text-xs font-bold transition-colors ${active ? 'border-[#4f46e5] text-[#4f46e5]' : 'border-transparent text-[#94a3b8] hover:text-[#475569]'}`}
+                                    >
+                                        {t.label}
                                     </button>
-                                )}
-                            </div>
+                                );
+                            })}
                         </div>
 
                         {/* Export */}
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 border-b border-[#eeeef5] p-3">
                             <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
                                 <ArrowDownTrayIcon className="h-3.5 w-3.5" /> DOCX
                             </a>
@@ -1235,6 +1211,200 @@ export default function Edit({
                             </a>
                         </div>
 
+                        {/* Tab content */}
+                        <div className="p-4">
+                            {recruiterNote && (
+                                <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                    <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
+                                    <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
+                                </div>
+                            )}
+
+                            {rightTab === 'preview' && (
+                                <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
+                                    <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
+                                        <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
+                                        <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+                                    </div>
+                                    <div className="relative h-[72vh]">
+                                        {([0, 1] as const).map(i => (
+                                            <iframe
+                                                key={i}
+                                                ref={el => { iframeRefs.current[i] = el; }}
+                                                src={pdfFrames[i] || undefined}
+                                                onLoad={() => { if (i !== activePdfFrame && pdfFrames[i]) { clearTimeout(pdfSwapTimer.current); setActivePdfFrame(i); } applyHighlight(i); }}
+                                                className="absolute inset-0 h-full w-full border-0 transition-opacity duration-150"
+                                                style={{ opacity: i === activePdfFrame ? 1 : 0, zIndex: i === activePdfFrame ? 1 : 0 }}
+                                                title="Resume preview"
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {rightTab === 'design' && (
+                                <div className="flex flex-col">
+                            <PanelCard
+                                title="Template"
+                                icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
+                                pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
+                                open={templateOpen}
+                                onToggle={() => setTemplateOpen(v => !v)}
+                            >
+                                <div className="px-3 pb-3">
+                                    <div aria-label="Resume template" className="grid grid-cols-3 gap-2">
+                                        {Object.keys(TEMPLATE_LABELS).map(t => {
+                                            const selected = template === t;
+                                            return (
+                                                <button
+                                                    key={t}
+                                                    type="button"
+                                                    onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
+                                                    aria-pressed={selected}
+                                                    title={TEMPLATE_LABELS[t] ?? t}
+                                                    className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
+                                                >
+                                                    <img
+                                                        src={`/images/templates/${t}.png`}
+                                                        loading="lazy"
+                                                        alt=""
+                                                        className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
+                                                    />
+                                                    <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
+                                </div>
+                            </PanelCard>
+
+                            <PanelCard
+                                title="Font"
+                                open={openSections.fontSizes}
+                                onToggle={() => toggleSection('fontSizes')}
+                            >
+                                <div className="px-3 pb-3">
+                                    <div className="mb-3.5 flex gap-1.5">
+                                        {(['sans', 'serif', 'mono'] as const).map(f => (
+                                            <button
+                                                key={f}
+                                                type="button"
+                                                onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
+                                                className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
+                                            >
+                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="flex flex-col gap-2.5">
+                                        {([
+                                            { label: 'Name size', key: 'name', min: 12, max: 36 },
+                                            { label: 'Contact size', key: 'contact', min: 6, max: 16 },
+                                            { label: 'Heading size', key: 'heading', min: 8, max: 20 },
+                                            { label: 'Body size', key: 'body', min: 8, max: 16 },
+                                            { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                            { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                            <div key={key}>
+                                                <div className="mb-1 flex justify-between">
+                                                    <span className="text-[11px] text-[#71717a]">{label}</span>
+                                                    <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min={min}
+                                                    max={max}
+                                                    step={0.5}
+                                                    value={fontSizes[key]}
+                                                    aria-label={label}
+                                                    onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
+                                                    onMouseUp={save}
+                                                    onTouchEnd={save}
+                                                    onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
+                                                    className="w-full"
+                                                    style={{ accentColor: '#4f46e5' }}
+                                                />
+                                            </div>
+                                        ))}
+                                        <div className="flex justify-end">
+                                            <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelCard>
+                                    <div className="flex items-center gap-2.5 rounded-[10px] border border-[#eeeef5] p-3">
+                                        {photoUrl
+                                            ? <img src={photoUrl} alt="Profile" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
+                                            : <div className="h-9 w-9 shrink-0 rounded-lg bg-[#f1f5f9]" />}
+                                        <span className="min-w-0 flex-1 text-xs text-[#71717a]">
+                                            {photoUrl ? 'Profile photo' : 'No photo added'}
+                                            {template !== 'executive' && <span className="block text-[10px] text-[#a0a0b0]">Shown on the Executive template</span>}
+                                        </span>
+                                        <label className="shrink-0 cursor-pointer text-xs font-semibold text-[#4f46e5] hover:text-[#4338ca]">
+                                            Upload
+                                            <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (!f) { return; } const fd = new FormData(); fd.append('photo', f); router.post(route('builder.photo.store', resume.id), fd, { forceFormData: true, preserveScroll: true }); }} />
+                                        </label>
+                                        {photoUrl && <button type="button" onClick={() => router.delete(route('builder.photo.destroy', resume.id), { preserveScroll: true })} className="shrink-0 text-xs text-red-500 hover:text-red-700">Remove</button>}
+                                    </div>
+                                </div>
+                            )}
+
+                            {rightTab === 'optimize' && (
+                                <div className="flex flex-col">
+                                    <PanelCard
+                                        title="Resume checklist"
+                                        pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
+                                        open={openSections.strength}
+                                        onToggle={() => toggleSection('strength')}
+                                    >
+                                        <div className="px-3 pb-3">
+                                            <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
+                                        </div>
+                                    </PanelCard>
+                                    <div className="rounded-[10px] border border-[#eeeef5] p-3">
+                                        {aiEnabled ? (
+                                            <AtsMatchPanel
+                                                jobDescription={targetJobDescription}
+                                                onJobDescriptionChange={setTargetJobDescription}
+                                                onJobDescriptionBlur={save}
+                                                keywordGaps={keywordGaps}
+                                                aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
+                                            />
+                                        ) : (
+                                            <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {rightTab === 'share' && (
+                                <div className="flex flex-col">
+                                    <PanelCard
+                                        title="Share links"
+                                        pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
+                                        open={openSections.share}
+                                        onToggle={() => toggleSection('share')}
+                                    >
+                                        <div className="px-3 pb-3">
+                                            <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
+                                        </div>
+                                    </PanelCard>
+                                    <PanelCard
+                                        title="Messages"
+                                        pill={unreadCount > 0
+                                            ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
+                                            : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
+                                        open={openSections.messages}
+                                        onToggle={() => toggleSection('messages')}
+                                    >
+                                        <div className="px-3 pb-3">
+                                            <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                                        </div>
+                                    </PanelCard>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     )}
                 </aside>

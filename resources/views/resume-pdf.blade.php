@@ -95,6 +95,9 @@
   /* skills-first chip block */
   .skills-first-chips { background: #eef2ff; border-radius: 4pt; padding: 6pt 8pt; margin-bottom: 8pt; font-size: {{ $sizeBody }}pt; }
   .skills-first-chips .label { font-size: 7pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #4f46e5; margin-bottom: 4pt; }
+
+  /* Builder-only: section highlight when the matching form card is clicked (ignored by DomPDF) */
+  .rg-hl { outline: 2px solid #4f46e5; outline-offset: 3px; background: rgba(79,70,229,0.07); border-radius: 2px; }
 </style>
 </head>
 <body>
