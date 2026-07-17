@@ -434,7 +434,7 @@ const TEMPLATE_LABELS: Record<string, string> = {
     'skills-first': 'Skills-First', academic: 'Academic CV', bold: 'Minimalist Bold',
 };
 const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'projects', 'education', 'skills', 'certifications'];
-const freshPdfSrc = (id: number) => route('builder.preview', id) + '?t=' + Date.now();
+const freshPdfSrc = (id: number) => route('builder.html-preview', id) + '?t=' + Date.now();
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -504,7 +504,20 @@ export default function Edit({
     const [showPreview, setShowPreview] = useState(true);
     const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
     const [templateOpen, setTemplateOpen] = useState(false);
-    const [pdfSrc, setPdfSrc] = useState(() => freshPdfSrc(resume.id));
+    // Double-buffered preview: two iframes ping-pong so the current PDF stays on
+    // screen while the next one loads, then we swap on its onLoad — no reload flash.
+    const [pdfFrames, setPdfFrames] = useState<[string, string]>(() => [freshPdfSrc(resume.id), '']);
+    const [activePdfFrame, setActivePdfFrame] = useState(0);
+    const activePdfFrameRef = useRef(activePdfFrame); activePdfFrameRef.current = activePdfFrame;
+    // Fallback timer: swap even if the iframe's onLoad never fires (PDF plugins can be flaky).
+    const pdfSwapTimer = useRef<ReturnType<typeof setTimeout>>();
+    const refreshPreview = useCallback(() => {
+        const url = freshPdfSrc(resume.id);
+        const back = activePdfFrameRef.current === 0 ? 1 : 0;
+        setPdfFrames(prev => (back === 0 ? [url, prev[1]] : [prev[0], url]));
+        clearTimeout(pdfSwapTimer.current);
+        pdfSwapTimer.current = setTimeout(() => setActivePdfFrame(back), 1500);
+    }, [resume.id]);
 
     const [openSections, setOpenSections] = useState({
         fontSizes: false, contact: true,
@@ -578,7 +591,7 @@ export default function Edit({
             onFinish: () => {
                 setSaving(false);
                 setSavedAt(new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(new Date()));
-                setPdfSrc(freshPdfSrc(resume.id));
+                refreshPreview();
                 if (pendingSave.current) { pendingSave.current = false; save(); }
                 void fetchLiveScore();
             },
@@ -693,7 +706,7 @@ export default function Edit({
                 </span>
                 <button
                     type="button"
-                    onClick={() => { if (!showPreview) setPdfSrc(freshPdfSrc(resume.id)); setShowPreview(v => !v); }}
+                    onClick={() => { if (!showPreview) refreshPreview(); setShowPreview(v => !v); }}
                     className={`ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-semibold transition hover:border-[#a5b4fc] ${showPreview ? 'border-[#cbd5e1] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] bg-white text-[#475569]'}`}
                 >
                     {showPreview ? <EyeSlashIcon className="h-3.5 w-3.5" /> : <EyeIcon className="h-3.5 w-3.5" />}
@@ -1046,7 +1059,18 @@ export default function Edit({
                                 <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
                                 <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
                             </div>
-                            <iframe src={pdfSrc} className="w-full flex-1 border-0" title="Resume PDF preview" />
+                            <div className="relative flex-1">
+                                {([0, 1] as const).map(i => (
+                                    <iframe
+                                        key={i}
+                                        src={pdfFrames[i] || undefined}
+                                        onLoad={() => { if (i !== activePdfFrame && pdfFrames[i]) { clearTimeout(pdfSwapTimer.current); setActivePdfFrame(i); } }}
+                                        className="absolute inset-0 h-full w-full border-0 transition-opacity duration-150"
+                                        style={{ opacity: i === activePdfFrame ? 1 : 0, zIndex: i === activePdfFrame ? 1 : 0 }}
+                                        title="Resume preview"
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 )}
