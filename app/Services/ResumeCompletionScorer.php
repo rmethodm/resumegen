@@ -49,13 +49,6 @@ class ResumeCompletionScorer
             $score += 5;
         }
 
-        // Photo bonus for photo-supporting templates
-        if (in_array($resume->template ?? 'classic', ['sidebar', 'creative', 'executive'])) {
-            if ($resume->getFirstMediaUrl('photo')) {
-                $score += 5;
-            }
-        }
-
         return min(100, $score);
     }
 }
