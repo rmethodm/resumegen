@@ -464,7 +464,7 @@ function SparkIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
     isFirstResume,
-    allowedTemplates, photoUrl, completionScore, recruiterNote,
+    allowedTemplates, completionScore, recruiterNote,
     skillCategoryOptions, aiRemaining,
 }: {
     resume: ResumeData;
@@ -472,7 +472,6 @@ export default function Edit({
     threads: { id: number; sender_name: string; sender_email: string; is_read: boolean; created_at: string }[];
     isFirstResume: boolean;
     allowedTemplates: string[];
-    photoUrl: string | null;
     completionScore: number;
     recruiterNote?: string | null;
     skillCategoryOptions: string[];
@@ -656,6 +655,178 @@ export default function Edit({
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [resume.id, saving]);
+
+    // ── Render helpers ──
+    const renderSkillsEditor = (): React.ReactNode => (
+        <>
+            {/* Layout picker cards */}
+            <div className="grid grid-cols-3 gap-2 pb-1">
+                <SkillsLayoutCard label="Inline" selected={skillsLayout === 'inline'} onClick={() => { setSkillsLayout('inline'); setTimeout(save, 0); }}>
+                    <div className="flex flex-wrap items-center gap-x-[3px] gap-y-1 pt-0.5">
+                        {[28, 22, 32, 18, 26].map((w, i) => (
+                            <span key={i} className="flex items-center gap-[3px]">
+                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-[#94a3b8]" />}
+                            </span>
+                        ))}
+                    </div>
+                </SkillsLayoutCard>
+
+                <SkillsLayoutCard label="Bullets" selected={skillsLayout === 'bullets'} onClick={() => { setSkillsLayout('bullets'); setTimeout(save, 0); }}>
+                    <div className="flex flex-col gap-[5px] pt-0.5">
+                        {[34, 26, 38, 22].map((w, i) => (
+                            <div key={i} className="flex items-center gap-1">
+                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#0f172a]" />
+                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                            </div>
+                        ))}
+                    </div>
+                </SkillsLayoutCard>
+
+                <SkillsLayoutCard label="Grouped" selected={skillsLayout === 'grouped-inline'} onClick={() => { setSkillsLayout('grouped-inline'); setTimeout(save, 0); }}>
+                    <div className="flex flex-col gap-[6px] pt-0.5">
+                        {[[20, [14, 12]], [16, [18, 10]], [22, [12, 14]]].map(([catW, items], i) => (
+                            <div key={i} className="flex flex-wrap items-center gap-[3px]">
+                                <span className="inline-block h-[6px] rounded-full bg-[#0f172a]" style={{ width: catW as number }} />
+                                <span className="text-[7px] leading-none text-[#94a3b8]">:</span>
+                                {(items as number[]).map((w, j) => (
+                                    <span key={j} className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </SkillsLayoutCard>
+
+                <SkillsLayoutCard label="Columns" selected={skillsLayout === 'grouped-vertical'} onClick={() => { setSkillsLayout('grouped-vertical'); setTimeout(save, 0); }}>
+                    <div className="flex gap-2.5 pt-0.5">
+                        {[[22, [18, 24, 16]], [18, [22, 14, 20]]].map(([catW, rows], ci) => (
+                            <div key={ci} className="flex flex-col gap-[4px]">
+                                <span className="inline-block h-[7px] rounded bg-[#0f172a]" style={{ width: catW as number }} />
+                                {(rows as number[]).map((w, ri) => (
+                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </SkillsLayoutCard>
+
+                <SkillsLayoutCard label="Narrative" selected={skillsLayout === 'narrative'} onClick={() => { setSkillsLayout('narrative'); setTimeout(save, 0); }}>
+                    <div className="flex flex-col gap-[5px] pt-0.5">
+                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#0f172a]" />
+                        {[32, 24, 34, 20].map((w, i) => (
+                            <div key={i} className="flex items-center gap-1 pl-1">
+                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[#94a3b8]" />
+                                <span className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                            </div>
+                        ))}
+                    </div>
+                </SkillsLayoutCard>
+            </div>
+
+            {/* Flat tag input for inline / bullets */}
+            {(skillsLayout === 'inline' || skillsLayout === 'bullets') && (
+                <SkillTagInput
+                    skills={flatSkills}
+                    onChange={s => { setFlatSkills(s); setTimeout(save, 0); }}
+                    placeholder="Search skills (e.g. Python, React...) or add custom"
+                />
+            )}
+
+            {/* Grouped category editor for grouped-inline / grouped-vertical */}
+            {(skillsLayout === 'grouped-inline' || skillsLayout === 'grouped-vertical') && (
+                <>
+                    {skillCategories.map(cat => (
+                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
+                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
+                                <DragDots className="text-[#94a3b8] shrink-0" />
+                                <select
+                                    value={cat.category_type}
+                                    onChange={e => {
+                                        const type = e.target.value;
+                                        setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_type: type, category_name: type || c.category_name } : c));
+                                    }}
+                                    onBlur={save}
+                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] px-2 py-1.5 text-sm text-[#1e293b] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                >
+                                    <option value="">Select category...</option>
+                                    {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                                </select>
+                                <input
+                                    type="text"
+                                    value={cat.category_name}
+                                    onChange={e => setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_name: e.target.value } : c))}
+                                    onBlur={save}
+                                    placeholder="Or type custom..."
+                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                />
+                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
+                                    <TrashIcon className="h-4 w-4" />
+                                </button>
+                            </div>
+                            <div className="p-3">
+                                <SkillTagInput
+                                    skills={cat.skills}
+                                    category={cat.category_type}
+                                    onChange={skills => { setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, skills } : c)); setTimeout(save, 0); }}
+                                    placeholder={cat.category_name ? `Search ${cat.category_name} skills or add custom...` : 'Search skills (e.g. Python, React, SolidWorks...) or add custom'}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                    <AddButton label="Add Category" onClick={() => setSkillCategories(prev => [...prev, emptySkillCategory()])} />
+                </>
+            )}
+
+            {/* Narrative editor */}
+            {skillsLayout === 'narrative' && (
+                <>
+                    {skillNarratives.map(n => (
+                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
+                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
+                                <input
+                                    type="text"
+                                    value={n.name}
+                                    onChange={e => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, name: e.target.value } : x))}
+                                    onBlur={save}
+                                    placeholder="Skill area (e.g. Communication, Leadership)"
+                                    className="flex-1 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm font-medium text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                />
+                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
+                                    <TrashIcon className="h-4 w-4" />
+                                </button>
+                            </div>
+                            <div className="p-3">
+                                <FTextarea
+                                    value={n.bulletsText}
+                                    onChange={v => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, bulletsText: v } : x))}
+                                    onBlur={save}
+                                    placeholder={"• Demonstrated ability to communicate effectively with customers...\n• Proficient in active listening techniques..."}
+                                    rows={4}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                    <AddButton label="Add Skill Area" onClick={() => setSkillNarratives(prev => [...prev, { id: uuid(), name: '', bulletsText: '' }])} />
+                </>
+            )}
+        </>
+    );
+
+    const renderPreviewFrames = (): React.ReactNode => (
+        <>
+            {([0, 1] as const).map(i => (
+                <iframe
+                    key={i}
+                    ref={el => { iframeRefs.current[i] = el; }}
+                    src={pdfFrames[i] || undefined}
+                    onLoad={() => { if (i !== activePdfFrame && pdfFrames[i]) { clearTimeout(pdfSwapTimer.current); setActivePdfFrame(i); } applyHighlight(i); }}
+                    className="absolute inset-0 h-full w-full border-0 transition-opacity duration-150"
+                    style={{ opacity: i === activePdfFrame ? 1 : 0, zIndex: i === activePdfFrame ? 1 : 0 }}
+                    title="Resume preview"
+                />
+            ))}
+        </>
+    );
 
     // ── AI suggestion handlers ──
     const handleGenerateSummary = async () => {
@@ -868,7 +1039,7 @@ export default function Edit({
                 <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
                     <div className="mx-auto max-w-2xl space-y-4 px-4">
 
-                        {/* Template, Font & Photo controls now live in the right panel's Design tab */}
+                        {/* Template & Font controls now live in the right panel's Design tab */}
                         {/* Resume Name */}
                         <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
                             <FLabel>Resume Name</FLabel>
@@ -994,156 +1165,7 @@ export default function Edit({
                                     // ── Skills ──
                                     if (key === 'skills') return (
                                         <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => { toggleSection('skills'); highlightSection('skills'); }}>
-                                            {/* Layout picker cards */}
-                                            <div className="grid grid-cols-3 gap-2 pb-1">
-                                                <SkillsLayoutCard label="Inline" selected={skillsLayout === 'inline'} onClick={() => { setSkillsLayout('inline'); setTimeout(save, 0); }}>
-                                                    <div className="flex flex-wrap items-center gap-x-[3px] gap-y-1 pt-0.5">
-                                                        {[28, 22, 32, 18, 26].map((w, i) => (
-                                                            <span key={i} className="flex items-center gap-[3px]">
-                                                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
-                                                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-[#94a3b8]" />}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </SkillsLayoutCard>
-
-                                                <SkillsLayoutCard label="Bullets" selected={skillsLayout === 'bullets'} onClick={() => { setSkillsLayout('bullets'); setTimeout(save, 0); }}>
-                                                    <div className="flex flex-col gap-[5px] pt-0.5">
-                                                        {[34, 26, 38, 22].map((w, i) => (
-                                                            <div key={i} className="flex items-center gap-1">
-                                                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#0f172a]" />
-                                                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </SkillsLayoutCard>
-
-                                                <SkillsLayoutCard label="Grouped" selected={skillsLayout === 'grouped-inline'} onClick={() => { setSkillsLayout('grouped-inline'); setTimeout(save, 0); }}>
-                                                    <div className="flex flex-col gap-[6px] pt-0.5">
-                                                        {[[20, [14, 12]], [16, [18, 10]], [22, [12, 14]]].map(([catW, items], i) => (
-                                                            <div key={i} className="flex flex-wrap items-center gap-[3px]">
-                                                                <span className="inline-block h-[6px] rounded-full bg-[#0f172a]" style={{ width: catW as number }} />
-                                                                <span className="text-[7px] leading-none text-[#94a3b8]">:</span>
-                                                                {(items as number[]).map((w, j) => (
-                                                                    <span key={j} className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
-                                                                ))}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </SkillsLayoutCard>
-
-                                                <SkillsLayoutCard label="Columns" selected={skillsLayout === 'grouped-vertical'} onClick={() => { setSkillsLayout('grouped-vertical'); setTimeout(save, 0); }}>
-                                                    <div className="flex gap-2.5 pt-0.5">
-                                                        {[[22, [18, 24, 16]], [18, [22, 14, 20]]].map(([catW, rows], ci) => (
-                                                            <div key={ci} className="flex flex-col gap-[4px]">
-                                                                <span className="inline-block h-[7px] rounded bg-[#0f172a]" style={{ width: catW as number }} />
-                                                                {(rows as number[]).map((w, ri) => (
-                                                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
-                                                                ))}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </SkillsLayoutCard>
-
-                                                <SkillsLayoutCard label="Narrative" selected={skillsLayout === 'narrative'} onClick={() => { setSkillsLayout('narrative'); setTimeout(save, 0); }}>
-                                                    <div className="flex flex-col gap-[5px] pt-0.5">
-                                                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#0f172a]" />
-                                                        {[32, 24, 34, 20].map((w, i) => (
-                                                            <div key={i} className="flex items-center gap-1 pl-1">
-                                                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[#94a3b8]" />
-                                                                <span className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </SkillsLayoutCard>
-                                            </div>
-
-                                            {/* Flat tag input for inline / bullets */}
-                                            {(skillsLayout === 'inline' || skillsLayout === 'bullets') && (
-                                                <SkillTagInput
-                                                    skills={flatSkills}
-                                                    onChange={s => { setFlatSkills(s); setTimeout(save, 0); }}
-                                                    placeholder="Search skills (e.g. Python, React...) or add custom"
-                                                />
-                                            )}
-
-                                            {/* Grouped category editor for grouped-inline / grouped-vertical */}
-                                            {(skillsLayout === 'grouped-inline' || skillsLayout === 'grouped-vertical') && (
-                                                <>
-                                                    {skillCategories.map(cat => (
-                                                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
-                                                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
-                                                                <DragDots className="text-[#94a3b8] shrink-0" />
-                                                                <select
-                                                                    value={cat.category_type}
-                                                                    onChange={e => {
-                                                                        const type = e.target.value;
-                                                                        setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_type: type, category_name: type || c.category_name } : c));
-                                                                    }}
-                                                                    onBlur={save}
-                                                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] px-2 py-1.5 text-sm text-[#1e293b] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
-                                                                >
-                                                                    <option value="">Select category...</option>
-                                                                    {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                                                                </select>
-                                                                <input
-                                                                    type="text"
-                                                                    value={cat.category_name}
-                                                                    onChange={e => setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_name: e.target.value } : c))}
-                                                                    onBlur={save}
-                                                                    placeholder="Or type custom..."
-                                                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
-                                                                />
-                                                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
-                                                                    <TrashIcon className="h-4 w-4" />
-                                                                </button>
-                                                            </div>
-                                                            <div className="p-3">
-                                                                <SkillTagInput
-                                                                    skills={cat.skills}
-                                                                    category={cat.category_type}
-                                                                    onChange={skills => { setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, skills } : c)); setTimeout(save, 0); }}
-                                                                    placeholder={cat.category_name ? `Search ${cat.category_name} skills or add custom...` : 'Search skills (e.g. Python, React, SolidWorks...) or add custom'}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    <AddButton label="Add Category" onClick={() => setSkillCategories(prev => [...prev, emptySkillCategory()])} />
-                                                </>
-                                            )}
-
-                                            {/* Narrative editor */}
-                                            {skillsLayout === 'narrative' && (
-                                                <>
-                                                    {skillNarratives.map(n => (
-                                                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
-                                                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
-                                                                <input
-                                                                    type="text"
-                                                                    value={n.name}
-                                                                    onChange={e => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, name: e.target.value } : x))}
-                                                                    onBlur={save}
-                                                                    placeholder="Skill area (e.g. Communication, Leadership)"
-                                                                    className="flex-1 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm font-medium text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
-                                                                />
-                                                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
-                                                                    <TrashIcon className="h-4 w-4" />
-                                                                </button>
-                                                            </div>
-                                                            <div className="p-3">
-                                                                <FTextarea
-                                                                    value={n.bulletsText}
-                                                                    onChange={v => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, bulletsText: v } : x))}
-                                                                    onBlur={save}
-                                                                    placeholder={"• Demonstrated ability to communicate effectively with customers...\n• Proficient in active listening techniques..."}
-                                                                    rows={4}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    <AddButton label="Add Skill Area" onClick={() => setSkillNarratives(prev => [...prev, { id: uuid(), name: '', bulletsText: '' }])} />
-                                                </>
-                                            )}
+                                            {renderSkillsEditor()}
                                         </DraggableSection>
                                     );
 
@@ -1227,17 +1249,7 @@ export default function Edit({
                                         <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
                                     </div>
                                     <div className="relative h-[72vh]">
-                                        {([0, 1] as const).map(i => (
-                                            <iframe
-                                                key={i}
-                                                ref={el => { iframeRefs.current[i] = el; }}
-                                                src={pdfFrames[i] || undefined}
-                                                onLoad={() => { if (i !== activePdfFrame && pdfFrames[i]) { clearTimeout(pdfSwapTimer.current); setActivePdfFrame(i); } applyHighlight(i); }}
-                                                className="absolute inset-0 h-full w-full border-0 transition-opacity duration-150"
-                                                style={{ opacity: i === activePdfFrame ? 1 : 0, zIndex: i === activePdfFrame ? 1 : 0 }}
-                                                title="Resume preview"
-                                            />
-                                        ))}
+                                        {renderPreviewFrames()}
                                     </div>
                                 </div>
                             )}
@@ -1333,20 +1345,6 @@ export default function Edit({
                                     </div>
                                 </div>
                             </PanelCard>
-                                    <div className="flex items-center gap-2.5 rounded-[10px] border border-[#eeeef5] p-3">
-                                        {photoUrl
-                                            ? <img src={photoUrl} alt="Profile" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
-                                            : <div className="h-9 w-9 shrink-0 rounded-lg bg-[#f1f5f9]" />}
-                                        <span className="min-w-0 flex-1 text-xs text-[#71717a]">
-                                            {photoUrl ? 'Profile photo' : 'No photo added'}
-                                            {template !== 'executive' && <span className="block text-[10px] text-[#a0a0b0]">Shown on the Executive template</span>}
-                                        </span>
-                                        <label className="shrink-0 cursor-pointer text-xs font-semibold text-[#4f46e5] hover:text-[#4338ca]">
-                                            Upload
-                                            <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (!f) { return; } const fd = new FormData(); fd.append('photo', f); router.post(route('builder.photo.store', resume.id), fd, { forceFormData: true, preserveScroll: true }); }} />
-                                        </label>
-                                        {photoUrl && <button type="button" onClick={() => router.delete(route('builder.photo.destroy', resume.id), { preserveScroll: true })} className="shrink-0 text-xs text-red-500 hover:text-red-700">Remove</button>}
-                                    </div>
                                 </div>
                             )}
 
