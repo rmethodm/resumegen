@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Resume extends Model implements HasMedia
+class Resume extends Model
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory;
 
     protected static function booted(): void
     {
@@ -74,13 +72,6 @@ class Resume extends Model implements HasMedia
         'custom_sections' => 'array',
         'is_snapshot' => 'boolean',
     ];
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('photo')
-            ->singleFile()
-            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
-    }
 
     public function scopeNonSnapshot(Builder $query): Builder
     {
