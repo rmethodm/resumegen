@@ -7,7 +7,9 @@ use App\Models\ResumeShareLink;
 use App\Models\ResumeThread;
 use App\Services\DocxGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class PublicResumeController extends Controller
@@ -20,6 +22,13 @@ class PublicResumeController extends Controller
             return Inertia::render('ResumeBuilder/LinkExpired', [
                 'reason' => ! $link->is_active ? 'deactivated' : 'expired',
             ])->toResponse($request)->setStatusCode(410);
+        }
+
+        if ($this->isLocked($request, $link)) {
+            return Inertia::render('ResumeBuilder/LinkPassword', [
+                'token' => $token,
+                'label' => $link->label,
+            ]);
         }
 
         ResumeShareEvent::log($request, $link, 'page_view');
@@ -64,6 +73,30 @@ class PublicResumeController extends Controller
         ])->withViewData(['og' => $og]);
     }
 
+    /**
+     * A password-protected link stays locked until this session has unlocked it.
+     */
+    private function isLocked(Request $request, ResumeShareLink $link): bool
+    {
+        return $link->password_hash !== null
+            && ! in_array($link->id, $request->session()->get('unlocked_links', []), true);
+    }
+
+    public function unlock(Request $request, string $token): RedirectResponse
+    {
+        $link = ResumeShareLink::where('token', $token)->firstOrFail();
+
+        $password = (string) $request->input('password');
+
+        if (! $link->password_hash || ! Hash::check($password, $link->password_hash)) {
+            return back()->withErrors(['password' => 'That password is not correct.']);
+        }
+
+        $request->session()->push('unlocked_links', $link->id);
+
+        return redirect()->route('public.resume', $token);
+    }
+
     public function downloadPdf(Request $request, string $token)
     {
         $link = ResumeShareLink::with('resume')->where('token', $token)->firstOrFail();
@@ -73,6 +106,8 @@ class PublicResumeController extends Controller
             410,
             'This link is no longer active.'
         );
+
+        abort_if($this->isLocked($request, $link), 403, 'This link is password protected.');
 
         $resume = $link->resume;
         $pdf = Pdf::loadView('resume-pdf', [
@@ -94,6 +129,8 @@ class PublicResumeController extends Controller
             410,
             'This link is no longer active.'
         );
+
+        abort_if($this->isLocked($request, $link), 403, 'This link is password protected.');
 
         $resume = $link->resume;
 

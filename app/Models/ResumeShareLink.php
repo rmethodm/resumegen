@@ -12,11 +12,15 @@ class ResumeShareLink extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['resume_id', 'token', 'label', 'is_active', 'expires_at'];
+    protected $fillable = ['resume_id', 'token', 'label', 'is_active', 'expires_at', 'is_primary', 'password_hash', 'views_seen_at'];
+
+    protected $hidden = ['password_hash'];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_primary' => 'boolean',
         'expires_at' => 'datetime',
+        'views_seen_at' => 'datetime',
     ];
 
     protected $attributes = [
