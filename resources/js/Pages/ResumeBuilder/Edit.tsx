@@ -527,6 +527,8 @@ export default function Edit({
     // Right panel: collapsible, tabbed. Open by default on wide screens.
     const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
     const [rightTab, setRightTab] = useState<RightTab>('preview');
+    // Experiment layout: preview on the left, Skills entry in the right panel. Not persisted.
+    const [experiment, setExperiment] = useState(false);
     const [templateOpen, setTemplateOpen] = useState(false);
     // Section-click → highlight in the live-preview iframe.
     const activeSectionRef = useRef<string | null>(null);
@@ -1025,389 +1027,434 @@ export default function Edit({
                 </button>
             </div>
 
-            {/* Completion bar */}
-            <div className="border-b border-gray-100 bg-white px-4 py-2">
-                <div className="max-w-[220px] overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
+            {/* Completion bar + experiment toggle */}
+            <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-2">
+                <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
                     <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] transition-all" style={{ width: `${completionScore}%` }} />
+                </div>
+                <div className="ml-4 inline-flex overflow-hidden rounded-lg border border-[#cbd5e1] text-xs font-bold">
+                    <button
+                        type="button"
+                        onClick={() => setExperiment(false)}
+                        className={`px-3 py-1.5 transition-colors ${!experiment ? 'bg-[#4f46e5] text-white' : 'text-[#475569] hover:bg-[#f1f5f9]'}`}
+                    >
+                        Normal
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => { setExperiment(true); refreshPreview(); }}
+                        className={`px-3 py-1.5 transition-colors ${experiment ? 'bg-[#4f46e5] text-white' : 'text-[#475569] hover:bg-[#f1f5f9]'}`}
+                    >
+                        ⭐ Experiment
+                    </button>
                 </div>
             </div>
 
             <Head title={`Editing: ${name}`} />
 
-            <div className="flex flex-wrap items-start bg-[#f1f5f9]">
-                {/* ── Form ── */}
-                <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
-                    <div className="mx-auto max-w-2xl space-y-4 px-4">
+            {!experiment && (
+                <div className="flex flex-wrap items-start bg-[#f1f5f9]">
+                    {/* ── Form ── */}
+                    <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
+                        <div className="mx-auto max-w-2xl space-y-4 px-4">
 
-                        {/* Template & Font controls now live in the right panel's Design tab */}
-                        {/* Resume Name */}
-                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
-                            <FLabel>Resume Name</FLabel>
-                            <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
-                            <p className="text-xs text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
-                        </div>
+                            {/* Template & Font controls now live in the right panel's Design tab */}
+                            {/* Resume Name */}
+                            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
+                                <FLabel>Resume Name</FLabel>
+                                <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
+                                <p className="text-xs text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
+                            </div>
 
-                        {/* Contact — pinned, not draggable */}
-                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
-                            <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => { toggleSection('contact'); highlightSection('contact'); }}>
-                                <span className="w-[18px]" />
-                                <span className="flex-1 text-sm font-semibold text-[#0f172a]">Contact Information</span>
-                                <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
-                            </button>
-                            {openSections.contact && (
-                                <div className="grid grid-cols-1 gap-3 border-t border-[#cbd5e1] p-5 sm:grid-cols-2">
-                                    <div className="col-span-2"><FLabel>Full Name</FLabel><FInput value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} onBlur={save} placeholder="Jane Smith" /></div>
-                                    <div><FLabel>Email</FLabel><FInput value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} onBlur={save} type="email" placeholder="jane@example.com" /></div>
-                                    <div><FLabel>Phone</FLabel><FInput value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} onBlur={save} placeholder="(555) 555-5555" /></div>
-                                    <div><FLabel>Location</FLabel><FInput value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} onBlur={save} placeholder="Atlanta, GA" /></div>
-                                    <div><FLabel>LinkedIn</FLabel><FInput value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} onBlur={save} placeholder="linkedin.com/in/jane" /></div>
-                                    <div className="col-span-2"><FLabel>Website</FLabel><FInput value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} onBlur={save} placeholder="janesmith.dev" /></div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Draggable sections */}
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
-                            <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
-
-                                {sectionOrder.map(key => {
-
-                                    // ── Summary ──
-                                    if (key === 'summary') return (
-                                        <DraggableSection key="summary" id="summary" title="Professional Summary" optional open={openSections.summary} onToggle={() => { toggleSection('summary'); highlightSection('summary'); }}>
-                                            <FTextarea
-                                                value={summary}
-                                                onChange={setSummary}
-                                                onBlur={save}
-                                                placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
-                                                rows={5}
-                                            />
-                                            <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
-                                            {renderBulletTools(
-                                                'summary',
-                                                summary,
-                                                s => { setSummary(s); markGenerated('summary'); setTimeout(save, 0); },
-                                                handleGenerateSummary,
-                                            )}
-                                        </DraggableSection>
-                                    );
-
-                                    // ── Experience ──
-                                    if (key === 'experience') return (
-                                        <DraggableSection key="experience" id="experience" title="Experience" open={openSections.experience} onToggle={() => { toggleSection('experience'); highlightSection('experience'); }}>
-                                            {experience.map((exp, i) => (
-                                                <EntryCard key={exp.id} label={exp.company || exp.title ? `${exp.title}${exp.company ? ' — ' + exp.company : ''}` : `Experience ${i + 1}`} onRemove={() => { setExperience(prev => prev.filter(e => e.id !== exp.id)); setTimeout(save, 0); }}>
-                                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                        <div><FLabel>Job Title</FLabel><FInput value={exp.title} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, title: v } : e))} onBlur={save} placeholder="Software Engineer" /></div>
-                                                        <div><FLabel>Company</FLabel><FInput value={exp.company} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, company: v } : e))} onBlur={save} placeholder="Acme Corp" /></div>
-                                                        <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
-                                                        <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
-                                                    </div>
-                                                    <label className="flex items-center gap-2 text-sm text-[#475569] cursor-pointer">
-                                                        <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#bfdbfe] text-[#2563eb] focus:ring-[#3b82f6]" />
-                                                        I currently work here
-                                                    </label>
-                                                    <div>
-                                                        <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
-                                                        <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
-                                                    </div>
-                                                    {renderBulletTools(
-                                                        `exp:${exp.id}`,
-                                                        exp.bullets ?? '',
-                                                        s => { setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: s } : e)); markGenerated(`exp:${exp.id}`); setTimeout(save, 0); },
-                                                        () => handleImproveExperience(exp.id, exp.bullets),
-                                                    )}
-                                                </EntryCard>
-                                            ))}
-                                            <AddButton label="Add Experience" onClick={() => setExperience(prev => [...prev, emptyExp()])} />
-                                        </DraggableSection>
-                                    );
-
-                                    // ── Projects ──
-                                    if (key === 'projects') return (
-                                        <DraggableSection key="projects" id="projects" title="Project" optional open={openSections.projects} onToggle={() => { toggleSection('projects'); highlightSection('projects'); }}>
-                                            {projects.map((proj, i) => (
-                                                <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
-                                                    <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
-                                                    <div><FLabel>Description <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
-                                                    <div><FLabel>Project URL <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
-                                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                        <div><FLabel>Start Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
-                                                        <div><FLabel>End Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
-                                                    </div>
-                                                    <div>
-                                                        <FLabel>Highlights <span className="text-[#94a3b8] font-normal">(one per line, optional)</span></FLabel>
-                                                        <FTextarea value={proj.bullets} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, bullets: v } : p))} onBlur={save} placeholder={"• Built with React, Node.js, and PostgreSQL\n• Handles 10k+ daily users"} rows={3} />
-                                                    </div>
-                                                </EntryCard>
-                                            ))}
-                                            <AddButton label="Add Project" onClick={() => setProjects(prev => [...prev, emptyProject()])} />
-                                        </DraggableSection>
-                                    );
-
-                                    // ── Education ──
-                                    if (key === 'education') return (
-                                        <DraggableSection key="education" id="education" title="Education" open={openSections.education} onToggle={() => { toggleSection('education'); highlightSection('education'); }}>
-                                            {education.map((edu, i) => (
-                                                <EntryCard key={edu.id} label={edu.school || `Education ${i + 1}`} onRemove={() => { setEducation(prev => prev.filter(e => e.id !== edu.id)); setTimeout(save, 0); }}>
-                                                    <div><FLabel>School / Institution</FLabel><FInput value={edu.school} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, school: v } : e))} onBlur={save} placeholder="University of Georgia" /></div>
-                                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                        <div><FLabel>Degree</FLabel><FInput value={edu.degree} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, degree: v } : e))} onBlur={save} placeholder="B.S." /></div>
-                                                        <div><FLabel>Field of Study</FLabel><FInput value={edu.field} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, field: v } : e))} onBlur={save} placeholder="Computer Science" /></div>
-                                                    </div>
-                                                    <div><FLabel>Graduation Year</FLabel><FInput value={edu.grad_year} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, grad_year: v } : e))} onBlur={save} placeholder="2024" /></div>
-                                                </EntryCard>
-                                            ))}
-                                            <AddButton label="Add Education" onClick={() => setEducation(prev => [...prev, emptyEdu()])} />
-                                        </DraggableSection>
-                                    );
-
-                                    // ── Skills ──
-                                    if (key === 'skills') return (
-                                        <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => { toggleSection('skills'); highlightSection('skills'); }}>
-                                            {renderSkillsEditor()}
-                                        </DraggableSection>
-                                    );
-
-                                    // ── Certifications ──
-                                    if (key === 'certifications') return (
-                                        <DraggableSection key="certifications" id="certifications" title="Certificate" optional open={openSections.certifications} onToggle={() => { toggleSection('certifications'); highlightSection('certifications'); }}>
-                                            {certifications.map((cert, i) => (
-                                                <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
-                                                    <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
-                                                    <div><FLabel>Issuing Organization <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
-                                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                        <div><FLabel>Date Obtained <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
-                                                        <div><FLabel>Expiration <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
-                                                    </div>
-                                                    <div><FLabel>Credential ID <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
-                                                </EntryCard>
-                                            ))}
-                                            <AddButton label="Add Certificate" onClick={() => setCertifications(prev => [...prev, emptyCert()])} />
-                                        </DraggableSection>
-                                    );
-
-                                    return null;
-                                })}
-
-                            </SortableContext>
-                        </DndContext>
-
-                    </div>
-                </div>
-
-                {/* ── Right panel (Preview / Design / Optimize / Share) ── */}
-                <aside className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white transition-all duration-200 ${sidebarOpen ? 'w-full md:w-[440px]' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
-                    <div className="flex items-center justify-between border-b border-[#eeeef5] px-4 py-3">
-                        {sidebarOpen && <span className="text-xs font-bold text-[#0f172a]">Panel</span>}
-                        <button type="button" onClick={() => setSidebarOpen(v => !v)} className="ml-auto rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]" title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}>
-                            {sidebarOpen ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
-                        </button>
-                    </div>
-                    {sidebarOpen && (
-                    <div className="flex flex-col">
-                        {/* Tabs */}
-                        <div className="flex border-b border-[#eeeef5]">
-                            {RIGHT_TABS.map(t => {
-                                const active = rightTab === t.key;
-                                return (
-                                    <button
-                                        key={t.key}
-                                        type="button"
-                                        onClick={() => { setRightTab(t.key); if (t.key === 'preview') { refreshPreview(); } }}
-                                        className={`flex-1 border-b-2 py-3 text-center text-xs font-bold transition-colors ${active ? 'border-[#4f46e5] text-[#4f46e5]' : 'border-transparent text-[#94a3b8] hover:text-[#475569]'}`}
-                                    >
-                                        {t.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
-
-                        {/* Export */}
-                        <div className="flex gap-2 border-b border-[#eeeef5] p-3">
-                            <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
-                                <ArrowDownTrayIcon className="h-3.5 w-3.5" /> DOCX
-                            </a>
-                            <a href={route('builder.pdf', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#cbd5e1] py-2 text-xs font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:bg-[#f8fafc] hover:text-[#4f46e5]">
-                                <ArrowDownTrayIcon className="h-3.5 w-3.5" /> PDF
-                            </a>
-                        </div>
-
-                        {/* Tab content */}
-                        <div className="p-4">
-                            {recruiterNote && (
-                                <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
-                                    <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
-                                    <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
-                                </div>
-                            )}
-
-                            {rightTab === 'preview' && (
-                                <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
-                                    <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
-                                        <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
-                                        <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+                            {/* Contact — pinned, not draggable */}
+                            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                                <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => { toggleSection('contact'); highlightSection('contact'); }}>
+                                    <span className="w-[18px]" />
+                                    <span className="flex-1 text-sm font-semibold text-[#0f172a]">Contact Information</span>
+                                    <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                                </button>
+                                {openSections.contact && (
+                                    <div className="grid grid-cols-1 gap-3 border-t border-[#cbd5e1] p-5 sm:grid-cols-2">
+                                        <div className="col-span-2"><FLabel>Full Name</FLabel><FInput value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} onBlur={save} placeholder="Jane Smith" /></div>
+                                        <div><FLabel>Email</FLabel><FInput value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} onBlur={save} type="email" placeholder="jane@example.com" /></div>
+                                        <div><FLabel>Phone</FLabel><FInput value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} onBlur={save} placeholder="(555) 555-5555" /></div>
+                                        <div><FLabel>Location</FLabel><FInput value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} onBlur={save} placeholder="Atlanta, GA" /></div>
+                                        <div><FLabel>LinkedIn</FLabel><FInput value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} onBlur={save} placeholder="linkedin.com/in/jane" /></div>
+                                        <div className="col-span-2"><FLabel>Website</FLabel><FInput value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} onBlur={save} placeholder="janesmith.dev" /></div>
                                     </div>
-                                    <div className="relative h-[72vh]">
-                                        {renderPreviewFrames()}
-                                    </div>
-                                </div>
-                            )}
+                                )}
+                            </div>
 
-                            {rightTab === 'design' && (
-                                <div className="flex flex-col">
-                            <PanelCard
-                                title="Template"
-                                icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
-                                pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
-                                open={templateOpen}
-                                onToggle={() => setTemplateOpen(v => !v)}
-                            >
-                                <div className="px-3 pb-3">
-                                    <div aria-label="Resume template" className="grid grid-cols-3 gap-2">
-                                        {Object.keys(TEMPLATE_LABELS).map(t => {
-                                            const selected = template === t;
-                                            return (
-                                                <button
-                                                    key={t}
-                                                    type="button"
-                                                    onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
-                                                    aria-pressed={selected}
-                                                    title={TEMPLATE_LABELS[t] ?? t}
-                                                    className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
-                                                >
-                                                    <img
-                                                        src={`/images/templates/${t}.png`}
-                                                        loading="lazy"
-                                                        alt=""
-                                                        className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
-                                                    />
-                                                    <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                    {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
-                                </div>
-                            </PanelCard>
+                            {/* Draggable sections */}
+                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
+                                <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
 
-                            <PanelCard
-                                title="Font"
-                                open={openSections.fontSizes}
-                                onToggle={() => toggleSection('fontSizes')}
-                            >
-                                <div className="px-3 pb-3">
-                                    <div className="mb-3.5 flex gap-1.5">
-                                        {(['sans', 'serif', 'mono'] as const).map(f => (
-                                            <button
-                                                key={f}
-                                                type="button"
-                                                onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
-                                                className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
-                                            >
-                                                {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <div className="flex flex-col gap-2.5">
-                                        {([
-                                            { label: 'Name size', key: 'name', min: 12, max: 36 },
-                                            { label: 'Contact size', key: 'contact', min: 6, max: 16 },
-                                            { label: 'Heading size', key: 'heading', min: 8, max: 20 },
-                                            { label: 'Body size', key: 'body', min: 8, max: 16 },
-                                            { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                            { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                        ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                            <div key={key}>
-                                                <div className="mb-1 flex justify-between">
-                                                    <span className="text-[11px] text-[#71717a]">{label}</span>
-                                                    <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
-                                                </div>
-                                                <input
-                                                    type="range"
-                                                    min={min}
-                                                    max={max}
-                                                    step={0.5}
-                                                    value={fontSizes[key]}
-                                                    aria-label={label}
-                                                    onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
-                                                    onMouseUp={save}
-                                                    onTouchEnd={save}
-                                                    onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
-                                                    className="w-full"
-                                                    style={{ accentColor: '#4f46e5' }}
+                                    {sectionOrder.map(key => {
+
+                                        // ── Summary ──
+                                        if (key === 'summary') return (
+                                            <DraggableSection key="summary" id="summary" title="Professional Summary" optional open={openSections.summary} onToggle={() => { toggleSection('summary'); highlightSection('summary'); }}>
+                                                <FTextarea
+                                                    value={summary}
+                                                    onChange={setSummary}
+                                                    onBlur={save}
+                                                    placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
+                                                    rows={5}
                                                 />
-                                            </div>
-                                        ))}
-                                        <div className="flex justify-end">
-                                            <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </PanelCard>
-                                </div>
-                            )}
+                                                <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                                                {renderBulletTools(
+                                                    'summary',
+                                                    summary,
+                                                    s => { setSummary(s); markGenerated('summary'); setTimeout(save, 0); },
+                                                    handleGenerateSummary,
+                                                )}
+                                            </DraggableSection>
+                                        );
 
-                            {rightTab === 'optimize' && (
-                                <div className="flex flex-col">
-                                    <PanelCard
-                                        title="Resume checklist"
-                                        pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
-                                        open={openSections.strength}
-                                        onToggle={() => toggleSection('strength')}
-                                    >
-                                        <div className="px-3 pb-3">
-                                            <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
-                                        </div>
-                                    </PanelCard>
-                                    <div className="rounded-[10px] border border-[#eeeef5] p-3">
-                                        {aiEnabled ? (
-                                            <AtsMatchPanel
-                                                jobDescription={targetJobDescription}
-                                                onJobDescriptionChange={setTargetJobDescription}
-                                                onJobDescriptionBlur={save}
-                                                keywordGaps={keywordGaps}
-                                                aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
-                                            />
-                                        ) : (
-                                            <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
-                                        )}
-                                    </div>
-                                </div>
-                            )}
+                                        // ── Experience ──
+                                        if (key === 'experience') return (
+                                            <DraggableSection key="experience" id="experience" title="Experience" open={openSections.experience} onToggle={() => { toggleSection('experience'); highlightSection('experience'); }}>
+                                                {experience.map((exp, i) => (
+                                                    <EntryCard key={exp.id} label={exp.company || exp.title ? `${exp.title}${exp.company ? ' — ' + exp.company : ''}` : `Experience ${i + 1}`} onRemove={() => { setExperience(prev => prev.filter(e => e.id !== exp.id)); setTimeout(save, 0); }}>
+                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                                            <div><FLabel>Job Title</FLabel><FInput value={exp.title} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, title: v } : e))} onBlur={save} placeholder="Software Engineer" /></div>
+                                                            <div><FLabel>Company</FLabel><FInput value={exp.company} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, company: v } : e))} onBlur={save} placeholder="Acme Corp" /></div>
+                                                            <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
+                                                            <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
+                                                        </div>
+                                                        <label className="flex items-center gap-2 text-sm text-[#475569] cursor-pointer">
+                                                            <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#bfdbfe] text-[#2563eb] focus:ring-[#3b82f6]" />
+                                                            I currently work here
+                                                        </label>
+                                                        <div>
+                                                            <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
+                                                            <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
+                                                        </div>
+                                                        {renderBulletTools(
+                                                            `exp:${exp.id}`,
+                                                            exp.bullets ?? '',
+                                                            s => { setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: s } : e)); markGenerated(`exp:${exp.id}`); setTimeout(save, 0); },
+                                                            () => handleImproveExperience(exp.id, exp.bullets),
+                                                        )}
+                                                    </EntryCard>
+                                                ))}
+                                                <AddButton label="Add Experience" onClick={() => setExperience(prev => [...prev, emptyExp()])} />
+                                            </DraggableSection>
+                                        );
 
-                            {rightTab === 'share' && (
-                                <div className="flex flex-col">
-                                    <PanelCard
-                                        title="Share links"
-                                        pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
-                                        open={openSections.share}
-                                        onToggle={() => toggleSection('share')}
-                                    >
-                                        <div className="px-3 pb-3">
-                                            <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
-                                        </div>
-                                    </PanelCard>
-                                    <PanelCard
-                                        title="Messages"
-                                        pill={unreadCount > 0
-                                            ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
-                                            : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
-                                        open={openSections.messages}
-                                        onToggle={() => toggleSection('messages')}
-                                    >
-                                        <div className="px-3 pb-3">
-                                            <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
-                                        </div>
-                                    </PanelCard>
-                                </div>
-                            )}
+                                        // ── Projects ──
+                                        if (key === 'projects') return (
+                                            <DraggableSection key="projects" id="projects" title="Project" optional open={openSections.projects} onToggle={() => { toggleSection('projects'); highlightSection('projects'); }}>
+                                                {projects.map((proj, i) => (
+                                                    <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
+                                                        <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
+                                                        <div><FLabel>Description <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
+                                                        <div><FLabel>Project URL <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
+                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                                            <div><FLabel>Start Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
+                                                            <div><FLabel>End Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
+                                                        </div>
+                                                        <div>
+                                                            <FLabel>Highlights <span className="text-[#94a3b8] font-normal">(one per line, optional)</span></FLabel>
+                                                            <FTextarea value={proj.bullets} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, bullets: v } : p))} onBlur={save} placeholder={"• Built with React, Node.js, and PostgreSQL\n• Handles 10k+ daily users"} rows={3} />
+                                                        </div>
+                                                    </EntryCard>
+                                                ))}
+                                                <AddButton label="Add Project" onClick={() => setProjects(prev => [...prev, emptyProject()])} />
+                                            </DraggableSection>
+                                        );
+
+                                        // ── Education ──
+                                        if (key === 'education') return (
+                                            <DraggableSection key="education" id="education" title="Education" open={openSections.education} onToggle={() => { toggleSection('education'); highlightSection('education'); }}>
+                                                {education.map((edu, i) => (
+                                                    <EntryCard key={edu.id} label={edu.school || `Education ${i + 1}`} onRemove={() => { setEducation(prev => prev.filter(e => e.id !== edu.id)); setTimeout(save, 0); }}>
+                                                        <div><FLabel>School / Institution</FLabel><FInput value={edu.school} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, school: v } : e))} onBlur={save} placeholder="University of Georgia" /></div>
+                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                                            <div><FLabel>Degree</FLabel><FInput value={edu.degree} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, degree: v } : e))} onBlur={save} placeholder="B.S." /></div>
+                                                            <div><FLabel>Field of Study</FLabel><FInput value={edu.field} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, field: v } : e))} onBlur={save} placeholder="Computer Science" /></div>
+                                                        </div>
+                                                        <div><FLabel>Graduation Year</FLabel><FInput value={edu.grad_year} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, grad_year: v } : e))} onBlur={save} placeholder="2024" /></div>
+                                                    </EntryCard>
+                                                ))}
+                                                <AddButton label="Add Education" onClick={() => setEducation(prev => [...prev, emptyEdu()])} />
+                                            </DraggableSection>
+                                        );
+
+                                        // ── Skills ──
+                                        if (key === 'skills') return (
+                                            <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => { toggleSection('skills'); highlightSection('skills'); }}>
+                                                {renderSkillsEditor()}
+                                            </DraggableSection>
+                                        );
+
+                                        // ── Certifications ──
+                                        if (key === 'certifications') return (
+                                            <DraggableSection key="certifications" id="certifications" title="Certificate" optional open={openSections.certifications} onToggle={() => { toggleSection('certifications'); highlightSection('certifications'); }}>
+                                                {certifications.map((cert, i) => (
+                                                    <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
+                                                        <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
+                                                        <div><FLabel>Issuing Organization <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
+                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                                            <div><FLabel>Date Obtained <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
+                                                            <div><FLabel>Expiration <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
+                                                        </div>
+                                                        <div><FLabel>Credential ID <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
+                                                    </EntryCard>
+                                                ))}
+                                                <AddButton label="Add Certificate" onClick={() => setCertifications(prev => [...prev, emptyCert()])} />
+                                            </DraggableSection>
+                                        );
+
+                                        return null;
+                                    })}
+
+                                </SortableContext>
+                            </DndContext>
+
                         </div>
                     </div>
-                    )}
-                </aside>
 
-            </div>
+                    {/* ── Right panel (Preview / Design / Optimize / Share) ── */}
+                    <aside className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white transition-all duration-200 ${sidebarOpen ? 'w-full md:w-[440px]' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+                        <div className="flex items-center justify-between border-b border-[#eeeef5] px-4 py-3">
+                            {sidebarOpen && <span className="text-xs font-bold text-[#0f172a]">Panel</span>}
+                            <button type="button" onClick={() => setSidebarOpen(v => !v)} className="ml-auto rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]" title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}>
+                                {sidebarOpen ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
+                            </button>
+                        </div>
+                        {sidebarOpen && (
+                        <div className="flex flex-col">
+                            {/* Tabs */}
+                            <div className="flex border-b border-[#eeeef5]">
+                                {RIGHT_TABS.map(t => {
+                                    const active = rightTab === t.key;
+                                    return (
+                                        <button
+                                            key={t.key}
+                                            type="button"
+                                            onClick={() => { setRightTab(t.key); if (t.key === 'preview') { refreshPreview(); } }}
+                                            className={`flex-1 border-b-2 py-3 text-center text-xs font-bold transition-colors ${active ? 'border-[#4f46e5] text-[#4f46e5]' : 'border-transparent text-[#94a3b8] hover:text-[#475569]'}`}
+                                        >
+                                            {t.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Export */}
+                            <div className="flex gap-2 border-b border-[#eeeef5] p-3">
+                                <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
+                                    <ArrowDownTrayIcon className="h-3.5 w-3.5" /> DOCX
+                                </a>
+                                <a href={route('builder.pdf', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#cbd5e1] py-2 text-xs font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:bg-[#f8fafc] hover:text-[#4f46e5]">
+                                    <ArrowDownTrayIcon className="h-3.5 w-3.5" /> PDF
+                                </a>
+                            </div>
+
+                            {/* Tab content */}
+                            <div className="p-4">
+                                {recruiterNote && (
+                                    <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                        <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
+                                        <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
+                                    </div>
+                                )}
+
+                                {rightTab === 'preview' && (
+                                    <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
+                                        <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
+                                            <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+                                        </div>
+                                        <div className="relative h-[72vh]">
+                                            {renderPreviewFrames()}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {rightTab === 'design' && (
+                                    <div className="flex flex-col">
+                                <PanelCard
+                                    title="Template"
+                                    icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
+                                    pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
+                                    open={templateOpen}
+                                    onToggle={() => setTemplateOpen(v => !v)}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <div aria-label="Resume template" className="grid grid-cols-3 gap-2">
+                                            {Object.keys(TEMPLATE_LABELS).map(t => {
+                                                const selected = template === t;
+                                                return (
+                                                    <button
+                                                        key={t}
+                                                        type="button"
+                                                        onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
+                                                        aria-pressed={selected}
+                                                        title={TEMPLATE_LABELS[t] ?? t}
+                                                        className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
+                                                    >
+                                                        <img
+                                                            src={`/images/templates/${t}.png`}
+                                                            loading="lazy"
+                                                            alt=""
+                                                            className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
+                                                        />
+                                                        <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                        {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
+                                    </div>
+                                </PanelCard>
+
+                                <PanelCard
+                                    title="Font"
+                                    open={openSections.fontSizes}
+                                    onToggle={() => toggleSection('fontSizes')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <div className="mb-3.5 flex gap-1.5">
+                                            {(['sans', 'serif', 'mono'] as const).map(f => (
+                                                <button
+                                                    key={f}
+                                                    type="button"
+                                                    onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
+                                                    className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
+                                                >
+                                                    {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="flex flex-col gap-2.5">
+                                            {([
+                                                { label: 'Name size', key: 'name', min: 12, max: 36 },
+                                                { label: 'Contact size', key: 'contact', min: 6, max: 16 },
+                                                { label: 'Heading size', key: 'heading', min: 8, max: 20 },
+                                                { label: 'Body size', key: 'body', min: 8, max: 16 },
+                                                { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                                { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                            ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                                <div key={key}>
+                                                    <div className="mb-1 flex justify-between">
+                                                        <span className="text-[11px] text-[#71717a]">{label}</span>
+                                                        <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
+                                                    </div>
+                                                    <input
+                                                        type="range"
+                                                        min={min}
+                                                        max={max}
+                                                        step={0.5}
+                                                        value={fontSizes[key]}
+                                                        aria-label={label}
+                                                        onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
+                                                        onMouseUp={save}
+                                                        onTouchEnd={save}
+                                                        onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
+                                                        className="w-full"
+                                                        style={{ accentColor: '#4f46e5' }}
+                                                    />
+                                                </div>
+                                            ))}
+                                            <div className="flex justify-end">
+                                                <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </PanelCard>
+                                    </div>
+                                )}
+
+                                {rightTab === 'optimize' && (
+                                    <div className="flex flex-col">
+                                        <PanelCard
+                                            title="Resume checklist"
+                                            pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
+                                            open={openSections.strength}
+                                            onToggle={() => toggleSection('strength')}
+                                        >
+                                            <div className="px-3 pb-3">
+                                                <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
+                                            </div>
+                                        </PanelCard>
+                                        <div className="rounded-[10px] border border-[#eeeef5] p-3">
+                                            {aiEnabled ? (
+                                                <AtsMatchPanel
+                                                    jobDescription={targetJobDescription}
+                                                    onJobDescriptionChange={setTargetJobDescription}
+                                                    onJobDescriptionBlur={save}
+                                                    keywordGaps={keywordGaps}
+                                                    aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
+                                                />
+                                            ) : (
+                                                <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {rightTab === 'share' && (
+                                    <div className="flex flex-col">
+                                        <PanelCard
+                                            title="Share links"
+                                            pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
+                                            open={openSections.share}
+                                            onToggle={() => toggleSection('share')}
+                                        >
+                                            <div className="px-3 pb-3">
+                                                <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
+                                            </div>
+                                        </PanelCard>
+                                        <PanelCard
+                                            title="Messages"
+                                            pill={unreadCount > 0
+                                                ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
+                                                : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
+                                            open={openSections.messages}
+                                            onToggle={() => toggleSection('messages')}
+                                        >
+                                            <div className="px-3 pb-3">
+                                                <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                                            </div>
+                                        </PanelCard>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        )}
+                    </aside>
+
+                </div>
+            )}
+
+            {experiment && (
+                <div className="flex flex-wrap items-start bg-[#f1f5f9]">
+                    {/* ── Left: live preview ── */}
+                    <div className="min-h-[calc(100vh-3.5rem)] flex-1 p-4">
+                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
+                            <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
+                                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
+                                <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+                            </div>
+                            <div className="relative h-[calc(100vh-8rem)]">
+                                {renderPreviewFrames()}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── Right: Skills entry ── */}
+                    <aside className="sticky top-0 max-h-screen w-full self-start overflow-y-auto border-l border-[#cbd5e1] bg-white md:w-[440px]" style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+                        <div className="border-b border-[#eeeef5] px-4 py-3">
+                            <span className="text-xs font-bold text-[#0f172a]">Skills</span>
+                        </div>
+                        <div className="p-4">
+                            {renderSkillsEditor()}
+                        </div>
+                    </aside>
+                </div>
+            )}
 
             {/* First-run wizard */}
             {wizardStep < 2 && (
