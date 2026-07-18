@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(AiModelRatesSeeder::class);
         $this->call(JobRolesSeeder::class);
         $this->call(JobTitlesSeeder::class);
     }
