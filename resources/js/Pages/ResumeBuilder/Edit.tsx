@@ -1032,10 +1032,11 @@ export default function Edit({
                 <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
                     <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] transition-all" style={{ width: `${completionScore}%` }} />
                 </div>
-                <div className="ml-4 inline-flex overflow-hidden rounded-lg border border-[#cbd5e1] text-xs font-bold">
+                <div className="ml-4 inline-flex overflow-hidden rounded-lg border border-[#cbd5e1] text-xs font-bold" role="group" aria-label="Editor layout">
                     <button
                         type="button"
                         onClick={() => setExperiment(false)}
+                        aria-pressed={!experiment}
                         className={`px-3 py-1.5 transition-colors ${!experiment ? 'bg-[#4f46e5] text-white' : 'text-[#475569] hover:bg-[#f1f5f9]'}`}
                     >
                         Normal
@@ -1043,6 +1044,7 @@ export default function Edit({
                     <button
                         type="button"
                         onClick={() => { setExperiment(true); refreshPreview(); }}
+                        aria-pressed={experiment}
                         className={`px-3 py-1.5 transition-colors ${experiment ? 'bg-[#4f46e5] text-white' : 'text-[#475569] hover:bg-[#f1f5f9]'}`}
                     >
                         ⭐ Experiment
