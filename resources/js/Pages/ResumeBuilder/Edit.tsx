@@ -9,7 +9,6 @@ import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
     SwatchIcon,
-    EyeIcon,
     ArrowDownTrayIcon, TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -147,7 +146,7 @@ function FInput({ value, onChange, onBlur, placeholder, type = 'text' }: {
             onChange={e => onChange(e.target.value)}
             onBlur={onBlur}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-[#cbd5e1] px-3 py-2 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
+            className="w-full rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
     );
 }
@@ -163,7 +162,7 @@ function FTextarea({ value, onChange, onBlur, placeholder, rows = 4 }: {
             placeholder={placeholder}
             rows={rows}
             spellCheck
-            className="w-full resize-y rounded-lg border border-[#cbd5e1] px-3 py-2 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
+            className="w-full resize-y rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
     );
 }
@@ -441,10 +440,11 @@ const TEMPLATE_LABELS: Record<string, string> = {
 const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'projects', 'education', 'skills', 'certifications'];
 const freshPdfSrc = (id: number) => route('builder.html-preview', id) + '?t=' + Date.now();
 
-// Right-panel tabs. Preview shows the live HTML render; Design/Optimize/Share group the tools.
-type RightTab = 'preview' | 'design' | 'optimize' | 'share';
+// Right-panel tabs. The live preview owns the left column, so the panel is all
+// editing: Sections holds the form, Design/Optimize/Share group the tools.
+type RightTab = 'sections' | 'design' | 'optimize' | 'share';
 const RIGHT_TABS: { key: RightTab; label: string }[] = [
-    { key: 'preview', label: 'Preview' },
+    { key: 'sections', label: 'Sections' },
     { key: 'design', label: 'Design' },
     { key: 'optimize', label: 'Optimize' },
     { key: 'share', label: 'Share' },
@@ -526,9 +526,32 @@ export default function Edit({
     const [liveScore, setLiveScore] = useState<number | null>(null);
     // Right panel: collapsible, tabbed. Open by default on wide screens.
     const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
-    const [rightTab, setRightTab] = useState<RightTab>('preview');
-    // Experiment layout: preview on the left, Skills entry in the right panel. Not persisted.
-    const [experiment, setExperiment] = useState(false);
+    const [rightTab, setRightTab] = useState<RightTab>('sections');
+    // Drag the panel's left edge to resize. ponytail: two window listeners, no
+    // resize library; width is not persisted across reloads.
+    // Default is proportional (~32vw, clamped) so the preview stays the dominant
+    // element on a small laptop instead of the panel creeping toward 50/50.
+    const [panelWidth, setPanelWidth] = useState(() =>
+        typeof window === 'undefined' ? 440 : Math.min(Math.max(window.innerWidth * 0.32, 360), 520)
+    );
+    const startResize = (e: React.PointerEvent) => {
+        e.preventDefault();
+        // Capture the pointer on the handle: without this the preview iframe eats
+        // pointermove/pointerup while the cursor is over it, so the drag freezes
+        // and the listeners outlive the release.
+        const handle = e.currentTarget as HTMLElement;
+        handle.setPointerCapture(e.pointerId);
+        const move = (ev: PointerEvent) => setPanelWidth(Math.min(Math.max(window.innerWidth - ev.clientX, 360), Math.max(360, window.innerWidth - 320)));
+        const up = () => {
+            // Capture is released implicitly on pointerup/pointercancel.
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', up);
+            window.removeEventListener('pointercancel', up);
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+        window.addEventListener('pointercancel', up);
+    };
     const [templateOpen, setTemplateOpen] = useState(false);
     // Section-click → highlight in the live-preview iframe.
     const activeSectionRef = useRef<string | null>(null);
@@ -547,13 +570,6 @@ export default function Edit({
         clearTimeout(pdfSwapTimer.current);
         pdfSwapTimer.current = setTimeout(() => setActivePdfFrame(back), 1500);
     }, [resume.id]);
-
-    // Header button / tab switch → open the panel on the live Preview tab and refresh it.
-    const jumpToPreview = () => {
-        setSidebarOpen(true);
-        setRightTab('preview');
-        refreshPreview();
-    };
 
     // Toggle the .rg-hl outline (from resume-pdf.blade) on the clicked section inside the
     // same-origin preview iframe, and scroll it into view. No-op when the iframe isn't mounted.
@@ -579,8 +595,8 @@ export default function Edit({
     };
 
     const [openSections, setOpenSections] = useState({
-        fontSizes: false, contact: true,
-        summary: true, experience: true, projects: true, education: true, skills: true, certifications: true,
+        fontSizes: false, contact: false,
+        summary: false, experience: false, projects: false, education: false, skills: false, certifications: false,
         strength: false, share: false, messages: false,
     });
     const toggleSection = (key: keyof typeof openSections) =>
@@ -1002,62 +1018,8 @@ export default function Edit({
         sectionOrder,
     };
 
-    return (
-        <AuthenticatedLayout>
-            {/* Top bar */}
-            <div className="flex flex-wrap items-center gap-3 border-b border-[#cbd5e1] bg-white px-4 py-2">
-                <Link href={route('builder.index')} className="shrink-0 text-sm text-[#94a3b8] hover:text-[#475569]">← Resumes</Link>
-                <span className="shrink-0 text-[#cbd5e1]">/</span>
-                <h2 className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold text-[#0f172a]">{name}</h2>
-                {liveScore !== null && (
-                    <span className="inline-flex shrink-0 items-center rounded-full bg-[#eef2ff] px-2.5 py-0.5 text-xs font-bold text-[#4f46e5]">
-                        {liveScore}%
-                    </span>
-                )}
-                <span className="shrink-0 text-[11px] text-[#a0a0b0]">
-                    {saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}
-                </span>
-                <button
-                    type="button"
-                    onClick={jumpToPreview}
-                    className="ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-[#cbd5e1] bg-white px-3 py-1.5 text-xs font-semibold text-[#475569] transition hover:border-[#a5b4fc]"
-                >
-                    <EyeIcon className="h-3.5 w-3.5" />
-                    Jump to preview
-                </button>
-            </div>
-
-            {/* Completion bar + experiment toggle */}
-            <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-2">
-                <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
-                    <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] transition-all" style={{ width: `${completionScore}%` }} />
-                </div>
-                <div className="ml-4 inline-flex overflow-hidden rounded-lg border border-[#cbd5e1] text-xs font-bold" role="group" aria-label="Editor layout">
-                    <button
-                        type="button"
-                        onClick={() => setExperiment(false)}
-                        aria-pressed={!experiment}
-                        className={`px-3 py-1.5 transition-colors ${!experiment ? 'bg-[#4f46e5] text-white' : 'text-[#475569] hover:bg-[#f1f5f9]'}`}
-                    >
-                        Normal
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => { setExperiment(true); refreshPreview(); }}
-                        aria-pressed={experiment}
-                        className={`px-3 py-1.5 transition-colors ${experiment ? 'bg-[#4f46e5] text-white' : 'text-[#475569] hover:bg-[#f1f5f9]'}`}
-                    >
-                        ⭐ Experiment
-                    </button>
-                </div>
-            </div>
-
-            <Head title={`Editing: ${name}`} />
-
-            {!experiment && (
-                <div className="flex flex-wrap items-start bg-[#f1f5f9]">
-                    {/* ── Form ── */}
-                    <div className="min-h-[calc(100vh-3.5rem)] flex-1 py-6 pb-24">
+    // The full section form, rendered in the panel's Sections tab.
+    const renderForm = (): React.ReactNode => (
                         <div className="mx-auto max-w-2xl space-y-4 px-4">
 
                             {/* Template & Font controls now live in the right panel's Design tab */}
@@ -1215,10 +1177,67 @@ export default function Edit({
                             </DndContext>
 
                         </div>
+    );
+
+    return (
+        <AuthenticatedLayout>
+            {/* Top bar */}
+            <div className="flex flex-wrap items-center gap-3 border-b border-[#cbd5e1] bg-white px-4 py-2">
+                <Link href={route('builder.index')} className="shrink-0 text-sm text-[#94a3b8] hover:text-[#475569]">← Resumes</Link>
+                <span className="shrink-0 text-[#cbd5e1]">/</span>
+                <h2 className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold text-[#0f172a]">{name}</h2>
+                {liveScore !== null && (
+                    <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                        liveScore <= 30 ? 'bg-[#fee2e2] text-[#b91c1c]'
+                            : liveScore <= 50 ? 'bg-[#fef3c7] text-[#a16207]'
+                                : 'bg-[#eef2ff] text-[#4f46e5]'
+                    }`}>
+                        {liveScore}%
+                    </span>
+                )}
+                <span className="shrink-0 text-[11px] text-[#a0a0b0]">
+                    {saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}
+                </span>
+            </div>
+
+            {/* Completion bar */}
+            <div className="flex items-center border-b border-gray-100 bg-white px-4 py-2">
+                <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] transition-all" style={{ width: `${completionScore}%` }} />
+                </div>
+            </div>
+
+            <Head title={`Editing: ${name}`} />
+
+            <div className="flex flex-wrap items-start bg-[#f1f5f9]">
+                    {/* ── Left column: the live preview, floated on a canvas so it
+                         reads as the document rather than a second panel. ── */}
+                    <div className="min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#f0f0f7] px-8 py-6">
+                        <div className="mb-2 flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
+                            <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+                        </div>
+                        <div className="relative h-[calc(100vh-9rem)] overflow-hidden rounded-md bg-white shadow-[0_8px_30px_rgba(79,70,229,0.12)]">
+                            {renderPreviewFrames()}
+                        </div>
                     </div>
 
-                    {/* ── Right panel (Preview / Design / Optimize / Share) ── */}
-                    <aside className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white transition-all duration-200 ${sidebarOpen ? 'w-full md:w-[440px]' : 'w-14'}`} style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+                    {/* Resize handle — drag to set the panel width. */}
+                    {sidebarOpen && (
+                        <div
+                            role="separator"
+                            aria-orientation="vertical"
+                            aria-label="Resize panel"
+                            onPointerDown={startResize}
+                            className="hidden min-h-[calc(100vh-3.5rem)] w-1.5 shrink-0 cursor-col-resize touch-none select-none self-stretch bg-[#e2e8f0] transition-colors hover:bg-[#a5b4fc] md:block"
+                        />
+                    )}
+
+                    {/* ── Right panel (Sections / Preview / Design / Optimize / Share) ── */}
+                    <aside
+                        className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white ${sidebarOpen ? 'w-full' : 'w-14 transition-all duration-200'}`}
+                        style={{ minHeight: 'calc(100vh - 3.5rem)', ...(sidebarOpen ? { width: panelWidth, maxWidth: '100%', flex: '0 0 auto' } : {}) }}
+                    >
                         <div className="flex items-center justify-between border-b border-[#eeeef5] px-4 py-3">
                             {sidebarOpen && <span className="text-xs font-bold text-[#0f172a]">Panel</span>}
                             <button type="button" onClick={() => setSidebarOpen(v => !v)} className="ml-auto rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]" title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}>
@@ -1235,7 +1254,7 @@ export default function Edit({
                                         <button
                                             key={t.key}
                                             type="button"
-                                            onClick={() => { setRightTab(t.key); if (t.key === 'preview') { refreshPreview(); } }}
+                                            onClick={() => setRightTab(t.key)}
                                             className={`flex-1 border-b-2 py-3 text-center text-xs font-bold transition-colors ${active ? 'border-[#4f46e5] text-[#4f46e5]' : 'border-transparent text-[#94a3b8] hover:text-[#475569]'}`}
                                         >
                                             {t.label}
@@ -1263,17 +1282,7 @@ export default function Edit({
                                     </div>
                                 )}
 
-                                {rightTab === 'preview' && (
-                                    <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
-                                        <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
-                                            <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
-                                        </div>
-                                        <div className="relative h-[72vh]">
-                                            {renderPreviewFrames()}
-                                        </div>
-                                    </div>
-                                )}
+                                {rightTab === 'sections' && renderForm()}
 
                                 {rightTab === 'design' && (
                                     <div className="flex flex-col">
@@ -1428,35 +1437,8 @@ export default function Edit({
                         )}
                     </aside>
 
-                </div>
-            )}
+            </div>
 
-            {experiment && (
-                <div className="flex flex-wrap items-start bg-[#f1f5f9]">
-                    {/* ── Left: live preview ── */}
-                    <div className="min-h-[calc(100vh-3.5rem)] flex-1 p-4">
-                        <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_4px_16px_rgba(79,70,229,0.08)]">
-                            <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-3.5 py-2">
-                                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
-                                <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
-                            </div>
-                            <div className="relative h-[calc(100vh-8rem)]">
-                                {renderPreviewFrames()}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ── Right: Skills entry ── */}
-                    <aside className="sticky top-0 max-h-screen w-full self-start overflow-y-auto border-l border-[#cbd5e1] bg-white md:w-[440px]" style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
-                        <div className="border-b border-[#eeeef5] px-4 py-3">
-                            <span className="text-xs font-bold text-[#0f172a]">Skills</span>
-                        </div>
-                        <div className="p-4">
-                            {renderSkillsEditor()}
-                        </div>
-                    </aside>
-                </div>
-            )}
 
             {/* First-run wizard */}
             {wizardStep < 2 && (
