@@ -6,6 +6,7 @@ Cleared orphaned references to deleted models that broke `migrate` and `migrate:
 ## Key Decisions
 - `job_applications` table stays despite the tracker being removed — `AnalyticsController` still queries it via `DB::table()` for the dashboard count.
 - Migrations reference column names, not model classes (`dropConstrainedForeignId`, not `dropForeignIdFor`), so deleting a model can't break them.
+- Migrations are forward-only; `migrate:rollback`/`reset`/`refresh` are unsupported and leave the DB wrecked. Rebuild with `migrate:fresh --seed`. See CLAUDE.md.
 - In-flight on `experiment/preview-left-skills-panel`: /shares page + builder preview-left experiment, both uncommitted.
 
 ## Next Steps
