@@ -63,7 +63,6 @@
   .sb-aside h1 { color: #fff; text-align: center; }
   .sb-aside .group { margin-top: 14pt; }
   .sb-aside .group-title { font-size: {{ $sizeHeading }}pt; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; margin-bottom: 4pt; }
-  .sb-aside .photo { width: 72pt; height: 72pt; border-radius: 50%; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); margin: 0 auto 10pt; }
   .sb-main h2 { color: {{ $accent }}; border-bottom-color: {{ $accent }}; }
 
   .creative-band { background: {{ $accent }}; color: #fff; padding: 24pt 0.75in; margin: -0.75in -0.75in 18pt; }
@@ -102,22 +101,9 @@
 </head>
 <body>
 
-@php
-    $photoDataUri = null;
-    $photoMedia = $resume->getFirstMedia('photo');
-    if ($photoMedia && file_exists($photoMedia->getPath())) {
-        $photoData = base64_encode(file_get_contents($photoMedia->getPath()));
-        $photoMime = $photoMedia->mime_type;
-        $photoDataUri = "data:{$photoMime};base64,{$photoData}";
-    }
-@endphp
-
 @if($template === 'sidebar')
   <div class="sb-wrap">
     <div class="sb-aside">
-      @if($photoDataUri)
-        <img src="{{ $photoDataUri }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px;" />
-      @endif
       <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
       <div class="group">
         @foreach($contactParts as $part)
@@ -141,9 +127,6 @@
 @elseif($template === 'creative')
   <div class="page">
     <div class="creative-band">
-      @if($photoDataUri)
-        <img src="{{ $photoDataUri }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px;" />
-      @endif
       <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
       <div class="sub">{{ implode(' • ', $contactParts) }}</div>
     </div>
@@ -153,9 +136,6 @@
 @elseif($template === 'executive')
   <div class="page exec">
     <div class="exec-header">
-      @if($photoDataUri)
-        <img src="{{ $photoDataUri }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px;" />
-      @endif
       <h1>{{ $c['full_name'] ?? $resume->name }}</h1>
       <hr>
       <div style="font-size: {{ $sizeContact }}pt;">{{ implode(' • ', $contactParts) }}</div>
