@@ -172,6 +172,9 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 - **Resume translation and career map** — the two most expensive AI features per unit of value. Deleted outright (routes, prompts, controllers, tests), not flagged off.
 - **All billing** (see above). Here the create-migrations were kept and a drop migration (`2026_07_14_120000_drop_billing_tables_and_columns`) removes the tables and columns, so both fresh and existing databases converge.
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
+- **Job applications tracker** (removed in `93c1c14`). `application_contacts` and `interview_notes` are dropped by migration. **`job_applications` is deliberately still live** — `AnalyticsController` queries it via `DB::table()` for the dashboard's `active_applications` count. Do not drop that table without rewriting that query first.
+
+**When deleting a model, grep for its class name across `database/`.** Migrations, factories, and seeders hold references the IDE and the test suite never exercise, so they stay green and only fail later at `migrate` or `migrate:fresh --seed` time. This has bitten three times: `JobApplication` (a migration `down()`, two factories) and `AiModelRate` (a seeder for a table dropped by `2026_06_10_113108_drop_dead_ai_tables`). Prefer the column name over the model — `dropConstrainedForeignId('foo_id')`, not `dropForeignIdFor(Foo::class)` — so migrations never depend on app classes that can be deleted out from under them.
 
 ## Key Design Decisions
 
@@ -186,7 +189,7 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 
 ---
 
-Last updated: 2026-07-14
+Last updated: 2026-07-18
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
