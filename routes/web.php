@@ -27,6 +27,7 @@ use App\Http\Controllers\ResumeThreadController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SectionEventController;
+use App\Http\Controllers\ShareController;
 use App\Http\Controllers\ShareLinkController;
 use App\Http\Controllers\StrengthScoreController;
 use Illuminate\Support\Facades\Route;
@@ -110,6 +111,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
+    Route::get('/shares', [ShareController::class, 'index'])->name('shares.index');
     Route::get('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'show'])->name('builder.thread');
     Route::post('/builder/{resume}/threads/{thread}/reply', [ResumeThreadController::class, 'reply'])->name('builder.thread.reply');
     Route::patch('/builder/{resume}/threads/{thread}/read', [ResumeThreadController::class, 'read'])->name('builder.thread.read');
@@ -150,6 +152,7 @@ Route::get('/career/{slug}', [CareerHubController::class, 'show'])->name('career
 // Public (unauthenticated) share link routes
 Route::middleware('throttle:60,1')->group(function () {
     Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
+    Route::post('/r/{token}/unlock', [PublicResumeController::class, 'unlock'])->name('public.resume.unlock');
 });
 Route::middleware('throttle:20,1')->group(function () {
     Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
