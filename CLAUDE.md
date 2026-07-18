@@ -74,7 +74,7 @@ Default to surfacing uncertainty, not hiding it.
 - **Frontend:** React 18, TypeScript, Tailwind CSS v3, Vite 8
 - **Auth:** Laravel Breeze (session-based), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63).
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
-- **Media:** `spatie/laravel-medialibrary` — `Resume` implements `HasMedia` with a single-file `photo` collection.
+- **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia` and nothing in `app/` uses `spatie/laravel-medialibrary`, though the package is still in `composer.json`.
 - **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
