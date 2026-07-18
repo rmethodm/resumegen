@@ -9,6 +9,7 @@ import {
     HomeIcon,
     MagnifyingGlassIcon,
     MoonIcon,
+    ShareIcon,
     ShieldCheckIcon,
     SunIcon,
     UserCircleIcon,
@@ -64,6 +65,7 @@ export default function Authenticated({
         { label: 'Resumes', href: route('builder.index'), active: route().current('builder.*'), icon: DocumentTextIcon },
         { label: 'Cover Letters', href: route('cover-letters.index'), active: route().current('cover-letters.*'), icon: EnvelopeIcon },
         { label: 'Messages', href: route('messages.index'), active: route().current('messages.*'), icon: ChatBubbleLeftRightIcon },
+        { label: 'Shares', href: route('shares.index'), active: route().current('shares.*'), icon: ShareIcon },
     ];
     if (user.is_master_admin) {
         workspace.push({ label: 'Admin', href: adminHref(), active: route().current('admin.*'), icon: ShieldCheckIcon });
