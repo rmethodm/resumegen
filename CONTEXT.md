@@ -1,15 +1,14 @@
 # Resumegen Context
 
 ## Current Task
-Cleared orphaned references to deleted models that broke `migrate` and `migrate:fresh --seed` (2026-07-18): `JobApplication` in a migration `down()` + two factories, `AiModelRate` in a seeder. Local DB rebuilt from scratch. Suite green (436 passed) — the drop from the previously-noted 532 is the 2026-07-14 billing/feature removals taking their tests, not lost coverage.
+Consolidated sharing onto `/shares` (2026-07-19). Deleted `SharePopover` from the builder; its Share tab now shows an active-link count plus a link to the shares page. Added `SampleSharesSeeder` (4 resumes, 10 links covering primary/password/expired/disabled/read/unread) wired into `DatabaseSeeder` behind a local-env guard. Also raised builder section-card contrast. All pushed to `experiment/preview-left-skills-panel`.
 
 ## Key Decisions
-- `job_applications` table stays despite the tracker being removed — `AnalyticsController` still queries it via `DB::table()` for the dashboard count.
-- Migrations reference column names, not model classes (`dropConstrainedForeignId`, not `dropForeignIdFor`), so deleting a model can't break them.
+- Share link management lives only on `/shares` — never in the builder. Sharing doesn't interleave with editing, and tokens are stable across edits. See CLAUDE.md.
+- Sample fixtures are a committed seeder, local-env only, idempotent (deletes `Sample — *` resumes before recreating) so real data is untouched.
 - Migrations are forward-only; `migrate:rollback`/`reset`/`refresh` are unsupported and leave the DB wrecked. Rebuild with `migrate:fresh --seed`. See CLAUDE.md.
-- In-flight on `experiment/preview-left-skills-panel`: /shares page + builder preview-left experiment, both uncommitted.
 
 ## Next Steps
 1. **Production .env** needs `AI_ENABLED=true` + `AI_CAREER_COACH_ENABLED=false` — until then prod AI stays dark.
-2. Finish or shelve the uncommitted /shares + builder-experiment work before branching again.
+2. Decide whether `experiment/preview-left-skills-panel` merges to main or stays an experiment.
 3. Wire cover letters to the existing `AiPrompts::coverLetter()` (no route yet); add deploy secrets `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`.
