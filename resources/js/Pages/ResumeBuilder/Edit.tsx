@@ -7,20 +7,17 @@ import ThreadsPanel from './Partials/ThreadsPanel';
 import SharePopover from './Partials/SharePopover';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
-    ChevronLeftIcon, ChevronRightIcon,
     SwatchIcon,
     ArrowDownTrayIcon, TrashIcon,
 } from '@heroicons/react/24/outline';
+import SectionDrawer from './Partials/SectionDrawer';
+import SectionPalette from './Partials/SectionPalette';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
-    DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors,
+    PointerSensor, KeyboardSensor, useSensor, useSensors,
     type DragEndEvent,
 } from '@dnd-kit/core';
-import {
-    SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable,
-    arrayMove,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ResumeData, ShareLink, ResumeTemplate,
@@ -164,59 +161,6 @@ function FTextarea({ value, onChange, onBlur, placeholder, rows = 4 }: {
             spellCheck
             className="w-full resize-y rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
-    );
-}
-
-// ─── Draggable section wrapper ────────────────────────────────────────────────
-
-function DraggableSection({
-    id, title, optional, open, onToggle, children,
-}: {
-    id: string; title: string; optional?: boolean; open: boolean; onToggle: () => void; children: React.ReactNode;
-}) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
-    return (
-        <div
-            ref={setNodeRef}
-            style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
-        >
-            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)]">
-                <div className="flex items-center gap-3 px-4 py-4">
-                    <button
-                        type="button"
-                        {...attributes}
-                        {...listeners}
-                        className="touch-none cursor-grab text-[#94a3b8] hover:text-[#475569] active:cursor-grabbing"
-                        tabIndex={-1}
-                        aria-label="Drag to reorder"
-                        onClick={e => e.stopPropagation()}
-                    >
-                        <DragDots />
-                    </button>
-                    <button
-                        type="button"
-                        className="flex flex-1 items-center gap-3 text-left"
-                        onClick={onToggle}
-                    >
-                        <span className="flex-1 text-sm font-semibold text-[#0f172a]">{title}</span>
-                        {optional && (
-                            <span className="text-[10px] font-medium uppercase tracking-widest text-[#94a3b8]">Optional</span>
-                        )}
-                        <svg
-                            className={`h-4 w-4 text-[#94a3b8] transition-transform ${open ? '' : 'rotate-180'}`}
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                    </button>
-                </div>
-                {open && (
-                    <div className="space-y-4 border-t border-[#cbd5e1] px-5 py-5">
-                        {children}
-                    </div>
-                )}
-            </div>
-        </div>
     );
 }
 
@@ -440,25 +384,14 @@ const TEMPLATE_LABELS: Record<string, string> = {
 const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'projects', 'education', 'skills', 'certifications'];
 const freshPdfSrc = (id: number) => route('builder.html-preview', id) + '?t=' + Date.now();
 
-// Right-panel tabs. The live preview owns the left column, so the panel is all
-// editing: Sections holds the form, Design/Optimize/Share group the tools.
-type RightTab = 'sections' | 'design' | 'optimize' | 'share';
-const RIGHT_TABS: { key: RightTab; label: string }[] = [
-    { key: 'sections', label: 'Sections' },
-    { key: 'design', label: 'Design' },
-    { key: 'optimize', label: 'Optimize' },
-    { key: 'share', label: 'Share' },
-];
+// Section registry: one entry per collapsible card, now opened in the palette's
+// drawer. `contact` is pinned (not draggable, not in sectionOrder); the rest
+// reorder via DEFAULT_SECTION_ORDER / sectionOrder. `optional` mirrors each
+// section's pre-refactor "optional" badge (summary/projects/certifications show
+// it; experience/education/skills do not).
+export type SectionKey = 'contact' | 'summary' | 'experience' | 'projects' | 'education' | 'skills' | 'certifications';
 
-// Section registry: one entry per collapsible card in the builder's Sections tab.
-// `contact` is pinned (not draggable, not in sectionOrder); the rest reorder via
-// DEFAULT_SECTION_ORDER / sectionOrder. `optional` mirrors each section's current
-// DraggableSection `optional` prop (summary/projects/certifications show the
-// "optional" affordance; experience/education/skills do not) — kept on the entry
-// so Task 1's rebuilt renderForm() reproduces the exact pre-refactor visuals.
-type SectionKey = 'contact' | 'summary' | 'experience' | 'projects' | 'education' | 'skills' | 'certifications';
-
-type SectionEntry = {
+export type SectionEntry = {
     key: SectionKey;
     label: string;
     isDraggable: boolean;
@@ -541,35 +474,11 @@ export default function Edit({
     const pendingSave = useRef(false);
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
-    // Right panel: collapsible, tabbed. Open by default on wide screens.
-    const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth >= 768);
-    const [rightTab, setRightTab] = useState<RightTab>('sections');
-    // Drag the panel's left edge to resize. ponytail: two window listeners, no
-    // resize library; width is not persisted across reloads.
-    // Default is proportional (~32vw, clamped) so the preview stays the dominant
-    // element on a small laptop instead of the panel creeping toward 50/50.
-    const [panelWidth, setPanelWidth] = useState(() =>
-        typeof window === 'undefined' ? 440 : Math.min(Math.max(window.innerWidth * 0.32, 360), 520)
-    );
-    const startResize = (e: React.PointerEvent) => {
-        e.preventDefault();
-        // Capture the pointer on the handle: without this the preview iframe eats
-        // pointermove/pointerup while the cursor is over it, so the drag freezes
-        // and the listeners outlive the release.
-        const handle = e.currentTarget as HTMLElement;
-        handle.setPointerCapture(e.pointerId);
-        const move = (ev: PointerEvent) => setPanelWidth(Math.min(Math.max(window.innerWidth - ev.clientX, 360), Math.max(360, window.innerWidth - 320)));
-        const up = () => {
-            // Capture is released implicitly on pointerup/pointercancel.
-            window.removeEventListener('pointermove', move);
-            window.removeEventListener('pointerup', up);
-            window.removeEventListener('pointercancel', up);
-        };
-        window.addEventListener('pointermove', move);
-        window.addEventListener('pointerup', up);
-        window.addEventListener('pointercancel', up);
-    };
     const [templateOpen, setTemplateOpen] = useState(false);
+    // Which section's fields are open in the drawer overlaying the preview. Not
+    // to be confused with `openSections` (the old per-card accordion state,
+    // still used inside each section's own render()).
+    const [drawerSection, setDrawerSection] = useState<SectionKey | null>(null);
     // Section-click → highlight in the live-preview iframe.
     const activeSectionRef = useRef<string | null>(null);
     const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
@@ -1198,55 +1107,8 @@ export default function Edit({
         },
     };
 
-    // The full section form, rendered in the panel's Sections tab. Built from the
-    // SECTIONS registry above; Task 2 replaces this with the palette + drawer.
-    const renderForm = (): React.ReactNode => (
-        <div className="mx-auto max-w-2xl space-y-4 px-4">
-
-            {/* Template & Font controls now live in the right panel's Design tab */}
-            {/* Resume Name */}
-            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)] px-5 py-4 space-y-2">
-                <FLabel>Resume Name</FLabel>
-                <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
-                <p className="text-xs text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
-            </div>
-
-            {/* Contact — pinned, not draggable */}
-            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)]">
-                <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => { toggleSection('contact'); highlightSection('contact'); }}>
-                    <span className="w-[18px]" />
-                    <span className="flex-1 text-sm font-semibold text-[#0f172a]">{SECTIONS.contact.label}</span>
-                    <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
-                </button>
-                {openSections.contact && SECTIONS.contact.render()}
-            </div>
-
-            {/* Draggable sections */}
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
-                <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
-                    {sectionOrder.map(key => {
-                        const entry = SECTIONS[key as SectionKey];
-                        if (!entry) {
-                            return null;
-                        }
-                        return (
-                            <DraggableSection
-                                key={entry.key}
-                                id={entry.key}
-                                title={entry.label}
-                                optional={entry.optional}
-                                open={openSections[entry.key as keyof typeof openSections]}
-                                onToggle={() => { toggleSection(entry.key); highlightSection(entry.key); }}
-                            >
-                                {entry.render()}
-                            </DraggableSection>
-                        );
-                    })}
-                </SortableContext>
-            </DndContext>
-
-        </div>
-    );
+    // Palette entries: contact pinned first, then the reorderable sections.
+    const paletteEntries: SectionEntry[] = [SECTIONS.contact, ...sectionOrder.map(k => SECTIONS[k as SectionKey]).filter(Boolean)];
 
     return (
         <AuthenticatedLayout>
@@ -1279,9 +1141,9 @@ export default function Edit({
             <Head title={`Editing: ${name}`} />
 
             <div className="flex flex-wrap items-start bg-[#f1f5f9]">
-                    {/* ── Left column: the live preview, floated on a canvas so it
-                         reads as the document rather than a second panel. ── */}
-                    <div className="min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6">
+                    {/* ── Left column: the live preview. The drawer overlays this
+                         column when a section is open, so it needs `relative`. ── */}
+                    <div className="relative min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6">
                         <div className="mb-2 flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
                             <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
@@ -1289,49 +1151,23 @@ export default function Edit({
                         <div className="relative h-[calc(100vh-9rem)] overflow-hidden rounded-md bg-white shadow-[0_8px_30px_rgba(79,70,229,0.12)]">
                             {renderPreviewFrames()}
                         </div>
+
+                        {drawerSection && (
+                            <SectionDrawer
+                                title={SECTIONS[drawerSection].label}
+                                onClose={() => setDrawerSection(null)}
+                            >
+                                {SECTIONS[drawerSection].render()}
+                            </SectionDrawer>
+                        )}
                     </div>
 
-                    {/* Resize handle — drag to set the panel width. */}
-                    {sidebarOpen && (
-                        <div
-                            role="separator"
-                            aria-orientation="vertical"
-                            aria-label="Resize panel"
-                            onPointerDown={startResize}
-                            className="hidden min-h-[calc(100vh-3.5rem)] w-1.5 shrink-0 cursor-col-resize touch-none select-none self-stretch bg-[#e2e8f0] transition-colors hover:bg-[#a5b4fc] md:block"
-                        />
-                    )}
-
-                    {/* ── Right panel (Sections / Preview / Design / Optimize / Share) ── */}
+                    {/* ── Right palette: fixed 300px, no collapse, no resize. ── */}
                     <aside
-                        className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white ${sidebarOpen ? 'w-full' : 'w-14 transition-all duration-200'}`}
-                        style={{ minHeight: 'calc(100vh - 3.5rem)', ...(sidebarOpen ? { width: panelWidth, maxWidth: '100%', flex: '0 0 auto' } : {}) }}
+                        className="sticky top-0 max-h-screen w-[300px] shrink-0 self-start overflow-y-auto border-l border-[#cbd5e1] bg-white"
+                        style={{ minHeight: 'calc(100vh - 3.5rem)' }}
                     >
-                        <div className="flex items-center justify-between border-b border-[#eeeef5] px-4 py-3">
-                            {sidebarOpen && <span className="text-xs font-bold text-[#0f172a]">Panel</span>}
-                            <button type="button" onClick={() => setSidebarOpen(v => !v)} className="ml-auto rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]" title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}>
-                                {sidebarOpen ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
-                            </button>
-                        </div>
-                        {sidebarOpen && (
                         <div className="flex flex-col">
-                            {/* Tabs */}
-                            <div className="flex border-b border-[#eeeef5]">
-                                {RIGHT_TABS.map(t => {
-                                    const active = rightTab === t.key;
-                                    return (
-                                        <button
-                                            key={t.key}
-                                            type="button"
-                                            onClick={() => setRightTab(t.key)}
-                                            className={`flex-1 border-b-2 py-3 text-center text-xs font-bold transition-colors ${active ? 'border-[#4f46e5] text-[#4f46e5]' : 'border-transparent text-[#94a3b8] hover:text-[#475569]'}`}
-                                        >
-                                            {t.label}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
                             {/* Export */}
                             <div className="flex gap-2 border-b border-[#eeeef5] p-3">
                                 <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
@@ -1342,19 +1178,34 @@ export default function Edit({
                                 </a>
                             </div>
 
-                            {/* Tab content */}
-                            <div className="p-4">
+                            <div className="space-y-4 p-3">
                                 {recruiterNote && (
-                                    <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
                                         <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
                                         <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
                                     </div>
                                 )}
 
-                                {rightTab === 'sections' && renderForm()}
+                                {/* Resume Name — always visible; doesn't belong to any one
+                                    section, so it doesn't get a drawer of its own. */}
+                                <div className="space-y-1.5 rounded-[10px] border border-[#eeeef5] bg-white p-3">
+                                    <FLabel>Resume Name</FLabel>
+                                    <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
+                                    <p className="text-[11px] text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
+                                </div>
 
-                                {rightTab === 'design' && (
-                                    <div className="flex flex-col">
+                                <div>
+                                    <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Sections</p>
+                                    <SectionPalette
+                                        entries={paletteEntries}
+                                        activeKey={drawerSection}
+                                        onSelect={key => { setDrawerSection(key); highlightSection(key); }}
+                                        onDragEnd={handleSectionDragEnd}
+                                        sensors={sensors}
+                                        sectionOrder={sectionOrder}
+                                    />
+                                </div>
+
                                 <PanelCard
                                     title="Template"
                                     icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
@@ -1363,7 +1214,7 @@ export default function Edit({
                                     onToggle={() => setTemplateOpen(v => !v)}
                                 >
                                     <div className="px-3 pb-3">
-                                        <div aria-label="Resume template" className="grid grid-cols-3 gap-2">
+                                        <div aria-label="Resume template" className="grid grid-cols-2 gap-2">
                                             {Object.keys(TEMPLATE_LABELS).map(t => {
                                                 const selected = template === t;
                                                 return (
@@ -1444,66 +1295,64 @@ export default function Edit({
                                         </div>
                                     </div>
                                 </PanelCard>
-                                    </div>
-                                )}
 
-                                {rightTab === 'optimize' && (
-                                    <div className="flex flex-col">
-                                        <PanelCard
-                                            title="Resume checklist"
-                                            pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
-                                            open={openSections.strength}
-                                            onToggle={() => toggleSection('strength')}
-                                        >
-                                            <div className="px-3 pb-3">
-                                                <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
-                                            </div>
-                                        </PanelCard>
-                                        <div className="rounded-[10px] border border-[#eeeef5] p-3">
-                                            {aiEnabled ? (
-                                                <AtsMatchPanel
-                                                    jobDescription={targetJobDescription}
-                                                    onJobDescriptionChange={setTargetJobDescription}
-                                                    onJobDescriptionBlur={save}
-                                                    keywordGaps={keywordGaps}
-                                                    aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
-                                                />
-                                            ) : (
-                                                <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
-                                            )}
-                                        </div>
+                                <PanelCard
+                                    title="Resume checklist"
+                                    pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
+                                    open={openSections.strength}
+                                    onToggle={() => toggleSection('strength')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
                                     </div>
-                                )}
+                                </PanelCard>
+                                <div className="rounded-[10px] border border-[#eeeef5] p-3">
+                                    {aiEnabled ? (
+                                        <AtsMatchPanel
+                                            jobDescription={targetJobDescription}
+                                            onJobDescriptionChange={setTargetJobDescription}
+                                            onJobDescriptionBlur={save}
+                                            keywordGaps={keywordGaps}
+                                            aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
+                                        />
+                                    ) : (
+                                        <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
+                                    )}
+                                </div>
 
-                                {rightTab === 'share' && (
-                                    <div className="flex flex-col">
-                                        <PanelCard
-                                            title="Share links"
-                                            pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
-                                            open={openSections.share}
-                                            onToggle={() => toggleSection('share')}
+                                <PanelCard
+                                    title="Share links"
+                                    pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
+                                    open={openSections.share}
+                                    onToggle={() => toggleSection('share')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        {/* ponytail: management lives on /shares — this is just the handoff. */}
+                                        <p className="mb-3 text-xs text-gray-500">
+                                            Share links are stable, so an edit here reaches anyone you already sent one to. Create and manage them on the Shares page.
+                                        </p>
+                                        <Link
+                                            href={route('shares.index')}
+                                            className="inline-flex rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
                                         >
-                                            <div className="px-3 pb-3">
-                                                <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
-                                            </div>
-                                        </PanelCard>
-                                        <PanelCard
-                                            title="Messages"
-                                            pill={unreadCount > 0
-                                                ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
-                                                : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
-                                            open={openSections.messages}
-                                            onToggle={() => toggleSection('messages')}
-                                        >
-                                            <div className="px-3 pb-3">
-                                                <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
-                                            </div>
-                                        </PanelCard>
+                                            Manage shares →
+                                        </Link>
                                     </div>
-                                )}
+                                </PanelCard>
+                                <PanelCard
+                                    title="Messages"
+                                    pill={unreadCount > 0
+                                        ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
+                                        : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
+                                    open={openSections.messages}
+                                    onToggle={() => toggleSection('messages')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                                    </div>
+                                </PanelCard>
                             </div>
                         </div>
-                        )}
                     </aside>
 
             </div>
