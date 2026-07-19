@@ -180,7 +180,7 @@ function DraggableSection({
             ref={setNodeRef}
             style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
         >
-            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)]">
                 <div className="flex items-center gap-3 px-4 py-4">
                     <button
                         type="button"
@@ -1024,14 +1024,14 @@ export default function Edit({
 
                             {/* Template & Font controls now live in the right panel's Design tab */}
                             {/* Resume Name */}
-                            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] px-5 py-4 space-y-2">
+                            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)] px-5 py-4 space-y-2">
                                 <FLabel>Resume Name</FLabel>
                                 <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
                                 <p className="text-xs text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
                             </div>
 
                             {/* Contact — pinned, not draggable */}
-                            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)]">
                                 <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => { toggleSection('contact'); highlightSection('contact'); }}>
                                     <span className="w-[18px]" />
                                     <span className="flex-1 text-sm font-semibold text-[#0f172a]">Contact Information</span>
@@ -1212,7 +1212,7 @@ export default function Edit({
             <div className="flex flex-wrap items-start bg-[#f1f5f9]">
                     {/* ── Left column: the live preview, floated on a canvas so it
                          reads as the document rather than a second panel. ── */}
-                    <div className="min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#f0f0f7] px-8 py-6">
+                    <div className="min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6">
                         <div className="mb-2 flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
                             <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
