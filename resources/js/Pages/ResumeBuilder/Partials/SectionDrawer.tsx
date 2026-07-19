@@ -4,6 +4,11 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 type Props = {
     title: string;
     onClose: () => void;
+    /** Element to return focus to on close — the palette row that opened this
+     *  drawer, passed explicitly by the caller rather than sniffed from
+     *  document.activeElement (see mount effect below for why). May be null,
+     *  or a node later removed from the DOM; focusing it is then a no-op. */
+    restoreFocusTo: HTMLElement | null;
     children: React.ReactNode;
 };
 
@@ -19,23 +24,25 @@ const FOCUSABLE_SELECTOR =
  * click-outside would fire while the user is reaching for the palette. Esc
  * and the close button are the two ways out.
  */
-export default function SectionDrawer({ title, onClose, children }: Props) {
+export default function SectionDrawer({ title, onClose, restoreFocusTo, children }: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
-    const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
-    // Move focus into the drawer on open, and restore it to the triggering
-    // element (the palette row) on close.
+    // Move focus into the drawer on open, and restore it to the caller-supplied
+    // trigger element on close. Deliberately not read from document.activeElement
+    // here: this component remounts (via a `key` on the section) when switching
+    // straight from one section's drawer to another's, and React runs the
+    // outgoing instance's cleanup before the incoming instance's mount effect in
+    // the same commit — a mount-time read would capture the previous drawer's
+    // just-restored focus target, not the row that opened this drawer.
     useEffect(() => {
-        previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
-
         const container = containerRef.current;
         const firstFocusable = container?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
         (firstFocusable ?? container)?.focus();
 
         return () => {
-            previouslyFocusedRef.current?.focus();
+            restoreFocusTo?.focus();
         };
-    }, []);
+    }, [restoreFocusTo]);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
