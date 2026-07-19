@@ -1138,10 +1138,10 @@ export default function Edit({
 
             <Head title={`Editing: ${name}`} />
 
-            <div className="flex flex-wrap items-start bg-[#f1f5f9]">
-                    {/* ── Left column: the live preview. The drawer overlays this
-                         column when a section is open, so it needs `relative`. ── */}
-                    <div className="relative min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6">
+            <div className="relative flex flex-wrap items-start bg-[#f1f5f9]">
+                    {/* ── Left column: the live preview. Hidden below `lg` so the
+                         palette/drawer can take the full narrow-screen width. ── */}
+                    <div className="relative hidden min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6 lg:block">
                         <div className="mb-2 flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
                             <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
@@ -1149,20 +1149,21 @@ export default function Edit({
                         <div className="relative h-[calc(100vh-9rem)] overflow-hidden rounded-md bg-white shadow-[0_8px_30px_rgba(79,70,229,0.12)]">
                             {renderPreviewFrames()}
                         </div>
-
-                        {drawerSection && (
-                            <SectionDrawer
-                                title={SECTIONS[drawerSection].label}
-                                onClose={() => setDrawerSection(null)}
-                            >
-                                {SECTIONS[drawerSection].render()}
-                            </SectionDrawer>
-                        )}
                     </div>
 
-                    {/* ── Right palette: fixed 300px, no collapse, no resize. ── */}
+                    {drawerSection && (
+                        <SectionDrawer
+                            title={SECTIONS[drawerSection].label}
+                            onClose={() => setDrawerSection(null)}
+                        >
+                            {SECTIONS[drawerSection].render()}
+                        </SectionDrawer>
+                    )}
+
+                    {/* ── Right palette: fixed 300px on large screens, full-width
+                         below `lg` since the preview is hidden there. ── */}
                     <aside
-                        className="sticky top-0 max-h-screen w-[300px] shrink-0 self-start overflow-y-auto border-l border-[#cbd5e1] bg-white"
+                        className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-[#cbd5e1] bg-white lg:w-[300px]"
                         style={{ minHeight: 'calc(100vh - 3.5rem)' }}
                     >
                         <div className="flex flex-col">
