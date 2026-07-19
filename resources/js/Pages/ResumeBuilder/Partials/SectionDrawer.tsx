@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 type Props = {
@@ -6,6 +6,9 @@ type Props = {
     onClose: () => void;
     children: React.ReactNode;
 };
+
+const FOCUSABLE_SELECTOR =
+    'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /**
  * Overlays the preview column while one section's fields are edited.
@@ -17,9 +20,61 @@ type Props = {
  * and the close button are the two ways out.
  */
 export default function SectionDrawer({ title, onClose, children }: Props) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+
+    // Move focus into the drawer on open, and restore it to the triggering
+    // element (the palette row) on close.
+    useEffect(() => {
+        previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+
+        const container = containerRef.current;
+        const firstFocusable = container?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+        (firstFocusable ?? container)?.focus();
+
+        return () => {
+            previouslyFocusedRef.current?.focus();
+        };
+    }, []);
+
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') { onClose(); }
+            if (e.key === 'Escape') {
+                onClose();
+                return;
+            }
+
+            if (e.key !== 'Tab') {
+                return;
+            }
+
+            const container = containerRef.current;
+            if (!container) {
+                return;
+            }
+
+            const focusable = Array.from(
+                container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+            );
+            if (focusable.length === 0) {
+                e.preventDefault();
+                container.focus();
+                return;
+            }
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            const active = document.activeElement;
+
+            if (e.shiftKey) {
+                if (active === first || !container.contains(active)) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            } else if (active === last || !container.contains(active)) {
+                e.preventDefault();
+                first.focus();
+            }
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
@@ -27,9 +82,12 @@ export default function SectionDrawer({ title, onClose, children }: Props) {
 
     return (
         <div
+            ref={containerRef}
             role="dialog"
+            aria-modal="true"
             aria-label={title}
-            className="absolute inset-y-0 right-0 z-20 flex w-full max-w-[640px] flex-col border-l border-[#cbd5e1] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.18)]"
+            tabIndex={-1}
+            className="absolute inset-y-0 right-0 z-20 flex w-full max-w-[640px] flex-col border-l border-[#cbd5e1] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.18)] focus:outline-none"
         >
             <div className="flex shrink-0 items-center justify-between border-b border-[#eeeef5] px-5 py-3">
                 <span className="text-sm font-semibold text-[#0f172a]">{title}</span>
