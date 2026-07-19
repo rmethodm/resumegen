@@ -3,12 +3,31 @@
     "allow": [
       "Bash(php artisan test *)",
       "Bash(php artisan route:list *)",
-      "Bash(npm run types:check)",
       "mcp__dual-graph__graph_read",
       "mcp__dual-graph__graph_continue",
-      "Bash(vendor/bin/phpunit *)",
-      "mcp__plugin_stripe_stripe__stripe_api_search",
-      "mcp__plugin_stripe_stripe__search_stripe_resources"
+      "Bash(vendor/bin/phpunit *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-migrate-rollback.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/nudge-project-skills.sh\""
+          }
+        ]
+      }
     ]
   }
 }
