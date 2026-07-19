@@ -21,6 +21,8 @@ class AiPrompts
             'interview_coach' => self::interviewCoach($input),
             'cover_letter' => self::coverLetter($input),
             'import_resume' => self::importResume($input),
+            'rank_jobs' => self::rankJobs($input),
+            'import_job_posting' => self::importJobPosting($input),
             default => throw new InvalidArgumentException("Unknown AI feature: {$feature}"),
         };
     }
@@ -174,6 +176,77 @@ class AiPrompts
         {$experienceText}{$jdSection}
 
         Return ONLY the letter body text. No markdown fences, no explanation, no preamble.
+        PROMPT;
+    }
+
+    /**
+     * Score postings against a candidate's actual history. The model judges fit;
+     * it never sources listings, so it is told plainly that the input list is the
+     * whole world and inventing an id is a failure.
+     *
+     * @param  array{experience?: array<mixed>, skills?: array<mixed>, summary?: string, listings?: array<mixed>}  $input
+     */
+    private static function rankJobs(array $input): string
+    {
+        $experience = json_encode($input['experience'] ?? []);
+        $skills = json_encode($input['skills'] ?? []);
+        $summary = $input['summary'] ?? '';
+        $listings = json_encode($input['listings'] ?? []);
+
+        return <<<PROMPT
+        You are screening job postings for one candidate. For each posting, judge how well the
+        candidate's actual experience matches it.
+
+        Score 0-100, where 80+ means they clearly meet the core requirements, 50-79 means a
+        plausible stretch, and below 50 means a poor match. Give one short sentence of reasoning
+        naming the specific thing that drove the score — a matching skill, a missing requirement,
+        a seniority gap. Do not flatter; a bad match must score low.
+
+        Score every posting in the list and no others. Use the exact "id" values given. Never
+        invent a posting or an id.
+
+        Return ONLY a JSON object of this shape, with no markdown fences or preamble:
+        {"scores": [{"id": "<id from input>", "score": 0, "reason": ""}]}
+
+        Candidate summary: {$summary}
+        Candidate skills: {$skills}
+        Candidate experience: {$experience}
+
+        Postings: {$listings}
+        PROMPT;
+    }
+
+    /**
+     * Extract a posting from arbitrary scraped page text. Pages carry navigation,
+     * cookie banners, and unrelated listings, so the model is told to prefer null
+     * over a guess — a wrong company name is worse than a blank one.
+     *
+     * @param  array{text?: string, url?: string}  $input
+     */
+    private static function importJobPosting(array $input): string
+    {
+        // ponytail: same cap as resume import; a posting that needs more than this is an outlier
+        $text = mb_substr($input['text'] ?? '', 0, 12000);
+        $url = $input['url'] ?? '';
+
+        return <<<PROMPT
+        Extract the job posting from the page text below and return it as a single JSON object.
+
+        Required JSON structure:
+        {"title": "", "company": "", "location": "", "description": "", "salary_min": null, "salary_max": null}
+
+        Rules:
+        - Use null for any field the page does not clearly state. Do not guess or infer.
+        - "description" is a plain-text summary of the role and its requirements, max 1500 characters.
+        - Salaries are annual whole numbers in the page's own currency, or null.
+        - If the page is not a job posting at all, return every field as null.
+
+        Return ONLY the JSON object. No markdown fences, no explanation.
+
+        Source URL: {$url}
+
+        Page text:
+        {$text}
         PROMPT;
     }
 
