@@ -121,6 +121,11 @@ Resume content is stored as JSON columns on a single `resumes` table (no separat
 ### Frontend page structure
 The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor + live preview iframe. Uses `onBlur` on every field to trigger `router.put` save (no debounce). The preview iframe loads `GET /builder/{resume}/preview` with a cache-busting `?t=<timestamp>` query param on each save.
 
+### Share links live on `/shares`, not in the builder
+`Shares/Index.tsx` (`ShareController@index`) is the only place share links are created, labelled, expired, password-gated, or revoked. It is a top-level nav item and shows what the builder never could: views, unique visitors, unread badges, a 7-day trend, and per-visit rows.
+
+The builder's Share tab holds only an active-link count and a link to `/shares`. It used to embed a `SharePopover` with its own label/expiry/revoke controls — a cramped duplicate that could not show any of the analytics, and drifted from `/shares` as that page grew. Removed on 2026-07-19; don't reintroduce link management in the builder. Sharing does not interleave with editing (you share once you've stopped editing), and tokens are stable across edits, so a recruiter's existing link already serves the current version — there is nothing to re-copy after an edit.
+
 ### Shared Inertia props
 `HandleInertiaRequests::share()` passes `auth.user`, `flash.{success,error}`, `aiEnabled` (mirrors `config('ai.enabled')` so the UI can hide AI affordances), and `impersonating`. There is no `featureGate` — see "Billing".
 
@@ -199,7 +204,7 @@ Making rollback work would mean editing seven already-shipped migrations to no b
 
 ---
 
-Last updated: 2026-07-18
+Last updated: 2026-07-19
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
