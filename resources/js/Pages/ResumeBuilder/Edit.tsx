@@ -479,6 +479,13 @@ export default function Edit({
     // to be confused with `openSections` (the old per-card accordion state,
     // still used inside each section's own render()).
     const [drawerSection, setDrawerSection] = useState<SectionKey | null>(null);
+    // The palette row that opened the current drawer, captured explicitly at click
+    // time so the drawer can restore focus to the right row on close. Sniffing
+    // document.activeElement inside the drawer itself is unreliable: React runs the
+    // outgoing drawer's unmount cleanup before the incoming drawer's mount effect in
+    // the same commit, so a mount-time read would capture the previous drawer's
+    // restored focus target instead of the row that opened this one.
+    const drawerTriggerRef = useRef<HTMLElement | null>(null);
     // Section-click → highlight in the live-preview iframe.
     const activeSectionRef = useRef<string | null>(null);
     const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
@@ -1129,9 +1136,16 @@ export default function Edit({
     // Palette entries: contact pinned first, then the reorderable sections.
     // sectionOrder is persisted DB data and can legitimately contain stale keys from
     // older versions, so this runtime filter against the registry is still required —
-    // but it's a runtime-only guard, not a type-checked no-op (see DEFAULT_SECTION_ORDER,
-    // which the type system does enforce as SectionKey-complete).
-    const paletteEntries: SectionEntry[] = [SECTIONS.contact, ...sectionOrder.map(k => SECTIONS[k as SectionKey]).filter(Boolean)];
+    // the cast to SectionKey doesn't guarantee a hit, so each lookup is re-typed as
+    // possibly undefined and the type-guarded filter is what actually narrows it back
+    // to SectionEntry[] (see DEFAULT_SECTION_ORDER, which the type system does enforce
+    // as SectionKey-complete).
+    const paletteEntries: SectionEntry[] = [
+        SECTIONS.contact,
+        ...sectionOrder
+            .map(k => SECTIONS[k as SectionKey] as SectionEntry | undefined)
+            .filter((e): e is SectionEntry => Boolean(e)),
+    ];
 
     return (
         <AuthenticatedLayout>
@@ -1181,6 +1195,7 @@ export default function Edit({
                             key={drawerSection}
                             title={SECTIONS[drawerSection].label}
                             onClose={() => setDrawerSection(null)}
+                            restoreFocusTo={drawerTriggerRef.current}
                         >
                             {SECTIONS[drawerSection].render()}
                         </SectionDrawer>
@@ -1224,7 +1239,7 @@ export default function Edit({
                                     <SectionPalette
                                         entries={paletteEntries}
                                         activeKey={drawerSection}
-                                        onSelect={key => { setDrawerSection(key); highlightSection(key); }}
+                                        onSelect={(key, trigger) => { drawerTriggerRef.current = trigger; setDrawerSection(key); highlightSection(key); }}
                                         onDragEnd={handleSectionDragEnd}
                                         sensors={sensors}
                                         sectionOrder={sectionOrder}
