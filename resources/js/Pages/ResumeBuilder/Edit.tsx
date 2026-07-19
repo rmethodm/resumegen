@@ -4,7 +4,6 @@ import { type ResumeContent } from './Partials/PlainTextView';
 import JdMatcher from './Partials/JdMatcher';
 import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
-import SharePopover from './Partials/SharePopover';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
@@ -1415,7 +1414,16 @@ export default function Edit({
                                             onToggle={() => toggleSection('share')}
                                         >
                                             <div className="px-3 pb-3">
-                                                <SharePopover resumeId={resume.id} shareLinks={initialLinks} />
+                                                {/* ponytail: management lives on /shares — this is just the handoff. */}
+                                                <p className="mb-3 text-xs text-gray-500">
+                                                    Share links are stable, so an edit here reaches anyone you already sent one to. Create and manage them on the Shares page.
+                                                </p>
+                                                <Link
+                                                    href={route('shares.index')}
+                                                    className="inline-flex rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
+                                                >
+                                                    Manage shares →
+                                                </Link>
                                             </div>
                                         </PanelCard>
                                         <PanelCard
