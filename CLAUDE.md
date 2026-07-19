@@ -137,13 +137,15 @@ The builder's Share tab holds only an active-link count and a link to `/shares`.
 
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
-## AI (OpenAI)
+## AI (OpenAI or Anthropic)
 
 `App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`AI_ENABLED`, `OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
 
 **Master switch:** `AI_ENABLED` (default true). The `ai_enabled` middleware (`EnsureAiEnabled`, aliased in `bootstrap/app.php`) **404s** every AI route when it's false — 404 not 403, so a suspended feature looks absent rather than like a plan restriction. The `aiEnabled` Inertia prop hides the matching UI.
 
-**Prompts:** `App\Data\AiPrompts::build(string $feature, array $input)` — one `match` over the feature key, throws on unknown. Keys: `rewrite_bullet`, `critique_bullet`, `generate_summary`, `ats_keywords`, `interview_coach`, `cover_letter`.
+**Provider switch:** `AI_PROVIDER` (`openai` | `anthropic`, default `openai`) picks the vendor app-wide; a per-call `provider` option overrides it. Anthropic goes through the `Http` facade (no SDK), and its usage keys (`input_tokens`/`output_tokens`) are normalized so `ai_requests` logging, cost estimation, and the monthly cap work identically for both. **`OPENAI_API_KEY` is required either way** — moderation always runs through OpenAI's free moderations endpoint, whichever vendor answers the chat call. Anthropic has no `response_format`, so JSON mode is emulated by prefilling the assistant turn with `{`; if you switch to tool-use for guaranteed schemas, `AiProviderTest` is what tells you the mapping still holds.
+
+**Prompts:** `App\Data\AiPrompts::build(string $feature, array $input)` — one `match` over the feature key, throws on unknown. Keys: `rewrite_bullet`, `critique_bullet`, `generate_summary`, `ats_keywords`, `interview_coach`, `cover_letter`, `import_resume`, `rank_jobs`, `import_job_posting`.
 
 **Routes** (all under `['ai_enabled', 'throttle:20,1']` in `web.php`): `builder/{resume}/ai/{rewrite-bullet,critique-bullet,summary,ats-keywords}`, `builder/{resume}/interview-coach`, `cover-letters/{letter}/ai/draft`.
 
@@ -152,6 +154,20 @@ Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` 
 **Bullet coach:** the bullet editor offers two equal-weight actions — "Coach me" (`critique_bullet`: the model asks what the weak bullet fails to say, the user answers in their own words, and the bullet is rebuilt from *their* facts) and "Write it for me" (`rewrite_bullet`). Deliberate 50/50 — do not demote either to a secondary affordance without asking.
 
 **Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `RegisteredUserController::store()` via `registration_ip` column on `users`.
+
+## Job Search (`/jobs`)
+
+**Code finds the jobs; the model only judges fit.** `JobSearchService` fans out to the boards in `app/Services/JobBoards/` (`AdzunaBoard`, `UsaJobsBoard`) behind the `JobBoard` interface, normalizing a `JobQuery` (keywords, location, `local|state|national`) into each API's own parameters. `national` drops the location filter entirely; `local`/`state` map to radii in `config/jobs.php`. A board with no credentials is **skipped**, and a board that errors returns `[]` and is reported — search degrades to whatever is configured, never to a 500. Results dedupe on normalized `company|title|location`, because the same posting is routinely syndicated to more than one board under different ids.
+
+**Do not add HTML scrapers for the big boards.** LinkedIn/Indeed/Glassdoor actively block plain HTTP clients and the selectors rot; the coverage gap is filled by `JobUrlImporter` instead — paste any posting URL, fetch the page, and let the model extract structured fields (`import_job_posting`). That is the scraping capability, without per-site knowledge to maintain.
+
+**`JobUrlImporter` is an SSRF trust boundary.** The URL is user-supplied, so it is a direct route to anything the server can reach. The guard resolves **both A and AAAA** (IPv4-only resolution let `[::1]` through), unwraps IPv4-mapped IPv6 (`::ffff:127.0.0.1` bypasses `FILTER_FLAG_NO_PRIV_RANGE`), and **disables redirects, revalidating every hop** — a public URL that 302s to `169.254.169.254` would otherwise walk past a one-time check. `JobUrlImporterTest` covers all 8 bypass vectors; treat it as a regression fence, not optional coverage. Known ceiling: DNS rebinding between check and fetch is not addressed — pin the resolved IP (curl `CURLOPT_RESOLVE`) or use an egress-allowlisting proxy if that matters.
+
+**Ranking is opt-in.** Searching never spends the AI quota; the user clicks "Score against my resume" to fire one batched `rank_jobs` call for the visible page. Scores for ids that were never sent are discarded and out-of-range scores clamped — a hallucinated id must not attach a score to nothing.
+
+**Alerts:** saved searches (`job_searches`) with `is_alerting` re-run daily at 07:00 via `jobs:run-alerts`. The unique index on `job_listings (job_search_id, source, external_id)` is what makes "new since last run" a database fact rather than a guess — **every fresh listing is marked `notified_at`, including ones held back below the score floor**, or they resurface as new every day forever. Requires both the scheduler and a queue worker in production (the digest mailable is `ShouldQueue`).
+
+**Note:** `/jobs/salary` (`SalaryController@hint`) predates this feature and occupies the `jobs.*` route namespace, so nav active-state uses `route().current('jobs.index')`, not `jobs.*`.
 
 ## Admin Panel
 
@@ -200,7 +216,8 @@ Making rollback work would mean editing seven already-shipped migrations to no b
 5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
 6. **No monetization** — every feature is free and unlimited; AI is metered only to cap OpenAI spend.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
-8. **AI coaches as often as it ghostwrites** — the coach path (ask the user for the missing facts, then rebuild the bullet from their answer) is offered at equal weight to the write-it-for-me path, so the resume stays the candidate's own words.
+8. **Deterministic sourcing, model-only judgment** — job boards are fetched by code; the model scores fit and parses arbitrary pages, and never picks what to search for.
+9. **AI coaches as often as it ghostwrites** — the coach path (ask the user for the missing facts, then rebuild the bullet from their answer) is offered at equal weight to the write-it-for-me path, so the resume stays the candidate's own words.
 
 ---
 
