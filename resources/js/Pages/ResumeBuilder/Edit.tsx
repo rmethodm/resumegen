@@ -4,7 +4,6 @@ import { type ResumeContent } from './Partials/PlainTextView';
 import JdMatcher from './Partials/JdMatcher';
 import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
-import SharePopover from './Partials/SharePopover';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     ChevronLeftIcon, ChevronRightIcon,
@@ -1407,7 +1406,219 @@ export default function Edit({
                         </div>
                     </div>
                     )}
-                </aside>
+
+                    {/* ── Right panel (Sections / Preview / Design / Optimize / Share) ── */}
+                    <aside
+                        className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white ${sidebarOpen ? 'w-full' : 'w-14 transition-all duration-200'}`}
+                        style={{ minHeight: 'calc(100vh - 3.5rem)', ...(sidebarOpen ? { width: panelWidth, maxWidth: '100%', flex: '0 0 auto' } : {}) }}
+                    >
+                        <div className="flex items-center justify-between border-b border-[#eeeef5] px-4 py-3">
+                            {sidebarOpen && <span className="text-xs font-bold text-[#0f172a]">Panel</span>}
+                            <button type="button" onClick={() => setSidebarOpen(v => !v)} className="ml-auto rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]" title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}>
+                                {sidebarOpen ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
+                            </button>
+                        </div>
+                        {sidebarOpen && (
+                        <div className="flex flex-col">
+                            {/* Tabs */}
+                            <div className="flex border-b border-[#eeeef5]">
+                                {RIGHT_TABS.map(t => {
+                                    const active = rightTab === t.key;
+                                    return (
+                                        <button
+                                            key={t.key}
+                                            type="button"
+                                            onClick={() => setRightTab(t.key)}
+                                            className={`flex-1 border-b-2 py-3 text-center text-xs font-bold transition-colors ${active ? 'border-[#4f46e5] text-[#4f46e5]' : 'border-transparent text-[#94a3b8] hover:text-[#475569]'}`}
+                                        >
+                                            {t.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Export */}
+                            <div className="flex gap-2 border-b border-[#eeeef5] p-3">
+                                <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
+                                    <ArrowDownTrayIcon className="h-3.5 w-3.5" /> DOCX
+                                </a>
+                                <a href={route('builder.pdf', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#cbd5e1] py-2 text-xs font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:bg-[#f8fafc] hover:text-[#4f46e5]">
+                                    <ArrowDownTrayIcon className="h-3.5 w-3.5" /> PDF
+                                </a>
+                            </div>
+
+                            {/* Tab content */}
+                            <div className="p-4">
+                                {recruiterNote && (
+                                    <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                        <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
+                                        <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
+                                    </div>
+                                )}
+
+                                {rightTab === 'sections' && renderForm()}
+
+                                {rightTab === 'design' && (
+                                    <div className="flex flex-col">
+                                <PanelCard
+                                    title="Template"
+                                    icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
+                                    pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
+                                    open={templateOpen}
+                                    onToggle={() => setTemplateOpen(v => !v)}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <div aria-label="Resume template" className="grid grid-cols-3 gap-2">
+                                            {Object.keys(TEMPLATE_LABELS).map(t => {
+                                                const selected = template === t;
+                                                return (
+                                                    <button
+                                                        key={t}
+                                                        type="button"
+                                                        onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
+                                                        aria-pressed={selected}
+                                                        title={TEMPLATE_LABELS[t] ?? t}
+                                                        className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
+                                                    >
+                                                        <img
+                                                            src={`/images/templates/${t}.png`}
+                                                            loading="lazy"
+                                                            alt=""
+                                                            className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
+                                                        />
+                                                        <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                        {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
+                                    </div>
+                                </PanelCard>
+
+                                <PanelCard
+                                    title="Font"
+                                    open={openSections.fontSizes}
+                                    onToggle={() => toggleSection('fontSizes')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <div className="mb-3.5 flex gap-1.5">
+                                            {(['sans', 'serif', 'mono'] as const).map(f => (
+                                                <button
+                                                    key={f}
+                                                    type="button"
+                                                    onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
+                                                    className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
+                                                >
+                                                    {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="flex flex-col gap-2.5">
+                                            {([
+                                                { label: 'Name size', key: 'name', min: 12, max: 36 },
+                                                { label: 'Contact size', key: 'contact', min: 6, max: 16 },
+                                                { label: 'Heading size', key: 'heading', min: 8, max: 20 },
+                                                { label: 'Body size', key: 'body', min: 8, max: 16 },
+                                                { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                                { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                            ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                                <div key={key}>
+                                                    <div className="mb-1 flex justify-between">
+                                                        <span className="text-[11px] text-[#71717a]">{label}</span>
+                                                        <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
+                                                    </div>
+                                                    <input
+                                                        type="range"
+                                                        min={min}
+                                                        max={max}
+                                                        step={0.5}
+                                                        value={fontSizes[key]}
+                                                        aria-label={label}
+                                                        onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
+                                                        onMouseUp={save}
+                                                        onTouchEnd={save}
+                                                        onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
+                                                        className="w-full"
+                                                        style={{ accentColor: '#4f46e5' }}
+                                                    />
+                                                </div>
+                                            ))}
+                                            <div className="flex justify-end">
+                                                <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </PanelCard>
+                                    </div>
+                                )}
+
+                                {rightTab === 'optimize' && (
+                                    <div className="flex flex-col">
+                                        <PanelCard
+                                            title="Resume checklist"
+                                            pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
+                                            open={openSections.strength}
+                                            onToggle={() => toggleSection('strength')}
+                                        >
+                                            <div className="px-3 pb-3">
+                                                <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
+                                            </div>
+                                        </PanelCard>
+                                        <div className="rounded-[10px] border border-[#eeeef5] p-3">
+                                            {aiEnabled ? (
+                                                <AtsMatchPanel
+                                                    jobDescription={targetJobDescription}
+                                                    onJobDescriptionChange={setTargetJobDescription}
+                                                    onJobDescriptionBlur={save}
+                                                    keywordGaps={keywordGaps}
+                                                    aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
+                                                />
+                                            ) : (
+                                                <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {rightTab === 'share' && (
+                                    <div className="flex flex-col">
+                                        <PanelCard
+                                            title="Share links"
+                                            pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
+                                            open={openSections.share}
+                                            onToggle={() => toggleSection('share')}
+                                        >
+                                            <div className="px-3 pb-3">
+                                                {/* ponytail: management lives on /shares — this is just the handoff. */}
+                                                <p className="mb-3 text-xs text-gray-500">
+                                                    Share links are stable, so an edit here reaches anyone you already sent one to. Create and manage them on the Shares page.
+                                                </p>
+                                                <Link
+                                                    href={route('shares.index')}
+                                                    className="inline-flex rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
+                                                >
+                                                    Manage shares →
+                                                </Link>
+                                            </div>
+                                        </PanelCard>
+                                        <PanelCard
+                                            title="Messages"
+                                            pill={unreadCount > 0
+                                                ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
+                                                : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
+                                            open={openSections.messages}
+                                            onToggle={() => toggleSection('messages')}
+                                        >
+                                            <div className="px-3 pb-3">
+                                                <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                                            </div>
+                                        </PanelCard>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        )}
+                    </aside>
 
             </div>
 
