@@ -128,6 +128,8 @@ The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor 
 
 **The app is free and unlimited.** Billing was removed on 2026-07-14: Cashier is uninstalled, there are no plan tiers, no Stripe, no payments, no `UpgradeModal`, no `featureGate`. Do not add a paywall, a tier check, or an upgrade CTA without asking first.
 
+**Laravel Boost's auto-generated context block lies about this.** It lists `laravel/cashier (CASHIER) - v16` among the installed packages. Cashier is in neither `composer.json` nor `vendor/` — verify against the filesystem, not that header. The matching `.claude/skills/cashier-stripe-development` skill and the two `mcp__plugin_stripe_stripe__*` permissions were deleted on 2026-07-19 for the same reason.
+
 `App\Services\UserLimits` survives, but it now meters **only AI** — every other limit (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
 
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
@@ -184,7 +186,24 @@ A rollback that fails partway leaves the database in a wrecked half-state — sc
 
 Making rollback work would mean editing seven already-shipped migrations to no benefit. Forward-only is the decision, not an oversight.
 
+**This is enforced, not just documented.** `.claude/hooks/block-migrate-rollback.sh` is a `PreToolUse` hook (wired in `.claude/settings.json`) that blocks any `artisan migrate:rollback|reset|refresh` and points at `migrate:fresh --seed`. Prose here did not prevent the two misdiagnoses above, so the rule got teeth. The regex requires an `artisan` prefix, so grepping for or documenting the term still works.
+
 **When deleting a model, grep for its class name across `database/`.** Migrations, factories, and seeders hold references the IDE and the test suite never exercise, so they stay green and only fail later at `migrate` or `migrate:fresh --seed` time. This has bitten three times: `JobApplication` (a migration `down()`, two factories) and `AiModelRate` (a seeder for a table dropped by `2026_06_10_113108_drop_dead_ai_tables`). Prefer the column name over the model — `dropConstrainedForeignId('foo_id')`, not `dropForeignIdFor(Foo::class)` — so migrations never depend on app classes that can be deleted out from under them.
+
+## Project skills are hook-enforced, not prose-enforced
+
+`.claude/skills/` holds five repo-specific skills. Two of them are wired to a `PreToolUse` hook — `.claude/hooks/nudge-project-skills.sh`, matched on `Edit|Write` in `.claude/settings.json`:
+
+- editing `resources/js/**/*.tsx|jsx` → activate `inertia-react-development`
+- editing `app/**/*.php` → activate `laravel-best-practices`
+
+**Why a hook and not a sentence.** A transcript audit on 2026-07-19 counted 83 `Skill` invocations across 122 sessions: `superpowers:*` process skills accounted for ~69%, and **all five project skills had fired exactly zero times** since being added on 2026-07-07 — despite good `description:` frontmatter and despite the Boost block below explicitly saying "IMPORTANT: Activate `inertia-react-development`". Passive description-matching loses against a crowded skill listing and four SessionStart hooks. Same lesson as `block-migrate-rollback.sh` one section up: prose that has already failed once does not get a second chance, it gets teeth.
+
+The hook **nudges, it does not block** — it emits `additionalContext` with `permissionDecision: "defer"`, so the edit is neither blocked nor auto-approved and the normal permission flow is untouched. It fires **once per skill per session** (a `/tmp` marker keyed on `session_id`); re-injecting the same sentence on all 40 edits of a page is how injected context gets tuned out.
+
+`debug-using-debugbar`, `server-deployment`, and `tailwindcss-development` are deliberately *not* hooked — they key off intent ("this page is slow", "deploy this"), not off a file path, so there is no reliable `Edit`/`Write` trigger for them. They remain description-matched only.
+
+Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-guidelines>` block — Boost regenerates that block, so edits there are overwritten. The hook is what actually carries the rule.
 
 ## Key Design Decisions
 
