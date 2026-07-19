@@ -1,16 +1,14 @@
 # Resumegen Context
 
 ## Current Task
-AI direction resolved and shipped (2026-07-13). Bullet editor now offers "🎯 Coach me" and "✨ Write it for me" as equal 50/50 buttons. Coach (`critique_bullet`) asks what a weak bullet fails to say; the user answers in their own words and the bullet is rebuilt from their facts. AI re-enabled site-wide. Full suite green (532 passed), nothing committed yet.
+Consolidated sharing onto `/shares` (2026-07-19). Deleted `SharePopover` from the builder; its Share tab now shows an active-link count plus a link to the shares page. Added `SampleSharesSeeder` (4 resumes, 10 links covering primary/password/expired/disabled/read/unread) wired into `DatabaseSeeder` behind a local-env guard. Also raised builder section-card contrast. All pushed to `experiment/preview-left-skills-panel`.
 
 ## Key Decisions
-- Option C at true 50/50 weight (user overrode the coach-primary recommendation).
-- Career coach chat kept but **dark** behind its own flag (`ai_enabled:career_coach` middleware param, `AI_CAREER_COACH_ENABLED=false`); code intact, still tested via phpunit.xml.
-- Translate / career map / resignation-letter generation **deleted outright**, not flagged off — highest cost, lowest value per AI_STRATEGY.md.
+- Share link management lives only on `/shares` — never in the builder. Sharing doesn't interleave with editing, and tokens are stable across edits. See CLAUDE.md.
+- Sample fixtures are a committed seeder, local-env only, idempotent (deletes `Sample — *` resumes before recreating) so real data is untouched.
+- Migrations are forward-only; `migrate:rollback`/`reset`/`refresh` are unsupported and leave the DB wrecked. Rebuild with `migrate:fresh --seed`. See CLAUDE.md.
 
 ## Next Steps
 1. **Production .env** needs `AI_ENABLED=true` + `AI_CAREER_COACH_ENABLED=false` — until then prod AI stays dark.
-2. **Free tier AI quota is 0** (`config/ai.php`), so free users can't use the coach at all — pick a non-zero number or keep 0 deliberately.
-3. **README.md + 9 template PNGs show modified** but were not touched by this work — review before staging.
-
-Also open: wire cover letters to the existing `AiPrompts::coverLetter()` (no route yet); decide whether to hard-scope or delete career coach chat; add GitHub secrets `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY` for the deploy pipeline; background-check vendor pick still with user.
+2. Decide whether `experiment/preview-left-skills-panel` merges to main or stays an experiment.
+3. Wire cover letters to the existing `AiPrompts::coverLetter()` (no route yet); add deploy secrets `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`.
