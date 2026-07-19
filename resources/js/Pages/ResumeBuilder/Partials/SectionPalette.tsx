@@ -7,13 +7,13 @@ import type { SectionEntry, SectionKey } from '../Edit';
 type Props = {
     entries: SectionEntry[];
     activeKey: SectionKey | null;
-    onSelect: (key: SectionKey) => void;
+    onSelect: (key: SectionKey, trigger: HTMLElement) => void;
     onDragEnd: (event: DragEndEvent) => void;
     sensors: ReturnType<typeof useSensors>;
     sectionOrder: string[];
 };
 
-function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: boolean; onSelect: () => void }) {
+function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: boolean; onSelect: (trigger: HTMLElement) => void }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: entry.key });
     const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
 
@@ -38,7 +38,7 @@ function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: 
             )}
             <button
                 type="button"
-                onClick={onSelect}
+                onClick={e => onSelect(e.currentTarget)}
                 className={`flex-1 text-left text-sm ${active ? 'font-semibold text-[#4f46e5]' : 'text-[#1e293b]'}`}
             >
                 {entry.label}
@@ -62,13 +62,13 @@ export default function SectionPalette({ entries, activeKey, onSelect, onDragEnd
     return (
         <div className="space-y-1.5">
             {pinned.map(entry => (
-                <PaletteRow key={entry.key} entry={entry} active={activeKey === entry.key} onSelect={() => onSelect(entry.key)} />
+                <PaletteRow key={entry.key} entry={entry} active={activeKey === entry.key} onSelect={trigger => onSelect(entry.key, trigger)} />
             ))}
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
                 <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
                     <div className="space-y-1.5">
                         {sortable.map(entry => (
-                            <PaletteRow key={entry.key} entry={entry} active={activeKey === entry.key} onSelect={() => onSelect(entry.key)} />
+                            <PaletteRow key={entry.key} entry={entry} active={activeKey === entry.key} onSelect={trigger => onSelect(entry.key, trigger)} />
                         ))}
                     </div>
                 </SortableContext>
