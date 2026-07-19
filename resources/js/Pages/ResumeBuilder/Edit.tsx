@@ -521,9 +521,7 @@ export default function Edit({
     };
 
     const [openSections, setOpenSections] = useState({
-        fontSizes: false, contact: false,
-        summary: false, experience: false, projects: false, education: false, skills: false, certifications: false,
-        strength: false, share: false, messages: false,
+        fontSizes: false, strength: false, share: false, messages: false,
     });
     const toggleSection = (key: keyof typeof openSections) =>
         setOpenSections(s => ({ ...s, [key]: !s[key] }));
