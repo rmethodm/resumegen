@@ -11,6 +11,7 @@ use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
 use App\Http\Controllers\InterviewCoachController;
+use App\Http\Controllers\JobSearchController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
@@ -103,6 +104,8 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
         Route::post('/cover-letters/{letter}/ai/draft', [AiSuggestionController::class, 'coverLetterDraft'])->name('cover-letters.ai.draft');
         Route::post('/import/pdf/extract', [ResumeImportController::class, 'extract'])->name('import.pdf.extract');
+        Route::post('/jobs/rank', [JobSearchController::class, 'rank'])->name('jobs.rank');
+        Route::post('/jobs/import-url', [JobSearchController::class, 'importUrl'])->name('jobs.import-url');
     });
 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
@@ -121,6 +124,13 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
 
     Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
+
+    Route::get('/jobs', [JobSearchController::class, 'index'])->name('jobs.index');
+    Route::post('/jobs/search', [JobSearchController::class, 'search'])->name('jobs.search')->middleware('throttle:30,1');
+    Route::post('/jobs/saved', [JobSearchController::class, 'store'])->name('jobs.saved.store');
+    Route::patch('/jobs/saved/{jobSearch}', [JobSearchController::class, 'update'])->name('jobs.saved.update');
+    Route::delete('/jobs/saved/{jobSearch}', [JobSearchController::class, 'destroy'])->name('jobs.saved.destroy');
+
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
     Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');
 
