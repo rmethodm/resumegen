@@ -17,5 +17,10 @@ class DatabaseSeeder extends Seeder
         $this->call(AiModelRatesSeeder::class);
         $this->call(JobRolesSeeder::class);
         $this->call(JobTitlesSeeder::class);
+
+        // Test fixtures only — never let sample resumes reach a real environment.
+        if (app()->environment('local')) {
+            $this->call(SampleSharesSeeder::class);
+        }
     }
 }
