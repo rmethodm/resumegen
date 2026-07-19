@@ -13,4 +13,5 @@ Schedule::command('resumes:nudge-views')->weekly();
 Schedule::command('ai:prune-flagged')->daily();
 Schedule::command('ai:cost-alert')->dailyAt('08:00');
 Schedule::command('system-events:prune')->daily();
+Schedule::command('jobs:run-alerts')->dailyAt('07:00');
 Schedule::command('revenue:snapshot')->dailyAt('23:55');
