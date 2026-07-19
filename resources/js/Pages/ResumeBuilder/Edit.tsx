@@ -450,6 +450,23 @@ const RIGHT_TABS: { key: RightTab; label: string }[] = [
     { key: 'share', label: 'Share' },
 ];
 
+// Section registry: one entry per collapsible card in the builder's Sections tab.
+// `contact` is pinned (not draggable, not in sectionOrder); the rest reorder via
+// DEFAULT_SECTION_ORDER / sectionOrder. `optional` mirrors each section's current
+// DraggableSection `optional` prop (summary/projects/certifications show the
+// "optional" affordance; experience/education/skills do not) — kept on the entry
+// so Task 1's rebuilt renderForm() reproduces the exact pre-refactor visuals.
+type SectionKey = 'contact' | 'summary' | 'experience' | 'projects' | 'education' | 'skills' | 'certifications';
+
+type SectionEntry = {
+    key: SectionKey;
+    label: string;
+    isDraggable: boolean;
+    optional: boolean;
+    isComplete: () => boolean;
+    render: () => React.ReactNode;
+};
+
 // Sparkle glyph for the "Coach me" action (matches the design's summary card).
 function SparkIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
     return (
@@ -1018,165 +1035,217 @@ export default function Edit({
         sectionOrder,
     };
 
-    // The full section form, rendered in the panel's Sections tab.
+    // Keyed section registry — one entry per collapsible card. Built inside the
+    // component so each entry's render() closes over the section's own state/setters.
+    const SECTIONS: Record<SectionKey, SectionEntry> = {
+        contact: {
+            key: 'contact',
+            label: 'Contact Information',
+            isDraggable: false,
+            optional: false,
+            isComplete: () => contact.full_name.trim().length > 0,
+            render: () => (
+                <div className="grid grid-cols-1 gap-3 border-t border-[#cbd5e1] p-5 sm:grid-cols-2">
+                    <div className="col-span-2"><FLabel>Full Name</FLabel><FInput value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} onBlur={save} placeholder="Jane Smith" /></div>
+                    <div><FLabel>Email</FLabel><FInput value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} onBlur={save} type="email" placeholder="jane@example.com" /></div>
+                    <div><FLabel>Phone</FLabel><FInput value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} onBlur={save} placeholder="(555) 555-5555" /></div>
+                    <div><FLabel>Location</FLabel><FInput value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} onBlur={save} placeholder="Atlanta, GA" /></div>
+                    <div><FLabel>LinkedIn</FLabel><FInput value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} onBlur={save} placeholder="linkedin.com/in/jane" /></div>
+                    <div className="col-span-2"><FLabel>Website</FLabel><FInput value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} onBlur={save} placeholder="janesmith.dev" /></div>
+                </div>
+            ),
+        },
+        summary: {
+            key: 'summary',
+            label: 'Professional Summary',
+            isDraggable: true,
+            optional: true,
+            isComplete: () => summary.trim().length > 0,
+            render: () => (
+                <>
+                    <FTextarea
+                        value={summary}
+                        onChange={setSummary}
+                        onBlur={save}
+                        placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
+                        rows={5}
+                    />
+                    <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                    {renderBulletTools(
+                        'summary',
+                        summary,
+                        s => { setSummary(s); markGenerated('summary'); setTimeout(save, 0); },
+                        handleGenerateSummary,
+                    )}
+                </>
+            ),
+        },
+        experience: {
+            key: 'experience',
+            label: 'Experience',
+            isDraggable: true,
+            optional: false,
+            isComplete: () => experience.length > 0,
+            render: () => (
+                <>
+                    {experience.map((exp, i) => (
+                        <EntryCard key={exp.id} label={exp.company || exp.title ? `${exp.title}${exp.company ? ' — ' + exp.company : ''}` : `Experience ${i + 1}`} onRemove={() => { setExperience(prev => prev.filter(e => e.id !== exp.id)); setTimeout(save, 0); }}>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div><FLabel>Job Title</FLabel><FInput value={exp.title} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, title: v } : e))} onBlur={save} placeholder="Software Engineer" /></div>
+                                <div><FLabel>Company</FLabel><FInput value={exp.company} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, company: v } : e))} onBlur={save} placeholder="Acme Corp" /></div>
+                                <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
+                                <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
+                            </div>
+                            <label className="flex items-center gap-2 text-sm text-[#475569] cursor-pointer">
+                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#bfdbfe] text-[#2563eb] focus:ring-[#3b82f6]" />
+                                I currently work here
+                            </label>
+                            <div>
+                                <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
+                                <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
+                            </div>
+                            {renderBulletTools(
+                                `exp:${exp.id}`,
+                                exp.bullets ?? '',
+                                s => { setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: s } : e)); markGenerated(`exp:${exp.id}`); setTimeout(save, 0); },
+                                () => handleImproveExperience(exp.id, exp.bullets),
+                            )}
+                        </EntryCard>
+                    ))}
+                    <AddButton label="Add Experience" onClick={() => setExperience(prev => [...prev, emptyExp()])} />
+                </>
+            ),
+        },
+        projects: {
+            key: 'projects',
+            label: 'Project',
+            isDraggable: true,
+            optional: true,
+            isComplete: () => projects.length > 0,
+            render: () => (
+                <>
+                    {projects.map((proj, i) => (
+                        <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
+                            <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
+                            <div><FLabel>Description <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
+                            <div><FLabel>Project URL <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div><FLabel>Start Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
+                                <div><FLabel>End Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
+                            </div>
+                            <div>
+                                <FLabel>Highlights <span className="text-[#94a3b8] font-normal">(one per line, optional)</span></FLabel>
+                                <FTextarea value={proj.bullets} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, bullets: v } : p))} onBlur={save} placeholder={"• Built with React, Node.js, and PostgreSQL\n• Handles 10k+ daily users"} rows={3} />
+                            </div>
+                        </EntryCard>
+                    ))}
+                    <AddButton label="Add Project" onClick={() => setProjects(prev => [...prev, emptyProject()])} />
+                </>
+            ),
+        },
+        education: {
+            key: 'education',
+            label: 'Education',
+            isDraggable: true,
+            optional: false,
+            isComplete: () => education.length > 0,
+            render: () => (
+                <>
+                    {education.map((edu, i) => (
+                        <EntryCard key={edu.id} label={edu.school || `Education ${i + 1}`} onRemove={() => { setEducation(prev => prev.filter(e => e.id !== edu.id)); setTimeout(save, 0); }}>
+                            <div><FLabel>School / Institution</FLabel><FInput value={edu.school} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, school: v } : e))} onBlur={save} placeholder="University of Georgia" /></div>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div><FLabel>Degree</FLabel><FInput value={edu.degree} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, degree: v } : e))} onBlur={save} placeholder="B.S." /></div>
+                                <div><FLabel>Field of Study</FLabel><FInput value={edu.field} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, field: v } : e))} onBlur={save} placeholder="Computer Science" /></div>
+                            </div>
+                            <div><FLabel>Graduation Year</FLabel><FInput value={edu.grad_year} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, grad_year: v } : e))} onBlur={save} placeholder="2024" /></div>
+                        </EntryCard>
+                    ))}
+                    <AddButton label="Add Education" onClick={() => setEducation(prev => [...prev, emptyEdu()])} />
+                </>
+            ),
+        },
+        skills: {
+            key: 'skills',
+            label: 'Skills',
+            isDraggable: true,
+            optional: false,
+            isComplete: () => flatSkills.length > 0 || skillCategories.length > 0,
+            render: () => renderSkillsEditor(),
+        },
+        certifications: {
+            key: 'certifications',
+            label: 'Certificate',
+            isDraggable: true,
+            optional: true,
+            isComplete: () => certifications.length > 0,
+            render: () => (
+                <>
+                    {certifications.map((cert, i) => (
+                        <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
+                            <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
+                            <div><FLabel>Issuing Organization <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div><FLabel>Date Obtained <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
+                                <div><FLabel>Expiration <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
+                            </div>
+                            <div><FLabel>Credential ID <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
+                        </EntryCard>
+                    ))}
+                    <AddButton label="Add Certificate" onClick={() => setCertifications(prev => [...prev, emptyCert()])} />
+                </>
+            ),
+        },
+    };
+
+    // The full section form, rendered in the panel's Sections tab. Built from the
+    // SECTIONS registry above; Task 2 replaces this with the palette + drawer.
     const renderForm = (): React.ReactNode => (
-                        <div className="mx-auto max-w-2xl space-y-4 px-4">
+        <div className="mx-auto max-w-2xl space-y-4 px-4">
 
-                            {/* Template & Font controls now live in the right panel's Design tab */}
-                            {/* Resume Name */}
-                            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)] px-5 py-4 space-y-2">
-                                <FLabel>Resume Name</FLabel>
-                                <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
-                                <p className="text-xs text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
-                            </div>
+            {/* Template & Font controls now live in the right panel's Design tab */}
+            {/* Resume Name */}
+            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)] px-5 py-4 space-y-2">
+                <FLabel>Resume Name</FLabel>
+                <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
+                <p className="text-xs text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
+            </div>
 
-                            {/* Contact — pinned, not draggable */}
-                            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)]">
-                                <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => { toggleSection('contact'); highlightSection('contact'); }}>
-                                    <span className="w-[18px]" />
-                                    <span className="flex-1 text-sm font-semibold text-[#0f172a]">Contact Information</span>
-                                    <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
-                                </button>
-                                {openSections.contact && (
-                                    <div className="grid grid-cols-1 gap-3 border-t border-[#cbd5e1] p-5 sm:grid-cols-2">
-                                        <div className="col-span-2"><FLabel>Full Name</FLabel><FInput value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} onBlur={save} placeholder="Jane Smith" /></div>
-                                        <div><FLabel>Email</FLabel><FInput value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} onBlur={save} type="email" placeholder="jane@example.com" /></div>
-                                        <div><FLabel>Phone</FLabel><FInput value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} onBlur={save} placeholder="(555) 555-5555" /></div>
-                                        <div><FLabel>Location</FLabel><FInput value={contact.location} onChange={v => setContact(c => ({ ...c, location: v }))} onBlur={save} placeholder="Atlanta, GA" /></div>
-                                        <div><FLabel>LinkedIn</FLabel><FInput value={contact.linkedin} onChange={v => setContact(c => ({ ...c, linkedin: v }))} onBlur={save} placeholder="linkedin.com/in/jane" /></div>
-                                        <div className="col-span-2"><FLabel>Website</FLabel><FInput value={contact.website} onChange={v => setContact(c => ({ ...c, website: v }))} onBlur={save} placeholder="janesmith.dev" /></div>
-                                    </div>
-                                )}
-                            </div>
+            {/* Contact — pinned, not draggable */}
+            <div className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.10)]">
+                <button type="button" className="flex w-full items-center gap-3 px-4 py-4 text-left" onClick={() => { toggleSection('contact'); highlightSection('contact'); }}>
+                    <span className="w-[18px]" />
+                    <span className="flex-1 text-sm font-semibold text-[#0f172a]">{SECTIONS.contact.label}</span>
+                    <svg className={`h-4 w-4 text-[#94a3b8] transition-transform ${openSections.contact ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                </button>
+                {openSections.contact && SECTIONS.contact.render()}
+            </div>
 
-                            {/* Draggable sections */}
-                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
-                                <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
+            {/* Draggable sections */}
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
+                <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
+                    {sectionOrder.map(key => {
+                        const entry = SECTIONS[key as SectionKey];
+                        if (!entry) {
+                            return null;
+                        }
+                        return (
+                            <DraggableSection
+                                key={entry.key}
+                                id={entry.key}
+                                title={entry.label}
+                                optional={entry.optional}
+                                open={openSections[entry.key as keyof typeof openSections]}
+                                onToggle={() => { toggleSection(entry.key); highlightSection(entry.key); }}
+                            >
+                                {entry.render()}
+                            </DraggableSection>
+                        );
+                    })}
+                </SortableContext>
+            </DndContext>
 
-                                    {sectionOrder.map(key => {
-
-                                        // ── Summary ──
-                                        if (key === 'summary') return (
-                                            <DraggableSection key="summary" id="summary" title="Professional Summary" optional open={openSections.summary} onToggle={() => { toggleSection('summary'); highlightSection('summary'); }}>
-                                                <FTextarea
-                                                    value={summary}
-                                                    onChange={setSummary}
-                                                    onBlur={save}
-                                                    placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
-                                                    rows={5}
-                                                />
-                                                <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
-                                                {renderBulletTools(
-                                                    'summary',
-                                                    summary,
-                                                    s => { setSummary(s); markGenerated('summary'); setTimeout(save, 0); },
-                                                    handleGenerateSummary,
-                                                )}
-                                            </DraggableSection>
-                                        );
-
-                                        // ── Experience ──
-                                        if (key === 'experience') return (
-                                            <DraggableSection key="experience" id="experience" title="Experience" open={openSections.experience} onToggle={() => { toggleSection('experience'); highlightSection('experience'); }}>
-                                                {experience.map((exp, i) => (
-                                                    <EntryCard key={exp.id} label={exp.company || exp.title ? `${exp.title}${exp.company ? ' — ' + exp.company : ''}` : `Experience ${i + 1}`} onRemove={() => { setExperience(prev => prev.filter(e => e.id !== exp.id)); setTimeout(save, 0); }}>
-                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                            <div><FLabel>Job Title</FLabel><FInput value={exp.title} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, title: v } : e))} onBlur={save} placeholder="Software Engineer" /></div>
-                                                            <div><FLabel>Company</FLabel><FInput value={exp.company} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, company: v } : e))} onBlur={save} placeholder="Acme Corp" /></div>
-                                                            <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
-                                                            <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
-                                                        </div>
-                                                        <label className="flex items-center gap-2 text-sm text-[#475569] cursor-pointer">
-                                                            <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#bfdbfe] text-[#2563eb] focus:ring-[#3b82f6]" />
-                                                            I currently work here
-                                                        </label>
-                                                        <div>
-                                                            <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
-                                                            <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
-                                                        </div>
-                                                        {renderBulletTools(
-                                                            `exp:${exp.id}`,
-                                                            exp.bullets ?? '',
-                                                            s => { setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: s } : e)); markGenerated(`exp:${exp.id}`); setTimeout(save, 0); },
-                                                            () => handleImproveExperience(exp.id, exp.bullets),
-                                                        )}
-                                                    </EntryCard>
-                                                ))}
-                                                <AddButton label="Add Experience" onClick={() => setExperience(prev => [...prev, emptyExp()])} />
-                                            </DraggableSection>
-                                        );
-
-                                        // ── Projects ──
-                                        if (key === 'projects') return (
-                                            <DraggableSection key="projects" id="projects" title="Project" optional open={openSections.projects} onToggle={() => { toggleSection('projects'); highlightSection('projects'); }}>
-                                                {projects.map((proj, i) => (
-                                                    <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
-                                                        <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
-                                                        <div><FLabel>Description <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
-                                                        <div><FLabel>Project URL <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
-                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                            <div><FLabel>Start Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
-                                                            <div><FLabel>End Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
-                                                        </div>
-                                                        <div>
-                                                            <FLabel>Highlights <span className="text-[#94a3b8] font-normal">(one per line, optional)</span></FLabel>
-                                                            <FTextarea value={proj.bullets} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, bullets: v } : p))} onBlur={save} placeholder={"• Built with React, Node.js, and PostgreSQL\n• Handles 10k+ daily users"} rows={3} />
-                                                        </div>
-                                                    </EntryCard>
-                                                ))}
-                                                <AddButton label="Add Project" onClick={() => setProjects(prev => [...prev, emptyProject()])} />
-                                            </DraggableSection>
-                                        );
-
-                                        // ── Education ──
-                                        if (key === 'education') return (
-                                            <DraggableSection key="education" id="education" title="Education" open={openSections.education} onToggle={() => { toggleSection('education'); highlightSection('education'); }}>
-                                                {education.map((edu, i) => (
-                                                    <EntryCard key={edu.id} label={edu.school || `Education ${i + 1}`} onRemove={() => { setEducation(prev => prev.filter(e => e.id !== edu.id)); setTimeout(save, 0); }}>
-                                                        <div><FLabel>School / Institution</FLabel><FInput value={edu.school} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, school: v } : e))} onBlur={save} placeholder="University of Georgia" /></div>
-                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                            <div><FLabel>Degree</FLabel><FInput value={edu.degree} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, degree: v } : e))} onBlur={save} placeholder="B.S." /></div>
-                                                            <div><FLabel>Field of Study</FLabel><FInput value={edu.field} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, field: v } : e))} onBlur={save} placeholder="Computer Science" /></div>
-                                                        </div>
-                                                        <div><FLabel>Graduation Year</FLabel><FInput value={edu.grad_year} onChange={v => setEducation(prev => prev.map(e => e.id === edu.id ? { ...e, grad_year: v } : e))} onBlur={save} placeholder="2024" /></div>
-                                                    </EntryCard>
-                                                ))}
-                                                <AddButton label="Add Education" onClick={() => setEducation(prev => [...prev, emptyEdu()])} />
-                                            </DraggableSection>
-                                        );
-
-                                        // ── Skills ──
-                                        if (key === 'skills') return (
-                                            <DraggableSection key="skills" id="skills" title="Skills" open={openSections.skills} onToggle={() => { toggleSection('skills'); highlightSection('skills'); }}>
-                                                {renderSkillsEditor()}
-                                            </DraggableSection>
-                                        );
-
-                                        // ── Certifications ──
-                                        if (key === 'certifications') return (
-                                            <DraggableSection key="certifications" id="certifications" title="Certificate" optional open={openSections.certifications} onToggle={() => { toggleSection('certifications'); highlightSection('certifications'); }}>
-                                                {certifications.map((cert, i) => (
-                                                    <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
-                                                        <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
-                                                        <div><FLabel>Issuing Organization <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
-                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                            <div><FLabel>Date Obtained <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
-                                                            <div><FLabel>Expiration <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
-                                                        </div>
-                                                        <div><FLabel>Credential ID <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
-                                                    </EntryCard>
-                                                ))}
-                                                <AddButton label="Add Certificate" onClick={() => setCertifications(prev => [...prev, emptyCert()])} />
-                                            </DraggableSection>
-                                        );
-
-                                        return null;
-                                    })}
-
-                                </SortableContext>
-                            </DndContext>
-
-                        </div>
+        </div>
     );
 
     return (
