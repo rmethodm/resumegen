@@ -380,7 +380,7 @@ const TEMPLATE_LABELS: Record<string, string> = {
     executive: 'Executive', ats: 'ATS',
     'skills-first': 'Skills-First', academic: 'Academic CV', bold: 'Minimalist Bold',
 };
-const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'projects', 'education', 'skills', 'certifications'];
+const DEFAULT_SECTION_ORDER: Exclude<SectionKey, 'contact'>[] = ['summary', 'experience', 'projects', 'education', 'skills', 'certifications'];
 const freshPdfSrc = (id: number) => route('builder.html-preview', id) + '?t=' + Date.now();
 
 // Section registry: one entry per collapsible card, now opened in the palette's
@@ -488,13 +488,34 @@ export default function Edit({
     const activePdfFrameRef = useRef(activePdfFrame); activePdfFrameRef.current = activePdfFrame;
     // Fallback timer: swap even if the iframe's onLoad never fires (PDF plugins can be flaky).
     const pdfSwapTimer = useRef<ReturnType<typeof setTimeout>>();
+    // The preview column is hidden below `lg` (display:none), but its iframes stay
+    // mounted — so without this guard, every save would trigger a server-side PDF
+    // render the user can't see. previewStaleRef records a skipped refresh so that
+    // crossing back above `lg` (resize/rotate) can catch the preview up to current content.
+    const previewStaleRef = useRef(false);
     const refreshPreview = useCallback(() => {
+        if (!window.matchMedia('(min-width: 1024px)').matches) {
+            previewStaleRef.current = true;
+            return;
+        }
+        previewStaleRef.current = false;
         const url = freshPdfSrc(resume.id);
         const back = activePdfFrameRef.current === 0 ? 1 : 0;
         setPdfFrames(prev => (back === 0 ? [url, prev[1]] : [prev[0], url]));
         clearTimeout(pdfSwapTimer.current);
         pdfSwapTimer.current = setTimeout(() => setActivePdfFrame(back), 1500);
     }, [resume.id]);
+
+    useEffect(() => {
+        const mql = window.matchMedia('(min-width: 1024px)');
+        const handleChange = (e: MediaQueryListEvent) => {
+            if (e.matches && previewStaleRef.current) {
+                refreshPreview();
+            }
+        };
+        mql.addEventListener('change', handleChange);
+        return () => mql.removeEventListener('change', handleChange);
+    }, [refreshPreview]);
 
     // Toggle the .rg-hl outline (from resume-pdf.blade) on the clicked section inside the
     // same-origin preview iframe, and scroll it into view. No-op when the iframe isn't mounted.
@@ -951,7 +972,7 @@ export default function Edit({
             optional: false,
             isComplete: () => contact.full_name.trim().length > 0,
             render: () => (
-                <div className="grid grid-cols-1 gap-3 border-t border-[#cbd5e1] p-5 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="col-span-2"><FLabel>Full Name</FLabel><FInput value={contact.full_name} onChange={v => setContact(c => ({ ...c, full_name: v }))} onBlur={save} placeholder="Jane Smith" /></div>
                     <div><FLabel>Email</FLabel><FInput value={contact.email} onChange={v => setContact(c => ({ ...c, email: v }))} onBlur={save} type="email" placeholder="jane@example.com" /></div>
                     <div><FLabel>Phone</FLabel><FInput value={contact.phone} onChange={v => setContact(c => ({ ...c, phone: v }))} onBlur={save} placeholder="(555) 555-5555" /></div>
@@ -1076,7 +1097,7 @@ export default function Edit({
             label: 'Skills',
             isDraggable: true,
             optional: false,
-            isComplete: () => flatSkills.length > 0 || skillCategories.length > 0,
+            isComplete: () => flatSkills.length > 0 || skillCategories.length > 0 || skillNarratives.length > 0,
             render: () => renderSkillsEditor(),
         },
         certifications: {
@@ -1105,6 +1126,10 @@ export default function Edit({
     };
 
     // Palette entries: contact pinned first, then the reorderable sections.
+    // sectionOrder is persisted DB data and can legitimately contain stale keys from
+    // older versions, so this runtime filter against the registry is still required —
+    // but it's a runtime-only guard, not a type-checked no-op (see DEFAULT_SECTION_ORDER,
+    // which the type system does enforce as SectionKey-complete).
     const paletteEntries: SectionEntry[] = [SECTIONS.contact, ...sectionOrder.map(k => SECTIONS[k as SectionKey]).filter(Boolean)];
 
     return (
@@ -1140,7 +1165,7 @@ export default function Edit({
             <div className="relative flex flex-wrap items-start bg-[#f1f5f9]">
                     {/* ── Left column: the live preview. Hidden below `lg` so the
                          palette/drawer can take the full narrow-screen width. ── */}
-                    <div className="relative hidden min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6 lg:block">
+                    <div className="hidden min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6 lg:block">
                         <div className="mb-2 flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
                             <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
@@ -1152,6 +1177,7 @@ export default function Edit({
 
                     {drawerSection && (
                         <SectionDrawer
+                            key={drawerSection}
                             title={SECTIONS[drawerSection].label}
                             onClose={() => setDrawerSection(null)}
                         >
