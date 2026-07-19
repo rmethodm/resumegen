@@ -9,9 +9,22 @@ return [
     'enabled' => env('AI_ENABLED', true),
 
     /*
+     * Which vendor App\Services\AiService talks to: 'openai' or 'anthropic'.
+     * App-wide, not per-user. Moderation always runs through OpenAI's free
+     * moderations endpoint regardless, so OPENAI_API_KEY is required either way.
+     */
+    'provider' => env('AI_PROVIDER', 'openai'),
+
+    /*
      * Default chat model used by App\Services\AiService when no model is passed.
      */
     'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
+
+    /*
+     * Anthropic credentials and default model, used when provider is 'anthropic'.
+     */
+    'anthropic_key' => env('ANTHROPIC_API_KEY'),
+    'anthropic_model' => env('ANTHROPIC_MODEL', 'claude-sonnet-5'),
 
     /*
      * Org-level Admin API key (distinct from OPENAI_API_KEY) used only by
@@ -40,6 +53,8 @@ return [
      */
     'pricing' => [
         'gpt-4o-mini' => ['input' => 0.015, 'output' => 0.06],
+        'claude-sonnet-5' => ['input' => 0.3, 'output' => 1.5],
+        'claude-haiku-4-5-20251001' => ['input' => 0.1, 'output' => 0.5],
     ],
 
     /*
