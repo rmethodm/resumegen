@@ -147,7 +147,7 @@ export default function SharesIndex() {
                             {links.map(link => (
                                 <div
                                     key={link.id}
-                                    className={`rounded-xl border bg-white p-4 ${CARD_SHADOW} ${
+                                    className={`group rounded-xl border bg-white p-4 transition hover:-translate-y-1 hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)] ${CARD_SHADOW} ${
                                         link.is_primary ? 'border-indigo-500' : 'border-[#eeeef5]'
                                     }`}
                                 >
@@ -218,7 +218,8 @@ export default function SharesIndex() {
                                         )}
                                     </div>
 
-                                    <div className="mt-3 flex gap-2 border-t border-[#eeeef5] pt-3">
+                                    {/* ponytail: fade only — hiding these would change card height and reflow the grid */}
+                                    <div className="mt-3 flex gap-2 border-t border-[#eeeef5] pt-3 transition-opacity focus-within:opacity-100 group-hover:opacity-100 sm:opacity-0">
                                         {!link.is_primary && (
                                             <button
                                                 onClick={() => patchLink(link, { is_primary: true })}

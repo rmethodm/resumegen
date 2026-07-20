@@ -41,12 +41,15 @@ function CardMenu({ id, name }: { id: number; name: string }) {
         if (confirm(`Delete "${name}"? This cannot be undone.`)) router.delete(route('builder.destroy', id));
     };
 
+    // ponytail: revealed on hover, but always visible on touch (sm:) and while the menu is open
     return (
         <div className="relative shrink-0">
             <button
                 onClick={() => setOpen(v => !v)}
                 aria-label="Resume actions"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[#71717a] transition hover:bg-[#eef2ff]"
+                className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[#71717a] transition hover:bg-[#eef2ff] focus-visible:opacity-100 group-hover:opacity-100 ${
+                    open ? 'opacity-100' : 'sm:opacity-0'
+                }`}
             >
                 <EllipsisVerticalIcon className="h-[18px] w-[18px]" />
             </button>
@@ -72,7 +75,7 @@ function CardMenu({ id, name }: { id: number; name: string }) {
 
 function ResumeGridCard({ card }: { card: ResumeCard }) {
     return (
-        <div className="flex flex-col overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
+        <div className="group flex flex-col overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:-translate-y-1 hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
             {/* Decorative preview */}
             <Link href={route('builder.edit', card.id)} className="block h-40 border-b border-[#eeeef5] bg-[#fafafe] p-5">
                 <div className="mx-auto max-w-[85%] space-y-2">
