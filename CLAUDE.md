@@ -145,6 +145,13 @@ The builder's Share tab holds only an active-link count and a link to `/shares`.
 
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
+**`PRICING_REVIEW.md` and `docs/claude/pricing-and-billing.md` were deleted on 2026-07-20** (recoverable in git history). Both still documented Free/Starter/Pro/Agency at $9/$19/$49 with resignation-letter and job-application caps and org seats, referencing `User::planTier()`, `is_pro`, `plan_tier`, `BillingController`, `Billing/Index.tsx`, `UpgradeModal` and `featureGate` — every one of which is gone. `PRICING_REVIEW.md` additionally *recommended re-gating templates and DOCX export to paid*. They read as authoritative and were the most likely route to an accidental paywall. If either resurfaces from a stash or an old branch, delete it again rather than updating it; `docs/prepaid-pricing-model.md` is the only live pricing document.
+
+**Modelling the prepaid proposal.** `GrowthSampleSeeder` fabricates 12 months of traffic; `pricing:growth` prints the P&L (`--infra=` sets the hosting assumption) and `pricing:usage` the jobs distribution. Every lever is a `GROWTH_*` env override (`GRANT_CENTS`, `JOB_CENTS`, `TOPUP_CENTS`, `ACTIVATION_PCT`, `JOBS_SCALE_PCT`, `RAMP_PCT`, `GENERAL_FREE`), so scenarios sweep without editing the seeder — see `docs/growth-model-sample-run.md` for 19 runs. Two things to know before quoting any figure from it:
+
+- **`pricing:growth`'s "Revenue" is cash collected, not revenue recognised.** Prepaid balance is a liability until spent. Recognised revenue and cash are the two ends of one measure — `net(r) = recognised + deferred × (1 − r) − stripe − ai − infra` — where `r=1` (everything refunded) gives the accrual figure and `r=0` (full breakage) gives the cash figure. The accrual number is therefore the *pessimistic bound*, not a central case.
+- **`PricingUsageReport::GRANT_JOBS` is 3, deliberately disagreeing with the pricing doc's settled $5 grant (§9).** Its three re-base triggers are now formulas of `GRANT_JOBS` (`median ≤ G+1`, `p90 < G+3`, `%exceeding G < 15%`) that reproduce the doc's published 10/12/15% at `G=9`. If the grant moves, set both together.
+
 ## AI (OpenAI or Anthropic)
 
 `App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`AI_ENABLED`, `OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
@@ -156,6 +163,7 @@ Consequences to keep in mind:
 - **All cost history before 2026-07-20 is zero and cannot be recovered** — the precision was lost at write time, not at display. Only Anthropic rows (~20x pricier) held a coarse non-zero, which is why this never looked completely dead.
 - **`AiUsageReport` reports costs in micro-cents** under the key `cost_micro_cents`, uniformly across `totals()`, `breakdown()`, and `dailySeries()`. Divide by 100,000,000 for dollars, at display only. The three methods previously returned three different key spellings and the overview blade read a fourth, so the cost tile and both breakdown tables silently rendered blank or $0.00 — don't reintroduce per-method key names.
 - `config('ai.pricing')` is still denominated in **cents per 1,000 tokens**, and `ai.daily_alert_threshold_cents` is still in cents. Only the stored column and the report keys changed units.
+- **`ai_requests.user_id` is `nullOnDelete`, not `cascadeOnDelete`** — a deleted user's cost history deliberately outlives the account. Correct for production, a trap for fixtures: deleting users strands rows with a NULL `user_id` that every cost report still sums, inflating AI cost by one full run per re-seed. Delete `ai_requests` *before* the users, while the join still resolves. A NULL `user_id` also defeats `whereNotIn('user_id', ...)`, so orphan checks silently report zero.
 
 **Master switch:** `AI_ENABLED` (default true). The `ai_enabled` middleware (`EnsureAiEnabled`, aliased in `bootstrap/app.php`) **404s** every AI route when it's false — 404 not 403, so a suspended feature looks absent rather than like a plan restriction. The `aiEnabled` Inertia prop hides the matching UI.
 
@@ -223,6 +231,14 @@ Added 2026-07-20. `tests/Browser/` is the only layer that executes React; the fe
 
 Assert on controls (`assertMissing('input[name="…"]')`), not strings (`assertDontSee('…')`) — a "don't see" assertion passes on any error page and proves nothing.
 
+## Testing console reports: assert the table, not substrings
+
+For the `pricing:*` commands (and any `$this->table()` output), use `expectsTable(...)` rather than `expectsOutputToContain` / `doesntExpectOutputToContain`. These reports print thresholds, counts and percentages side by side, so every bare numeral collides with something else on screen — `'10'` matches `'100.0%'`, `'3'` matches a `median <= 3` threshold column. A substring assertion then passes for the wrong reason, which is worse than failing.
+
+## Shell: this environment is zsh, which does not word-split
+
+`set -- $var` and `cmd $var` do **not** split on whitespace the way bash does — the whole string arrives as one argument. A loop built on `for s in "a b c"; set -- $s` silently assigns garbage to `$2`/`$3` (e.g. a price of `0`), producing a clean-looking run with meaningless numbers. Use `${=var}` to force splitting, or write invocations out explicitly. Prefer explicit; a sweep that lies is worse than a sweep that is verbose.
+
 ## Migrations are forward-only — rollback is not supported
 
 **Do not run `migrate:rollback`, `migrate:reset`, or `migrate:refresh`. Use `migrate:fresh --seed` to rebuild.**
@@ -266,7 +282,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 
 ---
 
-Last updated: 2026-07-20
+Last updated: 2026-07-20 (growth model, §12 threshold formulas, `ai_requests` orphan trap)
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
