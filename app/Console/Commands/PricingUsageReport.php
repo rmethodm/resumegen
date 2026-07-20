@@ -12,14 +12,35 @@ use Illuminate\Console\Command;
 class PricingUsageReport extends Command
 {
     /**
-     * Jobs covered by the proposed $5 signup grant. The first paid job would be the
-     * 10th, so "exceeds the grant" means more than 9 — see the pricing doc §12.
+     * Jobs covered by the proposed $2 signup grant: $2.00 less the reserved
+     * __general__ pairing at 50c, divided by 50c a job. The first paid job is
+     * therefore the 4th, so "exceeds the grant" means more than 3.
      *
      * Hardcoded rather than derived from config('pricing.signup_grant_cents'): both
      * prices are currently 0, so deriving it would divide by zero. Re-derive this if
      * the grant or the unit price moves.
+     *
+     * Was 9, for the $5 grant, until 2026-07-20.
      */
-    private const GRANT_JOBS = 9;
+    private const GRANT_JOBS = 3;
+
+    /**
+     * The §12 re-base triggers, as formulas of GRANT_JOBS rather than free-standing
+     * judgments — the pricing doc is explicit that they are derived from the grant and
+     * that any change to the grant must re-derive them. Stated here so the next change
+     * is arithmetic instead of archaeology:
+     *
+     *   median <= GRANT_JOBS + 1  — the median user pays for at most one job
+     *   p90    <  GRANT_JOBS + 3  — even the top decile pays barely anything
+     *   % exceeding GRANT_JOBS < 15% — too few users reach a card at all
+     *
+     * At the old grant of 9 these produced the doc's 10, 12, and 15%.
+     */
+    private const MEDIAN_TRIGGER = self::GRANT_JOBS + 1;
+
+    private const P90_TRIGGER = self::GRANT_JOBS + 3;
+
+    private const CONVERSION_TRIGGER_PERCENT = 15;
 
     public function handle(): int
     {
@@ -47,12 +68,12 @@ class PricingUsageReport extends Command
 
         $this->table(['Metric', 'Value', 'Re-base if'], [
             ['Users with >=1 job', $users, '—'],
-            ['Median jobs tailored', $this->median($counts), 'median <= 10'],
-            ['p90 jobs tailored', $this->percentile($counts, 90), 'p90 < 12'],
+            ['Median jobs tailored', $this->median($counts), 'median <= '.self::MEDIAN_TRIGGER],
+            ['p90 jobs tailored', $this->percentile($counts, 90), 'p90 < '.self::P90_TRIGGER],
             [
                 'Users exceeding '.self::GRANT_JOBS.' jobs',
                 sprintf('%d (%.1f%%)', $exceeding, $exceeding / $users * 100),
-                '< 15%',
+                '< '.self::CONVERSION_TRIGGER_PERCENT.'%',
             ],
         ]);
 
