@@ -52,7 +52,7 @@ class Resume extends Model implements HasMedia
         'user_id',
         'name', 'search_text', 'pdf_filename', 'template',
         'accent_color', 'font_family',
-        'contact', 'summary', 'target_job_description', 'experience', 'education', 'projects',
+        'contact', 'summary', 'target_job_description', 'target_company', 'target_title', 'experience', 'education', 'projects',
         'skills', 'skills_layout', 'skills_groups', 'skill_narratives', 'certifications', 'font_sizes',
         'section_order', 'custom_sections',
         'ab_parent_id',

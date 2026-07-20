@@ -4,10 +4,15 @@ namespace Tests\Feature;
 
 use App\Models\AiRequest;
 use App\Models\JobPairing;
+use App\Models\Resume;
 use App\Models\User;
 use App\Services\JobPairingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
+use OpenAI\Contracts\ClientContract;
+use OpenAI\Responses\Chat\CreateResponse;
+use OpenAI\Responses\Moderations\CreateResponse as ModerationResponse;
+use OpenAI\Testing\ClientFake;
 use Tests\TestCase;
 
 class JobPairingTest extends TestCase
@@ -17,6 +22,35 @@ class JobPairingTest extends TestCase
     private function service(): JobPairingService
     {
         return app(JobPairingService::class);
+    }
+
+    /** Seeds one moderation + chat pair per expected call; the fake is consumed in order. */
+    private function fakeReplies(int $count): void
+    {
+        $responses = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            $responses[] = ModerationResponse::fake(['results' => [['flagged' => false]]]);
+            $responses[] = CreateResponse::fake([
+                'model' => 'gpt-4o-mini',
+                'choices' => [['index' => 0, 'message' => ['role' => 'assistant', 'content' => 'Rewritten.']]],
+                'usage' => ['prompt_tokens' => 5, 'completion_tokens' => 5, 'total_tokens' => 10],
+            ]);
+        }
+
+        $this->app->instance(ClientContract::class, new ClientFake($responses));
+    }
+
+    private function fakeReply(string $content): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
+            CreateResponse::fake([
+                'model' => 'gpt-4o-mini',
+                'choices' => [['index' => 0, 'message' => ['role' => 'assistant', 'content' => $content]]],
+                'usage' => ['prompt_tokens' => 5, 'completion_tokens' => 5, 'total_tokens' => 10],
+            ]),
+        ]));
     }
 
     /**
@@ -155,6 +189,64 @@ class JobPairingTest extends TestCase
         ]);
 
         $this->assertFalse($pairing->fresh()->isRefundable());
+    }
+
+    /**
+     * The wiring that makes any of this measurable: a real AI call through the builder
+     * must record which job it was for. Without this the pairings table stays empty and
+     * §12's numbers cannot be collected.
+     */
+    public function test_ai_call_records_a_pairing_for_the_resume_target(): void
+    {
+        $this->fakeReply('Led a team of five engineers to ship X.');
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'target_company' => 'Acme, Inc.',
+            'target_title' => 'Senior Product Manager',
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('builder.ai.rewrite-bullet', $resume), ['text' => 'managed a team'])
+            ->assertOk();
+
+        $this->assertSame('acme|senior product manager', $user->jobPairings()->sole()->billing_key);
+    }
+
+    /** Two jobs tailored means two pairings — this is what "jobs tailored" counts. */
+    public function test_two_targets_produce_two_pairings(): void
+    {
+        $user = User::factory()->create();
+        $this->fakeReplies(2);
+
+        foreach ([['Acme', 'Senior Product Manager'], ['Globex', 'Staff Engineer']] as [$company, $title]) {
+            $resume = Resume::factory()->for($user)->create([
+                'target_company' => $company,
+                'target_title' => $title,
+            ]);
+
+            $this->actingAs($user)
+                ->postJson(route('builder.ai.rewrite-bullet', $resume), ['text' => 'managed a team'])
+                ->assertOk();
+        }
+
+        $this->assertSame(2, $user->jobPairings()->count());
+    }
+
+    /** An untargeted resume falls into __general__ rather than vanishing from the data. */
+    public function test_ai_call_without_a_target_falls_into_general(): void
+    {
+        $this->fakeReply('Rewritten.');
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'target_company' => null,
+            'target_title' => null,
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('builder.ai.rewrite-bullet', $resume), ['text' => 'managed a team'])
+            ->assertOk();
+
+        $this->assertSame(JobPairing::GENERAL, $user->jobPairings()->sole()->billing_key);
     }
 
     /** A user must never lose the refund window to our outage or a moderation block. */

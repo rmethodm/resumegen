@@ -483,6 +483,8 @@ export default function Edit({
     const [contact, setContact] = useState<Contact>(resume.contact ?? emptyContact());
     const [summary, setSummary] = useState(resume.summary ?? '');
     const [targetJobDescription, setTargetJobDescription] = useState(resume.target_job_description ?? '');
+    const [targetCompany, setTargetCompany] = useState(resume.target_company ?? '');
+    const [targetTitle, setTargetTitle] = useState(resume.target_title ?? '');
     const [experience, setExperience] = useState<ExperienceEntry[]>(resume.experience ?? []);
     const { aiEnabled } = usePage().props;
     const ai = useAiSuggestion(aiRemaining);
@@ -591,6 +593,8 @@ export default function Edit({
     const contactRef = useRef(contact); contactRef.current = contact;
     const summaryRef = useRef(summary); summaryRef.current = summary;
     const targetJobDescriptionRef = useRef(targetJobDescription); targetJobDescriptionRef.current = targetJobDescription;
+    const targetCompanyRef = useRef(targetCompany); targetCompanyRef.current = targetCompany;
+    const targetTitleRef = useRef(targetTitle); targetTitleRef.current = targetTitle;
     const experienceRef = useRef(experience); experienceRef.current = experience;
     const educationRef = useRef(education); educationRef.current = education;
     const projectsRef = useRef(projects); projectsRef.current = projects;
@@ -623,6 +627,8 @@ export default function Edit({
         contact: contactRef.current,
         summary: summaryRef.current,
         target_job_description: targetJobDescriptionRef.current,
+        target_company: targetCompanyRef.current,
+        target_title: targetTitleRef.current,
         experience: experienceRef.current,
         education: educationRef.current,
         projects: projectsRef.current,
@@ -1363,6 +1369,16 @@ export default function Edit({
                                         </div>
                                     </PanelCard>
                                     <div className="rounded-[10px] border border-[#eeeef5] p-3">
+                                        <div className="mb-3 grid grid-cols-2 gap-2">
+                                            <div>
+                                                <FLabel>Company</FLabel>
+                                                <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." />
+                                            </div>
+                                            <div>
+                                                <FLabel>Job title</FLabel>
+                                                <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" />
+                                            </div>
+                                        </div>
                                         {aiEnabled ? (
                                             <AtsMatchPanel
                                                 jobDescription={targetJobDescription}
