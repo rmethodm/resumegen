@@ -1,6 +1,6 @@
 # Prepaid Pricing Model — Resumegen
 
-**Status: PROPOSAL. Nothing here is implemented, and §12 argues it should not be yet.**
+**Status: PROPOSAL. §13's instrumentation is built at prices of 0; no billing is implemented, and §12 argues it should not be yet.**
 `CLAUDE.md` forbids adding a paywall without explicit approval, and several tests assert
 `assertSessionMissing('featureGate')` specifically to catch one creeping back in. Do not write
 billing code against this document without a separate go-ahead.
