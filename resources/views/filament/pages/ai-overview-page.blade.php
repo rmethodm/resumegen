@@ -11,7 +11,7 @@
             </div>
             <div class="rounded-xl border bg-white p-4 shadow-sm dark:bg-gray-900">
                 <div class="text-sm text-gray-500">Estimated Cost</div>
-                <div class="text-2xl font-bold">${{ number_format(($totals['cost_cents'] ?? 0) / 100, 2) }}</div>
+                <div class="text-2xl font-bold">${{ number_format(($totals['cost_micro_cents'] ?? 0) / 100_000_000, 4) }}</div>
             </div>
             <div class="rounded-xl border bg-white p-4 shadow-sm dark:bg-gray-900">
                 <div class="text-sm text-gray-500">OpenAI Actual Cost</div>
@@ -23,13 +23,13 @@
             <div>
                 <h3 class="mb-2 font-semibold">By Feature</h3>
                 <table class="w-full text-sm">
-                    <thead><tr class="text-left text-gray-500"><th>Feature</th><th>Requests</th><th>Tokens</th></tr></thead>
+                    <thead><tr class="text-left text-gray-500"><th>Feature</th><th>Requests</th><th>Cost</th></tr></thead>
                     <tbody>
                         @foreach($byFeature as $row)
                         <tr class="border-t">
-                            <td class="py-1">{{ $row['feature'] }}</td>
-                            <td>{{ number_format($row['requests']) }}</td>
-                            <td>{{ number_format($row['tokens']) }}</td>
+                            <td class="py-1">{{ $row['label'] }}</td>
+                            <td>{{ number_format($row['count']) }}</td>
+                            <td>${{ number_format($row['cost_micro_cents'] / 100_000_000, 4) }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -42,8 +42,8 @@
                     <tbody>
                         @foreach($byStatus as $row)
                         <tr class="border-t">
-                            <td class="py-1">{{ $row['status'] }}</td>
-                            <td>{{ number_format($row['requests']) }}</td>
+                            <td class="py-1">{{ $row['label'] }}</td>
+                            <td>{{ number_format($row['count']) }}</td>
                         </tr>
                         @endforeach
                     </tbody>

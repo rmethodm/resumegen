@@ -25,7 +25,7 @@ class AiRequestFactory extends Factory
             'prompt_tokens' => 10,
             'completion_tokens' => 5,
             'total_tokens' => 15,
-            'estimated_cost_cents' => 0,
+            'estimated_cost_micro_cents' => 0,
             'status' => 'success',
         ];
     }

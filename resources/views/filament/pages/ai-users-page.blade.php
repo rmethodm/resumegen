@@ -21,7 +21,7 @@
                     </td>
                     <td>{{ number_format($row['requests']) }}</td>
                     <td>{{ number_format($row['tokens']) }}</td>
-                    <td>${{ number_format($row['estimated_cost_cents'] / 100, 4) }}</td>
+                    <td>${{ number_format($row['cost_micro_cents'] / 100_000_000, 4) }}</td>
                     <td>{{ $row['used'] }} / {{ $row['limit'] ?? '∞' }}</td>
                     <td>{{ $row['flagged'] > 0 ? '⚠ '.$row['flagged'] : '—' }}</td>
                     <td class="text-gray-500 text-xs">{{ $row['last_used'] ? \Carbon\Carbon::parse($row['last_used'])->diffForHumans() : '—' }}</td>
