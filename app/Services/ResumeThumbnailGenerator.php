@@ -18,6 +18,12 @@ class ResumeThumbnailGenerator
             ->output();
 
         $imagick = new Imagick;
+        // Imagick stamps date:create / date:modify / date:timestamp and a tIME chunk into
+        // every PNG, so re-rendering an unchanged resume produces a byte-different file.
+        // For the nine committed template samples that meant `thumbnails:templates` dirtied
+        // all nine on every run with pixel-identical output; for user thumbnails it embedded
+        // a creation timestamp in a file recruiters receive. Excluding both fixes both.
+        $imagick->setOption('png:exclude-chunk', 'date,time');
         $imagick->setResolution(150, 150);
         $imagick->readImageBlob($pdf);
         $imagick->setIteratorIndex(0);
