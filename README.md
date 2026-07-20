@@ -83,7 +83,7 @@ npm run build
 - [docs/prepaid-pricing-model.md](docs/prepaid-pricing-model.md) - the pricing proposal (nothing is billed; prices are 0)
 - [docs/growth-model-sample-run.md](docs/growth-model-sample-run.md) - fabricated scenario sweep behind it
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) - server deployment guide
-- [AGENTS.md](AGENTS.md) - local development rules for AI agents
+- [AGENTS.md](AGENTS.md) - pointer to CLAUDE.md, which is authoritative for AI agents
 - [CODEX.md](CODEX.md) - Codex-specific context policy
 
 ## Verification From Latest Scan
