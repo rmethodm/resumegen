@@ -502,7 +502,8 @@ class TestAnalyticsDataSeeder extends Seeder
 
         $now = Carbon::now();
 
-        foreach ($resumes as $resumeData) {
+        // Capped — see TestResumesSeeder. The full fixture set above stays intact.
+        foreach (array_slice($resumes, 0, 2) as $resumeData) {
             $skills = $resumeData['skills'] ?? [];
             $certifications = $resumeData['certifications'] ?? [];
             $contact = $resumeData['contact'] ?? null;
@@ -521,8 +522,8 @@ class TestAnalyticsDataSeeder extends Seeder
                 'pdf_filename' => Str::uuid().'.pdf',
             ]);
 
-            // 2–4 share links per resume
-            $linkCount = rand(2, 4);
+            // 2–3 share links per resume
+            $linkCount = rand(2, 3);
             $usedLabels = [];
 
             for ($l = 0; $l < $linkCount; $l++) {
@@ -539,8 +540,8 @@ class TestAnalyticsDataSeeder extends Seeder
                     'is_active' => true,
                 ]);
 
-                // 25–100 visits spread over last 30 days
-                $visitCount = rand(25, 100);
+                // 3–12 visits spread over last 30 days
+                $visitCount = rand(3, 12);
 
                 for ($v = 0; $v < $visitCount; $v++) {
                     // Random timestamp within last 30 days

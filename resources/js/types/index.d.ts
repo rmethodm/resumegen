@@ -136,17 +136,6 @@ export interface ShareLink {
     created_at: string;
 }
 
-export interface ResumeQuestion {
-    id: number;
-    sender_name: string;
-    sender_email: string;
-    sender_phone: string;
-    message: string;
-    is_read: boolean;
-    link_label: string;
-    created_at: string;
-}
-
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
