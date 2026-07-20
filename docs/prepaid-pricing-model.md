@@ -58,9 +58,16 @@ these are modelled, not observed.
 > **Never tell users that credits reflect our costs.** They do not. We price the outcome; the margin
 > is a consequence, not a justification.
 
-Related: `ai_requests.estimated_cost_cents` is an `integer`, so every `gpt-4o-mini` call rounds to
-**0**. Cost logging currently records nothing and must be changed to decimal or micro-cents before
-any of this is measurable.
+Related: **`ai_requests.estimated_cost_cents` records 0 for every OpenAI call**, and the fix is not
+only the column type. `AiService::estimateCostCents()` ends in `(int) round($cents)`, so the value
+is already 0 in PHP before it reaches the `integer` column — anything under half a cent rounds away,
+which is every `gpt-4o-mini` call including a 15k-token page import. Migrating the column alone
+would change nothing.
+
+Everything downstream reads that zero: `ai:cost-alert` (so the daily spend alarm cannot fire),
+`AiUsageReport`, `AdminStatsOverview`, and `AiUsersPage`. Anthropic calls are ~20x pricier and do
+log a coarse non-zero, which is why this has not looked completely dead. Drop the rounding *and*
+store micro-cents before treating number 5 in §12 as measurable.
 
 ## 4. Price the outcome, not the call
 
@@ -210,7 +217,31 @@ Creating a pairing and debiting the ledger must happen in one transaction.
 
 **Refunds revoke the pairing.** Unlimited no-questions refunds plus a retained pairing means "get
 your money back, keep the work, forever." Refunding credits the balance and voids the pairing; using
-AI on that job again charges again. Ungameable without needing a written policy.
+AI on that job again charges again.
+
+> **This does not close the loop — corrected 2026-07-20.** Revoking the pairing only stops *future*
+> AI on that job. The output already generated is written into the user's resume and cover letter,
+> and survives the refund; there is nothing to claw back. So the actual exploit is: pay $0.50,
+> generate everything for the job, refund, repeat on the next job with the same $0.50 forever. A
+> $3 grant becomes an unlimited product, and no user ever reaches a second purchase.
+>
+> This is not hypothetical or adversarial — it is what a rational user does once they notice, and
+> the refund control is deliberately placed next to the output (§11), so they will notice.
+>
+> **The tension is real and unresolved.** "Refundable anytime" is load-bearing copy in §11 and a
+> pillar of the §2 brand position; the obvious fixes all erode it. Options, none chosen:
+>
+> - **Refund window** — self-serve only before the first AI call on that pairing. Preserves "you
+>   can always back out of a purchase you haven't used," which is the honest core of the promise,
+>   and kills the loop entirely. Costs the "this output wasn't useful" case, which is the case
+>   users most want a refund for.
+> - **Lifetime refund cap** (e.g. 3). Keeps the useful case, bounds the exploit. Requires a written
+>   policy — exactly what this design was trying to avoid — and a capped "unlimited" is a lie.
+> - **Accept it.** At current scale the loss is bounded by a tiny user base, and abuse is visible in
+>   `balance_transactions`. Revisit if the ledger shows it happening.
+>
+> Do not ship self-serve refunds until this is decided. The measurement work in §12 is unaffected —
+> at $0 prices there is nothing to refund.
 
 **Refund-to-balance and refund-to-card are different mechanisms.** The self-serve "this wasn't
 useful" button refunds to *balance* — instant, no Stripe involved. Refunding leftover balance to a
@@ -272,8 +303,15 @@ $50 is 100 jobs — more than anyone credibly needs.
 
 ## 10. Open decisions
 
-1. **Launch grant for existing accounts** (§8). The only item with a deadline — it must be decided
-   before the switch flips.
+1. **Launch grant for existing accounts** (§8). Must be decided before the switch flips. Blocked on
+   the production account count, which is still unknown.
+2. **The refund loop** (§8). Refunds return the money but not the generated output, so unlimited
+   self-serve refunds make the product free. Three options listed in §8, none chosen. Blocks
+   self-serve refunds; does not block §12's measurement work.
+3. **Why pay at all when a free competitor exists?** Jobscan gives five free ATS scans per month;
+   Teal and Kickresume have permanent free tiers. §5 gives away everything except job-targeted AI,
+   so the paid unit has to beat *free elsewhere*, not just feel fair here. The doc has no written
+   answer to this and never has. It is the question a skeptical user asks first.
 
 ### Closed
 
@@ -330,6 +368,10 @@ Add $30 → 60 jobs
 
 Never expires. Refundable anytime. No subscription.
 ```
+
+> **"Refundable anytime" is not yet true** — it depends on §8's unresolved refund loop. If a window
+> or a cap is adopted, this line must change with it. Shipping this copy and then narrowing the
+> policy is worse than never promising it: it is the precise move §2 accuses the gated cohort of.
 
 ### Charge at the front, never mid-task
 
