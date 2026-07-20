@@ -19,8 +19,9 @@ withdrawn — see "Why not subscriptions" below.
 
 Users hold a **balance in real dollars**. Everything in the app is free forever except AI work
 targeted at a specific job. Targeting a job costs **$0.50, once per job, per user** — and buys
-unlimited AI against that job forever, including every revision. Balances never expire. Refunds are
-self-serve and unlimited. There is no subscription and no recurring charge of any kind.
+unlimited AI against that job forever, including every revision. Balances never expire. Unspent
+balance is always refundable, and a purchased job is refundable until its first AI call (§8). There
+is no subscription and no recurring charge of any kind.
 
 ## 2. Why not subscriptions
 
@@ -196,7 +197,10 @@ $table->string('billing_key');              // company|title, or '__general__'
 $table->string('company')->nullable();      // display only, never identity
 $table->string('title')->nullable();
 $table->timestamps();
-$table->unique(['user_id', 'billing_key']);
+$table->timestamp('refunded_at')->nullable();
+// NOTE: not a plain unique — §8 replaces this with a partial unique index over
+// live rows only, so a refunded job can be bought again.
+$table->unique(['user_id', 'billing_key']);  // superseded by §8
 ```
 
 ```php
@@ -215,38 +219,77 @@ Creating a pairing and debiting the ledger must happen in one transaction.
 
 ## 8. Operational rules
 
-**Refunds revoke the pairing.** Unlimited no-questions refunds plus a retained pairing means "get
-your money back, keep the work, forever." Refunding credits the balance and voids the pairing; using
-AI on that job again charges again.
+### Refunds — settled 2026-07-20
 
-> **This does not close the loop — corrected 2026-07-20.** Revoking the pairing only stops *future*
-> AI on that job. The output already generated is written into the user's resume and cover letter,
-> and survives the refund; there is nothing to claw back. So the actual exploit is: pay $0.50,
-> generate everything for the job, refund, repeat on the next job with the same $0.50 forever. A
-> $3 grant becomes an unlimited product, and no user ever reaches a second purchase.
->
-> This is not hypothetical or adversarial — it is what a rational user does once they notice, and
-> the refund control is deliberately placed next to the output (§11), so they will notice.
->
-> **The tension is real and unresolved.** "Refundable anytime" is load-bearing copy in §11 and a
-> pillar of the §2 brand position; the obvious fixes all erode it. Options, none chosen:
->
-> - **Refund window** — self-serve only before the first AI call on that pairing. Preserves "you
->   can always back out of a purchase you haven't used," which is the honest core of the promise,
->   and kills the loop entirely. Costs the "this output wasn't useful" case, which is the case
->   users most want a refund for.
-> - **Lifetime refund cap** (e.g. 3). Keeps the useful case, bounds the exploit. Requires a written
->   policy — exactly what this design was trying to avoid — and a capped "unlimited" is a lie.
-> - **Accept it.** At current scale the loss is bounded by a tiny user base, and abuse is visible in
->   `balance_transactions`. Revisit if the ledger shows it happening.
->
-> Do not ship self-serve refunds until this is decided. The measurement work in §12 is unaffected —
-> at $0 prices there is nothing to refund.
+An earlier draft promised unlimited no-questions refunds that revoked the pairing. **That does not
+close the loop.** Revoking a pairing stops only *future* AI on that job; the output already
+generated is written into the resume and cover letter and survives the refund, so the exploit is:
+pay $0.50, generate everything, refund, repeat forever on the same $0.50. Not adversarial — it is
+what a rational user does once they notice, and §11 deliberately puts the refund control next to
+the output.
 
-**Refund-to-balance and refund-to-card are different mechanisms.** The self-serve "this wasn't
-useful" button refunds to *balance* — instant, no Stripe involved. Refunding leftover balance to a
-*card* is a separate manual path: Stripe API, processor fees not returned. Ship the first; decide
-the second later.
+**The rule: a pairing is self-serve refundable until its first successful AI call.** After that it
+is final. This is not "unlimited refunds" and must never be described as such.
+
+#### Three different refunds — do not conflate them
+
+| Refund | Rule | Mechanism |
+|---|---|---|
+| **Unused balance → card** | Always, no conditions | Manual Stripe path; processor fees not returned |
+| **Unused pairing → balance** | Only before first successful AI call | Self-serve, instant, no Stripe |
+| **Used pairing** | Not self-serve | Support discretion only |
+
+The first row is what carries most of the honesty claim, and it survives intact: **money you never
+spent is always yours.** That is unconditional and needs no window, because no output exists to keep.
+The window applies only to the second row.
+
+#### What "first successful AI call" means
+
+The pairing is refundable while it has no `ai_requests` row with `status = 'success'` and a matching
+`job_pairing_id`. Failures must not burn the refund right:
+
+- A provider error, timeout, or non-2xx logs non-success — still refundable.
+- A `ModerationException` rejection produces no output — still refundable.
+- Only a call that actually returned usable content closes the window.
+
+The debit happens at pairing creation, *before* any AI runs (§11, "charge at the front"), so there
+is always a real window — a misclick or a wrong-job purchase is genuinely reversible.
+
+#### Schema consequence
+
+`job_pairings` needs `refunded_at` (nullable timestamp), and the unique constraint must exclude
+refunded rows, or a user who refunds a mistake can never buy that job again:
+
+```php
+// Replaces $table->unique(['user_id', 'billing_key']) from §7.
+// Partial unique index — one *live* pairing per job per user; refunded rows step aside.
+// Postgres and SQLite both support this, so tests exercise the real constraint.
+DB::statement(
+    'CREATE UNIQUE INDEX job_pairings_user_billing_key_live
+     ON job_pairings (user_id, billing_key) WHERE refunded_at IS NULL'
+);
+```
+
+Refunding writes a `+50` ledger row (`reason = 'refund'`, `job_pairing_id` set) and stamps
+`refunded_at` — in one transaction, same as the debit. The pairing row is **kept, not deleted**: it
+is the audit trail, and `nullOnDelete` on the ledger FK would erase which job was refunded.
+
+Re-buying a refunded job creates a new pairing at full price. Ledger history shows both.
+
+#### What this costs, honestly
+
+It gives up the "I ran it and the output wasn't useful" case — which is the case users most want a
+refund for. That is a real loss, accepted because the alternative is a product that is free for
+anyone who notices. Two mitigations:
+
+- **Support discretion stays open.** A genuine dissatisfaction refund is a manual admin action, not
+  a policy the UI advertises. Per `CLAUDE.md`, that write goes through `AdminAuditLog::record()`.
+- **Output quality is the actual fix.** A refund window is not a substitute for the coach path (§5)
+  producing something the user wants to keep.
+
+**Watch for the inverse abuse:** buy → refund → buy → refund on the same job, repeatedly. It gains
+the user nothing (no AI ran) but it is a signal of someone probing. Visible in `balance_transactions`;
+no code needed for it now.
 
 **"Unlimited inside the unit" needs a fuse, not a meter.** No honest user makes 50 calls on one
 application; a script would happily make 100,000. Existing `throttle:20,1` covers bursts; add a high
@@ -267,7 +310,7 @@ let it be a surprise at 10,000 users.
 | Signup grant | **$3.00** — `__general__` plus 5 jobs |
 | Per job | **$0.50** |
 | Balance expiry | Never |
-| Refunds | Self-serve, unlimited, revoke the pairing |
+| Refunds | Unspent balance always; a job until its first AI call (§8) |
 | Minimum top-up | **$5.00** |
 | Maximum top-up | **$50.00** |
 | Preset amounts | **$5 / $15 / $30**, all at face value |
@@ -305,16 +348,15 @@ $50 is 100 jobs — more than anyone credibly needs.
 
 1. **Launch grant for existing accounts** (§8). Must be decided before the switch flips. Blocked on
    the production account count, which is still unknown.
-2. **The refund loop** (§8). Refunds return the money but not the generated output, so unlimited
-   self-serve refunds make the product free. Three options listed in §8, none chosen. Blocks
-   self-serve refunds; does not block §12's measurement work.
-3. **Why pay at all when a free competitor exists?** Jobscan gives five free ATS scans per month;
+2. **Why pay at all when a free competitor exists?** Jobscan gives five free ATS scans per month;
    Teal and Kickresume have permanent free tiers. §5 gives away everything except job-targeted AI,
    so the paid unit has to beat *free elsewhere*, not just feel fair here. The doc has no written
    answer to this and never has. It is the question a skeptical user asks first.
 
 ### Closed
 
+- ~~The refund loop.~~ Settled 2026-07-20: **a pairing is self-serve refundable until its first
+  successful AI call**; unspent balance stays unconditionally refundable. Reasoning and schema in §8.
 - ~~Volume bonus structure.~~ Settled 2026-07-20: **none**, plus a $50 maximum top-up. Reasoning in §9.
 - ~~Whether the signup grant stays $2.~~ Settled 2026-07-20 at **$3.00**.
 - ~~Minimum top-up.~~ Settled 2026-07-20 at **$5.00**. Stripe takes 2.9% + $0.30, so $5 loses 8.9%
@@ -366,12 +408,34 @@ Add $5  → 10 jobs
 Add $15 → 30 jobs
 Add $30 → 60 jobs
 
-Never expires. Refundable anytime. No subscription.
+Never expires. Unused balance always refundable. No subscription.
 ```
 
-> **"Refundable anytime" is not yet true** — it depends on §8's unresolved refund loop. If a window
-> or a cap is adopted, this line must change with it. Shipping this copy and then narrowing the
-> policy is worse than never promising it: it is the precise move §2 accuses the gated cohort of.
+> Earlier drafts said "Refundable anytime." **Do not restore that line** — §8's window makes it
+> false for pairings, and shipping a promise you later narrow is the precise move §2 accuses the
+> gated cohort of. The claim above is the strongest true one: unspent money is unconditionally
+> refundable, because no output exists to keep.
+
+### Say the window at the moment of purchase
+
+The window is only fair if it is stated before the click, not discovered after. The §11 purchase
+confirmation carries it:
+
+```
+Tailor for Senior PM at Acme — $0.50
+Includes unlimited rewrites, cover letters, and revisions
+for this job, forever.
+
+Refundable until you run the first rewrite.
+Balance after: $4.00
+```
+
+Once the first successful call lands, the refund control disappears rather than erroring — and says
+why, once, where the control used to be:
+
+```
+Paid · unlimited revisions for this job
+```
 
 ### Charge at the front, never mid-task
 
@@ -401,8 +465,9 @@ Pricing per-job instead of per-call exists to remove rationing anxiety (§4) —
 if the user knows.** Someone who never sees this badge will still ration out of habit, and the
 benefit is paid for without being received. Cheapest high-value copy in the design.
 
-Same reasoning for the refund control: put it near the output, not in settings. Unlimited
-no-questions refunds that are hard to find are not unlimited.
+Same reasoning for the refund control: put it near the job, not in settings. A refund window nobody
+can find is not a refund window — and because §8 closes it at the first successful call, burying it
+would mean most users never see it while it is still open.
 
 ### No manufactured urgency
 
