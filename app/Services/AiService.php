@@ -159,13 +159,22 @@ class AiService
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
             'total_tokens' => $totalTokens,
-            'estimated_cost_cents' => $this->estimateCostCents($model, $promptTokens, $completionTokens),
+            'estimated_cost_micro_cents' => $this->estimateCostMicroCents($model, $promptTokens, $completionTokens),
             'status' => $status,
             'flagged_text' => $flaggedText,
         ]);
     }
 
-    private function estimateCostCents(string $model, int $promptTokens, int $completionTokens): int
+    /**
+     * Estimate request cost in micro-cents (1 cent = 1,000,000).
+     *
+     * config('ai.pricing') is denominated in cents per 1,000 tokens, and a gpt-4o-mini
+     * call lands around 0.05 cents — so rounding to whole cents here recorded 0 for
+     * every OpenAI request, including a 15k-token page import. Scale before rounding:
+     * the rounding that remains is at a millionth of a cent, well below anything the
+     * spend alarm or the usage reports care about.
+     */
+    private function estimateCostMicroCents(string $model, int $promptTokens, int $completionTokens): int
     {
         $pricing = config("ai.pricing.{$model}");
         if (! $pricing) {
@@ -175,6 +184,6 @@ class AiService
         $cents = ($promptTokens / 1000) * $pricing['input']
             + ($completionTokens / 1000) * $pricing['output'];
 
-        return (int) round($cents);
+        return (int) round($cents * 1_000_000);
     }
 }
