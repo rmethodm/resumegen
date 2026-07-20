@@ -132,12 +132,13 @@ function FLabel({ children }: { children: React.ReactNode }) {
     return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#94a3b8]">{children}</p>;
 }
 
-function FInput({ value, onChange, onBlur, placeholder, type = 'text' }: {
-    value: string; onChange: (v: string) => void; onBlur?: () => void; placeholder?: string; type?: string;
+function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
+    value: string; onChange: (v: string) => void; onBlur?: () => void; placeholder?: string; type?: string; name?: string;
 }) {
     return (
         <input
             type={type}
+            name={name}
             value={value}
             onChange={e => onChange(e.target.value)}
             onBlur={onBlur}
@@ -1355,11 +1356,11 @@ export default function Edit({
                                     <div className="mb-3 grid grid-cols-2 gap-2">
                                         <div>
                                             <FLabel>Company</FLabel>
-                                            <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." />
+                                            <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." name="target_company" />
                                         </div>
                                         <div>
                                             <FLabel>Job title</FLabel>
-                                            <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" />
+                                            <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" name="target_title" />
                                         </div>
                                     </div>
                                     {aiEnabled ? (
