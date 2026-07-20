@@ -13,7 +13,8 @@ class TestResumesSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::updateOrCreate(
+        // firstOrCreate, not updateOrCreate — DatabaseSeeder owns this account's password.
+        $user = User::firstOrCreate(
             ['email' => 'rmethodm@outlook.com'],
             [
                 'name' => 'Richard Method',
@@ -409,7 +410,9 @@ class TestResumesSeeder extends Seeder
             ],
         ];
 
-        foreach ($resumes as $data) {
+        // Kept small on purpose — the full fixture set below is left intact so the cap
+        // can be raised without rewriting it. 4 here + 4 SampleShares + 2 Analytics = 10.
+        foreach (array_slice($resumes, 0, 4) as $data) {
             $existing = Resume::where('user_id', $user->id)
                 ->where('name', $data['name'])
                 ->first();
