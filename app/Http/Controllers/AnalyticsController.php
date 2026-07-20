@@ -22,7 +22,7 @@ class AnalyticsController extends Controller
             ->select(
                 'resume_id',
                 DB::raw("SUM(CASE WHEN event = 'page_view' THEN 1 ELSE 0 END) as page_views"),
-                DB::raw("SUM(CASE WHEN event = 'pdf_download' THEN 1 ELSE 0 END) as pdf_downloads"),
+                DB::raw("SUM(CASE WHEN event IN ('pdf_download', 'docx_download') THEN 1 ELSE 0 END) as pdf_downloads"),
                 DB::raw("SUM(CASE WHEN event = 'question_submitted' THEN 1 ELSE 0 END) as questions_submitted"),
                 DB::raw("COUNT(DISTINCT CASE WHEN event = 'page_view' AND ip_hash IS NOT NULL THEN ip_hash || DATE(created_at) END) as unique_visitors")
             )
@@ -53,7 +53,7 @@ class AnalyticsController extends Controller
             ->selectRaw(
                 "resumes.template,
                 SUM(CASE WHEN resume_share_events.event = 'page_view' THEN 1 ELSE 0 END) as views,
-                SUM(CASE WHEN resume_share_events.event = 'pdf_download' THEN 1 ELSE 0 END) as downloads"
+                SUM(CASE WHEN resume_share_events.event IN ('pdf_download', 'docx_download') THEN 1 ELSE 0 END) as downloads"
             )
             ->groupBy('resumes.template')
             ->orderByDesc('views')
