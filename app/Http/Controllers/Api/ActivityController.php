@@ -15,7 +15,7 @@ class ActivityController extends Controller
         $resumeIds = $request->user()->resumes()->pluck('id');
 
         $events = ResumeShareEvent::whereIn('resume_id', $resumeIds)
-            ->whereIn('event', ['page_view', 'pdf_download'])
+            ->whereIn('event', ['page_view', 'pdf_download', 'docx_download'])
             ->join('resumes', 'resumes.id', '=', 'resume_share_events.resume_id')
             ->select('resume_share_events.*', 'resumes.name as resume_name')
             ->latest('resume_share_events.created_at')
