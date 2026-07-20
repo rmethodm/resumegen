@@ -45,6 +45,21 @@ class ResumeShareEventTest extends TestCase
         ]);
     }
 
+    public function test_docx_download_is_logged(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->create(['user_id' => $user->id]);
+        $link = ResumeShareLink::factory()->create(['resume_id' => $resume->id]);
+
+        $this->get(route('public.docx', $link->token));
+
+        $this->assertDatabaseHas('resume_share_events', [
+            'resume_share_link_id' => $link->id,
+            'resume_id' => $resume->id,
+            'event' => 'docx_download',
+        ]);
+    }
+
     public function test_question_submitted_is_logged(): void
     {
         $user = User::factory()->create();
