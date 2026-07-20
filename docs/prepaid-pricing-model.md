@@ -296,8 +296,80 @@ application; a script would happily make 100,000. Existing `throttle:20,1` cover
 per-pairing ceiling (~200 calls, via `ai_requests.job_pairing_id`) that no real user reaches. This
 is a safety limit, not a pricing limit — do not surface it as a quota.
 
+### Launch grant for existing accounts — written up 2026-07-20
+
 **Existing accounts are a takeaway.** Every current user has 150 free AI calls/month under
-`UserLimits`. Cheapest fix is a one-time balance grant at launch. Amount undecided.
+`UserLimits`, forever. Switching to prepaid replaces an unlimited recurring allowance with a finite
+balance. For an active user that is strictly worse, and doing it silently to people mid-job-search
+is the one move that would justify the comparison to the gated cohort §2 defines itself against.
+
+#### Granted dollars are not withdrawable — the constraint that shapes everything else
+
+§8 makes unspent balance unconditionally refundable **to card**. Applied to granted money, that is a
+cash-extraction vector, not a generosity: register accounts, collect the grant, withdraw real money.
+`RegisteredUserController` caps registration at 5 accounts per IP per 24h, which slows a farm but
+does not stop one. **This applies to the $3 signup grant in §9 just as much as to the launch grant** —
+it was never spelled out there and must be.
+
+> **Granted balance is spendable, never withdrawable. Only money the user actually paid can be
+> refunded to a card.**
+
+The ledger already distinguishes these by `reason`, so the rule is computable without new columns:
+
+```
+refundable_to_card = min(
+    current_balance,
+    SUM(topup) - SUM(card_refund)      // lifetime, per user
+)
+```
+
+Safe regardless of the order grants and top-ups are spent in, and it needs no "which dollars did
+this charge consume" bookkeeping. **A user who never paid can never withdraw**, which is the whole
+requirement. Refund-*to-balance* (§8's pairing window) is unaffected — it moves money within the
+account and creates no extraction path.
+
+#### Who qualifies
+
+Not every row in `users`. The grant compensates a takeaway, so it should follow evidence the account
+was real and used:
+
+- **Email verified** — `User` implements `MustVerifyEmail` and the `verified` middleware gates the
+  whole app, so an unverified account never had the allowance being taken away.
+- **Owns at least one resume** — the cheapest available proxy for "actually used this."
+
+Dormant-but-real accounts that come back later are covered by the ordinary $3 signup-grant path
+being extended to them on next login, or by support. Do not stretch the launch grant to cover
+everyone in case someone returns; that maximizes liability for the least real benefit.
+
+#### Amount — decision rule, not a number
+
+Still blocked on **how many accounts qualify in production**, which is unknown; the local database
+holds one seeded account (2026-07-20) and tells us nothing.
+
+| Qualifying accounts | Grant | Reasoning |
+|---|---|---|
+| Under ~200 | **$15** (30 jobs) | Total liability under $3,000, and at that scale the engineering time spent optimizing costs more than the grant. Be generous and stop thinking about it. |
+| Hundreds to low thousands | **$10** (20 jobs) | Still comfortably above a realistic single search; liability becomes a real line item worth bounding. |
+| Many thousands | Model it | Segment by observed usage. At that size the §12 numbers exist, so guessing is no longer necessary. |
+
+The floor is **$5**: below that the grant reads as a coupon rather than compensation, and it needs
+to clear "more than a new user gets for free" ($3) or existing users are worse off than strangers.
+
+#### Mechanics
+
+1. **A console command, run once** — `php artisan balance:launch-grant`, with `--dry-run` reporting
+   the qualifying count and total liability before anything is written.
+2. **Idempotent, enforced in the database.** A partial unique index on
+   `balance_transactions (user_id) WHERE reason = 'launch_grant'` makes a double-run impossible
+   rather than merely unlikely. A re-run after a partial failure is the expected case, not an edge
+   case, and this is money.
+3. **Audit it.** `AdminAuditLog::record()` per `CLAUDE.md`, with the amount and qualifying count in
+   `meta`.
+4. **Grant before the switch, not at it.** Users should see the balance already sitting there when
+   pricing appears, not arrive at a paywall and be told compensation is coming.
+5. **Tell them first**, in the terms §11 uses: what changed, what is still free (nearly everything),
+   what the balance is, and that it never expires. A takeaway announced plainly is survivable; one
+   discovered mid-task is not.
 
 **Never-expiring balances are a liability on the books**, and unspent prepaid funds carry
 unclaimed-property (escheatment) obligations in some US states. Irrelevant at current scale; do not
@@ -307,7 +379,7 @@ let it be a surprise at 10,000 users.
 
 | | |
 |---|---|
-| Signup grant | **$3.00** — `__general__` plus 5 jobs |
+| Signup grant | **$3.00** — `__general__` plus 5 jobs. Spendable, **never withdrawable** (§8) |
 | Per job | **$0.50** |
 | Balance expiry | Never |
 | Refunds | Unspent balance always; a job until its first AI call (§8) |
@@ -346,8 +418,9 @@ $50 is 100 jobs — more than anyone credibly needs.
 
 ## 10. Open decisions
 
-1. **Launch grant for existing accounts** (§8). Must be decided before the switch flips. Blocked on
-   the production account count, which is still unknown.
+1. **Launch grant amount** (§8). Qualifying criteria, withdrawability, and mechanics are settled;
+   only the dollar figure is open, and it follows the decision rule in §8 once the production
+   count of qualifying accounts is known. Must be decided before the switch flips.
 2. **Why pay at all when a free competitor exists?** Jobscan gives five free ATS scans per month;
    Teal and Kickresume have permanent free tiers. §5 gives away everything except job-targeted AI,
    so the paid unit has to beat *free elsewhere*, not just feel fair here. The doc has no written
