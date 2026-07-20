@@ -80,7 +80,8 @@ npm run build
 
 - [CONTEXT.md](CONTEXT.md) - current project context and paused mobile decision
 - [AI_STRATEGY.md](AI_STRATEGY.md) - current AI decision record
-- [PRICING_REVIEW.md](PRICING_REVIEW.md) - pricing and tier review
+- [docs/prepaid-pricing-model.md](docs/prepaid-pricing-model.md) - the pricing proposal (nothing is billed; prices are 0)
+- [docs/growth-model-sample-run.md](docs/growth-model-sample-run.md) - fabricated scenario sweep behind it
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) - server deployment guide
 - [AGENTS.md](AGENTS.md) - local development rules for AI agents
 - [CODEX.md](CODEX.md) - Codex-specific context policy

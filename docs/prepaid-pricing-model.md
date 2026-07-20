@@ -581,23 +581,45 @@ made with no data on either side of it. The thresholds below moved with it and a
 numbers the first draft used; they are *derived from* the grant, not independent judgments, so any
 further change to the grant must re-derive them again.
 
+**A modelled sweep now exists** — `docs/growth-model-sample-run.md`, 19 fabricated scenarios.
+It does **not** satisfy this section's stop rule, which requires observed data, but it does
+say something this document could not: on its assumptions the price levers are second-order.
+Activation rate, jobs per user and the signup ramp swing the twelve-month result by $659–$906
+each, while the entire grant question swings $646 and AI cost $11. Two of those three are the
+model's own least-confident inputs. **When numbers 1–5 below are finally collected, collect
+activation and jobs-per-user with them** — they decide more than anything in §9.
+
 ### The five numbers to collect
 
 Thresholds below are **judgment**, not research — they are starting lines for a decision, not
 findings.
 
+Numbers 1–3 are now expressed as formulas of `G`, the count of jobs the grant covers
+(`(grant − 50c for the reserved __general__ pairing) ÷ price`), rather than as fixed
+figures. The fixed figures were re-derived by hand twice and drifted from the code both
+times; a formula cannot drift. At the $5 grant of §9, `G = 9` and these reproduce the
+published 10, 15% and 12 exactly.
+
 | # | Number | Why it matters | Re-base the model if |
 |---|---|---|---|
-| 1 | **Median jobs tailored** per user who finishes a resume | Sets whether the median user ever crosses the paid threshold | median ≤ 10 |
-| 2 | **% of users exceeding 9 tailored jobs** | This is the true conversion rate — everything below it is free | < 15% |
-| 3 | **p90 jobs tailored** | Revenue depends on a heavy tail; without one, totals are negligible | p90 < 12 |
+| 1 | **Median jobs tailored** per user who finishes a resume | Sets whether the median user ever crosses the paid threshold | median ≤ G + 1 |
+| 2 | **% of users exceeding G tailored jobs** | This is the true conversion rate — everything below it is free | < 15% |
+| 3 | **p90 jobs tailored** | Revenue depends on a heavy tail; without one, totals are negligible | p90 < G + 3 |
 | 4 | **Week-2 return rate** | A user who never comes back never reaches a paid moment | most users never return |
 | 5 | **Observed cost per AI call** | §3's figures are modelled, never measured | actuals exceed §3 by >3x |
 
-**Number 3 is now the tightest of the five.** At a $5 grant the first paid job is the 10th, so a p90
-of 12 means the *ninetieth-percentile* user pays for three jobs — $1.50, once, ever. Revenue is not
-merely tail-dependent, it depends on the tail being long, not just present. If the data shows a p90
-in the low teens, the grant is too large for the unit price and one of the two has to move.
+**Number 3 is the tightest of the five.** A p90 of `G + 3` means the *ninetieth-percentile*
+user pays for three jobs, once, ever. Revenue is not merely tail-dependent; it depends on
+the tail being long, not just present. If the data shows a p90 near `G`, the grant is too
+large for the unit price and one of the two has to move.
+
+> **The code and §9 currently disagree, deliberately.** `PricingUsageReport::GRANT_JOBS` is
+> **3**, not 9 — it was set to the $2 grant of the growth model's recommended scenario
+> (`docs/growth-model-sample-run.md`) so the report measures against a grant that might
+> actually convert. §9's settled $5 is unchanged and remains the proposal of record. Nothing
+> is billed either way: `config/pricing.php` is still 0. **Whichever grant is eventually
+> chosen, set `GRANT_JOBS` from it and §9 together, or the instrumentation will keep
+> answering a question nobody asked.**
 
 ### How to collect them without building billing
 
