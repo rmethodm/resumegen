@@ -13,6 +13,8 @@ class ResumeRules
             'font_family' => ['sometimes', 'nullable', 'in:sans,serif,mono'],
             'summary' => ['nullable', 'string'],
             'target_job_description' => ['nullable', 'string', 'max:10000'],
+            'target_company' => ['nullable', 'string', 'max:200'],
+            'target_title' => ['nullable', 'string', 'max:200'],
             'contact' => ['nullable', 'array'],
             'experience' => ['nullable', 'array'],
             'education' => ['nullable', 'array'],
@@ -49,7 +51,7 @@ class ResumeRules
     public static function copyFields(): array
     {
         return [
-            'template', 'accent_color', 'font_family', 'summary', 'target_job_description', 'contact',
+            'template', 'accent_color', 'font_family', 'summary', 'target_job_description', 'target_company', 'target_title', 'contact',
             'experience', 'education', 'projects', 'skills', 'skills_layout', 'skills_groups', 'skill_narratives',
             'certifications', 'font_sizes', 'custom_sections', 'section_order',
         ];
