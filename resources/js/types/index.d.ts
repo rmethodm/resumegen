@@ -4,7 +4,6 @@ export interface User {
     email: string;
     email_verified_at?: string;
     is_master_admin: boolean;
-    is_pro: boolean;
     two_factor_confirmed_at: string | null;
     profile: {
         full_name?: string;
