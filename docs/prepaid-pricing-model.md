@@ -107,7 +107,7 @@ pursue" is also a shorter sentence.
 **The `__general__` pairing.** `rewrite_bullet` can run with no job attached. Left free, a user does
 all resume work for $0 and only pays when targeting a posting — which becomes the default path. So
 non-job-specific AI is covered by one reserved pairing keyed `__general__`, costing $0.50 once,
-ever. A $3 signup grant is therefore general polish plus five real jobs.
+ever. A $5 signup grant is therefore general polish plus nine real jobs.
 
 ## 6. Job identity — the billing key
 
@@ -308,7 +308,7 @@ is the one move that would justify the comparison to the gated cohort §2 define
 §8 makes unspent balance unconditionally refundable **to card**. Applied to granted money, that is a
 cash-extraction vector, not a generosity: register accounts, collect the grant, withdraw real money.
 `RegisteredUserController` caps registration at 5 accounts per IP per 24h, which slows a farm but
-does not stop one. **This applies to the $3 signup grant in §9 just as much as to the launch grant** —
+does not stop one. **This applies to the $5 signup grant in §9 just as much as to the launch grant** —
 it was never spelled out there and must be.
 
 > **Granted balance is spendable, never withdrawable. Only money the user actually paid can be
@@ -337,7 +337,7 @@ was real and used:
   whole app, so an unverified account never had the allowance being taken away.
 - **Owns at least one resume** — the cheapest available proxy for "actually used this."
 
-Dormant-but-real accounts that come back later are covered by the ordinary $3 signup-grant path
+Dormant-but-real accounts that come back later are covered by the ordinary $5 signup-grant path
 being extended to them on next login, or by support. Do not stretch the launch grant to cover
 everyone in case someone returns; that maximizes liability for the least real benefit.
 
@@ -352,8 +352,9 @@ holds one seeded account (2026-07-20) and tells us nothing.
 | Hundreds to low thousands | **$10** (20 jobs) | Still comfortably above a realistic single search; liability becomes a real line item worth bounding. |
 | Many thousands | Model it | Segment by observed usage. At that size the §12 numbers exist, so guessing is no longer necessary. |
 
-The floor is **$5**: below that the grant reads as a coupon rather than compensation, and it needs
-to clear "more than a new user gets for free" ($3) or existing users are worse off than strangers.
+The floor is **$8**: it must clear "more than a new user gets for free," and the signup grant rose
+to $5 on 2026-07-20 (§9). A launch grant at or below $5 would leave existing users — the ones being
+taken from — no better off than a stranger signing up that day.
 
 #### Mechanics
 
@@ -379,7 +380,7 @@ let it be a surprise at 10,000 users.
 
 | | |
 |---|---|
-| Signup grant | **$3.00** — `__general__` plus 5 jobs. Spendable, **never withdrawable** (§8) |
+| Signup grant | **$5.00** — `__general__` plus 9 jobs. Spendable, **never withdrawable** (§8) |
 | Per job | **$0.50** |
 | Balance expiry | Never |
 | Refunds | Unspent balance always; a job until its first AI call (§8) |
@@ -421,17 +422,20 @@ $50 is 100 jobs — more than anyone credibly needs.
 1. **Launch grant amount** (§8). Qualifying criteria, withdrawability, and mechanics are settled;
    only the dollar figure is open, and it follows the decision rule in §8 once the production
    count of qualifying accounts is known. Must be decided before the switch flips.
-2. **Grant size vs free-tier competitiveness** (§14). Written up 2026-07-20, and it surfaced a
-   coupling rather than closing: the grant is both the free-tier lever (Jobscan's 5 scans/month
-   recur, our $3 does not — 15 free scans vs 5 free jobs over a search) and the thing deciding
-   whether the median user ever pays (§12). They pull opposite ways. Settle together, with data.
+2. **Grant size vs free-tier competitiveness** (§14). Partly acted on 2026-07-20: the grant rose
+   $3 → $5, narrowing the free-tier gap (15 free Jobscan scans vs 9 free jobs over a search) at the
+   cost of pushing the first paid job to the 10th. The coupling itself is not resolved — the grant
+   is still both levers at once, and $5 was chosen without data on either side. Re-derive §12's
+   thresholds if it moves again.
 
 ### Closed
 
 - ~~The refund loop.~~ Settled 2026-07-20: **a pairing is self-serve refundable until its first
   successful AI call**; unspent balance stays unconditionally refundable. Reasoning and schema in §8.
 - ~~Volume bonus structure.~~ Settled 2026-07-20: **none**, plus a $50 maximum top-up. Reasoning in §9.
-- ~~Whether the signup grant stays $2.~~ Settled 2026-07-20 at **$3.00**.
+- ~~Whether the signup grant stays $2.~~ Settled 2026-07-20 at **$5.00** — raised from $3 the same
+  day for free-tier competitiveness (§14). Knowingly moves the first paid job from 6 to 10 and makes
+  §12's bet harder; revisit together with the unit price once §12's numbers exist.
 - ~~Minimum top-up.~~ Settled 2026-07-20 at **$5.00**. Stripe takes 2.9% + $0.30, so $5 loses 8.9%
   to fees vs 3.5% on $10 — but this product's thesis is that its users have real money concerns, and
   a $5 first purchase is materially easier than $10 for someone unemployed. At 95% gross margin the
@@ -561,15 +565,21 @@ go.
 
 ### The arithmetic that decides everything
 
-A $3 grant covers `__general__` ($0.50) plus five jobs. **So a user pays nothing until their sixth
+A $5 grant covers `__general__` ($0.50) plus nine jobs. **So a user pays nothing until their tenth
 tailored job.** That single fact means:
 
-> If the median user tailors five jobs or fewer, **the median user never pays anything, ever.**
+> If the median user tailors nine jobs or fewer, **the median user never pays anything, ever.**
 
 That is not a pricing bug — it is a bet on behaviour. Most job seekers spray one generic resume at
 most postings and tailor only a handful. If that is what real users do here, revenue per user is
 roughly $0–2 and the model produces nothing regardless of how well-designed it is. Nobody has
 watched a single real user do this.
+
+**Raising the grant from $3 to $5 on 2026-07-20 moved this line from job 6 to job 10 — it made the
+bet substantially harder to win.** That was a deliberate trade for free-tier competitiveness (§14),
+made with no data on either side of it. The thresholds below moved with it and are no longer the
+numbers the first draft used; they are *derived from* the grant, not independent judgments, so any
+further change to the grant must re-derive them again.
 
 ### The five numbers to collect
 
@@ -578,11 +588,16 @@ findings.
 
 | # | Number | Why it matters | Re-base the model if |
 |---|---|---|---|
-| 1 | **Median jobs tailored** per user who finishes a resume | Sets whether the median user ever crosses the paid threshold | median ≤ 6 |
-| 2 | **% of users exceeding 6 tailored jobs** | This is the true conversion rate — everything below it is free | < 15% |
-| 3 | **p90 jobs tailored** | Revenue depends on a heavy tail; without one, totals are negligible | p90 < 15 |
+| 1 | **Median jobs tailored** per user who finishes a resume | Sets whether the median user ever crosses the paid threshold | median ≤ 10 |
+| 2 | **% of users exceeding 9 tailored jobs** | This is the true conversion rate — everything below it is free | < 15% |
+| 3 | **p90 jobs tailored** | Revenue depends on a heavy tail; without one, totals are negligible | p90 < 12 |
 | 4 | **Week-2 return rate** | A user who never comes back never reaches a paid moment | most users never return |
 | 5 | **Observed cost per AI call** | §3's figures are modelled, never measured | actuals exceed §3 by >3x |
+
+**Number 3 is now the tightest of the five.** At a $5 grant the first paid job is the 10th, so a p90
+of 12 means the *ninetieth-percentile* user pays for three jobs — $1.50, once, ever. Revenue is not
+merely tail-dependent, it depends on the tail being long, not just present. If the data shows a p90
+in the low teens, the grant is too large for the unit price and one of the two has to move.
 
 ### How to collect them without building billing
 
@@ -647,7 +662,7 @@ So the real question is what a whole search costs. For a user tailoring 12 jobs 
 
 | | Cost |
 |---|---|
-| **Resumegen** | $3 grant covers 5 → 7 more at $0.50 = **$3.50** |
+| **Resumegen** | $5 grant covers 9 → 3 more at $0.50 = **$1.50** |
 | **Teal** | $29/mo × 3 = **$87** |
 | **Jobscan** | $49.95/mo × 3 = **$150** |
 | **Kickresume** | **$96** upfront (annual) or $72 monthly |
@@ -659,9 +674,9 @@ orders of magnitude cheaper for the actual job to be done, because the competito
 ### The honest weaknesses
 
 **1. Our free tier is worse than Jobscan's over a full search.** Jobscan's 5 scans/month recur; our
-$3 grant is one-time. Over three months that is **15 free scans vs 5 free jobs**. A user comparing
-free tiers side by side sees us as *less* generous, and the first-glance comparison is the one that
-happens.
+$5 grant is one-time. Over three months that is **15 free scans vs 9 free jobs** — closer since the
+grant rose from $3 on 2026-07-20, but still behind. A user comparing free tiers side by side sees us
+as *less* generous, and the first-glance comparison is the one that happens.
 
 The rebuttal — a pairing is unlimited AI on that job forever while a scan is one match report — is
 true and is a per-unit argument that loses to a bigger number on a pricing page. This is a real
@@ -672,7 +687,7 @@ lever *and* the thing that decides whether the median user ever pays. Those pull
 directions and cannot both be optimized. Decide them together, with the §12 data, or not at all.
 
 **2. Zero is not a price.** "Free" beats "$0.50" for reasons arithmetic does not touch; a $0.50
-charge introduces a decision where none existed. The $3 grant softens the first encounter but does
+charge introduces a decision where none existed. The $5 grant softens the first encounter but does
 not remove it.
 
 **3. Free tiers stack.** Nothing stops a user running Jobscan's 5 scans, Teal's credits, and
