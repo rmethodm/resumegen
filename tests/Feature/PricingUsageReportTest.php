@@ -34,7 +34,8 @@ class PricingUsageReportTest extends TestCase
      */
     public function test_it_reports_the_jobs_tailored_distribution(): void
     {
-        // Sorted counts 1, 4, 7, 11, 13 → median 7, p90 13, two users above the grant.
+        // Sorted counts 1, 4, 7, 11, 13 → median 7, p90 13, and four users above the
+        // $2 grant's three free jobs (4, 7, 11, 13).
         foreach ([7, 1, 13, 4, 11] as $jobs) {
             $this->userWithJobs($jobs);
         }
@@ -42,7 +43,7 @@ class PricingUsageReportTest extends TestCase
         $this->artisan('pricing:usage')
             ->expectsOutputToContain('7')   // median
             ->expectsOutputToContain('13')  // p90
-            ->expectsOutputToContain('2 (40.0%)')
+            ->expectsOutputToContain('4 (80.0%)')
             ->assertSuccessful();
     }
 
@@ -53,7 +54,7 @@ class PricingUsageReportTest extends TestCase
      */
     public function test_it_excludes_general_and_refunded_pairings(): void
     {
-        $user = $this->userWithJobs(1);
+        $user = $this->userWithJobs(8);
 
         $user->jobPairings()->create([
             'billing_key' => JobPairing::GENERAL,
@@ -68,10 +69,17 @@ class PricingUsageReportTest extends TestCase
             'refunded_at' => now(),
         ]);
 
-        // Still 1 job, not 3.
+        // Still 8 jobs, not 10. Asserted as a whole table rather than a "doesn't contain
+        // 10": the report prints the grant (3), its derived triggers (4, 6, 15), and a
+        // percentage, so every bare numeral collides with something — "10" matches
+        // "100.0%" and "3" matches the threshold column, passing for the wrong reason.
         $this->artisan('pricing:usage')
-            ->expectsOutputToContain('Median jobs tailored')
-            ->doesntExpectOutputToContain('3')
+            ->expectsTable(['Metric', 'Value', 'Re-base if'], [
+                ['Users with >=1 job', 1, '—'],
+                ['Median jobs tailored', 8, 'median <= 4'],
+                ['p90 jobs tailored', 8, 'p90 < 6'],
+                ['Users exceeding 3 jobs', '1 (100.0%)', '< 15%'],
+            ])
             ->assertSuccessful();
     }
 
