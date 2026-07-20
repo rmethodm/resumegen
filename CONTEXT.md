@@ -1,23 +1,25 @@
 # Resumegen Context
 
 ## Current Task
-Dead-code + Claude-config cleanup (2026-07-19). Deleted unrouted `ImportTestController` + `ImportTest.tsx`
-(commit `d4f797f`, −487). Removed the `cashier-stripe-development` and `medialibrary-development` skills, the two
-Stripe MCP permissions, and a `types:check` grant for a script that doesn't exist. Added
-`.claude/hooks/block-migrate-rollback.sh` (PreToolUse, 10/10 cases pass). Prior work: builder rework
-(`ebfc933..5e2ea61`) still UNVERIFIED IN A BROWSER.
+Designed a prepaid pricing model to replace subscriptions — full proposal in
+`docs/prepaid-pricing-model.md` (13 sections). Nothing implemented; no code touched outside `docs/`.
 
 ## Key Decisions
-- Forward-only migrations are now enforced by a hook, not just documented — prose in CLAUDE.md failed to
-  prevent two misdiagnoses. Regex requires an `artisan` prefix so grepping the term still works.
-- Laravel Boost's context header falsely lists `laravel/cashier v16` as installed. Verify packages against
-  `composer.json`/`vendor/`, never that header. Noted in CLAUDE.md.
-- Controllers here are NOT bloated (max method 54 lines). Form Request / Action extraction would be churn.
-  The real finding was dead code, not fat controllers.
+- **Prepaid dollar balance, no subscription.** $0.50 per job (unlimited AI + revisions inside it,
+  forever), $3 signup grant, $5 min / $50 max top-up, no volume bonus, balances never expire,
+  refunds self-serve and unlimited. Withdraws §3 of `resume-builder-competitive-analysis.md`.
+- **AI COGS is ~$0.0005/call** (modelled; `ai_requests` was empty). The current 150/mo cap costs
+  ~8¢/user. Invalidates the competitive doc's §2 "structural cost asymmetry" argument — metering is
+  a pricing decision, not cost recovery.
+- **Implementation is gated on usage data** (§12). The $3 grant covers 5 jobs, so a user pays
+  nothing until their 6th tailored job — if the median user tailors ≤5, the median user never pays.
 
 ## Next Steps
-1. **Click through the builder in a browser.** Every visual claim rests on static reasoning. Only gate left.
-2. **Split this branch before it goes near main** — 25 commits ahead, bundling /shares, photo removal, the
-   07-17 Skills experiment, job search, builder rework, and this cleanup. Independently mergeable.
-3. Production .env needs `AI_ENABLED=true` + `AI_CAREER_COACH_ENABLED=false`; add deploy secrets
-   `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`. Cover letters still have no route to `AiPrompts::coverLetter()`.
+1. Build `job_pairings` + `balance_transactions` with **all prices $0** to collect the §12 numbers
+   (median jobs tailored, % exceeding 6, p90). No Stripe, no paywall. Also fix
+   `ai_requests.estimated_cost_cents` — it's an `integer`, so every call rounds to 0.
+2. **Split this branch before it goes near main** — 25+ commits bundling /shares, photo removal, the
+   07-17 Skills experiment, job search, builder rework, cleanup, and now pricing docs.
+3. Click through the builder in a browser — builder rework (`ebfc933..5e2ea61`) still unverified.
+   Prod .env still needs `AI_ENABLED=true` + `AI_CAREER_COACH_ENABLED=false`, deploy secrets
+   `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`; cover letters have no route to `AiPrompts::coverLetter()`.
