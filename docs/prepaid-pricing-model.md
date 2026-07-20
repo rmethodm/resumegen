@@ -421,10 +421,10 @@ $50 is 100 jobs — more than anyone credibly needs.
 1. **Launch grant amount** (§8). Qualifying criteria, withdrawability, and mechanics are settled;
    only the dollar figure is open, and it follows the decision rule in §8 once the production
    count of qualifying accounts is known. Must be decided before the switch flips.
-2. **Why pay at all when a free competitor exists?** Jobscan gives five free ATS scans per month;
-   Teal and Kickresume have permanent free tiers. §5 gives away everything except job-targeted AI,
-   so the paid unit has to beat *free elsewhere*, not just feel fair here. The doc has no written
-   answer to this and never has. It is the question a skeptical user asks first.
+2. **Grant size vs free-tier competitiveness** (§14). Written up 2026-07-20, and it surfaced a
+   coupling rather than closing: the grant is both the free-tier lever (Jobscan's 5 scans/month
+   recur, our $3 does not — 15 free scans vs 5 free jobs over a search) and the thing deciding
+   whether the median user ever pays (§12). They pull opposite ways. Settle together, with data.
 
 ### Closed
 
@@ -618,3 +618,90 @@ When approved, the smallest slice that tests the model — **no Stripe at all**:
 4. Top-ups seeded manually via a console command
 
 That proves whether $0.50-per-job feels right before any payments infrastructure exists.
+
+## 14. The competitor question — why pay anything?
+
+> *"Jobscan gives me five free scans a month. Teal has a free tier. Reactive Resume is free forever.
+> Why would I pay you $0.50?"*
+
+Facts below are from `resume-builder-competitive-analysis.md` §1, which verified them. The reasoning
+is judgment.
+
+### The comparison is not free-vs-$0.50
+
+Every free tier in the ungated cohort is **itself AI-metered**, and metered at a level deliberately
+short of a real search:
+
+| Vendor | Free AI allowance | Cost the moment you exceed it |
+|---|---|---|
+| **Jobscan** | 5 scans/month (rollover, cap 5) | ~$49.95/mo |
+| **Teal** | ~5–10 AI credits | $29/mo |
+| **Kickresume** | None — AI Writer is paid | $24/mo, or $96 upfront for the $8/mo annual |
+| **Reactive Resume** | Unlimited, BYO API key | $0 |
+
+They gave away export, resumes, and templates — the things that cost nothing — and put the wall
+exactly where we do: **AI volume**. Nobody in this market gives away unlimited AI. The disagreement
+is about the *shape* of the wall, not its existence.
+
+So the real question is what a whole search costs. For a user tailoring 12 jobs over three months:
+
+| | Cost |
+|---|---|
+| **Resumegen** | $3 grant covers 5 → 7 more at $0.50 = **$3.50** |
+| **Teal** | $29/mo × 3 = **$87** |
+| **Jobscan** | $49.95/mo × 3 = **$150** |
+| **Kickresume** | **$96** upfront (annual) or $72 monthly |
+
+**That is the answer, and it is a strong one.** It is not "cheaper per unit" — it is one to two
+orders of magnitude cheaper for the actual job to be done, because the competitor charges for
+*time* while the user consumes *jobs*, and a 3-month search pays for 3 months either way.
+
+### The honest weaknesses
+
+**1. Our free tier is worse than Jobscan's over a full search.** Jobscan's 5 scans/month recur; our
+$3 grant is one-time. Over three months that is **15 free scans vs 5 free jobs**. A user comparing
+free tiers side by side sees us as *less* generous, and the first-glance comparison is the one that
+happens.
+
+The rebuttal — a pairing is unlimited AI on that job forever while a scan is one match report — is
+true and is a per-unit argument that loses to a bigger number on a pricing page. This is a real
+disadvantage, not a framing problem.
+
+**It also couples directly to §12.** The grant size is simultaneously the free-tier competitiveness
+lever *and* the thing that decides whether the median user ever pays. Those pull in opposite
+directions and cannot both be optimized. Decide them together, with the §12 data, or not at all.
+
+**2. Zero is not a price.** "Free" beats "$0.50" for reasons arithmetic does not touch; a $0.50
+charge introduces a decision where none existed. The $3 grant softens the first encounter but does
+not remove it.
+
+**3. Free tiers stack.** Nothing stops a user running Jobscan's 5 scans, Teal's credits, and
+Kickresume's builder at $0 forever. The friction is three accounts and no single workspace — real,
+but not a moat.
+
+**4. Reactive Resume is genuinely free and unlimited.** It costs an API key and some setup, which
+filters to technical users. That is a different audience, not a defeated competitor.
+
+**5. Our differentiators are unverified.** `resume-builder-competitive-analysis.md` §2 lists share
+analytics, recruiter Q&A, A/B variants, and the coach path as possible leads with **"absence of
+evidence is mostly absence of research."** None can be leaned on until someone checks.
+
+### What the position actually is
+
+Not "cheaper." Not "more generous." It is:
+
+> **You pay for the jobs you pursue, not the weeks you spend looking — and we stop charging when you
+> stop, because we never started a subscription.**
+
+That is true, verifiable, unavailable to every vendor in §1 except Reactive Resume, and it inherits
+§2's structural point rather than resting on the unverified feature table. It is also the *only*
+claim here that survives scrutiny without qualification.
+
+### What would actually settle it
+
+None of the above is evidence about willingness to pay. The §12 fake door is — when the grant runs
+out, show the top-up screen, and on click say payments are not live and refill for free. Clicks
+measure intent against a real price; this section only measures whether the argument is coherent.
+
+**Do not treat this section as an answer that unblocks building.** It establishes the pitch is
+defensible, not that anyone will buy.
