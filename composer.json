@@ -10,8 +10,10 @@
         "bacon/bacon-qr-code": "^3.1",
         "barryvdh/laravel-dompdf": "^3.1",
         "filament/filament": "^3.0",
+        "illuminate/console": "*",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^13.8",
+        "laravel/mcp": "^0.9.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "openai-php/laravel": "^0.19.1",
@@ -61,6 +63,9 @@
         "test": [
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
+        ],
+        "fresh": [
+            "@php artisan migrate:fresh --seed"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
