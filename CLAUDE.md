@@ -140,6 +140,14 @@ Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` 
 
 `App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`AI_ENABLED`, `OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
 
+**AI cost is recorded in micro-cents (1 cent = 1,000,000)** on `ai_requests.estimated_cost_micro_cents`. It used to be `estimated_cost_cents`, and `AiService::estimateCostCents()` ended in `(int) round($cents)` — so anything under half a cent became 0, which is *every* `gpt-4o-mini` call (~0.05¢) including a 15k-token page import. Every OpenAI request ever logged recorded a cost of zero, and everything downstream read that zero: `ai:cost-alert` could not fire at any spend level, and `AiUsageReport` / `AdminStatsOverview` / `AiUsersPage` all reported $0.00. Fixed 2026-07-20 (migration `store_ai_cost_in_micro_cents`, forward-only).
+
+Consequences to keep in mind:
+
+- **All cost history before 2026-07-20 is zero and cannot be recovered** — the precision was lost at write time, not at display. Only Anthropic rows (~20x pricier) held a coarse non-zero, which is why this never looked completely dead.
+- **`AiUsageReport` reports costs in micro-cents** under the key `cost_micro_cents`, uniformly across `totals()`, `breakdown()`, and `dailySeries()`. Divide by 100,000,000 for dollars, at display only. The three methods previously returned three different key spellings and the overview blade read a fourth, so the cost tile and both breakdown tables silently rendered blank or $0.00 — don't reintroduce per-method key names.
+- `config('ai.pricing')` is still denominated in **cents per 1,000 tokens**, and `ai.daily_alert_threshold_cents` is still in cents. Only the stored column and the report keys changed units.
+
 **Master switch:** `AI_ENABLED` (default true). The `ai_enabled` middleware (`EnsureAiEnabled`, aliased in `bootstrap/app.php`) **404s** every AI route when it's false — 404 not 403, so a suspended feature looks absent rather than like a plan restriction. The `aiEnabled` Inertia prop hides the matching UI.
 
 **Prompts:** `App\Data\AiPrompts::build(string $feature, array $input)` — one `match` over the feature key, throws on unknown. Keys: `rewrite_bullet`, `critique_bullet`, `generate_summary`, `ats_keywords`, `interview_coach`, `cover_letter`.
