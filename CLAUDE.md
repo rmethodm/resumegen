@@ -231,6 +231,10 @@ Added 2026-07-20. `tests/Browser/` is the only layer that executes React; the fe
 
 Assert on controls (`assertMissing('input[name="…"]')`), not strings (`assertDontSee('…')`) — a "don't see" assertion passes on any error page and proves nothing.
 
+**3. `.env.dusk.local` sets `AI_ENABLED=true`, so every AI-off fallback is invisible to Dusk.** The builder swaps whole components on that flag — `AtsMatchPanel` when AI is on, `JdMatcher` (deterministic keyword overlap) when it is off — and only the first has ever executed in a browser. Any test of a fallback path needs the Dusk server booted with AI disabled; `config()->set` in the test will not do it, because Dusk drives a separate server process that read its own env at boot.
+
+**Check the build is current before trusting anything you see in a browser.** `public/build/manifest.json` older than `resources/js/**` means Herd is serving stale bundled JS and you are testing code that is not on the branch. `find resources/js -name '*.tsx' -newer public/build/manifest.json` answers it; `npm run build` fixes it. Dusk is unaffected only if the build is fresh — it loads the same built assets.
+
 ## Testing console reports: assert the table, not substrings
 
 For the `pricing:*` commands (and any `$this->table()` output), use `expectsTable(...)` rather than `expectsOutputToContain` / `doesntExpectOutputToContain`. These reports print thresholds, counts and percentages side by side, so every bare numeral collides with something else on screen — `'10'` matches `'100.0%'`, `'3'` matches a `median <= 3` threshold column. A substring assertion then passes for the wrong reason, which is worse than failing.
