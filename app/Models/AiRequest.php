@@ -22,7 +22,7 @@ class AiRequest extends Model
         'prompt_tokens',
         'completion_tokens',
         'total_tokens',
-        'estimated_cost_cents',
+        'estimated_cost_micro_cents',
         'status',
         'flagged_text',
     ];
