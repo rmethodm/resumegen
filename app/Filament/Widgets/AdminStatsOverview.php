@@ -29,13 +29,15 @@ class AdminStatsOverview extends BaseWidget
         }
 
         $aiRequestsToday = AiRequest::where('created_at', '>=', $todayStart)->count();
-        $aiSpendTodayCents = (int) AiRequest::where('created_at', '>=', $todayStart)
-            ->sum('estimated_cost_cents');
+        $aiSpendTodayMicroCents = (int) AiRequest::where('created_at', '>=', $todayStart)
+            ->sum('estimated_cost_micro_cents');
 
         return [
             ...$stats,
             Stat::make('AI Requests Today', $aiRequestsToday),
-            Stat::make('AI Spend Today', '$'.number_format($aiSpendTodayCents / 100, 2)),
+            // 4dp, not 2 — a day of gpt-4o-mini traffic is worth cents, and $0.00 was
+            // exactly the uninformative figure this widget used to show.
+            Stat::make('AI Spend Today', '$'.number_format($aiSpendTodayMicroCents / 100_000_000, 4)),
         ];
     }
 }
