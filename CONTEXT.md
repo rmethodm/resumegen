@@ -1,9 +1,10 @@
 # Resumegen Context
 
 ## Current Task
-Prepaid pricing model design — `docs/prepaid-pricing-model.md` (14 sections), still a **proposal**,
-no code outside `docs/`. All operational decisions are now settled; only two remain open and both
-are blocked on usage data that does not exist.
+Prepaid pricing instrumentation. `docs/prepaid-pricing-model.md` (14 sections) is still a
+**proposal** and no user pays anything — but §13 slices 1–3 are now **built and shipped** at
+`config/pricing.php` prices of 0, so pairings and a balance ledger are recorded for §12's numbers.
+The two open decisions remain blocked on usage data that does not exist yet.
 
 ## Key Decisions
 - **Prepaid dollar balance, no subscription.** $0.50/job, **$5 signup grant** (raised from $3), $5
@@ -17,16 +18,15 @@ are blocked on usage data that does not exist.
   change must re-derive them.
 
 ## Next Steps
-1. **Build §13 slices 1–3 at $0 prices** — `balance_transactions`, `job_pairings` (+ `refunded_at`,
-   partial unique index), `ai_requests.job_pairing_id`, `billingKey()` + tests, pairing resolver.
-   Yields §12's numbers 1–3, which unblock both open decisions. No Stripe, no paywall.
-2. **Fix `ai_requests.estimated_cost_cents`** — the rounding is in `AiService::estimateCostCents()`
-   (`(int) round($cents)`), not just the column type; a migration alone changes nothing. Blocks
-   §12 number 5 and leaves `ai:cost-alert` unable to fire.
-3. **Split this branch before it nears main** — 30+ commits bundling /shares, photo removal, job
+1. **Let the instrumentation collect.** Slices 1–3 and the cost fix are done; §12's numbers 1–3 and
+   5 now need real traffic, which needs the branch shipped. Nothing more to build here — resist
+   adding billing code before the data exists (§12 stop rule).
+2. **Split this branch before it nears main** — 30+ commits bundling /shares, photo removal, job
    search, builder rework, cleanup, and pricing docs. Builder rework (`ebfc933..5e2ea61`) still
    unverified in a browser. Prod .env needs `AI_ENABLED=true`, `AI_CAREER_COACH_ENABLED=false`,
    deploy secrets `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`.
+3. **Leave `PRICING_JOB_CENTS` at 0.** Turning it on is a paywall and needs explicit approval per
+   `CLAUDE.md`, plus §12's numbers 1–3.
 
 ## Open (blocked on data)
 - **Grant size vs free-tier competitiveness** (§14) — the grant is both the free-tier lever and the

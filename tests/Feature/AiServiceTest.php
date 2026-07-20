@@ -61,8 +61,32 @@ class AiServiceTest extends TestCase
 
         app(AiService::class)->chat('hi');
 
-        // 1000/1000 * 1.0 + 1000/1000 * 2.0 = 3 cents
-        $this->assertDatabaseHas('ai_requests', ['estimated_cost_cents' => 3]);
+        // 1000/1000 * 1.0 + 1000/1000 * 2.0 = 3 cents = 3,000,000 micro-cents
+        $this->assertDatabaseHas('ai_requests', ['estimated_cost_micro_cents' => 3_000_000]);
+    }
+
+    /**
+     * The round-number pricing above cannot catch the bug this guards: at the real
+     * gpt-4o-mini rates a call costs a small fraction of a cent, and rounding to whole
+     * cents logged 0 for every OpenAI request ever made. Everything downstream reads
+     * that column — ai:cost-alert could never fire, and the admin spend figures were
+     * all $0.00. Use the shipped pricing, not a convenient stand-in.
+     */
+    public function test_chat_logs_a_nonzero_cost_at_real_gpt_4o_mini_pricing(): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => false]]]),
+            CreateResponse::fake([
+                'model' => 'gpt-4o-mini',
+                'choices' => [['index' => 0, 'message' => ['role' => 'assistant', 'content' => 'ok']]],
+                'usage' => ['prompt_tokens' => 1500, 'completion_tokens' => 400, 'total_tokens' => 1900],
+            ]),
+        ]));
+
+        app(AiService::class)->chat('hi');
+
+        // 1.5 * 0.015 + 0.4 * 0.06 = 0.0465 cents — which round() flattened to 0.
+        $this->assertDatabaseHas('ai_requests', ['estimated_cost_micro_cents' => 46_500]);
     }
 
     public function test_chat_logs_error_and_rethrows_on_failure(): void

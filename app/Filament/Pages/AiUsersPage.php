@@ -30,12 +30,14 @@ class AiUsersPage extends Page
     {
         $rows = AiRequest::query()
             ->selectRaw('user_id, COUNT(*) as requests, COALESCE(SUM(total_tokens),0) as tokens')
-            ->selectRaw('COALESCE(SUM(estimated_cost_cents),0) as estimated_cost_cents')
+            ->selectRaw('COALESCE(SUM(estimated_cost_micro_cents),0) as cost_micro_cents')
             ->selectRaw("SUM(CASE WHEN status='flagged' THEN 1 ELSE 0 END) as flagged")
             ->selectRaw('MAX(created_at) as last_used')
             ->whereNotNull('user_id')
             ->groupBy('user_id')
-            ->orderByDesc('estimated_cost_cents')
+            // This ordering was previously a no-op: every OpenAI row summed to 0, so
+            // "top users by cost" was really "whatever order the group by returned".
+            ->orderByDesc('cost_micro_cents')
             ->limit(100)
             ->get();
 
@@ -51,7 +53,7 @@ class AiUsersPage extends Page
                 'email' => $user?->email,
                 'requests' => (int) $row->requests,
                 'tokens' => (int) $row->tokens,
-                'estimated_cost_cents' => (int) $row->estimated_cost_cents,
+                'cost_micro_cents' => (int) $row->cost_micro_cents,
                 'flagged' => (int) $row->flagged,
                 'limit' => $user ? UserLimits::aiMonthlyLimit($user) : null,
                 'used' => $user ? UserLimits::aiRequestsThisMonth($user) : null,

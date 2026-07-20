@@ -17,10 +17,13 @@ class AiCostAlert extends Command
         $yesterday = now()->subDay();
         $threshold = (int) config('ai.daily_alert_threshold_cents', 500);
 
+        // Summed in micro-cents, then converted once — summing rounded cents is what
+        // kept this alarm at 0 and unable to fire. The threshold stays in cents; it is
+        // a human-facing knob.
         $totalCents = AiRequest::whereBetween('created_at', [
             $yesterday->copy()->startOfDay(),
             $yesterday->copy()->endOfDay(),
-        ])->sum('estimated_cost_cents');
+        ])->sum('estimated_cost_micro_cents') / 1_000_000;
 
         if ($totalCents < $threshold) {
             return self::SUCCESS;

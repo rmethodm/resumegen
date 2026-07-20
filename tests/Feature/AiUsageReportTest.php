@@ -16,7 +16,7 @@ class AiUsageReportTest extends TestCase
     {
         $user = User::factory()->create();
         AiRequest::factory()->for($user)->count(3)->create([
-            'status' => 'success', 'total_tokens' => 10, 'estimated_cost_cents' => 2,
+            'status' => 'success', 'total_tokens' => 10, 'estimated_cost_micro_cents' => 2_000_000,
             'created_at' => now()->subDays(1),
         ]);
         AiRequest::factory()->for($user)->create([
@@ -24,7 +24,7 @@ class AiUsageReportTest extends TestCase
         ]);
         // Outside the 7d window — must be excluded.
         AiRequest::factory()->for($user)->create([
-            'status' => 'success', 'estimated_cost_cents' => 99,
+            'status' => 'success', 'estimated_cost_micro_cents' => 99_000_000,
             'created_at' => now()->subDays(40),
         ]);
 
@@ -33,7 +33,7 @@ class AiUsageReportTest extends TestCase
 
         $this->assertSame(4, $totals['requests']);          // 3 success + 1 flagged in window
         $this->assertSame(30, $totals['tokens']);
-        $this->assertSame(6, $totals['estimated_cost_cents']);
+        $this->assertSame(6_000_000, $totals['cost_micro_cents']);
         $this->assertSame(1, $totals['flagged']);
         $this->assertSame(1, $totals['active_users']);
     }
