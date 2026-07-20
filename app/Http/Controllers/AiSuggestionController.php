@@ -8,6 +8,7 @@ use App\Models\CoverLetter;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\AiService;
+use App\Services\JobPairingService;
 use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ use Throwable;
 
 class AiSuggestionController extends Controller
 {
-    public function __construct(private AiService $ai) {}
+    public function __construct(private AiService $ai, private JobPairingService $pairings) {}
 
     public function rewriteBullet(Request $request, Resume $resume): JsonResponse
     {
@@ -24,7 +25,8 @@ class AiSuggestionController extends Controller
         $data = $request->validate(['text' => ['required', 'string', 'max:8000']]);
 
         return $this->run($request->user(), 'rewrite_bullet', ['text' => $data['text']],
-            fn (string $reply): array => ['suggestion' => trim($reply)]);
+            fn (string $reply): array => ['suggestion' => trim($reply)],
+            null, $resume->target_company, $resume->target_title);
     }
 
     /**
@@ -37,7 +39,8 @@ class AiSuggestionController extends Controller
         $data = $request->validate(['text' => ['required', 'string', 'max:8000']]);
 
         return $this->run($request->user(), 'critique_bullet', ['text' => $data['text']],
-            fn (string $reply): array => ['questions' => $this->splitQuestions($reply)]);
+            fn (string $reply): array => ['questions' => $this->splitQuestions($reply)],
+            null, $resume->target_company, $resume->target_title);
     }
 
     public function summary(Request $request, Resume $resume): JsonResponse
@@ -57,7 +60,7 @@ class AiSuggestionController extends Controller
 
         return $this->run($request->user(), 'generate_summary', $input,
             fn (string $reply): array => ['suggestion' => trim($reply)],
-            $cacheKey,
+            $cacheKey, $resume->target_company, $resume->target_title,
         );
     }
 
@@ -83,7 +86,9 @@ class AiSuggestionController extends Controller
 
         return $this->run($request->user(), 'ats_keywords', $input,
             fn (string $reply): array => ['keywords' => $this->splitKeywords($reply)],
-            $cacheKey,
+            // Identity comes from the resume's target, never the per-request role field —
+            // that is free text and would mint a new pairing each time the wording changed.
+            $cacheKey, $resume->target_company, $resume->target_title,
         );
     }
 
@@ -119,8 +124,13 @@ class AiSuggestionController extends Controller
             'skills' => $resume->skills ?? [],
         ];
 
+        // A cover letter names its own company, so it can identify the job even when the
+        // linked resume has no target set. Falls back to the resume's target otherwise.
         return $this->run($request->user(), 'cover_letter', $input,
-            fn (string $reply): array => ['body' => trim($reply)]);
+            fn (string $reply): array => ['body' => trim($reply)],
+            null,
+            ($data['company'] ?? null) ?: $resume->target_company,
+            ($data['role'] ?? null) ?: $resume->target_title);
     }
 
     /**
@@ -129,8 +139,17 @@ class AiSuggestionController extends Controller
      * @param  array<string, mixed>  $input
      * @param  callable(string): array<string, mixed>  $shape
      */
-    private function run(User $user, string $feature, array $input, callable $shape, ?string $cacheKey = null): JsonResponse
-    {
+    private function run(
+        User $user,
+        string $feature,
+        array $input,
+        callable $shape,
+        ?string $cacheKey = null,
+        ?string $company = null,
+        ?string $title = null,
+    ): JsonResponse {
+        $this->recordPairing($user, $company, $title);
+
         if ($cacheKey && Cache::has($cacheKey)) {
             return response()->json(array_merge($shape(Cache::get($cacheKey)), [
                 'remaining' => UserLimits::aiRemaining($user),
@@ -168,6 +187,29 @@ class AiSuggestionController extends Controller
         return response()->json(array_merge($shaped, [
             'remaining' => UserLimits::aiRemaining($user),
         ]));
+    }
+
+    /**
+     * Record which job this AI call was made against.
+     *
+     * Instrumentation only — prices are 0, so nothing is charged and nothing is gated.
+     * A call with no company or title falls into the reserved __general__ pairing rather
+     * than being dropped, or non-job work would be invisible in the data.
+     *
+     * ponytail: the pairing is recorded but not yet stamped onto ai_requests. Attribution
+     * only powers the refund window and the abuse fuse, neither of which is live at $0,
+     * and threading it through AiService::log() would touch a file that diverges between
+     * branches. Add it when refunds ship.
+     */
+    private function recordPairing(User $user, ?string $company, ?string $title): void
+    {
+        if (filled($company) && filled($title)) {
+            $this->pairings->resolveForJob($user, $company, $title);
+
+            return;
+        }
+
+        $this->pairings->resolveGeneral($user);
     }
 
     /**
