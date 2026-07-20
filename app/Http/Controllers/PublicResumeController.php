@@ -135,6 +135,9 @@ class PublicResumeController extends Controller
         $resume = $link->resume;
 
         $word = app(DocxGenerator::class)->generate($resume);
+
+        ResumeShareEvent::log($request, $link, 'docx_download');
+
         $filename = $resume->name
             ? preg_replace('/[^a-zA-Z0-9_\-]/', '_', $resume->name).'.docx'
             : $resume->id.'.docx';
