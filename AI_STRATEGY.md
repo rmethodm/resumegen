@@ -1,91 +1,62 @@
-# AI Strategy — Parked for Decision
+# AI Strategy — Decision Record
 
-Date: 2026-07-13. Status: **decided and implemented — see "Outcome" at the bottom.**
+Decided and implemented 2026-07-13. Revised 2026-07-20 after the 2026-07-14 billing
+removal invalidated this document's economics, and after the growth model produced real
+per-call costs.
 
-## Context
+**Status: implemented.** This is a record of decisions already executed, not a proposal.
+Nothing here is pending.
 
-AI is currently suspended site-wide (`AI_ENABLED=false`, gated by the `ai_enabled` middleware). Code is intact, not deleted.
+## Current AI surface
 
-Reason it was turned off (user's words): concern that users were clicking a button and having AI create everything for them, plus Reddit posts from recruiters who are tired of seeing the same AI-generated content and want originality.
-
-## Existing AI surface (all built, all suspended)
+All routes sit behind the `ai_enabled` middleware and `throttle:20,1` (`routes/web.php`).
 
 | Feature | Route |
 |---|---|
 | Rewrite bullet | `POST /builder/{r}/ai/rewrite-bullet` |
-| Generate summary | `.../ai/summary` |
-| ATS keywords | `.../ai/ats-keywords` |
-| Career map | `.../ai/career-map` |
-| Translate resume | `.../ai/translate` |
-| Interview coach | `.../interview-coach` |
-| Career coach chat | `/career-coach` |
-| Resignation letter gen | `/resignation-letters/{l}/generate` |
+| Critique bullet ("Coach me") | `POST /builder/{r}/ai/critique-bullet` |
+| Generate summary | `POST /builder/{r}/ai/summary` |
+| ATS keywords | `POST /builder/{r}/ai/ats-keywords` |
+| Interview coach | `POST /builder/{r}/interview-coach` |
+| Cover letter draft | `POST /cover-letters/{letter}/ai/draft` |
 
-Deterministic (correctly NOT AI): strength score, salary hint, autocomplete, heatmap, proofreading.
+`AI_ENABLED` defaults to **true** (`config/ai.php`). The middleware 404s rather than 403s,
+so a suspended feature looks absent rather than plan-gated.
 
-## Feature assessment
+Deterministic and correctly NOT AI: strength score, salary hint, autocomplete, heatmap.
 
-**Keep / lead with:**
-- **Rewrite bullet** — the killer feature. Cheap, scoped, user verifies in 2 seconds.
-- **ATS keywords / JD tailoring** — real pain, real differentiation, the thing people pay for.
-- **Interview coach** — genuine judgment task, hard to fake with code.
+## Deleted — do not revive without asking
 
-**Keep but demote:**
-- **Summary generation** — table stakes, every competitor has it. Don't market on it.
-- **Cover letter generation** — biggest *gap*. No AI route exists today. Cover letters are the most AI-appropriate artifact in the app.
+Translate, career map, resignation letters, career coach chat, proofreading. Each was
+removed deliberately:
 
-**Cut / don't re-enable:**
-- **Translate** — needs domain nuance the model will quietly botch; nobody buys the product for it; highest cost per call (full resume in + full resume out).
-- **Career map** — vague, unverifiable output. The "AI horoscope" feature: great demo, zero repeat use.
-- **Resignation letter gen** — it's a 4-line letter. A template with 3 blanks does it better, instantly, for $0.
-- **Career coach chat** — unbounded tokens, unbounded scope, users will ask it about visa law. If kept, hard-scope it to the user's resume.
+- **Translate** — needs domain nuance the model quietly botches; highest cost per call
+  (full resume in and out); nobody buys the product for it.
+- **Career map** — vague, unverifiable output. The "AI horoscope": great demo, zero repeat use.
+- **Resignation letters** — a four-line letter. A template with three blanks does it better,
+  instantly, for $0.
+- **Career coach chat** — unbounded tokens, unbounded scope; users will ask it about visa law.
+- **Proofreading** — was deterministic anyway.
 
 ## How competitors get AI wrong
 
-1. **The chat box as a feature.** Nobody wants to converse with their resume builder; they want a button that fixes the bullet they're staring at.
-2. **AI where code answers** (violates project Rule 5). Competitors run "ATS score" through an LLM and get a non-deterministic number that changes on refresh. Ours (`StrengthScoreController`) is deterministic. Do not "upgrade" it to AI.
-3. **One-shot "generate my whole resume."** Produces a generic resume that gets rejected, and the user can't tell which part is the lie.
-4. **Quota theatre.** Metering credits so aggressively that free users never experience the value, so they never convert.
-5. **No provenance.** Users can't tell what AI wrote vs. what they wrote, and submit hallucinated metrics ("increased revenue 40%") they can't defend in an interview. This is the real liability in this space.
+1. **The chat box as a feature.** Nobody wants to converse with their resume builder; they
+   want a button that fixes the bullet they are staring at.
+2. **AI where code answers** (Rule 5). Competitors run "ATS score" through an LLM and get a
+   non-deterministic number that changes on refresh. Ours (`StrengthScoreController`) is
+   deterministic. **Do not "upgrade" it to AI.**
+3. **One-shot "generate my whole resume."** Produces a generic resume that gets rejected, and
+   the user cannot tell which part is the lie.
+4. **Quota theatre.** Metering so aggressively that users never experience the value.
+5. **No provenance.** Users cannot tell what AI wrote, and submit hallucinated metrics
+   ("increased revenue 40%") they cannot defend in an interview. The real liability here.
 
-## Cost analysis (OpenAI vs Claude)
+## The thesis
 
-Per-million-token prices:
-
-| Model | Input | Output |
-|---|---|---|
-| Claude Haiku 4.5 | $1.00 | $5.00 |
-| Claude Sonnet 5 | $3.00 ($2 intro thru 2026-08-31) | $15.00 ($10 intro) |
-| Claude Opus 4.8 | $5.00 | $25.00 |
-| OpenAI mini/nano tier | ~$0.10–0.15 *(from memory — verify)* | ~$0.40–0.60 *(verify)* |
-
-**Is Claude cheaper than OpenAI? No.** Haiku is ~6× the per-token price of OpenAI's small models.
-**Does it matter? Almost certainly not.** A bullet rewrite is ~500 tokens in, 200 out:
-
-- Haiku 4.5: **~$0.0015/rewrite.** A Starter user burning their *entire* 150-gen monthly quota costs **~$0.22** against $9 revenue.
-- Opus 4.8: **~$0.0075/rewrite.** Same fully-exhausted quota costs **~$1.13** against $9.
-
-Even on the most expensive Claude model, a user who exhausts their quota costs ~12% of their subscription. Nobody exhausts their quota. **Vendor choice is not the cost lever.**
-
-**The actual cost lever is three specific features:**
-1. **Translate** — full resume in + out, 10–20× the tokens of a bullet rewrite.
-2. **Career coach chat** — unbounded length; every turn resends the whole history.
-3. **Interview coach** — sends full experience + skills arrays on every call.
-
-Kill translate, hard-scope or kill the chat, and the cost ceiling is set.
-
-### Recommendation
-- **Claude Haiku 4.5** for bulk work (bullet rewrite, summary, keyword extraction).
-- **Claude Sonnet 5** for judgment-heavy calls (interview questions, resume critique).
-- **Prompt caching**: put the stable preamble (instructions + resume context) first in the prompt. Cache reads cost ~10% of base input price — this closes most of the gap with OpenAI's cheap tier.
-- Laravel 13 has a first-party AI SDK, so provider swap is config, not a rewrite. Not locked in either way.
-
-## The strategic thesis (the important part)
-
-The user's two concerns are the same concern:
-> "I want users to use their own brains" + "recruiters are tired of AI-generated content"
-
-If recruiters can spot AI-generated resumes and are rejecting them, **a resume builder whose AI generates the resume is actively harming its users.** That's a product defect, not a philosophical qualm.
+The two founding concerns — "I want users to use their own brains" and "recruiters are tired
+of AI-generated content" — are one concern. If recruiters can spot AI-generated resumes and
+are rejecting them, **a resume builder whose AI generates the resume is actively harming its
+users.** That is a product defect, not a philosophical qualm.
 
 **The move: flip the direction of the AI. Stop pointing it at the page; point it at the person.**
 
@@ -96,18 +67,42 @@ If recruiters can spot AI-generated resumes and are rejecting them, **a resume b
 | Produces polished prose | Flags that your bullet has no number in it |
 | Fills the blank | Interrogates the blank |
 
-Example: user writes *"Responsible for managing the sales team."* Today's AI rewrites it into confident filler. Instead it returns: *"How many people? Over what period? Did revenue move — by how much?"* The user types the real answer. The resume is now in their voice, contains facts only they know, and reads like nothing else in the stack — **because it's true.**
+User writes *"Responsible for managing the sales team."* Generation rewrites it into confident
+filler. Critique returns: *"How many people? Over what period? Did revenue move — by how
+much?"* The user types the real answer. The resume is now in their voice, contains facts only
+they know, and reads like nothing else in the stack — **because it is true.**
 
-This resolves all three concerns at once: **cheaper** (short critique output beats long generated prose), **more authentic**, and **defensible against recruiter fatigue** in a way better prompts never will be.
+Cheaper (short critique beats long generated prose), more authentic, and defensible against
+recruiter fatigue in a way better prompts never will be.
 
-## Outcome — decided and implemented 2026-07-13
+**Implemented as a true 50/50.** "🎯 Coach me" and "✨ Write it for me" sit side by side with
+no nudge either way (`ResumeBuilder/Edit.tsx`). The recommendation was coach-primary — an easy
+button next to a hard button gets pressed every time — and the 50/50 was chosen knowingly.
+**If the coach sees little use, this is the first thing to revisit.**
 
-The 3 open questions are answered:
+## Cost
 
-1. **Critique vs. generation → both, at equal weight ("Option C").** The bullet editor shows "🎯 Coach me" and "✨ Write it for me" side by side, no nudge either way. The recommendation was coach-primary, on the grounds that an easy button next to a hard button gets pressed every time; the user chose true 50/50 knowingly. **If the coach sees little use, this is the first thing to revisit.**
+**Vendor choice is not the cost lever, and cost is not the problem.** Measured against the
+growth model's fabricated traffic: ~0.32 cents per tailored job across 3–9 calls, against a
+proposed 50c price — a 99% margin. Total modelled AI spend across ~3,400 jobs was $11, versus
+a $480/yr infra floor. Sensitivity analysis ranks AI cost **dead last** of eight assumptions,
+swinging the twelve-month result by $11 while activation rate swings $659.
 
-2. **Re-enable + evolve, not rebuild.** `critique_bullet` was added as a new prompt arm and controller method reusing the existing private `run()` helper, so quota/moderation/error handling came free. Translate, career map, and resignation-letter generation were deleted outright. Cover letters are still unwired — note `AiPrompts::coverLetter()` **already exists**, contrary to the "biggest gap" framing above; only the route is missing.
+Current setup: `gpt-4o-mini` via `openai-php/laravel`, configured in `config/ai.php`. An
+Anthropic branch exists in `AiService` and is exercised by `AiProviderTest`, but is unused.
+Per-model pricing lives in `config('ai.pricing')`, denominated in cents per 1,000 tokens.
 
-3. **Historical cost numbers: unavailable.** `ai_requests` is empty (0 rows) on local. If AI ever ran in production the rows are on the production DB, which this session couldn't reach. The estimate above stands and its conclusion is unchanged: vendor choice is not the cost lever.
+**Metering is a flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a
+cost control, not a plan gate. There are no tiers. Any earlier version of this document
+comparing per-user AI cost against "$9 subscription revenue" described a billing system
+deleted on 2026-07-14.
 
-**Still open:** production `.env` needs `AI_ENABLED=true` + `AI_CAREER_COACH_ENABLED=false`; free-tier AI quota is **0**, so free users cannot use the coach at all (`config/ai.php`) — that likely defeats the coach as a conversion hook; career coach chat is dark behind its own flag pending a hard-scope-or-delete call.
+For economics, see `docs/prepaid-pricing-model.md` (proposal, nothing billed) and
+`docs/growth-model-sample-run.md` (fabricated scenario sweep).
+
+## Known gap
+
+Historical cost data before 2026-07-20 is all zero and unrecoverable — `estimateCostCents()`
+rounded every `gpt-4o-mini` call (~0.05c) to 0 before storage. Fixed by migrating to
+micro-cents; see the AI section of `CLAUDE.md`. The precision was lost at write time, so no
+backfill is possible.
