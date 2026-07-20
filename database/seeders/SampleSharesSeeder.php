@@ -129,8 +129,9 @@ class SampleSharesSeeder extends Seeder
                     ['id' => (string) Str::uuid(), 'name' => 'pgqueue', 'description' => 'Minimal Postgres-backed job queue for small Go services.', 'url' => 'github.com/dwhitfield/pgqueue', 'start_date' => '2022', 'end_date' => '', 'bullets' => "1.2k GitHub stars\nUsed in production by 3 companies"],
                 ],
                 'links' => [
-                    // 1 link: primary, active, half its visits unread.
+                    // 2 links: primary with half its visits unread, plus a plain second link.
                     ['label' => 'Primary — public profile', 'is_primary' => true, 'views' => 9, 'seen_days_ago' => 3],
+                    ['label' => 'Recruiter — Acme Corp', 'views' => 3],
                 ],
             ],
             [
@@ -199,10 +200,9 @@ class SampleSharesSeeder extends Seeder
                     ['id' => (string) Str::uuid(), 'name' => 'Seattle Bus Delay Explorer', 'description' => 'Interactive map of King County Metro delays built from public GTFS feeds.', 'url' => 'sofiadelgado.github.io/bus-delays', 'start_date' => '2025', 'end_date' => '', 'bullets' => "Ingests 2 years of GTFS-realtime data\nBuilt with Python, DuckDB, and Observable Plot"],
                 ],
                 'links' => [
-                    // 4 links: every state at once, including a never-viewed one.
+                    // 3 links, including a never-viewed one. Expired is covered by the resume above.
                     ['label' => 'Primary — resume for applications', 'is_primary' => true, 'views' => 11, 'seen_days_ago' => 2],
                     ['label' => 'Password — referral from Dr. Chen', 'password' => true, 'views' => 5, 'seen_days_ago' => 4],
-                    ['label' => 'Expired — career center review', 'expires_in_days' => -14, 'views' => 3],
                     ['label' => 'Fresh — not yet sent', 'views' => 0],
                 ],
             ],
