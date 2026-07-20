@@ -97,6 +97,10 @@ composer run test
 php artisan test tests/Feature/Auth/AuthenticationTest.php
 php artisan test --filter=test_name
 
+# Browser tests (Dusk) — needs its own server running first, in a second terminal
+php artisan serve --env=dusk.local --port=8001 --no-reload
+php artisan dusk
+
 # PHP code formatter (required before finalizing changes)
 ./vendor/bin/pint
 
@@ -200,6 +204,18 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 - **All billing** (see above). Here the create-migrations were kept and a drop migration (`2026_07_14_120000_drop_billing_tables_and_columns`) removes the tables and columns, so both fresh and existing databases converge.
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
 - **Job applications tracker** (removed in `93c1c14`). `application_contacts` and `interview_notes` are dropped by migration. **`job_applications` is deliberately still live** — `AnalyticsController` queries it via `DB::table()` for the dashboard's `active_applications` count. Do not drop that table without rewriting that query first.
+
+## Browser tests (Dusk) — two non-obvious requirements
+
+Added 2026-07-20. `tests/Browser/` is the only layer that executes React; the feature suite asserts the props Laravel *sends* and stays green even if a page throws on mount.
+
+**1. Dusk needs its own server, not Herd.** Herd serves `resumegen.test` using `.env`, which points at the **dev** database. Dusk's test process reads `.env.dusk.local` (database `resumegen_dusk`), so factories and the browser would look at two different databases and every test would fail on a missing user. `.env.dusk.local` therefore sets `APP_URL=http://127.0.0.1:8001`, and `php artisan serve --env=dusk.local --port=8001` must be running before `php artisan dusk`.
+
+**2. Use `DatabaseTruncation`, never `DatabaseMigrations`.** The latter rolls back on teardown, and this project's migrations are forward-only (next section) — it dies in the first `down()` that drops an already-dropped constraint. Truncation never rolls back. The consequence: **after adding a migration, run `php artisan migrate --env=dusk.local`**, or Dusk truncates a schema that lacks the new column.
+
+`.env.dusk.local` is a copy of `.env` and holds real credentials — `.gitignore` covers it via `.env.*`. Do not narrow that pattern.
+
+Assert on controls (`assertMissing('input[name="…"]')`), not strings (`assertDontSee('…')`) — a "don't see" assertion passes on any error page and proves nothing.
 
 ## Migrations are forward-only — rollback is not supported
 
