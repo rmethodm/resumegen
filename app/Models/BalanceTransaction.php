@@ -2,33 +2,25 @@
 
 namespace App\Models;
 
-use Database\Factories\AiRequestFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AiRequest extends Model
+class BalanceTransaction extends Model
 {
-    /** @use HasFactory<AiRequestFactory> */
-    use HasFactory;
-
     public const UPDATED_AT = null;
+
+    /** Grants are spendable but never withdrawable to a card — see refundableToCardCents(). */
+    public const GRANT_REASONS = ['signup_grant', 'launch_grant'];
 
     protected $fillable = [
         'user_id',
+        'amount_cents',
+        'reason',
         'job_pairing_id',
-        'feature',
-        'model',
-        'prompt_tokens',
-        'completion_tokens',
-        'total_tokens',
-        'estimated_cost_cents',
-        'status',
-        'flagged_text',
     ];
 
     /**
-     * @return BelongsTo<User, AiRequest>
+     * @return BelongsTo<User, BalanceTransaction>
      */
     public function user(): BelongsTo
     {
@@ -36,7 +28,7 @@ class AiRequest extends Model
     }
 
     /**
-     * @return BelongsTo<JobPairing, AiRequest>
+     * @return BelongsTo<JobPairing, BalanceTransaction>
      */
     public function jobPairing(): BelongsTo
     {
