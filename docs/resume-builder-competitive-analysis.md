@@ -76,7 +76,10 @@ No competitor was found shipping these, but **absence of evidence here is mostly
 > **This is the single largest risk in the pricing proposal below.** Three of the four proposed Pro-tier levers sit in this table.
 
 ### Structural cost asymmetry
-Reactive Resume can be free forever because its AI marginal cost is **zero** (user supplies the API key; Ollama enables local models). Resumegen absorbs real inference COGS. **This — not competitive positioning — is the argument for AI-volume metering.**
+Reactive Resume can be free forever because its AI marginal cost is **zero** (user supplies the API key; Ollama enables local models). Resumegen absorbs real inference COGS. ~~**This — not competitive positioning — is the argument for AI-volume metering.**~~
+> **Invalidated 2026-07-20.** Costed from `config/ai.php`: a `gpt-4o-mini` call is ~$0.0005, so the
+> 150/month cap costs ~8¢ per user per month. That is not a structural asymmetry, it is a rounding
+> error. Metering is a **pricing** decision, not cost recovery. See `docs/prepaid-pricing-model.md` §3.
 
 ### Conversion benchmarks
 ChartMogul + ProductLed + Growth Unhinged, Jan 2026, n=200 self-serve products. Free→paid within six months.
@@ -95,10 +98,15 @@ ChartMogul + ProductLed + Growth Unhinged, Jan 2026, n=200 self-serve products. 
 
 ---
 
-## 3. Proposed tiers — **JUDGMENT, NOT RESEARCH**
+## 3. Proposed tiers — **WITHDRAWN 2026-07-20**
 
-> Grounded in verified price points, cohort structure, conversion bands, and COGS logic.
-> The *feature allocation* rests partly on the unverified table above. **Read §3.4 before committing.**
+> **This section is superseded by `docs/prepaid-pricing-model.md` and is kept only as a record of
+> the reasoning that was rejected.** The subscription ladder assumed recurring use; the app's usage
+> is episodic (a user leaves when they get hired), so a monthly fee misprices every user in both
+> directions. Do not implement anything below.
+>
+> Original framing: grounded in verified price points, cohort structure, conversion bands, and COGS
+> logic; feature allocation rested partly on the unverified table above, with §3.4 to read first.
 
 ### 3.1 The strategic problem
 

@@ -137,11 +137,15 @@ The builder's Share tab holds only an active-link count and a link to `/shares`.
 
 `App\Services\UserLimits` survives, but it now meters **only AI** — every other limit (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
 
+**A replacement is proposed but not implemented.** `docs/prepaid-pricing-model.md` (2026-07-20) designs a prepaid dollar balance — $0.50 per resume-job pairing, $3 signup grant, no subscription. It is a **proposal**; its §12 gates implementation on usage data that does not exist yet. Nothing in `app/` implements it, and the sentence above still holds: do not add a paywall without asking. Read that doc before proposing any pricing change, and do not revive the subscription ladder in `docs/resume-builder-competitive-analysis.md` §3 — it was withdrawn.
+
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
 ## AI (OpenAI or Anthropic)
 
 `App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`AI_ENABLED`, `OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
+
+**`ai_requests.estimated_cost_cents` records 0 for every OpenAI call.** `AiService::estimateCostCents()` ends in `(int) round($cents)` and the column is an `integer`, so anything under half a cent becomes 0 — and a `gpt-4o-mini` call costs ~0.05¢, even a 15k-token page import. Everything downstream reads that zero: `ai:cost-alert` (the daily spend alarm therefore cannot fire), `AiUsageReport`, `AdminStatsOverview`, `AiUsersPage`. Anthropic calls are ~20x pricier so they log a coarse non-zero. Store micro-cents (or a decimal) and drop the rounding before trusting any cost figure.
 
 **Master switch:** `AI_ENABLED` (default true). The `ai_enabled` middleware (`EnsureAiEnabled`, aliased in `bootstrap/app.php`) **404s** every AI route when it's false — 404 not 403, so a suspended feature looks absent rather than like a plan restriction. The `aiEnabled` Inertia prop hides the matching UI.
 
@@ -240,7 +244,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 
 ---
 
-Last updated: 2026-07-19
+Last updated: 2026-07-20
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
