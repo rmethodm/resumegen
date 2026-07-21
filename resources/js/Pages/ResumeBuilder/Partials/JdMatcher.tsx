@@ -19,7 +19,7 @@ const STOPWORDS = new Set([
 ]);
 
 /** Split text into lowercase tokens, keeping tech punctuation (node.js, ci/cd, c++). */
-function tokenize(text: string): string[] {
+export function tokenize(text: string): string[] {
     return (text.toLowerCase().match(/[a-z0-9][a-z0-9+#./-]*/g) ?? [])
         .map(t => t.replace(/[.\-/]+$/, '')) // trim trailing separators
         .filter(Boolean);
@@ -32,7 +32,7 @@ interface MatchResult {
 }
 
 /** Deterministic keyword overlap between a JD and the resume text. */
-function matchJd(jd: string, resumeText: string): MatchResult {
+export function matchJd(jd: string, resumeText: string): MatchResult {
     const resumeTokens = new Set(tokenize(resumeText));
 
     // Rank JD keywords by frequency, keep the meaningful ones.

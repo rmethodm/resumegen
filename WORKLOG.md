@@ -54,14 +54,64 @@ _(pending — blocked)_
 ---
 
 ## Q4 — JdMatcher fallback has never run in a browser
-status: TODO · type: code · files: resources/js/Pages/ResumeBuilder/Partials/JdMatcher.tsx, .env.dusk.local
+status: DONE · type: code · files: resources/js/Pages/ResumeBuilder/Partials/JdMatcher.tsx, .env.dusk.local
 
 `JdMatcher` renders only when `aiEnabled` is false, but both `.env` and `.env.dusk.local`
 set `AI_ENABLED=true`. Covering it needs a Dusk server booted with AI off (`config()->set`
 in the test will not work — Dusk drives a separate server process).
 
 ### Answer
-_(pending)_
+**Needs a decision — do not proceed without picking an option below.**
+
+Confirmed the premise. `Edit.tsx:1366-1376` is the only render site; `AtsMatchPanel` when
+`aiEnabled`, `JdMatcher` otherwise. `AI_ENABLED=true` in `.env`, `.env.example` **and**
+`.env.dusk.local`, and prod is meant to be true as well — so `JdMatcher` renders in no
+environment that currently exists. It is degradation cover for an AI suspension, which is
+consistent with `EnsureAiEnabled` 404ing AI routes so a suspended feature looks absent.
+
+Two things found along the way that change the cost of each option:
+
+- **There is no JavaScript test runner in this project.** No vitest, no jest in `package.json`.
+  Any plan to test React directly means adding a devDependency, which needs your approval.
+- **`tests/Browser/` has exactly one file** (`ResumeBuilderTest.php`, 96 lines), so there is no
+  existing multi-env Dusk pattern to copy.
+
+Options, cheapest first:
+
+1. **Do nothing, document it.** `JdMatcher` is pure and presentational; the realistic failure is
+   `buildPlainText` throwing on an unexpected resume shape. Accept that it surfaces during an AI
+   outage rather than before one. Cost: zero. Risk: the fallback's first-ever execution happens
+   in front of users on the worst day.
+2. **Add vitest, export `matchJd`/`tokenize`, unit-test the logic and `buildPlainText`.**
+   Vite 8 is already installed so config is ~10 lines. Covers the code most likely to break and
+   gives the repo its first JS test. Does **not** prove the component mounts. Cost: one
+   devDependency (needs approval).
+3. **Second Dusk env with AI off.** `.env.dusk.ai-off` + a server on port 8002 + a test group +
+   a CI change + a `CLAUDE.md` note. Proves the whole path end to end. Cost: real, and it doubles
+   the Dusk setup burden documented in `CLAUDE.md` for one component.
+
+**Recommendation: (2).** It buys the coverage that matters — the pure logic shared with `Q5`'s
+`buildPlainText` — at a fraction of (3)'s cost, and it unblocks testing every other pure helper in
+`resources/js`. (3) is only worth it if AI suspension is a scenario you actually expect to hit.
+
+**Resolved 2026-07-20: you picked (2).** Added `vitest` as a devDependency, exported `tokenize`
+and `matchJd`, added `npm run test:js`, and wrote `JdMatcher.test.ts` — 8 tests, all passing,
+`tsc --noEmit` clean. The tests assert *why* the logic matters (tech punctuation must survive
+tokenizing or the panel reports gaps that are not gaps; stopwords must be dropped or every score
+inflates toward 100%; an all-stopword JD must score 0 rather than `NaN`, because the score is
+written straight into a CSS width).
+
+**Still not covered, deliberately:** nothing proves the component *mounts*. That needs option (3),
+a Dusk server booted with AI off. The pure logic was the part that could silently rot; a mount
+failure is loud and immediate whenever AI is next suspended.
+
+**Bug found, not fixed** (surgical-changes rule — it is outside this item): `tokenize` drops a
+leading dot, so `.NET` becomes `net`. A JD requiring `.NET` will match a resume that merely says
+"net". The test documents current behaviour rather than the desired behaviour. Filed as Q8.
+
+**Side finding, unrelated to this item:** the dual-graph stored decision claims `JdMatcher` was
+"wired as `'jd-match'` LAB_VIEW" with a `LAB_VIEWS` registry in `Edit.tsx`. There is no `LAB_VIEWS`
+symbol in `Edit.tsx` on this branch — that decision is stale or was reverted. Filed as Q7.
 
 ---
 
@@ -82,6 +132,40 @@ status: TODO · type: code
 36+ commits on `experiment/preview-left-skills-panel`. Builder is verified (Dusk 3/3,
 React mounts clean, save-on-blur round trip works). Prod `.env` needs `AI_ENABLED=true`
 and deploy secrets `SSH_HOST` / `SSH_USER` / `SSH_PRIVATE_KEY`.
+
+### Answer
+_(pending)_
+
+---
+
+## Q7 — Stale `LAB_VIEWS` decision in the dual-graph store
+status: TODO · type: research · files: resources/js/Pages/ResumeBuilder/Edit.tsx
+
+The graph's stored decisions claim `Edit.tsx` has a `LAB_VIEWS` registry with `'plaintext'` and
+`'jd-match'` entries and a sidebar "Preview" chooser. No `LAB_VIEWS` symbol exists in `Edit.tsx`
+on this branch. Either it was reverted or it lives on another branch. Decide whether to restore
+it or purge the decision — it is currently misleading every session's startup context.
+
+Related: the graph itself is stale, built for `/Users/rmethod/Herd/resumegen` (lowercase) while
+the project resolves as `/Users/rmethod/Herd/Resumegen`. Needs `graph_scan` to rebuild.
+
+### Answer
+_(pending)_
+
+---
+
+## Q8 — `tokenize` drops a leading dot, so `.NET` matches "net"
+status: TODO · type: code · files: resources/js/Pages/ResumeBuilder/Partials/JdMatcher.tsx
+
+Found while writing Q4's tests. The regex `[a-z0-9][a-z0-9+#./-]*` requires an alphanumeric first
+character, so `.NET` tokenizes to `net`. A JD requiring `.NET` scores as covered against a resume
+that only contains the word "net". `C++` and `node.js` survive correctly; only a **leading**
+separator is lost.
+
+`JdMatcher.test.ts` currently asserts the buggy output (`'.NET'` → `'net'`) so the suite documents
+reality. Fixing the regex means updating that assertion in the same change.
+
+Low priority — this panel renders in no live environment (see Q4).
 
 ### Answer
 _(pending)_
