@@ -27,6 +27,8 @@ status: BLOCKED · type: research · files: docs/prepaid-pricing-model.md §14
 The 19-scenario sweep narrows the signup grant but cannot settle it. Blocked on real
 usage data per §12's stop rule. Do not decide this from the fabricated seeder.
 
+Q9 does the answerable half (what competitors give free). Completing Q9 does not unblock this.
+
 ### Answer
 _(pending — blocked)_
 
@@ -37,6 +39,8 @@ status: BLOCKED · type: research · files: docs/growth-model-sample-run.md
 
 Carries the largest swing in the tornado chart, and nothing in the model represents it.
 Blocked on production conversion data.
+
+Q10 makes the assumption explicit in the model. Completing Q10 does not unblock this.
 
 ### Answer
 _(pending — blocked)_
@@ -270,3 +274,50 @@ the old regex — a test that passes either way would have been worthless here. 
 substring, and the panel already tells the user it does "exact word matches only, no synonyms or
 stemming". Fixing it means real matching logic, which is a different item and probably not worth
 it for a panel that renders in no live environment (Q4).
+
+---
+
+## Q9 — What competitors actually give away free
+status: TODO · type: research · files: docs/prepaid-pricing-model.md §14
+
+Desk research to narrow Q1's plausible grant range. Q1 asks what grant maximises conversion,
+which needs conversion data we do not have; this asks the answerable half — what a new user
+can get for $0 from Teal, Rezi, Kickresume, Jobscan, Enhancv, and Resume Worded, expressed in
+units comparable to our grant (tailored jobs, exports, AI credits).
+
+**Does not close Q1 and must not flip it to DONE.** A competitor's free tier bounds what a
+grant has to beat to look non-stingy; it says nothing about our own conversion curve. Record
+the finding as a range with the comparison unit stated, not a recommended number.
+
+Constraint: the seeder is off-limits here. This item touches no code and reads no local
+database — if it starts producing figures from `GrowthSampleSeeder`, it has gone wrong.
+
+### Answer
+_(pending)_
+
+---
+
+## Q10 — Elasticity is absent from the model, not just unmeasured
+status: TODO · type: code · files: database/seeders/GrowthSampleSeeder.php, docs/growth-model-sample-run.md
+
+Q2 records elasticity as the largest swing in the tornado chart with nothing in the model
+representing it. Today `JOB_CENTS` changes revenue per job and leaves demand untouched, so
+every sweep implicitly assumes perfectly inelastic demand — the most optimistic assumption
+available, applied silently. That is why D2 (75c) reads +$1,196 against B's +$447: the price
+rose 50% and not one user bought less.
+
+Add a `GROWTH_ELASTICITY_PCT` knob alongside the existing `GROWTH_*` overrides that scales
+jobs-per-user against price, so the assumption is declared rather than hidden. Default it to
+the current behaviour (zero elasticity) so published runs stay reproducible, then re-run D2
+at a few plausible values and record how much of its lead survives.
+
+**Does not close Q2.** It converts an omission into a stated assumption; the real coefficient
+still needs production conversion data at two prices. Every figure it produces inherits the
+guessed elasticity and must be quoted with it.
+
+Watch for: `CLAUDE.md` warns this environment is zsh and does not word-split, which has
+already produced a clean-looking sweep with a price of `0`. Write the invocations out
+explicitly or use `${=var}`.
+
+### Answer
+_(pending)_
