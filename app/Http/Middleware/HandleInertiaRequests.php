@@ -28,9 +28,6 @@ class HandleInertiaRequests extends Middleware
                 'success' => session('success'),
                 'error' => session('error'),
             ],
-            'impersonating' => session()->has('impersonating_id') ? [
-                'name' => $request->user()?->name,
-            ] : null,
         ];
     }
 }

@@ -77,6 +77,7 @@ Default to surfacing uncertainty, not hiding it.
 - **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia` and nothing in `app/` uses `spatie/laravel-medialibrary`, though the package is still in `composer.json`.
 - **AI:** none — removed 2026-07-21. No OpenAI, no Anthropic, no `config/ai.php`, no `ai_requests`. Every remaining feature is deterministic server-side code.
 - **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe, no pricing instrumentation.
+- **Admin:** none — removed 2026-07-21. No Filament, no Livewire, no admin subdomain, no impersonation. The app has no administrative interface of any kind; the only way to change a user row or the taxonomy tables is the database or a seeder.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
 **Conventions** (moved here from global instructions 2026-07-20 — they only apply to this stack):
@@ -137,7 +138,7 @@ The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor 
 The builder's Share tab holds only an active-link count and a link to `/shares`. It used to embed a `SharePopover` with its own label/expiry/revoke controls — a cramped duplicate that could not show any of the analytics, and drifted from `/shares` as that page grew. Removed on 2026-07-19; don't reintroduce link management in the builder. Sharing does not interleave with editing (you share once you've stopped editing), and tokens are stable across edits, so a recruiter's existing link already serves the current version — there is nothing to re-copy after an edit.
 
 ### Shared Inertia props
-`HandleInertiaRequests::share()` passes `auth.user`, `flash.{success,error}` and `impersonating`. There is no `featureGate` — see "Billing" — and no `aiEnabled`, removed with AI on 2026-07-21.
+`HandleInertiaRequests::share()` passes `auth.user` and `flash.{success,error}` — nothing else. There is no `featureGate` (see "Billing"), no `aiEnabled` and no `impersonating`; the last two went with AI and the admin panel on 2026-07-21.
 
 ## Billing — there is none
 
@@ -155,21 +156,11 @@ Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` 
 
 **Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `RegisteredUserController::store()` via `registration_ip` column on `users`.
 
-## Admin Panel
-
-Filament v3 panel mounted via `app/Providers/Filament/AdminPanelProvider.php` on a separate subdomain (`config('app.admin_domain')`, `.env` `APP_ADMIN_DOMAIN`, default `admin.resumegen.app`) — not a `/admin` path prefix. Access gated by `User::canAccessPanel()` (implements `FilamentUser`), checking `is_master_admin`. Resources/pages/widgets live in `app/Filament/{Resources,Pages,Widgets}`. `is_master_admin` is non-editable; set directly in DB or via seeder.
-
-**Audit log:** `AdminAuditLog::record(string $action, ?Model $target, string $description, array $meta = [])` — **call this on every privileged admin write action.** Reads `auth()->id()` + `request()->ip()`, swallows exceptions. Append-only `admin_audit_logs` table.
-
 ## API Layer
 
 Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (intentionally empty) — only token-auth works, no session fallback.
 
 **Test base class:** All API tests extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). It calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum guard cache from masking token revocation.
-
-## System Events
-
-`system_events` (append-only) logs outbound mail (`MessageSent`) via an `AppServiceProvider::boot()` listener. Best-effort — exceptions swallowed. Pruned after 30 days. Surfaced on Ops dashboard. The `channel` column is a holdover from when webhooks were also logged here; `'mail'` is the only value written now.
 
 ## Removed Features (do not reintroduce without asking)
 
@@ -186,8 +177,15 @@ Deleted on 2026-07-21 — code, routes, models, migrations, config and tests:
 - **All AI.** `AiService`, `AiPrompts`, `AiRequest`, `AiUsageReport`, `OpenAiUsageService`, `ModerationException`, `AiDisabledException`, `EnsureAiEnabled` + the `ai_enabled` alias, `AiSuggestionController`, `InterviewCoachController`, `ResumeImportController`, `ai:cost-alert`, `ai:prune-flagged`, `config/ai.php`, `config/openai.php`, the `openai-php/laravel` package, the Filament `AiOverviewPage` / `AiUsersPage`, the `aiEnabled` Inertia prop, `users.ai_limit_override` / `ai_blocked` / `ai_usage_reset_at`, and the `ai_requests` table. The features that went with it: bullet rewrite, bullet coach, summary generation, ATS keywords, interview coach, cover-letter AI draft, and resume PDF/LinkedIn import. Frontend: `useAiSuggestion`, `AtsMatchPanel`, `JdMatcher` (+ its test), `PdfImportModal`, `plainText.ts`.
 - **All pricing instrumentation** (see "Billing"). `JobPairing`, `BalanceTransaction`, `JobPairingService`, `config/pricing.php`, `pricing:usage`, `pricing:growth`, `GrowthSampleSeeder`, both pricing docs, and the `job_pairings` / `balance_transactions` tables.
 - **Job Search (`/jobs`).** `JobSearchService`, `app/Services/JobBoards/*`, `JobUrlImporter`, `JobSearchController`, `JobSearch` + `JobListing` models, `JobSearchPolicy`, `jobs:run-alerts`, `JobMatchesDigestMail`, `config/jobs.php`, `resources/js/Pages/Jobs/*`, the Jobs nav item and command-palette entry, and the `job_searches` / `job_listings` tables.
+- **The entire admin surface.** `AdminPanelProvider`, all of `app/Filament/**` (the User / CareerArticle / Message / JobRole / JobSkill / JobTitle resources, the Ops / Audit / Content / Growth pages, `AdminStatsOverview`), `resources/views/filament/**`, the `filament/filament` package (which took Livewire with it as a transitive dep), the `filament:upgrade` post-autoload script, and `public/{css,js}/filament`. With it: `User::canAccessPanel()` and the `FilamentUser` contract, `users.is_master_admin` (and its grant-to-owner data migration, and the field on the TSX `User` type), `config('app.admin_domain')` / `APP_ADMIN_DOMAIN`, the orphaned `resources/js/Layouts/AdminLayout.tsx`, `DemoDataSeeder`, and `tests/Feature/Admin/FilamentAdminTest.php`. **There is no admin interface at all now** — no panel, no subdomain, no `/admin` path, no privileged user flag.
+- **Impersonation.** `AdminImpersonationController`, the `admin.impersonate.destroy` route, the `impersonating` shared Inertia prop and the banner in `AuthenticatedLayout.tsx`.
+- **Admin audit log.** `AdminAuditLog` model + factory and the `admin_audit_logs` table. Nothing records privileged writes because there are no privileged writes.
+- **System events.** `SystemEvent` model + factory, the `system_events` table, the `AppServiceProvider` `MessageSent` listener, and `system-events:prune` with its schedule entry. **Outbound mail is no longer logged anywhere.**
+- **Career Hub** — deleted because the admin panel was its only editor. `CareerHubController`, `CareerArticle` model + factory, the `career_articles` table, the public `/career` and `/career/{slug}` routes, `resources/js/Pages/CareerHub/**`, the Career link on `Welcome.tsx`, and `CareerHubTest`.
 
-Survived that removal and must not be described as gone: **`SalaryController` / `/jobs/salary`** (predates Job Search, now the only `jobs.*` route), the **JobRole / JobTitle / JobSkill taxonomy** with its seeders, `AutocompleteController` and `SkillCategories`, **`StrengthScorePanel`** (server-side scorer, never AI), and the builder's `resumes.target_company` / `target_title` / `target_job_description` fields — the Optimize tab now holds a plain "Job description" textarea where the ATS panel used to be.
+`2026_07_21_101720_drop_admin_tables_and_flags` (forward-only) drops `admin_audit_logs`, `system_events`, `career_articles` and `users.is_master_admin`.
+
+Survived that removal and must not be described as gone: **`SalaryController` / `/jobs/salary`** (predates Job Search, now the only `jobs.*` route), the **JobRole / JobTitle / JobSkill taxonomy** with its seeders (still run by `DatabaseSeeder`), `AutocompleteController` and `SkillCategories` — only the admin CRUD over the taxonomy is gone, so **taxonomy is now seeder-managed with no UI**; **`PortfolioMessage`** and the user-facing `/messages` page; **`StrengthScorePanel`** (server-side scorer, never AI); and the builder's `resumes.target_company` / `target_title` / `target_job_description` fields — the Optimize tab now holds a plain "Job description" textarea where the ATS panel used to be.
 
 ## Browser tests (Dusk) — two non-obvious requirements
 
@@ -241,7 +239,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 1. **Single `resumes` table with JSON columns** — frontend owns shape; backend validates as array.
 2. **No template React components** — server renders PDF; iframe preview loads it.
 3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
-4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable.
+4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `portfolio_messages`. Simple, immutable.
 5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
 6. **No monetization** — every feature is free and unlimited, and nothing is metered.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
@@ -249,7 +247,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 
 ---
 
-Last updated: 2026-07-21 (AI, pricing instrumentation and Job Search removed)
+Last updated: 2026-07-21 (AI, pricing instrumentation, Job Search and the whole admin surface removed)
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
