@@ -46,11 +46,28 @@ business badly at small grants. Both views, across the scenarios swept:
 | **B** | **$2** | **50c** | **$5** | **25.5%** | **+$1,335.67** | **+$160.70** | **+$460.70** | $1,175 |
 | C | $1 | 50c | $10 | 41.2% | +$5,042.23 | +$504.23 | +$804.23 | $4,538 |
 | C2 | $1 | 50c | $5 | 41.2% | +$2,415.21 | +$567.24 | +$867.24 | $1,848 |
-| D | $2 | 75c | $10 | — | +$6,080 | +$872.93 | +$1,172.93 | $4,358 |
+| D | $2 | 75c | $10 | 41.5% | +$5,268.08 | +$855.08 | +$1,155.08 | $4,413 |
+| **D2** | **$2** | **75c** | **$5** | **41.5%** | **+$2,784.18** | **+$896.18** | **+$1,196.18** | **$1,888** |
 
 Accrual revenue counts only paid dollars actually spent on jobs (grant dollars burn first
 and are discount, not income). Scenario C's +$5,042 cash is 77% money being held for users
 who have not spent it — on accrual it is +$504.
+
+**D and D2 were re-measured on 2026-07-20**, replacing an earlier D row that carried an
+estimated cash figure (+$6,080) and no payer count. Both re-runs used per-user FIFO for the
+grant-vs-cash split — grant dollars burn first *within each user's own ledger*. A global
+FIFO is wrong and inverts the sign: it lets unspent grant belonging to users who never paid
+offset the cash spend of users who did, which reported D as −$224 instead of +$1,155.
+
+**D2 dominates D.** Same price, same 41.5% payers, same $1,707 recognised, marginally better
+accrual — on **57% less deferred liability**, because a $5 minimum does not force users to
+pre-fund jobs they have not decided to buy. D's larger cash number is mostly other people's
+money. This agrees with §9's $5 minimum, which was settled on accessibility grounds.
+
+**The 75c rows assume zero price elasticity.** The seeder tailors the same 3,145.50 of jobs
+at 75c as at 50c; the gain comes entirely from more users crossing the top-up wall (a $2
+grant buys 2.67 jobs instead of 4), not from margin. Real demand falls at a 50% price rise
+by some amount this model cannot estimate. Treat every 75c figure as an upper bound.
 
 **Two levers, ranked.** The $480 infra floor is larger than the entire baseline loss:
 dropping to a ~$15/mo box reaches roughly breakeven on accrual with *no pricing change at
