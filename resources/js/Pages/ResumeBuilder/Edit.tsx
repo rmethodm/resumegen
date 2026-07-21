@@ -1117,7 +1117,9 @@ export default function Edit({
                 </main>
 
                 {/* ── Right: inspector, showing whatever the left panel selected ── */}
-                <aside className="flex w-96 shrink-0 flex-col border-l border-gray-200 bg-white" aria-label="Selected section editor">
+                {/* 420px, the upper half of the mockup's minmax(360px, 430px). At w-96
+                    the two-column field grid truncated most job titles and companies. */}
+                <aside className="flex w-[420px] shrink-0 flex-col border-l border-gray-200 bg-white" aria-label="Selected section editor">
                     <div className="flex-1 space-y-4 overflow-y-auto p-4">
                         <div className="flex items-center justify-between gap-2">
                             <h2 className="text-base font-semibold text-gray-900">{inspectorTitle}</h2>
