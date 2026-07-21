@@ -22,14 +22,14 @@ function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: 
             ref={setNodeRef}
             style={style}
             className={`flex items-center gap-2 rounded-lg border px-2.5 py-2 transition-colors ${
-                active ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                active ? 'border-[#4f46e5] bg-[#eef2ff]' : 'border-[#eeeef5] hover:border-[#c7c7d9] hover:bg-[#f8fafc]'
             }`}
         >
             {entry.isDraggable && (
                 <button
                     type="button"
                     aria-label={`Reorder ${entry.label}`}
-                    className="cursor-grab touch-none text-gray-300 hover:text-gray-400"
+                    className="cursor-grab touch-none text-[#cbd5e1] hover:text-[#94a3b8]"
                     {...attributes}
                     {...listeners}
                 >
@@ -39,16 +39,16 @@ function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: 
             <button
                 type="button"
                 onClick={e => onSelect(e.currentTarget)}
-                className={`flex-1 text-left text-sm ${active ? 'font-semibold text-blue-600' : 'text-gray-800'}`}
+                className={`flex-1 text-left text-sm ${active ? 'font-semibold text-[#4f46e5]' : 'text-[#1e293b]'}`}
             >
                 {entry.label}
                 {entry.optional && (
-                    <span className="ml-1.5 text-[9px] font-medium uppercase tracking-widest text-gray-400">Optional</span>
+                    <span className="ml-1.5 text-[9px] font-medium uppercase tracking-widest text-[#94a3b8]">Optional</span>
                 )}
             </button>
             <span
                 aria-hidden
-                className={`h-1.5 w-1.5 shrink-0 rounded-full ${entry.isComplete() ? 'bg-blue-600' : 'bg-gray-200'}`}
+                className={`h-1.5 w-1.5 shrink-0 rounded-full ${entry.isComplete() ? 'bg-[#4f46e5]' : 'bg-[#e2e8f0]'}`}
             />
         </div>
     );

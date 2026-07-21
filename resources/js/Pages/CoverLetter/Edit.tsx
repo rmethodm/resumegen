@@ -32,11 +32,11 @@ export default function Edit({ letter, resumes }: Props) {
                     {/* Page header */}
                     <div className="mb-5 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <Link href={route('cover-letters.index')} className="text-sm text-gray-400 hover:text-gray-500">← Cover Letters</Link>
-                            <span className="text-gray-200">/</span>
-                            <span className="text-sm font-semibold text-gray-900">{letter.name}</span>
+                            <Link href={route('cover-letters.index')} className="text-sm text-[#a0a0b0] hover:text-[#71717a]">← Cover Letters</Link>
+                            <span className="text-[#eeeef5]">/</span>
+                            <span className="text-sm font-semibold text-[#0f0f1a]">{letter.name}</span>
                         </div>
-                        <span className="text-xs text-gray-400">{saving ? 'Saving…' : 'Saved'}</span>
+                        <span className="text-xs text-[#a0a0b0]">{saving ? 'Saving…' : 'Saved'}</span>
                     </div>
 
                     {/* Controls */}
@@ -46,7 +46,7 @@ export default function Edit({ letter, resumes }: Props) {
                             value={name}
                             onChange={e => setName(e.target.value)}
                             onBlur={() => name !== letter.name && save({ name })}
-                            className="flex-1 rounded-lg border border-gray-200 text-sm font-semibold focus:border-blue-600 focus:ring-blue-600"
+                            className="flex-1 rounded-lg border border-[#eeeef5] text-sm font-semibold focus:border-[#4f46e5] focus:ring-[#4f46e5]"
                             placeholder="Cover letter name"
                         />
                         <select
@@ -57,7 +57,7 @@ export default function Edit({ letter, resumes }: Props) {
                                 setResumeId(val ?? '');
                                 save({ resume_id: val });
                             }}
-                            className="rounded-lg border border-gray-200 text-sm focus:border-blue-600 focus:ring-blue-600"
+                            className="rounded-lg border border-[#eeeef5] text-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]"
                         >
                             <option value="">No resume linked</option>
                             {resumes.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
@@ -69,7 +69,7 @@ export default function Edit({ letter, resumes }: Props) {
                         value={body}
                         onChange={e => setBody(e.target.value)}
                         onBlur={() => body !== letter.body && save({ body })}
-                        className="h-[60vh] w-full rounded-xl border border-gray-200 font-mono text-sm shadow-sm focus:border-blue-600 focus:ring-blue-600"
+                        className="h-[60vh] w-full rounded-xl border border-[#eeeef5] font-mono text-sm shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]"
                         placeholder="Write your cover letter here…"
                     />
                 </div>

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+    scroll-behavior: smooth;
+}
+
 @media print {
     /* Hide everything except the resume preview panel */
     body > * { display: none !important; }
