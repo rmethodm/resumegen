@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 const SLIDES = [
     { tab: 'My Resumes',    label: 'Resume Builder' },
     { tab: 'Cover Letters', label: 'Cover Letters'  },
-    { tab: 'Jobs',          label: 'Job Tracker'    },
+    { tab: 'Shares',        label: 'Share Analytics' },
 ] as const;
 
 export default function Welcome({ auth }: PageProps) {
@@ -105,7 +105,7 @@ export default function Welcome({ auth }: PageProps) {
 
                     {/* Subtext */}
                     <p className="mx-auto mb-8 max-w-lg text-base leading-relaxed text-[#6b7280] sm:text-lg">
-                        Build a polished resume with 9 ATS-friendly templates, track your applications, and share your resume with a link recruiters can actually find.
+                        Build a polished resume with 9 ATS-friendly templates, export to PDF or DOCX, and share a live link that shows you exactly who's reading it.
                     </p>
 
                     {/* CTAs */}
@@ -241,43 +241,46 @@ export default function Welcome({ auth }: PageProps) {
                                 <div className="mb-3 h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
                             </div>
                         </div>
-                        {/* Slide 2 — Job Tracker */}
+                        {/* Slide 2 — Share Analytics */}
                         <div className={`absolute inset-0 bg-[#f9fafb] px-4 py-3 transition-opacity duration-500 ${activeSlide === 2 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             <div className="mb-2.5 flex items-center justify-between">
-                                <p className="text-[11px] font-black text-[#0f172a]">Job Applications</p>
-                                <span className="rounded-md bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-2 py-0.5 text-[8px] font-bold text-white">+ Add job</span>
+                                <p className="text-[11px] font-black text-[#0f172a]">Share Links</p>
+                                <span className="rounded-md bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-2 py-0.5 text-[8px] font-bold text-white">+ New link</span>
+                            </div>
+                            {/* Stat row */}
+                            <div className="mb-2.5 grid grid-cols-3 gap-2">
+                                {[
+                                    { n: '48', l: 'views' },
+                                    { n: '31', l: 'visitors' },
+                                    { n: '3', l: 'questions' },
+                                ].map(({ n, l }) => (
+                                    <div key={l} className="rounded-md border border-[#e5e7eb] bg-white px-2 py-1.5">
+                                        <p className="text-[11px] font-black leading-none text-[#0f172a]">{n}</p>
+                                        <p className="mt-0.5 text-[7px] font-bold uppercase tracking-widest text-[#9ca3af]">{l}</p>
+                                    </div>
+                                ))}
                             </div>
                             {/* Table header */}
                             <div className="grid grid-cols-4 border-b border-[#e5e7eb] pb-1 text-[7px] font-bold uppercase tracking-widest text-[#9ca3af]">
-                                <span>Company</span><span>Role</span><span>Status</span><span>Applied</span>
+                                <span className="col-span-2">Link</span><span>Views</span><span>Last seen</span>
                             </div>
                             {/* Row 1 */}
                             <div className="grid grid-cols-4 items-center border-b border-[#f3f4f6] py-1.5 text-[8px] text-[#374151]">
-                                <span className="font-bold">Google</span>
-                                <span>Software Engineer L5</span>
-                                <span><span className="rounded-full bg-[#d1fae5] px-2 py-0.5 text-[7px] font-bold text-[#065f46]">Interview</span></span>
-                                <span>Jun 2</span>
+                                <span className="col-span-2 font-bold">Recruiter — Google</span>
+                                <span>21</span>
+                                <span>2h ago</span>
                             </div>
                             {/* Row 2 */}
                             <div className="grid grid-cols-4 items-center border-b border-[#f3f4f6] py-1.5 text-[8px] text-[#374151]">
-                                <span className="font-bold">Stripe</span>
-                                <span>Product Manager</span>
-                                <span><span className="rounded-full bg-[#dbeafe] px-2 py-0.5 text-[7px] font-bold text-[#1d4ed8]">Applied</span></span>
-                                <span>Jun 4</span>
+                                <span className="col-span-2 font-bold">LinkedIn profile</span>
+                                <span>19</span>
+                                <span>Yesterday</span>
                             </div>
                             {/* Row 3 */}
-                            <div className="grid grid-cols-4 items-center border-b border-[#f3f4f6] py-1.5 text-[8px] text-[#374151]">
-                                <span className="font-bold">Airbnb</span>
-                                <span>Staff Designer</span>
-                                <span><span className="rounded-full bg-[#fef3c7] px-2 py-0.5 text-[7px] font-bold text-[#92400e]">Offer</span></span>
-                                <span>May 28</span>
-                            </div>
-                            {/* Row 4 */}
                             <div className="grid grid-cols-4 items-center py-1.5 text-[8px] text-[#374151]">
-                                <span className="font-bold">Linear</span>
-                                <span>Frontend Engineer</span>
-                                <span><span className="rounded-full bg-[#f3f4f6] px-2 py-0.5 text-[7px] font-bold text-[#6b7280]">Saved</span></span>
-                                <span>—</span>
+                                <span className="col-span-2 font-bold">Referral — Stripe</span>
+                                <span>8</span>
+                                <span>3d ago</span>
                             </div>
                         </div>
                         </div>
@@ -340,8 +343,8 @@ export default function Welcome({ auth }: PageProps) {
                             {[
                                 {
                                     n: '1',
-                                    title: 'Import or start fresh',
-                                    desc: 'Upload your LinkedIn PDF or start from scratch. We parse your experience and pre-fill your resume instantly.',
+                                    title: 'Pick a template',
+                                    desc: 'Start from any of 9 ATS-friendly templates and fill in your details in a live side-by-side editor.',
                                 },
                                 {
                                     n: '2',
@@ -385,8 +388,8 @@ export default function Welcome({ auth }: PageProps) {
                                 },
                                 {
                                     icon: '◈',
-                                    title: 'PDF & LinkedIn Import',
-                                    desc: 'Upload your existing resume or LinkedIn PDF and we\'ll parse your experience to pre-fill your new resume instantly.',
+                                    title: 'PDF & DOCX Export',
+                                    desc: 'Download your resume as a print-ready PDF or an editable DOCX — no watermarks, no limits.',
                                     tag: 'Free',
                                 },
                                 {
@@ -397,8 +400,8 @@ export default function Welcome({ auth }: PageProps) {
                                 },
                                 {
                                     icon: '📊',
-                                    title: 'Job Application Tracker',
-                                    desc: 'Track every application from saved to offer in one place. Link resumes to jobs and stay organized through your search.',
+                                    title: 'Share Analytics',
+                                    desc: 'See how many people opened your link, which sections they spent longest on, and when they last looked.',
                                     tag: 'Free',
                                 },
                             ].map(({ icon, title, desc, tag }) => (
