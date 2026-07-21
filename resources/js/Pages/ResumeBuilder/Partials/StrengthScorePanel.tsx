@@ -65,8 +65,8 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
 
                                 {/* Next-step nudge */}
                                 {score < 100 && tip && (
-                                    <div className="rounded-lg bg-[#dbeafe] px-3 py-2">
-                                        <p className="text-xs font-medium text-[#1e40af]">Next: {tip}</p>
+                                    <div className="rounded-lg bg-blue-100 px-3 py-2">
+                                        <p className="text-xs font-medium text-blue-800">Next: {tip}</p>
                                     </div>
                                 )}
 

@@ -1,17 +1,6 @@
-/* Builder chrome, lifted verbatim from the option 3 mockup
-   (docs/resume-builder-option-3-template.html). Scoped under
-   .rg-builder-template so it can't leak into the rest of the app.
-   Must stay above the @tailwind directives — postcss-import drops
-   an @import that follows another rule. */
-@import './builder.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-html {
-    scroll-behavior: smooth;
-}
 
 @media print {
     /* Hide everything except the resume preview panel */

@@ -63,12 +63,12 @@ function SkillsLayoutCard({
             onClick={onClick}
             className={`flex flex-col gap-2 rounded-xl border p-2.5 text-left transition-colors ${
                 selected
-                    ? 'border-[#2563eb] bg-[#dbeafe] ring-1 ring-[#2563eb]'
-                    : 'border-[#dbe3ef] bg-white hover:border-[#bfdbfe] hover:bg-[#f6f8fb]'
+                    ? 'border-blue-600 bg-blue-100 ring-1 ring-blue-600'
+                    : 'border-gray-300 bg-white hover:border-blue-200 hover:bg-gray-100'
             }`}
         >
             <div className="flex h-11 w-full items-start">{children}</div>
-            <span className={`text-[10px] font-semibold uppercase tracking-wide ${selected ? 'text-[#2563eb]' : 'text-[#94a3b8]'}`}>
+            <span className={`text-[10px] font-semibold uppercase tracking-wide ${selected ? 'text-blue-600' : 'text-gray-400'}`}>
                 {label}
             </span>
         </button>
@@ -80,7 +80,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
         <button
             type="button"
             onClick={onClick}
-            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-[#bfdbfe] py-3 text-sm font-medium text-[#2563eb] transition-colors hover:border-[#2563eb] hover:bg-[#dbeafe]"
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-blue-200 py-3 text-sm font-medium text-blue-600 transition-colors hover:border-blue-600 hover:bg-blue-100"
         >
             <span className="text-lg leading-none">+</span> {label}
         </button>
@@ -88,7 +88,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
 }
 
 function FLabel({ children }: { children: React.ReactNode }) {
-    return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#94a3b8]">{children}</p>;
+    return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-gray-400">{children}</p>;
 }
 
 function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
@@ -102,7 +102,7 @@ function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
             onChange={e => onChange(e.target.value)}
             onBlur={onBlur}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-[#dbe3ef] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 px-[6.6px] py-[4.4px] text-sm text-gray-800 placeholder-gray-400 focus:border-blue-600 focus:ring-blue-500 focus:outline-none"
         />
     );
 }
@@ -118,7 +118,7 @@ function FTextarea({ value, onChange, onBlur, placeholder, rows = 4 }: {
             placeholder={placeholder}
             rows={rows}
             spellCheck
-            className="w-full resize-y rounded-lg border border-[#dbe3ef] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
+            className="w-full resize-y rounded-lg border border-gray-300 px-[6.6px] py-[4.4px] text-sm text-gray-800 placeholder-gray-400 focus:border-blue-600 focus:ring-blue-500 focus:outline-none"
         />
     );
 }
@@ -131,10 +131,10 @@ function EntryCard({
     label: string; onRemove: () => void; children: React.ReactNode;
 }) {
     return (
-        <div className="overflow-hidden rounded-xl border border-[#dbe3ef]">
-            <div className="flex items-center justify-between border-b border-[#dbe3ef] bg-[#f6f8fb] px-4 py-2.5">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">{label}</span>
-                <button type="button" onClick={onRemove} className="text-[#94a3b8] hover:text-red-500 transition-colors">
+        <div className="overflow-hidden rounded-xl border border-gray-300">
+            <div className="flex items-center justify-between border-b border-gray-300 bg-gray-100 px-4 py-2.5">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">{label}</span>
+                <button type="button" onClick={onRemove} className="text-gray-400 hover:text-red-500 transition-colors">
                     <TrashIcon className="h-4 w-4" />
                 </button>
             </div>
@@ -153,7 +153,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
     return (
         <>
             {text.slice(0, idx)}
-            <span className="font-semibold text-[#2563eb]">{text.slice(idx, idx + q.length)}</span>
+            <span className="font-semibold text-blue-600">{text.slice(idx, idx + q.length)}</span>
             {text.slice(idx + q.length)}
         </>
     );
@@ -242,15 +242,15 @@ function SkillTagInput({
 
     return (
         <div ref={containerRef} className="relative">
-            <div className="min-h-[44px] w-full rounded-lg border border-[#dbe3ef] px-3 py-2 focus-within:border-[#2563eb] focus-within:ring-1 focus-within:ring-[#2563eb]">
+            <div className="min-h-[44px] w-full rounded-lg border border-gray-300 px-3 py-2 focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                 <div className="flex flex-wrap gap-1.5">
                     {skills.map(s => (
-                        <span key={s} className="flex items-center gap-1 rounded-md bg-[#dbeafe] px-2 py-1 text-xs text-[#1e40af] border border-[#bfdbfe]">
+                        <span key={s} className="flex items-center gap-1 rounded-md bg-blue-100 px-2 py-1 text-xs text-blue-800 border border-blue-200">
                             {s}
                             <button
                                 type="button"
                                 onClick={() => onChange(skills.filter(x => x !== s))}
-                                className="text-[#3b82f6] hover:text-red-500 leading-none"
+                                className="text-blue-500 hover:text-red-500 leading-none"
                             >
                                 ×
                             </button>
@@ -292,11 +292,11 @@ function SkillTagInput({
                         }}
                         onBlur={() => { if (inputVal) { addSkill(inputVal); } }}
                         placeholder={skills.length === 0 ? placeholder : ''}
-                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:ring-0 focus:outline-none"
+                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-gray-800 placeholder-gray-400 focus:ring-0 focus:outline-none"
                     />
                     {loading && (
                         <span className="self-center" aria-hidden="true">
-                            <svg className="h-3.5 w-3.5 animate-spin text-[#94a3b8]" viewBox="0 0 24 24" fill="none">
+                            <svg className="h-3.5 w-3.5 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                             </svg>
@@ -305,7 +305,7 @@ function SkillTagInput({
                 </div>
             </div>
             {open && (suggestions.length > 0 || showEmpty) && (
-                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#dbe3ef] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
@@ -314,14 +314,14 @@ function SkillTagInput({
                             aria-selected={i === activeIndex}
                             onMouseDown={() => addSkill(s.name)}
                             className={`px-3 py-2 text-sm cursor-pointer ${
-                                i === activeIndex ? 'bg-[#dbeafe] text-[#2563eb]' : 'text-[#1e293b] hover:bg-[#f6f8fb]'
+                                i === activeIndex ? 'bg-blue-100 text-blue-600' : 'text-gray-800 hover:bg-gray-100'
                             }`}
                         >
                             {highlightMatch(s.name, inputVal)}
                         </li>
                     ))}
                     {showEmpty && (
-                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-[#94a3b8]">
+                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-gray-400">
                             No matches — press Enter to add “{inputVal.trim()}”
                         </li>
                     )}
@@ -582,8 +582,8 @@ export default function Edit({
                     <div className="flex flex-wrap items-center gap-x-[3px] gap-y-1 pt-0.5">
                         {[28, 22, 32, 18, 26].map((w, i) => (
                             <span key={i} className="flex items-center gap-[3px]">
-                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
-                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-[#94a3b8]" />}
+                                <span className="inline-block h-[6px] rounded-full bg-blue-200" style={{ width: w }} />
+                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-gray-400" />}
                             </span>
                         ))}
                     </div>
@@ -593,8 +593,8 @@ export default function Edit({
                     <div className="flex flex-col gap-[5px] pt-0.5">
                         {[34, 26, 38, 22].map((w, i) => (
                             <div key={i} className="flex items-center gap-1">
-                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#111827]" />
-                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-gray-900" />
+                                <span className="inline-block h-[6px] rounded-full bg-blue-200" style={{ width: w }} />
                             </div>
                         ))}
                     </div>
@@ -604,10 +604,10 @@ export default function Edit({
                     <div className="flex flex-col gap-[6px] pt-0.5">
                         {[[20, [14, 12]], [16, [18, 10]], [22, [12, 14]]].map(([catW, items], i) => (
                             <div key={i} className="flex flex-wrap items-center gap-[3px]">
-                                <span className="inline-block h-[6px] rounded-full bg-[#111827]" style={{ width: catW as number }} />
-                                <span className="text-[7px] leading-none text-[#94a3b8]">:</span>
+                                <span className="inline-block h-[6px] rounded-full bg-gray-900" style={{ width: catW as number }} />
+                                <span className="text-[7px] leading-none text-gray-400">:</span>
                                 {(items as number[]).map((w, j) => (
-                                    <span key={j} className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                    <span key={j} className="inline-block h-[6px] rounded-full bg-blue-200" style={{ width: w }} />
                                 ))}
                             </div>
                         ))}
@@ -618,9 +618,9 @@ export default function Edit({
                     <div className="flex gap-2.5 pt-0.5">
                         {[[22, [18, 24, 16]], [18, [22, 14, 20]]].map(([catW, rows], ci) => (
                             <div key={ci} className="flex flex-col gap-[4px]">
-                                <span className="inline-block h-[7px] rounded bg-[#111827]" style={{ width: catW as number }} />
+                                <span className="inline-block h-[7px] rounded bg-gray-900" style={{ width: catW as number }} />
                                 {(rows as number[]).map((w, ri) => (
-                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-blue-200" style={{ width: w }} />
                                 ))}
                             </div>
                         ))}
@@ -629,11 +629,11 @@ export default function Edit({
 
                 <SkillsLayoutCard label="Narrative" selected={skillsLayout === 'narrative'} onClick={() => { setSkillsLayout('narrative'); setTimeout(save, 0); }}>
                     <div className="flex flex-col gap-[5px] pt-0.5">
-                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#111827]" />
+                        <span className="inline-block h-[7px] w-[38px] rounded bg-gray-900" />
                         {[32, 24, 34, 20].map((w, i) => (
                             <div key={i} className="flex items-center gap-1 pl-1">
-                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[#94a3b8]" />
-                                <span className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-gray-400" />
+                                <span className="inline-block h-[5px] rounded-full bg-blue-200" style={{ width: w }} />
                             </div>
                         ))}
                     </div>
@@ -653,9 +653,9 @@ export default function Edit({
             {(skillsLayout === 'grouped-inline' || skillsLayout === 'grouped-vertical') && (
                 <>
                     {skillCategories.map(cat => (
-                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#dbe3ef] bg-white">
-                            <div className="flex items-center gap-2 border-b border-[#dbe3ef] bg-[#f6f8fb] px-3 py-2.5">
-                                <DragDots className="text-[#94a3b8] shrink-0" />
+                        <div key={cat.id} className="overflow-hidden rounded-xl border border-gray-300 bg-white">
+                            <div className="flex items-center gap-2 border-b border-gray-300 bg-gray-100 px-3 py-2.5">
+                                <DragDots className="text-gray-400 shrink-0" />
                                 <select
                                     value={cat.category_type}
                                     onChange={e => {
@@ -663,7 +663,7 @@ export default function Edit({
                                         setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_type: type, category_name: type || c.category_name } : c));
                                     }}
                                     onBlur={save}
-                                    className="flex-1 min-w-0 rounded-lg border border-[#dbe3ef] px-2 py-1.5 text-sm text-[#1e293b] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-800 focus:border-blue-600 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                                 >
                                     <option value="">Select category...</option>
                                     {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
@@ -674,9 +674,9 @@ export default function Edit({
                                     onChange={e => setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_name: e.target.value } : c))}
                                     onBlur={save}
                                     placeholder="Or type custom..."
-                                    className="flex-1 min-w-0 rounded-lg border border-[#dbe3ef] bg-white px-2 py-1.5 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-800 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                                 />
-                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
+                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-gray-400 hover:text-red-500 transition-colors">
                                     <TrashIcon className="h-4 w-4" />
                                 </button>
                             </div>
@@ -698,17 +698,17 @@ export default function Edit({
             {skillsLayout === 'narrative' && (
                 <>
                     {skillNarratives.map(n => (
-                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#dbe3ef] bg-white">
-                            <div className="flex items-center gap-2 border-b border-[#dbe3ef] bg-[#f6f8fb] px-3 py-2.5">
+                        <div key={n.id} className="overflow-hidden rounded-xl border border-gray-300 bg-white">
+                            <div className="flex items-center gap-2 border-b border-gray-300 bg-gray-100 px-3 py-2.5">
                                 <input
                                     type="text"
                                     value={n.name}
                                     onChange={e => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, name: e.target.value } : x))}
                                     onBlur={save}
                                     placeholder="Skill area (e.g. Communication, Leadership)"
-                                    className="flex-1 rounded-lg border border-[#dbe3ef] bg-white px-2 py-1.5 text-sm font-medium text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm font-medium text-gray-800 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                                 />
-                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
+                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-gray-400 hover:text-red-500 transition-colors">
                                     <TrashIcon className="h-4 w-4" />
                                 </button>
                             </div>
@@ -818,7 +818,7 @@ export default function Edit({
                         placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
                         rows={5}
                     />
-                    <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                    <p className="text-right text-xs text-gray-400">{Math.max(0, 1000 - summary.length)} characters remaining</p>
                 </>
             ),
         },
@@ -838,12 +838,12 @@ export default function Edit({
                                 <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
                                 <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
                             </div>
-                            <label className="flex items-center gap-2 text-sm text-[#475569] cursor-pointer">
-                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#bfdbfe] text-[#2563eb] focus:ring-[#3b82f6]" />
+                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-blue-200 text-blue-600 focus:ring-blue-500" />
                                 I currently work here
                             </label>
                             <div>
-                                <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
+                                <FLabel>Bullet Points <span className="text-gray-400 font-normal">(one per line)</span></FLabel>
                                 <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
                             </div>
                         </EntryCard>
@@ -863,14 +863,14 @@ export default function Edit({
                     {projects.map((proj, i) => (
                         <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
                             <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
-                            <div><FLabel>Description <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
-                            <div><FLabel>Project URL <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
+                            <div><FLabel>Description <span className="text-gray-400 font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
+                            <div><FLabel>Project URL <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <div><FLabel>Start Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
-                                <div><FLabel>End Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
+                                <div><FLabel>Start Date <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
+                                <div><FLabel>End Date <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
                             </div>
                             <div>
-                                <FLabel>Highlights <span className="text-[#94a3b8] font-normal">(one per line, optional)</span></FLabel>
+                                <FLabel>Highlights <span className="text-gray-400 font-normal">(one per line, optional)</span></FLabel>
                                 <FTextarea value={proj.bullets} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, bullets: v } : p))} onBlur={save} placeholder={"• Built with React, Node.js, and PostgreSQL\n• Handles 10k+ daily users"} rows={3} />
                             </div>
                         </EntryCard>
@@ -920,12 +920,12 @@ export default function Edit({
                     {certifications.map((cert, i) => (
                         <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
                             <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
-                            <div><FLabel>Issuing Organization <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
+                            <div><FLabel>Issuing Organization <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <div><FLabel>Date Obtained <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
-                                <div><FLabel>Expiration <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
+                                <div><FLabel>Date Obtained <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
+                                <div><FLabel>Expiration <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
                             </div>
-                            <div><FLabel>Credential ID <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
+                            <div><FLabel>Credential ID <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
                         </EntryCard>
                     ))}
                     <AddButton label="Add Certificate" onClick={() => setCertifications(prev => [...prev, emptyCert()])} />
@@ -952,37 +952,38 @@ export default function Edit({
     const inspectorTitle = isSection(inspector) ? SECTIONS[inspector].label : TOOL_LABELS[inspector];
 
     return (
-        <div className="rg-builder-template">
+        <div className="min-h-screen bg-gray-100 text-gray-900" dusk="builder">
             <Head title={`Editing: ${name}`} />
 
-            <div className="rg-app">
-                {/* ── Icon rail. Replaces AuthenticatedLayout's top nav: the mockup is a
-                     full-bleed four-column grid, so a stacked app header would break it. ── */}
-                <nav className="rg-master-nav" aria-label="Application navigation">
-                    <div className="rg-logo">RG</div>
-                    <Link href={route('dashboard')} className="rg-nav-button" title="Dashboard" aria-label="Dashboard">
-                        <HomeIcon className="h-[18px] w-[18px]" />
+            <div className="flex min-h-screen">
+                {/* ── Icon rail. This page does not use AuthenticatedLayout: it is a
+                     full-bleed four-column workspace, and a stacked app header on top
+                     of it would leave no room for the preview. ── */}
+                <nav className="flex w-14 shrink-0 flex-col items-center gap-2 border-r border-gray-200 bg-white p-2" aria-label="Application navigation">
+                    <div className="mb-2 grid h-8 w-8 place-items-center rounded-lg bg-gray-900 text-xs font-bold text-white">RG</div>
+                    <Link href={route('dashboard')} className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Dashboard" aria-label="Dashboard">
+                        <HomeIcon className="h-5 w-5" />
                     </Link>
-                    <Link href={route('builder.index')} className="rg-nav-button is-active" title="Resumes" aria-label="Resumes">
-                        <DocumentTextIcon className="h-[18px] w-[18px]" />
+                    <Link href={route('builder.index')} className="grid h-9 w-9 place-items-center rounded-lg bg-blue-50 text-blue-600" title="Resumes" aria-label="Resumes">
+                        <DocumentTextIcon className="h-5 w-5" />
                     </Link>
-                    <Link href={route('messages.index')} className="rg-nav-button" title="Messages" aria-label="Messages">
-                        <ChatBubbleLeftRightIcon className="h-[18px] w-[18px]" />
+                    <Link href={route('messages.index')} className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Messages" aria-label="Messages">
+                        <ChatBubbleLeftRightIcon className="h-5 w-5" />
                     </Link>
-                    <Link href={route('shares.index')} className="rg-nav-button" title="Shares" aria-label="Shares">
-                        <ShareIcon className="h-[18px] w-[18px]" />
+                    <Link href={route('shares.index')} className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Shares" aria-label="Shares">
+                        <ShareIcon className="h-5 w-5" />
                     </Link>
-                    <div className="rg-nav-spacer" />
-                    <Link href={route('profile.edit')} className="rg-nav-button" title="Settings" aria-label="Settings">
-                        <Cog6ToothIcon className="h-[18px] w-[18px]" />
+                    <div className="flex-1" />
+                    <Link href={route('profile.edit')} className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Settings" aria-label="Settings">
+                        <Cog6ToothIcon className="h-5 w-5" />
                     </Link>
                 </nav>
 
                 {/* ── Left panel: sections, design, tools ── */}
-                <aside className="rg-left-panel" aria-label="Resume controls">
-                    <div className="rg-left-scroll">
-                        <section className="rg-panel-group">
-                            <div className="rg-group-head"><span>Sections</span></div>
+                <aside className="flex w-72 shrink-0 flex-col border-r border-gray-200 bg-white" aria-label="Resume controls">
+                    <div className="flex-1 overflow-y-auto p-3">
+                        <section className="mb-4 border-b border-gray-200 pb-4">
+                            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Sections</p>
                             <SectionPalette
                                 entries={paletteEntries}
                                 activeKey={isSection(inspector) ? inspector : null}
@@ -993,13 +994,13 @@ export default function Edit({
                             />
                         </section>
 
-                        <section className="rg-panel-group">
-                            <div className="rg-group-head"><span>Design</span></div>
-                            <div className="rg-field">
-                                <label className="rg-label" htmlFor="rg-template">Template</label>
+                        <section className="mb-4 border-b border-gray-200 pb-4">
+                            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Design</p>
+                            <div className="mb-3">
+                                <label className="mb-1 block text-xs font-medium text-gray-700" htmlFor="builder-template">Template</label>
                                 <select
-                                    id="rg-template"
-                                    className="rg-select"
+                                    id="builder-template"
+                                    className="w-full rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
                                     value={template}
                                     onChange={e => { setTemplate(e.target.value as ResumeTemplate); setTimeout(save, 0); }}
                                 >
@@ -1008,11 +1009,11 @@ export default function Edit({
                                     ))}
                                 </select>
                             </div>
-                            <div className="rg-field">
-                                <label className="rg-label" htmlFor="rg-font">Font</label>
+                            <div className="mb-3">
+                                <label className="mb-1 block text-xs font-medium text-gray-700" htmlFor="builder-font">Font</label>
                                 <select
-                                    id="rg-font"
-                                    className="rg-select"
+                                    id="builder-font"
+                                    className="w-full rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
                                     value={fontFamily}
                                     onChange={e => {
                                         const f = e.target.value as 'sans' | 'serif' | 'mono';
@@ -1026,81 +1027,85 @@ export default function Edit({
                                     <option value="mono">Mono</option>
                                 </select>
                             </div>
-                            <button type="button" className="rg-button is-full" onClick={() => setInspector('design')}>
+                            <button
+                                type="button"
+                                className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                onClick={() => setInspector('design')}
+                            >
                                 Type sizes &amp; spacing
                             </button>
                         </section>
 
-                        <section className="rg-panel-group">
-                            <div className="rg-group-head"><span>Tools</span></div>
-                            <div className="rg-control-list">
-                                <button type="button" dusk="target-role" className="rg-control-row" onClick={() => setInspector('target')}>
-                                    <span className="rg-row-title">Target role</span>
-                                    {targetTitle && <span className="rg-row-meta">{targetTitle}</span>}
+                        <section className="mb-4 border-b border-gray-200 pb-4">
+                            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Tools</p>
+                            <div className="flex flex-col gap-1">
+                                <button type="button" dusk="target-role" className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => setInspector('target')}>
+                                    <span className="flex-1 truncate">Target role</span>
+                                    {targetTitle && <span className="truncate text-xs text-gray-400">{targetTitle}</span>}
                                 </button>
-                                <button type="button" className="rg-control-row" onClick={() => setInspector('checklist')}>
-                                    <span className="rg-row-title">Resume checklist</span>
-                                    {liveScore !== null && <span className="rg-chip">{liveScore}%</span>}
+                                <button type="button" className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => setInspector('checklist')}>
+                                    <span className="flex-1 truncate">Resume checklist</span>
+                                    {liveScore !== null && <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">{liveScore}%</span>}
                                 </button>
-                                <button type="button" className="rg-control-row" onClick={() => setInspector('shares')}>
-                                    <span className="rg-row-title">Share links</span>
-                                    <span className="rg-row-meta">{initialLinks.filter(l => l.is_active).length} active</span>
+                                <button type="button" className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => setInspector('shares')}>
+                                    <span className="flex-1 truncate">Share links</span>
+                                    <span className="text-xs text-gray-400">{initialLinks.filter(l => l.is_active).length} active</span>
                                 </button>
-                                <button type="button" className="rg-control-row" onClick={() => setInspector('messages')}>
-                                    <span className="rg-row-title">Messages</span>
+                                <button type="button" className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => setInspector('messages')}>
+                                    <span className="flex-1 truncate">Messages</span>
                                     {unreadCount > 0
-                                        ? <span className="rg-chip">{unreadCount} unread</span>
-                                        : <span className="rg-row-meta">{initialThreads.length}</span>}
+                                        ? <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">{unreadCount} unread</span>
+                                        : <span className="text-xs text-gray-400">{initialThreads.length}</span>}
                                 </button>
                             </div>
                         </section>
 
-                        <section className="rg-panel-group">
-                            <div className="rg-group-head"><span>Export</span></div>
-                            <div className="rg-control-list">
-                                <a href={route('builder.docx', resume.id)} className="rg-button is-full">Download DOCX</a>
-                                <a href={route('builder.pdf', resume.id)} className="rg-button is-full">Download PDF</a>
+                        <section>
+                            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Export</p>
+                            <div className="flex flex-col gap-2">
+                                <a href={route('builder.docx', resume.id)} className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">Download DOCX</a>
+                                <a href={route('builder.pdf', resume.id)} className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">Download PDF</a>
                             </div>
                         </section>
                     </div>
 
-                    <div className="rg-left-footer">
-                        <div className="rg-match-chip">
+                    <div className="border-t border-gray-200 p-3">
+                        <div className="mb-2 flex items-center justify-between text-xs font-medium text-gray-700">
                             <span>Match checklist</span>
-                            <span className="rg-chip">{completionScore}%</span>
+                            <span>{completionScore}%</span>
                         </div>
-                        <div className="rg-match-bar"><span style={{ width: `${completionScore}%` }} /></div>
+                        <div className="h-1.5 overflow-hidden rounded-full bg-gray-200">
+                            <span className="block h-full rounded-full bg-blue-600" style={{ width: `${completionScore}%` }} />
+                        </div>
                     </div>
                 </aside>
 
                 {/* ── Centre: topbar, canvas tools, live preview ── */}
-                <main className="rg-main">
-                    <header className="rg-topbar">
-                        <div className="rg-title-block">
-                            <Link href={route('builder.index')} className="rg-back">← Resumes</Link>
-                            <span className="rg-title">{name}</span>
-                            {liveScore !== null && <span className="rg-chip">{liveScore}% match</span>}
+                <main className="flex min-w-0 flex-1 flex-col">
+                    <header className="flex items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-2">
+                        <div className="flex min-w-0 items-center gap-2">
+                            <Link href={route('builder.index')} className="shrink-0 text-sm text-gray-500 hover:text-gray-700">← Resumes</Link>
+                            <span className="truncate text-sm font-semibold text-gray-900">{name}</span>
+                            {liveScore !== null && <span className="shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">{liveScore}% match</span>}
                         </div>
-                        <div className="rg-top-actions">
-                            <span className="rg-save">{saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}</span>
-                            <a href={route('builder.pdf', resume.id)} className="rg-button is-primary">Export</a>
+                        <div className="flex shrink-0 items-center gap-2">
+                            <span className="text-xs text-gray-400">{saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}</span>
+                            <a href={route('builder.pdf', resume.id)} className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700">Export</a>
                         </div>
                     </header>
 
-                    <div className="rg-canvas-tools" aria-label="Preview controls">
-                        <div className="rg-tool-group">
-                            <button type="button" aria-label="Zoom out" onClick={() => setZoom(z => Math.max(50, z - 10))}>−</button>
-                            <span>{zoom}%</span>
-                            <button type="button" aria-label="Zoom in" onClick={() => setZoom(z => Math.min(200, z + 10))}>+</button>
+                    <div className="flex items-center justify-center gap-4 border-b border-gray-200 bg-white px-4 py-1.5 text-sm text-gray-600" aria-label="Preview controls">
+                        <div className="flex items-center gap-2">
+                            <button type="button" aria-label="Zoom out" className="rounded px-2 py-0.5 hover:bg-gray-100" onClick={() => setZoom(z => Math.max(50, z - 10))}>−</button>
+                            <span className="tabular-nums">{zoom}%</span>
+                            <button type="button" aria-label="Zoom in" className="rounded px-2 py-0.5 hover:bg-gray-100" onClick={() => setZoom(z => Math.min(200, z + 10))}>+</button>
                         </div>
-                        <div className="rg-tool-group">
-                            <button type="button" onClick={() => setZoom(100)}>Reset</button>
-                        </div>
+                        <button type="button" className="rounded px-2 py-0.5 hover:bg-gray-100" onClick={() => setZoom(100)}>Reset</button>
                     </div>
 
-                    <div className="rg-canvas">
+                    <div className="flex-1 overflow-auto p-6">
                         <div
-                            className="relative h-full w-full origin-top"
+                            className="relative mx-auto h-full w-full origin-top bg-white shadow"
                             style={{ transform: `scale(${zoom / 100})` }}
                         >
                             {renderPreviewFrames()}
@@ -1109,12 +1114,12 @@ export default function Edit({
                 </main>
 
                 {/* ── Right: inspector, showing whatever the left panel selected ── */}
-                <aside className="rg-inspector" aria-label="Selected section editor">
-                    <div className="rg-inspector-scroll rg-inspector-content">
-                        <div className="rg-inspector-title">
-                            <h2>{inspectorTitle}</h2>
+                <aside className="flex w-96 shrink-0 flex-col border-l border-gray-200 bg-white" aria-label="Selected section editor">
+                    <div className="flex-1 space-y-4 overflow-y-auto p-4">
+                        <div className="flex items-center justify-between gap-2">
+                            <h2 className="text-base font-semibold text-gray-900">{inspectorTitle}</h2>
                             {isSection(inspector) && SECTIONS[inspector].optional && (
-                                <span className="rg-row-meta">Optional</span>
+                                <span className="text-xs text-gray-400">Optional</span>
                             )}
                         </div>
 
@@ -1132,8 +1137,8 @@ export default function Edit({
                                 ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
                                     <div key={key}>
                                         <div className="mb-1 flex justify-between">
-                                            <span className="text-[11px] text-gray-500">{label}</span>
-                                            <span className="text-[11px] font-semibold tabular-nums text-gray-900">{fontSizes[key]}pt</span>
+                                            <span className="text-xs text-gray-500">{label}</span>
+                                            <span className="text-xs font-semibold tabular-nums text-gray-900">{fontSizes[key]}pt</span>
                                         </div>
                                         <input
                                             type="range"
@@ -1147,7 +1152,6 @@ export default function Edit({
                                             onTouchEnd={save}
                                             onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
                                             className="w-full"
-                                            style={{ accentColor: '#2563eb' }}
                                         />
                                     </div>
                                 ))}
@@ -1155,7 +1159,7 @@ export default function Edit({
                                     <button
                                         type="button"
                                         onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }}
-                                        className="text-[10px] text-gray-400 transition-colors hover:text-brand-600"
+                                        className="text-xs text-gray-400 hover:text-blue-600"
                                     >
                                         Reset sizes
                                     </button>
@@ -1165,18 +1169,18 @@ export default function Edit({
 
                         {inspector === 'target' && (
                             <>
-                                <div className="rg-field-grid">
-                                    <div className="rg-field">
-                                        <label className="rg-label">Company</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <FLabel>Company</FLabel>
                                         <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." name="target_company" />
                                     </div>
-                                    <div className="rg-field">
-                                        <label className="rg-label">Job title</label>
+                                    <div>
+                                        <FLabel>Job title</FLabel>
                                         <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" name="target_title" />
                                     </div>
                                 </div>
-                                <div className="rg-field">
-                                    <label className="rg-label">Job description</label>
+                                <div>
+                                    <FLabel>Job description</FLabel>
                                     <FTextarea
                                         value={targetJobDescription}
                                         onChange={setTargetJobDescription}
@@ -1197,15 +1201,15 @@ export default function Edit({
                                     Share links are stable, so an edit here reaches anyone you already sent one to.
                                     Create and manage them on the Shares page.
                                 </p>
-                                <Link href={route('shares.index')} className="rg-button is-primary">Manage shares →</Link>
+                                <Link href={route('shares.index')} className="inline-flex rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700">Manage shares →</Link>
                             </>
                         )}
 
                         {inspector === 'messages' && <ThreadsPanel threads={initialThreads} resumeId={resume.id} />}
 
                         {recruiterNote && isSection(inspector) && (
-                            <div className="rg-card">
-                                <p className="rg-card-title">Recruiter note</p>
+                            <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                                <p className="mb-1 text-xs font-semibold text-gray-900">Recruiter note</p>
                                 <p className="text-sm leading-relaxed text-gray-700">{recruiterNote}</p>
                             </div>
                         )}
@@ -1219,14 +1223,14 @@ export default function Edit({
                     <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
                         <div className="mb-6 flex justify-center gap-2">
                             {([0, 1] as const).map(i => (
-                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-[#111827]' : i < wizardStep ? 'bg-[#93c5fd]' : 'bg-[#dbe3ef]'}`} />
+                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-gray-900' : i < wizardStep ? 'bg-blue-300' : 'bg-gray-300'}`} />
                             ))}
                         </div>
                         {wizardStep === 0 && (
                             <div className="space-y-4 text-center">
                                 <h2 className="text-2xl font-semibold text-gray-900">Let's build your resume</h2>
                                 <p className="text-sm text-gray-600">It takes just a few minutes. We'll start with your contact details.</p>
-                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Get started →</button>
+                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800">Get started →</button>
                             </div>
                         )}
                         {wizardStep === 1 && (
@@ -1242,7 +1246,7 @@ export default function Edit({
                                 </div>
                                 <div className="mt-4 flex items-center justify-between">
                                     <button type="button" onClick={finishWizard} className="text-sm text-gray-500 hover:text-gray-700">Skip</button>
-                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Finish →</button>
+                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800">Finish →</button>
                                 </div>
                             </div>
                         )}
