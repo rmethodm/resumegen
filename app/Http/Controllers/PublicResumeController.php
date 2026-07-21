@@ -112,7 +112,6 @@ class PublicResumeController extends Controller
         $resume = $link->resume;
         $pdf = Pdf::loadView('resume-pdf', [
             'resume' => $resume,
-            'watermark' => false,
         ])->setPaper('letter', 'portrait');
 
         ResumeShareEvent::log($request, $link, 'pdf_download');

@@ -72,7 +72,7 @@ class OnboardingController extends Controller
         $resume = new Resume(SampleResume::data());
         $resume->template = $template;
 
-        return Pdf::loadView('resume-pdf', ['resume' => $resume, 'watermark' => false])
+        return Pdf::loadView('resume-pdf', ['resume' => $resume])
             ->setPaper('letter', 'portrait')
             ->stream('preview.pdf');
     }
