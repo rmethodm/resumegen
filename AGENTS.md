@@ -8,17 +8,21 @@ hand-written corrections, without which parts of it are actively wrong. Duplicat
 meant an agent could read the errata without the errata sheet, so the copy was replaced with
 this pointer on 2026-07-20.
 
-The three corrections most likely to cause damage if you act on the Boost block alone:
+The corrections most likely to cause damage if you act on the Boost block alone:
 
 - **`laravel/cashier` is NOT installed**, despite the block listing it as a dependency. There
   is no billing, no Stripe, no plan tiers, no paywall. Do not add one without asking.
 - **`spatie/laravel-medialibrary` is installed but unused.** Nothing in `app/` references it;
   the resume photo feature was removed. Do not activate the medialibrary skill.
+- **Filament and Livewire are NOT installed**, despite the block listing both and carrying a
+  whole Filament rules section. The entire admin panel was deleted on 2026-07-21 and the
+  package removed; Livewire went with it as a transitive dep. There is no admin interface,
+  no admin subdomain, and no `is_master_admin`. Do not build one without asking.
 - **Dusk needs its own server** — `php artisan serve --env=dusk.local --port=8001` must be
   running first, because Herd serves the dev database. The block's "never run commands to
   serve the site" does not apply to the Dusk path.
 
 Also in `CLAUDE.md` and absent from the Boost block: migrations are forward-only (never
 `migrate:rollback`), Rule 5 (no LLM for anything code can answer deterministically), and the
-2026-07-21 removal of all AI, all pricing instrumentation and the Job Search feature — there is
-no AI in this app, and no live pricing document.
+2026-07-21 removal of all AI, all pricing instrumentation, the Job Search feature and the whole
+admin surface — there is no AI in this app, no live pricing document, and no admin panel.

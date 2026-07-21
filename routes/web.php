@@ -1,12 +1,10 @@
 <?php
 
-use App\Http\Controllers\AdminImpersonationController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
-use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
 use App\Http\Controllers\MessagesController;
@@ -131,10 +129,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 Route::get('/p/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
 Route::post('/p/{slug}/contact', [PortfolioController::class, 'contact'])->name('portfolio.contact')->middleware('throttle:5,1');
 
-// Public (unauthenticated) Career Hub routes
-Route::get('/career', [CareerHubController::class, 'index'])->name('career.index');
-Route::get('/career/{slug}', [CareerHubController::class, 'show'])->name('career.show');
-
 // Public (unauthenticated) share link routes
 Route::middleware('throttle:60,1')->group(function () {
     Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
@@ -150,7 +144,5 @@ Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('pub
 Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'])
     ->middleware('throttle:30,1')
     ->name('public.section-events');
-
-Route::middleware('auth')->delete('/admin/impersonate', [AdminImpersonationController::class, 'destroy'])->name('admin.impersonate.destroy');
 
 require __DIR__.'/auth.php';

@@ -11,7 +11,6 @@ import {
     MagnifyingGlassIcon,
     MoonIcon,
     ShareIcon,
-    ShieldCheckIcon,
     SunIcon,
     UserCircleIcon,
     GlobeAltIcon,
@@ -21,20 +20,11 @@ import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
 type NavItem = { label: string; href: string; active: boolean; icon: typeof HomeIcon };
 
-function adminHref(): string {
-    try {
-        return route('admin.dashboard');
-    } catch {
-        return route('admin.users.index');
-    }
-}
-
 export default function Authenticated({
     header: _header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const { user } = usePage().props.auth;
-    const { impersonating } = usePage().props as { impersonating?: { name: string } };
     const { isDark, toggle } = useDarkMode();
 
     const onBuilder = route().current('builder.edit');
@@ -68,9 +58,6 @@ export default function Authenticated({
         { label: 'Messages', href: route('messages.index'), active: route().current('messages.*'), icon: ChatBubbleLeftRightIcon },
         { label: 'Shares', href: route('shares.index'), active: route().current('shares.*'), icon: ShareIcon },
     ];
-    if (user.is_master_admin) {
-        workspace.push({ label: 'Admin', href: adminHref(), active: route().current('admin.*'), icon: ShieldCheckIcon });
-    }
     const account: NavItem[] = [
         { label: 'Profile', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
         { label: 'Portfolio', href: route('portfolio.edit'), active: route().current('portfolio.edit'), icon: GlobeAltIcon },
@@ -111,16 +98,6 @@ export default function Authenticated({
 
     return (
         <div className="min-h-screen bg-[#f5f5fb] dark:bg-gray-900">
-            {impersonating && (
-                <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-sm font-medium text-amber-800">
-                    Impersonating <strong>{impersonating.name}</strong>
-                    {' — '}
-                    <Link href={route('admin.impersonate.destroy')} method="delete" as="button" className="underline hover:text-amber-900">
-                        Stop
-                    </Link>
-                </div>
-            )}
-
             <div className="flex">
                 {/* Desktop sidebar */}
                 <aside

@@ -10,4 +10,3 @@ Artisan::command('inspire', function () {
 
 Schedule::command('resumes:nudge-stale')->dailyAt('09:00');
 Schedule::command('resumes:nudge-views')->weekly();
-Schedule::command('system-events:prune')->daily();

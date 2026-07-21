@@ -142,15 +142,10 @@ MAIL_PORT=587
 MAIL_USERNAME=...
 MAIL_PASSWORD=...
 MAIL_FROM_ADDRESS="hello@yourdomain.com"
-
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o-mini
-
-STRIPE_KEY=pk_...
-STRIPE_SECRET=sk_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-# + the 6 Stripe price IDs (Part 10)
 ```
+
+> There are no AI, billing or admin env keys. `OPENAI_*`, `STRIPE_*` and `APP_ADMIN_DOMAIN`
+> were removed with those features — if you see them in an old `.env`, delete them.
 
 Then:
 
@@ -205,7 +200,7 @@ sudo a2dissite 000-default.conf
 sudo systemctl reload apache2
 ```
 
-**HTTPS** (required — Stripe webhooks + secure cookies):
+**HTTPS** (required — secure cookies):
 
 ```bash
 sudo apt install -y certbot python3-certbot-apache
@@ -218,7 +213,10 @@ After SSL, ensure `APP_URL` uses `https://` and re-run `php artisan config:cache
 
 ## Part 9 — Scheduler & queue
 
-**Scheduler (required)** — drives daily commands (revenue snapshot, prune jobs):
+**Scheduler (required)** — drives the remaining recurring commands, `resumes:nudge-stale`
+(daily) and `resumes:nudge-views` (weekly). Everything else that used to be scheduled —
+`system-events:prune`, `jobs:run-alerts`, `ai:cost-alert`, the revenue snapshot — is gone
+with its feature; check `routes/console.php` for the current list rather than this doc:
 
 ```bash
 sudo crontab -e -u www-data
@@ -253,27 +251,7 @@ sudo systemctl enable --now resumegen-queue
 
 ---
 
-## Part 10 — Stripe
-
-Checkout 402s until the 6 price IDs are set. Create 3 products (Starter/Pro/Agency),
-each with a monthly + yearly price ($9/$79, $19/$149, $49/$399), then add to `.env`:
-
-```ini
-STRIPE_STARTER_MONTHLY_PRICE_ID=price_...
-STRIPE_STARTER_YEARLY_PRICE_ID=price_...
-STRIPE_PRO_MONTHLY_PRICE_ID=price_...
-STRIPE_PRO_YEARLY_PRICE_ID=price_...
-STRIPE_AGENCY_MONTHLY_PRICE_ID=price_...
-STRIPE_AGENCY_YEARLY_PRICE_ID=price_...
-```
-
-Add a webhook endpoint `https://yourdomain.com/stripe/webhook` in the Stripe Dashboard,
-copy its signing secret into `STRIPE_WEBHOOK_SECRET`, then `php artisan config:cache`.
-(Confirm exact env var names against `config/services.php`.)
-
----
-
-## Part 11 — Deploying updates
+## Part 10 — Deploying updates
 
 Deploys are build-once-in-CI, then rsynced to the server — the server never runs
 Composer or npm itself.
@@ -295,10 +273,9 @@ the free-plan substitute, per the comment in `.github/workflows/ci.yml`.) The
 Requires repo secrets `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` and a `production`
 environment configured in GitHub repo settings.
 
-**Admin subdomain:** the Filament admin panel is served on `APP_ADMIN_DOMAIN`
-(`.env`, default `admin.resumegen.app`), not a `/admin` path — point DNS/reverse
-proxy at that subdomain too, and make sure `SESSION_DOMAIN` (`.resumegen.app`)
-covers it so admin auth shares cookies with the main app.
+**No admin subdomain.** The Filament panel was deleted on 2026-07-21 — one vhost on the
+apex domain is the whole app. If an old DNS record or vhost still points at
+`admin.<domain>`, remove it.
 
 **Manual deploy (no CI):** build locally the same way, rsync with the same excludes,
 then SSH in and run `./deploy.sh` yourself.

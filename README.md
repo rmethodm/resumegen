@@ -1,13 +1,14 @@
 # Resumegen
 
-Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create resumes, cover letters, public portfolio pages, and shareable resume links. The app also includes admin operations, analytics, and a small Sanctum API used by the browser extension.
+Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create resumes, cover letters, public portfolio pages, and shareable resume links. The app also includes analytics and a small Sanctum API used by the browser extension.
 
 ## Current Status
 
-- Laravel 13 app with React 18, Inertia 2, Tailwind CSS, Filament 3, Sanctum, DOMPDF, and PHPWord.
+- Laravel 13 app with React 18, Inertia 2, Tailwind CSS, Sanctum, DOMPDF, and PHPWord.
 - Mobile app work is paused. The previous Expo/mobile-only API surface was removed on 2026-07-08.
 - **The app is free and unlimited.** There is no billing, no plan tier, and nothing is metered.
 - **There is no AI.** All AI features, the pricing instrumentation, and the Job Search feature were removed on 2026-07-21. Every remaining feature is deterministic server-side code.
+- **There is no admin panel.** The Filament admin surface, impersonation, the audit log, system-event logging, and the Career Hub were removed on 2026-07-21. The job-role/title/skill taxonomy is now seeder-managed with no UI.
 - Deployment notes live in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Main Product Areas
@@ -19,7 +20,6 @@ Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps use
 - Proofreading request flow with a paid service path.
 - Dashboard analytics, view tracking, heatmaps, strength scoring, salary hints, job-role/title/skill autocomplete, and user activity tracking.
 - Browser extension support through Sanctum personal tokens and API routes.
-- Filament admin panel for users, content, operations, audit logs, messages, job data, and admin impersonation.
 
 ## Local Development
 
@@ -55,7 +55,6 @@ npm run build
 - `app/Http/Controllers` - app controllers
 - `app/Models` - domain models
 - `app/Services` - scoring, exports, thumbnails, and the template allowlist
-- `app/Filament` - admin panel pages, resources, and widgets
 - `resources/js/Pages` - Inertia React pages
 - `database/migrations` - schema history
 - `tests` - PHPUnit feature and unit tests
