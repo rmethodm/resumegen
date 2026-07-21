@@ -146,12 +146,45 @@ Verified: `npx tsc --noEmit` clean, `npx vitest run` 8/8 passing.
 ## Q6 — Split this branch before main
 status: TODO · type: code
 
-36+ commits on `experiment/preview-left-skills-panel`. Builder is verified (Dusk 3/3,
-React mounts clean, save-on-blur round trip works). Prod `.env` needs `AI_ENABLED=true`
-and deploy secrets `SSH_HOST` / `SSH_USER` / `SSH_PRIVATE_KEY`.
+68 commits on `experiment/preview-left-skills-panel` (was written as "36+"; measured
+2026-07-21 with `git log --oneline main..HEAD`). Builder is verified (Dusk 3/3, React mounts
+clean, save-on-blur round trip works). Prod `.env` needs `AI_ENABLED=true` and deploy secrets
+`SSH_HOST` / `SSH_USER` / `SSH_PRIVATE_KEY`.
 
 ### Answer
-_(pending)_
+**Interim: deferred 2026-07-21, not resolved.** Status stays `TODO` — the branch is still
+unsplit. What follows is the groundwork so the next pass does not re-derive it.
+
+Measured scope vs main: **68 commits, 147 files, +10,158 / −3,360**. Distinct workstreams,
+none of which is a subset of another:
+
+- Job search (`AdzunaBoard`, `UsaJobsBoard`, `JobUrlImporter`, alerts, `/jobs`)
+- Prepaid pricing instrumentation (`JobPairing`, `BalanceTransaction`, `pricing:*`, the docs)
+- `/shares` page and its analytics
+- Builder preview-left redesign (`SectionPalette`, `SectionDrawer`, `Edit.tsx` rewrite)
+- Dusk browser tests and `DuskTestCase`
+- Billing removal + doc sweep + `.claude/` hooks and skills
+
+**A focused PR is not available as a fallback, and this is the finding that matters.**
+Cherry-picking a single commit onto main does not work, because the files it edits do not
+exist there. `app/Console/Commands/PricingUsageReport.php` shows as +160 all-additions in
+`git diff main...HEAD` — it was created by `91b37f7` on this branch. The same holds for
+`JobPairing`, `config/pricing.php`, and the job-search services. **Any split must carry whole
+dependency chains, not individual commits.**
+
+Splitting is therefore real work, not a rebase: each candidate branch needs its own migration
+subset, and several commits touch shared files (`AiService`, `routes/web.php`, `CLAUDE.md`,
+`composer.lock`) that every workstream also edits. Expect conflicts on those four regardless of
+how the split is cut.
+
+**No PR was opened** (`gh pr list` confirms none exists for this branch). Asked and answered
+directly: hold off while the branch is still named `experiment/`. Revisit when the builder
+redesign is actually a merge candidate — that is the workstream the branch is named for, and
+the others accreted onto it.
+
+**Next pass on this item should start by deciding the split axis**, since that is the only
+open question: by workstream (6 branches, most faithful, most conflicts) or a single
+`feature/*` PR that merges the lot and accepts the review burden.
 
 ---
 
