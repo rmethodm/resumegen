@@ -92,11 +92,11 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={onKeyDown}
                     placeholder="Search resumes, cover letters, or jump to…"
-                    className="w-full border-0 border-b border-[#e8edf5] bg-transparent px-4 py-3 text-sm focus:ring-0 dark:border-gray-700 dark:text-white"
+                    className="w-full border-0 border-b border-gray-200 bg-transparent px-4 py-3 text-sm focus:ring-0 dark:border-gray-700 dark:text-white"
                 />
                 <ul className="max-h-80 overflow-y-auto py-2">
                     {flat.length === 0 && (
-                        <li className="px-4 py-6 text-center text-sm text-[#94a3b8]">No matches</li>
+                        <li className="px-4 py-6 text-center text-sm text-gray-400">No matches</li>
                     )}
                     {flat.map((item, i) => (
                         <li key={`${item.sub}-${item.url}`}>
@@ -106,11 +106,11 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
                                 onClick={() => go(item.url)}
                                 className={
                                     'flex w-full items-center justify-between px-4 py-2 text-left text-sm ' +
-                                    (i === active ? 'bg-[#eaf1ff] dark:bg-gray-700' : '')
+                                    (i === active ? 'bg-blue-50 dark:bg-gray-700' : '')
                                 }
                             >
-                                <span className="truncate text-[#111827] dark:text-white">{item.label}</span>
-                                <span className="ml-3 flex-shrink-0 text-[11px] uppercase tracking-wide text-[#94a3b8]">{item.sub}</span>
+                                <span className="truncate text-gray-900 dark:text-white">{item.label}</span>
+                                <span className="ml-3 flex-shrink-0 text-[11px] uppercase tracking-wide text-gray-400">{item.sub}</span>
                             </button>
                         </li>
                     ))}

@@ -42,7 +42,7 @@ function RowActionsMenu({ actions }: { actions: RowAction[] }) {
                 ref={btnRef}
                 onClick={toggle}
                 aria-label="Resume actions"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[#64748b] transition hover:bg-[#eaf1ff]"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full text-gray-500 transition hover:bg-blue-50"
             >
                 <EllipsisVerticalIcon className="h-[18px] w-[18px]" />
             </button>
@@ -50,19 +50,19 @@ function RowActionsMenu({ actions }: { actions: RowAction[] }) {
                 <>
                     <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
                     <div
-                        className="fixed z-50 rounded-lg border border-[#e8edf5] bg-white py-1 shadow-lg"
+                        className="fixed z-50 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
                         style={{ top: pos.top, left: pos.left, width: MENU_WIDTH }}
                         onClick={() => setOpen(false)}
                     >
                         {actions.map(a => a.href ? (
-                            <Link key={a.label} href={a.href} className="block px-4 py-2 text-sm text-[#334155] transition hover:bg-[#f9fbff]">
+                            <Link key={a.label} href={a.href} className="block px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
                                 {a.label}
                             </Link>
                         ) : (
                             <button
                                 key={a.label}
                                 onClick={a.onClick}
-                                className={`block w-full px-4 py-2 text-left text-sm transition hover:bg-[#f9fbff] ${a.danger ? 'text-red-600' : 'text-[#334155]'}`}
+                                className={`block w-full px-4 py-2 text-left text-sm transition hover:bg-gray-50 ${a.danger ? 'text-red-600' : 'text-gray-700'}`}
                             >
                                 {a.label}
                             </button>
@@ -97,12 +97,12 @@ function AddTagPopover({ resumeId }: { resumeId: number }) {
         <div className="relative">
             <button
                 onClick={() => setOpen(v => !v)}
-                className="inline-flex items-center rounded-full border border-dashed border-[#dbe3ef] px-2 py-0.5 text-xs text-[#94a3b8] hover:border-[#3b82f6] hover:text-[#3b82f6]"
+                className="inline-flex items-center rounded-full border border-dashed border-gray-300 px-2 py-0.5 text-xs text-gray-400 hover:border-blue-500 hover:text-blue-500"
             >
                 + Tag
             </button>
             {open && (
-                <div className="absolute left-0 top-7 z-20 w-56 rounded-lg border border-[#e8edf5] bg-white p-3 shadow-lg">
+                <div className="absolute left-0 top-7 z-20 w-56 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
                     <form onSubmit={submit} className="space-y-2">
                         <input
                             type="text"
@@ -111,7 +111,7 @@ function AddTagPopover({ resumeId }: { resumeId: number }) {
                             maxLength={30}
                             placeholder="Tag label"
                             autoFocus
-                            className="w-full rounded border border-[#e8edf5] px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#3b82f6]"
+                            className="w-full rounded border border-gray-200 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
                         <div className="flex flex-wrap gap-1">
                             {TAG_COLORS.map(c => (
@@ -129,13 +129,13 @@ function AddTagPopover({ resumeId }: { resumeId: number }) {
                             <button
                                 type="button"
                                 onClick={() => setOpen(false)}
-                                className="rounded px-2 py-1 text-xs text-[#94a3b8] hover:bg-[#f9fbff]"
+                                className="rounded px-2 py-1 text-xs text-gray-400 hover:bg-gray-50"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="rounded bg-[#3b82f6] px-2 py-1 text-xs text-white hover:bg-[#1d4ed8]"
+                                className="rounded bg-blue-500 px-2 py-1 text-xs text-white hover:bg-blue-700"
                             >
                                 Add
                             </button>
@@ -149,9 +149,9 @@ function AddTagPopover({ resumeId }: { resumeId: number }) {
 
 function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortDir: 'asc' | 'desc' }) {
     return (
-        <span className="ml-1 inline-flex flex-col leading-none text-[#dbe3ef]">
-            <span className={sortKey === k && sortDir === 'asc' ? 'text-[#2563eb]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
-            <span className={sortKey === k && sortDir === 'desc' ? 'text-[#2563eb]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
+        <span className="ml-1 inline-flex flex-col leading-none text-gray-300">
+            <span className={sortKey === k && sortDir === 'asc' ? 'text-blue-600' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
+            <span className={sortKey === k && sortDir === 'desc' ? 'text-blue-600' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
         </span>
     );
 }
@@ -212,29 +212,29 @@ export default function Index({ resumes, resumeCount }: Props) {
                     {/* Page header */}
                     <div className="mb-6 flex items-start justify-between">
                         <div>
-                            <h1 className="text-xl font-extrabold tracking-tight text-[#111827]">Resumes</h1>
-                            <p className="mt-1 text-sm text-[#94a3b8]">{resumeCount} resume{resumeCount !== 1 ? 's' : ''}</p>
+                            <h1 className="text-xl font-extrabold tracking-tight text-gray-900">Resumes</h1>
+                            <p className="mt-1 text-sm text-gray-400">{resumeCount} resume{resumeCount !== 1 ? 's' : ''}</p>
                         </div>
                         <Link
                             href={route('builder.create')}
-                            className="rounded-lg bg-gradient-to-br from-[#2563eb] to-[#17213a] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+                            className="rounded-lg bg-gradient-to-br from-blue-600 to-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
                         >
                             + New Resume
                         </Link>
                     </div>
 
                     {/* Resume table */}
-                    <div className="overflow-hidden rounded-xl border border-[#e8edf5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
 
                         {/* Table controls */}
-                        <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[#e8edf5]">
-                            <div className="flex items-center gap-2 text-sm text-[#64748b]">
+                        <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+                            <div className="flex items-center gap-2 text-sm text-gray-500">
                                 <span>Show</span>
                                 <div className="relative">
                                     <select
                                         value={pageSize}
                                         onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                                        className="h-8 appearance-none rounded-lg border border-[#e8edf5] pl-2 pr-7 py-0 text-sm text-[#111827] focus:border-[#2563eb] focus:ring-[#2563eb]"
+                                        className="h-8 appearance-none rounded-lg border border-gray-200 pl-2 pr-7 py-0 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
                                     >
                                         {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
                                     </select>
@@ -242,7 +242,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                 <span>entries</span>
                             </div>
                             <div className="relative w-64">
-                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
                                 </svg>
                                 <input
@@ -250,7 +250,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                     placeholder="Search..."
                                     value={search}
                                     onChange={e => { setSearch(e.target.value); setPage(1); }}
-                                    className="w-full rounded-lg border border-[#e8edf5] py-1.5 pl-9 pr-3 text-sm text-[#111827] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#2563eb]"
+                                    className="w-full rounded-lg border border-gray-200 py-1.5 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-blue-600"
                                 />
                             </div>
                         </div>
@@ -258,10 +258,10 @@ export default function Index({ resumes, resumeCount }: Props) {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
                                 <thead>
-                                    <tr className="border-b border-[#e8edf5]">
+                                    <tr className="border-b border-gray-200">
                                         <th
                                             onClick={() => toggleSort('name')}
-                                            className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#64748b] hover:text-[#111827] transition-colors"
+                                            className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors"
                                         >
                                             <span className="inline-flex items-center gap-0.5">
                                                 Resume
@@ -270,28 +270,28 @@ export default function Index({ resumes, resumeCount }: Props) {
                                         </th>
                                         <th
                                             onClick={() => toggleSort('updated_at')}
-                                            className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#64748b] hover:text-[#111827] transition-colors"
+                                            className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors"
                                         >
                                             <span className="inline-flex items-center gap-0.5">
                                                 Last Edited
                                                 <SortIcon k="updated_at" sortKey={sortKey} sortDir={sortDir} />
                                             </span>
                                         </th>
-                                        <th className="px-5 py-3.5 text-right text-xs font-semibold text-[#64748b]">Actions</th>
+                                        <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-500">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {pageRows.length === 0 ? (
                                         <tr>
-                                            <td colSpan={3} className="px-5 py-12 text-center text-sm text-[#94a3b8]">
+                                            <td colSpan={3} className="px-5 py-12 text-center text-sm text-gray-400">
                                                 {search ? 'No resumes match your search.' : 'No resumes yet. Click "+ New Resume" to create your first one.'}
                                             </td>
                                         </tr>
                                     ) : pageRows.map(r => (
-                                        <tr key={r.id} className="border-b border-[#f6f8fb] transition-colors hover:bg-[#f9fbff]">
+                                        <tr key={r.id} className="border-b border-gray-100 transition-colors hover:bg-gray-50">
                                             <td className="px-5 py-4">
                                                 <div className="flex items-start gap-3">
-                                                    <Link href={route('builder.edit', r.id)} className="shrink-0 block h-16 w-12 overflow-hidden rounded border border-[#e8edf5] bg-[#f9fbff]">
+                                                    <Link href={route('builder.edit', r.id)} className="shrink-0 block h-16 w-12 overflow-hidden rounded border border-gray-200 bg-gray-50">
                                                         <iframe
                                                             src={route('builder.html-preview', r.id)}
                                                             scrolling="no"
@@ -302,7 +302,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     </Link>
                                                     <div className="min-w-0">
                                                 <div className="flex items-center gap-2">
-                                                    <Link href={route('builder.edit', r.id)} className="font-bold text-[#111827] hover:text-[#2563eb]">
+                                                    <Link href={route('builder.edit', r.id)} className="font-bold text-gray-900 hover:text-blue-600">
                                                         {r.name}
                                                     </Link>
                                                     {r.ab_parent_id !== null && (
@@ -310,7 +310,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     )}
                                                 </div>
                                                 <div className="mt-1 flex items-center gap-2">
-                                                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#e8edf5]">
+                                                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-200">
                                                         <div
                                                             className={`h-full rounded-full ${
                                                                 r.strength <= 40
@@ -335,11 +335,11 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     </span>
                                                 </div>
                                                 {r.strength < 100 && (
-                                                    <p className="mt-0.5 text-xs text-[#94a3b8]">{r.strength_tip}</p>
+                                                    <p className="mt-0.5 text-xs text-gray-400">{r.strength_tip}</p>
                                                 )}
                                                 {r.view_count > 0 && (
                                                     <span
-                                                        className="mt-1 flex items-center gap-1 text-xs text-[#64748b]"
+                                                        className="mt-1 flex items-center gap-1 text-xs text-gray-500"
                                                         title={`${r.view_count} public view${r.view_count !== 1 ? 's' : ''}`}
                                                     >
                                                         <EyeIcon className="h-3.5 w-3.5" />
@@ -380,7 +380,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-5 py-4 tabular-nums text-[#64748b]">{fmt(r.updated_at)}</td>
+                                            <td className="px-5 py-4 tabular-nums text-gray-500">{fmt(r.updated_at)}</td>
                                             <td className="px-5 py-4">
                                                 <div className="flex justify-end">
                                                     <RowActionsMenu actions={[
@@ -399,12 +399,12 @@ export default function Index({ resumes, resumeCount }: Props) {
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex items-center justify-between px-5 py-4 border-t border-[#e8edf5]">
+                        <div className="flex items-center justify-between px-5 py-4 border-t border-gray-200">
                             <div className="flex items-center gap-1.5">
                                 <button
                                     onClick={() => setPage(p => Math.max(1, p - 1))}
                                     disabled={safePage === 1}
-                                    className="rounded-lg border border-[#e8edf5] px-3.5 py-1.5 text-sm font-medium text-[#64748b] transition hover:bg-[#f9fbff] disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="rounded-lg border border-gray-200 px-3.5 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                                 >
                                     Previous
                                 </button>
@@ -412,7 +412,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                     <button
                                         key={p}
                                         onClick={() => setPage(p)}
-                                        className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${p === safePage ? 'bg-gradient-to-br from-[#2563eb] to-[#17213a] text-white shadow-sm' : 'border border-[#e8edf5] text-[#64748b] hover:bg-[#f9fbff]'}`}
+                                        className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${p === safePage ? 'bg-gradient-to-br from-blue-600 to-gray-900 text-white shadow-sm' : 'border border-gray-200 text-gray-500 hover:bg-gray-50'}`}
                                     >
                                         {p}
                                     </button>
@@ -420,12 +420,12 @@ export default function Index({ resumes, resumeCount }: Props) {
                                 <button
                                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                     disabled={safePage === totalPages}
-                                    className="rounded-lg border border-[#e8edf5] px-3.5 py-1.5 text-sm font-medium text-[#64748b] transition hover:bg-[#f9fbff] disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="rounded-lg border border-gray-200 px-3.5 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                                 >
                                     Next
                                 </button>
                             </div>
-                            <p className="text-sm text-[#94a3b8]">
+                            <p className="text-sm text-gray-400">
                                 {sorted.length === 0
                                     ? 'No entries'
                                     : `Showing ${showingFrom} to ${showingTo} of ${sorted.length} ${sorted.length === 1 ? 'entry' : 'entries'}`}

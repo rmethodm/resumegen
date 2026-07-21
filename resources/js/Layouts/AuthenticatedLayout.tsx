@@ -71,8 +71,8 @@ export default function Authenticated({
                 className={
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ' +
                     (item.active
-                        ? 'bg-[#eaf1ff] text-[#2563eb] dark:bg-gray-700 dark:text-white'
-                        : 'text-[#64748b] hover:bg-[#f6f8fb] hover:text-[#111827] dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white')
+                        ? 'bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-white'
+                        : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white')
                 }
                 title={rail ? item.label : undefined}
             >
@@ -84,25 +84,25 @@ export default function Authenticated({
     const renderSidebar = (rail: boolean) => (
         <>
             <Link href={route('dashboard')} className="flex items-center gap-2.5 px-3 py-4">
-                <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-gradient-to-br from-[#2563eb] to-[#17213a]" />
-                {!rail && <span className="text-[15px] font-extrabold tracking-tight text-[#111827] dark:text-white">Resumegen</span>}
+                <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-gradient-to-br from-blue-600 to-gray-900" />
+                {!rail && <span className="text-[15px] font-extrabold tracking-tight text-gray-900 dark:text-white">Resumegen</span>}
             </Link>
             <nav className="flex flex-col gap-1 px-2">
-                {!rail && <div className="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">Workspace</div>}
+                {!rail && <div className="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Workspace</div>}
                 {renderNav(workspace, rail)}
-                {!rail && <div className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">Account</div>}
+                {!rail && <div className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Account</div>}
                 {renderNav(account, rail)}
             </nav>
         </>
     );
 
     return (
-        <div className="min-h-screen bg-[#f6f8fb] dark:bg-gray-900">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
             <div className="flex">
                 {/* Desktop sidebar */}
                 <aside
                     className={
-                        'sticky top-0 hidden h-screen flex-shrink-0 border-r border-[#e8edf5] bg-white transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 lg:block ' +
+                        'sticky top-0 hidden h-screen flex-shrink-0 border-r border-gray-200 bg-white transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 lg:block ' +
                         (collapsed ? 'w-[64px]' : 'w-64')
                     }
                 >
@@ -113,7 +113,7 @@ export default function Authenticated({
                 {drawerOpen && (
                     <div className="fixed inset-0 z-40 lg:hidden">
                         <div className="absolute inset-0 bg-black/30" onClick={() => setDrawerOpen(false)} />
-                        <aside className="absolute left-0 top-0 h-full w-64 border-r border-[#e8edf5] bg-white dark:border-gray-700 dark:bg-gray-800">
+                        <aside className="absolute left-0 top-0 h-full w-64 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
                             {renderSidebar(false)}
                         </aside>
                     </div>
@@ -121,12 +121,12 @@ export default function Authenticated({
 
                 <div className="flex min-w-0 flex-1 flex-col">
                     {/* Top header */}
-                    <header className="sticky top-0 z-30 flex h-[52px] items-center gap-3 border-b border-[#e8edf5] bg-white px-4 dark:border-gray-700 dark:bg-gray-800">
+                    <header className="sticky top-0 z-30 flex h-[52px] items-center gap-3 border-b border-gray-200 bg-white px-4 dark:border-gray-700 dark:bg-gray-800">
                         <button
                             type="button"
                             aria-label="Toggle navigation"
                             onClick={() => (window.innerWidth < 1024 ? setDrawerOpen((v) => !v) : setCollapsed((v) => !v))}
-                            className="rounded-lg p-2 text-gray-500 hover:bg-[#f6f8fb] hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700"
+                            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700"
                         >
                             <Bars3Icon className="h-5 w-5" />
                         </button>
@@ -134,11 +134,11 @@ export default function Authenticated({
                         <button
                             type="button"
                             onClick={() => setPaletteOpen(true)}
-                            className="flex flex-1 items-center gap-2 rounded-lg border border-[#e8edf5] px-3 py-1.5 text-sm text-[#94a3b8] hover:border-[#dbe3ef] dark:border-gray-700 dark:hover:border-gray-600 sm:max-w-md"
+                            className="flex flex-1 items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-400 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 sm:max-w-md"
                         >
                             <MagnifyingGlassIcon className="h-4 w-4" />
                             <span className="flex-1 text-left">Search or type command…</span>
-                            <kbd className="hidden rounded border border-[#e8edf5] px-1.5 py-0.5 text-[11px] dark:border-gray-600 sm:inline">⌘K</kbd>
+                            <kbd className="hidden rounded border border-gray-200 px-1.5 py-0.5 text-[11px] dark:border-gray-600 sm:inline">⌘K</kbd>
                         </button>
 
                         <div className="ml-auto flex items-center gap-2">
@@ -153,9 +153,9 @@ export default function Authenticated({
                                 <Dropdown.Trigger>
                                     <button
                                         type="button"
-                                        className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-[#64748b] transition hover:text-[#111827] focus:outline-none dark:text-gray-400 dark:hover:text-white"
+                                        className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-gray-500 transition hover:text-gray-900 focus:outline-none dark:text-gray-400 dark:hover:text-white"
                                     >
-                                        <div className="h-7 w-7 rounded-full bg-gradient-to-br from-[#2563eb] to-[#17213a]" />
+                                        <div className="h-7 w-7 rounded-full bg-gradient-to-br from-blue-600 to-gray-900" />
                                         <span className="hidden sm:inline">{user.name}</span>
                                     </button>
                                 </Dropdown.Trigger>

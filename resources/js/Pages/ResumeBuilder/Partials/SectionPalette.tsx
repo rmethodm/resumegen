@@ -22,14 +22,14 @@ function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: 
             ref={setNodeRef}
             style={style}
             className={`flex items-center gap-2 rounded-lg border px-2.5 py-2 transition-colors ${
-                active ? 'border-[#2563eb] bg-[#eaf1ff]' : 'border-[#e8edf5] hover:border-[#dbe3ef] hover:bg-[#f9fbff]'
+                active ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
             }`}
         >
             {entry.isDraggable && (
                 <button
                     type="button"
                     aria-label={`Reorder ${entry.label}`}
-                    className="cursor-grab touch-none text-[#dbe3ef] hover:text-[#94a3b8]"
+                    className="cursor-grab touch-none text-gray-300 hover:text-gray-400"
                     {...attributes}
                     {...listeners}
                 >
@@ -39,16 +39,16 @@ function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: 
             <button
                 type="button"
                 onClick={e => onSelect(e.currentTarget)}
-                className={`flex-1 text-left text-sm ${active ? 'font-semibold text-[#2563eb]' : 'text-[#1e293b]'}`}
+                className={`flex-1 text-left text-sm ${active ? 'font-semibold text-blue-600' : 'text-gray-800'}`}
             >
                 {entry.label}
                 {entry.optional && (
-                    <span className="ml-1.5 text-[9px] font-medium uppercase tracking-widest text-[#94a3b8]">Optional</span>
+                    <span className="ml-1.5 text-[9px] font-medium uppercase tracking-widest text-gray-400">Optional</span>
                 )}
             </button>
             <span
                 aria-hidden
-                className={`h-1.5 w-1.5 shrink-0 rounded-full ${entry.isComplete() ? 'bg-[#2563eb]' : 'bg-[#e8edf5]'}`}
+                className={`h-1.5 w-1.5 shrink-0 rounded-full ${entry.isComplete() ? 'bg-blue-600' : 'bg-gray-200'}`}
             />
         </div>
     );

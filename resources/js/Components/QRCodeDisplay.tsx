@@ -23,11 +23,11 @@ export default function QRCodeDisplay({ url, size = 128 }: { url: string; size?:
 
     return (
         <div className="flex flex-col items-center gap-2">
-            <canvas ref={canvasRef} className="rounded-lg border border-[#e8edf5]" />
+            <canvas ref={canvasRef} className="rounded-lg border border-gray-200" />
             <button
                 type="button"
                 onClick={download}
-                className="text-xs text-[#94a3b8] hover:text-[#111827] underline"
+                className="text-xs text-gray-400 hover:text-gray-900 underline"
             >
                 Download QR Code
             </button>

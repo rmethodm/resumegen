@@ -36,10 +36,10 @@ class ResumeBuilderTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($user, $resume): void {
             $browser->loginAs($user)
                 ->visit(route('builder.edit', $resume, false))
-                // .rg-app is the builder's grid root — present iff the page mounted.
+                // @builder is the page's root element — present iff React mounted.
                 // The target fields are no longer on screen at load; they live in the
                 // inspector, which the Target role tool row swaps in.
-                ->waitFor('.rg-app', 10)
+                ->waitFor('@builder', 10)
                 ->click('@target-role')
                 ->waitFor('input[name="target_company"]', 5)
                 ->assertPresent('input[name="target_title"]');
@@ -69,7 +69,7 @@ class ResumeBuilderTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($user, $resume): void {
             $browser->loginAs($user)
                 ->visit(route('builder.edit', $resume, false))
-                ->waitFor('.rg-app', 10)
+                ->waitFor('@builder', 10)
                 ->click('@target-role')
                 ->waitFor('input[name="target_company"]', 5)
                 ->type('target_company', 'Acme, Inc.')
@@ -99,10 +99,10 @@ class ResumeBuilderTest extends DuskTestCase
                 ->visit(route('builder.edit', $resume, false))
                 // assertMissing on the builder shell, not assertDontSee on a string —
                 // a "don't see" assertion passes on any error page and proves nothing.
-                // Must be .rg-app rather than a target field: those now render only
-                // after the Target role row is clicked, so their absence would be
+                // Must be the page root rather than a target field: those now render
+                // only after the Target role row is clicked, so their absence would be
                 // true for the owner too and the assertion would prove nothing.
-                ->assertMissing('.rg-app');
+                ->assertMissing('@builder');
         });
     }
 }

@@ -115,8 +115,8 @@ export default function SharesIndex() {
                 <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-6 flex items-center justify-between">
                         <div>
-                            <h1 className="text-xl font-extrabold tracking-tight text-[#111827]">Shares</h1>
-                            <p className="mt-1 text-sm text-[#94a3b8]">
+                            <h1 className="text-xl font-extrabold tracking-tight text-gray-900">Shares</h1>
+                            <p className="mt-1 text-sm text-gray-400">
                                 Every link you've shared, and who has looked at it
                             </p>
                         </div>
@@ -132,13 +132,13 @@ export default function SharesIndex() {
 
                     {links.length === 0 ? (
                         <div
-                            className={`flex flex-col items-center justify-center rounded-xl border border-[#e8edf5] bg-white py-20 ${CARD_SHADOW}`}
+                            className={`flex flex-col items-center justify-center rounded-xl border border-gray-200 bg-white py-20 ${CARD_SHADOW}`}
                         >
                             <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-indigo-50 p-4">
                                 <LinkIcon className="h-8 w-8 text-indigo-500" />
                             </div>
-                            <p className="text-sm font-semibold text-[#111827]">No share links yet</p>
-                            <p className="mt-1 text-sm text-[#94a3b8]">
+                            <p className="text-sm font-semibold text-gray-900">No share links yet</p>
+                            <p className="mt-1 text-sm text-gray-400">
                                 Create a link to send a resume to an employer and track who opens it.
                             </p>
                         </div>
@@ -148,7 +148,7 @@ export default function SharesIndex() {
                                 <div
                                     key={link.id}
                                     className={`group rounded-xl border bg-white p-4 transition hover:-translate-y-1 hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)] ${CARD_SHADOW} ${
-                                        link.is_primary ? 'border-indigo-500' : 'border-[#e8edf5]'
+                                        link.is_primary ? 'border-indigo-500' : 'border-gray-200'
                                     }`}
                                 >
                                     <div className="mb-1 flex items-start justify-between gap-2">
@@ -156,7 +156,7 @@ export default function SharesIndex() {
                                             {link.is_primary && (
                                                 <StarSolid className="h-3.5 w-3.5 shrink-0 text-indigo-500" title="Primary link" />
                                             )}
-                                            <p className="truncate text-[13px] font-semibold text-[#111827]">
+                                            <p className="truncate text-[13px] font-semibold text-gray-900">
                                                 {link.label || 'Untitled link'}
                                             </p>
                                         </div>
@@ -167,19 +167,19 @@ export default function SharesIndex() {
 
                                     <button
                                         onClick={() => copy(link)}
-                                        className="mb-2 block max-w-full truncate text-[11px] text-[#94a3b8] hover:text-indigo-500"
+                                        className="mb-2 block max-w-full truncate text-[11px] text-gray-400 hover:text-indigo-500"
                                         title="Copy link"
                                     >
                                         {copiedId === link.id ? 'Copied!' : link.url}
                                     </button>
 
-                                    <div className="mb-2 flex items-center gap-1.5 text-[11px] text-[#64748b]">
+                                    <div className="mb-2 flex items-center gap-1.5 text-[11px] text-gray-500">
                                         <span>Resume:</span>
                                         <select
                                             value={link.resume_id}
                                             onChange={e => patchLink(link, { resume_id: Number(e.target.value) })}
                                             aria-label="Resume shared by this link"
-                                            className="max-w-[9rem] truncate rounded-md border-[#e8edf5] bg-[#f9fbff] py-1 pl-2 pr-6 text-[11px] font-medium text-[#64748b] focus:border-indigo-400 focus:ring-indigo-400"
+                                            className="max-w-[9rem] truncate rounded-md border-gray-200 bg-gray-50 py-1 pl-2 pr-6 text-[11px] font-medium text-gray-500 focus:border-indigo-400 focus:ring-indigo-400"
                                         >
                                             {resumes.map(r => (
                                                 <option key={r.id} value={r.id}>
@@ -191,7 +191,7 @@ export default function SharesIndex() {
 
                                     <Sparkline values={link.trend} />
 
-                                    <div className="mt-2 flex items-center justify-between text-[11px] text-[#64748b]">
+                                    <div className="mt-2 flex items-center justify-between text-[11px] text-gray-500">
                                         <button
                                             onClick={() => openDetail(link)}
                                             className="relative font-medium text-indigo-600 hover:underline"
@@ -219,11 +219,11 @@ export default function SharesIndex() {
                                     </div>
 
                                     {/* ponytail: fade only — hiding these would change card height and reflow the grid */}
-                                    <div className="mt-3 flex gap-2 border-t border-[#e8edf5] pt-3 transition-opacity focus-within:opacity-100 group-hover:opacity-100 sm:opacity-0">
+                                    <div className="mt-3 flex gap-2 border-t border-gray-200 pt-3 transition-opacity focus-within:opacity-100 group-hover:opacity-100 sm:opacity-0">
                                         {!link.is_primary && (
                                             <button
                                                 onClick={() => patchLink(link, { is_primary: true })}
-                                                className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-[#e8edf5] px-2 py-1.5 text-xs font-medium text-[#64748b] transition hover:bg-[#f9fbff]"
+                                                className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-medium text-gray-500 transition hover:bg-gray-50"
                                             >
                                                 <StarIcon className="h-3.5 w-3.5" />
                                                 Make primary
@@ -231,7 +231,7 @@ export default function SharesIndex() {
                                         )}
                                         <button
                                             onClick={() => openDetail(link)}
-                                            className="flex-1 rounded-lg border border-[#e8edf5] px-2 py-1.5 text-xs font-medium text-[#64748b] transition hover:bg-[#f9fbff]"
+                                            className="flex-1 rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-medium text-gray-500 transition hover:bg-gray-50"
                                         >
                                             Details
                                         </button>
@@ -255,17 +255,17 @@ export default function SharesIndex() {
 
             <Modal show={creating} onClose={() => setCreating(false)} maxWidth="md">
                 <form onSubmit={submitCreate} className="p-6">
-                    <h2 className="text-lg font-semibold text-[#111827]">New share link</h2>
-                    <p className="mt-1 text-xs text-[#94a3b8]">
+                    <h2 className="text-lg font-semibold text-gray-900">New share link</h2>
+                    <p className="mt-1 text-xs text-gray-400">
                         Give it a label so you remember who you sent it to.
                     </p>
 
-                    <label className="mt-4 block text-xs font-medium text-[#64748b]">
+                    <label className="mt-4 block text-xs font-medium text-gray-500">
                         Resume
                         <select
                             value={createForm.data.resume_id}
                             onChange={e => createForm.setData('resume_id', Number(e.target.value))}
-                            className="mt-1 block w-full rounded-lg border-[#e8edf5] text-sm focus:border-indigo-400 focus:ring-indigo-400"
+                            className="mt-1 block w-full rounded-lg border-gray-200 text-sm focus:border-indigo-400 focus:ring-indigo-400"
                         >
                             {resumes.map(r => (
                                 <option key={r.id} value={r.id}>
@@ -275,14 +275,14 @@ export default function SharesIndex() {
                         </select>
                     </label>
 
-                    <label className="mt-3 block text-xs font-medium text-[#64748b]">
+                    <label className="mt-3 block text-xs font-medium text-gray-500">
                         Label
                         <input
                             type="text"
                             value={createForm.data.label}
                             onChange={e => createForm.setData('label', e.target.value)}
                             placeholder="For Acme Corp"
-                            className="mt-1 block w-full rounded-lg border-[#e8edf5] text-sm focus:border-indigo-400 focus:ring-indigo-400"
+                            className="mt-1 block w-full rounded-lg border-gray-200 text-sm focus:border-indigo-400 focus:ring-indigo-400"
                         />
                     </label>
 
@@ -290,7 +290,7 @@ export default function SharesIndex() {
                         <button
                             type="button"
                             onClick={() => setCreating(false)}
-                            className="rounded-lg border border-[#e8edf5] px-3 py-1.5 text-sm font-medium text-[#64748b] hover:bg-[#f9fbff]"
+                            className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-50"
                         >
                             Cancel
                         </button>
@@ -310,23 +310,23 @@ export default function SharesIndex() {
                     <div className="p-6">
                         <div className="mb-1 flex items-center gap-2">
                             {detailFor.is_primary && <StarSolid className="h-4 w-4 text-indigo-500" />}
-                            <h2 className="text-lg font-semibold text-[#111827]">
+                            <h2 className="text-lg font-semibold text-gray-900">
                                 {detailFor.label || 'Untitled link'}
                             </h2>
                         </div>
-                        <p className="mb-5 text-xs text-[#94a3b8]">
+                        <p className="mb-5 text-xs text-gray-400">
                             {detailFor.url} · shares {detailFor.resume_name}
                         </p>
 
-                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[#94a3b8]">
+                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
                             Visitor activity
                         </p>
                         {detailFor.visits.length === 0 ? (
-                            <p className="py-6 text-center text-sm text-[#94a3b8]">No visits yet.</p>
+                            <p className="py-6 text-center text-sm text-gray-400">No visits yet.</p>
                         ) : (
                             <table className="w-full text-left text-[12px]">
                                 <thead>
-                                    <tr className="text-[10px] uppercase tracking-wide text-[#94a3b8]">
+                                    <tr className="text-[10px] uppercase tracking-wide text-gray-400">
                                         <th className="pb-2 font-semibold">Visitor</th>
                                         <th className="pb-2 font-semibold">Location</th>
                                         <th className="pb-2 font-semibold">When</th>
@@ -336,12 +336,12 @@ export default function SharesIndex() {
                                 </thead>
                                 <tbody>
                                     {detailFor.visits.map(v => (
-                                        <tr key={v.id} className="border-t border-[#f6f8fb]">
-                                            <td className="py-2 text-[#64748b]">Anonymous visitor</td>
-                                            <td className="py-2 text-[#94a3b8]">{v.location}</td>
-                                            <td className="py-2 text-[#94a3b8]">{v.when}</td>
-                                            <td className="py-2 text-[#94a3b8]">{v.source}</td>
-                                            <td className="py-2 text-[#94a3b8]">{v.duration}</td>
+                                        <tr key={v.id} className="border-t border-gray-100">
+                                            <td className="py-2 text-gray-500">Anonymous visitor</td>
+                                            <td className="py-2 text-gray-400">{v.location}</td>
+                                            <td className="py-2 text-gray-400">{v.when}</td>
+                                            <td className="py-2 text-gray-400">{v.source}</td>
+                                            <td className="py-2 text-gray-400">{v.duration}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -357,22 +357,22 @@ export default function SharesIndex() {
                             </Link>
                         )}
 
-                        <div className="mt-6 border-t border-[#e8edf5] pt-4">
-                            <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-[#94a3b8]">
+                        <div className="mt-6 border-t border-gray-200 pt-4">
+                            <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
                                 Link settings
                             </p>
                             <div className="flex flex-wrap items-end gap-4">
-                                <label className="text-xs font-medium text-[#64748b]">
+                                <label className="text-xs font-medium text-gray-500">
                                     Expires
                                     <input
                                         type="date"
                                         defaultValue={detailFor.expires_at ?? ''}
                                         onBlur={e => patchLink(detailFor, { expires_at: e.target.value || null })}
-                                        className="mt-1 block rounded-lg border-[#e8edf5] text-xs focus:border-indigo-400 focus:ring-indigo-400"
+                                        className="mt-1 block rounded-lg border-gray-200 text-xs focus:border-indigo-400 focus:ring-indigo-400"
                                     />
                                 </label>
 
-                                <label className="text-xs font-medium text-[#64748b]">
+                                <label className="text-xs font-medium text-gray-500">
                                     <span className="flex items-center gap-1">
                                         <LockClosedIcon className="h-3 w-3" />
                                         Password {detailFor.has_password && '(set)'}
@@ -382,7 +382,7 @@ export default function SharesIndex() {
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
                                         placeholder="At least 4 characters"
-                                        className="mt-1 block rounded-lg border-[#e8edf5] text-xs focus:border-indigo-400 focus:ring-indigo-400"
+                                        className="mt-1 block rounded-lg border-gray-200 text-xs focus:border-indigo-400 focus:ring-indigo-400"
                                     />
                                 </label>
 
@@ -392,7 +392,7 @@ export default function SharesIndex() {
                                         setDetailFor({ ...detailFor, has_password: password.length > 0 });
                                         setPassword('');
                                     }}
-                                    className="rounded-lg border border-[#e8edf5] px-3 py-1.5 text-xs font-medium text-[#64748b] hover:bg-[#f9fbff]"
+                                    className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50"
                                 >
                                     {password ? 'Set password' : 'Remove password'}
                                 </button>

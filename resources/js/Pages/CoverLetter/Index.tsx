@@ -59,9 +59,9 @@ export default function Index({ letters, templates }: Props) {
     const showingTo   = Math.min(start + pageSize, sorted.length);
 
     const SortIcon = ({ k }: { k: SortKey }) => (
-        <span className="ml-1 inline-flex flex-col leading-none text-[#dbe3ef]">
-            <span className={sortKey === k && sortDir === 'asc' ? 'text-[#2563eb]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
-            <span className={sortKey === k && sortDir === 'desc' ? 'text-[#2563eb]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
+        <span className="ml-1 inline-flex flex-col leading-none text-gray-300">
+            <span className={sortKey === k && sortDir === 'asc' ? 'text-blue-600' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
+            <span className={sortKey === k && sortDir === 'desc' ? 'text-blue-600' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
         </span>
     );
 
@@ -74,28 +74,28 @@ export default function Index({ letters, templates }: Props) {
 
                     <div className="mb-6 flex items-start justify-between">
                         <div>
-                            <h1 className="text-xl font-extrabold tracking-tight text-[#111827]">Cover Letters</h1>
-                            <p className="mt-1 text-sm text-[#94a3b8]">{letters.length} letter{letters.length !== 1 ? 's' : ''}</p>
+                            <h1 className="text-xl font-extrabold tracking-tight text-gray-900">Cover Letters</h1>
+                            <p className="mt-1 text-sm text-gray-400">{letters.length} letter{letters.length !== 1 ? 's' : ''}</p>
                         </div>
                         <button
                             onClick={() => setPicking(true)}
-                            className="rounded-lg bg-gradient-to-br from-[#2563eb] to-[#17213a] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+                            className="rounded-lg bg-gradient-to-br from-blue-600 to-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
                         >
                             + New Cover Letter
                         </button>
                     </div>
 
-                    <div className="overflow-hidden rounded-xl border border-[#e8edf5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
 
                         {/* Table controls */}
-                        <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[#e8edf5]">
-                            <div className="flex items-center gap-2 text-sm text-[#64748b]">
+                        <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
+                            <div className="flex items-center gap-2 text-sm text-gray-500">
                                 <span>Show</span>
                                 <div className="relative">
                                     <select
                                         value={pageSize}
                                         onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                                        className="h-8 appearance-none rounded-lg border border-[#e8edf5] pl-2 pr-7 py-0 text-sm text-[#111827] focus:border-[#2563eb] focus:ring-[#2563eb]"
+                                        className="h-8 appearance-none rounded-lg border border-gray-200 pl-2 pr-7 py-0 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
                                     >
                                         {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
                                     </select>
@@ -103,7 +103,7 @@ export default function Index({ letters, templates }: Props) {
                                 <span>entries</span>
                             </div>
                             <div className="relative w-64">
-                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
                                 </svg>
                                 <input
@@ -111,7 +111,7 @@ export default function Index({ letters, templates }: Props) {
                                     placeholder="Search..."
                                     value={search}
                                     onChange={e => { setSearch(e.target.value); setPage(1); }}
-                                    className="w-full rounded-lg border border-[#e8edf5] py-1.5 pl-9 pr-3 text-sm text-[#111827] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#2563eb]"
+                                    className="w-full rounded-lg border border-gray-200 py-1.5 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-blue-600"
                                 />
                             </div>
                         </div>
@@ -119,36 +119,36 @@ export default function Index({ letters, templates }: Props) {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
                                 <thead>
-                                    <tr className="border-b border-[#e8edf5]">
-                                        <th onClick={() => toggleSort('name')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#64748b] hover:text-[#111827] transition-colors">
+                                    <tr className="border-b border-gray-200">
+                                        <th onClick={() => toggleSort('name')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors">
                                             <span className="inline-flex items-center gap-0.5">Name<SortIcon k="name" /></span>
                                         </th>
-                                        <th onClick={() => toggleSort('template_key')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#64748b] hover:text-[#111827] transition-colors">
+                                        <th onClick={() => toggleSort('template_key')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors">
                                             <span className="inline-flex items-center gap-0.5">Template<SortIcon k="template_key" /></span>
                                         </th>
-                                        <th onClick={() => toggleSort('updated_at')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#64748b] hover:text-[#111827] transition-colors">
+                                        <th onClick={() => toggleSort('updated_at')} className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors">
                                             <span className="inline-flex items-center gap-0.5">Last Edited<SortIcon k="updated_at" /></span>
                                         </th>
-                                        <th className="px-5 py-3.5 text-right text-xs font-semibold text-[#64748b]">Actions</th>
+                                        <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-500">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {pageRows.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="px-5 py-12 text-center text-sm text-[#94a3b8]">
+                                            <td colSpan={4} className="px-5 py-12 text-center text-sm text-gray-400">
                                                 {search ? 'No cover letters match your search.' : 'No cover letters yet. Click "+ New Cover Letter" to start.'}
                                             </td>
                                         </tr>
                                     ) : pageRows.map(l => (
-                                        <tr key={l.id} className="border-b border-[#f6f8fb] transition-colors hover:bg-[#f9fbff]">
-                                            <td className="px-5 py-4 font-bold text-[#111827]">{l.name}</td>
+                                        <tr key={l.id} className="border-b border-gray-100 transition-colors hover:bg-gray-50">
+                                            <td className="px-5 py-4 font-bold text-gray-900">{l.name}</td>
                                             <td className="px-5 py-4">
-                                                <span className="inline-flex items-center rounded-full bg-[#eaf1ff] px-2 py-0.5 text-[10px] font-bold text-[#2563eb]">{l.template_key}</span>
+                                                <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-600">{l.template_key}</span>
                                             </td>
-                                            <td className="px-5 py-4 tabular-nums text-[#64748b]">{fmt(l.updated_at)}</td>
+                                            <td className="px-5 py-4 tabular-nums text-gray-500">{fmt(l.updated_at)}</td>
                                             <td className="px-5 py-4">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    <Link href={route('cover-letters.edit', l.id)} title="Edit" className="rounded-lg p-1.5 text-[#1d4ed8] hover:bg-[#eaf1ff] transition"><PencilSquareIcon className="h-4 w-4" /></Link>
+                                                    <Link href={route('cover-letters.edit', l.id)} title="Edit" className="rounded-lg p-1.5 text-blue-700 hover:bg-blue-50 transition"><PencilSquareIcon className="h-4 w-4" /></Link>
                                                     <button onClick={() => destroy(l.id, l.name)} title="Delete" className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 transition"><TrashIcon className="h-4 w-4" /></button>
                                                 </div>
                                             </td>
@@ -159,12 +159,12 @@ export default function Index({ letters, templates }: Props) {
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex items-center justify-between px-5 py-4 border-t border-[#e8edf5]">
+                        <div className="flex items-center justify-between px-5 py-4 border-t border-gray-200">
                             <div className="flex items-center gap-1.5">
                                 <button
                                     onClick={() => setPage(p => Math.max(1, p - 1))}
                                     disabled={safePage === 1}
-                                    className="rounded-lg border border-[#e8edf5] px-3.5 py-1.5 text-sm font-medium text-[#64748b] transition hover:bg-[#f9fbff] disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="rounded-lg border border-gray-200 px-3.5 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                                 >
                                     Previous
                                 </button>
@@ -172,7 +172,7 @@ export default function Index({ letters, templates }: Props) {
                                     <button
                                         key={p}
                                         onClick={() => setPage(p)}
-                                        className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${p === safePage ? 'bg-gradient-to-br from-[#2563eb] to-[#17213a] text-white shadow-sm' : 'border border-[#e8edf5] text-[#64748b] hover:bg-[#f9fbff]'}`}
+                                        className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${p === safePage ? 'bg-gradient-to-br from-blue-600 to-gray-900 text-white shadow-sm' : 'border border-gray-200 text-gray-500 hover:bg-gray-50'}`}
                                     >
                                         {p}
                                     </button>
@@ -180,12 +180,12 @@ export default function Index({ letters, templates }: Props) {
                                 <button
                                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                     disabled={safePage === totalPages}
-                                    className="rounded-lg border border-[#e8edf5] px-3.5 py-1.5 text-sm font-medium text-[#64748b] transition hover:bg-[#f9fbff] disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="rounded-lg border border-gray-200 px-3.5 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                                 >
                                     Next
                                 </button>
                             </div>
-                            <p className="text-sm text-[#94a3b8]">
+                            <p className="text-sm text-gray-400">
                                 {sorted.length === 0
                                     ? 'No entries'
                                     : `Showing ${showingFrom} to ${showingTo} of ${sorted.length} ${sorted.length === 1 ? 'entry' : 'entries'}`}
@@ -199,10 +199,10 @@ export default function Index({ letters, templates }: Props) {
             {/* Template picker modal */}
             {picking && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-                    <div className="w-full max-w-2xl rounded-2xl border border-[#e8edf5] bg-white p-6 shadow-2xl">
+                    <div className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
                         <div className="mb-5 flex items-center justify-between">
-                            <h3 className="text-base font-bold text-[#111827]">Choose a template</h3>
-                            <button onClick={() => setPicking(false)} className="rounded-lg p-1 text-[#94a3b8] hover:bg-[#f6f8fb] hover:text-[#64748b]">
+                            <h3 className="text-base font-bold text-gray-900">Choose a template</h3>
+                            <button onClick={() => setPicking(false)} className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500">
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>
@@ -212,10 +212,10 @@ export default function Index({ letters, templates }: Props) {
                                     key={t.key}
                                     onClick={() => choose(t.key)}
                                     disabled={form.processing}
-                                    className="rounded-xl border border-[#e8edf5] p-4 text-left transition hover:border-[#2563eb] hover:bg-[#eaf1ff] disabled:opacity-50"
+                                    className="rounded-xl border border-gray-200 p-4 text-left transition hover:border-blue-600 hover:bg-blue-50 disabled:opacity-50"
                                 >
-                                    <p className="font-semibold text-[#111827]">{t.label}</p>
-                                    <p className="mt-1 text-xs text-[#94a3b8]">{t.description}</p>
+                                    <p className="font-semibold text-gray-900">{t.label}</p>
+                                    <p className="mt-1 text-xs text-gray-400">{t.description}</p>
                                 </button>
                             ))}
                         </div>
