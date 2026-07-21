@@ -36,7 +36,6 @@ class ResumeViewNudgeMail extends Mailable implements ShouldQueue
                 'viewCount' => $this->viewCount,
                 'topSection' => $this->topSection,
                 'dashboardUrl' => route('dashboard'),
-                'billingUrl' => route('billing.index'),
             ],
         );
     }
