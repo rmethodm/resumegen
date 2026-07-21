@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
-import { type ResumeContent } from './Partials/PlainTextView';
+import { type ResumeContent } from './Partials/plainText';
 import JdMatcher from './Partials/JdMatcher';
 import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';

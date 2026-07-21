@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { tokenize, matchJd } from './JdMatcher';
-import { buildPlainText, type ResumeContent } from './PlainTextView';
+import { buildPlainText, type ResumeContent } from './plainText';
 
 /**
  * These cover the deterministic keyword matcher shown when AI is disabled. It renders in no

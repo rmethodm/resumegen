@@ -1,7 +1,6 @@
 import type {
     Contact, ExperienceEntry, ProjectEntry, EducationEntry, CertEntry,
 } from '@/types';
-import { useMemo, useState } from 'react';
 
 export interface ResumeContent {
     contact: Contact;
@@ -15,8 +14,6 @@ export interface ResumeContent {
     skillNarratives: { name: string; bullets: string[] }[];
     sectionOrder: string[];
 }
-
-type Props = ResumeContent;
 
 /** Normalize a bullets textarea (one per line) into plain "- " lines. */
 function bulletLines(raw: string): string[] {
@@ -110,32 +107,4 @@ export function buildPlainText(p: ResumeContent): string {
     }
 
     return out.join('\n');
-}
-
-export default function PlainTextView(props: Props) {
-    const text = useMemo(() => buildPlainText(props), [props]);
-    const [copied, setCopied] = useState(false);
-
-    const copy = async () => {
-        try {
-            await navigator.clipboard.writeText(text);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 1500);
-        } catch { /* clipboard unavailable — ignore */ }
-    };
-
-    return (
-        <div className="absolute inset-0 overflow-auto bg-white">
-            <button
-                type="button"
-                onClick={copy}
-                className="sticky left-full top-2 z-10 mr-2 rounded-md border border-[#cbd5e1] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:text-[#4f46e5]"
-            >
-                {copied ? 'Copied' : 'Copy'}
-            </button>
-            <pre className="whitespace-pre-wrap px-4 pb-4 font-mono text-[12px] leading-relaxed text-[#1e293b]">
-                {text || 'Nothing to show yet — fill in the resume form.'}
-            </pre>
-        </div>
-    );
 }
