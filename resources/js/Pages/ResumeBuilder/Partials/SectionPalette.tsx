@@ -22,14 +22,14 @@ function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: 
             ref={setNodeRef}
             style={style}
             className={`flex items-center gap-2 rounded-lg border px-2.5 py-2 transition-colors ${
-                active ? 'border-[#4f46e5] bg-[#eef2ff]' : 'border-[#eeeef5] hover:border-[#c7c7d9] hover:bg-[#f8fafc]'
+                active ? 'border-[#2563eb] bg-[#eaf1ff]' : 'border-[#e8edf5] hover:border-[#dbe3ef] hover:bg-[#f9fbff]'
             }`}
         >
             {entry.isDraggable && (
                 <button
                     type="button"
                     aria-label={`Reorder ${entry.label}`}
-                    className="cursor-grab touch-none text-[#cbd5e1] hover:text-[#94a3b8]"
+                    className="cursor-grab touch-none text-[#dbe3ef] hover:text-[#94a3b8]"
                     {...attributes}
                     {...listeners}
                 >
@@ -39,7 +39,7 @@ function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: 
             <button
                 type="button"
                 onClick={e => onSelect(e.currentTarget)}
-                className={`flex-1 text-left text-sm ${active ? 'font-semibold text-[#4f46e5]' : 'text-[#1e293b]'}`}
+                className={`flex-1 text-left text-sm ${active ? 'font-semibold text-[#2563eb]' : 'text-[#1e293b]'}`}
             >
                 {entry.label}
                 {entry.optional && (
@@ -48,7 +48,7 @@ function PaletteRow({ entry, active, onSelect }: { entry: SectionEntry; active: 
             </button>
             <span
                 aria-hidden
-                className={`h-1.5 w-1.5 shrink-0 rounded-full ${entry.isComplete() ? 'bg-[#4f46e5]' : 'bg-[#e2e8f0]'}`}
+                className={`h-1.5 w-1.5 shrink-0 rounded-full ${entry.isComplete() ? 'bg-[#2563eb]' : 'bg-[#e8edf5]'}`}
             />
         </div>
     );

@@ -52,17 +52,6 @@ function DragDots({ className = '' }: { className?: string }) {
     );
 }
 
-function TipBox({ children }: { children: React.ReactNode }) {
-    return (
-        <div className="flex gap-2.5 rounded-xl bg-[#dbeafe] p-3.5">
-            <svg className="h-4 w-4 shrink-0 text-[#2563eb] mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM6.343 5.343a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zM15.657 5.343a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM7 16v-1h6v1a2 2 0 11-4 0zM10 4a4 4 0 00-1.446 7.724L8 13h4l-.554-1.276A4 4 0 0010 4z" />
-            </svg>
-            <div className="text-sm text-[#1e40af]">{children}</div>
-        </div>
-    );
-}
-
 function SkillsLayoutCard({
     selected, onClick, label, children,
 }: {
@@ -75,7 +64,7 @@ function SkillsLayoutCard({
             className={`flex flex-col gap-2 rounded-xl border p-2.5 text-left transition-colors ${
                 selected
                     ? 'border-[#2563eb] bg-[#dbeafe] ring-1 ring-[#2563eb]'
-                    : 'border-[#cbd5e1] bg-white hover:border-[#bfdbfe] hover:bg-[#f1f5f9]'
+                    : 'border-[#dbe3ef] bg-white hover:border-[#bfdbfe] hover:bg-[#f6f8fb]'
             }`}
         >
             <div className="flex h-11 w-full items-start">{children}</div>
@@ -83,30 +72,6 @@ function SkillsLayoutCard({
                 {label}
             </span>
         </button>
-    );
-}
-
-function PanelGroupLabel({ children }: { children: React.ReactNode }) {
-    return <p className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#4f46e5]">{children}</p>;
-}
-
-function PanelCard({
-    title, icon, pill, open, onToggle, children,
-}: {
-    title: string; icon?: React.ReactNode; pill?: React.ReactNode; open: boolean; onToggle: () => void; children: React.ReactNode;
-}) {
-    return (
-        <div className="mb-2.5 overflow-hidden rounded-[10px] border border-[#eeeef5] bg-white">
-            <button type="button" onClick={onToggle} className="flex w-full items-center gap-2 px-3 py-2.5 transition-colors hover:bg-[#fafafe]">
-                {icon}
-                <span className="flex-1 text-left text-[13px] font-semibold text-[#0f172a]">{title}</span>
-                {pill}
-                <svg className={`h-3.5 w-3.5 shrink-0 text-[#94a3b8] transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-            </button>
-            {open && children}
-        </div>
     );
 }
 
@@ -137,7 +102,7 @@ function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
             onChange={e => onChange(e.target.value)}
             onBlur={onBlur}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
+            className="w-full rounded-lg border border-[#dbe3ef] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
     );
 }
@@ -153,7 +118,7 @@ function FTextarea({ value, onChange, onBlur, placeholder, rows = 4 }: {
             placeholder={placeholder}
             rows={rows}
             spellCheck
-            className="w-full resize-y rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
+            className="w-full resize-y rounded-lg border border-[#dbe3ef] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
     );
 }
@@ -166,8 +131,8 @@ function EntryCard({
     label: string; onRemove: () => void; children: React.ReactNode;
 }) {
     return (
-        <div className="overflow-hidden rounded-xl border border-[#cbd5e1]">
-            <div className="flex items-center justify-between border-b border-[#cbd5e1] bg-[#f1f5f9] px-4 py-2.5">
+        <div className="overflow-hidden rounded-xl border border-[#dbe3ef]">
+            <div className="flex items-center justify-between border-b border-[#dbe3ef] bg-[#f6f8fb] px-4 py-2.5">
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">{label}</span>
                 <button type="button" onClick={onRemove} className="text-[#94a3b8] hover:text-red-500 transition-colors">
                     <TrashIcon className="h-4 w-4" />
@@ -277,7 +242,7 @@ function SkillTagInput({
 
     return (
         <div ref={containerRef} className="relative">
-            <div className="min-h-[44px] w-full rounded-lg border border-[#cbd5e1] px-3 py-2 focus-within:border-[#2563eb] focus-within:ring-1 focus-within:ring-[#2563eb]">
+            <div className="min-h-[44px] w-full rounded-lg border border-[#dbe3ef] px-3 py-2 focus-within:border-[#2563eb] focus-within:ring-1 focus-within:ring-[#2563eb]">
                 <div className="flex flex-wrap gap-1.5">
                     {skills.map(s => (
                         <span key={s} className="flex items-center gap-1 rounded-md bg-[#dbeafe] px-2 py-1 text-xs text-[#1e40af] border border-[#bfdbfe]">
@@ -340,7 +305,7 @@ function SkillTagInput({
                 </div>
             </div>
             {open && (suggestions.length > 0 || showEmpty) && (
-                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#cbd5e1] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#dbe3ef] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
@@ -349,7 +314,7 @@ function SkillTagInput({
                             aria-selected={i === activeIndex}
                             onMouseDown={() => addSkill(s.name)}
                             className={`px-3 py-2 text-sm cursor-pointer ${
-                                i === activeIndex ? 'bg-[#dbeafe] text-[#2563eb]' : 'text-[#1e293b] hover:bg-[#f1f5f9]'
+                                i === activeIndex ? 'bg-[#dbeafe] text-[#2563eb]' : 'text-[#1e293b] hover:bg-[#f6f8fb]'
                             }`}
                         >
                             {highlightMatch(s.name, inputVal)}
@@ -463,7 +428,6 @@ export default function Edit({
     const pendingSave = useRef(false);
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
-    const [templateOpen, setTemplateOpen] = useState(false);
     // What the right-hand inspector is currently editing. The left panel is the
     // only thing that sets this — clicking a section row, a tool row, or a design
     // control swaps the inspector's contents. Replaces the old overlay drawer.
@@ -532,12 +496,6 @@ export default function Edit({
         activeSectionRef.current = key;
         applyHighlight();
     };
-
-    const [openSections, setOpenSections] = useState({
-        fontSizes: false, strength: false, share: false, messages: false,
-    });
-    const toggleSection = (key: keyof typeof openSections) =>
-        setOpenSections(s => ({ ...s, [key]: !s[key] }));
 
     // Refs to avoid stale closures in save/beacon
     const nameRef = useRef(name); nameRef.current = name;
@@ -635,7 +593,7 @@ export default function Edit({
                     <div className="flex flex-col gap-[5px] pt-0.5">
                         {[34, 26, 38, 22].map((w, i) => (
                             <div key={i} className="flex items-center gap-1">
-                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#0f172a]" />
+                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#111827]" />
                                 <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                             </div>
                         ))}
@@ -646,7 +604,7 @@ export default function Edit({
                     <div className="flex flex-col gap-[6px] pt-0.5">
                         {[[20, [14, 12]], [16, [18, 10]], [22, [12, 14]]].map(([catW, items], i) => (
                             <div key={i} className="flex flex-wrap items-center gap-[3px]">
-                                <span className="inline-block h-[6px] rounded-full bg-[#0f172a]" style={{ width: catW as number }} />
+                                <span className="inline-block h-[6px] rounded-full bg-[#111827]" style={{ width: catW as number }} />
                                 <span className="text-[7px] leading-none text-[#94a3b8]">:</span>
                                 {(items as number[]).map((w, j) => (
                                     <span key={j} className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
@@ -660,7 +618,7 @@ export default function Edit({
                     <div className="flex gap-2.5 pt-0.5">
                         {[[22, [18, 24, 16]], [18, [22, 14, 20]]].map(([catW, rows], ci) => (
                             <div key={ci} className="flex flex-col gap-[4px]">
-                                <span className="inline-block h-[7px] rounded bg-[#0f172a]" style={{ width: catW as number }} />
+                                <span className="inline-block h-[7px] rounded bg-[#111827]" style={{ width: catW as number }} />
                                 {(rows as number[]).map((w, ri) => (
                                     <span key={ri} className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                                 ))}
@@ -671,7 +629,7 @@ export default function Edit({
 
                 <SkillsLayoutCard label="Narrative" selected={skillsLayout === 'narrative'} onClick={() => { setSkillsLayout('narrative'); setTimeout(save, 0); }}>
                     <div className="flex flex-col gap-[5px] pt-0.5">
-                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#0f172a]" />
+                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#111827]" />
                         {[32, 24, 34, 20].map((w, i) => (
                             <div key={i} className="flex items-center gap-1 pl-1">
                                 <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[#94a3b8]" />
@@ -695,8 +653,8 @@ export default function Edit({
             {(skillsLayout === 'grouped-inline' || skillsLayout === 'grouped-vertical') && (
                 <>
                     {skillCategories.map(cat => (
-                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
-                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
+                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#dbe3ef] bg-white">
+                            <div className="flex items-center gap-2 border-b border-[#dbe3ef] bg-[#f6f8fb] px-3 py-2.5">
                                 <DragDots className="text-[#94a3b8] shrink-0" />
                                 <select
                                     value={cat.category_type}
@@ -705,7 +663,7 @@ export default function Edit({
                                         setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_type: type, category_name: type || c.category_name } : c));
                                     }}
                                     onBlur={save}
-                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] px-2 py-1.5 text-sm text-[#1e293b] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-[#dbe3ef] px-2 py-1.5 text-sm text-[#1e293b] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                 >
                                     <option value="">Select category...</option>
                                     {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
@@ -716,7 +674,7 @@ export default function Edit({
                                     onChange={e => setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_name: e.target.value } : c))}
                                     onBlur={save}
                                     placeholder="Or type custom..."
-                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-[#dbe3ef] bg-white px-2 py-1.5 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                 />
                                 <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
                                     <TrashIcon className="h-4 w-4" />
@@ -740,15 +698,15 @@ export default function Edit({
             {skillsLayout === 'narrative' && (
                 <>
                     {skillNarratives.map(n => (
-                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
-                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
+                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#dbe3ef] bg-white">
+                            <div className="flex items-center gap-2 border-b border-[#dbe3ef] bg-[#f6f8fb] px-3 py-2.5">
                                 <input
                                     type="text"
                                     value={n.name}
                                     onChange={e => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, name: e.target.value } : x))}
                                     onBlur={save}
                                     placeholder="Skill area (e.g. Communication, Leadership)"
-                                    className="flex-1 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm font-medium text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 rounded-lg border border-[#dbe3ef] bg-white px-2 py-1.5 text-sm font-medium text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                 />
                                 <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
                                     <TrashIcon className="h-4 w-4" />
@@ -1261,14 +1219,14 @@ export default function Edit({
                     <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
                         <div className="mb-6 flex justify-center gap-2">
                             {([0, 1] as const).map(i => (
-                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-[#0f172a]' : i < wizardStep ? 'bg-[#93c5fd]' : 'bg-[#cbd5e1]'}`} />
+                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-[#111827]' : i < wizardStep ? 'bg-[#93c5fd]' : 'bg-[#dbe3ef]'}`} />
                             ))}
                         </div>
                         {wizardStep === 0 && (
                             <div className="space-y-4 text-center">
                                 <h2 className="text-2xl font-semibold text-gray-900">Let's build your resume</h2>
                                 <p className="text-sm text-gray-600">It takes just a few minutes. We'll start with your contact details.</p>
-                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-[#0f172a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Get started →</button>
+                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Get started →</button>
                             </div>
                         )}
                         {wizardStep === 1 && (
@@ -1284,7 +1242,7 @@ export default function Edit({
                                 </div>
                                 <div className="mt-4 flex items-center justify-between">
                                     <button type="button" onClick={finishWizard} className="text-sm text-gray-500 hover:text-gray-700">Skip</button>
-                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-[#0f172a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Finish →</button>
+                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Finish →</button>
                                 </div>
                             </div>
                         )}

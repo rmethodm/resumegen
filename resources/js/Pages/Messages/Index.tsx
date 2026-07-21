@@ -38,13 +38,13 @@ export default function MessagesIndex() {
 
                     <div className="mb-6 flex items-center justify-between">
                         <div>
-                            <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Messages</h1>
-                            <p className="mt-1 text-sm text-[#a0a0b0]">Conversations from your shared resume links</p>
+                            <h1 className="text-xl font-extrabold tracking-tight text-[#111827]">Messages</h1>
+                            <p className="mt-1 text-sm text-[#94a3b8]">Conversations from your shared resume links</p>
                         </div>
                         {unreadCount > 0 && (
                             <button
                                 onClick={markAllRead}
-                                className="flex items-center gap-1.5 rounded-lg border border-[#eeeef5] px-3 py-1.5 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe]"
+                                className="flex items-center gap-1.5 rounded-lg border border-[#e8edf5] px-3 py-1.5 text-sm font-medium text-[#64748b] transition hover:bg-[#f9fbff]"
                             >
                                 <EnvelopeOpenIcon className="h-4 w-4" />
                                 Mark all read
@@ -53,33 +53,33 @@ export default function MessagesIndex() {
                     </div>
 
                     {messages.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center rounded-xl border border-[#eeeef5] bg-white py-20 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                        <div className="flex flex-col items-center justify-center rounded-xl border border-[#e8edf5] bg-white py-20 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                             <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-emerald-50 p-4">
                                 <ChatBubbleLeftRightIcon className="h-8 w-8 text-emerald-500" />
                             </div>
-                            <p className="text-sm font-semibold text-[#0f0f1a]">No messages yet</p>
-                            <p className="mt-1 text-sm text-[#a0a0b0]">Share a resume link to start receiving conversations.</p>
+                            <p className="text-sm font-semibold text-[#111827]">No messages yet</p>
+                            <p className="mt-1 text-sm text-[#94a3b8]">Share a resume link to start receiving conversations.</p>
                         </div>
                     ) : (
-                        <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
-                            <ul className="divide-y divide-[#f5f5fb]">
+                        <div className="overflow-hidden rounded-xl border border-[#e8edf5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                            <ul className="divide-y divide-[#f6f8fb]">
                                 {messages.map(thread => (
                                     <li key={thread.id}>
                                         <Link
                                             href={route('builder.thread', [thread.resume_id, thread.id])}
-                                            className={`flex items-start gap-3 px-5 py-4 transition hover:bg-[#fafafe] ${!thread.is_read ? 'bg-indigo-50/40' : ''}`}
+                                            className={`flex items-start gap-3 px-5 py-4 transition hover:bg-[#f9fbff] ${!thread.is_read ? 'bg-indigo-50/40' : ''}`}
                                         >
                                             <div className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${thread.is_read ? 'bg-transparent' : 'bg-indigo-500'}`} />
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex flex-wrap items-baseline gap-x-2">
-                                                    <span className="text-sm font-semibold text-[#0f0f1a]">{thread.sender_name}</span>
-                                                    <span className="text-xs text-[#a0a0b0]">{thread.sender_email}</span>
-                                                    <span className="text-xs text-[#c0c0cc]">· {thread.message_count} message{thread.message_count !== 1 ? 's' : ''}</span>
+                                                    <span className="text-sm font-semibold text-[#111827]">{thread.sender_name}</span>
+                                                    <span className="text-xs text-[#94a3b8]">{thread.sender_email}</span>
+                                                    <span className="text-xs text-[#dbe3ef]">· {thread.message_count} message{thread.message_count !== 1 ? 's' : ''}</span>
                                                 </div>
-                                                <p className="mt-0.5 line-clamp-1 text-sm text-[#71717a]">{thread.preview}</p>
+                                                <p className="mt-0.5 line-clamp-1 text-sm text-[#64748b]">{thread.preview}</p>
                                                 <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5">
                                                     <span className="text-xs text-indigo-500">{thread.resume_name}</span>
-                                                    <span className="text-xs text-[#c0c0cc]">{formatDate(thread.created_at)}</span>
+                                                    <span className="text-xs text-[#dbe3ef]">{formatDate(thread.created_at)}</span>
                                                 </div>
                                             </div>
                                         </Link>

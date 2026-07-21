@@ -29,14 +29,14 @@ function OptionCard({ icon, label, active, onClick }: {
             onClick={onClick}
             className={`flex flex-1 flex-col items-center gap-3 rounded-xl border bg-white px-6 py-7 shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition ${
                 active
-                    ? 'border-[#4f46e5] bg-[#f5f7ff] ring-1 ring-[#4f46e5]'
-                    : 'border-[#eeeef5] hover:border-[#c7d2fe] hover:bg-[#fafafe]'
+                    ? 'border-[#2563eb] bg-[#eaf1ff] ring-1 ring-[#2563eb]'
+                    : 'border-[#e8edf5] hover:border-[#bfdbfe] hover:bg-[#f9fbff]'
             }`}
         >
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#eef2ff] text-[#4f46e5]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#eaf1ff] text-[#2563eb]">
                 {icon}
             </span>
-            <span className="text-sm font-bold text-[#0f0f1a]">{label}</span>
+            <span className="text-sm font-bold text-[#111827]">{label}</span>
         </button>
     );
 }
@@ -63,10 +63,10 @@ export default function Create({ resumeCount, allowedTemplates }: Props) {
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
 
                     <div className="text-center">
-                        <h1 className="text-2xl font-extrabold tracking-tight text-[#0f0f1a]">
+                        <h1 className="text-2xl font-extrabold tracking-tight text-[#111827]">
                             {resumeCount === 0 ? 'Create your first resume' : 'Create a new resume'}
                         </h1>
-                        <p className="mt-1.5 text-sm text-[#71717a]">
+                        <p className="mt-1.5 text-sm text-[#64748b]">
                             Start from scratch, import what you have, or pick a template.
                         </p>
                     </div>
@@ -89,11 +89,11 @@ export default function Create({ resumeCount, allowedTemplates }: Props) {
                     {mode !== null && (
                         <form
                             onSubmit={submit}
-                            className="mt-6 rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]"
+                            className="mt-6 rounded-xl border border-[#e8edf5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]"
                         >
                             {mode === 'templates' && (
                                 <div className="mb-6">
-                                    <p className="mb-3 text-sm font-semibold text-[#0f0f1a]">Pick a template</p>
+                                    <p className="mb-3 text-sm font-semibold text-[#111827]">Pick a template</p>
                                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                                         {allowedTemplates.map(t => (
                                             <button
@@ -102,8 +102,8 @@ export default function Create({ resumeCount, allowedTemplates }: Props) {
                                                 onClick={() => form.setData('template', t)}
                                                 className={`overflow-hidden rounded-lg border text-left transition ${
                                                     form.data.template === t
-                                                        ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]'
-                                                        : 'border-[#eeeef5] hover:border-[#c7d2fe]'
+                                                        ? 'border-[#2563eb] bg-[#eaf1ff] ring-1 ring-[#2563eb]'
+                                                        : 'border-[#e8edf5] hover:border-[#bfdbfe]'
                                                 }`}
                                             >
                                                 <img
@@ -111,7 +111,7 @@ export default function Create({ resumeCount, allowedTemplates }: Props) {
                                                     alt={`${TEMPLATE_LABELS[t] ?? t} template`}
                                                     className="aspect-[3/4] w-full object-cover object-top"
                                                 />
-                                                <span className="block px-2.5 py-1.5 text-xs font-semibold text-[#374151]">
+                                                <span className="block px-2.5 py-1.5 text-xs font-semibold text-[#334155]">
                                                     {TEMPLATE_LABELS[t] ?? t}
                                                 </span>
                                             </button>
@@ -136,7 +136,7 @@ export default function Create({ resumeCount, allowedTemplates }: Props) {
                                 <button
                                     type="submit"
                                     disabled={form.processing || !form.data.name.trim() || (mode === 'templates' && !form.data.template)}
-                                    className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:opacity-50"
+                                    className="rounded-lg bg-gradient-to-br from-[#2563eb] to-[#17213a] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:opacity-50"
                                 >
                                     Create resume
                                 </button>
