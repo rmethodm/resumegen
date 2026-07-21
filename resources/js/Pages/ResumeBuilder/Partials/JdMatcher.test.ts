@@ -27,7 +27,12 @@ function emptyResume(over: Partial<ResumeContent> = {}): ResumeContent {
 describe('tokenize', () => {
     it('keeps punctuation inside tech terms', () => {
         // Splitting "node.js" into "node" + "js" would report a gap the resume does not have.
-        expect(tokenize('Node.js CI/CD C++ .NET')).toEqual(['node.js', 'ci/cd', 'c++', 'net']);
+        expect(tokenize('Node.js CI/CD C++ .NET')).toEqual(['node.js', 'ci/cd', 'c++', '.net']);
+    });
+
+    it('keeps a leading dot so .NET stays distinct from the word "net"', () => {
+        // Dropping it silently widens the token: see the matchJd case below for the consequence.
+        expect(tokenize('.NET')).toEqual(['.net']);
     });
 
     it('trims trailing separators so sentence position does not change the token', () => {
@@ -42,6 +47,19 @@ describe('matchJd', () => {
         const { matched, missing } = matchJd('You will work with the team using Kubernetes', 'Kubernetes');
         expect(matched).toEqual(['kubernetes']);
         expect(missing).toEqual([]);
+    });
+
+    it('does not treat the word "net" as covering a JD that requires .NET', () => {
+        // The panel's whole job is telling the user what is missing. Reporting .NET as
+        // "already covered" because the resume says "net" somewhere is a false negative on
+        // the one thing they would have acted on — worse than reporting nothing at all.
+        const { matched, missing } = matchJd('.NET developer', 'net revenue reporting');
+        expect(missing).toContain('.net');
+        expect(matched).not.toContain('.net');
+    });
+
+    it('still matches .NET against a resume that names it properly', () => {
+        expect(matchJd('.NET developer', 'Built services in .NET').matched).toContain('.net');
     });
 
     it('scores by proportion of JD keywords present in the resume', () => {

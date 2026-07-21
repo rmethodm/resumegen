@@ -231,7 +231,7 @@ memory files.
 ---
 
 ## Q8 — `tokenize` drops a leading dot, so `.NET` matches "net"
-status: TODO · type: code · files: resources/js/Pages/ResumeBuilder/Partials/JdMatcher.tsx
+status: DONE · type: code · files: resources/js/Pages/ResumeBuilder/Partials/JdMatcher.tsx
 
 Found while writing Q4's tests. The regex `[a-z0-9][a-z0-9+#./-]*` requires an alphanumeric first
 character, so `.NET` tokenizes to `net`. A JD requiring `.NET` scores as covered against a resume
@@ -244,4 +244,29 @@ reality. Fixing the regex means updating that assertion in the same change.
 Low priority — this panel renders in no live environment (see Q4).
 
 ### Answer
-_(pending)_
+**Fixed.** One character of regex: `/[a-z0-9][a-z0-9+#./-]*/g` → `/\.?[a-z0-9][a-z0-9+#./-]*/g`.
+A dot is the only leading separator worth allowing — no real skill starts with `+`, `#`, `/`
+or `-`, so a broader character class would only invent tokens.
+
+Verified old vs new on the same inputs before trusting the suite:
+
+| Input | Old | New |
+|---|---|---|
+| `Node.js CI/CD C++ .NET` | `node.js, ci/cd, c++, net` | `node.js, ci/cd, c++, .net` |
+| `.NET developer` | `net, developer` | `.net, developer` |
+| `Kubernetes. Docker, Terraform-` | `kubernetes, docker, terraform` | **unchanged** |
+
+The third row is the one that mattered — trailing-separator trimming is untouched, so the
+sentence-position case Q4 covered does not regress.
+
+Tests: updated the assertion that documented the bug, and added three that pin the behaviour
+(`.NET` tokenizes with its dot; a resume saying "net revenue" does **not** cover a JD requiring
+`.NET`; a resume that names `.NET` properly still matches). Confirmed all three fail against
+the old regex — a test that passes either way would have been worthless here. `npx vitest run`
+11/11, `npx tsc --noEmit` clean.
+
+**Remaining limitation, not fixed and not a regression:** a resume saying `ASP.NET` tokenizes to
+`asp.net`, which still does not match a JD's `.net`. Exact-token matching cannot see the
+substring, and the panel already tells the user it does "exact word matches only, no synonyms or
+stemming". Fixing it means real matching logic, which is a different item and probably not worth
+it for a panel that renders in no live environment (Q4).
