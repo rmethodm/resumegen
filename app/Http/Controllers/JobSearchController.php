@@ -74,6 +74,11 @@ class JobSearchController extends Controller
     /**
      * Score a batch of postings against a resume. The model only judges fit —
      * it never sees a search box and never invents a listing.
+     *
+     * Deliberately records no JobPairing. One call scores a whole page of listings the
+     * user is still browsing, so a pairing per listing would attribute jobs they never
+     * tailored for — and at a non-zero pricing.job_cents, bill for them. Ranking is the
+     * step before choosing a job; the pairing belongs to the builder call that follows.
      */
     public function rank(Request $request): JsonResponse
     {
