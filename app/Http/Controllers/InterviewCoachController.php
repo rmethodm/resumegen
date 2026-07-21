@@ -6,6 +6,7 @@ use App\Data\AiPrompts;
 use App\Exceptions\ModerationException;
 use App\Models\Resume;
 use App\Services\AiService;
+use App\Services\JobPairingService;
 use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Throwable;
 
 class InterviewCoachController extends Controller
 {
-    public function __construct(private AiService $ai) {}
+    public function __construct(private AiService $ai, private JobPairingService $pairings) {}
 
     public function coach(Request $request, Resume $resume): JsonResponse
     {
@@ -65,6 +66,10 @@ class InterviewCoachController extends Controller
         if (! is_array($questions)) {
             return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
         }
+
+        // Coaching is per-job work, so it belongs to the same pairing the builder charges
+        // for. The role comes from the request; only the resume knows the employer.
+        $this->pairings->record($user, $resume->target_company, $validated['target_role']);
 
         return response()->json([
             'questions' => array_slice(array_values($questions), 0, 8),
