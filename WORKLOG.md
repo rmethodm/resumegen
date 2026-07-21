@@ -171,14 +171,25 @@ the project resolves as `/Users/rmethod/Herd/Resumegen`. Needs `graph_scan` to r
 `8ad5bf7` and removed an hour later by `4666d6b` when the 4-tab right panel replaced it. The graph
 recorded the first decision and never saw the reversal.
 
-**Not purged.** The dual-graph store is not editable through the tools available here — the
-decision list is derived from scans, and `graph_add_memory` only appends. The stale entry
-disappears on the next `graph_scan`, which is needed anyway for the path-casing problem below.
+**Rescan done** — 1497 files, 1816 symbols, 11279 edges. `graph_continue` now returns
+`confidence: high` against `/Users/rmethod/Herd/Resumegen` instead of refusing every query and
+silently falling back to grep. The path-casing problem is fixed.
 
-**Action for you:** run a rescan against `/Users/rmethod/Herd/Resumegen` (capital R). The graph is
-keyed to the lowercase path, so `graph_continue` refuses every query and falls back to grep. It
-costs one ~1500-file scan and fixes both problems at once. I did not run it mid-task because it
-rewrites shared tool state; say the word and I will.
+**The rescan did NOT clear the stale decisions — I predicted wrongly that it would.**
+`graph_scan` rebuilds `info_graph.json` and `symbol_index.json` only. Decisions live in
+`.dual-graph/context-store.json`, which the scan never touches (its mtime was unchanged), and
+both `LAB_VIEW` entries survived.
+
+Appended two corrections via `graph_add_memory` (the store is append-only, and `CLAUDE.md`
+forbids editing `context-store.json` directly). Retrieval ranks on recency — the `why` field
+shows a recency term — so the corrections should outrank the stale entries. **Not verified:**
+whether the SessionStart hook's "Decisions" block shows the correction above the stale pair.
+Check the next session's startup output; if the stale entries still lead, the only remaining
+fix is editing `context-store.json` by hand, which contradicts the project rule.
+
+**Standing lesson:** `graph_scan` refreshes code structure, not recorded decisions. Stale
+decisions must be corrected explicitly. Treat stored decisions as leads to verify against the
+code, never as fact.
 
 **Lesson worth noting:** the graph's stored decisions record what was decided, not what survived.
 Treat them as leads to verify against the code, never as fact — the same rule already applied to
