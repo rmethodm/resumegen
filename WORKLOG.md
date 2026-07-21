@@ -116,13 +116,30 @@ symbol in `Edit.tsx` on this branch — that decision is stale or was reverted. 
 ---
 
 ## Q5 — PlainTextView's component export is dead
-status: TODO · type: code · files: resources/js/Pages/ResumeBuilder/Partials/PlainTextView.tsx
+status: DONE · type: code · files: resources/js/Pages/ResumeBuilder/Partials/plainText.ts
 
 Only `buildPlainText` and the type are used (by `JdMatcher`). Decide: wire the component
 into a LAB_VIEW, or delete it and keep the helper.
 
 ### Answer
-_(pending)_
+**Deleted the component, kept the helper.** Git history settles it — this was not an oversight:
+
+- `8ad5bf7` (17 Jul, 10:57) added the `LAB_VIEWS` preview chooser with `PlainTextView` + `JdMatcher`.
+- `4666d6b` (17 Jul, 12:01 — **one hour later**) replaced that whole design with the collapsible
+  4-tab right panel (Preview / Design / Optimize / Share), explicitly "reversing the earlier
+  slimming". `JdMatcher` was re-homed into the Optimize tab as the AI-off fallback. `PlainTextView`
+  was dropped, and its import narrowed from default+type to type-only **in that same commit**.
+
+The plain-text dump has no home in the tab design, and re-wiring it would mean inventing a place
+for it. Deleting is the smaller change and matches the decision already made an hour after it
+was written.
+
+Also renamed `PlainTextView.tsx` → `plainText.ts` (via `git mv`, so history follows). A `.tsx`
+named after a view that contains no view is exactly what made this item necessary. Dropped the
+now-unused `useMemo`/`useState` import and the orphan `type Props = ResumeContent` alias; updated
+the three import sites (`Edit.tsx`, `JdMatcher.tsx`, `JdMatcher.test.ts`).
+
+Verified: `npx tsc --noEmit` clean, `npx vitest run` 8/8 passing.
 
 ---
 
@@ -139,7 +156,7 @@ _(pending)_
 ---
 
 ## Q7 — Stale `LAB_VIEWS` decision in the dual-graph store
-status: TODO · type: research · files: resources/js/Pages/ResumeBuilder/Edit.tsx
+status: DONE · type: research · files: resources/js/Pages/ResumeBuilder/Edit.tsx
 
 The graph's stored decisions claim `Edit.tsx` has a `LAB_VIEWS` registry with `'plaintext'` and
 `'jd-match'` entries and a sidebar "Preview" chooser. No `LAB_VIEWS` symbol exists in `Edit.tsx`
@@ -150,7 +167,22 @@ Related: the graph itself is stale, built for `/Users/rmethod/Herd/resumegen` (l
 the project resolves as `/Users/rmethod/Herd/Resumegen`. Needs `graph_scan` to rebuild.
 
 ### Answer
-_(pending)_
+**Answered while doing Q5 — the decision is stale, not wrong.** `LAB_VIEWS` was real, added in
+`8ad5bf7` and removed an hour later by `4666d6b` when the 4-tab right panel replaced it. The graph
+recorded the first decision and never saw the reversal.
+
+**Not purged.** The dual-graph store is not editable through the tools available here — the
+decision list is derived from scans, and `graph_add_memory` only appends. The stale entry
+disappears on the next `graph_scan`, which is needed anyway for the path-casing problem below.
+
+**Action for you:** run a rescan against `/Users/rmethod/Herd/Resumegen` (capital R). The graph is
+keyed to the lowercase path, so `graph_continue` refuses every query and falls back to grep. It
+costs one ~1500-file scan and fixes both problems at once. I did not run it mid-task because it
+rewrites shared tool state; say the word and I will.
+
+**Lesson worth noting:** the graph's stored decisions record what was decided, not what survived.
+Treat them as leads to verify against the code, never as fact — the same rule already applied to
+memory files.
 
 ---
 

@@ -1,4 +1,4 @@
-import { buildPlainText, type ResumeContent } from './PlainTextView';
+import { buildPlainText, type ResumeContent } from './plainText';
 import { useMemo, useState } from 'react';
 
 interface Props {
