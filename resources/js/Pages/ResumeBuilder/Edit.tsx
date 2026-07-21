@@ -1104,8 +1104,11 @@ export default function Edit({
                     </div>
 
                     <div className="flex-1 overflow-auto p-6">
+                        {/* A letter-proportioned sheet, not a fill: h-full stretched the
+                            white page to the canvas height whatever the content was. The
+                            iframe scrolls internally when the resume runs past one page. */}
                         <div
-                            className="relative mx-auto h-full w-full origin-top bg-white shadow"
+                            className="relative mx-auto aspect-[8.5/11] w-full max-w-3xl origin-top bg-white shadow"
                             style={{ transform: `scale(${zoom / 100})` }}
                         >
                             {renderPreviewFrames()}
