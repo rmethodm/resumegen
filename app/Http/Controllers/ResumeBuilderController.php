@@ -279,7 +279,6 @@ class ResumeBuilderController extends Controller
     {
         return Pdf::loadView('resume-pdf', [
             'resume' => $resume,
-            'watermark' => false,
         ])->setPaper('letter', 'portrait');
     }
 

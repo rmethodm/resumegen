@@ -271,11 +271,5 @@
   </div>
 @endif
 
-@if($watermark ?? false)
-  <div style="position: fixed; bottom: 0.3in; left: 0; right: 0; text-align: center; font-size: 7pt; color: #b8b8b8; font-family: {{ $fontFamilyCss }};">
-    Made with Resumegen — build your free resume at resumegen.app
-  </div>
-@endif
-
 </body>
 </html>

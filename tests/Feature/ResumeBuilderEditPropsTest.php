@@ -25,16 +25,16 @@ class ResumeBuilderEditPropsTest extends TestCase
             );
     }
 
-    public function test_pdf_blade_renders_watermark_when_flagged(): void
-    {
-        $resume = Resume::factory()->create();
-
-        $html = view('resume-pdf', ['resume' => $resume, 'watermark' => true])->render();
-
-        $this->assertStringContainsString('Made with Resumegen', $html);
-    }
-
-    public function test_pdf_blade_omits_watermark_by_default(): void
+    /**
+     * The PDF watermark was a paid-tier gate; it went with billing and the template
+     * can no longer render one at all. This is an alarm, not a behaviour test — like
+     * the assertSessionMissing('featureGate') assertions elsewhere in the suite, it
+     * fails if a paywall artifact creeps back into the export path.
+     *
+     * Replaced test_pdf_blade_renders_watermark_when_flagged, which asserted the
+     * now-deleted $watermark => true branch.
+     */
+    public function test_pdf_blade_never_renders_a_watermark(): void
     {
         $resume = Resume::factory()->create();
 
