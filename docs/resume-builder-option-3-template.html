@@ -1,0 +1,1108 @@
+<div class="rg-builder-template" data-selected-section="experience">
+  <style>
+    .rg-builder-template {
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-soft: #f9fbff;
+      --ink: #111827;
+      --ink-soft: #334155;
+      --muted: #64748b;
+      --muted-2: #94a3b8;
+      --border: #dbe3ef;
+      --border-soft: #e8edf5;
+      --primary: #17213a;
+      --primary-2: #2563eb;
+      --primary-soft: #eaf1ff;
+      --success: #16a34a;
+      --success-soft: #eaf8ef;
+      --warning: #d97706;
+      --warning-soft: #fff7e8;
+      --danger: #dc2626;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+      --shadow-md: 0 16px 40px rgba(15, 23, 42, .08);
+      --radius-xs: 6px;
+      --radius-sm: 8px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-doc: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    .rg-builder-template * { box-sizing: border-box; }
+    .rg-builder-template button,
+    .rg-builder-template input,
+    .rg-builder-template textarea,
+    .rg-builder-template select { font: inherit; }
+
+    .rg-app {
+      display: grid;
+      grid-template-columns: 56px minmax(260px, 300px) minmax(480px, 1fr) minmax(360px, 430px);
+      min-height: 100vh;
+    }
+
+    .rg-master-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      border-right: 1px solid var(--border-soft);
+      background: var(--surface);
+      padding: 14px 8px;
+    }
+
+    .rg-logo {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #2563eb, #17213a);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .rg-nav-button,
+    .rg-icon-button {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .rg-nav-button:hover,
+    .rg-icon-button:hover { background: var(--surface-soft); color: var(--ink); }
+    .rg-nav-button.is-active { background: var(--primary-soft); color: var(--primary-2); }
+    .rg-nav-spacer { flex: 1; }
+
+    .rg-left-panel {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      min-width: 0;
+    }
+
+    .rg-left-scroll {
+      flex: 1;
+      overflow: auto;
+      padding: 14px;
+    }
+
+    .rg-panel-group {
+      border-bottom: 1px solid var(--border-soft);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+
+    .rg-group-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .rg-section-list,
+    .rg-control-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .rg-section-row,
+    .rg-control-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--ink-soft);
+      padding: 7px 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .rg-section-row:hover,
+    .rg-control-row:hover {
+      border-color: var(--border-soft);
+      background: var(--surface-soft);
+    }
+
+    .rg-section-row.is-selected {
+      border-color: #b9cdfd;
+      background: var(--primary-soft);
+      color: var(--ink);
+      box-shadow: inset 3px 0 0 var(--primary-2);
+    }
+
+    .rg-drag {
+      color: var(--muted-2);
+      line-height: 0;
+    }
+
+    .rg-row-title {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .rg-row-meta {
+      color: var(--muted-2);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .rg-status {
+      display: inline-grid;
+      width: 15px;
+      height: 15px;
+      place-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: transparent;
+      flex: 0 0 auto;
+    }
+
+    .rg-status.is-complete {
+      border-color: #86efac;
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .rg-status.is-warning {
+      border-color: #fed7aa;
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    .rg-select,
+    .rg-input,
+    .rg-textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 8px 10px;
+      outline: none;
+    }
+
+    .rg-select:focus,
+    .rg-input:focus,
+    .rg-textarea:focus {
+      border-color: #93b4fd;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+
+    .rg-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .rg-field { margin-bottom: 13px; }
+    .rg-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .rg-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--ink-soft);
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .rg-button:hover { background: var(--surface-soft); border-color: #c6d1e0; }
+    .rg-button.is-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .rg-button.is-primary:hover { background: #0f172a; }
+    .rg-button.is-soft { background: var(--primary-soft); border-color: #c7d7fe; color: var(--primary-2); }
+    .rg-button.is-full { width: 100%; }
+
+    .rg-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background:
+        linear-gradient(90deg, rgba(219, 227, 239, .55) 0 1px, transparent 1px 100%),
+        var(--bg);
+      background-size: 24px 24px;
+    }
+
+    .rg-topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 54px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, .92);
+      padding: 0 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .rg-title-block {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rg-back {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .rg-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .rg-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 999px;
+      background: var(--success-soft);
+      color: var(--success);
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .rg-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .rg-save {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .rg-canvas-tools {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 16px 0;
+    }
+
+    .rg-tool-group {
+      display: inline-flex;
+      align-items: center;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,.88);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .rg-tool-group button,
+    .rg-tool-group span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 30px;
+      border: 0;
+      border-right: 1px solid var(--border-soft);
+      background: transparent;
+      color: var(--ink-soft);
+      padding: 0 9px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .rg-tool-group button:last-child,
+    .rg-tool-group span:last-child { border-right: 0; }
+
+    .rg-canvas {
+      flex: 1;
+      overflow: auto;
+      padding: 18px 40px 34px;
+    }
+
+    .rg-page {
+      width: min(100%, 760px);
+      min-height: 980px;
+      margin: 0 auto;
+      background: #fff;
+      color: #181818;
+      border-radius: 3px;
+      box-shadow: var(--shadow-md);
+      padding: 70px 72px;
+      font-family: var(--font-doc);
+    }
+
+    .rg-resume-head {
+      text-align: center;
+      border-bottom: 2px solid #1f2933;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+
+    .rg-resume-head h1 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .rg-resume-head p {
+      margin: 0;
+      color: #333;
+      font-size: 12px;
+    }
+
+    .rg-doc-section { margin-top: 13px; }
+    .rg-doc-section h2 {
+      border-bottom: 1px solid #c8c8c8;
+      margin: 0 0 7px;
+      padding-bottom: 3px;
+      color: #444;
+      font-size: 14px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    .rg-doc-section p,
+    .rg-doc-section li {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .rg-job-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 7px;
+      font-size: 12px;
+    }
+
+    .rg-job-title { font-weight: 700; }
+    .rg-job-company { color: #444; }
+    .rg-doc-section ul {
+      margin: 4px 0 0 16px;
+      padding: 0;
+    }
+
+    .rg-edu-row,
+    .rg-cert-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .rg-inspector {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      border-left: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .rg-inspector-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border-soft);
+      padding: 8px 10px 0;
+      gap: 4px;
+    }
+
+    .rg-tab {
+      border: 0;
+      border-bottom: 2px solid transparent;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .rg-tab.is-active {
+      background: var(--primary-soft);
+      border-color: var(--primary-2);
+      color: var(--primary);
+    }
+
+    .rg-inspector-scroll {
+      flex: 1;
+      overflow: auto;
+      padding: 18px;
+    }
+
+    .rg-inspector-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .rg-inspector-title h2 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .rg-card {
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .rg-card-title {
+      margin: 0 0 12px;
+      color: var(--ink-soft);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .rg-textarea {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .rg-bullets { min-height: 132px; }
+
+    .rg-help-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 7px;
+    }
+
+    .rg-hints {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .rg-hints li {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .rg-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      min-height: 42px;
+    }
+
+    .rg-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary-2);
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .rg-segment {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .rg-segment button {
+      min-height: 34px;
+      border: 0;
+      border-right: 1px solid var(--border-soft);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .rg-segment button:last-child { border-right: 0; }
+    .rg-segment button.is-active { background: var(--primary-soft); color: var(--primary-2); }
+
+    .rg-match-bar {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--border-soft);
+      margin-top: 8px;
+    }
+
+    .rg-match-bar span {
+      display: block;
+      width: 95%;
+      height: 100%;
+      background: var(--success);
+    }
+
+    .rg-left-footer {
+      border-top: 1px solid var(--border-soft);
+      padding: 12px 14px;
+      background: var(--surface-soft);
+    }
+
+    .rg-match-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .rg-mobile-bar { display: none; }
+
+    .rg-hidden-template-state { display: none; }
+
+    .rg-builder-template[data-selected-section="contact"] .rg-inspector-content > * { display: none; }
+    .rg-builder-template[data-selected-section="contact"] .rg-contact-editor { display: block; }
+    .rg-builder-template[data-selected-section="summary"] .rg-inspector-content > * { display: none; }
+    .rg-builder-template[data-selected-section="summary"] .rg-summary-editor { display: block; }
+    .rg-builder-template[data-selected-section="experience"] .rg-inspector-content > * { display: none; }
+    .rg-builder-template[data-selected-section="experience"] .rg-experience-editor { display: block; }
+    .rg-builder-template[data-selected-section="project"] .rg-inspector-content > * { display: none; }
+    .rg-builder-template[data-selected-section="project"] .rg-project-editor { display: block; }
+    .rg-builder-template[data-selected-section="education"] .rg-inspector-content > * { display: none; }
+    .rg-builder-template[data-selected-section="education"] .rg-education-editor { display: block; }
+    .rg-builder-template[data-selected-section="skills"] .rg-inspector-content > * { display: none; }
+    .rg-builder-template[data-selected-section="skills"] .rg-skills-editor { display: block; }
+    .rg-builder-template[data-selected-section="certificate"] .rg-inspector-content > * { display: none; }
+    .rg-builder-template[data-selected-section="certificate"] .rg-certificate-editor { display: block; }
+
+    @media (max-width: 1180px) {
+      .rg-app {
+        grid-template-columns: 56px minmax(236px, 280px) minmax(420px, 1fr);
+      }
+      .rg-inspector {
+        position: fixed;
+        inset: 54px 0 0 auto;
+        z-index: 10;
+        width: min(430px, calc(100vw - 56px));
+        box-shadow: var(--shadow-md);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .rg-app { grid-template-columns: 1fr; }
+      .rg-master-nav,
+      .rg-left-panel,
+      .rg-inspector { display: none; }
+      .rg-main { min-height: 100vh; }
+      .rg-topbar { padding: 0 12px; }
+      .rg-title-block { flex: 1; }
+      .rg-top-actions .rg-button:not(.is-primary),
+      .rg-save { display: none; }
+      .rg-canvas { padding: 12px; }
+      .rg-page {
+        width: 100%;
+        min-height: 720px;
+        padding: 34px 28px;
+      }
+      .rg-mobile-bar {
+        position: sticky;
+        bottom: 0;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .rg-mobile-bar button {
+        min-height: 48px;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .rg-mobile-bar button.is-active { color: var(--primary-2); background: var(--primary-soft); }
+    }
+  </style>
+
+  <div class="rg-app">
+    <nav class="rg-master-nav" aria-label="Application navigation">
+      <div class="rg-logo">RG</div>
+      <button class="rg-nav-button" aria-label="Dashboard" title="Dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+      </button>
+      <button class="rg-nav-button is-active" aria-label="Resumes" title="Resumes">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+      </button>
+      <button class="rg-nav-button" aria-label="Cover letters" title="Cover Letters">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+      </button>
+      <button class="rg-nav-button" aria-label="Messages" title="Messages">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
+      </button>
+      <button class="rg-nav-button" aria-label="Shares" title="Shares">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 10.9 7.6-3.8"/><path d="m8.2 13.1 7.6 3.8"/></svg>
+      </button>
+      <button class="rg-nav-button" aria-label="Portfolio" title="Portfolio">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.2 2.4 3.3 5.4 3.3 9S14.2 18.6 12 21c-2.2-2.4-3.3-5.4-3.3-9S9.8 5.4 12 3z"/></svg>
+      </button>
+      <div class="rg-nav-spacer"></div>
+      <button class="rg-nav-button" aria-label="Settings" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="m19.4 15 .6 2.1-2 3.4-2.2-.5a8 8 0 0 1-1.8 1l-.7 2h-4l-.7-2a8 8 0 0 1-1.8-1l-2.2.5-2-3.4.6-2.1a8 8 0 0 1 0-2l-.6-2.1 2-3.4 2.2.5a8 8 0 0 1 1.8-1l.7-2h4l.7 2a8 8 0 0 1 1.8 1l2.2-.5 2 3.4-.6 2.1a8 8 0 0 1 0 2z"/></svg>
+      </button>
+    </nav>
+
+    <aside class="rg-left-panel" aria-label="Resume controls">
+      <div class="rg-left-scroll">
+        <section class="rg-panel-group">
+          <div class="rg-group-head">
+            <span>Sections</span>
+            <button class="rg-icon-button" aria-label="Add section" title="Add section">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            </button>
+          </div>
+          <div class="rg-section-list">
+            <button class="rg-section-row" data-section="contact">
+              <span class="rg-drag"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="6" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg></span>
+              <span class="rg-row-title">Contact Information</span>
+              <span class="rg-status is-complete"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></span>
+            </button>
+            <button class="rg-section-row" data-section="summary">
+              <span class="rg-drag"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="6" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg></span>
+              <span class="rg-row-title">Professional Summary</span>
+              <span class="rg-status is-complete"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></span>
+            </button>
+            <button class="rg-section-row is-selected" data-section="experience">
+              <span class="rg-drag"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="6" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg></span>
+              <span class="rg-row-title">Experience</span>
+              <span class="rg-status is-complete"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></span>
+            </button>
+            <button class="rg-section-row" data-section="project">
+              <span class="rg-drag"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="6" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg></span>
+              <span class="rg-row-title">Project</span>
+              <span class="rg-row-meta">Optional</span>
+              <span class="rg-status"></span>
+            </button>
+            <button class="rg-section-row" data-section="education">
+              <span class="rg-drag"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="6" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg></span>
+              <span class="rg-row-title">Education</span>
+              <span class="rg-status is-complete"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></span>
+            </button>
+            <button class="rg-section-row" data-section="skills">
+              <span class="rg-drag"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="6" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg></span>
+              <span class="rg-row-title">Skills</span>
+              <span class="rg-status is-complete"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></span>
+            </button>
+            <button class="rg-section-row" data-section="certificate">
+              <span class="rg-drag"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="6" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg></span>
+              <span class="rg-row-title">Certificate</span>
+              <span class="rg-row-meta">Optional</span>
+              <span class="rg-status is-complete"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 13 4 4L19 7"/></svg></span>
+            </button>
+          </div>
+        </section>
+
+        <section class="rg-panel-group">
+          <div class="rg-group-head"><span>Design</span></div>
+          <div class="rg-field">
+            <label class="rg-label" for="rg-template">Template</label>
+            <select class="rg-select" id="rg-template">
+              <option>Modern Professional</option>
+              <option selected>Minimal</option>
+              <option>Classic</option>
+              <option>Executive</option>
+              <option>ATS</option>
+              <option>Skills-first</option>
+            </select>
+          </div>
+          <div class="rg-field">
+            <label class="rg-label" for="rg-font">Font</label>
+            <select class="rg-select" id="rg-font">
+              <option selected>Inter</option>
+              <option>Serif</option>
+              <option>Mono</option>
+            </select>
+          </div>
+          <div class="rg-field">
+            <label class="rg-label" for="rg-density">Density</label>
+            <select class="rg-select" id="rg-density">
+              <option>Compact</option>
+              <option selected>Balanced</option>
+              <option>Spacious</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="rg-panel-group">
+          <div class="rg-group-head"><span>Tools</span></div>
+          <div class="rg-control-list">
+            <button class="rg-control-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20V10"/><path d="m18 20-6-10-6 10"/><path d="M8 14h8"/></svg>
+              <span class="rg-row-title">Target role</span>
+              <span class="rg-chip">95%</span>
+            </button>
+            <button class="rg-control-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l2 2 4-4"/><path d="M5 4h14v16H5z"/></svg>
+              <span class="rg-row-title">Resume checklist</span>
+            </button>
+            <button class="rg-control-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 10.9 7.6-3.8"/><path d="m8.2 13.1 7.6 3.8"/></svg>
+              <span class="rg-row-title">Share links</span>
+              <span class="rg-row-meta">3 active</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="rg-panel-group">
+          <div class="rg-group-head"><span>Quick actions</span></div>
+          <div class="rg-control-list">
+            <button class="rg-button is-full">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7h10v10H7z"/><path d="M4 4h10"/><path d="M10 20h10"/></svg>
+              Reorder sections
+            </button>
+            <button class="rg-button is-full">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 8h11v11H8z"/><path d="M5 16H4a1 1 0 0 1-1-1V4h11v1"/></svg>
+              Duplicate resume
+            </button>
+          </div>
+        </section>
+      </div>
+      <div class="rg-left-footer">
+        <div class="rg-match-chip">
+          <span>Match checklist</span>
+          <span class="rg-chip">95%</span>
+        </div>
+        <div class="rg-match-bar"><span></span></div>
+      </div>
+    </aside>
+
+    <main class="rg-main">
+      <header class="rg-topbar">
+        <div class="rg-title-block">
+          <a href="#" class="rg-back">← Resumes</a>
+          <span class="rg-title">Clinical Psychologist</span>
+          <span class="rg-chip">95% match</span>
+        </div>
+        <div class="rg-top-actions">
+          <span class="rg-save">Saved 1m ago</span>
+          <button class="rg-icon-button" aria-label="Undo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-1"/></svg></button>
+          <button class="rg-icon-button" aria-label="Redo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h1"/></svg></button>
+          <button class="rg-button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            Preview
+          </button>
+          <button class="rg-button is-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            Export
+          </button>
+        </div>
+      </header>
+
+      <div class="rg-canvas-tools" aria-label="Preview controls">
+        <div class="rg-tool-group">
+          <button aria-label="Zoom out">−</button>
+          <span>100%</span>
+          <button aria-label="Zoom in">+</button>
+        </div>
+        <div class="rg-tool-group">
+          <button aria-label="Previous page">‹</button>
+          <span>1 / 1</span>
+          <button aria-label="Next page">›</button>
+        </div>
+        <div class="rg-tool-group">
+          <button aria-label="Fit width"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8V4h4"/><path d="M20 8V4h-4"/><path d="M4 16v4h4"/><path d="M20 16v4h-4"/></svg></button>
+          <button aria-label="Page layout"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h7v7H4z"/><path d="M13 4h7v7h-7z"/><path d="M4 13h7v7H4z"/><path d="M13 13h7v7h-7z"/></svg></button>
+        </div>
+      </div>
+
+      <div class="rg-canvas">
+        <article class="rg-page" id="resume-preview">
+          <header class="rg-resume-head">
+            <h1>Richard Method</h1>
+            <p>richard@example.com • 555-0202 • Chicago, IL</p>
+          </header>
+
+          <section class="rg-doc-section">
+            <h2>Summary</h2>
+            <p>Licensed clinical psychologist with 12 years of experience in cognitive-behavioral therapy and trauma-informed care.</p>
+          </section>
+
+          <section class="rg-doc-section">
+            <h2>Work Experience</h2>
+            <div class="rg-job-head">
+              <div><div class="rg-job-title">Senior Clinical Psychologist</div><div class="rg-job-company">Midwest Behavioral Health</div></div>
+              <div>Sep 2016 – Present</div>
+            </div>
+            <ul>
+              <li>Provide individual and group CBT to 30+ clients per week</li>
+              <li>Developed evidence-based PTSD treatment protocol adopted clinic-wide</li>
+              <li>Supervised 4 doctoral interns annually</li>
+            </ul>
+            <div class="rg-job-head">
+              <div><div class="rg-job-title">Staff Psychologist</div><div class="rg-job-company">Chicago VA Medical Center</div></div>
+              <div>Jul 2012 – Aug 2016</div>
+            </div>
+            <ul>
+              <li>Assessed and treated veterans with complex trauma and co-occurring disorders</li>
+              <li>Published 3 peer-reviewed articles on EMDR efficacy</li>
+              <li>Facilitated weekly DBT skills group for 12 veterans</li>
+            </ul>
+          </section>
+
+          <section class="rg-doc-section">
+            <h2>Education</h2>
+            <div class="rg-edu-row"><span><strong>Northwestern University</strong> &nbsp; Ph.D. in Clinical Psychology</span><span>2012</span></div>
+            <div class="rg-edu-row"><span><strong>University of Michigan</strong> &nbsp; B.A. in Psychology</span><span>2007</span></div>
+          </section>
+
+          <section class="rg-doc-section">
+            <h2>Skills</h2>
+            <p>CBT • DBT • EMDR • Psychological Assessment • Group Therapy • Trauma-Informed Care</p>
+          </section>
+
+          <section class="rg-doc-section">
+            <h2>Certifications</h2>
+            <div class="rg-cert-row"><span><strong>Licensed Clinical Psychologist (IL)</strong></span><span>Illinois IDFPR, 2013-06</span></div>
+          </section>
+        </article>
+      </div>
+
+      <div class="rg-mobile-bar" aria-label="Mobile builder modes">
+        <button class="is-active">Preview</button>
+        <button>Sections</button>
+        <button>Edit</button>
+        <button>Tools</button>
+      </div>
+    </main>
+
+    <aside class="rg-inspector" aria-label="Selected section editor">
+      <div class="rg-inspector-tabs">
+        <button class="rg-tab is-active">Content</button>
+        <button class="rg-tab">Suggestions</button>
+        <button class="rg-tab">Settings</button>
+      </div>
+
+      <div class="rg-inspector-scroll rg-inspector-content">
+        <section class="rg-contact-editor rg-hidden-template-state">
+          <div class="rg-inspector-title"><h2>Contact Information</h2><span class="rg-chip">Complete</span></div>
+          <div class="rg-field"><label class="rg-label">Full name</label><input class="rg-input" value="Richard Method"></div>
+          <div class="rg-field"><label class="rg-label">Email</label><input class="rg-input" value="richard@example.com"></div>
+          <div class="rg-field-grid">
+            <div class="rg-field"><label class="rg-label">Phone</label><input class="rg-input" value="555-0202"></div>
+            <div class="rg-field"><label class="rg-label">Location</label><input class="rg-input" value="Chicago, IL"></div>
+          </div>
+          <div class="rg-field"><label class="rg-label">LinkedIn</label><input class="rg-input" value="linkedin.com/in/richard-method"></div>
+          <div class="rg-field"><label class="rg-label">Website</label><input class="rg-input" value="richardmethod.com"></div>
+          <div class="rg-card">
+            <p class="rg-card-title">Checklist hints</p>
+            <ul class="rg-hints">
+              <li><span class="rg-status is-complete"></span>Add professional email</li>
+              <li><span class="rg-status is-complete"></span>Include location</li>
+              <li><span class="rg-status is-complete"></span>Add LinkedIn or website</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="rg-summary-editor rg-hidden-template-state">
+          <div class="rg-inspector-title"><h2>Professional Summary</h2><span class="rg-chip">Complete</span></div>
+          <div class="rg-field">
+            <label class="rg-label">Summary</label>
+            <textarea class="rg-textarea">Licensed clinical psychologist with 12 years of experience in cognitive-behavioral therapy and trauma-informed care.</textarea>
+            <div class="rg-help-row"><span>98 / 200 characters</span><button class="rg-button is-soft">Suggest rewrite</button></div>
+          </div>
+          <div class="rg-card">
+            <p class="rg-card-title">Checklist hints</p>
+            <ul class="rg-hints">
+              <li><span class="rg-status is-complete"></span>Highlight years of experience</li>
+              <li><span class="rg-status is-complete"></span>Include key specialties</li>
+              <li><span class="rg-status is-warning"></span>Add measurable impact</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="rg-experience-editor">
+          <div class="rg-inspector-title"><h2>Experience</h2><span class="rg-chip">Complete</span></div>
+          <div class="rg-field">
+            <label class="rg-label">Experience entry</label>
+            <select class="rg-select">
+              <option>Senior Clinical Psychologist - Midwest Behavioral Health</option>
+              <option>Staff Psychologist - Chicago VA Medical Center</option>
+            </select>
+          </div>
+          <div class="rg-field"><label class="rg-label">Job title</label><input class="rg-input" value="Senior Clinical Psychologist"></div>
+          <div class="rg-field"><label class="rg-label">Company</label><input class="rg-input" value="Midwest Behavioral Health"></div>
+          <div class="rg-field-grid">
+            <div class="rg-field"><label class="rg-label">Start date</label><input class="rg-input" value="Sep 2016"></div>
+            <div class="rg-field"><label class="rg-label">End date</label><input class="rg-input" value="Present"></div>
+          </div>
+          <div class="rg-field">
+            <label><input type="checkbox" checked> I currently work here</label>
+          </div>
+          <div class="rg-field">
+            <label class="rg-label">Bullets</label>
+            <textarea class="rg-textarea rg-bullets">• Provide individual and group CBT to 30+ clients per week
+• Developed evidence-based PTSD treatment protocol adopted clinic-wide
+• Supervised 4 doctoral interns annually</textarea>
+          </div>
+          <button class="rg-button is-soft">+ Add experience</button>
+          <div class="rg-card">
+            <p class="rg-card-title">Checklist hints</p>
+            <ul class="rg-hints">
+              <li><span class="rg-status is-complete"></span>Use strong action verbs</li>
+              <li><span class="rg-status is-complete"></span>Quantify your impact</li>
+              <li><span class="rg-status is-complete"></span>Keep bullets concise</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="rg-project-editor rg-hidden-template-state">
+          <div class="rg-inspector-title"><h2>Project</h2><span class="rg-row-meta">Optional</span></div>
+          <div class="rg-field"><label class="rg-label">Project name</label><input class="rg-input" value="Midwest CBT Initiative"></div>
+          <div class="rg-field"><label class="rg-label">Project URL</label><input class="rg-input" value="https://midwestcbt.org"></div>
+          <div class="rg-field-grid">
+            <div class="rg-field"><label class="rg-label">Start date</label><input class="rg-input" value="Jan 2023"></div>
+            <div class="rg-field"><label class="rg-label">End date</label><input class="rg-input" value="Dec 2023"></div>
+          </div>
+          <div class="rg-field"><label class="rg-label">Description</label><textarea class="rg-textarea">Led a multidisciplinary initiative to expand access to cognitive-behavioral therapy across community clinics.</textarea></div>
+          <div class="rg-field"><label class="rg-label">Highlights</label><textarea class="rg-textarea">• Designed and implemented CBT training for 25 clinicians
+• Increased patient access by 40% across 6 clinics
+• Secured $250K in grant funding</textarea></div>
+          <button class="rg-button is-soft">+ Add project</button>
+        </section>
+
+        <section class="rg-education-editor rg-hidden-template-state">
+          <div class="rg-inspector-title"><h2>Education</h2><span class="rg-chip">Complete</span></div>
+          <div class="rg-field"><label class="rg-label">School</label><input class="rg-input" value="Northwestern University"></div>
+          <div class="rg-field"><label class="rg-label">Degree</label><input class="rg-input" value="Ph.D."></div>
+          <div class="rg-field"><label class="rg-label">Field of study</label><input class="rg-input" value="Clinical Psychology"></div>
+          <div class="rg-field"><label class="rg-label">Graduation year</label><input class="rg-input" value="2012"></div>
+          <button class="rg-button is-soft">+ Add education</button>
+        </section>
+
+        <section class="rg-skills-editor rg-hidden-template-state">
+          <div class="rg-inspector-title"><h2>Skills</h2><span class="rg-chip">Complete</span></div>
+          <div class="rg-segment" aria-label="Skills layout">
+            <button class="is-active">Inline</button>
+            <button>Bullets</button>
+            <button>Grouped</button>
+            <button>Columns</button>
+            <button>Narrative</button>
+          </div>
+          <div class="rg-field"><label class="rg-label">Skill category</label><input class="rg-input" value="Core Competencies"></div>
+          <div class="rg-field">
+            <label class="rg-label">Skills</label>
+            <div class="rg-tags">
+              <span class="rg-tag">CBT ×</span>
+              <span class="rg-tag">DBT ×</span>
+              <span class="rg-tag">EMDR ×</span>
+              <span class="rg-tag">Psychological Assessment ×</span>
+              <span class="rg-tag">Group Therapy ×</span>
+              <span class="rg-tag">Trauma-Informed Care ×</span>
+            </div>
+          </div>
+          <button class="rg-button is-soft">+ Add category</button>
+        </section>
+
+        <section class="rg-certificate-editor rg-hidden-template-state">
+          <div class="rg-inspector-title"><h2>Certificate</h2><span class="rg-row-meta">Optional</span></div>
+          <div class="rg-field"><label class="rg-label">Certificate name</label><input class="rg-input" value="Licensed Clinical Psychologist (IL)"></div>
+          <div class="rg-field"><label class="rg-label">Issuer</label><input class="rg-input" value="Illinois Department of Financial and Professional Regulation"></div>
+          <div class="rg-field-grid">
+            <div class="rg-field"><label class="rg-label">Date obtained</label><input class="rg-input" value="Jun 2013"></div>
+            <div class="rg-field"><label class="rg-label">Expiration date</label><input class="rg-input" value="Jun 2028"></div>
+          </div>
+          <div class="rg-field"><label class="rg-label">Credential ID</label><input class="rg-input" value="071.012345"></div>
+          <button class="rg-button is-soft">+ Add certificate</button>
+        </section>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.currentScript.closest('.rg-builder-template');
+      const rows = Array.from(root.querySelectorAll('.rg-section-row[data-section]'));
+      const titleMap = {
+        contact: 'Contact Information',
+        summary: 'Professional Summary',
+        experience: 'Experience',
+        project: 'Project',
+        education: 'Education',
+        skills: 'Skills',
+        certificate: 'Certificate'
+      };
+      rows.forEach(row => {
+        row.addEventListener('click', () => {
+          const section = row.dataset.section;
+          root.dataset.selectedSection = section;
+          rows.forEach(r => r.classList.toggle('is-selected', r === row));
+          const activeTitle = root.querySelector('.rg-inspector-title h2');
+          if (activeTitle && titleMap[section]) activeTitle.textContent = titleMap[section];
+        });
+      });
+    })();
+  </script>
+</div>

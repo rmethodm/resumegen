@@ -1,11 +1,9 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import {
-    SwatchIcon,
-    ArrowDownTrayIcon, TrashIcon,
+    TrashIcon,
+    HomeIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, ShareIcon, Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
-import SectionDrawer from './Partials/SectionDrawer';
 import SectionPalette from './Partials/SectionPalette';
 import { Head, Link, router } from '@inertiajs/react';
 import {
@@ -387,6 +385,17 @@ const freshPdfSrc = (id: number) => route('builder.html-preview', id) + '?t=' + 
 // it; experience/education/skills do not).
 export type SectionKey = 'contact' | 'summary' | 'experience' | 'projects' | 'education' | 'skills' | 'certifications';
 
+/** Everything the inspector can show: a resume section, or one of the tool panels. */
+export type InspectorView = SectionKey | 'target' | 'checklist' | 'shares' | 'messages' | 'design';
+
+const TOOL_LABELS: Record<Exclude<InspectorView, SectionKey>, string> = {
+    target: 'Target role',
+    checklist: 'Resume checklist',
+    shares: 'Share links',
+    messages: 'Messages',
+    design: 'Design',
+};
+
 export type SectionEntry = {
     key: SectionKey;
     label: string;
@@ -455,17 +464,13 @@ export default function Edit({
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
     const [templateOpen, setTemplateOpen] = useState(false);
-    // Which section's fields are open in the drawer overlaying the preview. Not
-    // to be confused with `openSections` (the old per-card accordion state,
-    // still used inside each section's own render()).
-    const [drawerSection, setDrawerSection] = useState<SectionKey | null>(null);
-    // The palette row that opened the current drawer, captured explicitly at click
-    // time so the drawer can restore focus to the right row on close. Sniffing
-    // document.activeElement inside the drawer itself is unreliable: React runs the
-    // outgoing drawer's unmount cleanup before the incoming drawer's mount effect in
-    // the same commit, so a mount-time read would capture the previous drawer's
-    // restored focus target instead of the row that opened this one.
-    const drawerTriggerRef = useRef<HTMLElement | null>(null);
+    // What the right-hand inspector is currently editing. The left panel is the
+    // only thing that sets this — clicking a section row, a tool row, or a design
+    // control swaps the inspector's contents. Replaces the old overlay drawer.
+    const [inspector, setInspector] = useState<InspectorView>('contact');
+    // Preview zoom, driven by the canvas toolbar. Percent, applied as a transform
+    // on the page wrapper so the iframes themselves never re-render.
+    const [zoom, setZoom] = useState(100);
     // Section-click → highlight in the live-preview iframe.
     const activeSectionRef = useRef<string | null>(null);
     const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
@@ -985,263 +990,270 @@ export default function Edit({
             .filter((e): e is SectionEntry => Boolean(e)),
     ];
 
+    const isSection = (v: InspectorView): v is SectionKey => v in SECTIONS;
+    const inspectorTitle = isSection(inspector) ? SECTIONS[inspector].label : TOOL_LABELS[inspector];
+
     return (
-        <AuthenticatedLayout>
-            {/* Top bar */}
-            <div className="flex flex-wrap items-center gap-3 border-b border-[#cbd5e1] bg-white px-4 py-2">
-                <Link href={route('builder.index')} className="shrink-0 text-sm text-[#94a3b8] hover:text-[#475569]">← Resumes</Link>
-                <span className="shrink-0 text-[#cbd5e1]">/</span>
-                <h2 className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold text-[#0f172a]">{name}</h2>
-                {liveScore !== null && (
-                    <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                        liveScore <= 30 ? 'bg-[#fee2e2] text-[#b91c1c]'
-                            : liveScore <= 50 ? 'bg-[#fef3c7] text-[#a16207]'
-                                : 'bg-[#eef2ff] text-[#4f46e5]'
-                    }`}>
-                        {liveScore}%
-                    </span>
-                )}
-                <span className="shrink-0 text-[11px] text-[#a0a0b0]">
-                    {saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}
-                </span>
-            </div>
-
-            {/* Completion bar */}
-            <div className="flex items-center border-b border-gray-100 bg-white px-4 py-2">
-                <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
-                    <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] transition-all" style={{ width: `${completionScore}%` }} />
-                </div>
-            </div>
-
+        <div className="rg-builder-template">
             <Head title={`Editing: ${name}`} />
 
-            <div className="relative flex flex-wrap items-start bg-[#f1f5f9]">
-                    {/* ── Left column: the live preview. Hidden below `lg` so the
-                         palette/drawer can take the full narrow-screen width. ── */}
-                    <div className="hidden min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6 lg:block">
-                        <div className="mb-2 flex items-center justify-between">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
-                            <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+            <div className="rg-app">
+                {/* ── Icon rail. Replaces AuthenticatedLayout's top nav: the mockup is a
+                     full-bleed four-column grid, so a stacked app header would break it. ── */}
+                <nav className="rg-master-nav" aria-label="Application navigation">
+                    <div className="rg-logo">RG</div>
+                    <Link href={route('dashboard')} className="rg-nav-button" title="Dashboard" aria-label="Dashboard">
+                        <HomeIcon className="h-[18px] w-[18px]" />
+                    </Link>
+                    <Link href={route('builder.index')} className="rg-nav-button is-active" title="Resumes" aria-label="Resumes">
+                        <DocumentTextIcon className="h-[18px] w-[18px]" />
+                    </Link>
+                    <Link href={route('messages.index')} className="rg-nav-button" title="Messages" aria-label="Messages">
+                        <ChatBubbleLeftRightIcon className="h-[18px] w-[18px]" />
+                    </Link>
+                    <Link href={route('shares.index')} className="rg-nav-button" title="Shares" aria-label="Shares">
+                        <ShareIcon className="h-[18px] w-[18px]" />
+                    </Link>
+                    <div className="rg-nav-spacer" />
+                    <Link href={route('profile.edit')} className="rg-nav-button" title="Settings" aria-label="Settings">
+                        <Cog6ToothIcon className="h-[18px] w-[18px]" />
+                    </Link>
+                </nav>
+
+                {/* ── Left panel: sections, design, tools ── */}
+                <aside className="rg-left-panel" aria-label="Resume controls">
+                    <div className="rg-left-scroll">
+                        <section className="rg-panel-group">
+                            <div className="rg-group-head"><span>Sections</span></div>
+                            <SectionPalette
+                                entries={paletteEntries}
+                                activeKey={isSection(inspector) ? inspector : null}
+                                onSelect={key => { setInspector(key); highlightSection(key); }}
+                                onDragEnd={handleSectionDragEnd}
+                                sensors={sensors}
+                                sectionOrder={sectionOrder}
+                            />
+                        </section>
+
+                        <section className="rg-panel-group">
+                            <div className="rg-group-head"><span>Design</span></div>
+                            <div className="rg-field">
+                                <label className="rg-label" htmlFor="rg-template">Template</label>
+                                <select
+                                    id="rg-template"
+                                    className="rg-select"
+                                    value={template}
+                                    onChange={e => { setTemplate(e.target.value as ResumeTemplate); setTimeout(save, 0); }}
+                                >
+                                    {Object.keys(TEMPLATE_LABELS).map(t => (
+                                        <option key={t} value={t}>{TEMPLATE_LABELS[t] ?? t}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="rg-field">
+                                <label className="rg-label" htmlFor="rg-font">Font</label>
+                                <select
+                                    id="rg-font"
+                                    className="rg-select"
+                                    value={fontFamily}
+                                    onChange={e => {
+                                        const f = e.target.value as 'sans' | 'serif' | 'mono';
+                                        fontFamilyRef.current = f;
+                                        setFontFamily(f);
+                                        save();
+                                    }}
+                                >
+                                    <option value="sans">Sans</option>
+                                    <option value="serif">Serif</option>
+                                    <option value="mono">Mono</option>
+                                </select>
+                            </div>
+                            <button type="button" className="rg-button is-full" onClick={() => setInspector('design')}>
+                                Type sizes &amp; spacing
+                            </button>
+                        </section>
+
+                        <section className="rg-panel-group">
+                            <div className="rg-group-head"><span>Tools</span></div>
+                            <div className="rg-control-list">
+                                <button type="button" dusk="target-role" className="rg-control-row" onClick={() => setInspector('target')}>
+                                    <span className="rg-row-title">Target role</span>
+                                    {targetTitle && <span className="rg-row-meta">{targetTitle}</span>}
+                                </button>
+                                <button type="button" className="rg-control-row" onClick={() => setInspector('checklist')}>
+                                    <span className="rg-row-title">Resume checklist</span>
+                                    {liveScore !== null && <span className="rg-chip">{liveScore}%</span>}
+                                </button>
+                                <button type="button" className="rg-control-row" onClick={() => setInspector('shares')}>
+                                    <span className="rg-row-title">Share links</span>
+                                    <span className="rg-row-meta">{initialLinks.filter(l => l.is_active).length} active</span>
+                                </button>
+                                <button type="button" className="rg-control-row" onClick={() => setInspector('messages')}>
+                                    <span className="rg-row-title">Messages</span>
+                                    {unreadCount > 0
+                                        ? <span className="rg-chip">{unreadCount} unread</span>
+                                        : <span className="rg-row-meta">{initialThreads.length}</span>}
+                                </button>
+                            </div>
+                        </section>
+
+                        <section className="rg-panel-group">
+                            <div className="rg-group-head"><span>Export</span></div>
+                            <div className="rg-control-list">
+                                <a href={route('builder.docx', resume.id)} className="rg-button is-full">Download DOCX</a>
+                                <a href={route('builder.pdf', resume.id)} className="rg-button is-full">Download PDF</a>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div className="rg-left-footer">
+                        <div className="rg-match-chip">
+                            <span>Match checklist</span>
+                            <span className="rg-chip">{completionScore}%</span>
                         </div>
-                        <div className="relative h-[calc(100vh-9rem)] overflow-hidden rounded-md bg-white shadow-[0_8px_30px_rgba(79,70,229,0.12)]">
-                            {renderPreviewFrames()}
+                        <div className="rg-match-bar"><span style={{ width: `${completionScore}%` }} /></div>
+                    </div>
+                </aside>
+
+                {/* ── Centre: topbar, canvas tools, live preview ── */}
+                <main className="rg-main">
+                    <header className="rg-topbar">
+                        <div className="rg-title-block">
+                            <Link href={route('builder.index')} className="rg-back">← Resumes</Link>
+                            <span className="rg-title">{name}</span>
+                            {liveScore !== null && <span className="rg-chip">{liveScore}% match</span>}
+                        </div>
+                        <div className="rg-top-actions">
+                            <span className="rg-save">{saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}</span>
+                            <a href={route('builder.pdf', resume.id)} className="rg-button is-primary">Export</a>
+                        </div>
+                    </header>
+
+                    <div className="rg-canvas-tools" aria-label="Preview controls">
+                        <div className="rg-tool-group">
+                            <button type="button" aria-label="Zoom out" onClick={() => setZoom(z => Math.max(50, z - 10))}>−</button>
+                            <span>{zoom}%</span>
+                            <button type="button" aria-label="Zoom in" onClick={() => setZoom(z => Math.min(200, z + 10))}>+</button>
+                        </div>
+                        <div className="rg-tool-group">
+                            <button type="button" onClick={() => setZoom(100)}>Reset</button>
                         </div>
                     </div>
 
-                    {drawerSection && (
-                        <SectionDrawer
-                            key={drawerSection}
-                            title={SECTIONS[drawerSection].label}
-                            onClose={() => setDrawerSection(null)}
-                            restoreFocusTo={drawerTriggerRef.current}
+                    <div className="rg-canvas">
+                        <div
+                            className="relative h-full w-full origin-top"
+                            style={{ transform: `scale(${zoom / 100})` }}
                         >
-                            {SECTIONS[drawerSection].render()}
-                        </SectionDrawer>
-                    )}
+                            {renderPreviewFrames()}
+                        </div>
+                    </div>
+                </main>
 
-                    {/* ── Right palette: fixed 300px on large screens, full-width
-                         below `lg` since the preview is hidden there. ── */}
-                    <aside
-                        className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-[#cbd5e1] bg-white lg:w-[300px]"
-                        style={{ minHeight: 'calc(100vh - 3.5rem)' }}
-                    >
-                        <div className="flex flex-col">
-                            {/* Export */}
-                            <div className="flex gap-2 border-b border-[#eeeef5] p-3">
-                                <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
-                                    <ArrowDownTrayIcon className="h-3.5 w-3.5" /> DOCX
-                                </a>
-                                <a href={route('builder.pdf', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#cbd5e1] py-2 text-xs font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:bg-[#f8fafc] hover:text-[#4f46e5]">
-                                    <ArrowDownTrayIcon className="h-3.5 w-3.5" /> PDF
-                                </a>
+                {/* ── Right: inspector, showing whatever the left panel selected ── */}
+                <aside className="rg-inspector" aria-label="Selected section editor">
+                    <div className="rg-inspector-scroll rg-inspector-content">
+                        <div className="rg-inspector-title">
+                            <h2>{inspectorTitle}</h2>
+                            {isSection(inspector) && SECTIONS[inspector].optional && (
+                                <span className="rg-row-meta">Optional</span>
+                            )}
+                        </div>
+
+                        {isSection(inspector) && SECTIONS[inspector].render()}
+
+                        {inspector === 'design' && (
+                            <div className="flex flex-col gap-2.5">
+                                {([
+                                    { label: 'Name size', key: 'name', min: 12, max: 36 },
+                                    { label: 'Contact size', key: 'contact', min: 6, max: 16 },
+                                    { label: 'Heading size', key: 'heading', min: 8, max: 20 },
+                                    { label: 'Body size', key: 'body', min: 8, max: 16 },
+                                    { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                    { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                    <div key={key}>
+                                        <div className="mb-1 flex justify-between">
+                                            <span className="text-[11px] text-gray-500">{label}</span>
+                                            <span className="text-[11px] font-semibold tabular-nums text-gray-900">{fontSizes[key]}pt</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min={min}
+                                            max={max}
+                                            step={0.5}
+                                            value={fontSizes[key]}
+                                            aria-label={label}
+                                            onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
+                                            onMouseUp={save}
+                                            onTouchEnd={save}
+                                            onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
+                                            className="w-full"
+                                            style={{ accentColor: '#2563eb' }}
+                                        />
+                                    </div>
+                                ))}
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }}
+                                        className="text-[10px] text-gray-400 transition-colors hover:text-brand-600"
+                                    >
+                                        Reset sizes
+                                    </button>
+                                </div>
                             </div>
+                        )}
 
-                            <div className="space-y-4 p-3">
-                                {recruiterNote && (
-                                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-                                        <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
-                                        <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
+                        {inspector === 'target' && (
+                            <>
+                                <div className="rg-field-grid">
+                                    <div className="rg-field">
+                                        <label className="rg-label">Company</label>
+                                        <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." name="target_company" />
                                     </div>
-                                )}
-
-                                {/* Resume Name — always visible; doesn't belong to any one
-                                    section, so it doesn't get a drawer of its own. */}
-                                <div className="space-y-1.5 rounded-[10px] border border-[#eeeef5] bg-white p-3">
-                                    <FLabel>Resume Name</FLabel>
-                                    <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
-                                    <p className="text-[11px] text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
+                                    <div className="rg-field">
+                                        <label className="rg-label">Job title</label>
+                                        <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" name="target_title" />
+                                    </div>
                                 </div>
-
-                                <div>
-                                    <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Sections</p>
-                                    <SectionPalette
-                                        entries={paletteEntries}
-                                        activeKey={drawerSection}
-                                        onSelect={(key, trigger) => { drawerTriggerRef.current = trigger; setDrawerSection(key); highlightSection(key); }}
-                                        onDragEnd={handleSectionDragEnd}
-                                        sensors={sensors}
-                                        sectionOrder={sectionOrder}
-                                    />
-                                </div>
-
-                                <PanelCard
-                                    title="Template"
-                                    icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
-                                    pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
-                                    open={templateOpen}
-                                    onToggle={() => setTemplateOpen(v => !v)}
-                                >
-                                    <div className="px-3 pb-3">
-                                        <div aria-label="Resume template" className="grid grid-cols-2 gap-2">
-                                            {Object.keys(TEMPLATE_LABELS).map(t => {
-                                                const selected = template === t;
-                                                return (
-                                                    <button
-                                                        key={t}
-                                                        type="button"
-                                                        onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
-                                                        aria-pressed={selected}
-                                                        title={TEMPLATE_LABELS[t] ?? t}
-                                                        className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
-                                                    >
-                                                        <img
-                                                            src={`/images/templates/${t}.png`}
-                                                            loading="lazy"
-                                                            alt=""
-                                                            className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
-                                                        />
-                                                        <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                        {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
-                                    </div>
-                                </PanelCard>
-
-                                <PanelCard
-                                    title="Font"
-                                    open={openSections.fontSizes}
-                                    onToggle={() => toggleSection('fontSizes')}
-                                >
-                                    <div className="px-3 pb-3">
-                                        <div className="mb-3.5 flex gap-1.5">
-                                            {(['sans', 'serif', 'mono'] as const).map(f => (
-                                                <button
-                                                    key={f}
-                                                    type="button"
-                                                    onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
-                                                    className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
-                                                >
-                                                    {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        <div className="flex flex-col gap-2.5">
-                                            {([
-                                                { label: 'Name size', key: 'name', min: 12, max: 36 },
-                                                { label: 'Contact size', key: 'contact', min: 6, max: 16 },
-                                                { label: 'Heading size', key: 'heading', min: 8, max: 20 },
-                                                { label: 'Body size', key: 'body', min: 8, max: 16 },
-                                                { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                                { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                            ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                                <div key={key}>
-                                                    <div className="mb-1 flex justify-between">
-                                                        <span className="text-[11px] text-[#71717a]">{label}</span>
-                                                        <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
-                                                    </div>
-                                                    <input
-                                                        type="range"
-                                                        min={min}
-                                                        max={max}
-                                                        step={0.5}
-                                                        value={fontSizes[key]}
-                                                        aria-label={label}
-                                                        onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
-                                                        onMouseUp={save}
-                                                        onTouchEnd={save}
-                                                        onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
-                                                        className="w-full"
-                                                        style={{ accentColor: '#4f46e5' }}
-                                                    />
-                                                </div>
-                                            ))}
-                                            <div className="flex justify-end">
-                                                <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </PanelCard>
-
-                                <PanelCard
-                                    title="Resume checklist"
-                                    pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
-                                    open={openSections.strength}
-                                    onToggle={() => toggleSection('strength')}
-                                >
-                                    <div className="px-3 pb-3">
-                                        <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} />
-                                    </div>
-                                </PanelCard>
-                                <div className="rounded-[10px] border border-[#eeeef5] p-3">
-                                    <div className="mb-3 grid grid-cols-2 gap-2">
-                                        <div>
-                                            <FLabel>Company</FLabel>
-                                            <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." name="target_company" />
-                                        </div>
-                                        <div>
-                                            <FLabel>Job title</FLabel>
-                                            <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" name="target_title" />
-                                        </div>
-                                    </div>
-                                    <FLabel>Job description</FLabel>
+                                <div className="rg-field">
+                                    <label className="rg-label">Job description</label>
                                     <FTextarea
                                         value={targetJobDescription}
                                         onChange={setTargetJobDescription}
                                         onBlur={save}
                                         placeholder="Paste the job posting here to keep it alongside the resume you're tailoring."
-                                        rows={6}
+                                        rows={10}
                                     />
                                 </div>
+                            </>
+                        )}
 
-                                <PanelCard
-                                    title="Share links"
-                                    pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
-                                    open={openSections.share}
-                                    onToggle={() => toggleSection('share')}
-                                >
-                                    <div className="px-3 pb-3">
-                                        {/* ponytail: management lives on /shares — this is just the handoff. */}
-                                        <p className="mb-3 text-xs text-gray-500">
-                                            Share links are stable, so an edit here reaches anyone you already sent one to. Create and manage them on the Shares page.
-                                        </p>
-                                        <Link
-                                            href={route('shares.index')}
-                                            className="inline-flex rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
-                                        >
-                                            Manage shares →
-                                        </Link>
-                                    </div>
-                                </PanelCard>
-                                <PanelCard
-                                    title="Messages"
-                                    pill={unreadCount > 0
-                                        ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
-                                        : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
-                                    open={openSections.messages}
-                                    onToggle={() => toggleSection('messages')}
-                                >
-                                    <div className="px-3 pb-3">
-                                        <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
-                                    </div>
-                                </PanelCard>
+                        {inspector === 'checklist' && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} />}
+
+                        {inspector === 'shares' && (
+                            <>
+                                {/* ponytail: management lives on /shares — this is just the handoff. */}
+                                <p className="mb-3 text-xs text-gray-500">
+                                    Share links are stable, so an edit here reaches anyone you already sent one to.
+                                    Create and manage them on the Shares page.
+                                </p>
+                                <Link href={route('shares.index')} className="rg-button is-primary">Manage shares →</Link>
+                            </>
+                        )}
+
+                        {inspector === 'messages' && <ThreadsPanel threads={initialThreads} resumeId={resume.id} />}
+
+                        {recruiterNote && isSection(inspector) && (
+                            <div className="rg-card">
+                                <p className="rg-card-title">Recruiter note</p>
+                                <p className="text-sm leading-relaxed text-gray-700">{recruiterNote}</p>
                             </div>
-                        </div>
-                    </aside>
-
+                        )}
+                    </div>
+                </aside>
             </div>
-
 
             {/* First-run wizard */}
             {wizardStep < 2 && (
@@ -1279,6 +1291,6 @@ export default function Edit({
                     </div>
                 </div>
             )}
-        </AuthenticatedLayout>
+        </div>
     );
 }
