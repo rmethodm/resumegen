@@ -127,26 +127,84 @@ requires re-deriving them. They are now stated as formulas of `GRANT_JOBS` in
 | p90 | `p90 < G + 3` | p90 < 12 | **p90 < 6** |
 | Conversion | `% exceeding G < 15%` | exceeding 9 < 15% | **exceeding 3 < 15%** |
 
-Measured against the modelled distribution (median 3, p90 9, 49.0% exceeding 3):
+Measured against the modelled distribution, re-run 2026-07-21 after `pricing:usage` gained
+a maturity window (see below):
 
 ```
 +------------------------+-------------+-------------+
 | Metric                 | Value       | Re-base if  |
 +------------------------+-------------+-------------+
-| Users with >=1 job     | 733         | —           |
-| Median jobs tailored   | 3           | median <= 4 |
-| p90 jobs tailored      | 9           | p90 < 6     |
-| Users exceeding 3 jobs | 359 (49.0%) | < 15%       |
+| Users with >=1 job     | 327         | —           |
+| Median jobs tailored   | 4           | median <= 4 |
+| p90 jobs tailored      | 14          | p90 < 6     |
+| Users exceeding 3 jobs | 182 (55.7%) | < 15%       |
 +------------------------+-------------+-------------+
 ```
 
-p90 and conversion clear comfortably. **The median trigger still trips** — at 3 jobs the
-median user spends exactly their grant and never reaches a card. A $2 grant is profitable
-but still on the wrong side of §12's own median rule, just by less than $5 was.
+p90 and conversion clear, now by a wide margin. **The median trigger still trips**, but
+only just — 4 against a threshold of 4, sitting exactly on the boundary. The median user
+spends their grant and reaches a card on the very next job. A $2 grant is profitable but
+still on the wrong side of §12's own median rule, by the smallest possible amount.
+
+### The maturity window, and what it changed
+
+The figures above replace an earlier set (median 3, p90 9, 49.0% of 733 users) that was
+**right-censored**. `pricing:usage` measures jobs-so-far, but §12's triggers are defined
+over *lifetime* jobs tailored, and both the median and p90 triggers fire on LOW values. A
+user who signed up last week has not finished applying, so counting them pushes the report
+toward "re-base the grant down" — and under a 1.25x signup ramp the newest, least-complete
+cohort is also the largest, so the bias grows as the product does. That is a go/no-go
+signal pointing the wrong way, and it would have misread real production data identically.
+`PricingUsageReport::MATURITY_DAYS` now excludes users younger than 90 days.
+
+Measured on one identical dataset, censored versus matured:
+
+| Metric | Uncensored | Matured (90d) | Effect |
+|---|---|---|---|
+| Users with >=1 job | 718 | 327 | −54% of the population |
+| Median jobs | 4 | 4 | none *on this date* — see below |
+| p90 jobs | 10 | 14 | **+40%** |
+| Exceeding 3 jobs | 50.3% | 55.7% | +5.4pt |
+
+A single snapshot understates the median effect, because on 2026-07-21 the uncensored
+median had already converged to 4. Replaying the same dataset at a series of as-of dates
+(hiding jobs dated after each one — valid because the seeder's user rows are identical
+across days, only the `isFuture()` cutoff moves) shows what the pooled statistic actually
+does over time:
+
+| as-of | Uncensored n / median / p90 | Matured 90d n / median / p90 |
+|---|---|---|
+| 2026-07-01 | 617 / **3** / 10 | 270 / **4** / 14 |
+| 2026-07-05 | 632 / **3** / 10 | 282 / **4** / 14 |
+| 2026-07-07 | 640 / **3.5** / 10 | 289 / **4** / 14 |
+| 2026-07-09 | 652 / **4** / 10 | 292 / **4** / 14 |
+| 2026-07-13 | 672 / **4** / 10 | 302 / **4** / 14 |
+| 2026-07-17 | 697 / **4** / 10 | 315 / **4** / 14 |
+| 2026-07-21 | 718 / **4** / 10 | 327 / **4** / 14 |
+
+Read that as two findings:
+
+- **The uncensored median converges upward toward the truth, and reads at or below it in the
+  meantime.** It sat at 3 for the first week of July and reached 4 only on the 9th. It is not
+  wrong by a fixed amount, it is wrong by an amount that depends on when you ran it — which
+  is worse, because nothing in the output says which you got.
+- **The matured median is flat at 4 across every as-of date, and p90 flat at 14.** The window
+  fixes the instability outright rather than merely shrinking it. A matured cohort's
+  contribution can still grow (a 100-day-old user with a 180-day spread is not finished), but
+  that drift is slow, real, and in the direction of more jobs — not an artefact.
+
+An earlier draft of this section attributed the wandering median to a "calendar artefact" the
+window did not address. That was wrong: it is the censoring, and the window does address it.
+
+What the window does buy: the matured figures (median 4, p90 14) land close to the
+distribution `GrowthSampleSeeder` was actually authored to produce ("median around 4 and
+p90 around 12"), which is a check that the instrument now reads what was put in. The cost
+is steep — **more than half the population is excluded** — and that ratio only improves if
+growth slows.
 
 ### The $1 alternative (C2), flagged not adopted
 
-Only a $1 grant clears all three (`median ≤ 2` vs an observed 3), and it is better on
+Only a $1 grant clears all three (`median ≤ 2` vs an observed 4), and it is better on
 accrual too: **+$567.24 @ $40 infra, +$867.24 @ $15**, versus B's +$160.70 / +$460.70. It
 keeps the $5 minimum top-up, so accessibility survives.
 
@@ -295,7 +353,7 @@ literally zero cost.
 |---|---|---|
 | Signup ramp | 20/mo growing ~1.25x, no paid acquisition | Low — arbitrary |
 | Activation (ever tailors a job) | 55% | **Lowest — invented** |
-| Jobs per activated user | banded, median 3 / p90 9 | **Lowest — invented** |
+| Jobs per activated user | banded, median 4 / p90 14 matured | **Lowest — invented** |
 | AI calls per job | 3–9 | Medium |
 | Token envelope | 900–2200 in, 150–600 out, gpt-4o-mini | Medium — priced off `config('ai.pricing')` |
 | Failed/moderated calls | 2% | Low, immaterial |

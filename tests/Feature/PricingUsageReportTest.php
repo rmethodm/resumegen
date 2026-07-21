@@ -11,9 +11,15 @@ class PricingUsageReportTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function userWithJobs(int $jobs): User
+    /**
+     * Signed up 120 days ago by default — past the command's 90-day maturity window, so
+     * the user counts. Tests that care about censoring pass a smaller number explicitly.
+     */
+    private function userWithJobs(int $jobs, int $signedUpDaysAgo = 120): User
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'created_at' => now()->subDays($signedUpDaysAgo),
+        ]);
 
         for ($i = 0; $i < $jobs; $i++) {
             $user->jobPairings()->create([
@@ -80,6 +86,50 @@ class PricingUsageReportTest extends TestCase
                 ['p90 jobs tailored', 8, 'p90 < 6'],
                 ['Users exceeding 3 jobs', '1 (100.0%)', '< 15%'],
             ])
+            ->assertSuccessful();
+    }
+
+    /**
+     * The §12 triggers are defined over *lifetime* jobs tailored, but a query run today can
+     * only see jobs-so-far. Recent signups have not finished applying, and both the median
+     * and p90 triggers fire on LOW values — so counting the half-finished drags the report
+     * toward "re-base the grant down". Under signup growth the newest cohort is also the
+     * largest, so the bias gets worse the better the product does. That makes this a
+     * go/no-go signal pointing the wrong way, not a rounding error.
+     */
+    public function test_it_excludes_users_too_new_to_have_finished_tailoring(): void
+    {
+        foreach ([8, 8, 8] as $jobs) {
+            $this->userWithJobs($jobs);
+        }
+
+        // Four users a week into their search, one job each. Uncensored these dominate the
+        // population and drag the median from 8 to 1, tripping every trigger.
+        foreach ([1, 1, 1, 1] as $jobs) {
+            $this->userWithJobs($jobs, signedUpDaysAgo: 7);
+        }
+
+        $this->artisan('pricing:usage')
+            ->expectsTable(['Metric', 'Value', 'Re-base if'], [
+                ['Users with >=1 job', 3, '—'],
+                ['Median jobs tailored', 8, 'median <= 4'],
+                ['p90 jobs tailored', 8, 'p90 < 6'],
+                ['Users exceeding 3 jobs', '3 (100.0%)', '< 15%'],
+            ])
+            ->expectsOutputToContain('Also excluded: 4 user(s)')
+            ->assertSuccessful();
+    }
+
+    /**
+     * A brand-new product has nothing but immature users. Reporting a median off them
+     * would read as a real signal, so the command refuses rather than under-reporting.
+     */
+    public function test_it_refuses_to_report_when_every_user_is_too_new(): void
+    {
+        $this->userWithJobs(8, signedUpDaysAgo: 7);
+
+        $this->artisan('pricing:usage')
+            ->expectsOutputToContain('too new to read')
             ->assertSuccessful();
     }
 
