@@ -78,6 +78,11 @@ Default to surfacing uncertainty, not hiding it.
 - **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
+**Conventions** (moved here from global instructions 2026-07-20 — they only apply to this stack):
+
+- **Postgres:** prefer `jsonb` over `json`; add indexes explicitly in migrations; run `EXPLAIN ANALYZE` before assuming a slow query is fixed. Tests run on SQLite, so avoid SQLite-incompatible raw SQL or the suite passes on something production never executes.
+- **React/TypeScript:** no `any` — use `unknown` + narrowing. Co-locate component-specific types. Prefer server state (Inertia props) over client-side caches unless there is a real need for local-only state.
+
 ## Commands
 
 ```bash
@@ -143,6 +148,8 @@ The builder's Share tab holds only an active-link count and a link to `/shares`.
 
 **A replacement is proposed but not implemented.** `docs/prepaid-pricing-model.md` (2026-07-20) designs a prepaid dollar balance — $0.50 per **job** (not per resume×job — pairing on resume too would bill users for the A/B variants feature), $5 signup grant, no subscription. It is a **proposal**; its §12 gates implementation on usage data that does not exist yet. Nothing in `app/` implements it, and the sentence above still holds: do not add a paywall without asking. Read that doc before proposing any pricing change, and do not revive the subscription ladder in `docs/resume-builder-competitive-analysis.md` §3 — it was withdrawn.
 
+**Subscriptions were reconsidered on 2026-07-20 and rejected again, with reasons this time.** The arithmetic favours them (a $9/mo subscriber out-earns the average prepaid user's entire year in 0.62 months); the demand shape does not. Job hunting is episodic — someone tailors 8 resumes over five weeks and disappears for two years — so a subscription bills a relationship the product does not have. Consequences: month-3 retention in this category runs 20–30%, conversion collapses when a $9 gate sits in front of the first resume (prepaid's 25–41% payer rate comes from spending a grant already in hand), and what survives is largely forgot-to-cancel revenue. **Price is the better lever than model**: at 75c/job the sweep accrues +$1,196 vs +$447 at 50c, with no second billing implementation and no churn assumption. Reopen only if real retention data shows genuine multi-month engagement, or if predictable MRR becomes the goal for fundraising/exit reasons — that is a legitimate trade, just a different one.
+
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
 **`PRICING_REVIEW.md` and `docs/claude/pricing-and-billing.md` were deleted on 2026-07-20** (recoverable in git history). Both still documented Free/Starter/Pro/Agency at $9/$19/$49 with resignation-letter and job-application caps and org seats, referencing `User::planTier()`, `is_pro`, `plan_tier`, `BillingController`, `Billing/Index.tsx`, `UpgradeModal` and `featureGate` — every one of which is gone. `PRICING_REVIEW.md` additionally *recommended re-gating templates and DOCX export to paid*. They read as authoritative and were the most likely route to an accidental paywall. If either resurfaces from a stash or an old branch, delete it again rather than updating it; `docs/prepaid-pricing-model.md` is the only live pricing document.
@@ -150,6 +157,7 @@ Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` 
 **Modelling the prepaid proposal.** `GrowthSampleSeeder` fabricates 12 months of traffic; `pricing:growth` prints the P&L (`--infra=` sets the hosting assumption) and `pricing:usage` the jobs distribution. Every lever is a `GROWTH_*` env override (`GRANT_CENTS`, `JOB_CENTS`, `TOPUP_CENTS`, `ACTIVATION_PCT`, `JOBS_SCALE_PCT`, `RAMP_PCT`, `GENERAL_FREE`), so scenarios sweep without editing the seeder — see `docs/growth-model-sample-run.md` for 19 runs. Two things to know before quoting any figure from it:
 
 - **`pricing:growth`'s "Revenue" is cash collected, not revenue recognised.** Prepaid balance is a liability until spent. Recognised revenue and cash are the two ends of one measure — `net(r) = recognised + deferred × (1 − r) − stripe − ai − infra` — where `r=1` (everything refunded) gives the accrual figure and `r=0` (full breakage) gives the cash figure. The accrual number is therefore the *pessimistic bound*, not a central case.
+- **Recognised revenue needs a per-user FIFO over the ledger, and `pricing:growth` does not print it.** Grant dollars burn before cash *within each user's own balance*, so recognised is `Σ max(0, min(spend − grant, topup))` per user. Doing that FIFO globally is not an approximation, it flips the sign: unspent grant held by users who never paid cancels out the cash spend of users who did. That mistake reported scenario D as −$224 when it is +$1,155. Validate any accrual script against a known row (scenario B: deferred ≈ $1,175) before trusting a new one.
 - **`PricingUsageReport::GRANT_JOBS` is 3, deliberately disagreeing with the pricing doc's settled $5 grant (§9).** Its three re-base triggers are now formulas of `GRANT_JOBS` (`median ≤ G+1`, `p90 < G+3`, `%exceeding G < 15%`) that reproduce the doc's published 10/12/15% at `G=9`. If the grant moves, set both together.
 
 ## AI (OpenAI or Anthropic)

@@ -6,8 +6,8 @@ is still 0, nobody pays. `GrowthSampleSeeder` now sweeps 19 fabricated scenarios
 (`docs/growth-model-sample-run.md`) via `GROWTH_*` env vars. Does not satisfy §12's stop rule.
 Branch is pushed and clean as of 2026-07-20; doc sweep done (dead tier docs deleted, AI_STRATEGY
 rewritten, AGENTS.md reduced to a pointer, Imagick timestamp churn fixed). Scenario D re-measured
-and D2 (75c/$5) added — **uncommitted** in `docs/growth-model-sample-run.md`. Dev DB currently
-holds the D2 seed, not baseline.
+and D2 (75c/$5) added in `docs/growth-model-sample-run.md`. Dev DB currently holds the D2 seed,
+not baseline.
 
 ## Key Decisions
 - **Cash and accrual are bounds of one measure**: `net(r) = recognised + deferred x (1-r) - stripe -
