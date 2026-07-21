@@ -1,12 +1,13 @@
 # Resumegen
 
-Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create resumes, cover letters, resignation letters, public portfolio pages, and shareable resume links. The app also includes billing, admin operations, analytics, webhooks, and a small Sanctum API used by the browser extension.
+Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create resumes, cover letters, public portfolio pages, and shareable resume links. The app also includes admin operations, analytics, and a small Sanctum API used by the browser extension.
 
 ## Current Status
 
-- Laravel 13 app with React 18, Inertia 2, Tailwind CSS, Filament 3, Sanctum, Cashier, DOMPDF, PHPWord, Spatie Media Library, and OpenAI integration.
+- Laravel 13 app with React 18, Inertia 2, Tailwind CSS, Filament 3, Sanctum, DOMPDF, and PHPWord.
 - Mobile app work is paused. The previous Expo/mobile-only API surface was removed on 2026-07-08.
-- AI code still exists, but production AI behavior is controlled by `AI_ENABLED`. See [AI_STRATEGY.md](AI_STRATEGY.md) before re-enabling or changing AI features.
+- **The app is free and unlimited.** There is no billing, no plan tier, and nothing is metered.
+- **There is no AI.** All AI features, the pricing instrumentation, and the Job Search feature were removed on 2026-07-21. Every remaining feature is deterministic server-side code.
 - Deployment notes live in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Main Product Areas
@@ -17,25 +18,8 @@ Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps use
 - Cover letter and resignation letter builders.
 - Proofreading request flow with a paid service path.
 - Dashboard analytics, view tracking, heatmaps, strength scoring, salary hints, job-role/title/skill autocomplete, and user activity tracking.
-- Billing through Laravel Cashier and Stripe.
-- Webhook endpoints for user-owned integrations.
 - Browser extension support through Sanctum personal tokens and API routes.
-- Filament admin panel for users, content, operations, revenue, growth, AI oversight, audit logs, messages, proofreading requests, job data, and admin impersonation.
-
-## AI Surface
-
-AI-gated routes currently include:
-
-- Resume bullet rewrite
-- Summary generation
-- ATS keywords
-- Career map
-- Resume translation
-- Interview coach
-- Career coach chat
-- Resignation letter generation
-
-Deterministic features such as strength score, salary hint, autocomplete, heatmap, and proofreading are not AI features.
+- Filament admin panel for users, content, operations, audit logs, messages, job data, and admin impersonation.
 
 ## Local Development
 
@@ -70,7 +54,7 @@ npm run build
 - `routes/api.php` - Sanctum API used by the browser extension
 - `app/Http/Controllers` - app controllers
 - `app/Models` - domain models
-- `app/Services` - AI, scoring, exports, revenue, growth, thumbnails, webhooks, and user limits
+- `app/Services` - scoring, exports, thumbnails, and the template allowlist
 - `app/Filament` - admin panel pages, resources, and widgets
 - `resources/js/Pages` - Inertia React pages
 - `database/migrations` - schema history
@@ -78,10 +62,7 @@ npm run build
 
 ## Documentation
 
-- [CONTEXT.md](CONTEXT.md) - current project context and paused mobile decision
-- [AI_STRATEGY.md](AI_STRATEGY.md) - current AI decision record
-- [docs/prepaid-pricing-model.md](docs/prepaid-pricing-model.md) - the pricing proposal (nothing is billed; prices are 0)
-- [docs/growth-model-sample-run.md](docs/growth-model-sample-run.md) - fabricated scenario sweep behind it
+- [CONTEXT.md](CONTEXT.md) - current project context
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) - server deployment guide
 - [AGENTS.md](AGENTS.md) - pointer to CLAUDE.md, which is authoritative for AI agents
 - [CODEX.md](CODEX.md) - Codex-specific context policy

@@ -20,4 +20,5 @@ The three corrections most likely to cause damage if you act on the Boost block 
 
 Also in `CLAUDE.md` and absent from the Boost block: migrations are forward-only (never
 `migrate:rollback`), Rule 5 (no LLM for anything code can answer deterministically), and the
-rule that `docs/prepaid-pricing-model.md` is the only live pricing document.
+2026-07-21 removal of all AI, all pricing instrumentation and the Job Search feature — there is
+no AI in this app, and no live pricing document.

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AdminImpersonationController;
-use App\Http\Controllers\AiSuggestionController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
@@ -10,8 +9,6 @@ use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\CareerHubController;
 use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
-use App\Http\Controllers\InterviewCoachController;
-use App\Http\Controllers\JobSearchController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
@@ -21,7 +18,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
 use App\Http\Controllers\ResumeBuilderController;
-use App\Http\Controllers\ResumeImportController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\ResumeThreadController;
 use App\Http\Controllers\SalaryController;
@@ -74,7 +70,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
     Route::post('/builder', [ResumeBuilderController::class, 'store'])->name('builder.store');
     Route::get('/builder/create', [ResumeBuilderController::class, 'create'])->name('builder.create');
-    Route::post('/import/pdf/confirm', [ResumeImportController::class, 'confirm'])->name('import.pdf.confirm');
     Route::get('/builder/{resume}', [ResumeBuilderController::class, 'edit'])->name('builder.edit');
     Route::put('/builder/{resume}', [ResumeBuilderController::class, 'update'])->name('builder.update');
     Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
@@ -96,18 +91,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
     Route::get('/search', SearchController::class)->name('search')->middleware('throttle:30,1');
 
-    Route::middleware(['ai_enabled', 'throttle:20,1'])->group(function () {
-        Route::post('/builder/{resume}/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])->name('builder.ai.rewrite-bullet');
-        Route::post('/builder/{resume}/ai/critique-bullet', [AiSuggestionController::class, 'critiqueBullet'])->name('builder.ai.critique-bullet');
-        Route::post('/builder/{resume}/ai/summary', [AiSuggestionController::class, 'summary'])->name('builder.ai.summary');
-        Route::post('/builder/{resume}/ai/ats-keywords', [AiSuggestionController::class, 'atsKeywords'])->name('builder.ai.ats-keywords');
-        Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
-        Route::post('/cover-letters/{letter}/ai/draft', [AiSuggestionController::class, 'coverLetterDraft'])->name('cover-letters.ai.draft');
-        Route::post('/import/pdf/extract', [ResumeImportController::class, 'extract'])->name('import.pdf.extract');
-        Route::post('/jobs/rank', [JobSearchController::class, 'rank'])->name('jobs.rank');
-        Route::post('/jobs/import-url', [JobSearchController::class, 'importUrl'])->name('jobs.import-url');
-    });
-
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
@@ -123,13 +106,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
     Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
 
+    // Salary hint predates the removed Job Search feature and is independent of it;
+    // `jobs.salary` is now the only `jobs.*` route.
     Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
-
-    Route::get('/jobs', [JobSearchController::class, 'index'])->name('jobs.index');
-    Route::post('/jobs/search', [JobSearchController::class, 'search'])->name('jobs.search')->middleware('throttle:30,1');
-    Route::post('/jobs/saved', [JobSearchController::class, 'store'])->name('jobs.saved.store');
-    Route::patch('/jobs/saved/{jobSearch}', [JobSearchController::class, 'update'])->name('jobs.saved.update');
-    Route::delete('/jobs/saved/{jobSearch}', [JobSearchController::class, 'destroy'])->name('jobs.saved.destroy');
 
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
     Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');

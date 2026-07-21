@@ -7,12 +7,10 @@ export interface StrengthPanelHandle {
 
 interface Props {
     resumeId: number;
-    aiRemaining: number;
-    onGenerateSummary: () => void;
 }
 
 const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
-    function StrengthScorePanel({ resumeId, aiRemaining, onGenerateSummary }, ref) {
+    function StrengthScorePanel({ resumeId }, ref) {
         const [score, setScore] = useState<number | null>(null);
         const [tip, setTip] = useState<string | null>(null);
         const [tipKey, setTipKey] = useState<string | null>(null);
@@ -69,9 +67,6 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                                 {score < 100 && tip && (
                                     <div className="rounded-lg bg-[#dbeafe] px-3 py-2">
                                         <p className="text-xs font-medium text-[#1e40af]">Next: {tip}</p>
-                                        {tipKey === 'summary' && aiRemaining > 0 && (
-                                            <button type="button" onClick={onGenerateSummary} className="mt-1 text-xs font-semibold text-[#2563eb] hover:text-[#1d4ed8]">✨ Generate it with AI →</button>
-                                        )}
                                     </div>
                                 )}
 

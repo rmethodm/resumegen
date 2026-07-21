@@ -8,7 +8,7 @@ const SLIDES = [
     { tab: 'Jobs',          label: 'Job Tracker'    },
 ] as const;
 
-export default function Welcome({ auth, aiEnabled }: PageProps) {
+export default function Welcome({ auth }: PageProps) {
     const isLoggedIn = !!auth.user;
     const ctaHref = route(isLoggedIn ? 'dashboard' : 'register');
 
@@ -316,9 +316,7 @@ export default function Welcome({ auth, aiEnabled }: PageProps) {
                             { num: 'No card', label: 'needed to start' },
                             { num: '9',      label: 'resume templates' },
                             { num: 'Free',   label: 'to get started' },
-                            aiEnabled
-                                ? { num: '∞',    label: 'free — no plans' }
-                                : { num: 'PDF + DOCX', label: 'export on every plan' },
+                            { num: '∞',      label: 'free — no plans' },
                         ].map(({ num, label }) => (
                             <div key={label} className="flex items-center gap-2">
                                 <span className="text-lg font-black text-[#0f172a]">{num}</span>
@@ -446,8 +444,6 @@ export default function Welcome({ auth, aiEnabled }: PageProps) {
                                     'PDF + DOCX export',
                                     'Public share links',
                                     'Portfolio page',
-                                    'Job tracker',
-                                    ...(aiEnabled ? ['AI writing tools'] : []),
                                 ].map((f) => (
                                     <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                         <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}

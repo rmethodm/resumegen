@@ -26,11 +26,6 @@ class UserResource extends Resource
         return $form->schema([
             Forms\Components\TextInput::make('name')->required()->maxLength(255),
             Forms\Components\TextInput::make('email')->email()->required()->maxLength(255),
-            Forms\Components\Toggle::make('ai_blocked')->label('AI Blocked'),
-            Forms\Components\TextInput::make('ai_limit_override')
-                ->label('AI Limit Override')
-                ->numeric()
-                ->nullable(),
         ]);
     }
 

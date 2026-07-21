@@ -2,11 +2,9 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps } from '@/types';
-import { ArrowDownTrayIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { PlusIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
-import PdfImportModal from './Partials/PdfImportModal';
 
 const TEMPLATE_LABELS: Record<string, string> = {
     classic: 'Classic', modern: 'Modern', minimal: 'Minimal', 'minimal-ruled': 'Minimal Ruled',
@@ -15,7 +13,6 @@ const TEMPLATE_LABELS: Record<string, string> = {
 };
 
 type Props = {
-    resumes: { id: number; name: string }[];
     resumeCount: number;
     allowedTemplates: string[];
 };
@@ -44,10 +41,8 @@ function OptionCard({ icon, label, active, onClick }: {
     );
 }
 
-export default function Create({ resumes, resumeCount, allowedTemplates }: Props) {
-    const { aiEnabled } = usePage<PageProps>().props;
+export default function Create({ resumeCount, allowedTemplates }: Props) {
     const [mode, setMode] = useState<'blank' | 'templates' | null>(null);
-    const [showImport, setShowImport] = useState(false);
     const form = useForm({ name: '', template: '' });
 
     const submit = (e: FormEvent) => {
@@ -83,14 +78,6 @@ export default function Create({ resumes, resumeCount, allowedTemplates }: Props
                             active={mode === 'blank'}
                             onClick={() => pick('blank')}
                         />
-                        {aiEnabled && (
-                            <OptionCard
-                                icon={<ArrowDownTrayIcon className="h-5 w-5" />}
-                                label="Import PDF / LinkedIn"
-                                active={showImport}
-                                onClick={() => setShowImport(true)}
-                            />
-                        )}
                         <OptionCard
                             icon={<Squares2X2Icon className="h-5 w-5" />}
                             label="Browse templates"
@@ -159,12 +146,6 @@ export default function Create({ resumes, resumeCount, allowedTemplates }: Props
                 </div>
             </div>
 
-            {showImport && (
-                <PdfImportModal
-                    resumes={resumes}
-                    onClose={() => setShowImport(false)}
-                />
-            )}
         </AuthenticatedLayout>
     );
 }
