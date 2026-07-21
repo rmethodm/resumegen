@@ -6,8 +6,10 @@ is still 0, nobody pays. `GrowthSampleSeeder` now sweeps 19 fabricated scenarios
 (`docs/growth-model-sample-run.md`) via `GROWTH_*` env vars. Does not satisfy §12's stop rule.
 Branch is pushed and clean as of 2026-07-20; doc sweep done (dead tier docs deleted, AI_STRATEGY
 rewritten, AGENTS.md reduced to a pointer, Imagick timestamp churn fixed). Scenario D re-measured
-and D2 (75c/$5) added in `docs/growth-model-sample-run.md`. Dev DB currently holds the D2 seed,
-not baseline.
+and D2 (75c/$5) added in `docs/growth-model-sample-run.md`. **Dev DB holds the scenario B seed**
+(grant $2 / 50c per job / $5 top-up), verified 2026-07-21 against `balance_transactions` — this
+line previously claimed D2 and was wrong. Re-check before quoting any `pricing:*` output.
+Instrumentation is shipped and open as PR #3 (`pricing-instrumentation` → `main`); prices stay 0.
 
 ## Key Decisions
 - **Cash and accrual are bounds of one measure**: `net(r) = recognised + deferred x (1-r) - stripe -
@@ -21,11 +23,15 @@ not baseline.
   episodic (tailor 8 resumes in five weeks, vanish for two years) — a subscription bills a
   relationship the product does not have, and the revenue that survives that mismatch is mostly
   forgot-to-cancel. Raising price beats changing model: D2 (75c/$5) accrues **+$1,196** vs B's
-  **+$447**, no second billing implementation, no churn assumption.
+  **+$471**, no second billing implementation, no churn assumption. B re-measured 2026-07-21
+  (recognised $841.50, deferred $1,178.50 — passes the ≈$1,175 validation gate); the old **+$447**
+  matched no run and predates the per-user FIFO fix. The doc's +$460.70 is $10.01 lower, cause
+  unknown. **D2's margin over B assumes zero elasticity — see WORKLOG Q10 before quoting it.**
 - **Grant-vs-cash split is per-user FIFO, never global.** Global FIFO lets non-payers' unspent
   grant offset payers' cash spend and inverts the sign (D reads −$224 instead of +$1,155).
 
 ## Next Steps
 **`WORKLOG.md` is the work queue.** Say "process the next TODO in WORKLOG.md", one item per pass.
-Three of its six items are `BLOCKED` on production data by §12's stop rule — **nothing is broken,
-those are parked on purpose, not chores.** Correct action on them: none.
+Ten items: Q1-Q3 `BLOCKED` on production data by §12's stop rule — **nothing is broken, those are
+parked on purpose, not chores.** Correct action on them: none. Open `TODO`s are Q6 (split the
+branch), Q9 (competitor free tiers) and Q10 (elasticity knob); Q9/Q10 inform Q1/Q2, never close them.
