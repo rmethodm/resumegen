@@ -84,12 +84,8 @@ class ResumeBuilderController extends Controller
 
     public function create(Request $request): Response
     {
-        $user = $request->user();
-        $resumes = $user->resumes()->nonSnapshot()->orderByDesc('updated_at')->get(['id', 'name']);
-
         return Inertia::render('ResumeBuilder/Create', [
-            'resumes' => $resumes,
-            'resumeCount' => $resumes->count(),
+            'resumeCount' => $request->user()->resumes()->nonSnapshot()->count(),
             'allowedTemplates' => UserLimits::allTemplates(),
         ]);
     }
@@ -148,7 +144,6 @@ class ResumeBuilderController extends Controller
             'shareLinks' => $resume->shareLinks,
             'threads' => $threads,
             'isFirstResume' => $isFirstResume,
-            'aiRemaining' => UserLimits::aiRemaining($user),
             'allowedTemplates' => UserLimits::allTemplates(),
             'completionScore' => ResumeCompletionScorer::score($resume),
             'skillCategoryOptions' => SkillCategories::labels(),

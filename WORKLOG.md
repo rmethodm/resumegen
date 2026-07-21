@@ -2,6 +2,9 @@
 
 Queue of questions and tasks for Claude. One item per pass.
 
+**The queue is empty as of 2026-07-21** — everything below is closed. What remains is kept for the
+reasoning, not as work.
+
 **How to use:** say "Process the next TODO in WORKLOG.md". Claude fills in `### Answer`
 and flips the status. Don't ask for all items in one go — that reproduces the long-chat
 problem this file exists to avoid.
@@ -21,44 +24,25 @@ Project rules live in `CLAUDE.md`. Do not restate them here.
 
 ---
 
-## Q1 — Grant size vs free-tier competitiveness
-status: BLOCKED · type: research · files: docs/prepaid-pricing-model.md §14
+## Closed 2026-07-21 — the pricing investigation was abandoned
 
-The 19-scenario sweep narrows the signup grant but cannot settle it. Blocked on real
-usage data per §12's stop rule. Do not decide this from the fabricated seeder.
+Q1, Q2, Q3, Q9 and Q10 all asked about grant size, price elasticity or competitor free tiers.
+Q6 asked how to split a branch whose largest workstreams were pricing instrumentation and job
+search. On 2026-07-21 AI, the prepaid billing instrumentation and Job Search were removed from
+the codebase, along with both pricing docs and the growth model. Every one of those items is
+moot — not blocked, not deferred. Nothing about them needs doing. If pricing is ever revisited
+it starts from scratch, with production data, not from these questions.
 
-Q9 does the answerable half (what competitors give free). Completing Q9 does not unblock this.
-
-### Answer
-_(pending — blocked)_
-
----
-
-## Q2 — Price elasticity is unmodelled
-status: BLOCKED · type: research · files: docs/growth-model-sample-run.md
-
-Carries the largest swing in the tornado chart, and nothing in the model represents it.
-Blocked on production conversion data.
-
-Q10 makes the assumption explicit in the model. Completing Q10 does not unblock this.
-
-### Answer
-_(pending — blocked)_
-
----
-
-## Q3 — Launch grant amount
-status: BLOCKED · type: research · files: docs/prepaid-pricing-model.md §8
-
-Floor is $8. Needs a production count of qualifying accounts, which does not exist yet.
-
-### Answer
-_(pending — blocked)_
+The items themselves are in git history if the reasoning is ever wanted.
 
 ---
 
 ## Q4 — JdMatcher fallback has never run in a browser
 status: DONE · type: code · files: resources/js/Pages/ResumeBuilder/Partials/JdMatcher.tsx, .env.dusk.local
+
+> **Superseded 2026-07-21:** `JdMatcher`, `AtsMatchPanel` and `AI_ENABLED` are all deleted.
+> Kept for the standing lesson: this repo has a JS test runner (`npm run test:js`, vitest) because
+> of this item, and pure helpers in `resources/js` are testable without Dusk.
 
 `JdMatcher` renders only when `aiEnabled` is false, but both `.env` and `.env.dusk.local`
 set `AI_ENABLED=true`. Covering it needs a Dusk server booted with AI off (`config()->set`
@@ -122,6 +106,8 @@ symbol in `Edit.tsx` on this branch — that decision is stale or was reverted. 
 ## Q5 — PlainTextView's component export is dead
 status: DONE · type: code · files: resources/js/Pages/ResumeBuilder/Partials/plainText.ts
 
+> **Superseded 2026-07-21:** `plainText.ts` was deleted with the AI removal.
+
 Only `buildPlainText` and the type are used (by `JdMatcher`). Decide: wire the component
 into a LAB_VIEW, or delete it and keep the helper.
 
@@ -144,51 +130,6 @@ now-unused `useMemo`/`useState` import and the orphan `type Props = ResumeConten
 the three import sites (`Edit.tsx`, `JdMatcher.tsx`, `JdMatcher.test.ts`).
 
 Verified: `npx tsc --noEmit` clean, `npx vitest run` 8/8 passing.
-
----
-
-## Q6 — Split this branch before main
-status: TODO · type: code
-
-68 commits on `experiment/preview-left-skills-panel` (was written as "36+"; measured
-2026-07-21 with `git log --oneline main..HEAD`). Builder is verified (Dusk 3/3, React mounts
-clean, save-on-blur round trip works). Prod `.env` needs `AI_ENABLED=true` and deploy secrets
-`SSH_HOST` / `SSH_USER` / `SSH_PRIVATE_KEY`.
-
-### Answer
-**Interim: deferred 2026-07-21, not resolved.** Status stays `TODO` — the branch is still
-unsplit. What follows is the groundwork so the next pass does not re-derive it.
-
-Measured scope vs main: **68 commits, 147 files, +10,158 / −3,360**. Distinct workstreams,
-none of which is a subset of another:
-
-- Job search (`AdzunaBoard`, `UsaJobsBoard`, `JobUrlImporter`, alerts, `/jobs`)
-- Prepaid pricing instrumentation (`JobPairing`, `BalanceTransaction`, `pricing:*`, the docs)
-- `/shares` page and its analytics
-- Builder preview-left redesign (`SectionPalette`, `SectionDrawer`, `Edit.tsx` rewrite)
-- Dusk browser tests and `DuskTestCase`
-- Billing removal + doc sweep + `.claude/` hooks and skills
-
-**A focused PR is not available as a fallback, and this is the finding that matters.**
-Cherry-picking a single commit onto main does not work, because the files it edits do not
-exist there. `app/Console/Commands/PricingUsageReport.php` shows as +160 all-additions in
-`git diff main...HEAD` — it was created by `91b37f7` on this branch. The same holds for
-`JobPairing`, `config/pricing.php`, and the job-search services. **Any split must carry whole
-dependency chains, not individual commits.**
-
-Splitting is therefore real work, not a rebase: each candidate branch needs its own migration
-subset, and several commits touch shared files (`AiService`, `routes/web.php`, `CLAUDE.md`,
-`composer.lock`) that every workstream also edits. Expect conflicts on those four regardless of
-how the split is cut.
-
-**No PR was opened** (`gh pr list` confirms none exists for this branch). Asked and answered
-directly: hold off while the branch is still named `experiment/`. Revisit when the builder
-redesign is actually a merge candidate — that is the workstream the branch is named for, and
-the others accreted onto it.
-
-**Next pass on this item should start by deciding the split axis**, since that is the only
-open question: by workstream (6 branches, most faithful, most conflicts) or a single
-`feature/*` PR that merges the lot and accepts the review burden.
 
 ---
 
@@ -237,6 +178,10 @@ memory files.
 ## Q8 — `tokenize` drops a leading dot, so `.NET` matches "net"
 status: DONE · type: code · files: resources/js/Pages/ResumeBuilder/Partials/JdMatcher.tsx
 
+> **Superseded 2026-07-21:** `JdMatcher` and its tests were deleted. The trap is worth remembering
+> if keyword matching is ever rebuilt: a token regex that requires a leading alphanumeric silently
+> turns `.NET` into `net`.
+
 Found while writing Q4's tests. The regex `[a-z0-9][a-z0-9+#./-]*` requires an alphanumeric first
 character, so `.NET` tokenizes to `net`. A JD requiring `.NET` scores as covered against a resume
 that only contains the word "net". `C++` and `node.js` survive correctly; only a **leading**
@@ -276,48 +221,3 @@ stemming". Fixing it means real matching logic, which is a different item and pr
 it for a panel that renders in no live environment (Q4).
 
 ---
-
-## Q9 — What competitors actually give away free
-status: TODO · type: research · files: docs/prepaid-pricing-model.md §14
-
-Desk research to narrow Q1's plausible grant range. Q1 asks what grant maximises conversion,
-which needs conversion data we do not have; this asks the answerable half — what a new user
-can get for $0 from Teal, Rezi, Kickresume, Jobscan, Enhancv, and Resume Worded, expressed in
-units comparable to our grant (tailored jobs, exports, AI credits).
-
-**Does not close Q1 and must not flip it to DONE.** A competitor's free tier bounds what a
-grant has to beat to look non-stingy; it says nothing about our own conversion curve. Record
-the finding as a range with the comparison unit stated, not a recommended number.
-
-Constraint: the seeder is off-limits here. This item touches no code and reads no local
-database — if it starts producing figures from `GrowthSampleSeeder`, it has gone wrong.
-
-### Answer
-_(pending)_
-
----
-
-## Q10 — Elasticity is absent from the model, not just unmeasured
-status: TODO · type: code · files: database/seeders/GrowthSampleSeeder.php, docs/growth-model-sample-run.md
-
-Q2 records elasticity as the largest swing in the tornado chart with nothing in the model
-representing it. Today `JOB_CENTS` changes revenue per job and leaves demand untouched, so
-every sweep implicitly assumes perfectly inelastic demand — the most optimistic assumption
-available, applied silently. That is why D2 (75c) reads +$1,196 against B's +$447: the price
-rose 50% and not one user bought less.
-
-Add a `GROWTH_ELASTICITY_PCT` knob alongside the existing `GROWTH_*` overrides that scales
-jobs-per-user against price, so the assumption is declared rather than hidden. Default it to
-the current behaviour (zero elasticity) so published runs stay reproducible, then re-run D2
-at a few plausible values and record how much of its lead survives.
-
-**Does not close Q2.** It converts an omission into a stated assumption; the real coefficient
-still needs production conversion data at two prices. Every figure it produces inherits the
-guessed elasticity and must be quoted with it.
-
-Watch for: `CLAUDE.md` warns this environment is zsh and does not word-split, which has
-already produced a clean-looking sweep with a price of `0`. Write the invocations out
-explicitly or use `${=var}`.
-
-### Answer
-_(pending)_

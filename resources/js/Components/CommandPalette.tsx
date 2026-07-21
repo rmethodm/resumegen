@@ -12,7 +12,6 @@ const NAV: Flat[] = [
     { label: 'Resumes', sub: 'Go to', url: route('builder.index') },
     { label: 'Cover Letters', sub: 'Go to', url: route('cover-letters.index') },
     { label: 'Messages', sub: 'Go to', url: route('messages.index') },
-    { label: 'Jobs', sub: 'Go to', url: route('jobs.index') },
 ];
 
 export default function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {

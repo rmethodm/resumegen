@@ -47,20 +47,6 @@ class FilamentAdminTest extends TestCase
         $this->assertFalse($user->canAccessPanel($panel));
     }
 
-    // ─── Quota reset ───────────────────────────────────────────────────────
-
-    public function test_quota_reset_sets_ai_usage_reset_at(): void
-    {
-        $before = now()->subHour();
-        $target = $this->regularUser();
-        $target->update(['ai_usage_reset_at' => $before]);
-
-        $target->update(['ai_usage_reset_at' => now()]);
-        $target->refresh();
-
-        $this->assertTrue($target->ai_usage_reset_at->isAfter($before));
-    }
-
     // ─── Mark read ─────────────────────────────────────────────────────────
 
     public function test_mark_read_stamps_read_at(): void

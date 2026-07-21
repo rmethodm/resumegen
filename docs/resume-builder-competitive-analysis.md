@@ -1,5 +1,10 @@
 # Resume Builder Competitive & Pricing Analysis — Resumegen
 
+> **Historical, 2026-07-21.** Billing and AI were removed from the app on this date, along with all
+> pricing instrumentation and the prepaid proposal. Nothing here is live guidance — the pricing
+> sections (especially Part 3's tier ladder) describe a monetization path that was abandoned. The
+> app is free and unlimited, and has no AI features. Read the competitor research as research only.
+
 **Rounds 1 + 2 complete.** 208 agents · ~8.9M tokens · 43 sources · 50 claims adversarially verified (36 confirmed, 14 refuted).
 Market: US consumer self-serve. Constraint: free tier stays generous — no download gating, no watermark, no resume cap.
 All pricing as displayed **2026-07-19, US vantage point**. Several vendors geo/A-B vary pricing. Re-verify before publication.

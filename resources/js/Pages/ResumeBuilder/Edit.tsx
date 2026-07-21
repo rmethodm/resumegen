@@ -1,17 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
-import { type ResumeContent } from './Partials/plainText';
-import JdMatcher from './Partials/JdMatcher';
-import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
-import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     SwatchIcon,
     ArrowDownTrayIcon, TrashIcon,
 } from '@heroicons/react/24/outline';
 import SectionDrawer from './Partials/SectionDrawer';
 import SectionPalette from './Partials/SectionPalette';
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import {
     PointerSensor, KeyboardSensor, useSensor, useSensors,
     type DragEndEvent,
@@ -400,22 +396,13 @@ export type SectionEntry = {
     render: () => React.ReactNode;
 };
 
-// Sparkle glyph for the "Coach me" action (matches the design's summary card).
-function SparkIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
-    return (
-        <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
-        </svg>
-    );
-}
-
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function Edit({
     resume, shareLinks: initialLinks, threads: initialThreads,
     isFirstResume,
     allowedTemplates, completionScore, recruiterNote,
-    skillCategoryOptions, aiRemaining,
+    skillCategoryOptions,
 }: {
     resume: ResumeData;
     shareLinks: ShareLink[];
@@ -425,7 +412,6 @@ export default function Edit({
     completionScore: number;
     recruiterNote?: string | null;
     skillCategoryOptions: string[];
-    aiRemaining: number;
 }) {
     const [name, setName] = useState(resume.name);
     const [template, setTemplate] = useState<ResumeTemplate>(resume.template ?? 'classic');
@@ -435,14 +421,6 @@ export default function Edit({
     const [targetCompany, setTargetCompany] = useState(resume.target_company ?? '');
     const [targetTitle, setTargetTitle] = useState(resume.target_title ?? '');
     const [experience, setExperience] = useState<ExperienceEntry[]>(resume.experience ?? []);
-    const { aiEnabled } = usePage().props;
-    const ai = useAiSuggestion(aiRemaining);
-    // Tracks fields already rewritten by AI this session, so the button reads "Regenerate". Keys: 'summary', `exp:${id}`.
-    const [aiGenerated, setAiGenerated] = useState<Set<string>>(new Set());
-    const markGenerated = (key: string) => setAiGenerated(prev => new Set(prev).add(key));
-    const [keywordGaps, setKeywordGaps] = useState<string[]>([]);
-    const [coachQuestions, setCoachQuestions] = useState<Record<string, string[]>>({});
-    const [coachAnswers, setCoachAnswers] = useState<Record<string, string>>({});
     const [education, setEducation] = useState<EducationEntry[]>(resume.education ?? []);
     const [projects, setProjects] = useState<ProjectEntry[]>(resume.projects ?? []);
     const [certifications, setCertifications] = useState<CertEntry[]>(resume.certifications ?? []);
@@ -804,132 +782,6 @@ export default function Edit({
         </>
     );
 
-    // ── AI suggestion handlers ──
-    const handleGenerateSummary = async () => {
-        const data = await ai.run<{ suggestion: string }>(route('builder.ai.summary', resume.id));
-        if (data?.suggestion) { setSummary(data.suggestion); markGenerated('summary'); setTimeout(save, 0); }
-    };
-    const handleImproveExperience = async (expId: string, bullets: string | null) => {
-        if (!bullets?.trim()) { return; }
-        const data = await ai.run<{ suggestion: string }>(route('builder.ai.rewrite-bullet', resume.id), { text: bullets });
-        if (data?.suggestion) {
-            setExperience(prev => prev.map(e => e.id === expId ? { ...e, bullets: data.suggestion } : e));
-            markGenerated(`exp:${expId}`);
-            setTimeout(save, 0);
-        }
-    };
-    const handleKeywordGaps = async () => {
-        const data = await ai.run<{ keywords: string[] }>(route('builder.ai.ats-keywords', resume.id), { job_description: targetJobDescription });
-        if (data?.keywords) { setKeywordGaps(data.keywords); }
-    };
-    // The coach half of the bullet tools, keyed so it drives both the summary and each
-    // experience entry: ask what the text is missing, then rebuild it from the user's own answer.
-    const runCoach = async (key: string, text: string) => {
-        if (!text.trim()) { return; }
-        const data = await ai.run<{ questions: string[] }>(route('builder.ai.critique-bullet', resume.id), { text });
-        if (data?.questions) { setCoachQuestions(prev => ({ ...prev, [key]: data.questions })); }
-    };
-    const runRebuild = async (key: string, text: string, apply: (suggestion: string) => void) => {
-        const answer = coachAnswers[key]?.trim();
-        if (!text.trim() || !answer) { return; }
-        const data = await ai.run<{ suggestion: string }>(route('builder.ai.rewrite-bullet', resume.id), {
-            text: `${text}\n\nFacts the candidate supplied — use these, invent nothing else:\n${answer}`,
-        });
-        if (data?.suggestion) {
-            apply(data.suggestion);
-            markGenerated(key);
-            setCoachQuestions(prev => { const next = { ...prev }; delete next[key]; return next; });
-            setCoachAnswers(prev => { const next = { ...prev }; delete next[key]; return next; });
-            setTimeout(save, 0);
-        }
-    };
-
-    const renderAiButton = (opts: { idle: string; onRun: () => void; regenerated?: boolean; extraDisabled?: boolean; className?: string }) => {
-        if (!aiEnabled) {
-            return null;
-        }
-        const exhausted = ai.remaining === 0;
-        const label = opts.regenerated && !exhausted ? `↺ Regenerate · ${ai.remaining} left` : opts.idle;
-        return (
-            <button
-                type="button"
-                onClick={opts.onRun}
-                disabled={ai.loadingUrl !== null || opts.extraDisabled || exhausted}
-                className={`text-xs font-medium text-[#2563eb] hover:text-[#1d4ed8] disabled:opacity-40 disabled:cursor-not-allowed ${opts.className ?? ''}`}
-            >
-                {label}
-            </button>
-        );
-    };
-
-    // The 50/50 coach ↔ ghostwrite pair, rendered under the summary and each experience bullet.
-    // `onWrite` differs per field (summary vs. bullet route); the coach flow is shared via runCoach/runRebuild.
-    const renderBulletTools = (
-        key: string,
-        text: string,
-        apply: (suggestion: string) => void,
-        onWrite: () => void,
-    ) => {
-        if (!aiEnabled) { return null; }
-        const exhausted = ai.remaining === 0;
-        const busy = ai.loadingUrl !== null;
-        const questions = coachQuestions[key];
-        return (
-            <div>
-                <div className="flex items-center gap-4">
-                    <button
-                        type="button"
-                        onClick={() => runCoach(key, text)}
-                        disabled={busy || exhausted || !text.trim()}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] px-3.5 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                        <SparkIcon /> Coach me
-                    </button>
-                    <button
-                        type="button"
-                        onClick={onWrite}
-                        disabled={busy || exhausted}
-                        className="text-xs font-semibold text-[#71717a] transition-colors hover:text-[#475569] disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                        Write it for me{exhausted ? '' : ` · ${ai.remaining} left`}
-                    </button>
-                </div>
-                {questions && (
-                    <div className="mt-3 rounded-lg border border-[#e0e7ff] bg-[#eef2ff] p-3">
-                        <p className="mb-1.5 text-[11px] font-semibold text-[#4338ca]">Answer in your own words — we'll rebuild it from your facts:</p>
-                        <ul className="mb-2 list-disc space-y-0.5 pl-4 text-xs text-[#4338ca]">
-                            {questions.map((q, i) => <li key={i}>{q}</li>)}
-                        </ul>
-                        <textarea
-                            value={coachAnswers[key] ?? ''}
-                            onChange={e => setCoachAnswers(prev => ({ ...prev, [key]: e.target.value }))}
-                            rows={3}
-                            placeholder="e.g. cut load time from 4s to 1.2s for 50k monthly users"
-                            className="w-full resize-y rounded-md border border-[#c7d2fe] px-2.5 py-2 text-xs text-[#1e293b] placeholder-[#94a3b8] focus:border-[#4f46e5] focus:outline-none focus:ring-1 focus:ring-[#4f46e5]"
-                        />
-                        <div className="mt-2 flex justify-end gap-2">
-                            <button
-                                type="button"
-                                onClick={() => setCoachQuestions(prev => { const next = { ...prev }; delete next[key]; return next; })}
-                                className="text-xs text-[#94a3b8] hover:text-[#475569]"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => runRebuild(key, text, apply)}
-                                disabled={busy || !(coachAnswers[key]?.trim())}
-                                className="rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-40"
-                            >
-                                Rebuild
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
-        );
-    };
-
     // First-run wizard: 0=welcome, 1=contact, 2=done
     const [wizardStep, setWizardStep] = useState<0 | 1 | 2>(isFirstResume ? 0 : 2);
     const finishWizard = useCallback(() => {
@@ -968,14 +820,6 @@ export default function Edit({
     const pdfFilename = resume.pdf_filename ?? `${resume.id}.pdf`;
     const unreadCount = initialThreads.filter(t => !t.is_read).length;
 
-    // Live resume content shared by the read-only lab panels (plain text, JD matcher).
-    const resumeContent: ResumeContent = {
-        contact, summary, experience, projects, education, certifications, flatSkills,
-        skillGroups: skillCategories.map(c => ({ category: c.category_name, items: c.skills })),
-        skillNarratives: skillNarratives.map(n => ({ name: n.name, bullets: n.bulletsText.split('\n').filter(Boolean) })),
-        sectionOrder,
-    };
-
     // Keyed section registry — one entry per collapsible card. Built inside the
     // component so each entry's render() closes over the section's own state/setters.
     const SECTIONS: Record<SectionKey, SectionEntry> = {
@@ -1012,12 +856,6 @@ export default function Edit({
                         rows={5}
                     />
                     <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
-                    {renderBulletTools(
-                        'summary',
-                        summary,
-                        s => { setSummary(s); markGenerated('summary'); setTimeout(save, 0); },
-                        handleGenerateSummary,
-                    )}
                 </>
             ),
         },
@@ -1045,12 +883,6 @@ export default function Edit({
                                 <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
                                 <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
                             </div>
-                            {renderBulletTools(
-                                `exp:${exp.id}`,
-                                exp.bullets ?? '',
-                                s => { setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: s } : e)); markGenerated(`exp:${exp.id}`); setTimeout(save, 0); },
-                                () => handleImproveExperience(exp.id, exp.bullets),
-                            )}
                         </EntryCard>
                     ))}
                     <AddButton label="Add Experience" onClick={() => setExperience(prev => [...prev, emptyExp()])} />
@@ -1349,7 +1181,7 @@ export default function Edit({
                                     onToggle={() => toggleSection('strength')}
                                 >
                                     <div className="px-3 pb-3">
-                                        <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
+                                        <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} />
                                     </div>
                                 </PanelCard>
                                 <div className="rounded-[10px] border border-[#eeeef5] p-3">
@@ -1363,17 +1195,14 @@ export default function Edit({
                                             <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" name="target_title" />
                                         </div>
                                     </div>
-                                    {aiEnabled ? (
-                                        <AtsMatchPanel
-                                            jobDescription={targetJobDescription}
-                                            onJobDescriptionChange={setTargetJobDescription}
-                                            onJobDescriptionBlur={save}
-                                            keywordGaps={keywordGaps}
-                                            aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
-                                        />
-                                    ) : (
-                                        <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
-                                    )}
+                                    <FLabel>Job description</FLabel>
+                                    <FTextarea
+                                        value={targetJobDescription}
+                                        onChange={setTargetJobDescription}
+                                        onBlur={save}
+                                        placeholder="Paste the job posting here to keep it alongside the resume you're tailoring."
+                                        rows={6}
+                                    />
                                 </div>
 
                                 <PanelCard

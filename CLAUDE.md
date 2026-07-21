@@ -75,7 +75,8 @@ Default to surfacing uncertainty, not hiding it.
 - **Auth:** Laravel Breeze (session-based), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63).
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
 - **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia` and nothing in `app/` uses `spatie/laravel-medialibrary`, though the package is still in `composer.json`.
-- **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe.
+- **AI:** none — removed 2026-07-21. No OpenAI, no Anthropic, no `config/ai.php`, no `ai_requests`. Every remaining feature is deterministic server-side code.
+- **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe, no pricing instrumentation.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
 **Conventions** (moved here from global instructions 2026-07-20 — they only apply to this stack):
@@ -136,7 +137,7 @@ The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor 
 The builder's Share tab holds only an active-link count and a link to `/shares`. It used to embed a `SharePopover` with its own label/expiry/revoke controls — a cramped duplicate that could not show any of the analytics, and drifted from `/shares` as that page grew. Removed on 2026-07-19; don't reintroduce link management in the builder. Sharing does not interleave with editing (you share once you've stopped editing), and tokens are stable across edits, so a recruiter's existing link already serves the current version — there is nothing to re-copy after an edit.
 
 ### Shared Inertia props
-`HandleInertiaRequests::share()` passes `auth.user`, `flash.{success,error}`, `aiEnabled` (mirrors `config('ai.enabled')` so the UI can hide AI affordances), and `impersonating`. There is no `featureGate` — see "Billing".
+`HandleInertiaRequests::share()` passes `auth.user`, `flash.{success,error}` and `impersonating`. There is no `featureGate` — see "Billing" — and no `aiEnabled`, removed with AI on 2026-07-21.
 
 ## Billing — there is none
 
@@ -144,62 +145,15 @@ The builder's Share tab holds only an active-link count and a link to `/shares`.
 
 **Laravel Boost's auto-generated context block lies about this.** It lists `laravel/cashier (CASHIER) - v16` among the installed packages. Cashier is in neither `composer.json` nor `vendor/` — verify against the filesystem, not that header. The matching `.claude/skills/cashier-stripe-development` skill and the two `mcp__plugin_stripe_stripe__*` permissions were deleted on 2026-07-19 for the same reason.
 
-`App\Services\UserLimits` survives, but it now meters **only AI** — every other limit (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
-
-**A replacement is proposed but not implemented.** `docs/prepaid-pricing-model.md` (2026-07-20) designs a prepaid dollar balance — $0.50 per **job** (not per resume×job — pairing on resume too would bill users for the A/B variants feature), $5 signup grant, no subscription. It is a **proposal**; its §12 gates implementation on usage data that does not exist yet. What `app/` implements is the *instrumentation*, not the billing: `JobPairing`, `BalanceTransaction`, `JobPairingService` and `config/pricing.php` record one pairing per user per job so §12 can be answered with real numbers, with `job_cents` and `signup_grant_cents` both **0**. Nobody is charged and nobody sees a price, and the sentence above still holds: do not add a paywall without asking — turning prices on is a config change, so it is one env var away and must not happen by accident. Read that doc before proposing any pricing change, and do not revive the subscription ladder in `docs/resume-builder-competitive-analysis.md` §3 — it was withdrawn.
-
-**Subscriptions were reconsidered on 2026-07-20 and rejected again, with reasons this time.** The arithmetic favours them (a $9/mo subscriber out-earns the average prepaid user's entire year in 0.62 months); the demand shape does not. Job hunting is episodic — someone tailors 8 resumes over five weeks and disappears for two years — so a subscription bills a relationship the product does not have. Consequences: month-3 retention in this category runs 20–30%, conversion collapses when a $9 gate sits in front of the first resume (prepaid's 25–41% payer rate comes from spending a grant already in hand), and what survives is largely forgot-to-cancel revenue. **Price is the better lever than model**: at 75c/job the sweep accrues +$1,196 vs +$447 at 50c, with no second billing implementation and no churn assumption. Reopen only if real retention data shows genuine multi-month engagement, or if predictable MRR becomes the goal for fundraising/exit reasons — that is a legitimate trade, just a different one.
-
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
-**`PRICING_REVIEW.md` and `docs/claude/pricing-and-billing.md` were deleted on 2026-07-20** (recoverable in git history). Both still documented Free/Starter/Pro/Agency at $9/$19/$49 with resignation-letter and job-application caps and org seats, referencing `User::planTier()`, `is_pro`, `plan_tier`, `BillingController`, `Billing/Index.tsx`, `UpgradeModal` and `featureGate` — every one of which is gone. `PRICING_REVIEW.md` additionally *recommended re-gating templates and DOCX export to paid*. They read as authoritative and were the most likely route to an accidental paywall. If either resurfaces from a stash or an old branch, delete it again rather than updating it; `docs/prepaid-pricing-model.md` is the only live pricing document.
+**Nothing is metered.** `App\Services\UserLimits` survives but now holds only `allTemplates()` — the template allowlist. Every limit it used to enforce (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark, AI calls) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
 
-**Modelling the prepaid proposal.** `GrowthSampleSeeder` fabricates 12 months of traffic; `pricing:growth` prints the P&L (`--infra=` sets the hosting assumption) and `pricing:usage` the jobs distribution. Every lever is a `GROWTH_*` env override (`GRANT_CENTS`, `JOB_CENTS`, `TOPUP_CENTS`, `ACTIVATION_PCT`, `JOBS_SCALE_PCT`, `RAMP_PCT`, `GENERAL_FREE`), so scenarios sweep without editing the seeder — see `docs/growth-model-sample-run.md` for 19 runs. Two things to know before quoting any figure from it:
+**The prepaid pricing work was abandoned on 2026-07-21.** The proposal docs (`docs/prepaid-pricing-model.md`, `docs/growth-model-sample-run.md`) and all of its instrumentation (`JobPairing`, `BalanceTransaction`, `JobPairingService`, `config/pricing.php`, `pricing:usage`, `pricing:growth`, `GrowthSampleSeeder`, the `job_pairings` and `balance_transactions` tables) were deleted along with AI. There is no pricing model, no growth model and no live pricing document. Do not resurrect any of it, and do not treat `docs/resume-builder-competitive-analysis.md` §3 as live guidance — it is historical.
 
-- **`pricing:growth`'s "Revenue" is cash collected, not revenue recognised.** Prepaid balance is a liability until spent. Recognised revenue and cash are the two ends of one measure — `net(r) = recognised + deferred × (1 − r) − stripe − ai − infra` — where `r=1` (everything refunded) gives the accrual figure and `r=0` (full breakage) gives the cash figure. The accrual number is therefore the *pessimistic bound*, not a central case.
-- **Recognised revenue needs a per-user FIFO over the ledger, and `pricing:growth` does not print it.** Grant dollars burn before cash *within each user's own balance*, so recognised is `Σ max(0, min(spend − grant, topup))` per user. Doing that FIFO globally is not an approximation, it flips the sign: unspent grant held by users who never paid cancels out the cash spend of users who did. That mistake reported scenario D as −$224 when it is +$1,155. Validate any accrual script against a known row (scenario B: deferred ≈ $1,175) before trusting a new one.
-- **`PricingUsageReport::GRANT_JOBS` is 3, deliberately disagreeing with the pricing doc's settled $5 grant (§9).** Its three re-base triggers are now formulas of `GRANT_JOBS` (`median ≤ G+1`, `p90 < G+3`, `%exceeding G < 15%`) that reproduce the doc's published 10/12/15% at `G=9`. If the grant moves, set both together.
-
-## AI (OpenAI or Anthropic)
-
-`App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`AI_ENABLED`, `OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
-
-**AI cost is recorded in micro-cents (1 cent = 1,000,000)** on `ai_requests.estimated_cost_micro_cents`. It used to be `estimated_cost_cents`, and `AiService::estimateCostCents()` ended in `(int) round($cents)` — so anything under half a cent became 0, which is *every* `gpt-4o-mini` call (~0.05¢) including a 15k-token page import. Every OpenAI request ever logged recorded a cost of zero, and everything downstream read that zero: `ai:cost-alert` could not fire at any spend level, and `AiUsageReport` / `AdminStatsOverview` / `AiUsersPage` all reported $0.00. Fixed 2026-07-20 (migration `store_ai_cost_in_micro_cents`, forward-only).
-
-Consequences to keep in mind:
-
-- **All cost history before 2026-07-20 is zero and cannot be recovered** — the precision was lost at write time, not at display. Only Anthropic rows (~20x pricier) held a coarse non-zero, which is why this never looked completely dead.
-- **`AiUsageReport` reports costs in micro-cents** under the key `cost_micro_cents`, uniformly across `totals()`, `breakdown()`, and `dailySeries()`. Divide by 100,000,000 for dollars, at display only. The three methods previously returned three different key spellings and the overview blade read a fourth, so the cost tile and both breakdown tables silently rendered blank or $0.00 — don't reintroduce per-method key names.
-- `config('ai.pricing')` is still denominated in **cents per 1,000 tokens**, and `ai.daily_alert_threshold_cents` is still in cents. Only the stored column and the report keys changed units.
-- **`ai_requests.user_id` is `nullOnDelete`, not `cascadeOnDelete`** — a deleted user's cost history deliberately outlives the account. Correct for production, a trap for fixtures: deleting users strands rows with a NULL `user_id` that every cost report still sums, inflating AI cost by one full run per re-seed. Delete `ai_requests` *before* the users, while the join still resolves. A NULL `user_id` also defeats `whereNotIn('user_id', ...)`, so orphan checks silently report zero.
-
-**Master switch:** `AI_ENABLED` (default true). The `ai_enabled` middleware (`EnsureAiEnabled`, aliased in `bootstrap/app.php`) **404s** every AI route when it's false — 404 not 403, so a suspended feature looks absent rather than like a plan restriction. The `aiEnabled` Inertia prop hides the matching UI.
-
-**Provider switch:** `AI_PROVIDER` (`openai` | `anthropic`, default `openai`) picks the vendor app-wide; a per-call `provider` option overrides it. Anthropic goes through the `Http` facade (no SDK), and its usage keys (`input_tokens`/`output_tokens`) are normalized so `ai_requests` logging, cost estimation, and the monthly cap work identically for both. **`OPENAI_API_KEY` is required either way** — moderation always runs through OpenAI's free moderations endpoint, whichever vendor answers the chat call. Anthropic has no `response_format`, so JSON mode is emulated by prefilling the assistant turn with `{`; if you switch to tool-use for guaranteed schemas, `AiProviderTest` is what tells you the mapping still holds.
-
-**Prompts:** `App\Data\AiPrompts::build(string $feature, array $input)` — one `match` over the feature key, throws on unknown. Keys: `rewrite_bullet`, `critique_bullet`, `generate_summary`, `ats_keywords`, `interview_coach`, `cover_letter`, `import_resume`, `rank_jobs`, `import_job_posting`.
-
-**Routes** (all under `['ai_enabled', 'throttle:20,1']` in `web.php`): `builder/{resume}/ai/{rewrite-bullet,critique-bullet,summary,ats-keywords}`, `builder/{resume}/interview-coach`, `cover-letters/{letter}/ai/draft`.
-
-**Cover letter draft** (`cover-letters.ai.draft`) requires the letter to have a linked resume — the prompt forbids inventing employers or accomplishments, so with no resume there is nothing to ground the letter in; it 422s rather than let the model make one up. Role/company come from the request, falling back to `users.target_role` and the resume's `target_job_description`.
-
-**Bullet coach:** the bullet editor offers two equal-weight actions — "Coach me" (`critique_bullet`: the model asks what the weak bullet fails to say, the user answers in their own words, and the bullet is rebuilt from *their* facts) and "Write it for me" (`rewrite_bullet`). Deliberate 50/50 — do not demote either to a secondary affordance without asking.
+**`PRICING_REVIEW.md` and `docs/claude/pricing-and-billing.md` were deleted on 2026-07-20** (recoverable in git history). Both still documented Free/Starter/Pro/Agency at $9/$19/$49, referencing `User::planTier()`, `is_pro`, `plan_tier`, `BillingController`, `Billing/Index.tsx`, `UpgradeModal` and `featureGate` — every one of which is gone. `PRICING_REVIEW.md` additionally *recommended re-gating templates and DOCX export to paid*. They read as authoritative and were the most likely route to an accidental paywall. If either resurfaces from a stash or an old branch, delete it again rather than updating it.
 
 **Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `RegisteredUserController::store()` via `registration_ip` column on `users`.
-
-## Job Search (`/jobs`)
-
-**Code finds the jobs; the model only judges fit.** `JobSearchService` fans out to the boards in `app/Services/JobBoards/` (`AdzunaBoard`, `UsaJobsBoard`) behind the `JobBoard` interface, normalizing a `JobQuery` (keywords, location, `local|state|national`) into each API's own parameters. `national` drops the location filter entirely; `local`/`state` map to radii in `config/jobs.php`. A board with no credentials is **skipped**, and a board that errors returns `[]` and is reported — search degrades to whatever is configured, never to a 500. Results dedupe on normalized `company|title|location`, because the same posting is routinely syndicated to more than one board under different ids.
-
-**Do not add HTML scrapers for the big boards.** LinkedIn/Indeed/Glassdoor actively block plain HTTP clients and the selectors rot; the coverage gap is filled by `JobUrlImporter` instead — paste any posting URL, fetch the page, and let the model extract structured fields (`import_job_posting`). That is the scraping capability, without per-site knowledge to maintain.
-
-**`JobUrlImporter` is an SSRF trust boundary.** The URL is user-supplied, so it is a direct route to anything the server can reach. The guard resolves **both A and AAAA** (IPv4-only resolution let `[::1]` through), unwraps IPv4-mapped IPv6 (`::ffff:127.0.0.1` bypasses `FILTER_FLAG_NO_PRIV_RANGE`), and **disables redirects, revalidating every hop** — a public URL that 302s to `169.254.169.254` would otherwise walk past a one-time check. `JobUrlImporterTest` covers all 8 bypass vectors; treat it as a regression fence, not optional coverage. Known ceiling: DNS rebinding between check and fetch is not addressed — pin the resolved IP (curl `CURLOPT_RESOLVE`) or use an egress-allowlisting proxy if that matters.
-
-**Ranking is opt-in.** Searching never spends the AI quota; the user clicks "Score against my resume" to fire one batched `rank_jobs` call for the visible page. Scores for ids that were never sent are discarded and out-of-range scores clamped — a hallucinated id must not attach a score to nothing.
-
-**Alerts:** saved searches (`job_searches`) with `is_alerting` re-run daily at 07:00 via `jobs:run-alerts`. The unique index on `job_listings (job_search_id, source, external_id)` is what makes "new since last run" a database fact rather than a guess — **every fresh listing is marked `notified_at`, including ones held back below the score floor**, or they resurface as new every day forever. Requires both the scheduler and a queue worker in production (the digest mailable is `ShouldQueue`).
-
-**Note:** `/jobs/salary` (`SalaryController@hint`) predates this feature and occupies the `jobs.*` route namespace, so nav active-state uses `route().current('jobs.index')`, not `jobs.*`.
 
 ## Admin Panel
 
@@ -227,6 +181,14 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
 - **Job applications tracker** (removed in `93c1c14`). `application_contacts` and `interview_notes` are dropped by migration. **`job_applications` is deliberately still live** — `AnalyticsController` queries it via `DB::table()` for the dashboard's `active_applications` count. Do not drop that table without rewriting that query first.
 
+Deleted on 2026-07-21 — code, routes, models, migrations, config and tests:
+
+- **All AI.** `AiService`, `AiPrompts`, `AiRequest`, `AiUsageReport`, `OpenAiUsageService`, `ModerationException`, `AiDisabledException`, `EnsureAiEnabled` + the `ai_enabled` alias, `AiSuggestionController`, `InterviewCoachController`, `ResumeImportController`, `ai:cost-alert`, `ai:prune-flagged`, `config/ai.php`, `config/openai.php`, the `openai-php/laravel` package, the Filament `AiOverviewPage` / `AiUsersPage`, the `aiEnabled` Inertia prop, `users.ai_limit_override` / `ai_blocked` / `ai_usage_reset_at`, and the `ai_requests` table. The features that went with it: bullet rewrite, bullet coach, summary generation, ATS keywords, interview coach, cover-letter AI draft, and resume PDF/LinkedIn import. Frontend: `useAiSuggestion`, `AtsMatchPanel`, `JdMatcher` (+ its test), `PdfImportModal`, `plainText.ts`.
+- **All pricing instrumentation** (see "Billing"). `JobPairing`, `BalanceTransaction`, `JobPairingService`, `config/pricing.php`, `pricing:usage`, `pricing:growth`, `GrowthSampleSeeder`, both pricing docs, and the `job_pairings` / `balance_transactions` tables.
+- **Job Search (`/jobs`).** `JobSearchService`, `app/Services/JobBoards/*`, `JobUrlImporter`, `JobSearchController`, `JobSearch` + `JobListing` models, `JobSearchPolicy`, `jobs:run-alerts`, `JobMatchesDigestMail`, `config/jobs.php`, `resources/js/Pages/Jobs/*`, the Jobs nav item and command-palette entry, and the `job_searches` / `job_listings` tables.
+
+Survived that removal and must not be described as gone: **`SalaryController` / `/jobs/salary`** (predates Job Search, now the only `jobs.*` route), the **JobRole / JobTitle / JobSkill taxonomy** with its seeders, `AutocompleteController` and `SkillCategories`, **`StrengthScorePanel`** (server-side scorer, never AI), and the builder's `resumes.target_company` / `target_title` / `target_job_description` fields — the Optimize tab now holds a plain "Job description" textarea where the ATS panel used to be.
+
 ## Browser tests (Dusk) — two non-obvious requirements
 
 Added 2026-07-20. `tests/Browser/` is the only layer that executes React; the feature suite asserts the props Laravel *sends* and stays green even if a page throws on mount.
@@ -239,13 +201,7 @@ Added 2026-07-20. `tests/Browser/` is the only layer that executes React; the fe
 
 Assert on controls (`assertMissing('input[name="…"]')`), not strings (`assertDontSee('…')`) — a "don't see" assertion passes on any error page and proves nothing.
 
-**3. `.env.dusk.local` sets `AI_ENABLED=true`, so every AI-off fallback is invisible to Dusk.** The builder swaps whole components on that flag — `AtsMatchPanel` when AI is on, `JdMatcher` (deterministic keyword overlap) when it is off — and only the first has ever executed in a browser. Any test of a fallback path needs the Dusk server booted with AI disabled; `config()->set` in the test will not do it, because Dusk drives a separate server process that read its own env at boot.
-
 **Check the build is current before trusting anything you see in a browser.** `public/build/manifest.json` older than `resources/js/**` means Herd is serving stale bundled JS and you are testing code that is not on the branch. `find resources/js -name '*.tsx' -newer public/build/manifest.json` answers it; `npm run build` fixes it. Dusk is unaffected only if the build is fresh — it loads the same built assets.
-
-## Testing console reports: assert the table, not substrings
-
-For the `pricing:*` commands (and any `$this->table()` output), use `expectsTable(...)` rather than `expectsOutputToContain` / `doesntExpectOutputToContain`. These reports print thresholds, counts and percentages side by side, so every bare numeral collides with something else on screen — `'10'` matches `'100.0%'`, `'3'` matches a `median <= 3` threshold column. A substring assertion then passes for the wrong reason, which is worse than failing.
 
 ## Shell: this environment is zsh, which does not word-split
 
@@ -287,14 +243,13 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
 4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable.
 5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
-6. **No monetization** — every feature is free and unlimited; AI is metered only to cap OpenAI spend.
+6. **No monetization** — every feature is free and unlimited, and nothing is metered.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
-8. **Deterministic sourcing, model-only judgment** — job boards are fetched by code; the model scores fit and parses arbitrary pages, and never picks what to search for.
-9. **AI coaches as often as it ghostwrites** — the coach path (ask the user for the missing facts, then rebuild the bullet from their answer) is offered at equal weight to the write-it-for-me path, so the resume stays the candidate's own words.
+8. **No LLM anywhere** — every remaining feature (strength score, salary hint, autocomplete, keyword overlap, exports) is deterministic server-side code. Adding an AI dependency back is a product decision, not an implementation detail; ask first.
 
 ---
 
-Last updated: 2026-07-20 (growth model, §12 threshold formulas, `ai_requests` orphan trap)
+Last updated: 2026-07-21 (AI, pricing instrumentation and Job Search removed)
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy

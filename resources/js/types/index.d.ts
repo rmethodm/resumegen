@@ -143,7 +143,6 @@ export type PageProps<
     auth: {
         user: User;
     };
-    aiEnabled: boolean;
 };
 
 export interface ResumeTag {

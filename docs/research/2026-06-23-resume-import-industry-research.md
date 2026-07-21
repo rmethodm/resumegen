@@ -1,6 +1,8 @@
 # Resume Import Feature — Industry Research
 *Date: 2026-06-23*
 
+> **Historical, 2026-07-21:** the resume-import feature researched here was removed along with all AI.
+
 Deep research across Enhancv, Kickresume, OpenResume, Zety, and others on how resume builder apps handle file import.
 
 ---
