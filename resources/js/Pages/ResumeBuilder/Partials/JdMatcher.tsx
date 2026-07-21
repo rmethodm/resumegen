@@ -18,9 +18,15 @@ const STOPWORDS = new Set([
     'must', 'should', 'would', 'about', 'using', 'use', 'used', 'such', 'both', 'while', 'also',
 ]);
 
-/** Split text into lowercase tokens, keeping tech punctuation (node.js, ci/cd, c++). */
+/**
+ * Split text into lowercase tokens, keeping tech punctuation (node.js, ci/cd, c++, .net).
+ *
+ * The optional leading dot matters: without it `.NET` tokenizes to `net`, so a JD requiring
+ * .NET scores as covered against a resume that merely contains the word "net". A dot is the
+ * only leading separator worth allowing — no real skill starts with `+`, `#`, `/` or `-`.
+ */
 export function tokenize(text: string): string[] {
-    return (text.toLowerCase().match(/[a-z0-9][a-z0-9+#./-]*/g) ?? [])
+    return (text.toLowerCase().match(/\.?[a-z0-9][a-z0-9+#./-]*/g) ?? [])
         .map(t => t.replace(/[.\-/]+$/, '')) // trim trailing separators
         .filter(Boolean);
 }
