@@ -32,11 +32,11 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-sm font-bold text-[#0f0f1a]">
+                <h2 className="text-sm font-bold text-[#111827]">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-sm text-[#a0a0b0]">
+                <p className="mt-1 text-sm text-[#94a3b8]">
                     Update your account's profile information and email address.
                 </p>
             </header>
@@ -107,7 +107,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-[#71717a]">
+                        <p className="text-sm text-[#64748b]">
                             Saved.
                         </p>
                     </Transition>

@@ -47,7 +47,7 @@ function CardMenu({ id, name }: { id: number; name: string }) {
             <button
                 onClick={() => setOpen(v => !v)}
                 aria-label="Resume actions"
-                className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[#71717a] transition hover:bg-[#eef2ff] focus-visible:opacity-100 group-hover:opacity-100 ${
+                className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[#64748b] transition hover:bg-[#eaf1ff] focus-visible:opacity-100 group-hover:opacity-100 ${
                     open ? 'opacity-100' : 'sm:opacity-0'
                 }`}
             >
@@ -56,14 +56,14 @@ function CardMenu({ id, name }: { id: number; name: string }) {
             {open && (
                 <>
                     <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-                    <div className="absolute right-0 top-8 z-50 w-40 rounded-lg border border-[#eeeef5] bg-white py-1 shadow-lg">
-                        <Link href={route('builder.edit', id)} className="block px-4 py-2 text-sm text-[#374151] transition hover:bg-[#fafafe]">
+                    <div className="absolute right-0 top-8 z-50 w-40 rounded-lg border border-[#e8edf5] bg-white py-1 shadow-lg">
+                        <Link href={route('builder.edit', id)} className="block px-4 py-2 text-sm text-[#334155] transition hover:bg-[#f9fbff]">
                             Edit
                         </Link>
-                        <button onClick={duplicate} className="block w-full px-4 py-2 text-left text-sm text-[#374151] transition hover:bg-[#fafafe]">
+                        <button onClick={duplicate} className="block w-full px-4 py-2 text-left text-sm text-[#334155] transition hover:bg-[#f9fbff]">
                             Duplicate
                         </button>
-                        <button onClick={destroy} className="block w-full px-4 py-2 text-left text-sm text-red-600 transition hover:bg-[#fafafe]">
+                        <button onClick={destroy} className="block w-full px-4 py-2 text-left text-sm text-red-600 transition hover:bg-[#f9fbff]">
                             Delete
                         </button>
                     </div>
@@ -75,29 +75,29 @@ function CardMenu({ id, name }: { id: number; name: string }) {
 
 function ResumeGridCard({ card }: { card: ResumeCard }) {
     return (
-        <div className="group flex flex-col overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:-translate-y-1 hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
+        <div className="group flex flex-col overflow-hidden rounded-xl border border-[#e8edf5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:-translate-y-1 hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
             {/* Decorative preview */}
-            <Link href={route('builder.edit', card.id)} className="block h-40 border-b border-[#eeeef5] bg-[#fafafe] p-5">
+            <Link href={route('builder.edit', card.id)} className="block h-40 border-b border-[#e8edf5] bg-[#f9fbff] p-5">
                 <div className="mx-auto max-w-[85%] space-y-2">
-                    <div className="h-2.5 w-2/3 rounded bg-[#dcdce8]" />
+                    <div className="h-2.5 w-2/3 rounded bg-[#e8edf5]" />
                     <div className="space-y-1.5 pt-1.5">
-                        <div className="h-1.5 w-full rounded bg-[#ececf3]" />
-                        <div className="h-1.5 w-11/12 rounded bg-[#ececf3]" />
-                        <div className="h-1.5 w-3/4 rounded bg-[#ececf3]" />
+                        <div className="h-1.5 w-full rounded bg-[#e8edf5]" />
+                        <div className="h-1.5 w-11/12 rounded bg-[#e8edf5]" />
+                        <div className="h-1.5 w-3/4 rounded bg-[#e8edf5]" />
                     </div>
                 </div>
             </Link>
 
             <div className="flex flex-1 flex-col gap-2 p-4">
                 <div className="flex items-start justify-between gap-2">
-                    <Link href={route('builder.edit', card.id)} className="font-bold leading-snug text-[#0f0f1a] hover:text-[#4f46e5]">
+                    <Link href={route('builder.edit', card.id)} className="font-bold leading-snug text-[#111827] hover:text-[#2563eb]">
                         {card.name}
                     </Link>
                     <CardMenu id={card.id} name={card.name} />
                 </div>
 
                 <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-[#a0a0b0]">Edited {editedAgo(card.updated_at)}</span>
+                    <span className="text-xs text-[#94a3b8]">Edited {editedAgo(card.updated_at)}</span>
                     {card.has_active_share_link ? (
                         <span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${strengthPillClass(card.strength)}`} title="Resume strength score">
                             {card.strength}%
@@ -108,16 +108,16 @@ function ResumeGridCard({ card }: { card: ResumeCard }) {
                 </div>
 
                 {(card.variant_count > 0 || card.active_applications > 0) && (
-                    <div className="space-y-1 text-xs text-[#6b7280]">
+                    <div className="space-y-1 text-xs text-[#64748b]">
                         {card.variant_count > 0 && (
                             <p className="flex items-center gap-1.5">
-                                <span className="text-[#c4c4d0]">●</span>
+                                <span className="text-[#dbe3ef]">●</span>
                                 {card.variant_count} version{card.variant_count !== 1 ? 's' : ''}
                             </p>
                         )}
                         {card.active_applications > 0 && (
                             <p className="flex items-center gap-1.5">
-                                <span className="text-[#c4c4d0]">●</span>
+                                <span className="text-[#dbe3ef]">●</span>
                                 {card.active_applications} active application{card.active_applications !== 1 ? 's' : ''}
                             </p>
                         )}
@@ -193,8 +193,8 @@ export default function Dashboard() {
 
                     {/* Page title */}
                     <div className="mb-6">
-                        <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Dashboard</h1>
-                        <p className="mt-1 text-sm text-[#a0a0b0]">Your resume activity at a glance</p>
+                        <h1 className="text-xl font-extrabold tracking-tight text-[#111827]">Dashboard</h1>
+                        <p className="mt-1 text-sm text-[#94a3b8]">Your resume activity at a glance</p>
                     </div>
 
                     {/* Stat strip */}
@@ -209,17 +209,17 @@ export default function Dashboard() {
                                 <div className="flex items-center gap-3">
                                     <Icon className={`h-4 w-4 shrink-0 ${iconColor}`} />
                                     <div>
-                                        <p className="text-lg font-bold leading-none tracking-tight text-[#0f0f1a]">{value.toLocaleString()}</p>
-                                        <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#a0a0b0]">{label}</p>
+                                        <p className="text-lg font-bold leading-none tracking-tight text-[#111827]">{value.toLocaleString()}</p>
+                                        <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#94a3b8]">{label}</p>
                                     </div>
                                 </div>
                             );
                             return href ? (
-                                <Link key={label} href={href} className="rounded-lg border border-[#eeeef5] bg-white px-4 py-3 shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:border-[#c7c5f4] hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
+                                <Link key={label} href={href} className="rounded-lg border border-[#e8edf5] bg-white px-4 py-3 shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:border-[#93c5fd] hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
                                     {inner}
                                 </Link>
                             ) : (
-                                <div key={label} className="rounded-lg border border-[#eeeef5] bg-white px-4 py-3 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                                <div key={label} className="rounded-lg border border-[#e8edf5] bg-white px-4 py-3 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                                     {inner}
                                 </div>
                             );
@@ -230,9 +230,9 @@ export default function Dashboard() {
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <Link
                             href={route('builder.create')}
-                            className="flex min-h-[280px] flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-[#d8d8e4] text-[#a0a0b0] transition hover:border-[#6366f1] hover:text-[#6366f1]"
+                            className="flex min-h-[280px] flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-[#dbe3ef] text-[#94a3b8] transition hover:border-[#3b82f6] hover:text-[#3b82f6]"
                         >
-                            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#eef2ff] text-2xl font-light text-[#6366f1]">+</span>
+                            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#eaf1ff] text-2xl font-light text-[#3b82f6]">+</span>
                             <span className="text-sm font-medium">Blank resume</span>
                         </Link>
                         {resumeCards.map((card) => (
