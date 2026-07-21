@@ -148,9 +148,9 @@ class AiSuggestionController extends Controller
         ?string $company = null,
         ?string $title = null,
     ): JsonResponse {
-        $this->recordPairing($user, $company, $title);
-
         if ($cacheKey && Cache::has($cacheKey)) {
+            $this->recordPairing($user, $company, $title);
+
             return response()->json(array_merge($shape(Cache::get($cacheKey)), [
                 'remaining' => UserLimits::aiRemaining($user),
             ]));
@@ -184,17 +184,15 @@ class AiSuggestionController extends Controller
             Cache::put($cacheKey, $reply, now()->addDay());
         }
 
+        $this->recordPairing($user, $company, $title);
+
         return response()->json(array_merge($shaped, [
             'remaining' => UserLimits::aiRemaining($user),
         ]));
     }
 
     /**
-     * Record which job this AI call was made against.
-     *
-     * Instrumentation only — prices are 0, so nothing is charged and nothing is gated.
-     * A call with no company or title falls into the reserved __general__ pairing rather
-     * than being dropped, or non-job work would be invisible in the data.
+     * Record which job this AI call was made against, once the user has been served.
      *
      * ponytail: the pairing is recorded but not yet stamped onto ai_requests. Attribution
      * only powers the refund window and the abuse fuse, neither of which is live at $0,
@@ -203,13 +201,7 @@ class AiSuggestionController extends Controller
      */
     private function recordPairing(User $user, ?string $company, ?string $title): void
     {
-        if (filled($company) && filled($title)) {
-            $this->pairings->resolveForJob($user, $company, $title);
-
-            return;
-        }
-
-        $this->pairings->resolveGeneral($user);
+        $this->pairings->record($user, $company, $title);
     }
 
     /**

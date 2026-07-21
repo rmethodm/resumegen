@@ -266,4 +266,74 @@ class JobPairingTest extends TestCase
 
         $this->assertTrue($pairing->fresh()->isRefundable());
     }
+
+    /**
+     * A pairing is the billable unit, so it must only exist once the user has been
+     * served something. Prices are 0 today, which is exactly why this needs a test:
+     * a pairing recorded for a request that never ran is invisible now and becomes a
+     * charge for nothing the moment PRICING_JOB_CENTS moves off zero.
+     */
+    public function test_a_quota_rejected_call_records_no_pairing(): void
+    {
+        $user = User::factory()->create(['ai_blocked' => true]);
+        $resume = Resume::factory()->for($user)->create([
+            'target_company' => 'Acme',
+            'target_title' => 'Senior Product Manager',
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('builder.ai.rewrite-bullet', $resume), ['text' => 'managed a team'])
+            ->assertStatus(402);
+
+        $this->assertSame(0, $user->jobPairings()->count());
+    }
+
+    /** Same rule for a moderation block: nothing was generated, so nothing is billable. */
+    public function test_a_moderation_blocked_call_records_no_pairing(): void
+    {
+        $this->app->instance(ClientContract::class, new ClientFake([
+            ModerationResponse::fake(['results' => [['flagged' => true]]]),
+        ]));
+
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'target_company' => 'Acme',
+            'target_title' => 'Senior Product Manager',
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('builder.ai.rewrite-bullet', $resume), ['text' => 'managed a team'])
+            ->assertStatus(422);
+
+        $this->assertSame(0, $user->jobPairings()->count());
+    }
+
+    /**
+     * The coach is per-job work, so its spend has to land on the same pairing the
+     * builder uses — otherwise §12's "median jobs tailored" undercounts every user who
+     * prepped for an interview, and the two features bill the same job twice.
+     */
+    public function test_interview_coaching_joins_the_resume_target_pairing(): void
+    {
+        $this->fakeReply('["Tell me about a time you shipped under pressure."]');
+
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'target_company' => 'Acme',
+            'target_title' => 'Senior Product Manager',
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('builder.interview-coach', $resume), [
+                'target_role' => 'Senior Product Manager',
+            ])
+            ->assertOk();
+
+        // The key, not the count: a __general__ pairing would also make a count of 1 pass
+        // while still undercounting the job.
+        $this->assertSame(
+            'acme|senior product manager',
+            $user->jobPairings()->sole()->billing_key,
+        );
+    }
 }
