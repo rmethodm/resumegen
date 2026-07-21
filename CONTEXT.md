@@ -5,7 +5,9 @@ Prepaid pricing **modelling**, not implementation. The doc is still a proposal, 
 is still 0, nobody pays. `GrowthSampleSeeder` now sweeps 19 fabricated scenarios
 (`docs/growth-model-sample-run.md`) via `GROWTH_*` env vars. Does not satisfy §12's stop rule.
 Branch is pushed and clean as of 2026-07-20; doc sweep done (dead tier docs deleted, AI_STRATEGY
-rewritten, AGENTS.md reduced to a pointer, Imagick timestamp churn fixed).
+rewritten, AGENTS.md reduced to a pointer, Imagick timestamp churn fixed). Scenario D re-measured
+and D2 (75c/$5) added — **uncommitted** in `docs/growth-model-sample-run.md`. Dev DB currently
+holds the D2 seed, not baseline.
 
 ## Key Decisions
 - **Cash and accrual are bounds of one measure**: `net(r) = recognised + deferred x (1-r) - stripe -
@@ -15,19 +17,15 @@ rewritten, AGENTS.md reduced to a pointer, Imagick timestamp churn fixed).
 - **Pricing knobs are second-order.** Activation / jobs-per-user / ramp swing $659-$906 each; the
   grant $646, infra $180, AI $11. Two of the top three are the least-confident inputs.
 - **Refund window closes at the first successful AI call**; granted dollars never withdrawable.
+- **Prepaid stays; subscriptions were reconsidered and rejected 2026-07-20.** Job hunting is
+  episodic (tailor 8 resumes in five weeks, vanish for two years) — a subscription bills a
+  relationship the product does not have, and the revenue that survives that mismatch is mostly
+  forgot-to-cancel. Raising price beats changing model: D2 (75c/$5) accrues **+$1,196** vs B's
+  **+$447**, no second billing implementation, no churn assumption.
+- **Grant-vs-cash split is per-user FIFO, never global.** Global FIFO lets non-payers' unspent
+  grant offset payers' cash spend and inverts the sign (D reads −$224 instead of +$1,155).
 
 ## Next Steps
-1. **Nothing is broken — the pricing items below are parked on purpose, not chores.** §12's stop rule
-   says do not decide the grant without real usage data, which does not exist. Correct action: none.
-2. **Two loose ends in the builder.** `JdMatcher` renders only when `aiEnabled` is false, and both
-   `.env` and `.env.dusk.local` set `AI_ENABLED=true`, so that fallback has never run in a browser —
-   covering it needs a Dusk server booted with AI off. `PlainTextView`'s component export is rendered
-   nowhere; only its `buildPlainText` and type are used (by `JdMatcher`).
-3. **Split this branch before main** — 36+ commits. Builder now **verified**: Dusk 3/3, React mounts
-   clean, save-on-blur round trip works. Prod .env needs `AI_ENABLED=true` and deploy secrets
-   `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`.
-
-## Open (blocked on data)
-- **Grant size vs free-tier competitiveness** (§14) — the sweep narrows it, cannot settle it.
-- **Price elasticity unmodelled** — carries the largest swing in the tornado.
-- **Launch grant amount** (§8) — floor $8; needs production count of qualifying accounts.
+**`WORKLOG.md` is the work queue.** Say "process the next TODO in WORKLOG.md", one item per pass.
+Three of its six items are `BLOCKED` on production data by §12's stop rule — **nothing is broken,
+those are parked on purpose, not chores.** Correct action on them: none.
