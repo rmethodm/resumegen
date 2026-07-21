@@ -6,6 +6,7 @@ use App\Models\JobPairing;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 
 #[Signature('pricing:usage')]
 #[Description("Report the jobs-tailored distribution behind the pricing model's go/no-go decision")]
@@ -42,15 +43,49 @@ class PricingUsageReport extends Command
 
     private const CONVERSION_TRIGGER_PERCENT = 15;
 
+    /**
+     * How long a user must have existed before their job count is counted at all.
+     *
+     * The triggers above are defined over *lifetime* jobs tailored, but a query run
+     * today can only see jobs-so-far. Someone who signed up last week has not finished
+     * applying, so counting them drags the median and p90 down — and both triggers fire
+     * on LOW values. Under any signup growth the newest, least-complete cohorts are also
+     * the largest, so the uncorrected report is biased toward "re-base the grant down"
+     * permanently, and biased harder the faster the product grows.
+     *
+     * 90 days because a job hunt is a burst, not a habit: at the modelled spread a median
+     * (3 jobs) user finishes inside ~20 days and a p90 (9 jobs) user inside ~60. That
+     * matures both statistics the triggers actually read. Only the heavy tail, which
+     * spreads up to 180 days, is still clipped — and it is clipped in the safe direction,
+     * understating the users most likely to pay.
+     */
+    private const MATURITY_DAYS = 90;
+
     public function handle(): int
     {
+        $cutoff = now()->subDays(self::MATURITY_DAYS);
+
         // Live, real jobs only: __general__ is not a job someone pursued, and a
         // refunded pairing is one they backed out of.
-        $counts = JobPairing::query()
-            ->whereNull('refunded_at')
-            ->where('billing_key', '!=', JobPairing::GENERAL)
-            ->selectRaw('user_id, COUNT(*) as jobs')
-            ->groupBy('user_id')
+        $rows = JobPairing::query()
+            ->join('users', 'users.id', '=', 'job_pairings.user_id')
+            ->whereNull('job_pairings.refunded_at')
+            ->where('job_pairings.billing_key', '!=', JobPairing::GENERAL)
+            ->groupBy('job_pairings.user_id', 'users.created_at')
+            ->selectRaw('job_pairings.user_id, users.created_at as signed_up_at, COUNT(*) as jobs')
+            ->get();
+
+        if ($rows->isEmpty()) {
+            $this->warn('No job pairings recorded yet — nothing to report.');
+
+            return self::SUCCESS;
+        }
+
+        [$mature, $immature] = $rows->partition(
+            fn ($row): bool => Carbon::parse($row->signed_up_at)->lt($cutoff)
+        );
+
+        $counts = $mature
             ->pluck('jobs')
             ->map(fn ($jobs): int => (int) $jobs)
             ->sort()
@@ -58,7 +93,13 @@ class PricingUsageReport extends Command
             ->all();
 
         if ($counts === []) {
-            $this->warn('No job pairings recorded yet — nothing to report.');
+            $this->warn(sprintf(
+                'All %d users with jobs signed up within the last %d days — too new to read. '
+                    .'Reporting on them would understate the median and p90, which is the direction '
+                    .'that trips the re-base triggers.',
+                $immature->count(),
+                self::MATURITY_DAYS,
+            ));
 
             return self::SUCCESS;
         }
@@ -80,6 +121,13 @@ class PricingUsageReport extends Command
         $this->line('');
         $this->line('Denominator is users who tailored at least one job — users who never');
         $this->line('used job-targeted AI are excluded, or the median reads 0 and says nothing.');
+        $this->line(sprintf(
+            'Also excluded: %d user(s) who signed up within the last %d days and are still '
+                .'tailoring. Counting them understates the median and p90, which is the direction '
+                .'that trips the re-base triggers.',
+            $immature->count(),
+            self::MATURITY_DAYS,
+        ));
 
         return self::SUCCESS;
     }
