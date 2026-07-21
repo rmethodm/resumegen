@@ -28,20 +28,13 @@ class ResumeBuilderTest extends DuskTestCase
 
     public function test_builder_renders_without_javascript_errors(): void
     {
-        // Past onboarding: the first-run wizard is a full-screen overlay that
-        // intercepts every click in the builder, and this test is not about it.
-        $user = User::factory()->create(['has_completed_onboarding' => true]);
+        $user = User::factory()->create();
         $resume = Resume::factory()->for($user)->create(['name' => 'Dusk Smoke Resume']);
 
         $this->browse(function (Browser $browser) use ($user, $resume): void {
             $browser->loginAs($user)
                 ->visit(route('builder.edit', $resume, false))
-                // @builder is the page's root element — present iff React mounted.
-                // The target fields are no longer on screen at load; they live in the
-                // inspector, which the Target role tool row swaps in.
-                ->waitFor('@builder', 10)
-                ->click('@target-role')
-                ->waitFor('input[name="target_company"]', 5)
+                ->waitFor('input[name="target_company"]', 10)
                 ->assertPresent('input[name="target_title"]');
 
             $severe = collect($browser->driver->manage()->getLog('browser'))
@@ -60,7 +53,7 @@ class ResumeBuilderTest extends DuskTestCase
      */
     public function test_target_job_fields_persist_on_blur(): void
     {
-        $user = User::factory()->create(['has_completed_onboarding' => true]);
+        $user = User::factory()->create();
         $resume = Resume::factory()->for($user)->create([
             'target_company' => null,
             'target_title' => null,
@@ -69,9 +62,7 @@ class ResumeBuilderTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($user, $resume): void {
             $browser->loginAs($user)
                 ->visit(route('builder.edit', $resume, false))
-                ->waitFor('@builder', 10)
-                ->click('@target-role')
-                ->waitFor('input[name="target_company"]', 5)
+                ->waitFor('input[name="target_company"]', 10)
                 ->type('target_company', 'Acme, Inc.')
                 ->type('target_title', 'Senior Product Manager')
                 // The builder saves on blur; blur the focused field directly rather
@@ -97,12 +88,9 @@ class ResumeBuilderTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($intruder, $resume): void {
             $browser->loginAs($intruder)
                 ->visit(route('builder.edit', $resume, false))
-                // assertMissing on the builder shell, not assertDontSee on a string —
+                // assertMissing on the control itself, not assertDontSee on a string —
                 // a "don't see" assertion passes on any error page and proves nothing.
-                // Must be the page root rather than a target field: those now render
-                // only after the Target role row is clicked, so their absence would be
-                // true for the owner too and the assertion would prove nothing.
-                ->assertMissing('@builder');
+                ->assertMissing('input[name="target_company"]');
         });
     }
 }

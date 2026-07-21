@@ -73,19 +73,19 @@ export default function Edit({
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
 
                     <div className="mb-2">
-                        <h1 className="text-xl font-extrabold tracking-tight text-gray-900">Profile</h1>
-                        <p className="mt-1 text-sm text-gray-400">Manage your account settings</p>
+                        <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Profile</h1>
+                        <p className="mt-1 text-sm text-[#a0a0b0]">Manage your account settings</p>
                     </div>
 
-                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} className="max-w-xl" />
                     </div>
 
-                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <UpdatePasswordForm className="max-w-xl" />
                     </div>
 
-                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <TwoFactorForm
                             enabled={twoFactor.enabled}
                             pending={twoFactor.pending}
@@ -95,11 +95,11 @@ export default function Edit({
                         />
                     </div>
 
-                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <BrowserExtensionTokens tokens={tokens} className="max-w-xl" />
                     </div>
 
-                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <section className="space-y-6">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">Default Contact Info</h2>

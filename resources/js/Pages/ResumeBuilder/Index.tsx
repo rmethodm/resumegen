@@ -9,7 +9,7 @@ type Props = { resumes: ResumeRow[]; resumeCount: number };
 type SortKey = 'name' | 'updated_at';
 
 const TAG_COLORS = [
-    '#3b82f6', '#3b82f6', '#10b981', '#f59e0b',
+    '#6366f1', '#8b5cf6', '#10b981', '#f59e0b',
     '#ef4444', '#0ea5e9', '#64748b', '#f97316',
 ];
 
@@ -42,7 +42,7 @@ function RowActionsMenu({ actions }: { actions: RowAction[] }) {
                 ref={btnRef}
                 onClick={toggle}
                 aria-label="Resume actions"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full text-gray-500 transition hover:bg-blue-50"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[#71717a] transition hover:bg-[#eef2ff]"
             >
                 <EllipsisVerticalIcon className="h-[18px] w-[18px]" />
             </button>
@@ -50,19 +50,19 @@ function RowActionsMenu({ actions }: { actions: RowAction[] }) {
                 <>
                     <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
                     <div
-                        className="fixed z-50 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+                        className="fixed z-50 rounded-lg border border-[#eeeef5] bg-white py-1 shadow-lg"
                         style={{ top: pos.top, left: pos.left, width: MENU_WIDTH }}
                         onClick={() => setOpen(false)}
                     >
                         {actions.map(a => a.href ? (
-                            <Link key={a.label} href={a.href} className="block px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                            <Link key={a.label} href={a.href} className="block px-4 py-2 text-sm text-[#374151] transition hover:bg-[#fafafe]">
                                 {a.label}
                             </Link>
                         ) : (
                             <button
                                 key={a.label}
                                 onClick={a.onClick}
-                                className={`block w-full px-4 py-2 text-left text-sm transition hover:bg-gray-50 ${a.danger ? 'text-red-600' : 'text-gray-700'}`}
+                                className={`block w-full px-4 py-2 text-left text-sm transition hover:bg-[#fafafe] ${a.danger ? 'text-red-600' : 'text-[#374151]'}`}
                             >
                                 {a.label}
                             </button>
@@ -97,12 +97,12 @@ function AddTagPopover({ resumeId }: { resumeId: number }) {
         <div className="relative">
             <button
                 onClick={() => setOpen(v => !v)}
-                className="inline-flex items-center rounded-full border border-dashed border-gray-300 px-2 py-0.5 text-xs text-gray-400 hover:border-blue-500 hover:text-blue-500"
+                className="inline-flex items-center rounded-full border border-dashed border-[#c8c8d8] px-2 py-0.5 text-xs text-[#a0a0b0] hover:border-[#6366f1] hover:text-[#6366f1]"
             >
                 + Tag
             </button>
             {open && (
-                <div className="absolute left-0 top-7 z-20 w-56 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+                <div className="absolute left-0 top-7 z-20 w-56 rounded-lg border border-[#e8e8f0] bg-white p-3 shadow-lg">
                     <form onSubmit={submit} className="space-y-2">
                         <input
                             type="text"
@@ -111,7 +111,7 @@ function AddTagPopover({ resumeId }: { resumeId: number }) {
                             maxLength={30}
                             placeholder="Tag label"
                             autoFocus
-                            className="w-full rounded border border-gray-200 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            className="w-full rounded border border-[#e8e8f0] px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#6366f1]"
                         />
                         <div className="flex flex-wrap gap-1">
                             {TAG_COLORS.map(c => (
@@ -129,13 +129,13 @@ function AddTagPopover({ resumeId }: { resumeId: number }) {
                             <button
                                 type="button"
                                 onClick={() => setOpen(false)}
-                                className="rounded px-2 py-1 text-xs text-gray-400 hover:bg-gray-50"
+                                className="rounded px-2 py-1 text-xs text-[#a0a0b0] hover:bg-[#f5f5fa]"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="rounded bg-blue-500 px-2 py-1 text-xs text-white hover:bg-blue-700"
+                                className="rounded bg-[#6366f1] px-2 py-1 text-xs text-white hover:bg-[#5254cc]"
                             >
                                 Add
                             </button>
@@ -149,9 +149,9 @@ function AddTagPopover({ resumeId }: { resumeId: number }) {
 
 function SortIcon({ k, sortKey, sortDir }: { k: SortKey; sortKey: SortKey; sortDir: 'asc' | 'desc' }) {
     return (
-        <span className="ml-1 inline-flex flex-col leading-none text-gray-300">
-            <span className={sortKey === k && sortDir === 'asc' ? 'text-blue-600' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
-            <span className={sortKey === k && sortDir === 'desc' ? 'text-blue-600' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
+        <span className="ml-1 inline-flex flex-col leading-none text-[#c4c4d0]">
+            <span className={sortKey === k && sortDir === 'asc' ? 'text-[#4f46e5]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▲</span>
+            <span className={sortKey === k && sortDir === 'desc' ? 'text-[#4f46e5]' : ''} style={{ fontSize: '8px', lineHeight: 1 }}>▼</span>
         </span>
     );
 }
@@ -212,29 +212,29 @@ export default function Index({ resumes, resumeCount }: Props) {
                     {/* Page header */}
                     <div className="mb-6 flex items-start justify-between">
                         <div>
-                            <h1 className="text-xl font-extrabold tracking-tight text-gray-900">Resumes</h1>
-                            <p className="mt-1 text-sm text-gray-400">{resumeCount} resume{resumeCount !== 1 ? 's' : ''}</p>
+                            <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Resumes</h1>
+                            <p className="mt-1 text-sm text-[#a0a0b0]">{resumeCount} resume{resumeCount !== 1 ? 's' : ''}</p>
                         </div>
                         <Link
                             href={route('builder.create')}
-                            className="rounded-lg bg-gradient-to-br from-blue-600 to-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+                            className="rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
                         >
                             + New Resume
                         </Link>
                     </div>
 
                     {/* Resume table */}
-                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
 
                         {/* Table controls */}
-                        <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-gray-200">
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[#eeeef5]">
+                            <div className="flex items-center gap-2 text-sm text-[#71717a]">
                                 <span>Show</span>
                                 <div className="relative">
                                     <select
                                         value={pageSize}
                                         onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                                        className="h-8 appearance-none rounded-lg border border-gray-200 pl-2 pr-7 py-0 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600"
+                                        className="h-8 appearance-none rounded-lg border border-[#eeeef5] pl-2 pr-7 py-0 text-sm text-[#0f0f1a] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
                                     >
                                         {[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
                                     </select>
@@ -242,7 +242,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                 <span>entries</span>
                             </div>
                             <div className="relative w-64">
-                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#a0a0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
                                 </svg>
                                 <input
@@ -250,7 +250,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                     placeholder="Search..."
                                     value={search}
                                     onChange={e => { setSearch(e.target.value); setPage(1); }}
-                                    className="w-full rounded-lg border border-gray-200 py-1.5 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-blue-600"
+                                    className="w-full rounded-lg border border-[#eeeef5] py-1.5 pl-9 pr-3 text-sm text-[#0f0f1a] placeholder-[#a0a0b0] focus:border-[#4f46e5] focus:ring-[#4f46e5]"
                                 />
                             </div>
                         </div>
@@ -258,10 +258,10 @@ export default function Index({ resumes, resumeCount }: Props) {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
                                 <thead>
-                                    <tr className="border-b border-gray-200">
+                                    <tr className="border-b border-[#eeeef5]">
                                         <th
                                             onClick={() => toggleSort('name')}
-                                            className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors"
+                                            className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#71717a] hover:text-[#0f0f1a] transition-colors"
                                         >
                                             <span className="inline-flex items-center gap-0.5">
                                                 Resume
@@ -270,28 +270,28 @@ export default function Index({ resumes, resumeCount }: Props) {
                                         </th>
                                         <th
                                             onClick={() => toggleSort('updated_at')}
-                                            className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors"
+                                            className="cursor-pointer select-none px-5 py-3.5 text-xs font-semibold text-[#71717a] hover:text-[#0f0f1a] transition-colors"
                                         >
                                             <span className="inline-flex items-center gap-0.5">
                                                 Last Edited
                                                 <SortIcon k="updated_at" sortKey={sortKey} sortDir={sortDir} />
                                             </span>
                                         </th>
-                                        <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-500">Actions</th>
+                                        <th className="px-5 py-3.5 text-right text-xs font-semibold text-[#71717a]">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {pageRows.length === 0 ? (
                                         <tr>
-                                            <td colSpan={3} className="px-5 py-12 text-center text-sm text-gray-400">
+                                            <td colSpan={3} className="px-5 py-12 text-center text-sm text-[#a0a0b0]">
                                                 {search ? 'No resumes match your search.' : 'No resumes yet. Click "+ New Resume" to create your first one.'}
                                             </td>
                                         </tr>
                                     ) : pageRows.map(r => (
-                                        <tr key={r.id} className="border-b border-gray-100 transition-colors hover:bg-gray-50">
+                                        <tr key={r.id} className="border-b border-[#f5f5fb] transition-colors hover:bg-[#fafafe]">
                                             <td className="px-5 py-4">
                                                 <div className="flex items-start gap-3">
-                                                    <Link href={route('builder.edit', r.id)} className="shrink-0 block h-16 w-12 overflow-hidden rounded border border-gray-200 bg-gray-50">
+                                                    <Link href={route('builder.edit', r.id)} className="shrink-0 block h-16 w-12 overflow-hidden rounded border border-[#eeeef5] bg-[#fafafe]">
                                                         <iframe
                                                             src={route('builder.html-preview', r.id)}
                                                             scrolling="no"
@@ -302,7 +302,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     </Link>
                                                     <div className="min-w-0">
                                                 <div className="flex items-center gap-2">
-                                                    <Link href={route('builder.edit', r.id)} className="font-bold text-gray-900 hover:text-blue-600">
+                                                    <Link href={route('builder.edit', r.id)} className="font-bold text-[#0f0f1a] hover:text-[#4f46e5]">
                                                         {r.name}
                                                     </Link>
                                                     {r.ab_parent_id !== null && (
@@ -310,7 +310,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     )}
                                                 </div>
                                                 <div className="mt-1 flex items-center gap-2">
-                                                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-200">
+                                                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#eeeef5]">
                                                         <div
                                                             className={`h-full rounded-full ${
                                                                 r.strength <= 40
@@ -335,11 +335,11 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     </span>
                                                 </div>
                                                 {r.strength < 100 && (
-                                                    <p className="mt-0.5 text-xs text-gray-400">{r.strength_tip}</p>
+                                                    <p className="mt-0.5 text-xs text-[#a0a0b0]">{r.strength_tip}</p>
                                                 )}
                                                 {r.view_count > 0 && (
                                                     <span
-                                                        className="mt-1 flex items-center gap-1 text-xs text-gray-500"
+                                                        className="mt-1 flex items-center gap-1 text-xs text-[#6b7280]"
                                                         title={`${r.view_count} public view${r.view_count !== 1 ? 's' : ''}`}
                                                     >
                                                         <EyeIcon className="h-3.5 w-3.5" />
@@ -380,7 +380,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-5 py-4 tabular-nums text-gray-500">{fmt(r.updated_at)}</td>
+                                            <td className="px-5 py-4 tabular-nums text-[#71717a]">{fmt(r.updated_at)}</td>
                                             <td className="px-5 py-4">
                                                 <div className="flex justify-end">
                                                     <RowActionsMenu actions={[
@@ -399,12 +399,12 @@ export default function Index({ resumes, resumeCount }: Props) {
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex items-center justify-between px-5 py-4 border-t border-gray-200">
+                        <div className="flex items-center justify-between px-5 py-4 border-t border-[#eeeef5]">
                             <div className="flex items-center gap-1.5">
                                 <button
                                     onClick={() => setPage(p => Math.max(1, p - 1))}
                                     disabled={safePage === 1}
-                                    className="rounded-lg border border-gray-200 px-3.5 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="rounded-lg border border-[#eeeef5] px-3.5 py-1.5 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe] disabled:cursor-not-allowed disabled:opacity-40"
                                 >
                                     Previous
                                 </button>
@@ -412,7 +412,7 @@ export default function Index({ resumes, resumeCount }: Props) {
                                     <button
                                         key={p}
                                         onClick={() => setPage(p)}
-                                        className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${p === safePage ? 'bg-gradient-to-br from-blue-600 to-gray-900 text-white shadow-sm' : 'border border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+                                        className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${p === safePage ? 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white shadow-sm' : 'border border-[#eeeef5] text-[#71717a] hover:bg-[#fafafe]'}`}
                                     >
                                         {p}
                                     </button>
@@ -420,12 +420,12 @@ export default function Index({ resumes, resumeCount }: Props) {
                                 <button
                                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                     disabled={safePage === totalPages}
-                                    className="rounded-lg border border-gray-200 px-3.5 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="rounded-lg border border-[#eeeef5] px-3.5 py-1.5 text-sm font-medium text-[#71717a] transition hover:bg-[#fafafe] disabled:cursor-not-allowed disabled:opacity-40"
                                 >
                                     Next
                                 </button>
                             </div>
-                            <p className="text-sm text-gray-400">
+                            <p className="text-sm text-[#a0a0b0]">
                                 {sorted.length === 0
                                     ? 'No entries'
                                     : `Showing ${showingFrom} to ${showingTo} of ${sorted.length} ${sorted.length === 1 ? 'entry' : 'entries'}`}

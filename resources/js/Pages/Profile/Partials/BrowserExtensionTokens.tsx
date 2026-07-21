@@ -51,19 +51,19 @@ export default function BrowserExtensionTokens({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-base font-semibold text-gray-900">Browser Extension</h2>
-                <p className="mt-1 text-sm text-gray-400">
+                <h2 className="text-base font-semibold text-[#0f0f1a]">Browser Extension</h2>
+                <p className="mt-1 text-sm text-[#a0a0b0]">
                     Connect the Resumegen Chrome/Edge extension to monitor who views or downloads your resumes and reply to visitor messages directly from your browser.
                 </p>
             </header>
 
             {tokens.length > 0 && (
-                <ul className="mt-4 divide-y divide-gray-200 rounded-lg border border-gray-200">
+                <ul className="mt-4 divide-y divide-[#eeeef5] rounded-lg border border-[#eeeef5]">
                     {tokens.map((token) => (
                         <li key={token.id} className="flex items-center justify-between px-4 py-3">
                             <div>
-                                <p className="text-sm font-medium text-gray-900">{token.name}</p>
-                                <p className="text-xs text-gray-400">
+                                <p className="text-sm font-medium text-[#0f0f1a]">{token.name}</p>
+                                <p className="text-xs text-[#a0a0b0]">
                                     Created{' '}
                                     {new Date(token.created_at).toLocaleDateString(undefined, {
                                         year: 'numeric',
@@ -96,23 +96,23 @@ export default function BrowserExtensionTokens({
             {newToken && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
                     <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-                        <h3 className="text-base font-semibold text-gray-900">Your API Token</h3>
+                        <h3 className="text-base font-semibold text-[#0f0f1a]">Your API Token</h3>
                         <p className="mt-1 text-sm text-amber-600">
                             Copy this token now — it won't be shown again.
                         </p>
                         <div className="mt-3 flex items-stretch gap-2">
-                            <code className="flex-1 overflow-x-auto rounded-lg bg-gray-100 px-3 py-2 font-mono text-xs text-gray-900 break-all">
+                            <code className="flex-1 overflow-x-auto rounded-lg bg-[#f5f5fb] px-3 py-2 font-mono text-xs text-[#0f0f1a] break-all">
                                 {newToken}
                             </code>
                             <button
                                 type="button"
                                 onClick={copyToken}
-                                className="shrink-0 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 hover:bg-gray-100"
+                                className="shrink-0 rounded-lg border border-[#eeeef5] px-3 py-2 text-xs font-medium text-[#0f0f1a] hover:bg-[#f5f5fb]"
                             >
                                 {copied ? 'Copied!' : 'Copy'}
                             </button>
                         </div>
-                        <p className="mt-3 text-xs text-gray-400">
+                        <p className="mt-3 text-xs text-[#a0a0b0]">
                             Paste this token into the Resumegen extension options page to connect your account.
                         </p>
                         <button

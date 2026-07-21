@@ -146,15 +146,15 @@ export default function AutocompleteInput({
                 onBlur={handleBlur}
             />
             {open && suggestions.length > 0 && (
-                <ul className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+                <ul className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#e8e8f0] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
                             onMouseDown={() => select(s.title)}
                             className={`px-3 py-2 text-sm cursor-pointer ${
                                 i === activeIndex
-                                    ? 'bg-blue-50 text-blue-600'
-                                    : 'text-gray-800 hover:bg-gray-100'
+                                    ? 'bg-[#eef2ff] text-[#4f46e5]'
+                                    : 'text-[#23232d] hover:bg-[#f5f5fb]'
                             }`}
                         >
                             {s.title}

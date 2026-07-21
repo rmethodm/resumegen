@@ -1,9 +1,11 @@
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import {
-    TrashIcon,
-    HomeIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, ShareIcon, Cog6ToothIcon,
+    SwatchIcon,
+    ArrowDownTrayIcon, TrashIcon,
 } from '@heroicons/react/24/outline';
+import SectionDrawer from './Partials/SectionDrawer';
 import SectionPalette from './Partials/SectionPalette';
 import { Head, Link, router } from '@inertiajs/react';
 import {
@@ -52,6 +54,17 @@ function DragDots({ className = '' }: { className?: string }) {
     );
 }
 
+function TipBox({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="flex gap-2.5 rounded-xl bg-[#dbeafe] p-3.5">
+            <svg className="h-4 w-4 shrink-0 text-[#2563eb] mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM6.343 5.343a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zM15.657 5.343a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM7 16v-1h6v1a2 2 0 11-4 0zM10 4a4 4 0 00-1.446 7.724L8 13h4l-.554-1.276A4 4 0 0010 4z" />
+            </svg>
+            <div className="text-sm text-[#1e40af]">{children}</div>
+        </div>
+    );
+}
+
 function SkillsLayoutCard({
     selected, onClick, label, children,
 }: {
@@ -63,15 +76,39 @@ function SkillsLayoutCard({
             onClick={onClick}
             className={`flex flex-col gap-2 rounded-xl border p-2.5 text-left transition-colors ${
                 selected
-                    ? 'border-blue-600 bg-blue-100 ring-1 ring-blue-600'
-                    : 'border-gray-300 bg-white hover:border-blue-200 hover:bg-gray-100'
+                    ? 'border-[#2563eb] bg-[#dbeafe] ring-1 ring-[#2563eb]'
+                    : 'border-[#cbd5e1] bg-white hover:border-[#bfdbfe] hover:bg-[#f1f5f9]'
             }`}
         >
             <div className="flex h-11 w-full items-start">{children}</div>
-            <span className={`text-[10px] font-semibold uppercase tracking-wide ${selected ? 'text-blue-600' : 'text-gray-400'}`}>
+            <span className={`text-[10px] font-semibold uppercase tracking-wide ${selected ? 'text-[#2563eb]' : 'text-[#94a3b8]'}`}>
                 {label}
             </span>
         </button>
+    );
+}
+
+function PanelGroupLabel({ children }: { children: React.ReactNode }) {
+    return <p className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#4f46e5]">{children}</p>;
+}
+
+function PanelCard({
+    title, icon, pill, open, onToggle, children,
+}: {
+    title: string; icon?: React.ReactNode; pill?: React.ReactNode; open: boolean; onToggle: () => void; children: React.ReactNode;
+}) {
+    return (
+        <div className="mb-2.5 overflow-hidden rounded-[10px] border border-[#eeeef5] bg-white">
+            <button type="button" onClick={onToggle} className="flex w-full items-center gap-2 px-3 py-2.5 transition-colors hover:bg-[#fafafe]">
+                {icon}
+                <span className="flex-1 text-left text-[13px] font-semibold text-[#0f172a]">{title}</span>
+                {pill}
+                <svg className={`h-3.5 w-3.5 shrink-0 text-[#94a3b8] transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            {open && children}
+        </div>
     );
 }
 
@@ -80,7 +117,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
         <button
             type="button"
             onClick={onClick}
-            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-blue-200 py-3 text-sm font-medium text-blue-600 transition-colors hover:border-blue-600 hover:bg-blue-100"
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-[#bfdbfe] py-3 text-sm font-medium text-[#2563eb] transition-colors hover:border-[#2563eb] hover:bg-[#dbeafe]"
         >
             <span className="text-lg leading-none">+</span> {label}
         </button>
@@ -88,7 +125,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
 }
 
 function FLabel({ children }: { children: React.ReactNode }) {
-    return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-gray-400">{children}</p>;
+    return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#94a3b8]">{children}</p>;
 }
 
 function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
@@ -102,7 +139,7 @@ function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
             onChange={e => onChange(e.target.value)}
             onBlur={onBlur}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-gray-300 px-[6.6px] py-[4.4px] text-sm text-gray-800 placeholder-gray-400 focus:border-blue-600 focus:ring-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
     );
 }
@@ -118,7 +155,7 @@ function FTextarea({ value, onChange, onBlur, placeholder, rows = 4 }: {
             placeholder={placeholder}
             rows={rows}
             spellCheck
-            className="w-full resize-y rounded-lg border border-gray-300 px-[6.6px] py-[4.4px] text-sm text-gray-800 placeholder-gray-400 focus:border-blue-600 focus:ring-blue-500 focus:outline-none"
+            className="w-full resize-y rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
         />
     );
 }
@@ -131,10 +168,10 @@ function EntryCard({
     label: string; onRemove: () => void; children: React.ReactNode;
 }) {
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-300">
-            <div className="flex items-center justify-between border-b border-gray-300 bg-gray-100 px-4 py-2.5">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">{label}</span>
-                <button type="button" onClick={onRemove} className="text-gray-400 hover:text-red-500 transition-colors">
+        <div className="overflow-hidden rounded-xl border border-[#cbd5e1]">
+            <div className="flex items-center justify-between border-b border-[#cbd5e1] bg-[#f1f5f9] px-4 py-2.5">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">{label}</span>
+                <button type="button" onClick={onRemove} className="text-[#94a3b8] hover:text-red-500 transition-colors">
                     <TrashIcon className="h-4 w-4" />
                 </button>
             </div>
@@ -153,7 +190,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
     return (
         <>
             {text.slice(0, idx)}
-            <span className="font-semibold text-blue-600">{text.slice(idx, idx + q.length)}</span>
+            <span className="font-semibold text-[#2563eb]">{text.slice(idx, idx + q.length)}</span>
             {text.slice(idx + q.length)}
         </>
     );
@@ -242,15 +279,15 @@ function SkillTagInput({
 
     return (
         <div ref={containerRef} className="relative">
-            <div className="min-h-[44px] w-full rounded-lg border border-gray-300 px-3 py-2 focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+            <div className="min-h-[44px] w-full rounded-lg border border-[#cbd5e1] px-3 py-2 focus-within:border-[#2563eb] focus-within:ring-1 focus-within:ring-[#2563eb]">
                 <div className="flex flex-wrap gap-1.5">
                     {skills.map(s => (
-                        <span key={s} className="flex items-center gap-1 rounded-md bg-blue-100 px-2 py-1 text-xs text-blue-800 border border-blue-200">
+                        <span key={s} className="flex items-center gap-1 rounded-md bg-[#dbeafe] px-2 py-1 text-xs text-[#1e40af] border border-[#bfdbfe]">
                             {s}
                             <button
                                 type="button"
                                 onClick={() => onChange(skills.filter(x => x !== s))}
-                                className="text-blue-500 hover:text-red-500 leading-none"
+                                className="text-[#3b82f6] hover:text-red-500 leading-none"
                             >
                                 ×
                             </button>
@@ -292,11 +329,11 @@ function SkillTagInput({
                         }}
                         onBlur={() => { if (inputVal) { addSkill(inputVal); } }}
                         placeholder={skills.length === 0 ? placeholder : ''}
-                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-gray-800 placeholder-gray-400 focus:ring-0 focus:outline-none"
+                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:ring-0 focus:outline-none"
                     />
                     {loading && (
                         <span className="self-center" aria-hidden="true">
-                            <svg className="h-3.5 w-3.5 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none">
+                            <svg className="h-3.5 w-3.5 animate-spin text-[#94a3b8]" viewBox="0 0 24 24" fill="none">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                             </svg>
@@ -305,7 +342,7 @@ function SkillTagInput({
                 </div>
             </div>
             {open && (suggestions.length > 0 || showEmpty) && (
-                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#cbd5e1] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
@@ -314,14 +351,14 @@ function SkillTagInput({
                             aria-selected={i === activeIndex}
                             onMouseDown={() => addSkill(s.name)}
                             className={`px-3 py-2 text-sm cursor-pointer ${
-                                i === activeIndex ? 'bg-blue-100 text-blue-600' : 'text-gray-800 hover:bg-gray-100'
+                                i === activeIndex ? 'bg-[#dbeafe] text-[#2563eb]' : 'text-[#1e293b] hover:bg-[#f1f5f9]'
                             }`}
                         >
                             {highlightMatch(s.name, inputVal)}
                         </li>
                     ))}
                     {showEmpty && (
-                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-gray-400">
+                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-[#94a3b8]">
                             No matches — press Enter to add “{inputVal.trim()}”
                         </li>
                     )}
@@ -349,17 +386,6 @@ const freshPdfSrc = (id: number) => route('builder.html-preview', id) + '?t=' + 
 // section's pre-refactor "optional" badge (summary/projects/certifications show
 // it; experience/education/skills do not).
 export type SectionKey = 'contact' | 'summary' | 'experience' | 'projects' | 'education' | 'skills' | 'certifications';
-
-/** Everything the inspector can show: a resume section, or one of the tool panels. */
-export type InspectorView = SectionKey | 'target' | 'checklist' | 'shares' | 'messages' | 'design';
-
-const TOOL_LABELS: Record<Exclude<InspectorView, SectionKey>, string> = {
-    target: 'Target role',
-    checklist: 'Resume checklist',
-    shares: 'Share links',
-    messages: 'Messages',
-    design: 'Design',
-};
 
 export type SectionEntry = {
     key: SectionKey;
@@ -428,13 +454,18 @@ export default function Edit({
     const pendingSave = useRef(false);
     const strengthPanelRef = useRef<StrengthPanelHandle>(null);
     const [liveScore, setLiveScore] = useState<number | null>(null);
-    // What the right-hand inspector is currently editing. The left panel is the
-    // only thing that sets this — clicking a section row, a tool row, or a design
-    // control swaps the inspector's contents. Replaces the old overlay drawer.
-    const [inspector, setInspector] = useState<InspectorView>('contact');
-    // Preview zoom, driven by the canvas toolbar. Percent, applied as a transform
-    // on the page wrapper so the iframes themselves never re-render.
-    const [zoom, setZoom] = useState(100);
+    const [templateOpen, setTemplateOpen] = useState(false);
+    // Which section's fields are open in the drawer overlaying the preview. Not
+    // to be confused with `openSections` (the old per-card accordion state,
+    // still used inside each section's own render()).
+    const [drawerSection, setDrawerSection] = useState<SectionKey | null>(null);
+    // The palette row that opened the current drawer, captured explicitly at click
+    // time so the drawer can restore focus to the right row on close. Sniffing
+    // document.activeElement inside the drawer itself is unreliable: React runs the
+    // outgoing drawer's unmount cleanup before the incoming drawer's mount effect in
+    // the same commit, so a mount-time read would capture the previous drawer's
+    // restored focus target instead of the row that opened this one.
+    const drawerTriggerRef = useRef<HTMLElement | null>(null);
     // Section-click → highlight in the live-preview iframe.
     const activeSectionRef = useRef<string | null>(null);
     const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
@@ -496,6 +527,12 @@ export default function Edit({
         activeSectionRef.current = key;
         applyHighlight();
     };
+
+    const [openSections, setOpenSections] = useState({
+        fontSizes: false, strength: false, share: false, messages: false,
+    });
+    const toggleSection = (key: keyof typeof openSections) =>
+        setOpenSections(s => ({ ...s, [key]: !s[key] }));
 
     // Refs to avoid stale closures in save/beacon
     const nameRef = useRef(name); nameRef.current = name;
@@ -582,8 +619,8 @@ export default function Edit({
                     <div className="flex flex-wrap items-center gap-x-[3px] gap-y-1 pt-0.5">
                         {[28, 22, 32, 18, 26].map((w, i) => (
                             <span key={i} className="flex items-center gap-[3px]">
-                                <span className="inline-block h-[6px] rounded-full bg-blue-200" style={{ width: w }} />
-                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-gray-400" />}
+                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-[#94a3b8]" />}
                             </span>
                         ))}
                     </div>
@@ -593,8 +630,8 @@ export default function Edit({
                     <div className="flex flex-col gap-[5px] pt-0.5">
                         {[34, 26, 38, 22].map((w, i) => (
                             <div key={i} className="flex items-center gap-1">
-                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-gray-900" />
-                                <span className="inline-block h-[6px] rounded-full bg-blue-200" style={{ width: w }} />
+                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#0f172a]" />
+                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                             </div>
                         ))}
                     </div>
@@ -604,10 +641,10 @@ export default function Edit({
                     <div className="flex flex-col gap-[6px] pt-0.5">
                         {[[20, [14, 12]], [16, [18, 10]], [22, [12, 14]]].map(([catW, items], i) => (
                             <div key={i} className="flex flex-wrap items-center gap-[3px]">
-                                <span className="inline-block h-[6px] rounded-full bg-gray-900" style={{ width: catW as number }} />
-                                <span className="text-[7px] leading-none text-gray-400">:</span>
+                                <span className="inline-block h-[6px] rounded-full bg-[#0f172a]" style={{ width: catW as number }} />
+                                <span className="text-[7px] leading-none text-[#94a3b8]">:</span>
                                 {(items as number[]).map((w, j) => (
-                                    <span key={j} className="inline-block h-[6px] rounded-full bg-blue-200" style={{ width: w }} />
+                                    <span key={j} className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                                 ))}
                             </div>
                         ))}
@@ -618,9 +655,9 @@ export default function Edit({
                     <div className="flex gap-2.5 pt-0.5">
                         {[[22, [18, 24, 16]], [18, [22, 14, 20]]].map(([catW, rows], ci) => (
                             <div key={ci} className="flex flex-col gap-[4px]">
-                                <span className="inline-block h-[7px] rounded bg-gray-900" style={{ width: catW as number }} />
+                                <span className="inline-block h-[7px] rounded bg-[#0f172a]" style={{ width: catW as number }} />
                                 {(rows as number[]).map((w, ri) => (
-                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-blue-200" style={{ width: w }} />
+                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                                 ))}
                             </div>
                         ))}
@@ -629,11 +666,11 @@ export default function Edit({
 
                 <SkillsLayoutCard label="Narrative" selected={skillsLayout === 'narrative'} onClick={() => { setSkillsLayout('narrative'); setTimeout(save, 0); }}>
                     <div className="flex flex-col gap-[5px] pt-0.5">
-                        <span className="inline-block h-[7px] w-[38px] rounded bg-gray-900" />
+                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#0f172a]" />
                         {[32, 24, 34, 20].map((w, i) => (
                             <div key={i} className="flex items-center gap-1 pl-1">
-                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-gray-400" />
-                                <span className="inline-block h-[5px] rounded-full bg-blue-200" style={{ width: w }} />
+                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[#94a3b8]" />
+                                <span className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
                             </div>
                         ))}
                     </div>
@@ -653,9 +690,9 @@ export default function Edit({
             {(skillsLayout === 'grouped-inline' || skillsLayout === 'grouped-vertical') && (
                 <>
                     {skillCategories.map(cat => (
-                        <div key={cat.id} className="overflow-hidden rounded-xl border border-gray-300 bg-white">
-                            <div className="flex items-center gap-2 border-b border-gray-300 bg-gray-100 px-3 py-2.5">
-                                <DragDots className="text-gray-400 shrink-0" />
+                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
+                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
+                                <DragDots className="text-[#94a3b8] shrink-0" />
                                 <select
                                     value={cat.category_type}
                                     onChange={e => {
@@ -663,7 +700,7 @@ export default function Edit({
                                         setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_type: type, category_name: type || c.category_name } : c));
                                     }}
                                     onBlur={save}
-                                    className="flex-1 min-w-0 rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-800 focus:border-blue-600 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] px-2 py-1.5 text-sm text-[#1e293b] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                 >
                                     <option value="">Select category...</option>
                                     {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
@@ -674,9 +711,9 @@ export default function Edit({
                                     onChange={e => setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_name: e.target.value } : c))}
                                     onBlur={save}
                                     placeholder="Or type custom..."
-                                    className="flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-800 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                 />
-                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-gray-400 hover:text-red-500 transition-colors">
+                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
                                     <TrashIcon className="h-4 w-4" />
                                 </button>
                             </div>
@@ -698,17 +735,17 @@ export default function Edit({
             {skillsLayout === 'narrative' && (
                 <>
                     {skillNarratives.map(n => (
-                        <div key={n.id} className="overflow-hidden rounded-xl border border-gray-300 bg-white">
-                            <div className="flex items-center gap-2 border-b border-gray-300 bg-gray-100 px-3 py-2.5">
+                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
+                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
                                 <input
                                     type="text"
                                     value={n.name}
                                     onChange={e => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, name: e.target.value } : x))}
                                     onBlur={save}
                                     placeholder="Skill area (e.g. Communication, Leadership)"
-                                    className="flex-1 rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm font-medium text-gray-800 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                    className="flex-1 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm font-medium text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
                                 />
-                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-gray-400 hover:text-red-500 transition-colors">
+                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
                                     <TrashIcon className="h-4 w-4" />
                                 </button>
                             </div>
@@ -818,7 +855,7 @@ export default function Edit({
                         placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
                         rows={5}
                     />
-                    <p className="text-right text-xs text-gray-400">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                    <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
                 </>
             ),
         },
@@ -838,12 +875,12 @@ export default function Edit({
                                 <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
                                 <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
                             </div>
-                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-blue-200 text-blue-600 focus:ring-blue-500" />
+                            <label className="flex items-center gap-2 text-sm text-[#475569] cursor-pointer">
+                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#bfdbfe] text-[#2563eb] focus:ring-[#3b82f6]" />
                                 I currently work here
                             </label>
                             <div>
-                                <FLabel>Bullet Points <span className="text-gray-400 font-normal">(one per line)</span></FLabel>
+                                <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
                                 <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
                             </div>
                         </EntryCard>
@@ -863,14 +900,14 @@ export default function Edit({
                     {projects.map((proj, i) => (
                         <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
                             <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
-                            <div><FLabel>Description <span className="text-gray-400 font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
-                            <div><FLabel>Project URL <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
+                            <div><FLabel>Description <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
+                            <div><FLabel>Project URL <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <div><FLabel>Start Date <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
-                                <div><FLabel>End Date <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
+                                <div><FLabel>Start Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
+                                <div><FLabel>End Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
                             </div>
                             <div>
-                                <FLabel>Highlights <span className="text-gray-400 font-normal">(one per line, optional)</span></FLabel>
+                                <FLabel>Highlights <span className="text-[#94a3b8] font-normal">(one per line, optional)</span></FLabel>
                                 <FTextarea value={proj.bullets} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, bullets: v } : p))} onBlur={save} placeholder={"• Built with React, Node.js, and PostgreSQL\n• Handles 10k+ daily users"} rows={3} />
                             </div>
                         </EntryCard>
@@ -920,12 +957,12 @@ export default function Edit({
                     {certifications.map((cert, i) => (
                         <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
                             <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
-                            <div><FLabel>Issuing Organization <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
+                            <div><FLabel>Issuing Organization <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <div><FLabel>Date Obtained <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
-                                <div><FLabel>Expiration <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
+                                <div><FLabel>Date Obtained <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
+                                <div><FLabel>Expiration <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
                             </div>
-                            <div><FLabel>Credential ID <span className="text-gray-400 font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
+                            <div><FLabel>Credential ID <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
                         </EntryCard>
                     ))}
                     <AddButton label="Add Certificate" onClick={() => setCertifications(prev => [...prev, emptyCert()])} />
@@ -948,279 +985,263 @@ export default function Edit({
             .filter((e): e is SectionEntry => Boolean(e)),
     ];
 
-    const isSection = (v: InspectorView): v is SectionKey => v in SECTIONS;
-    const inspectorTitle = isSection(inspector) ? SECTIONS[inspector].label : TOOL_LABELS[inspector];
-
     return (
-        <div className="min-h-screen bg-gray-100 text-gray-900" dusk="builder">
+        <AuthenticatedLayout>
+            {/* Top bar */}
+            <div className="flex flex-wrap items-center gap-3 border-b border-[#cbd5e1] bg-white px-4 py-2">
+                <Link href={route('builder.index')} className="shrink-0 text-sm text-[#94a3b8] hover:text-[#475569]">← Resumes</Link>
+                <span className="shrink-0 text-[#cbd5e1]">/</span>
+                <h2 className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold text-[#0f172a]">{name}</h2>
+                {liveScore !== null && (
+                    <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                        liveScore <= 30 ? 'bg-[#fee2e2] text-[#b91c1c]'
+                            : liveScore <= 50 ? 'bg-[#fef3c7] text-[#a16207]'
+                                : 'bg-[#eef2ff] text-[#4f46e5]'
+                    }`}>
+                        {liveScore}%
+                    </span>
+                )}
+                <span className="shrink-0 text-[11px] text-[#a0a0b0]">
+                    {saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}
+                </span>
+            </div>
+
+            {/* Completion bar */}
+            <div className="flex items-center border-b border-gray-100 bg-white px-4 py-2">
+                <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] transition-all" style={{ width: `${completionScore}%` }} />
+                </div>
+            </div>
+
             <Head title={`Editing: ${name}`} />
 
-            <div className="flex min-h-screen">
-                {/* ── Icon rail. This page does not use AuthenticatedLayout: it is a
-                     full-bleed four-column workspace, and a stacked app header on top
-                     of it would leave no room for the preview. ── */}
-                <nav className="flex w-14 shrink-0 flex-col items-center gap-2 border-r border-gray-200 bg-white p-2" aria-label="Application navigation">
-                    <div className="mb-2 grid h-8 w-8 place-items-center rounded-lg bg-gray-900 text-xs font-bold text-white">RG</div>
-                    <Link href={route('dashboard')} className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Dashboard" aria-label="Dashboard">
-                        <HomeIcon className="h-5 w-5" />
-                    </Link>
-                    <Link href={route('builder.index')} className="grid h-9 w-9 place-items-center rounded-lg bg-blue-50 text-blue-600" title="Resumes" aria-label="Resumes">
-                        <DocumentTextIcon className="h-5 w-5" />
-                    </Link>
-                    <Link href={route('messages.index')} className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Messages" aria-label="Messages">
-                        <ChatBubbleLeftRightIcon className="h-5 w-5" />
-                    </Link>
-                    <Link href={route('shares.index')} className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Shares" aria-label="Shares">
-                        <ShareIcon className="h-5 w-5" />
-                    </Link>
-                    <div className="flex-1" />
-                    <Link href={route('profile.edit')} className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Settings" aria-label="Settings">
-                        <Cog6ToothIcon className="h-5 w-5" />
-                    </Link>
-                </nav>
-
-                {/* ── Left panel: sections, design, tools ── */}
-                <aside className="flex w-72 shrink-0 flex-col border-r border-gray-200 bg-white" aria-label="Resume controls">
-                    <div className="flex-1 overflow-y-auto p-3">
-                        <section className="mb-4 border-b border-gray-200 pb-4">
-                            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Sections</p>
-                            <SectionPalette
-                                entries={paletteEntries}
-                                activeKey={isSection(inspector) ? inspector : null}
-                                onSelect={key => { setInspector(key); highlightSection(key); }}
-                                onDragEnd={handleSectionDragEnd}
-                                sensors={sensors}
-                                sectionOrder={sectionOrder}
-                            />
-                        </section>
-
-                        <section className="mb-4 border-b border-gray-200 pb-4">
-                            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Design</p>
-                            <div className="mb-3">
-                                <label className="mb-1 block text-xs font-medium text-gray-700" htmlFor="builder-template">Template</label>
-                                <select
-                                    id="builder-template"
-                                    className="w-full rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
-                                    value={template}
-                                    onChange={e => { setTemplate(e.target.value as ResumeTemplate); setTimeout(save, 0); }}
-                                >
-                                    {Object.keys(TEMPLATE_LABELS).map(t => (
-                                        <option key={t} value={t}>{TEMPLATE_LABELS[t] ?? t}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="mb-3">
-                                <label className="mb-1 block text-xs font-medium text-gray-700" htmlFor="builder-font">Font</label>
-                                <select
-                                    id="builder-font"
-                                    className="w-full rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
-                                    value={fontFamily}
-                                    onChange={e => {
-                                        const f = e.target.value as 'sans' | 'serif' | 'mono';
-                                        fontFamilyRef.current = f;
-                                        setFontFamily(f);
-                                        save();
-                                    }}
-                                >
-                                    <option value="sans">Sans</option>
-                                    <option value="serif">Serif</option>
-                                    <option value="mono">Mono</option>
-                                </select>
-                            </div>
-                            <button
-                                type="button"
-                                className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                                onClick={() => setInspector('design')}
-                            >
-                                Type sizes &amp; spacing
-                            </button>
-                        </section>
-
-                        <section className="mb-4 border-b border-gray-200 pb-4">
-                            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Tools</p>
-                            <div className="flex flex-col gap-1">
-                                <button type="button" dusk="target-role" className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => setInspector('target')}>
-                                    <span className="flex-1 truncate">Target role</span>
-                                    {targetTitle && <span className="truncate text-xs text-gray-400">{targetTitle}</span>}
-                                </button>
-                                <button type="button" className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => setInspector('checklist')}>
-                                    <span className="flex-1 truncate">Resume checklist</span>
-                                    {liveScore !== null && <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">{liveScore}%</span>}
-                                </button>
-                                <button type="button" className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => setInspector('shares')}>
-                                    <span className="flex-1 truncate">Share links</span>
-                                    <span className="text-xs text-gray-400">{initialLinks.filter(l => l.is_active).length} active</span>
-                                </button>
-                                <button type="button" className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => setInspector('messages')}>
-                                    <span className="flex-1 truncate">Messages</span>
-                                    {unreadCount > 0
-                                        ? <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">{unreadCount} unread</span>
-                                        : <span className="text-xs text-gray-400">{initialThreads.length}</span>}
-                                </button>
-                            </div>
-                        </section>
-
-                        <section>
-                            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Export</p>
-                            <div className="flex flex-col gap-2">
-                                <a href={route('builder.docx', resume.id)} className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">Download DOCX</a>
-                                <a href={route('builder.pdf', resume.id)} className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">Download PDF</a>
-                            </div>
-                        </section>
-                    </div>
-
-                    <div className="border-t border-gray-200 p-3">
-                        <div className="mb-2 flex items-center justify-between text-xs font-medium text-gray-700">
-                            <span>Match checklist</span>
-                            <span>{completionScore}%</span>
+            <div className="relative flex flex-wrap items-start bg-[#f1f5f9]">
+                    {/* ── Left column: the live preview. Hidden below `lg` so the
+                         palette/drawer can take the full narrow-screen width. ── */}
+                    <div className="hidden min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6 lg:block">
+                        <div className="mb-2 flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
+                            <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
                         </div>
-                        <div className="h-1.5 overflow-hidden rounded-full bg-gray-200">
-                            <span className="block h-full rounded-full bg-blue-600" style={{ width: `${completionScore}%` }} />
-                        </div>
-                    </div>
-                </aside>
-
-                {/* ── Centre: topbar, canvas tools, live preview ── */}
-                <main className="flex min-w-0 flex-1 flex-col">
-                    <header className="flex items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-2">
-                        <div className="flex min-w-0 items-center gap-2">
-                            <Link href={route('builder.index')} className="shrink-0 text-sm text-gray-500 hover:text-gray-700">← Resumes</Link>
-                            <span className="truncate text-sm font-semibold text-gray-900">{name}</span>
-                            {liveScore !== null && <span className="shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">{liveScore}% match</span>}
-                        </div>
-                        <div className="flex shrink-0 items-center gap-2">
-                            <span className="text-xs text-gray-400">{saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}</span>
-                            <a href={route('builder.pdf', resume.id)} className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700">Export</a>
-                        </div>
-                    </header>
-
-                    <div className="flex items-center justify-center gap-4 border-b border-gray-200 bg-white px-4 py-1.5 text-sm text-gray-600" aria-label="Preview controls">
-                        <div className="flex items-center gap-2">
-                            <button type="button" aria-label="Zoom out" className="rounded px-2 py-0.5 hover:bg-gray-100" onClick={() => setZoom(z => Math.max(50, z - 10))}>−</button>
-                            <span className="tabular-nums">{zoom}%</span>
-                            <button type="button" aria-label="Zoom in" className="rounded px-2 py-0.5 hover:bg-gray-100" onClick={() => setZoom(z => Math.min(200, z + 10))}>+</button>
-                        </div>
-                        <button type="button" className="rounded px-2 py-0.5 hover:bg-gray-100" onClick={() => setZoom(100)}>Reset</button>
-                    </div>
-
-                    <div className="flex-1 overflow-auto p-6">
-                        {/* A letter-proportioned sheet, not a fill: h-full stretched the
-                            white page to the canvas height whatever the content was. The
-                            iframe scrolls internally when the resume runs past one page. */}
-                        <div
-                            className="relative mx-auto aspect-[8.5/11] w-full max-w-3xl origin-top bg-white shadow"
-                            style={{ transform: `scale(${zoom / 100})` }}
-                        >
+                        <div className="relative h-[calc(100vh-9rem)] overflow-hidden rounded-md bg-white shadow-[0_8px_30px_rgba(79,70,229,0.12)]">
                             {renderPreviewFrames()}
                         </div>
                     </div>
-                </main>
 
-                {/* ── Right: inspector, showing whatever the left panel selected ── */}
-                {/* 420px, the upper half of the mockup's minmax(360px, 430px). At w-96
-                    the two-column field grid truncated most job titles and companies. */}
-                <aside className="flex w-[420px] shrink-0 flex-col border-l border-gray-200 bg-white" aria-label="Selected section editor">
-                    <div className="flex-1 space-y-4 overflow-y-auto p-4">
-                        <div className="flex items-center justify-between gap-2">
-                            <h2 className="text-base font-semibold text-gray-900">{inspectorTitle}</h2>
-                            {isSection(inspector) && SECTIONS[inspector].optional && (
-                                <span className="text-xs text-gray-400">Optional</span>
-                            )}
-                        </div>
+                    {drawerSection && (
+                        <SectionDrawer
+                            key={drawerSection}
+                            title={SECTIONS[drawerSection].label}
+                            onClose={() => setDrawerSection(null)}
+                            restoreFocusTo={drawerTriggerRef.current}
+                        >
+                            {SECTIONS[drawerSection].render()}
+                        </SectionDrawer>
+                    )}
 
-                        {isSection(inspector) && SECTIONS[inspector].render()}
-
-                        {inspector === 'design' && (
-                            <div className="flex flex-col gap-2.5">
-                                {([
-                                    { label: 'Name size', key: 'name', min: 12, max: 36 },
-                                    { label: 'Contact size', key: 'contact', min: 6, max: 16 },
-                                    { label: 'Heading size', key: 'heading', min: 8, max: 20 },
-                                    { label: 'Body size', key: 'body', min: 8, max: 16 },
-                                    { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
-                                    { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
-                                ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
-                                    <div key={key}>
-                                        <div className="mb-1 flex justify-between">
-                                            <span className="text-xs text-gray-500">{label}</span>
-                                            <span className="text-xs font-semibold tabular-nums text-gray-900">{fontSizes[key]}pt</span>
-                                        </div>
-                                        <input
-                                            type="range"
-                                            min={min}
-                                            max={max}
-                                            step={0.5}
-                                            value={fontSizes[key]}
-                                            aria-label={label}
-                                            onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
-                                            onMouseUp={save}
-                                            onTouchEnd={save}
-                                            onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
-                                            className="w-full"
-                                        />
-                                    </div>
-                                ))}
-                                <div className="flex justify-end">
-                                    <button
-                                        type="button"
-                                        onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }}
-                                        className="text-xs text-gray-400 hover:text-blue-600"
-                                    >
-                                        Reset sizes
-                                    </button>
-                                </div>
+                    {/* ── Right palette: fixed 300px on large screens, full-width
+                         below `lg` since the preview is hidden there. ── */}
+                    <aside
+                        className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-[#cbd5e1] bg-white lg:w-[300px]"
+                        style={{ minHeight: 'calc(100vh - 3.5rem)' }}
+                    >
+                        <div className="flex flex-col">
+                            {/* Export */}
+                            <div className="flex gap-2 border-b border-[#eeeef5] p-3">
+                                <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
+                                    <ArrowDownTrayIcon className="h-3.5 w-3.5" /> DOCX
+                                </a>
+                                <a href={route('builder.pdf', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#cbd5e1] py-2 text-xs font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:bg-[#f8fafc] hover:text-[#4f46e5]">
+                                    <ArrowDownTrayIcon className="h-3.5 w-3.5" /> PDF
+                                </a>
                             </div>
-                        )}
 
-                        {inspector === 'target' && (
-                            <>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <FLabel>Company</FLabel>
-                                        <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." name="target_company" />
+                            <div className="space-y-4 p-3">
+                                {recruiterNote && (
+                                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                                        <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
+                                        <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
                                     </div>
-                                    <div>
-                                        <FLabel>Job title</FLabel>
-                                        <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" name="target_title" />
-                                    </div>
+                                )}
+
+                                {/* Resume Name — always visible; doesn't belong to any one
+                                    section, so it doesn't get a drawer of its own. */}
+                                <div className="space-y-1.5 rounded-[10px] border border-[#eeeef5] bg-white p-3">
+                                    <FLabel>Resume Name</FLabel>
+                                    <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
+                                    <p className="text-[11px] text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
                                 </div>
+
                                 <div>
+                                    <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Sections</p>
+                                    <SectionPalette
+                                        entries={paletteEntries}
+                                        activeKey={drawerSection}
+                                        onSelect={(key, trigger) => { drawerTriggerRef.current = trigger; setDrawerSection(key); highlightSection(key); }}
+                                        onDragEnd={handleSectionDragEnd}
+                                        sensors={sensors}
+                                        sectionOrder={sectionOrder}
+                                    />
+                                </div>
+
+                                <PanelCard
+                                    title="Template"
+                                    icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
+                                    pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
+                                    open={templateOpen}
+                                    onToggle={() => setTemplateOpen(v => !v)}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <div aria-label="Resume template" className="grid grid-cols-2 gap-2">
+                                            {Object.keys(TEMPLATE_LABELS).map(t => {
+                                                const selected = template === t;
+                                                return (
+                                                    <button
+                                                        key={t}
+                                                        type="button"
+                                                        onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
+                                                        aria-pressed={selected}
+                                                        title={TEMPLATE_LABELS[t] ?? t}
+                                                        className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
+                                                    >
+                                                        <img
+                                                            src={`/images/templates/${t}.png`}
+                                                            loading="lazy"
+                                                            alt=""
+                                                            className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
+                                                        />
+                                                        <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                        {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
+                                    </div>
+                                </PanelCard>
+
+                                <PanelCard
+                                    title="Font"
+                                    open={openSections.fontSizes}
+                                    onToggle={() => toggleSection('fontSizes')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <div className="mb-3.5 flex gap-1.5">
+                                            {(['sans', 'serif', 'mono'] as const).map(f => (
+                                                <button
+                                                    key={f}
+                                                    type="button"
+                                                    onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
+                                                    className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
+                                                >
+                                                    {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="flex flex-col gap-2.5">
+                                            {([
+                                                { label: 'Name size', key: 'name', min: 12, max: 36 },
+                                                { label: 'Contact size', key: 'contact', min: 6, max: 16 },
+                                                { label: 'Heading size', key: 'heading', min: 8, max: 20 },
+                                                { label: 'Body size', key: 'body', min: 8, max: 16 },
+                                                { label: 'Section spacing', key: 'sectionSpacing', min: 0, max: 20 },
+                                                { label: 'Entry spacing', key: 'entrySpacing', min: 0, max: 20 },
+                                            ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
+                                                <div key={key}>
+                                                    <div className="mb-1 flex justify-between">
+                                                        <span className="text-[11px] text-[#71717a]">{label}</span>
+                                                        <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
+                                                    </div>
+                                                    <input
+                                                        type="range"
+                                                        min={min}
+                                                        max={max}
+                                                        step={0.5}
+                                                        value={fontSizes[key]}
+                                                        aria-label={label}
+                                                        onChange={e => { const n = { ...fontSizesRef.current, [key]: Number(e.target.value) }; fontSizesRef.current = n; setFontSizes(n); }}
+                                                        onMouseUp={save}
+                                                        onTouchEnd={save}
+                                                        onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
+                                                        className="w-full"
+                                                        style={{ accentColor: '#4f46e5' }}
+                                                    />
+                                                </div>
+                                            ))}
+                                            <div className="flex justify-end">
+                                                <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </PanelCard>
+
+                                <PanelCard
+                                    title="Resume checklist"
+                                    pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
+                                    open={openSections.strength}
+                                    onToggle={() => toggleSection('strength')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} />
+                                    </div>
+                                </PanelCard>
+                                <div className="rounded-[10px] border border-[#eeeef5] p-3">
+                                    <div className="mb-3 grid grid-cols-2 gap-2">
+                                        <div>
+                                            <FLabel>Company</FLabel>
+                                            <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." name="target_company" />
+                                        </div>
+                                        <div>
+                                            <FLabel>Job title</FLabel>
+                                            <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" name="target_title" />
+                                        </div>
+                                    </div>
                                     <FLabel>Job description</FLabel>
                                     <FTextarea
                                         value={targetJobDescription}
                                         onChange={setTargetJobDescription}
                                         onBlur={save}
                                         placeholder="Paste the job posting here to keep it alongside the resume you're tailoring."
-                                        rows={10}
+                                        rows={6}
                                     />
                                 </div>
-                            </>
-                        )}
 
-                        {inspector === 'checklist' && <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} />}
-
-                        {inspector === 'shares' && (
-                            <>
-                                {/* ponytail: management lives on /shares — this is just the handoff. */}
-                                <p className="mb-3 text-xs text-gray-500">
-                                    Share links are stable, so an edit here reaches anyone you already sent one to.
-                                    Create and manage them on the Shares page.
-                                </p>
-                                <Link href={route('shares.index')} className="inline-flex rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700">Manage shares →</Link>
-                            </>
-                        )}
-
-                        {inspector === 'messages' && <ThreadsPanel threads={initialThreads} resumeId={resume.id} />}
-
-                        {recruiterNote && isSection(inspector) && (
-                            <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                                <p className="mb-1 text-xs font-semibold text-gray-900">Recruiter note</p>
-                                <p className="text-sm leading-relaxed text-gray-700">{recruiterNote}</p>
+                                <PanelCard
+                                    title="Share links"
+                                    pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
+                                    open={openSections.share}
+                                    onToggle={() => toggleSection('share')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        {/* ponytail: management lives on /shares — this is just the handoff. */}
+                                        <p className="mb-3 text-xs text-gray-500">
+                                            Share links are stable, so an edit here reaches anyone you already sent one to. Create and manage them on the Shares page.
+                                        </p>
+                                        <Link
+                                            href={route('shares.index')}
+                                            className="inline-flex rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
+                                        >
+                                            Manage shares →
+                                        </Link>
+                                    </div>
+                                </PanelCard>
+                                <PanelCard
+                                    title="Messages"
+                                    pill={unreadCount > 0
+                                        ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
+                                        : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
+                                    open={openSections.messages}
+                                    onToggle={() => toggleSection('messages')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                                    </div>
+                                </PanelCard>
                             </div>
-                        )}
-                    </div>
-                </aside>
+                        </div>
+                    </aside>
+
             </div>
+
 
             {/* First-run wizard */}
             {wizardStep < 2 && (
@@ -1228,14 +1249,14 @@ export default function Edit({
                     <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
                         <div className="mb-6 flex justify-center gap-2">
                             {([0, 1] as const).map(i => (
-                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-gray-900' : i < wizardStep ? 'bg-blue-300' : 'bg-gray-300'}`} />
+                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-[#0f172a]' : i < wizardStep ? 'bg-[#93c5fd]' : 'bg-[#cbd5e1]'}`} />
                             ))}
                         </div>
                         {wizardStep === 0 && (
                             <div className="space-y-4 text-center">
                                 <h2 className="text-2xl font-semibold text-gray-900">Let's build your resume</h2>
                                 <p className="text-sm text-gray-600">It takes just a few minutes. We'll start with your contact details.</p>
-                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800">Get started →</button>
+                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-[#0f172a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Get started →</button>
                             </div>
                         )}
                         {wizardStep === 1 && (
@@ -1251,13 +1272,13 @@ export default function Edit({
                                 </div>
                                 <div className="mt-4 flex items-center justify-between">
                                     <button type="button" onClick={finishWizard} className="text-sm text-gray-500 hover:text-gray-700">Skip</button>
-                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800">Finish →</button>
+                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-[#0f172a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Finish →</button>
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
             )}
-        </div>
+        </AuthenticatedLayout>
     );
 }
