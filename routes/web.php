@@ -5,20 +5,17 @@ use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
-use App\Http\Controllers\CoverLetterController;
 use App\Http\Controllers\HeatmapController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PersonalTokenController;
-use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\ResumeThreadController;
-use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SectionEventController;
 use App\Http\Controllers\ShareController;
@@ -51,10 +48,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
     Route::patch('/user/profile-info', [ProfileController::class, 'updatePersona'])->name('profile.persona');
 
-    Route::get('/settings/portfolio', [PortfolioController::class, 'edit'])->name('portfolio.edit');
-    Route::patch('/settings/portfolio', [PortfolioController::class, 'update'])->name('portfolio.update');
-    Route::get('/portfolio/check-slug', [PortfolioController::class, 'checkSlug'])->name('portfolio.check-slug')->middleware('throttle:10,1');
-
     Route::post('/user/two-factor-authentication', [TwoFactorController::class, 'store'])
         ->name('two-factor.enable');
     Route::post('/user/confirmed-two-factor-authentication', [ConfirmedTwoFactorController::class, 'store'])
@@ -78,7 +71,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/builder/{resume}/thumbnail', [ResumeBuilderController::class, 'thumbnail'])->name('builder.thumbnail');
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
     Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
-    Route::post('/builder/{resume}/create-variant', [ResumeBuilderController::class, 'createVariant'])->name('builder.create-variant');
     Route::get('/builder/{resume}/heatmap', [HeatmapController::class, 'show'])->name('builder.heatmap');
     Route::get('/builder/{resume}/strength-score', [StrengthScoreController::class, 'show'])
         ->middleware('throttle:10,1')
@@ -98,16 +90,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/builder/{resume}/threads/{thread}/read', [ResumeThreadController::class, 'read'])->name('builder.thread.read');
     Route::delete('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'destroy'])->name('builder.thread.destroy');
 
-    Route::get('/cover-letters', [CoverLetterController::class, 'index'])->name('cover-letters.index');
-    Route::post('/cover-letters', [CoverLetterController::class, 'store'])->name('cover-letters.store');
-    Route::get('/cover-letters/{letter}', [CoverLetterController::class, 'edit'])->name('cover-letters.edit');
-    Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
-    Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
-
-    // Salary hint predates the removed Job Search feature and is independent of it;
-    // `jobs.salary` is now the only `jobs.*` route.
-    Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
-
     Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
     Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');
 
@@ -124,10 +106,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     });
 
 });
-
-// Public (unauthenticated) portfolio page
-Route::get('/p/{slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
-Route::post('/p/{slug}/contact', [PortfolioController::class, 'contact'])->name('portfolio.contact')->middleware('throttle:5,1');
 
 // Public (unauthenticated) share link routes
 Route::middleware('throttle:60,1')->group(function () {

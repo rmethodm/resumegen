@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CoverLetter;
 use App\Models\Resume;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,7 +13,7 @@ class SearchController extends Controller
         $query = trim((string) $request->query('q', ''));
 
         if ($query === '') {
-            return response()->json(['resumes' => [], 'coverLetters' => []]);
+            return response()->json(['resumes' => []]);
         }
 
         $like = '%'.mb_strtolower($query).'%';
@@ -33,24 +32,8 @@ class SearchController extends Controller
             ])
             ->all();
 
-        $coverLetters = CoverLetter::query()
-            ->where('user_id', $userId)
-            ->where(function ($q) use ($like) {
-                $q->whereRaw('LOWER(name) LIKE ?', [$like])
-                    ->orWhereRaw('LOWER(body) LIKE ?', [$like]);
-            })
-            ->limit(5)
-            ->get(['id', 'name'])
-            ->map(fn (CoverLetter $c) => [
-                'id' => $c->id,
-                'name' => $c->name,
-                'url' => route('cover-letters.edit', $c->id),
-            ])
-            ->all();
-
         return response()->json([
             'resumes' => $resumes,
-            'coverLetters' => $coverLetters,
         ]);
     }
 }

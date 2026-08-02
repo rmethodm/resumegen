@@ -12,35 +12,6 @@ class ResumeCascadeDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_deleting_parent_resume_deletes_ab_variants(): void
-    {
-        $user = User::factory()->create();
-        $parent = Resume::factory()->for($user)->create();
-        $variant = Resume::factory()->for($user)->create(['ab_parent_id' => $parent->id]);
-
-        $parent->delete();
-
-        $this->assertModelMissing($variant);
-    }
-
-    /**
-     * A bulk delete on the variants relation skips each child's own `deleting`
-     * hook, so a grandchild variant survives its grandparent. Nested A/B trees
-     * must delete all the way down.
-     */
-    public function test_deleting_parent_resume_deletes_nested_ab_variants(): void
-    {
-        $user = User::factory()->create();
-        $parent = Resume::factory()->for($user)->create();
-        $child = Resume::factory()->for($user)->create(['ab_parent_id' => $parent->id]);
-        $grandchild = Resume::factory()->for($user)->create(['ab_parent_id' => $child->id]);
-
-        $parent->delete();
-
-        $this->assertModelMissing($child);
-        $this->assertModelMissing($grandchild);
-    }
-
     /**
      * The `deleting` hook no longer removes threads by hand; it relies on the
      * `cascadeOnDelete` FK. This guards that the FK is actually enforced, since

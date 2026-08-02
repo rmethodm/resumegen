@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Mail;
 
-use App\Mail\NewPortfolioMessageMail;
 use App\Mail\NewThreadStarted;
 use App\Mail\NewVisitorReply;
 use App\Mail\ResumeViewNudgeMail;
 use App\Mail\StaleResumeNudgeMail;
 use App\Mail\TwoFactorCodeMail;
 use App\Mail\VisitorThreadReply;
-use App\Models\PortfolioMessage;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Models\ResumeThread;
@@ -78,16 +76,6 @@ class MailRendersTest extends TestCase
     public function test_two_factor_code_renders(): void
     {
         $this->assertStringContainsString('123456', (new TwoFactorCodeMail('123456'))->render());
-    }
-
-    public function test_new_portfolio_message_renders(): void
-    {
-        $user = User::factory()->create();
-        $message = PortfolioMessage::factory()->create(['user_id' => $user->id]);
-
-        $body = (new NewPortfolioMessageMail($user, $message))->render();
-
-        $this->assertStringContainsString(route('portfolio.edit'), $body);
     }
 
     public function test_new_thread_started_renders(): void

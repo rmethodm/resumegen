@@ -124,7 +124,7 @@ All routes return Inertia responses — no Blade views except the single root `r
 ### Resume data model
 Resume content is stored as JSON columns on a single `resumes` table (no separate section tables). Frontend owns JSON shape; backend validates as `nullable array`.
 
-**Cascade delete:** Most dependents (share links, snapshots, threads, section/share events, tags) are removed by `cascadeOnDelete` FKs. `Resume::booted()`'s `deleting` observer covers only what FKs can't: it deletes A/B variants per-model (so nested variant trees recurse) and unlinks the resume's thumbnail. Because the `resumes.user_id` FK would cascade rows away without firing model events, `User::booted()` deletes its resumes per-model — otherwise account deletion would leak every thumbnail on disk.
+**Cascade delete:** Most dependents (share links, snapshots, threads, section/share events, tags) are removed by `cascadeOnDelete` FKs. `Resume::booted()`'s `deleting` observer covers only what FKs can't: it unlinks the resume's thumbnail. Because the `resumes.user_id` FK would cascade rows away without firing model events, `User::booted()` deletes its resumes per-model — otherwise account deletion would leak every thumbnail on disk.
 
 ### Authorization
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses `AuthorizesRequests` so `$this->authorize()` is available everywhere.
@@ -184,7 +184,16 @@ Deleted on 2026-07-21 — code, routes, models, migrations, config and tests:
 
 `2026_07_21_101720_drop_admin_tables_and_flags` (forward-only) drops `admin_audit_logs`, `system_events`, `career_articles` and `users.is_master_admin`.
 
-Survived that removal and must not be described as gone: **`SalaryController` / `/jobs/salary`** (predates Job Search, now the only `jobs.*` route), the **JobRole / JobTitle / JobSkill taxonomy** with its seeders (still run by `DatabaseSeeder`), `AutocompleteController` and `SkillCategories` — only the admin CRUD over the taxonomy is gone, so **taxonomy is now seeder-managed with no UI**; **`PortfolioMessage`** and the user-facing `/messages` page; **`StrengthScorePanel`** (server-side scorer, never AI); and the builder's `resumes.target_company` / `target_title` / `target_job_description` fields — the Optimize tab now holds a plain "Job description" textarea where the ATS panel used to be.
+Survived that removal and must not be described as gone: the **JobRole / JobTitle / JobSkill taxonomy** with its seeders (still run by `DatabaseSeeder`), `AutocompleteController` and `SkillCategories` — only the admin CRUD over the taxonomy is gone, so **taxonomy is now seeder-managed with no UI**; **`StrengthScorePanel`** (server-side scorer, never AI); and the builder's `resumes.target_company` / `target_title` / `target_job_description` fields — the Optimize tab now holds a plain "Job description" textarea where the ATS panel used to be.
+
+Deleted on 2026-08-02 — code, routes, models, migrations, and tests:
+
+- **A/B resume variants.** `Resume::abParent()` / `abVariants()`, `ResumeBuilderController::createVariant()`, the `builder.create-variant` route, the A/B badge and row action in `ResumeBuilder/Index.tsx`, `variant_count` on the dashboard cards, and the `resumes.ab_parent_id` column.
+- **Cover Letters.** `CoverLetterController`, `CoverLetter` model + policy + factory, `App\Data\CoverLetterTemplates`, `resources/js/Pages/CoverLetter/**`, the Cover Letters nav item and command-palette entry, and the `cover_letters` table. `SearchController`'s JSON contract dropped the `coverLetters` key — it now returns `{resumes}` only.
+- **Job Search / salary hint.** `SalaryController`, `App\Data\SalaryRanges`, and the `/jobs/salary` route — this was already dead code with no frontend caller, left over from the 2026-07-21 Job Search removal.
+- **Portfolio.** `PortfolioController`, `PortfolioMessage` model + mail + factory, the public `/p/{slug}` page and settings page (`resources/js/Pages/Portfolio/Show.tsx`, `resources/js/Pages/Settings/Portfolio.tsx`), the Portfolio nav item, and `users.portfolio_slug` / `portfolio_headline` / `portfolio_bio` / `portfolio_is_public` / `portfolio_links`. **The `/messages` page and `MessagesController` were deliberately kept** — despite the shared "Messages" name, that page is the `ResumeThread` share-link comment inbox, unrelated to `PortfolioMessage`.
+
+`2026_08_02_072809_drop_variants_cover_letters_salary_and_portfolio` (forward-only) drops `resumes.ab_parent_id`, the `cover_letters` and `portfolio_messages` tables, and the five `users.portfolio_*` columns.
 
 ## Browser tests (Dusk) — two non-obvious requirements
 
@@ -238,15 +247,15 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 1. **Single `resumes` table with JSON columns** — frontend owns shape; backend validates as array.
 2. **No template React components** — server renders PDF; iframe preview loads it.
 3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
-4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `portfolio_messages`. Simple, immutable.
-5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
+4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`. Simple, immutable.
+5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
 6. **No monetization** — every feature is free and unlimited, and nothing is metered.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
-8. **No LLM anywhere** — every remaining feature (strength score, salary hint, autocomplete, keyword overlap, exports) is deterministic server-side code. Adding an AI dependency back is a product decision, not an implementation detail; ask first.
+8. **No LLM anywhere** — every remaining feature (strength score, autocomplete, keyword overlap, exports) is deterministic server-side code. Adding an AI dependency back is a product decision, not an implementation detail; ask first.
 
 ---
 
-Last updated: 2026-07-21 (AI, pricing instrumentation, Job Search and the whole admin surface removed)
+Last updated: 2026-08-02 (A/B resume variants, Cover Letters, the salary hint, and Portfolio removed)
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy

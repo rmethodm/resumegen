@@ -3,9 +3,8 @@ import { PageProps } from '@/types';
 import { useEffect, useRef, useState } from 'react';
 
 const SLIDES = [
-    { tab: 'My Resumes',    label: 'Resume Builder' },
-    { tab: 'Cover Letters', label: 'Cover Letters'  },
-    { tab: 'Shares',        label: 'Share Analytics' },
+    { tab: 'My Resumes', label: 'Resume Builder' },
+    { tab: 'Shares',     label: 'Share Analytics' },
 ] as const;
 
 export default function Welcome({ auth }: PageProps) {
@@ -209,40 +208,8 @@ export default function Welcome({ auth }: PageProps) {
                             </div>
                         </div>
                         {/* end slide 0 */}
-                        {/* Slide 1 — Cover Letters */}
-                        <div className={`absolute inset-0 flex bg-[#f9fafb] transition-opacity duration-500 ${activeSlide === 1 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                            {/* Letter list sidebar */}
-                            <div className="w-40 flex-shrink-0 border-r border-[#f3f4f6] bg-[#fafafa] px-3 py-3 sm:w-48">
-                                <p className="mb-2 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">My Cover Letters</p>
-                                <div className="mb-1.5 rounded-md border border-[#4f46e5] bg-[#eef2ff] px-2 py-2">
-                                    <p className="text-[9px] font-bold text-[#4f46e5]">Google — SWE L5</p>
-                                    <p className="text-[7px] text-[#818cf8]">Modern template</p>
-                                </div>
-                                <div className="mb-1.5 rounded-md border border-[#f3f4f6] bg-white px-2 py-2">
-                                    <p className="text-[9px] font-bold text-[#374151]">Stripe — PM</p>
-                                    <p className="text-[7px] text-[#9ca3af]">Standard template</p>
-                                </div>
-                                <div className="rounded-md border border-[#f3f4f6] bg-white px-2 py-2">
-                                    <p className="text-[9px] font-bold text-[#374151]">Airbnb — Design</p>
-                                    <p className="text-[7px] text-[#9ca3af]">Career change</p>
-                                </div>
-                            </div>
-                            {/* Letter editor */}
-                            <div className="flex-1 px-5 py-4">
-                                <p className="mb-3 text-[11px] font-black text-[#0f172a]">Google — Software Engineer L5</p>
-                                <div className="mb-1.5 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1.5 h-1.5 w-11/12 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-3 h-1.5 w-4/5 rounded-full bg-[#e0e7ff]" />
-                                <div className="mb-1.5 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1.5 h-1.5 w-10/12 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1.5 h-1.5 w-3/4 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-3 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-1.5 w-11/12 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-3 h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
-                            </div>
-                        </div>
-                        {/* Slide 2 — Share Analytics */}
-                        <div className={`absolute inset-0 bg-[#f9fafb] px-4 py-3 transition-opacity duration-500 ${activeSlide === 2 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                        {/* Slide 1 — Share Analytics */}
+                        <div className={`absolute inset-0 bg-[#f9fafb] px-4 py-3 transition-opacity duration-500 ${activeSlide === 1 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             <div className="mb-2.5 flex items-center justify-between">
                                 <p className="text-[11px] font-black text-[#0f172a]">Share Links</p>
                                 <span className="rounded-md bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] px-2 py-0.5 text-[8px] font-bold text-white">+ New link</span>
@@ -441,11 +408,9 @@ export default function Welcome({ auth }: PageProps) {
                             <ul className="mx-auto mb-8 grid max-w-md grid-cols-1 gap-2 text-left sm:grid-cols-2">
                                 {[
                                     'Unlimited resumes',
-                                    'Unlimited cover letters',
                                     'All 9 templates',
                                     'PDF + DOCX export',
                                     'Public share links',
-                                    'Portfolio page',
                                 ].map((f) => (
                                     <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
                                         <span className="text-[11px] font-black text-[#4f46e5]">✓</span> {f}

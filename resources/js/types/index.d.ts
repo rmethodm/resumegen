@@ -158,7 +158,6 @@ export interface ResumeRow {
     strength: number;
     strength_tip: string;
     view_count: number;
-    ab_parent_id: number | null;
     tags: ResumeTag[];
 
     has_active_share_link: boolean;
@@ -178,7 +177,6 @@ export interface ResumeCard {
     updated_at: string;
     strength: number;
     has_active_share_link: boolean;
-    variant_count: number;
     active_applications: number;
 }
 
@@ -207,38 +205,6 @@ export interface AtsScore {
         soft_skills: number;
         format_signals: number;
     };
-}
-
-export interface CoverLetterRow {
-    id: number;
-    name: string;
-    template_key: string;
-    resume_id: number | null;
-    updated_at: string;
-}
-
-export interface CoverLetterTemplateOption {
-    key: string;
-    label: string;
-    description: string;
-}
-
-export interface CoverLetter {
-    id: number;
-    user_id: number;
-    resume_id: number | null;
-    name: string;
-    template_key: string;
-    body: string;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface CoverLetterSuggestion {
-    id: number;
-    original_text: string;
-    suggested_text: string;
-    reason: string;
 }
 
 export interface InterviewQuestion {
