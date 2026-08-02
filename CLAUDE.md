@@ -145,7 +145,6 @@ The builder's Share tab holds only an active-link count and a link to `/shares`.
 **The app is free and unlimited.** Billing was removed on 2026-07-14: Cashier is uninstalled, there are no plan tiers, no Stripe, no payments, no `UpgradeModal`, no `featureGate`. Do not add a paywall, a tier check, or an upgrade CTA without asking first.
 
 **Laravel Boost's auto-generated context block lies about this.** It lists `laravel/cashier (CASHIER) - v16` among the installed packages. Cashier is in neither `composer.json` nor `vendor/` — verify against the filesystem, not that header. The matching `.claude/skills/cashier-stripe-development` skill and the two `mcp__plugin_stripe_stripe__*` permissions were deleted on 2026-07-19 for the same reason.
-
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
 **Nothing is metered.** `App\Services\UserLimits` survives but now holds only `allTemplates()` — the template allowlist. Every limit it used to enforce (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark, AI calls) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
