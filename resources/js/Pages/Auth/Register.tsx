@@ -1,3 +1,4 @@
+import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -25,6 +26,13 @@ export default function Register() {
     return (
         <GuestLayout>
             <Head title="Register" />
+
+            <h1 className="mb-1 text-center text-xl font-bold text-[#0f0f1a]">
+                Create your account
+            </h1>
+            <p className="mb-6 text-center text-sm text-[#71717a]">
+                Start building a resume that gets noticed.
+            </p>
 
             <form onSubmit={submit}>
                 <div>
@@ -103,18 +111,23 @@ export default function Register() {
                     />
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Already registered?
-                    </Link>
+                <label className="mt-4 flex items-start gap-2 text-xs text-gray-600">
+                    <Checkbox className="mt-0.5" required />
+                    <span>
+                        I agree to the Terms of Service and Privacy Policy
+                    </span>
+                </label>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
-                </div>
+                <PrimaryButton className="mt-4 w-full justify-center" disabled={processing}>
+                    Create account
+                </PrimaryButton>
+
+                <p className="mt-4 text-center text-sm text-[#71717a]">
+                    Already have an account?{' '}
+                    <Link href={route('login')} className="font-bold">
+                        Log in
+                    </Link>
+                </p>
             </form>
         </GuestLayout>
     );
