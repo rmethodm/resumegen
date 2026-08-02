@@ -50,11 +50,6 @@ class ProfileController extends Controller
                 'preferred_template' => $user->preferred_template,
             ],
             'allowedTemplates' => UserLimits::allTemplates(),
-            'tokens' => $user->tokens->map(fn ($t) => [
-                'id' => $t->id,
-                'name' => $t->name,
-                'created_at' => $t->created_at->toISOString(),
-            ])->values(),
             'twoFactor' => [
                 'enabled' => $user->hasTwoFactorEnabled(),
                 'pending' => $user->two_factor_secret !== null && ! $user->hasTwoFactorEnabled(),

@@ -1,6 +1,5 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import AutocompleteInput from '@/Components/AutocompleteInput';
-import Modal from '@/Components/Modal';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 
@@ -33,7 +32,6 @@ function StepDots({ step }: { step: Step }) {
 
 export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemplates: string[]; allTemplates: string[] }) {
     const [step, setStep] = useState<Step>(1);
-    const [previewTemplate, setPreviewTemplate] = useState<string | null>(null);
 
     const { data, setData, post, processing, errors } = useForm({
         target_role: '',
@@ -300,7 +298,6 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                         onClick={() => {
                                             setData('preferred_template', selected ? '' : t);
                                         }}
-                                        onDoubleClick={(e) => { e.preventDefault(); setPreviewTemplate(t); }}
                                         aria-pressed={selected}
                                         title={TEMPLATE_LABELS[t] ?? t}
                                         className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-indigo-600 ring-1 ring-indigo-600' : 'border-gray-200 hover:border-gray-300'} ${locked ? 'opacity-60' : ''}`}
@@ -346,24 +343,6 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                         </div>
                     </form>
                 )}
-
-                <Modal show={previewTemplate !== null} onClose={() => setPreviewTemplate(null)} maxWidth="2xl">
-                    <div className="p-4">
-                        <div className="mb-2 flex items-center justify-between">
-                            <span className="text-sm font-semibold text-gray-900">
-                                {previewTemplate && TEMPLATE_LABELS[previewTemplate]}
-                            </span>
-                            <button type="button" onClick={() => setPreviewTemplate(null)} className="text-sm text-gray-400 hover:text-gray-600">Close</button>
-                        </div>
-                        {previewTemplate && (
-                            <iframe
-                                src={route('onboarding.template-preview', previewTemplate)}
-                                className="h-[80vh] w-full rounded border border-gray-200"
-                                title="Template preview"
-                            />
-                        )}
-                    </div>
-                </Modal>
             </div>
         </GuestLayout>
     );

@@ -14,68 +14,6 @@ export interface User {
     } | null;
 }
 
-export interface Contact {
-    full_name: string;
-    email: string;
-    phone: string;
-    location: string;
-    linkedin: string;
-    website: string;
-}
-
-export interface ExperienceEntry {
-    id: string;
-    company: string;
-    title: string;
-    start_date: string;
-    end_date: string;
-    current: boolean;
-    bullets: string;
-}
-
-export interface EducationEntry {
-    id: string;
-    school: string;
-    degree: string;
-    field: string;
-    grad_year: string;
-}
-
-export interface CertEntry {
-    id: string;
-    name: string;
-    issuer: string;
-    date: string;
-    expiration: string;
-    credential_id: string;
-}
-
-export interface ProjectEntry {
-    id: string;
-    name: string;
-    description: string;
-    url: string;
-    start_date: string;
-    end_date: string;
-    bullets: string;
-}
-
-export interface CustomSectionEntry {
-    id: string;
-    title: string;
-    subtitle: string;
-    start_date: string;
-    end_date: string | null;
-    description: string;
-    bullets: string[];
-}
-
-export interface CustomSection {
-    id: string;
-    name: string;
-    entries: CustomSectionEntry[];
-}
-
 export interface SkillGroup {
     id?: string;
     category_type?: string;
@@ -91,51 +29,6 @@ export interface SkillNarrative {
     bullets: string[];
 }
 
-export type ResumeTemplate = 'classic' | 'modern' | 'minimal' | 'minimal-ruled' | 'executive' | 'ats' | 'skills-first' | 'academic' | 'bold';
-
-export interface FontSizes {
-    name: number;
-    contact: number;
-    heading: number;
-    body: number;
-    sectionSpacing: number;
-    entrySpacing: number;
-}
-
-export interface ResumeData {
-    id: number;
-    name: string;
-    pdf_filename: string | null;
-    template: ResumeTemplate;
-    accent_color: string | null;
-    font_family: 'sans' | 'serif' | 'mono' | null;
-    contact: Contact | null;
-    summary: string | null;
-    target_job_description: string | null;
-    target_company: string | null;
-    target_title: string | null;
-    experience: ExperienceEntry[] | null;
-    education: EducationEntry[] | null;
-    skills: string[] | null;
-    skills_layout: SkillsLayout | null;
-    skills_groups: SkillGroup[] | null;
-    skill_narratives: SkillNarrative[] | null;
-    certifications: CertEntry[] | null;
-    projects: ProjectEntry[] | null;
-    custom_sections: CustomSection[] | null;
-    section_order: string[] | null;
-    font_sizes: FontSizes | null;
-}
-
-export interface ShareLink {
-    id: number;
-    token: string;
-    label: string | null;
-    is_active: boolean;
-    expires_at: string | null;
-    created_at: string;
-}
-
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
@@ -143,51 +36,6 @@ export type PageProps<
         user: User;
     };
 };
-
-export interface ResumeTag {
-    id: number;
-    label: string;
-    color: string;
-}
-
-export interface ResumeRow {
-    id: number;
-    name: string;
-    pdf_filename: string | null;
-    updated_at: string;
-    strength: number;
-    strength_tip: string;
-    view_count: number;
-    tags: ResumeTag[];
-
-    has_active_share_link: boolean;
-    job_application_id: number | null;
-    linked_job: { id: number; role: string; company: string } | null;
-}
-
-export interface TemplateStatRow {
-    template: string;
-    views: number;
-    downloads: number;
-}
-
-export interface ResumeCard {
-    id: number;
-    name: string;
-    updated_at: string;
-    strength: number;
-    has_active_share_link: boolean;
-    active_applications: number;
-}
-
-export interface ResumeStat {
-    resume_id: number;
-    resume_name: string;
-    page_views: number;
-    unique_visitors: number;
-    pdf_downloads: number;
-    questions_submitted: number;
-}
 
 export interface AtsScoreCategory {
     action_verbs: string[];

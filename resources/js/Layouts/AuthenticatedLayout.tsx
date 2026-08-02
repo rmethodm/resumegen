@@ -1,18 +1,6 @@
-import CommandPalette from '@/Components/CommandPalette';
 import Dropdown from '@/Components/Dropdown';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import {
-    Bars3Icon,
-    BriefcaseIcon,
-    ChatBubbleLeftRightIcon,
-    DocumentTextIcon,
-    HomeIcon,
-    MagnifyingGlassIcon,
-    MoonIcon,
-    ShareIcon,
-    SunIcon,
-    UserCircleIcon,
-} from '@heroicons/react/24/outline';
+import { Bars3Icon, HomeIcon, MoonIcon, SunIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
@@ -25,36 +13,16 @@ export default function Authenticated({
     const { user } = usePage().props.auth;
     const { isDark, toggle } = useDarkMode();
 
-    const onBuilder = route().current('builder.edit');
     const [collapsed, setCollapsed] = useState<boolean>(() => {
         if (typeof window === 'undefined') return false;
-        if (onBuilder) return true;
         return window.localStorage.getItem('nav:collapsed') === '1';
     });
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [paletteOpen, setPaletteOpen] = useState(false);
 
     useEffect(() => {
-        if (!onBuilder) window.localStorage.setItem('nav:collapsed', collapsed ? '1' : '0');
-    }, [collapsed, onBuilder]);
+        window.localStorage.setItem('nav:collapsed', collapsed ? '1' : '0');
+    }, [collapsed]);
 
-    useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-                e.preventDefault();
-                setPaletteOpen(true);
-            }
-        };
-        window.addEventListener('keydown', handler);
-        return () => window.removeEventListener('keydown', handler);
-    }, []);
-
-    const workspace: NavItem[] = [
-        { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
-        { label: 'Resumes', href: route('builder.index'), active: route().current('builder.*'), icon: DocumentTextIcon },
-        { label: 'Messages', href: route('messages.index'), active: route().current('messages.*'), icon: ChatBubbleLeftRightIcon },
-        { label: 'Shares', href: route('shares.index'), active: route().current('shares.*'), icon: ShareIcon },
-    ];
     const account: NavItem[] = [
         { label: 'Profile', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
     ];
@@ -79,14 +47,12 @@ export default function Authenticated({
 
     const renderSidebar = (rail: boolean) => (
         <>
-            <Link href={route('dashboard')} className="flex items-center gap-2.5 px-3 py-4">
+            <Link href={route('profile.edit')} className="flex items-center gap-2.5 px-3 py-4">
                 <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed]" />
                 {!rail && <span className="text-[15px] font-extrabold tracking-tight text-[#0f0f1a] dark:text-white">Resumegen</span>}
             </Link>
             <nav className="flex flex-col gap-1 px-2">
-                {!rail && <div className="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Workspace</div>}
-                {renderNav(workspace, rail)}
-                {!rail && <div className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Account</div>}
+                {!rail && <div className="px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[#a0a0b0]">Account</div>}
                 {renderNav(account, rail)}
             </nav>
         </>
@@ -127,16 +93,6 @@ export default function Authenticated({
                             <Bars3Icon className="h-5 w-5" />
                         </button>
 
-                        <button
-                            type="button"
-                            onClick={() => setPaletteOpen(true)}
-                            className="flex flex-1 items-center gap-2 rounded-lg border border-[#eeeef5] px-3 py-1.5 text-sm text-[#a0a0b0] hover:border-[#cbd5e1] dark:border-gray-700 dark:hover:border-gray-600 sm:max-w-md"
-                        >
-                            <MagnifyingGlassIcon className="h-4 w-4" />
-                            <span className="flex-1 text-left">Search or type command…</span>
-                            <kbd className="hidden rounded border border-[#eeeef5] px-1.5 py-0.5 text-[11px] dark:border-gray-600 sm:inline">⌘K</kbd>
-                        </button>
-
                         <div className="ml-auto flex items-center gap-2">
                             <button
                                 onClick={toggle}
@@ -165,8 +121,6 @@ export default function Authenticated({
                     <main className="min-w-0 flex-1">{children}</main>
                 </div>
             </div>
-
-            <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
         </div>
     );
 }

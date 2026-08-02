@@ -18,7 +18,7 @@ class TwoFactorEnforcementTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('dashboard'))
-            ->assertOk();
+            ->assertRedirect(route('profile.edit'));
     }
 
     public function test_pro_user_without_2fa_can_access_profile(): void
@@ -40,7 +40,7 @@ class TwoFactorEnforcementTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('dashboard'))
-            ->assertOk();
+            ->assertRedirect(route('profile.edit'));
     }
 
     public function test_free_user_without_2fa_can_access_dashboard(): void
@@ -51,7 +51,7 @@ class TwoFactorEnforcementTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('dashboard'))
-            ->assertOk();
+            ->assertRedirect(route('profile.edit'));
     }
 
     public function test_user_with_pending_2fa_challenge_redirected_to_challenge_page(): void
