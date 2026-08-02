@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\UserLimits;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use PragmaRX\Google2FA\Google2FA;
@@ -41,6 +43,13 @@ class ProfileController extends Controller
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
             'profile' => $user->profile ?? [],
+            'persona' => [
+                'target_role' => $user->target_role,
+                'industry' => $user->industry,
+                'years_experience' => $user->years_experience,
+                'preferred_template' => $user->preferred_template,
+            ],
+            'allowedTemplates' => UserLimits::allTemplates(),
             'tokens' => $user->tokens->map(fn ($t) => [
                 'id' => $t->id,
                 'name' => $t->name,
@@ -67,11 +76,24 @@ class ProfileController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'linkedin_url' => ['nullable', 'url', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
+            'target_role' => ['nullable', 'string', 'max:100'],
+            'industry' => ['nullable', 'string', 'max:100'],
+            'years_experience' => ['nullable', 'integer', 'min:0', 'max:40'],
+            'preferred_template' => ['nullable', 'string', Rule::in(UserLimits::allTemplates())],
         ]);
 
         $request->user()->update([
             'profile' => array_filter($request->only(['full_name', 'email', 'phone', 'location', 'linkedin_url', 'website']), fn ($v) => $v !== null),
         ]);
+
+        $personaFields = array_filter(
+            $request->only(['target_role', 'industry', 'years_experience', 'preferred_template']),
+            fn ($v) => $v !== null && $v !== '',
+        );
+
+        if ($personaFields) {
+            $request->user()->update($personaFields);
+        }
 
         return Redirect::route('profile.edit');
     }
