@@ -305,9 +305,6 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     <Link href={route('builder.edit', r.id)} className="font-bold text-[#0f0f1a] hover:text-[#4f46e5]">
                                                         {r.name}
                                                     </Link>
-                                                    {r.ab_parent_id !== null && (
-                                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">A/B</span>
-                                                    )}
                                                 </div>
                                                 <div className="mt-1 flex items-center gap-2">
                                                     <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#eeeef5]">
@@ -386,7 +383,6 @@ export default function Index({ resumes, resumeCount }: Props) {
                                                     <RowActionsMenu actions={[
                                                         { label: 'Edit', href: route('builder.edit', r.id) },
                                                         { label: 'Duplicate', onClick: () => duplicate(r.id) },
-                                                        { label: 'Create A/B Variant', onClick: () => router.post(route('builder.create-variant', r.id), {}, { preserveScroll: false }) },
                                                         ...(r.has_active_share_link ? [{ label: 'Heatmap', href: route('builder.heatmap', r.id) }] : []),
                                                         { label: 'Delete', onClick: () => destroy(r.id, r.name), danger: true },
                                                     ]} />

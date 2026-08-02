@@ -3,20 +3,19 @@ import { router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 
 type Hit = { id: number; name: string; url: string };
-type Results = { resumes: Hit[]; coverLetters: Hit[] };
+type Results = { resumes: Hit[] };
 
 type Flat = { label: string; sub: string; url: string };
 
 const NAV: Flat[] = [
     { label: 'Dashboard', sub: 'Go to', url: route('dashboard') },
     { label: 'Resumes', sub: 'Go to', url: route('builder.index') },
-    { label: 'Cover Letters', sub: 'Go to', url: route('cover-letters.index') },
     { label: 'Messages', sub: 'Go to', url: route('messages.index') },
 ];
 
 export default function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState<Results>({ resumes: [], coverLetters: [] });
+    const [results, setResults] = useState<Results>({ resumes: [] });
     const [active, setActive] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -24,7 +23,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
     useEffect(() => {
         if (open) {
             setQuery('');
-            setResults({ resumes: [], coverLetters: [] });
+            setResults({ resumes: [] });
             setActive(0);
             setTimeout(() => inputRef.current?.focus(), 50);
         }
@@ -35,7 +34,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
         if (!open) return;
         const q = query.trim();
         if (q === '') {
-            setResults({ resumes: [], coverLetters: [] });
+            setResults({ resumes: [] });
             return;
         }
         let ignore = false;
@@ -45,7 +44,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
             })
                 .then((r) => r.json() as Promise<Results>)
                 .then((d) => { if (!ignore) setResults(d); })
-                .catch(() => { if (!ignore) setResults({ resumes: [], coverLetters: [] }); });
+                .catch(() => { if (!ignore) setResults({ resumes: [] }); });
         }, 150);
         return () => { ignore = true; clearTimeout(id); };
     }, [query, open]);
@@ -57,7 +56,6 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
 
     const flat: Flat[] = [
         ...results.resumes.map((r) => ({ label: r.name, sub: 'Resume', url: r.url })),
-        ...results.coverLetters.map((c) => ({ label: c.name, sub: 'Cover Letter', url: c.url })),
         ...navMatches,
     ];
 
@@ -91,7 +89,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={onKeyDown}
-                    placeholder="Search resumes, cover letters, or jump to…"
+                    placeholder="Search resumes or jump to…"
                     className="w-full border-0 border-b border-[#eeeef5] bg-transparent px-4 py-3 text-sm focus:ring-0 dark:border-gray-700 dark:text-white"
                 />
                 <ul className="max-h-80 overflow-y-auto py-2">

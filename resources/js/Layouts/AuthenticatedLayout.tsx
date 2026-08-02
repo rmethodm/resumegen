@@ -6,14 +6,12 @@ import {
     BriefcaseIcon,
     ChatBubbleLeftRightIcon,
     DocumentTextIcon,
-    EnvelopeIcon,
     HomeIcon,
     MagnifyingGlassIcon,
     MoonIcon,
     ShareIcon,
     SunIcon,
     UserCircleIcon,
-    GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
@@ -54,13 +52,11 @@ export default function Authenticated({
     const workspace: NavItem[] = [
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
         { label: 'Resumes', href: route('builder.index'), active: route().current('builder.*'), icon: DocumentTextIcon },
-        { label: 'Cover Letters', href: route('cover-letters.index'), active: route().current('cover-letters.*'), icon: EnvelopeIcon },
         { label: 'Messages', href: route('messages.index'), active: route().current('messages.*'), icon: ChatBubbleLeftRightIcon },
         { label: 'Shares', href: route('shares.index'), active: route().current('shares.*'), icon: ShareIcon },
     ];
     const account: NavItem[] = [
         { label: 'Profile', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
-        { label: 'Portfolio', href: route('portfolio.edit'), active: route().current('portfolio.edit'), icon: GlobeAltIcon },
     ];
 
     const renderNav = (items: NavItem[], rail: boolean) =>

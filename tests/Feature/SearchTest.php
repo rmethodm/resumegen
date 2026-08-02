@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\CoverLetter;
 use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,21 +25,6 @@ class SearchTest extends TestCase
         $this->assertFalse($ids->contains($theirs->id));
     }
 
-    public function test_matches_cover_letter_by_name_or_body(): void
-    {
-        $user = User::factory()->create();
-        $letter = CoverLetter::factory()->for($user)->create([
-            'name' => 'Application to Stripe',
-            'body' => 'I am excited about distributed systems.',
-        ]);
-
-        $byName = $this->actingAs($user)->getJson('/search?q=stripe');
-        $this->assertEquals($letter->id, $byName->json('coverLetters.0.id'));
-
-        $byBody = $this->actingAs($user)->getJson('/search?q=distributed');
-        $this->assertEquals($letter->id, $byBody->json('coverLetters.0.id'));
-    }
-
     public function test_limits_to_five_results_each(): void
     {
         $user = User::factory()->create();
@@ -60,7 +44,6 @@ class SearchTest extends TestCase
 
         $response->assertOk();
         $this->assertSame([], $response->json('resumes'));
-        $this->assertSame([], $response->json('coverLetters'));
     }
 
     public function test_requires_authentication(): void

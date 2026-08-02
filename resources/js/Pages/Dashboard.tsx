@@ -107,14 +107,8 @@ function ResumeGridCard({ card }: { card: ResumeCard }) {
                     )}
                 </div>
 
-                {(card.variant_count > 0 || card.active_applications > 0) && (
+                {card.active_applications > 0 && (
                     <div className="space-y-1 text-xs text-[#6b7280]">
-                        {card.variant_count > 0 && (
-                            <p className="flex items-center gap-1.5">
-                                <span className="text-[#c4c4d0]">●</span>
-                                {card.variant_count} version{card.variant_count !== 1 ? 's' : ''}
-                            </p>
-                        )}
                         {card.active_applications > 0 && (
                             <p className="flex items-center gap-1.5">
                                 <span className="text-[#c4c4d0]">●</span>

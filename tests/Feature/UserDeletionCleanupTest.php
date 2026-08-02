@@ -47,26 +47,6 @@ class UserDeletionCleanupTest extends TestCase
     }
 
     /**
-     * A/B variants are resumes too. Deleting the owner must recurse through the
-     * whole tree, not just the top-level resumes.
-     */
-    public function test_deleting_a_user_removes_nested_ab_variant_thumbnails(): void
-    {
-        $user = User::factory()->create();
-        $parent = Resume::factory()->for($user)->create();
-        $variant = Resume::factory()->for($user)->create(['ab_parent_id' => $parent->id]);
-
-        $parentPath = $this->writeThumbnail($parent);
-        $variantPath = $this->writeThumbnail($variant);
-
-        $user->delete();
-
-        $this->assertFileDoesNotExist($parentPath);
-        $this->assertFileDoesNotExist($variantPath);
-        $this->assertModelMissing($variant);
-    }
-
-    /**
      * Deleting one user must not touch another user's files.
      */
     public function test_deleting_a_user_leaves_other_users_thumbnails_alone(): void

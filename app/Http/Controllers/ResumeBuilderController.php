@@ -60,7 +60,6 @@ class ResumeBuilderController extends Controller
                 'strength' => $strength['score'],
                 'strength_tip' => $strength['tip'],
                 'view_count' => (int) ($viewCounts[$resume->id] ?? 0),
-                'ab_parent_id' => $resume->ab_parent_id,
                 'tags' => $resume->tags->map(fn ($t) => [
                     'id' => $t->id,
                     'label' => $t->label,
@@ -293,18 +292,6 @@ class ResumeBuilderController extends Controller
         $resume->update($validated);
 
         return response()->noContent();
-    }
-
-    public function createVariant(Request $request, Resume $resume): RedirectResponse
-    {
-        $this->authorize('update', $resume);
-
-        $variant = $resume->replicate();
-        $variant->name = $resume->name.' (Variant)';
-        $variant->ab_parent_id = $resume->id;
-        $variant->save();
-
-        return redirect()->route('builder.edit', $variant->id);
     }
 
     public function duplicate(Resume $resume): RedirectResponse

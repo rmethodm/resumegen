@@ -78,11 +78,6 @@ class AnalyticsController extends Controller
             ->pluck('resume_id')
             ->flip();
 
-        $variantCounts = Resume::whereIn('ab_parent_id', $cardIds)
-            ->selectRaw('ab_parent_id, COUNT(*) as cnt')
-            ->groupBy('ab_parent_id')
-            ->pluck('cnt', 'ab_parent_id');
-
         // ponytail: job_applications has no Eloquent model (feature dark), query the table directly
         $activeApplicationCounts = DB::table('job_applications')
             ->whereIn('resume_id', $cardIds)
@@ -91,7 +86,7 @@ class AnalyticsController extends Controller
             ->groupBy('resume_id')
             ->pluck('cnt', 'resume_id');
 
-        $resumeCards = $cardResumes->map(function (Resume $resume) use ($activeShareResumeIds, $variantCounts, $activeApplicationCounts) {
+        $resumeCards = $cardResumes->map(function (Resume $resume) use ($activeShareResumeIds, $activeApplicationCounts) {
             $cacheKey = "strength:{$resume->id}:".$resume->updated_at->timestamp;
             $strength = cache()->remember($cacheKey, now()->addMinutes(5), fn () => ResumeStrengthScorer::score($resume));
 
@@ -101,7 +96,6 @@ class AnalyticsController extends Controller
                 'updated_at' => $resume->updated_at,
                 'strength' => $strength['score'],
                 'has_active_share_link' => isset($activeShareResumeIds[$resume->id]),
-                'variant_count' => (int) ($variantCounts[$resume->id] ?? 0),
                 'active_applications' => (int) ($activeApplicationCounts[$resume->id] ?? 0),
             ];
         });
