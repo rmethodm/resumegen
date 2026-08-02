@@ -70,9 +70,9 @@ Default to surfacing uncertainty, not hiding it.
 
 ## Stack
 
-- **Backend:** Laravel 13, PHP 8.4, PostgreSQL (`DB_CONNECTION=pgsql`; tests run on in-memory SQLite), Inertia.js v2
-- **Frontend:** React 18, TypeScript, Tailwind CSS v3, Vite 8
-- **Auth:** Laravel Breeze (session-based), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63).
+- **Backend:** Laravel 13, PHP 8.5, PostgreSQL (`DB_CONNECTION=pgsql`; tests run on in-memory SQLite), Inertia.js v3
+- **Frontend:** React 19, TypeScript, Tailwind CSS v3, Vite 8
+- **Auth:** Laravel Fortify (session-based), Sanctum (API tokens) — swapped from Breeze on 2026-08-02. `app/Providers/FortifyServiceProvider.php` and `config/fortify.php` are the relevant files. `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63). Resumegen's custom 2FA system (`TwoFactorController`, `TwoFactorChallengeController`, etc.) is separate from and unrelated to Fortify's own optional two-factor feature, which stays disabled — do not enable `Features::twoFactorAuthentication()` without asking first.
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
 - **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia` and nothing in `app/` uses `spatie/laravel-medialibrary`, though the package is still in `composer.json`.
 - **AI:** none — removed 2026-07-21. No OpenAI, no Anthropic, no `config/ai.php`, no `ai_requests`. Every remaining feature is deterministic server-side code.

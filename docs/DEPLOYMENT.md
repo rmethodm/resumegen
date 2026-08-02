@@ -2,7 +2,12 @@
 
 How to ship Resumegen from your laptop to a production web server via GitHub.
 
-**Target stack:** Ubuntu/Debian · Apache · PostgreSQL · PHP 8.3+ · Node 20+ · SSH (root/sudo).
+**Target stack:** Ubuntu/Debian · Apache · PostgreSQL · PHP 8.5+ · Node 20+ · SSH (root/sudo).
+
+> ⚠️ **Existing servers must upgrade PHP to 8.5 before deploying this branch.** `composer.json`
+> now requires `^8.5`; `composer install` will fatal against an older PHP. Upgrading a live
+> server's PHP version is a manual prerequisite — not scripted here — do it (and confirm
+> Apache/PHP-FPM picks up the new version) before running a deploy from this branch.
 
 Secrets never go to GitHub — `.env`, `.env.production`, `auth.json`, and `storage/*.key`
 are gitignored. You create them fresh on the server. `.env.example` is the committed template.
@@ -29,15 +34,15 @@ SSH in as a sudo user.
 # System update
 sudo apt update && sudo apt upgrade -y
 
-# Apache + PHP 8.3 + required extensions
+# Apache + PHP 8.5 + required extensions
 sudo apt install -y software-properties-common
 sudo add-apt-repository -y ppa:ondrej/php
 sudo apt update
 sudo apt install -y apache2 \
-  php8.3 libapache2-mod-php8.3 php8.3-cli \
-  php8.3-pgsql php8.3-mbstring php8.3-xml php8.3-curl \
-  php8.3-zip php8.3-gd php8.3-bcmath php8.3-intl \
-  php8.3-imagick ghostscript unzip git
+  php8.5 libapache2-mod-php8.5 php8.5-cli \
+  php8.5-pgsql php8.5-mbstring php8.5-xml php8.5-curl \
+  php8.5-zip php8.5-gd php8.5-bcmath php8.5-intl \
+  php8.5-imagick ghostscript unzip git
 
 # Composer
 curl -sS https://getcomposer.org/installer | php
