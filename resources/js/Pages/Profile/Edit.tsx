@@ -8,7 +8,20 @@ import TwoFactorForm from './Partials/TwoFactorForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
-function PersonaForm({ profile }: { profile: Record<string, string | undefined> }) {
+function PersonaForm({
+    profile,
+    persona,
+    allowedTemplates,
+}: {
+    profile: Record<string, string | undefined>;
+    persona: {
+        target_role: string | null;
+        industry: string | null;
+        years_experience: number | null;
+        preferred_template: string | null;
+    };
+    allowedTemplates: string[];
+}) {
     const [data, setData] = React.useState({
         full_name: profile.full_name ?? '',
         email: profile.email ?? '',
@@ -16,6 +29,10 @@ function PersonaForm({ profile }: { profile: Record<string, string | undefined> 
         location: profile.location ?? '',
         linkedin_url: profile.linkedin_url ?? '',
         website: profile.website ?? '',
+        target_role: persona.target_role ?? '',
+        industry: persona.industry ?? '',
+        years_experience: persona.years_experience?.toString() ?? '',
+        preferred_template: persona.preferred_template ?? '',
     });
 
     const save = () => {
@@ -43,6 +60,25 @@ function PersonaForm({ profile }: { profile: Record<string, string | undefined> 
             {field('Location', 'location')}
             {field('LinkedIn URL', 'linkedin_url', 'url')}
             {field('Website', 'website', 'url')}
+            {field('Target Role', 'target_role')}
+            {field('Industry', 'industry')}
+            {field('Years of Experience', 'years_experience', 'number')}
+            <div>
+                <label className="block text-sm font-medium text-gray-700">Preferred Template</label>
+                <select
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    value={data.preferred_template}
+                    onChange={e => {
+                        setData(prev => ({ ...prev, preferred_template: e.target.value }));
+                        setTimeout(save, 0);
+                    }}
+                >
+                    <option value="">No preference</option>
+                    {allowedTemplates.map(t => (
+                        <option key={t} value={t}>{t}</option>
+                    ))}
+                </select>
+            </div>
         </div>
     );
 }
@@ -53,6 +89,8 @@ export default function Edit({
     tokens,
     twoFactor,
     profile,
+    persona,
+    allowedTemplates,
 }: PageProps<{
     mustVerifyEmail: boolean;
     status?: string;
@@ -64,6 +102,13 @@ export default function Edit({
         recoveryCodes: string[] | null;
     };
     profile: Record<string, string> | null;
+    persona: {
+        target_role: string | null;
+        industry: string | null;
+        years_experience: number | null;
+        preferred_template: string | null;
+    };
+    allowedTemplates: string[];
 }>) {
     return (
         <AuthenticatedLayout>
@@ -102,13 +147,13 @@ export default function Edit({
                     <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
                         <section className="space-y-6">
                             <header>
-                                <h2 className="text-lg font-medium text-gray-900">Default Contact Info</h2>
+                                <h2 className="text-lg font-medium text-gray-900">Starter Profile</h2>
                                 <p className="mt-1 text-sm text-gray-600">
-                                    Pre-fills the contact section on every new resume you create.
+                                    Pre-fills the contact section and defaults on every new resume you create.
                                 </p>
                             </header>
 
-                            <PersonaForm profile={profile ?? {}} />
+                            <PersonaForm profile={profile ?? {}} persona={persona} allowedTemplates={allowedTemplates} />
                         </section>
                     </div>
 

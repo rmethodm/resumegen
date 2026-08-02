@@ -96,4 +96,44 @@ class ProfileTest extends TestCase
 
         $this->assertNotNull($user->fresh());
     }
+
+    public function test_starter_profile_persona_fields_can_be_updated_after_onboarding(): void
+    {
+        $user = User::factory()->create(['has_completed_onboarding' => true]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('profile.persona'), [
+                'full_name' => 'Jordan Rivera',
+                'target_role' => 'Senior Engineer',
+                'industry' => 'Technology',
+                'years_experience' => 8,
+                'preferred_template' => 'modern',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('profile.edit'));
+
+        $user->refresh();
+
+        $this->assertSame('Jordan Rivera', $user->profile['full_name']);
+        $this->assertSame('Senior Engineer', $user->target_role);
+        $this->assertSame('Technology', $user->industry);
+        $this->assertSame(8, $user->years_experience);
+        $this->assertSame('modern', $user->preferred_template);
+    }
+
+    public function test_starter_profile_rejects_a_disallowed_template(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('profile.persona'), [
+                'preferred_template' => 'not-a-real-template',
+            ]);
+
+        $response->assertSessionHasErrors('preferred_template');
+    }
 }
