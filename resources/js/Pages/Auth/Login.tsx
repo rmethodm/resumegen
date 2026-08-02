@@ -32,6 +32,13 @@ export default function Login({
         <GuestLayout>
             <Head title="Log in" />
 
+            <h1 className="mb-1 text-center text-xl font-bold text-[#0f0f1a]">
+                Welcome back
+            </h1>
+            <p className="mb-6 text-center text-sm text-[#71717a]">
+                Log in to keep building your resume.
+            </p>
+
             {status && (
                 <div className="mb-4 text-sm font-medium text-green-600">
                     {status}
@@ -72,7 +79,7 @@ export default function Login({
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="mt-4 block">
+                <div className="mt-4 flex items-center justify-between">
                     <label className="flex items-center">
                         <Checkbox
                             name="remember"
@@ -88,9 +95,7 @@ export default function Login({
                             Remember me
                         </span>
                     </label>
-                </div>
 
-                <div className="mt-4 flex items-center justify-end">
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
@@ -99,11 +104,18 @@ export default function Login({
                             Forgot your password?
                         </Link>
                     )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
                 </div>
+
+                <PrimaryButton className="mt-6 w-full justify-center" disabled={processing}>
+                    Log in
+                </PrimaryButton>
+
+                <p className="mt-4 text-center text-sm text-[#71717a]">
+                    No account yet?{' '}
+                    <Link href={route('register')} className="font-bold">
+                        Sign up
+                    </Link>
+                </p>
             </form>
         </GuestLayout>
     );
