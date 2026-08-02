@@ -1,0 +1,760 @@
+{
+  "entries": {
+    "resume share messages pages controllers models routes migrations|tf=5|te=12": {
+      "created_epoch": 1785706108,
+      "files": [
+        "resources/js/Pages/Shares/Index.tsx::ResumeOption",
+        "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+        "resources/js/Pages/Dashboard.tsx::ResumeGridCard",
+        "resources/js/Pages/Messages/Index.tsx",
+        "resources/js/Pages/ResumeBuilder/Create.tsx::OptionCard"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Shares/Index.tsx::ResumeOption": 1785652392416826920,
+        "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx": 1784678031000000000,
+        "resources/js/Pages/Dashboard.tsx::ResumeGridCard": 1785655055400637212,
+        "resources/js/Pages/Messages/Index.tsx": 1784678031000000000,
+        "resources/js/Pages/ResumeBuilder/Create.tsx::OptionCard": 1785652392416262506
+      },
+      "result": {
+        "ok": true,
+        "query": "Resume Share Messages pages controllers models routes migrations to delete: ResumeController, ShareController, MessagesController, Resume model, ResumeThread, tables",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Shares/Index.tsx::ResumeOption",
+            "kind": "symbol",
+            "path": "resources/js/Pages/Shares/Index.tsx",
+            "ext": ".tsx",
+            "size": 4,
+            "keywords": [
+              "resumeoption",
+              "resume",
+              "option"
+            ],
+            "symbol_type": "model",
+            "name": "ResumeOption",
+            "line_start": 34,
+            "line_end": 37,
+            "body_hash": "9d9bb77a",
+            "confidence": "high",
+            "exported": false,
+            "_score": 28,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+            "ext": ".tsx",
+            "size": 4199,
+            "keywords": [
+              "deleteuserform",
+              "delete",
+              "user",
+              "form"
+            ],
+            "summary": "import DangerButton from '@/Components/DangerButton';. Contains 1 function: DeleteUserForm.",
+            "file_hash": "cb55270c",
+            "_score": 27,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Dashboard.tsx::ResumeGridCard",
+            "kind": "symbol",
+            "path": "resources/js/Pages/Dashboard.tsx",
+            "ext": ".tsx",
+            "size": 48,
+            "keywords": [
+              "resumegridcard",
+              "resume",
+              "grid",
+              "card"
+            ],
+            "symbol_type": "utility",
+            "name": "ResumeGridCard",
+            "line_start": 75,
+            "line_end": 122,
+            "body_hash": "db17c42f",
+            "confidence": "medium",
+            "exported": false,
+            "_score": 26,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Messages/Index.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Messages/Index.tsx",
+            "ext": ".tsx",
+            "size": 5254,
+            "keywords": [
+              "messagesindex",
+              "messages",
+              "index"
+            ],
+            "summary": "import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';. Contains 2 functions/classes: formatDate, MessagesIndex.",
+            "file_hash": "54eb4e8f",
+            "_score": 26,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/ResumeBuilder/Create.tsx::OptionCard",
+            "kind": "symbol",
+            "path": "resources/js/Pages/ResumeBuilder/Create.tsx",
+            "ext": ".tsx",
+            "size": 23,
+            "keywords": [
+              "optioncard",
+              "option",
+              "card"
+            ],
+            "symbol_type": "utility",
+            "name": "OptionCard",
+            "line_start": 19,
+            "line_end": 41,
+            "body_hash": "ea4173eb",
+            "confidence": "medium",
+            "exported": false,
+            "_score": 24,
+            "_role": "ui_surface",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "resources/js/Pages/Shares/Index.tsx::ResumeOption",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "@/Layouts/AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "@/types",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "@heroicons/react/24/outline",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "@inertiajs/react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+            "to": "@/Components/DangerButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+            "to": "@/Components/InputError",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+            "to": "@/Components/InputLabel",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+            "to": "@/Components/Modal",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+            "to": "@/Components/SecondaryButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+            "to": "@/Components/TextInput",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    },
+    "resumes feature resume builder model controllers pdf export|tf=5|te=12": {
+      "created_epoch": 1785706141,
+      "files": [
+        "resources/js/hooks/useHistory.ts::ResumeSnapshot",
+        "resources/js/types/index.d.ts::ResumeStat",
+        "resources/js/Pages/ResumeBuilder/Create.tsx::Props",
+        "resources/js/Pages/ResumeBuilder/Edit.tsx::SectionEntry",
+        "resources/js/Pages/ResumeBuilder/Heatmap.tsx::HeatmapSection"
+      ],
+      "mtimes_ns": {
+        "resources/js/hooks/useHistory.ts::ResumeSnapshot": 1782464292000000000,
+        "resources/js/types/index.d.ts::ResumeStat": 1785655226865018646,
+        "resources/js/Pages/ResumeBuilder/Create.tsx::Props": 1785652392416262506,
+        "resources/js/Pages/ResumeBuilder/Edit.tsx::SectionEntry": 1785700358699711572,
+        "resources/js/Pages/ResumeBuilder/Heatmap.tsx::HeatmapSection": 1782464292000000000
+      },
+      "result": {
+        "ok": true,
+        "query": "Resumes feature: resume builder, resume model, resume controllers, PDF export",
+        "graph_files": [
+          {
+            "id": "resources/js/hooks/useHistory.ts::ResumeSnapshot",
+            "kind": "symbol",
+            "path": "resources/js/hooks/useHistory.ts",
+            "ext": ".ts",
+            "size": 11,
+            "keywords": [
+              "resumesnapshot",
+              "resume",
+              "snapshot"
+            ],
+            "symbol_type": "model",
+            "name": "ResumeSnapshot",
+            "line_start": 2,
+            "line_end": 12,
+            "body_hash": "64abf21e",
+            "confidence": "high",
+            "exported": true,
+            "_score": 23,
+            "_role": "logic",
+            "_intent": "feature"
+          },
+          {
+            "id": "resources/js/types/index.d.ts::ResumeStat",
+            "kind": "symbol",
+            "path": "resources/js/types/index.d.ts",
+            "ext": ".ts",
+            "size": 8,
+            "keywords": [
+              "resumestat",
+              "resume",
+              "stat"
+            ],
+            "symbol_type": "model",
+            "name": "ResumeStat",
+            "line_start": 182,
+            "line_end": 189,
+            "body_hash": "b6deb49c",
+            "confidence": "high",
+            "exported": true,
+            "_score": 21,
+            "_role": "code",
+            "_intent": "feature"
+          },
+          {
+            "id": "resources/js/Pages/ResumeBuilder/Create.tsx::Props",
+            "kind": "symbol",
+            "path": "resources/js/Pages/ResumeBuilder/Create.tsx",
+            "ext": ".tsx",
+            "size": 4,
+            "keywords": [
+              "props"
+            ],
+            "symbol_type": "model",
+            "name": "Props",
+            "line_start": 14,
+            "line_end": 17,
+            "body_hash": "e5dad093",
+            "confidence": "high",
+            "exported": false,
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "feature"
+          },
+          {
+            "id": "resources/js/Pages/ResumeBuilder/Edit.tsx::SectionEntry",
+            "kind": "symbol",
+            "path": "resources/js/Pages/ResumeBuilder/Edit.tsx",
+            "ext": ".tsx",
+            "size": 8,
+            "keywords": [
+              "sectionentry",
+              "section",
+              "entry"
+            ],
+            "symbol_type": "model",
+            "name": "SectionEntry",
+            "line_start": 390,
+            "line_end": 397,
+            "body_hash": "032cff03",
+            "confidence": "high",
+            "exported": true,
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "feature"
+          },
+          {
+            "id": "resources/js/Pages/ResumeBuilder/Heatmap.tsx::HeatmapSection",
+            "kind": "symbol",
+            "path": "resources/js/Pages/ResumeBuilder/Heatmap.tsx",
+            "ext": ".tsx",
+            "size": 5,
+            "keywords": [
+              "heatmapsection",
+              "heatmap",
+              "section"
+            ],
+            "symbol_type": "model",
+            "name": "HeatmapSection",
+            "line_start": 3,
+            "line_end": 7,
+            "body_hash": "4b8f47e9",
+            "confidence": "high",
+            "exported": false,
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "feature"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "docs/superpowers/plans/2026-06-06-pre-launch-feature-moat.md",
+            "to": "resources/js/Pages/ResumeBuilder/Partials/PdfImportModal.ts",
+            "rel": "references"
+          },
+          {
+            "from": "resources/js/Pages/ResumeBuilder/Create.tsx",
+            "to": "resources/js/Pages/ResumeBuilder/Create.tsx::Props",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/ResumeBuilder/Edit.tsx",
+            "to": "resources/js/Pages/ResumeBuilder/Edit.tsx::SectionEntry",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/ResumeBuilder/Heatmap.tsx",
+            "to": "resources/js/Pages/ResumeBuilder/Heatmap.tsx::HeatmapSection",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/hooks/useHistory.ts",
+            "to": "resources/js/hooks/useHistory.ts::ResumeSnapshot",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/types/index.d.ts",
+            "to": "resources/js/types/index.d.ts::ResumeStat",
+            "rel": "contains"
+          },
+          {
+            "from": "docs/resume-builder-competitive-analysis.md",
+            "to": "docs/prepaid-pricing-model.md",
+            "rel": "references"
+          },
+          {
+            "from": "docs/superpowers/plans/2026-06-06-group-b-ai-content-intelligence.md",
+            "to": "resources/js/Pages/ResumeBuilder/Partials/PdfImportModal.ts",
+            "rel": "references"
+          },
+          {
+            "from": "docs/superpowers/plans/2026-06-06-pre-launch-feature-moat.md",
+            "to": "resources/js/Pages/ResumeBuilder/Edit.ts",
+            "rel": "references"
+          },
+          {
+            "from": "docs/superpowers/plans/2026-06-06-pre-launch-feature-moat.md",
+            "to": "resources/js/Pages/ResumeBuilder/Partials/InterviewCoachPanel.ts",
+            "rel": "references"
+          },
+          {
+            "from": "docs/superpowers/plans/2026-06-06-pre-launch-feature-moat.md",
+            "to": "resources/js/Pages/ResumeBuilder/PublicView.ts",
+            "rel": "references"
+          },
+          {
+            "from": "docs/superpowers/specs/2026-06-06-pre-launch-feature-moat-design.md",
+            "to": "ResumeBuilder/PublicView.ts",
+            "rel": "references"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    },
+    "shares feature share link management route|tf=5|te=12": {
+      "created_epoch": 1785706141,
+      "files": [
+        "resources/js/Pages/Shares/Index.tsx",
+        "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
+        "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+        "resources/js/Pages/ResumeBuilder/Create.tsx",
+        "resources/js/types/index.d.ts::ShareLink"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Shares/Index.tsx": 1785652392416826920,
+        "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx": 1785700358699501488,
+        "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx": 1784678031000000000,
+        "resources/js/Pages/ResumeBuilder/Create.tsx": 1785652392416262506,
+        "resources/js/types/index.d.ts::ShareLink": 1785655226865018646
+      },
+      "result": {
+        "ok": true,
+        "query": "Shares feature: share-link management at /shares route",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Shares/Index.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Shares/Index.tsx",
+            "ext": ".tsx",
+            "size": 22272,
+            "keywords": [
+              "sharesindex",
+              "shares",
+              "index"
+            ],
+            "summary": "import Modal from '@/Components/Modal';. Contains 4 functions/classes: Pill, Sparkline, patchLink, SharesIndex.",
+            "file_hash": "f8ceabd1",
+            "_score": 34,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
+            "ext": ".tsx",
+            "size": 4865,
+            "keywords": [
+              "updatepasswordform",
+              "update",
+              "password",
+              "form"
+            ],
+            "summary": "import InputError from '@/Components/InputError';. Contains 1 function: UpdatePasswordForm.",
+            "file_hash": "db8833a8",
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+            "ext": ".tsx",
+            "size": 4284,
+            "keywords": [
+              "updateprofileinformation",
+              "update",
+              "profile",
+              "information"
+            ],
+            "summary": "import InputError from '@/Components/InputError';. Contains 1 function: UpdateProfileInformation.",
+            "file_hash": "e084779e",
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/ResumeBuilder/Create.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/ResumeBuilder/Create.tsx",
+            "ext": ".tsx",
+            "size": 7215,
+            "keywords": [
+              "create"
+            ],
+            "summary": "import InputError from '@/Components/InputError';. Contains 2 functions/classes: OptionCard, Create.",
+            "file_hash": "fc07db8f",
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/types/index.d.ts::ShareLink",
+            "kind": "symbol",
+            "path": "resources/js/types/index.d.ts",
+            "ext": ".ts",
+            "size": 8,
+            "keywords": [
+              "sharelink",
+              "share",
+              "link"
+            ],
+            "symbol_type": "model",
+            "name": "ShareLink",
+            "line_start": 129,
+            "line_end": 136,
+            "body_hash": "4ec4cc20",
+            "confidence": "high",
+            "exported": true,
+            "_score": 20,
+            "_role": "code",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "resources/js/Pages/Shares/Index.tsx::patchLink",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "@/Layouts/AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "resources/js/Pages/Shares/Index.tsx::ShareLinkRow",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "@/Components/Modal",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "@/types",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "@heroicons/react/24/outline",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "@heroicons/react/24/solid",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "@inertiajs/react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "Modal",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "resources/js/Pages/Shares/Index.tsx::Pill",
+            "rel": "contains"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    },
+    "messages feature resumethread share link comment inbox route|tf=5|te=12": {
+      "created_epoch": 1785706141,
+      "files": [
+        "resources/js/Pages/Shares/Index.tsx",
+        "resources/js/Pages/Messages/Index.tsx",
+        "resources/js/Pages/ResumeBuilder/PublicView.tsx::CommentAvatar",
+        "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
+        "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Shares/Index.tsx": 1785652392416826920,
+        "resources/js/Pages/Messages/Index.tsx": 1784678031000000000,
+        "resources/js/Pages/ResumeBuilder/PublicView.tsx::CommentAvatar": 1784265310000000000,
+        "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx": 1785700358699501488,
+        "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx": 1784678031000000000
+      },
+      "result": {
+        "ok": true,
+        "query": "Messages feature: ResumeThread share-link comment inbox at /messages route",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Shares/Index.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Shares/Index.tsx",
+            "ext": ".tsx",
+            "size": 22272,
+            "keywords": [
+              "sharesindex",
+              "shares",
+              "index"
+            ],
+            "summary": "import Modal from '@/Components/Modal';. Contains 4 functions/classes: Pill, Sparkline, patchLink, SharesIndex.",
+            "file_hash": "f8ceabd1",
+            "_score": 26,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Messages/Index.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Messages/Index.tsx",
+            "ext": ".tsx",
+            "size": 5254,
+            "keywords": [
+              "messagesindex",
+              "messages",
+              "index"
+            ],
+            "summary": "import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';. Contains 2 functions/classes: formatDate, MessagesIndex.",
+            "file_hash": "54eb4e8f",
+            "_score": 22,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/ResumeBuilder/PublicView.tsx::CommentAvatar",
+            "kind": "symbol",
+            "path": "resources/js/Pages/ResumeBuilder/PublicView.tsx",
+            "ext": ".tsx",
+            "size": 11,
+            "keywords": [
+              "commentavatar",
+              "comment",
+              "avatar"
+            ],
+            "symbol_type": "utility",
+            "name": "CommentAvatar",
+            "line_start": 106,
+            "line_end": 116,
+            "body_hash": "e9385ff5",
+            "confidence": "medium",
+            "exported": false,
+            "_score": 21,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
+            "ext": ".tsx",
+            "size": 4865,
+            "keywords": [
+              "updatepasswordform",
+              "update",
+              "password",
+              "form"
+            ],
+            "summary": "import InputError from '@/Components/InputError';. Contains 1 function: UpdatePasswordForm.",
+            "file_hash": "db8833a8",
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+            "ext": ".tsx",
+            "size": 4284,
+            "keywords": [
+              "updateprofileinformation",
+              "update",
+              "profile",
+              "information"
+            ],
+            "summary": "import InputError from '@/Components/InputError';. Contains 1 function: UpdateProfileInformation.",
+            "file_hash": "e084779e",
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "resources/js/Pages/Shares/Index.tsx::patchLink",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "@/Layouts/AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "@/Layouts/AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "resources/js/Pages/Messages/Index.tsx::formatDate",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/ResumeBuilder/PublicView.tsx",
+            "to": "resources/js/Pages/ResumeBuilder/PublicView.tsx::CommentAvatar",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/Shares/Index.tsx",
+            "to": "resources/js/Pages/Shares/Index.tsx::ShareLinkRow",
+            "rel": "contains"
+          },
+          {
+            "from": "docs/superpowers/plans/2026-05-27-share-link-analytics.md",
+            "to": "@/Layouts/AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "docs/superpowers/plans/2026-05-27-share-link-analytics.md",
+            "to": "AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "@/types",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Messages/Index.tsx",
+            "to": "@heroicons/react/24/outline",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    }
+  }
+}

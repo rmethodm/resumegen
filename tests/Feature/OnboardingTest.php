@@ -157,24 +157,6 @@ class OnboardingTest extends TestCase
             ->assertRedirect(route('dashboard'));
     }
 
-    public function test_template_preview_returns_pdf_for_valid_template(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->get(route('onboarding.template-preview', 'modern'));
-
-        $response->assertOk();
-        $this->assertSame('application/pdf', $response->headers->get('Content-Type'));
-    }
-
-    public function test_template_preview_returns_404_for_invalid_template(): void
-    {
-        $user = User::factory()->create();
-
-        $this->actingAs($user)->get(route('onboarding.template-preview', 'nonexistent'))
-            ->assertStatus(404);
-    }
-
     public function test_registration_redirects_to_onboarding(): void
     {
         $response = $this->post(route('register'), [

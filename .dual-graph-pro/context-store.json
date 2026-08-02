@@ -1,0 +1,255 @@
+[
+  {
+    "id": "mem:1785652815419",
+    "kind": "query_association",
+    "content": "Queried during: &lt;&lt;&lt;&lt;&lt;&lt;&lt;",
+    "tags": [],
+    "files": [
+      "CLAUDE.md"
+    ],
+    "file_path": "CLAUDE.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-02T06:40:15.419083+00:00",
+    "created_epoch": 1785652815,
+    "updated_at": "2026-08-02T06:40:15.419088+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "&lt;&lt;&lt;&lt;&lt;&lt;&lt;"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1785651822
+    }
+  },
+  {
+    "id": "mem:1785694511859",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: bootstrap/providers.php, routes/auth.php, app/Http/Controllers/Auth/RegisteredUserController.php",
+    "tags": [],
+    "files": [
+      "composer.json"
+    ],
+    "file_path": "composer.json",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-02T18:15:11.859727+00:00",
+    "created_epoch": 1785694511,
+    "updated_at": "2026-08-02T18:15:11.859736+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": [
+        "bootstrap/providers.php",
+        "routes/auth.php",
+        "app/Http/Controllers/Auth/RegisteredUserController.php"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785698873369",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "task",
+      "removed",
+      "laravel",
+      "breeze",
+      "fixed",
+      "inertia",
+      "app",
+      "tsx"
+    ],
+    "files": [
+      "composer.lock"
+    ],
+    "file_path": "composer.lock",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-02T19:27:53.369188+00:00",
+    "created_epoch": 1785698873,
+    "updated_at": "2026-08-02T19:27:53.369191+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785698873368",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "task",
+      "removed",
+      "laravel",
+      "breeze",
+      "fixed",
+      "inertia",
+      "app",
+      "tsx"
+    ],
+    "files": [
+      "resources/js/Pages/ResumeBuilder/Edit.tsx"
+    ],
+    "file_path": "resources/js/Pages/ResumeBuilder/Edit.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-02T19:27:53.368266+00:00",
+    "created_epoch": 1785698873,
+    "updated_at": "2026-08-02T19:27:53.368270+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785698873367",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "task",
+      "removed",
+      "laravel",
+      "breeze",
+      "fixed",
+      "inertia",
+      "app",
+      "tsx"
+    ],
+    "files": [
+      "resources/js/app.tsx"
+    ],
+    "file_path": "resources/js/app.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-02T19:27:53.367251+00:00",
+    "created_epoch": 1785698873,
+    "updated_at": "2026-08-02T19:27:53.367262+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785698873361",
+    "kind": "decision",
+    "content": "Task 6: removed laravel/breeze, fixed Inertia v3 app.tsx crash and useRef TS errors",
+    "tags": [
+      "task",
+      "removed",
+      "laravel",
+      "breeze",
+      "fixed",
+      "inertia",
+      "app",
+      "tsx"
+    ],
+    "files": [
+      "resources/js/app.tsx",
+      "resources/js/Components/AutocompleteInput.tsx",
+      "resources/js/Pages/ResumeBuilder/Edit.tsx",
+      "composer.json",
+      "composer.lock"
+    ],
+    "file_path": "resources/js/app.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-02T19:27:53.361772+00:00",
+    "created_epoch": 1785698873,
+    "updated_at": "2026-08-02T19:27:53.361775+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785698873367",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "task",
+      "removed",
+      "laravel",
+      "breeze",
+      "fixed",
+      "inertia",
+      "app",
+      "tsx"
+    ],
+    "files": [
+      "resources/js/Components/AutocompleteInput.tsx"
+    ],
+    "file_path": "resources/js/Components/AutocompleteInput.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-02T19:27:53.367819+00:00",
+    "created_epoch": 1785698873,
+    "updated_at": "2026-08-02T19:27:53.367825+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785698873368",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "task",
+      "removed",
+      "laravel",
+      "breeze",
+      "fixed",
+      "inertia",
+      "app",
+      "tsx"
+    ],
+    "files": [
+      "composer.json"
+    ],
+    "file_path": "composer.json",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-02T19:27:53.368740+00:00",
+    "created_epoch": 1785698873,
+    "updated_at": "2026-08-02T19:27:53.368744+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  }
+]
