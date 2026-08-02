@@ -4,8 +4,14 @@ use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResumeCompareController;
+use App\Http\Controllers\ResumeController;
+use App\Http\Controllers\ResumeGroupController;
+use App\Http\Controllers\ResumeNoteController;
+use App\Http\Controllers\Settings\StarterProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,7 +22,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', fn () => redirect()->route('profile.edit'))
+Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified', 'two_factor_challenge'])
     ->name('dashboard');
 
@@ -29,6 +35,28 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
     Route::patch('/user/profile-info', [ProfileController::class, 'updatePersona'])->name('profile.persona');
+
+    Route::get('/settings/starter-profile', [StarterProfileController::class, 'edit'])->name('starter-profile.edit');
+    Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');
+    Route::post('/settings/starter-profile/skip', [StarterProfileController::class, 'skip'])->name('starter-profile.skip');
+
+    Route::get('/resumes', [ResumeController::class, 'index'])->name('resumes.index');
+    Route::post('/resumes', [ResumeController::class, 'store'])->name('resumes.store');
+    Route::get('/resumes/{resume}/workstation', [ResumeController::class, 'workstation'])->name('resumes.workstation');
+    Route::put('/resumes/{resume}', [ResumeController::class, 'update'])->name('resumes.update');
+    Route::get('/resumes/{resume}/export', [ResumeController::class, 'download'])->name('resumes.download');
+    Route::get('/resumes/{resume}/export-docx', [ResumeController::class, 'downloadDocx'])->name('resumes.download-docx');
+    Route::post('/resumes/{resume}/duplicate', [ResumeController::class, 'duplicate'])->name('resumes.duplicate');
+    Route::patch('/resumes/{resume}/rename', [ResumeController::class, 'rename'])->name('resumes.rename');
+    Route::delete('/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
+
+    Route::post('/resumes/{resume}/notes', [ResumeNoteController::class, 'store'])->name('resume-notes.store');
+    Route::patch('/resume-notes/{resumeNote}', [ResumeNoteController::class, 'update'])->name('resume-notes.update');
+    Route::delete('/resume-notes/{resumeNote}', [ResumeNoteController::class, 'destroy'])->name('resume-notes.destroy');
+
+    Route::patch('/resume-groups/{resumeGroup}', [ResumeGroupController::class, 'update'])->name('resume-groups.update');
+    Route::delete('/resume-groups/{resumeGroup}', [ResumeGroupController::class, 'destroy'])->name('resume-groups.destroy');
+    Route::get('/resume-groups/{resumeGroup}/compare', [ResumeCompareController::class, 'show'])->name('resume-groups.compare');
 
     Route::post('/user/two-factor-authentication', [TwoFactorController::class, 'store'])
         ->name('two-factor.enable');
