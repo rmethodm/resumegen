@@ -103,4 +103,9 @@ class Resume extends Model
     {
         return $this->hasMany(ResumeTag::class)->orderBy('created_at');
     }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(ResumeNote::class)->orderBy('created_at');
+    }
 }
