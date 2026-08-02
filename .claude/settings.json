@@ -3,8 +3,8 @@
     "allow": [
       "Bash(php artisan test *)",
       "Bash(php artisan route:list *)",
-      "mcp__dual-graph__graph_read",
-      "mcp__dual-graph__graph_continue",
+      "mcp__graperoot-pro__graph_read",
+      "mcp__graperoot-pro__graph_continue",
       "Bash(vendor/bin/phpunit *)"
     ]
   },

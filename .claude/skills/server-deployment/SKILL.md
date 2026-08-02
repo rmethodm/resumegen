@@ -17,7 +17,7 @@ Do not re-derive deployment steps from memory — read these files, they are aut
 
 ## Key facts a fresh session won't know
 
-- **Prod DB is PostgreSQL**, not the SQLite used in local dev (`config/database.php` default). Don't assume SQLite behavior (JSON columns, `EXPLAIN` output, locking) matches production — see [[supabase-postgres-best-practices]] skill for Postgres-specific query/schema guidance.
+- **Prod DB is PostgreSQL**, not the SQLite used in local dev (`config/database.php` default). Don't assume SQLite behavior (JSON columns, `EXPLAIN` output, locking) matches production — see CLAUDE.md's Postgres conventions section for query/schema guidance.
 - **Deploy only fires manually** — `workflow_dispatch` on `main`, never on a bare push (free-plan substitute for required-reviewer environment protection — see comment in `ci.yml`).
 - **Build happens in CI, not on the server** — the server only receives a built `vendor/` + `public/build` via rsync and runs `deploy.sh`; it never runs Composer or npm itself.
 - **Required repo secrets**: `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`, plus a `production` environment in GitHub repo settings.
