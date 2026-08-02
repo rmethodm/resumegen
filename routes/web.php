@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
 use App\Http\Controllers\ResumeBuilderController;
+use App\Http\Controllers\ResumeNoteController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\ResumeThreadController;
 use App\Http\Controllers\SearchController;
@@ -78,6 +79,10 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/builder/{resume}/share-url', [ResumeBuilderController::class, 'shareUrl'])->name('builder.share-url');
     Route::post('/builder/{resume}/tags', [ResumeTagController::class, 'store'])->name('builder.tags.store');
     Route::delete('/builder/{resume}/tags/{tag}', [ResumeTagController::class, 'destroy'])->name('builder.tags.destroy');
+
+    Route::post('/builder/{resume}/notes', [ResumeNoteController::class, 'store'])->name('builder.notes.store');
+    Route::patch('/builder/{resume}/notes/{note}', [ResumeNoteController::class, 'update'])->name('builder.notes.update');
+    Route::delete('/builder/{resume}/notes/{note}', [ResumeNoteController::class, 'destroy'])->name('builder.notes.destroy');
 
     Route::get('/search', SearchController::class)->name('search')->middleware('throttle:30,1');
 

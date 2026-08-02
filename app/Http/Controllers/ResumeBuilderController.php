@@ -124,7 +124,7 @@ class ResumeBuilderController extends Controller
     {
         $this->authorize('update', $resume);
 
-        $resume->load(['shareLinks', 'threads']);
+        $resume->load(['shareLinks', 'threads', 'notes']);
 
         $threads = $resume->threads->map(fn ($t) => [
             'id' => $t->id,
@@ -142,6 +142,11 @@ class ResumeBuilderController extends Controller
             'resume' => $resume,
             'shareLinks' => $resume->shareLinks,
             'threads' => $threads,
+            'notes' => $resume->notes->map(fn ($n) => [
+                'id' => $n->id,
+                'body' => $n->body,
+                'created_at' => $n->created_at->toDateTimeString(),
+            ]),
             'isFirstResume' => $isFirstResume,
             'allowedTemplates' => UserLimits::allTemplates(),
             'completionScore' => ResumeCompletionScorer::score($resume),

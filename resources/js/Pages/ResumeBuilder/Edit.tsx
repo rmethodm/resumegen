@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StrengthScorePanel, { type StrengthPanelHandle } from './Partials/StrengthScorePanel';
+import NotesPanel from './Partials/NotesPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
 import {
     SwatchIcon,
@@ -399,7 +400,7 @@ export type SectionEntry = {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function Edit({
-    resume, shareLinks: initialLinks, threads: initialThreads,
+    resume, shareLinks: initialLinks, threads: initialThreads, notes: initialNotes,
     isFirstResume,
     allowedTemplates, completionScore, recruiterNote,
     skillCategoryOptions,
@@ -407,6 +408,7 @@ export default function Edit({
     resume: ResumeData;
     shareLinks: ShareLink[];
     threads: { id: number; sender_name: string; sender_email: string; is_read: boolean; created_at: string }[];
+    notes: { id: number; body: string; created_at: string }[];
     isFirstResume: boolean;
     allowedTemplates: string[];
     completionScore: number;
@@ -529,7 +531,7 @@ export default function Edit({
     };
 
     const [openSections, setOpenSections] = useState({
-        fontSizes: false, strength: false, share: false, messages: false,
+        fontSizes: false, strength: false, share: false, messages: false, notes: false,
     });
     const toggleSection = (key: keyof typeof openSections) =>
         setOpenSections(s => ({ ...s, [key]: !s[key] }));
@@ -1234,6 +1236,16 @@ export default function Edit({
                                 >
                                     <div className="px-3 pb-3">
                                         <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                                    </div>
+                                </PanelCard>
+                                <PanelCard
+                                    title="Notes"
+                                    pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialNotes.length}</span>}
+                                    open={openSections.notes}
+                                    onToggle={() => toggleSection('notes')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <NotesPanel notes={initialNotes} resumeId={resume.id} />
                                     </div>
                                 </PanelCard>
                             </div>
