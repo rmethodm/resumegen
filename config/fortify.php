@@ -22,10 +22,6 @@ return [
 
     'middleware' => ['web'],
 
-    'limiters' => [
-        'login' => 'login',
-    ],
-
     'views' => true,
 
     // Fortify's default paths for these three routes differ from the paths the
