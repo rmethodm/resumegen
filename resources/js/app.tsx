@@ -16,7 +16,7 @@ createInertiaApp({
         ),
     setup({ el, App, props }) {
         if (!el) {
-            return;
+            throw new Error('Inertia mount element #app not found');
         }
 
         const root = createRoot(el);
