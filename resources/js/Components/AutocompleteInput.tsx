@@ -26,7 +26,7 @@ export default function AutocompleteInput({
     const [activeIndex, setActiveIndex] = useState(-1);
     const [open, setOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+    const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
     // Sync external value changes (e.g. form reset)
     useEffect(() => {
