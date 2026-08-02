@@ -1,0 +1,7 @@
+/*
+ * Resume-only web fonts. These families are used by resume previews and the
+ * resume style library, not by the main app chrome, so they are loaded from a
+ * dedicated stylesheet imported by those surfaces instead of the global app
+ * entry. This trims the app-wide bundle and font preload set substantially.
+ */
+@import url('https://fonts.bunny.net/css?family=Inter:400,700|Open+Sans:400,700|Lato:400,700|Roboto:400,700|Montserrat:400,700|IBM+Plex+Sans:400,700|Work+Sans:400,700|EB+Garamond:400,700|IBM+Plex+Mono:400,700|Libre+Baskerville:400,700|Source+Serif+4:400,700&display=swap');

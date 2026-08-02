@@ -404,8 +404,8 @@
       "edit_count": 1
     },
     "routes/web.php": {
-      "last_edited": 1785707405.2617211,
-      "edit_count": 6
+      "last_edited": 1785713187.55584,
+      "edit_count": 8
     },
     "routes/api.php": {
       "last_edited": 1785707168.937199,
@@ -420,12 +420,12 @@
       "edit_count": 2
     },
     "app/Models/User.php": {
-      "last_edited": 1785707210.204493,
-      "edit_count": 3
+      "last_edited": 1785709121.612038,
+      "edit_count": 5
     },
     "resources/js/Layouts/AuthenticatedLayout.tsx": {
-      "last_edited": 1785707324.9614642,
-      "edit_count": 4
+      "last_edited": 1785714440.368004,
+      "edit_count": 11
     },
     "resources/js/Pages/Onboarding/Wizard.tsx": {
       "last_edited": 1785707356.755027,
@@ -440,16 +440,16 @@
       "edit_count": 3
     },
     "resources/js/types/index.d.ts": {
-      "last_edited": 1785707507.796736,
-      "edit_count": 4
+      "last_edited": 1785711556.368406,
+      "edit_count": 5
     },
     "database/migrations/2026_08_02_215300_drop_resumes_shares_and_messages_tables.php": {
       "last_edited": 1785707606.7105,
       "edit_count": 1
     },
     "database/seeders/DatabaseSeeder.php": {
-      "last_edited": 1785707630.963281,
-      "edit_count": 2
+      "last_edited": 1785712296.936929,
+      "edit_count": 3
     },
     "database/migrations/2026_07_14_130000_add_search_text_to_resumes_table.php": {
       "last_edited": 1785707816.447665,
@@ -474,248 +474,293 @@
     "tests/Feature/Auth/TwoFactorEnforcementTest.php": {
       "last_edited": 1785707838.546376,
       "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220000_create_resumes_table.php": {
+      "last_edited": 1785708992.195094,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220100_create_experiences_table.php": {
+      "last_edited": 1785708995.4795089,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220200_create_skills_table.php": {
+      "last_edited": 1785708997.5143528,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220300_add_target_role_to_resumes_table.php": {
+      "last_edited": 1785708999.1208,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220400_add_contact_and_design_fields_to_resumes_table.php": {
+      "last_edited": 1785709002.731665,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220500_restructure_experience_dates.php": {
+      "last_edited": 1785709006.381989,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220600_add_category_to_skills_table.php": {
+      "last_edited": 1785709008.235323,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220700_create_projects_table.php": {
+      "last_edited": 1785709010.426964,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220800_create_education_table.php": {
+      "last_edited": 1785709012.557593,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_220900_create_certificates_table.php": {
+      "last_edited": 1785709014.768932,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221000_widen_skills_unique_index_to_include_category.php": {
+      "last_edited": 1785709017.693232,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221100_remap_resume_fonts_to_named_faces.php": {
+      "last_edited": 1785709022.4076731,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221200_create_library_skills_table.php": {
+      "last_edited": 1785709025.2894862,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221300_add_import_state_to_resumes_table.php": {
+      "last_edited": 1785709027.5874612,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221400_create_resume_snapshots_table.php": {
+      "last_edited": 1785709029.3118238,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221500_create_starter_profiles_table.php": {
+      "last_edited": 1785709032.963061,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221600_create_resume_groups_table.php": {
+      "last_edited": 1785709039.999727,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221700_create_resume_notes_table.php": {
+      "last_edited": 1785709043.5791879,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221800_add_size_to_resume_notes_table.php": {
+      "last_edited": 1785709046.109386,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_221900_add_missing_foreign_key_indexes.php": {
+      "last_edited": 1785709051.928909,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_222000_add_user_id_index_to_resumes_table.php": {
+      "last_edited": 1785709053.768663,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_222100_add_target_company_to_resumes_table.php": {
+      "last_edited": 1785709055.3375611,
+      "edit_count": 1
+    },
+    "app/Models/Resume.php": {
+      "last_edited": 1785709082.542623,
+      "edit_count": 1
+    },
+    "app/Models/Experience.php": {
+      "last_edited": 1785709085.1731389,
+      "edit_count": 1
+    },
+    "app/Models/Skill.php": {
+      "last_edited": 1785709086.9489121,
+      "edit_count": 1
+    },
+    "app/Models/Project.php": {
+      "last_edited": 1785709089.4943922,
+      "edit_count": 1
+    },
+    "app/Models/Education.php": {
+      "last_edited": 1785709091.662771,
+      "edit_count": 1
+    },
+    "app/Models/Certificate.php": {
+      "last_edited": 1785709094.4350631,
+      "edit_count": 1
+    },
+    "app/Models/LibrarySkill.php": {
+      "last_edited": 1785709098.95106,
+      "edit_count": 1
+    },
+    "app/Models/ResumeSnapshot.php": {
+      "last_edited": 1785709101.5035179,
+      "edit_count": 1
+    },
+    "app/Models/ResumeNote.php": {
+      "last_edited": 1785709104.0436249,
+      "edit_count": 1
+    },
+    "app/Models/ResumeGroup.php": {
+      "last_edited": 1785709106.2185159,
+      "edit_count": 1
+    },
+    "app/Models/StarterProfile.php": {
+      "last_edited": 1785709110.2727308,
+      "edit_count": 1
+    },
+    "database/factories/ResumeFactory.php": {
+      "last_edited": 1785709139.190208,
+      "edit_count": 1
+    },
+    "database/factories/ExperienceFactory.php": {
+      "last_edited": 1785709141.33866,
+      "edit_count": 1
+    },
+    "database/factories/SkillFactory.php": {
+      "last_edited": 1785709143.168701,
+      "edit_count": 1
+    },
+    "database/factories/ProjectFactory.php": {
+      "last_edited": 1785709145.34653,
+      "edit_count": 1
+    },
+    "database/factories/EducationFactory.php": {
+      "last_edited": 1785709147.154263,
+      "edit_count": 1
+    },
+    "database/factories/CertificateFactory.php": {
+      "last_edited": 1785709149.342981,
+      "edit_count": 1
+    },
+    "database/factories/ResumeGroupFactory.php": {
+      "last_edited": 1785709151.157105,
+      "edit_count": 1
+    },
+    "database/factories/ResumeNoteFactory.php": {
+      "last_edited": 1785709152.9795468,
+      "edit_count": 1
+    },
+    "database/factories/StarterProfileFactory.php": {
+      "last_edited": 1785709155.483764,
+      "edit_count": 1
+    },
+    "app/Concerns/AbortsAsNotFound.php": {
+      "last_edited": 1785710221.853751,
+      "edit_count": 1
+    },
+    "app/Http/Controllers/DashboardController.php": {
+      "last_edited": 1785712063.949909,
+      "edit_count": 2
+    },
+    "app/Http/Controllers/ResumeController.php": {
+      "last_edited": 1785713177.18102,
+      "edit_count": 5
+    },
+    "resources/js/types/resume.ts": {
+      "last_edited": 1785712140.677539,
+      "edit_count": 2
+    },
+    "resources/js/Components/ui/button.tsx": {
+      "last_edited": 1785711762.639797,
+      "edit_count": 2
+    },
+    "resources/js/Components/ui/badge.tsx": {
+      "last_edited": 1785711637.229116,
+      "edit_count": 1
+    },
+    "resources/js/Components/ui/input.tsx": {
+      "last_edited": 1785711639.352601,
+      "edit_count": 1
+    },
+    "resources/js/Components/ui/label.tsx": {
+      "last_edited": 1785711640.8007638,
+      "edit_count": 1
+    },
+    "resources/js/Components/ui/checkbox.tsx": {
+      "last_edited": 1785711642.2614331,
+      "edit_count": 1
+    },
+    "resources/js/Components/ui/textarea.tsx": {
+      "last_edited": 1785711644.456204,
+      "edit_count": 1
+    },
+    "resources/js/Components/ui/card.tsx": {
+      "last_edited": 1785711647.3543391,
+      "edit_count": 1
+    },
+    "resources/js/Components/resume/score-dial.tsx": {
+      "last_edited": 1785711707.474418,
+      "edit_count": 1
+    },
+    "resources/js/Components/resume/score-gauge.tsx": {
+      "last_edited": 1785711714.251063,
+      "edit_count": 1
+    },
+    "resources/js/Components/resume/suggestion-list.tsx": {
+      "last_edited": 1785711718.8467772,
+      "edit_count": 1
+    },
+    "resources/js/Components/workstation/inspector.tsx": {
+      "last_edited": 1785714125.033226,
+      "edit_count": 5
+    },
+    "resources/js/Components/workstation/section-panel.tsx": {
+      "last_edited": 1785711769.4364412,
+      "edit_count": 3
+    },
+    "resources/js/Components/workstation/inspector-fields.tsx": {
+      "last_edited": 1785711826.886476,
+      "edit_count": 1
+    },
+    "resources/js/Components/workstation/inspector-sections.tsx": {
+      "last_edited": 1785714113.825464,
+      "edit_count": 4
+    },
+    "resources/js/Components/workstation/workstation-header.tsx": {
+      "last_edited": 1785713204.16533,
+      "edit_count": 5
+    },
+    "resources/js/Pages/resumes/workstation.tsx": {
+      "last_edited": 1785711957.920361,
+      "edit_count": 1
+    },
+    "resources/js/Pages/resumes/compare.tsx": {
+      "last_edited": 1785711988.98496,
+      "edit_count": 1
+    },
+    "app/Http/Controllers/ResumeCompareController.php": {
+      "last_edited": 1785712055.0500858,
+      "edit_count": 1
+    },
+    "app/Http/Controllers/Settings/StarterProfileController.php": {
+      "last_edited": 1785712061.2208152,
+      "edit_count": 1
+    },
+    "resources/js/Pages/Settings/StarterProfile.tsx": {
+      "last_edited": 1785712134.497709,
+      "edit_count": 1
+    },
+    "resources/js/Pages/Dashboard.tsx": {
+      "last_edited": 1785713412.3110359,
+      "edit_count": 3
+    },
+    "CLAUDE.md": {
+      "last_edited": 1785712394.0190542,
+      "edit_count": 3
+    },
+    "resources/js/Pages/Resumes/Workstation.tsx": {
+      "last_edited": 1785714146.6070888,
+      "edit_count": 5
+    },
+    "resources/js/Pages/Resumes/Compare.tsx": {
+      "last_edited": 1785713604.721429,
+      "edit_count": 3
+    },
+    "resources/js/Components/workstation/skill-picker-modal.tsx": {
+      "last_edited": 1785714078.996674,
+      "edit_count": 1
     }
   },
   "actions": [
-    {
-      "ts": 1785698294,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "app.tsx createInertiaApp Inertia v3 setup resolve, AutocompleteInput.tsx type errors, ResumeBuilder Edit.tsx type errors, composer.json breeze dependency"
-      }
-    },
-    {
-      "ts": 1785698294,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "app.tsx createInertiaApp Inertia v3 setup resolve, AutocompleteInput.tsx type errors, ResumeBuilder Edit.tsx type errors, composer.json breeze dependency"
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785698352.878897,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/resources/js/Components/AutocompleteInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785698354.701615,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/resources/js/Pages/ResumeBuilder/Edit.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785698355.739666,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/resources/js/Pages/ResumeBuilder/Edit.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785698363.924643,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/resources/js/app.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785698373.637059,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/resources/js/app.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785698402.706837,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/resources/js/app.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785698866.876363,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/.superpowers/sdd/2026-08-02-foundation-swap-fortify-inertia-v3/task-6-report.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1785698873,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785699387.093985,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/resources/js/app.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785699406.65611,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/.superpowers/sdd/2026-08-02-foundation-swap-fortify-inertia-v3/task-6-report.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785699447.783983,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/.superpowers/sdd/2026-08-02-foundation-swap-fortify-inertia-v3/task-6-report.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785699475.916028,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/.superpowers/sdd/2026-08-02-foundation-swap-fortify-inertia-v3/task-6-report.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700035.1759622,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/.github/workflows/ci.yml"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700036.642279,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/.github/workflows/ci.yml"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700039.923141,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/docs/DEPLOYMENT.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700043.419211,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/docs/DEPLOYMENT.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700044.6472478,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/resources/js/Pages/Auth/Login.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700045.736903,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/config/fortify.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700047.946062,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/app/Providers/FortifyServiceProvider.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700049.355007,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/app/Providers/FortifyServiceProvider.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700051.3909178,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/app/Providers/FortifyServiceProvider.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700058.0785868,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700066.4211771,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/tests/Feature/Auth/AuthRouteNamesTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700112.914403,
-      "files": [
-        ".claude/worktrees/fortify-inertia-v3-foundation-swap/.superpowers/sdd/2026-08-02-foundation-swap-fortify-inertia-v3/final-review-fix-report.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1785700632.1398919,
-      "files": [
-        "docs/superpowers/resumo-clone-progress.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1785706108,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "Resume Share Messages pages controllers models routes migrations to delete: ResumeController, ShareController, MessagesController, Resume model, ResumeThread, tables"
-      }
-    },
-    {
-      "ts": 1785706108,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "Resume Share Messages pages controllers models routes migrations to delete: ResumeController, ShareController, MessagesController, Resume model, ResumeThread, tables"
-      }
-    },
-    {
-      "ts": 1785706141,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "Resumes feature: resume builder, resume model, resume controllers, PDF export"
-      }
-    },
     {
       "ts": 1785706141,
       "kind": "continue_retrieve",
@@ -1618,6 +1663,1108 @@
       "ts": 1785707838.546376,
       "files": [
         "tests/Feature/Auth/TwoFactorEnforcementTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785708992.195093,
+      "files": [
+        "database/migrations/2026_08_02_220000_create_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785708995.479508,
+      "files": [
+        "database/migrations/2026_08_02_220100_create_experiences_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785708997.514352,
+      "files": [
+        "database/migrations/2026_08_02_220200_create_skills_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785708999.1208,
+      "files": [
+        "database/migrations/2026_08_02_220300_add_target_role_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709002.731665,
+      "files": [
+        "database/migrations/2026_08_02_220400_add_contact_and_design_fields_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709006.381988,
+      "files": [
+        "database/migrations/2026_08_02_220500_restructure_experience_dates.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709008.235321,
+      "files": [
+        "database/migrations/2026_08_02_220600_add_category_to_skills_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709010.4269629,
+      "files": [
+        "database/migrations/2026_08_02_220700_create_projects_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709012.5575922,
+      "files": [
+        "database/migrations/2026_08_02_220800_create_education_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709014.7689312,
+      "files": [
+        "database/migrations/2026_08_02_220900_create_certificates_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709017.693231,
+      "files": [
+        "database/migrations/2026_08_02_221000_widen_skills_unique_index_to_include_category.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709022.4076722,
+      "files": [
+        "database/migrations/2026_08_02_221100_remap_resume_fonts_to_named_faces.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709025.289485,
+      "files": [
+        "database/migrations/2026_08_02_221200_create_library_skills_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709027.5874612,
+      "files": [
+        "database/migrations/2026_08_02_221300_add_import_state_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709029.3118231,
+      "files": [
+        "database/migrations/2026_08_02_221400_create_resume_snapshots_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709032.963061,
+      "files": [
+        "database/migrations/2026_08_02_221500_create_starter_profiles_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709039.999727,
+      "files": [
+        "database/migrations/2026_08_02_221600_create_resume_groups_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709043.579187,
+      "files": [
+        "database/migrations/2026_08_02_221700_create_resume_notes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709046.109386,
+      "files": [
+        "database/migrations/2026_08_02_221800_add_size_to_resume_notes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709051.928908,
+      "files": [
+        "database/migrations/2026_08_02_221900_add_missing_foreign_key_indexes.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709053.768662,
+      "files": [
+        "database/migrations/2026_08_02_222000_add_user_id_index_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709055.3375602,
+      "files": [
+        "database/migrations/2026_08_02_222100_add_target_company_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709082.5426219,
+      "files": [
+        "app/Models/Resume.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709085.1731389,
+      "files": [
+        "app/Models/Experience.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709086.9489112,
+      "files": [
+        "app/Models/Skill.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709089.4943922,
+      "files": [
+        "app/Models/Project.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709091.66277,
+      "files": [
+        "app/Models/Education.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709094.4350631,
+      "files": [
+        "app/Models/Certificate.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709098.9510589,
+      "files": [
+        "app/Models/LibrarySkill.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709101.503517,
+      "files": [
+        "app/Models/ResumeSnapshot.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709104.043624,
+      "files": [
+        "app/Models/ResumeNote.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709106.2185159,
+      "files": [
+        "app/Models/ResumeGroup.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709110.27273,
+      "files": [
+        "app/Models/StarterProfile.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709119.168103,
+      "files": [
+        "app/Models/User.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709121.6120372,
+      "files": [
+        "app/Models/User.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709139.190208,
+      "files": [
+        "database/factories/ResumeFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709141.338659,
+      "files": [
+        "database/factories/ExperienceFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709143.168701,
+      "files": [
+        "database/factories/SkillFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709145.346529,
+      "files": [
+        "database/factories/ProjectFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709147.154263,
+      "files": [
+        "database/factories/EducationFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709149.3429801,
+      "files": [
+        "database/factories/CertificateFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709151.157105,
+      "files": [
+        "database/factories/ResumeGroupFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709152.979546,
+      "files": [
+        "database/factories/ResumeNoteFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785709155.483764,
+      "files": [
+        "database/factories/StarterProfileFactory.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785710221.85375,
+      "files": [
+        "app/Concerns/AbortsAsNotFound.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785710241.194614,
+      "files": [
+        "app/Http/Controllers/DashboardController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785710269.3703349,
+      "files": [
+        "app/Http/Controllers/ResumeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785710336.5176609,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785710345,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "route\\('dashboard'\\)|HOME =|redirectTo",
+        "hit_count": 30,
+        "hit_files": [
+          "./app/Http/Controllers/Auth/TwoFactorChallengeController.php",
+          "./resources/js/Pages/Welcome.tsx",
+          "./app/Http/Controllers/OnboardingController.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711548.606254,
+      "files": [
+        "resources/js/types/resume.ts"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711556.368405,
+      "files": [
+        "resources/js/types/index.d.ts"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711568.945538,
+      "files": [
+        "app/Http/Controllers/ResumeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711627.993387,
+      "files": [
+        "resources/js/Components/ui/button.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711637.229116,
+      "files": [
+        "resources/js/Components/ui/badge.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711639.352601,
+      "files": [
+        "resources/js/Components/ui/input.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711640.800763,
+      "files": [
+        "resources/js/Components/ui/label.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711642.2614331,
+      "files": [
+        "resources/js/Components/ui/checkbox.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711644.456203,
+      "files": [
+        "resources/js/Components/ui/textarea.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711647.3543391,
+      "files": [
+        "resources/js/Components/ui/card.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711707.474418,
+      "files": [
+        "resources/js/Components/resume/score-dial.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711714.251062,
+      "files": [
+        "resources/js/Components/resume/score-gauge.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711718.8467772,
+      "files": [
+        "resources/js/Components/resume/suggestion-list.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711741.8256419,
+      "files": [
+        "resources/js/Components/workstation/inspector.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711752.3089569,
+      "files": [
+        "resources/js/Components/workstation/section-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711762.639797,
+      "files": [
+        "resources/js/Components/ui/button.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711766.0558138,
+      "files": [
+        "resources/js/Components/workstation/section-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711769.436439,
+      "files": [
+        "resources/js/Components/workstation/section-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711826.886476,
+      "files": [
+        "resources/js/Components/workstation/inspector-fields.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711881.1097531,
+      "files": [
+        "resources/js/Components/workstation/inspector-sections.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711886.789258,
+      "files": [
+        "resources/js/Components/workstation/inspector.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711889.9426,
+      "files": [
+        "resources/js/Components/workstation/inspector.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711916.187926,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711920.745661,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711925.1825018,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711957.920359,
+      "files": [
+        "resources/js/Pages/resumes/workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785711988.98496,
+      "files": [
+        "resources/js/Pages/resumes/compare.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785712036,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "Inertia::render",
+        "hit_count": 20,
+        "hit_files": [
+          "./app/Http/Controllers/OnboardingController.php-21-            'allTemplates' => UserLimits",
+          "./routes/web.php-18-Route",
+          "./routes/web.php-21-        'canRegister' => Route",
+          "./routes/web.php-20-        'canLogin' => Route",
+          "./routes/web.php",
+          "./app/Http/Controllers/ResumeCompareController.php",
+          "./app/Providers/FortifyServiceProvider.php",
+          "./app/Http/Controllers/OnboardingController.php",
+          "./app/Http/Controllers/OnboardingController.php-20-            'allowedTemplates' => UserLimits",
+          "./CLAUDE.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712051.8296351,
+      "files": [
+        "app/Http/Controllers/ResumeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712055.050085,
+      "files": [
+        "app/Http/Controllers/ResumeCompareController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712061.2208152,
+      "files": [
+        "app/Http/Controllers/Settings/StarterProfileController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712063.949908,
+      "files": [
+        "app/Http/Controllers/DashboardController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785712095,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "AuthenticatedLayout header=",
+        "hit_count": 4,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-05-28-billing-subscriptions.md",
+          "./docs/superpowers/plans/2026-06-07-batch-6-engagement-insights.md",
+          "./docs/superpowers/plans/2026-05-28-master-admin-section.md-752-                <div className=\"mx-auto max-w-7xl px-4 sm",
+          "./docs/superpowers/plans/2026-05-28-master-admin-section.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712134.497709,
+      "files": [
+        "resources/js/Pages/Settings/StarterProfile.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712140.6775382,
+      "files": [
+        "resources/js/types/resume.ts"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712200.205744,
+      "files": [
+        "resources/js/Pages/Dashboard.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712296.936928,
+      "files": [
+        "database/seeders/DatabaseSeeder.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785712320,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "JSON column|Resume data model|json columns|nullable array|Single .resumes. table",
+        "hit_count": 20,
+        "hit_files": [
+          "./database/migrations/2026_08_02_220100_create_experiences_table.php",
+          "./CLAUDE.md-127-**Cascade delete",
+          "./database/migrations/2026_08_02_220400_add_contact_and_design_fields_to_resumes_table.php",
+          "./docs/superpowers/specs/2026-07-05-resignation-letter-generator-design.md",
+          "./docs/superpowers/specs/2026-06-05-group-a-resume-editor-enhancements-design.md",
+          "./docs/superpowers/specs/2026-07-05-resignation-letter-generator-design.md-102-**`AiPrompts",
+          "./docs/research/2026-06-23-resume-import-industry-research.md",
+          "./CLAUDE.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712372.8894222,
+      "files": [
+        "CLAUDE.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712388.311604,
+      "files": [
+        "CLAUDE.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712394.0190542,
+      "files": [
+        "CLAUDE.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712650.730011,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712655.1863658,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712659.437997,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785712992.330451,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713173.891571,
+      "files": [
+        "app/Http/Controllers/ResumeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713177.1810188,
+      "files": [
+        "app/Http/Controllers/ResumeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785713184,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "resumes.download",
+        "hit_count": 5,
+        "hit_files": [
+          "./routes/web.php-49-    Route",
+          "./routes/web.php-45-    Route",
+          "./routes/web.php",
+          "./routes/web.php-46-    Route",
+          "./routes/web.php-48-    Route"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713187.555839,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713198.219543,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713204.165329,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713406.345292,
+      "files": [
+        "resources/js/Pages/Dashboard.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713412.311035,
+      "files": [
+        "resources/js/Pages/Dashboard.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785713550,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "AuthenticatedLayout",
+        "hit_count": 30,
+        "hit_files": [
+          "./CLAUDE.md",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-83-<button onClick={toggle} className=\"p-2 rounded-lg text-gray-500 hover",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-93-- Main content",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-92-- Nav",
+          "./CLAUDE.md-178-- **The entire admin surface.** `AdminPanelProvider`, all of `app/Filament/**` (the User / CareerArticle / Message / JobRole / JobSkill / JobTitle resources, the Ops / Audit / Content / Growth pages, `AdminStatsOverview`), `resources/views/filament/**`, the `filament/filament` package (which took Livewire with it as a transitive dep), the `filament",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-90-**Dark mode color classes** \u2014 add `dark"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713565.60579,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713577.91297,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713580.516734,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713594.5908349,
+      "files": [
+        "resources/js/Pages/Resumes/Compare.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713601.598599,
+      "files": [
+        "resources/js/Pages/Resumes/Compare.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785713604.721428,
+      "files": [
+        "resources/js/Pages/Resumes/Compare.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785713618,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "export default function",
+        "hit_count": 4,
+        "hit_files": [
+          "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx",
+          "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+          "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+          "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714078.996673,
+      "files": [
+        "resources/js/Components/workstation/skill-picker-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714098.546819,
+      "files": [
+        "resources/js/Components/workstation/inspector-sections.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714102.806603,
+      "files": [
+        "resources/js/Components/workstation/inspector-sections.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714113.825462,
+      "files": [
+        "resources/js/Components/workstation/inspector-sections.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714121.676922,
+      "files": [
+        "resources/js/Components/workstation/inspector.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714125.033225,
+      "files": [
+        "resources/js/Components/workstation/inspector.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714135.169749,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785714142,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "SectionFields",
+        "hit_count": 10,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-06-11-drag-drop-resume-builder.md",
+          "./docs/superpowers/plans/2026-06-11-drag-drop-resume-builder.md-1028-    onSaveSection",
+          "./resources/js/Pages/Resumes/Workstation.tsx",
+          "./resources/js/Components/workstation/inspector.tsx",
+          "./docs/superpowers/plans/2026-06-11-drag-drop-resume-builder.md-1026-    onRemoveSection"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714146.607088,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1785714164,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "skillLibrary",
+        "hit_count": 5,
+        "hit_files": [
+          "./app/Http/Controllers/ResumeController.php",
+          "./app/Http/Controllers/ResumeController.php-186-                'suggestions' => ResumeAnalysis",
+          "./resources/js/Pages/Resumes/Workstation.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "ts": 1785714307,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "class SearchController",
+        "hit_count": 1,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-07-14-app-layout-four-and-command-palette.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714335.59746,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714345.120136,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1785714440.3680031,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
       ],
       "source": "graph_sync_hook"
     }

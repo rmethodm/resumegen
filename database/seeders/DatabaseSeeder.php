@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(JobRolesSeeder::class);
         $this->call(JobTitlesSeeder::class);
         $this->call(JobSkillsSeeder::class);
+        $this->call(LibrarySkillSeeder::class);
 
         // Test fixture only — never let this account reach a real environment.
         if (! app()->environment('local')) {

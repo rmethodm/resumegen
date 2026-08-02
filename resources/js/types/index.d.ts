@@ -1,3 +1,5 @@
+export type * from './resume';
+
 export interface User {
     id: number;
     name: string;

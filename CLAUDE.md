@@ -122,20 +122,19 @@ php artisan migrate:fresh --seed
 All routes return Inertia responses — no Blade views except the single root `resources/views/app.blade.php`. Laravel serializes props as JSON; Inertia hydrates the matching React page component at `resources/js/Pages/`.
 
 ### Resume data model
-Resume content is stored as JSON columns on a single `resumes` table (no separate section tables). Frontend owns JSON shape; backend validates as `nullable array`.
+**Rewritten 2026-08-02, imported from a sibling project (`Resumo`) and adapted.** Resume content is **relational**, not JSON-column: a `resumes` row (title, target_role, contact fields, template/font/density/skills_layout, `section_order` json) has one-to-many `experiences`, `projects`, `education`, `certificates`, `skills` tables (each with a `position` int for ordering; `bullets`/`highlights` stay `json` on their own row since they're owned entirely by one parent and never queried standalone). `App\Support\ResumeDocument` is the single place that knows this shape — `toArray()` reads it for the frontend/PDF, `save()` writes the whole document transactionally (deletes + recreates the child rows) on every autosave. `ResumeGroup` holds versions of the same resume (`resumes.group_id`); `ResumeSnapshot` and `ResumeNote` (canvas sticky notes — backend only, no UI yet) and `StarterProfile` (the one-time reusable seed a new resume is pre-filled from) round out the model. `LibrarySkill` is a seeded flat catalogue (`LibrarySkillSeeder`), not yet wired into any UI.
 
-**Cascade delete:** Most dependents (share links, snapshots, threads, section/share events, tags) are removed by `cascadeOnDelete` FKs. `Resume::booted()`'s `deleting` observer covers only what FKs can't: it unlinks the resume's thumbnail. Because the `resumes.user_id` FK would cascade rows away without firing model events, `User::booted()` deletes its resumes per-model — otherwise account deletion would leak every thumbnail on disk.
+Explicitly **not** ported from Resumo: public resume sharing/publication (`is_public`, `public_slug`, password gates), the `ProfileMessage` recruiter-inbox feature, Cover Letters, and AI-driven resume import (`ParseResume`, `ResumeImportController`) — all excluded per the removed-feature policy below. `Resume::$import_state` exists on the model (harmless, always `'ready'`) but nothing sets it to anything else.
+
+**Cascade delete:** `experiences`/`projects`/`education`/`certificates`/`skills`/`resume_notes`/`resume_snapshots` are removed by `cascadeOnDelete` FKs on `resume_id`. `User` deletes its `resumes()` per-model (not relying on the FK cascade) so any future model-event-driven cleanup still fires.
 
 ### Authorization
-`ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses `AuthorizesRequests` so `$this->authorize()` is available everywhere.
+`ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses `AuthorizesRequests` so `$this->authorize()` is available everywhere. Most of the imported `ResumeController`/`ResumeGroupController`/`ResumeNoteController` methods use inline `abort_unless($resume->user_id === ...)` (matching Resumo's own convention) rather than the policy — both patterns coexist, don't consolidate without checking call sites.
 
-### Frontend page structure
-The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor + live preview iframe. Uses `onBlur` on every field to trigger `router.put` save (no debounce). The preview iframe loads `GET /builder/{resume}/preview` with a cache-busting `?t=<timestamp>` query param on each save.
+### Frontend page structure (post-2026-08-02 import)
+`Pages/Resumes/Workstation.tsx` is the editor: a section-rail (`SectionPanel`) + stacked per-section forms (`inspector.tsx`/`inspector-sections.tsx`/`inspector-fields.tsx`), autosaved via `useAutosave` (debounced `router.put`, no beforeunload beacon). There is **no live preview panel in the editor** — `Components/resume/resume-preview.tsx` (the React equivalent of the PDF template renderer, all 24 templates) is ported and correct but currently unused by any page; PDF download (`GET /resumes/{resume}/export`) is the only way to see the rendered document today. `Pages/Resumes/Compare.tsx` diffs two versions side by side. `Pages/Dashboard.tsx` lists resume groups with score, version tray, and the usual rename/duplicate/delete/compare actions.
 
-### Share links live on `/shares`, not in the builder
-`Shares/Index.tsx` (`ShareController@index`) is the only place share links are created, labelled, expired, password-gated, or revoked. It is a top-level nav item and shows what the builder never could: views, unique visitors, unread badges, a 7-day trend, and per-visit rows.
-
-The builder's Share tab holds only an active-link count and a link to `/shares`. It used to embed a `SharePopover` with its own label/expiry/revoke controls — a cramped duplicate that could not show any of the analytics, and drifted from `/shares` as that page grew. Removed on 2026-07-19; don't reintroduce link management in the builder. Sharing does not interleave with editing (you share once you've stopped editing), and tokens are stable across edits, so a recruiter's existing link already serves the current version — there is nothing to re-copy after an edit.
+The imported UI runs on Resumegen's existing Headless UI + Heroicons + Tailwind v3 stack, not shadcn/Radix — Resumo's original pages use shadcn/ui on Tailwind v4, so every component under `Components/ui/`, `Components/workstation/`, and `Components/resume/` was rebuilt (not copied) to match. There is no `/shares` page or share-link system in this codebase (unlike some older design docs in `docs/superpowers/`, which predate the 2026-08-02 reset and describe a `ResumeBuilder/Edit.tsx` + `/shares` architecture that no longer exists — don't treat those as current).
 
 ### Shared Inertia props
 `HandleInertiaRequests::share()` passes `auth.user` and `flash.{success,error}` — nothing else. There is no `featureGate` (see "Billing"), no `aiEnabled` and no `impersonating`; the last two went with AI and the admin panel on 2026-07-21.
@@ -244,18 +243,18 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 
 ## Key Design Decisions
 
-1. **Single `resumes` table with JSON columns** — frontend owns shape; backend validates as array.
-2. **No template React components** — server renders PDF; iframe preview loads it.
-3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
-4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`. Simple, immutable.
-5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
+1. **Relational resume schema** (since 2026-08-02) — a `resumes` row plus one-to-many `experiences`/`projects`/`education`/`certificates`/`skills` tables, not JSON columns; `App\Support\ResumeDocument` is the single place that knows the shape and round-trips it wholesale on every save. See "Resume data model" above.
+2. **No template React components in the PDF path** — server renders PDF (`ResumeExport` + `resumes.export.pdf` Blade). A React preview component (`resume-preview.tsx`) exists and mirrors the same 24 templates but isn't wired into any page yet.
+3. **Beacon save on beforeunload** — this predates the 2026-08-02 reset and describes the old builder; the imported resume editor uses a plain debounced `router.put` instead (see "Frontend page structure" above). May still be accurate for other forms — verify before relying on it.
+4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`. Predates the reset; there is currently no share-link feature these would attach to. Verify these tables/models still exist before relying on this.
+5. **FK cascade for dependents** — `cascadeOnDelete` on `resume_id` handles `experiences`/`projects`/`education`/`certificates`/`skills`/`resume_notes`/`resume_snapshots`. `User` deletes its resumes per-model rather than relying purely on the FK cascade.
 6. **No monetization** — every feature is free and unlimited, and nothing is metered.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 8. **No LLM anywhere** — every remaining feature (strength score, autocomplete, keyword overlap, exports) is deterministic server-side code. Adding an AI dependency back is a product decision, not an implementation detail; ask first.
 
 ---
 
-Last updated: 2026-08-02 (A/B resume variants, Cover Letters, the salary hint, and Portfolio removed)
+Last updated: 2026-08-02 (resume feature imported from Resumo with a relational data model, replacing the earlier JSON-column design; A/B resume variants, Cover Letters, the salary hint, and Portfolio removed earlier the same day)
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
