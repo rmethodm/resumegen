@@ -208,7 +208,7 @@ function SkillTagInput({
     const [loading, setLoading] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
     const containerRef = useRef<HTMLDivElement>(null);
-    const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+    const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
     const listId = useRef(`skills-list-${Math.round(performance.now())}`).current;
 
     const addSkill = (raw: string) => {
@@ -477,7 +477,7 @@ export default function Edit({
     const [activePdfFrame, setActivePdfFrame] = useState(0);
     const activePdfFrameRef = useRef(activePdfFrame); activePdfFrameRef.current = activePdfFrame;
     // Fallback timer: swap even if the iframe's onLoad never fires (PDF plugins can be flaky).
-    const pdfSwapTimer = useRef<ReturnType<typeof setTimeout>>();
+    const pdfSwapTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
     // The preview column is hidden below `lg` (display:none), but its iframes stay
     // mounted — so without this guard, every save would trigger a server-side PDF
     // render the user can't see. previewStaleRef records a skipped refresh so that
