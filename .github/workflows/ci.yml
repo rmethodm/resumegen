@@ -67,52 +67,17 @@ jobs:
     # is a free-plan substitute — deploy only fires when manually triggered
     # (Actions tab "Run workflow" or `gh workflow run ci.yml`), never on a bare push.
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    # Self-hosted runner living on the production box itself (resumegen-prod
+    # label, registered as the github-runner system user). GitHub-hosted
+    # runners can't reach this server -- Hostinger's network firewall drops
+    # SSH connections from GitHub Actions runner IPs before they reach sshd.
+    # Running the job locally sidesteps that: no SSH/rsync needed, deploy.sh
+    # already pulls/builds/migrates itself. github-runner has exactly one
+    # narrowly-scoped sudo rule (/etc/sudoers.d/github-runner) permitting only
+    # this one script as root -- nothing broader.
+    runs-on: [self-hosted, resumegen-prod]
     environment: production
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.5"
-          coverage: none
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install production PHP dependencies
-        run: composer install --no-dev --optimize-autoloader
-
-      - name: Install and build frontend assets
-        run: |
-          npm ci --legacy-peer-deps
-          npm run build
-
-      - name: Load SSH key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add server to known_hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Rsync build to server
-        run: |
-          rsync -az --delete \
-            --exclude='.git/' \
-            --exclude='.env' \
-            --exclude='storage/app/' \
-            --exclude='storage/logs/' \
-            --exclude='storage/framework/cache/' \
-            --exclude='storage/framework/sessions/' \
-            --exclude='storage/framework/views/' \
-            --exclude='node_modules/' \
-            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/resumegen.app/
-
-      - name: Run remote activation script
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd /var/www/resumegen.app && ./deploy.sh'
+      - name: Run deploy script
+        run: sudo /var/www/resumegen.app/deploy.sh
