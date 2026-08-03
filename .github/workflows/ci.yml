@@ -109,7 +109,7 @@ jobs:
             --exclude='storage/framework/sessions/' \
             --exclude='storage/framework/views/' \
             --exclude='node_modules/' \
-            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/resumegen/
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/resumegen.app/
 
       - name: Run remote activation script
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd /var/www/resumegen && ./deploy.sh'
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd /var/www/resumegen.app && ./deploy.sh'
