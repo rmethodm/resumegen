@@ -7,16 +7,19 @@ import {
     DocumentDuplicateIcon,
     EllipsisVerticalIcon,
     ExclamationTriangleIcon,
+    ShareIcon,
 } from '@heroicons/react/24/outline';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Badge } from '@/Components/ui/badge';
+import { Button } from '@/Components/ui/button';
 import { buttonClassName } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
+import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
 import { templateKeys, templateLabels } from '@/lib/resume-templates';
 import { cn } from '@/lib/utils';
-import type { ResumeTemplateKey, SaveStatus } from '@/types';
+import type { ResumeShareLink, ResumeTemplateKey, SaveStatus } from '@/types';
 
 const TABS = ['Edit', 'Review'] as const;
 export type WorkstationTab = (typeof TABS)[number];
@@ -37,6 +40,7 @@ export function WorkstationHeader({
     onTabChange,
     template,
     onTemplateChange,
+    share,
 }: {
     resumeId: number;
     title: string;
@@ -49,9 +53,11 @@ export function WorkstationHeader({
     onFixContact: () => void;
     activeTab: WorkstationTab;
     onTabChange: (tab: WorkstationTab) => void;
+    share: ResumeShareLink | null;
 }) {
     const [renaming, setRenaming] = useState(false);
     const [duplicating, setDuplicating] = useState(false);
+    const [sharing, setSharing] = useState(false);
 
     return (
         <div className="rounded-lg border border-gray-200 bg-white">
@@ -188,6 +194,16 @@ export function WorkstationHeader({
                         </MenuItems>
                     </Menu>
 
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setSharing(true)}
+                        className="w-full sm:w-auto"
+                    >
+                        <ShareIcon className="size-4" />
+                        Share
+                    </Button>
+
                     <Menu as="div" className="relative">
                         <MenuButton
                             className={buttonClassName('default', 'default', 'w-full sm:w-auto')}
@@ -238,6 +254,13 @@ export function WorkstationHeader({
                     </button>
                 ))}
             </div>
+
+            <ShareResumeModal
+                open={sharing}
+                onOpenChange={setSharing}
+                resumeId={resumeId}
+                share={share}
+            />
         </div>
     );
 }

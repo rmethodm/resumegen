@@ -184,6 +184,17 @@ export interface ResumeVersionGroup {
     title: string;
 }
 
+/** The Share modal's backing data (design doc turn 6, option 6a). Null until generated. */
+export interface ResumeShareLink {
+    id: number;
+    url: string;
+    allow_download: boolean;
+    require_email: boolean;
+    require_password: boolean;
+    password: string | null;
+    expires_at: string | null;
+}
+
 export interface StarterProfileExperience {
     title: string;
     company: string;

@@ -7,10 +7,12 @@ use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicResumeShareController;
 use App\Http\Controllers\ResumeCompareController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ResumeGroupController;
 use App\Http\Controllers\ResumeNoteController;
+use App\Http\Controllers\ResumeShareLinkController;
 use App\Http\Controllers\Settings\StarterProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,6 +27,13 @@ Route::get('/', function () {
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified', 'two_factor_challenge'])
     ->name('dashboard');
+
+// Public, token-authenticated — the recipient of a shared link has no
+// account. The token in the URL is the credential.
+Route::get('/r/{token}', [PublicResumeShareController::class, 'show'])->name('share.show');
+Route::post('/r/{token}/unlock', [PublicResumeShareController::class, 'unlock'])->name('share.unlock');
+Route::get('/r/{token}/pdf', [PublicResumeShareController::class, 'pdf'])->name('share.pdf');
+Route::get('/r/{token}/docx', [PublicResumeShareController::class, 'docx'])->name('share.docx');
 
 Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -49,6 +58,10 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/resumes/{resume}/duplicate', [ResumeController::class, 'duplicate'])->name('resumes.duplicate');
     Route::patch('/resumes/{resume}/rename', [ResumeController::class, 'rename'])->name('resumes.rename');
     Route::delete('/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
+
+    Route::post('/resumes/{resume}/share', [ResumeShareLinkController::class, 'store'])->name('resumes.share.store');
+    Route::patch('/resume-share-links/{resumeShareLink}', [ResumeShareLinkController::class, 'update'])->name('resume-share-links.update');
+    Route::delete('/resume-share-links/{resumeShareLink}', [ResumeShareLinkController::class, 'destroy'])->name('resume-share-links.destroy');
 
     Route::post('/resumes/{resume}/notes', [ResumeNoteController::class, 'store'])->name('resume-notes.store');
     Route::patch('/resume-notes/{resumeNote}', [ResumeNoteController::class, 'update'])->name('resume-notes.update');
