@@ -102,9 +102,9 @@ export default function UpdateProfileInformation({
 
                     <Transition
                         show={recentlySuccessful}
-                        enter="transition ease-in-out"
+                        enter="motion-safe:transition motion-safe:ease-in-out"
                         enterFrom="opacity-0"
-                        leave="transition ease-in-out"
+                        leave="motion-safe:transition motion-safe:ease-in-out"
                         leaveTo="opacity-0"
                     >
                         <p className="text-sm text-[#71717a]">
