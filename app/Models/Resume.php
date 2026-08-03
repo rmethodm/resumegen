@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property list<string>|null $section_order
@@ -141,6 +142,18 @@ class Resume extends Model
     public function snapshots(): HasMany
     {
         return $this->hasMany(ResumeSnapshot::class)->latest();
+    }
+
+    /**
+     * The public read-only share link for this resume, if one has been
+     * generated. Publication metadata, not part of the document — see the
+     * note in ResumeDocument::save().
+     *
+     * @return HasOne<ResumeShareLink, $this>
+     */
+    public function shareLink(): HasOne
+    {
+        return $this->hasOne(ResumeShareLink::class);
     }
 
     /**

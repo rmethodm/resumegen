@@ -18,6 +18,7 @@ import type {
     ResumeAnalysis,
     ResumeDraft,
     ResumeSectionKey,
+    ResumeShareLink,
     SkillLibraryGroup,
 } from '@/types';
 
@@ -25,10 +26,12 @@ export default function Workstation({
     resume,
     analysis,
     skillLibrary,
+    share,
 }: {
     resume: Resume;
     analysis: ResumeAnalysis;
     skillLibrary: SkillLibraryGroup[];
+    share: ResumeShareLink | null;
 }) {
     const { id, ...initial } = resume;
     const { value: draft, set: setDraft } = useHistory<ResumeDraft>(initial);
@@ -137,6 +140,7 @@ export default function Workstation({
                             onTemplateChange={(template) =>
                                 setDraft({ ...draft, template })
                             }
+                            share={share}
                         />
 
                         {tab === 'Review' ? (

@@ -216,6 +216,17 @@ class ResumeController extends Controller
                 'height' => $note->height,
                 'created_at' => $note->created_at->diffForHumans(),
             ])->all(),
+            // Share modal (design doc turn 6, option 6a). Null until Maya
+            // opens the modal for the first time and one is generated.
+            'share' => $resume->shareLink ? [
+                'id' => $resume->shareLink->id,
+                'url' => route('share.show', $resume->shareLink->token),
+                'allow_download' => $resume->shareLink->allow_download,
+                'require_email' => $resume->shareLink->require_email,
+                'require_password' => $resume->shareLink->require_password,
+                'password' => $resume->shareLink->password,
+                'expires_at' => $resume->shareLink->expires_at?->toDateString(),
+            ] : null,
         ]);
     }
 
