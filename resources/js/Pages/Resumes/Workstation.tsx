@@ -167,7 +167,7 @@ export default function Workstation({
                                             'opacity-50',
                                     )}
                                 >
-                                    <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-2.5">
+                                    <div className="flex items-center gap-2 border-b border-gray-100 bg-white px-5 py-3">
                                         <Bars3Icon
                                             className={cn(
                                                 'size-4 shrink-0 text-gray-500',
@@ -222,7 +222,7 @@ export default function Workstation({
                                             </Button>
                                         </div>
                                     </div>
-                                    <div className="p-4">
+                                    <div className="p-6">
                                         <SectionFields
                                             resume={draft}
                                             section={sectionKey}

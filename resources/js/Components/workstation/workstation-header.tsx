@@ -55,9 +55,9 @@ export function WorkstationHeader({
 
     return (
         <div className="rounded-lg border border-gray-200 bg-white">
-            <div className="flex flex-col gap-3 p-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <div className="flex items-center gap-2">
-                    <span className="font-bold">{title || 'Untitled resume'}</span>
+                    <span className="text-lg font-bold">{title || 'Untitled resume'}</span>
                     {showSaved && saveStatus === 'saved' && (
                         <Badge
                             variant="outline"
@@ -221,7 +221,7 @@ export function WorkstationHeader({
                 </div>
             </div>
 
-            <div className="flex flex-wrap gap-2 border-t border-gray-200 px-3">
+            <div className="flex flex-wrap gap-5 border-t border-gray-100 px-5">
                 {TABS.map((tab) => (
                     <button
                         key={tab}
