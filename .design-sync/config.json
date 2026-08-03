@@ -1,5 +1,5 @@
 {
-  "projectId": "294ecd74-b84a-4034-9675-19c32d9e5069",
+  "projectId": "56acb0bc-2354-4760-b583-b8a9ea8baa7d",
   "pkg": "resumegen",
   "globalName": "Resumegen",
   "shape": "package",
@@ -9,7 +9,9 @@
   "readmeHeader": ".design-sync/conventions.md",
   "buildCmd": "npm run build && npx tailwindcss -i ./resources/css/app.css -o ./.design-sync/components.css --content './resources/js/Components/**/*.tsx'",
   "overrides": {
-    "Modal": { "cardMode": "single", "viewport": "800x600" }
+    "Modal": { "cardMode": "single", "viewport": "800x600" },
+    "ShareResumeModal": { "cardMode": "single", "viewport": "800x600" },
+    "SkillPickerModal": { "cardMode": "single", "viewport": "900x750" }
   },
   "componentSrcMap": {
     "ApplicationLogo": "resources/js/Components/ApplicationLogo.tsx",
@@ -28,8 +30,29 @@
     "SkillNarrativeEditor": "resources/js/Components/SkillNarrativeEditor.tsx",
     "TagInput": "resources/js/Components/TagInput.tsx",
     "TextInput": "resources/js/Components/TextInput.tsx",
+    "ResumePreview": "resources/js/Components/resume/resume-preview.tsx",
+    "ScoreDial": "resources/js/Components/resume/score-dial.tsx",
+    "ScoreGauge": "resources/js/Components/resume/score-gauge.tsx",
+    "SuggestionList": "resources/js/Components/resume/suggestion-list.tsx",
+    "Badge": "resources/js/Components/ui/badge.tsx",
+    "Button": "resources/js/Components/ui/button.tsx",
+    "Card": "resources/js/Components/ui/card.tsx",
+    "CardHeader": "resources/js/Components/ui/card.tsx",
+    "CardTitle": "resources/js/Components/ui/card.tsx",
+    "CardDescription": "resources/js/Components/ui/card.tsx",
+    "CardContent": "resources/js/Components/ui/card.tsx",
+    "CardFooter": "resources/js/Components/ui/card.tsx",
+    "UiCheckbox": "resources/js/Components/ui/checkbox.tsx",
+    "Input": "resources/js/Components/ui/input.tsx",
+    "Label": "resources/js/Components/ui/label.tsx",
+    "Textarea": "resources/js/Components/ui/textarea.tsx",
+    "ShareResumeModal": "resources/js/Components/workstation/share-resume-modal.tsx",
+    "SkillPickerModal": "resources/js/Components/workstation/skill-picker-modal.tsx",
+    "SectionFields": "resources/js/Components/workstation/inspector.tsx",
     "NavLink": null,
     "ResponsiveNavLink": null,
-    "UpgradeModal": null
+    "UpgradeModal": null,
+    "SectionPanel": null,
+    "WorkstationHeader": null
   }
 }

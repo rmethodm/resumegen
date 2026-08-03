@@ -57,6 +57,22 @@ These components use Tailwind CSS utility classes. Use the same vocabulary for a
 
 **QRCodeDisplay** — pass a `url` string; renders a canvas QR code. Optional `size` (default 128px).
 
+## Added 2026-08-03: shadcn-style primitives, resume-rendering, and workstation components
+
+A second, newer component family lives alongside the original set above — these are the current product's actual UI (the resume editor and its rendered output), imported the same way from `'resumegen'`.
+
+**Badge / Button / Card (+ CardHeader/CardTitle/CardDescription/CardContent/CardFooter) / UiCheckbox / Input / Label / Textarea** — shadcn-style primitives, a separate lineage from the original `PrimaryButton`/`TextInput`/etc. above (do not mix the two families in one composition — pick one). `Button` takes `variant` (`default | destructive | outline | secondary | ghost | link`) and `size` (`default | sm | lg | icon`); no `asChild`/Slot support — use the exported `buttonClassName(variant, size, className)` helper to style a non-button element instead of wrapping it. `UiCheckbox` is the `Checkbox` export aliased to avoid a name collision with the original `Checkbox` above — when composing, import it as `UiCheckbox`. `Card` composes with its five sub-parts as children, matching the shadcn card pattern (`CardHeader` > `CardTitle` + `CardDescription`, `CardContent`, `CardFooter`).
+
+**ResumePreview** — renders a full resume document as a print-style sheet. Takes one `resume` prop (the whole document: contact fields, `experiences`/`projects`/`education`/`certificates`/`skills` arrays, plus `template`/`font`/`density`/`skills_layout`/`section_order`). `template` selects one of ~24 named looks (`minimal`, `modern`, `classic`, `executive`, `ats`, etc.) — each only changes the header/heading treatment, never the layout, so any template is a safe default. All resume text colors are literal hex values by design (it's a print surface that must stay legible on white in both light and dark app themes) — don't restyle it with theme tokens.
+
+**ScoreDial / ScoreGauge** — both take a `score: number | null` (null renders a "—" empty state) and render it as a ring or half-circle gauge respectively; no CSS needed beyond what ships, pure SVG/conic-gradient.
+
+**SuggestionList** — takes `suggestions` (array of `{message, rewrite}` objects), a `stale` boolean (dims the list during a pending recompute), and an `onApply` callback. Empty array renders a reassuring "nothing to flag" message, not a blank space.
+
+**ShareResumeModal / SkillPickerModal** — full-screen `headlessui` Dialogs; render with `open={true}` for a filled composition (both need real prop data — `share`/`library` — to look intentional, not just `open`).
+
+**SectionFields** — the resume editor's form-fields panel; takes the whole `resume` document, a `section` key (`'experience' | 'summary' | 'skills' | ...`), `skillLibrary`, `contactErrors: {email, phone}`, and `onChange`. Renders only the fields for the given section — pair it with a section-switcher UI you build yourself.
+
 ## Idiomatic build snippet
 
 ```jsx
