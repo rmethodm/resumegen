@@ -282,5 +282,11 @@ environment configured in GitHub repo settings.
 apex domain is the whole app. If an old DNS record or vhost still points at
 `admin.<domain>`, remove it.
 
-**Manual deploy (no CI):** build locally the same way, rsync with the same excludes,
-then SSH in and run `./deploy.sh` yourself.
+**Manual deploy (no CI):** `deploy.sh` is self-sufficient — it pulls `main`, installs
+Composer/npm dependencies, builds the frontend, migrates, re-caches, and fixes
+`storage`/`bootstrap/cache` ownership. SSH in as root, `cd` to the project root, and run
+`./deploy.sh`. This is currently the *only* deploy path — the CI `deploy` job is blocked
+because Hostinger's network firewall drops SSH connections from GitHub Actions runner
+IPs before they reach `sshd`. That's parked, not fixed; revisit if automated deploys are
+worth pursuing (e.g. a self-hosted Actions runner installed directly on the server, which
+sidesteps the inbound-SSH problem entirely).
