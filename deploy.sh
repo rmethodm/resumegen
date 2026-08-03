@@ -34,6 +34,8 @@ if [[ ! -f "${APP_DIR}/artisan" ]]; then
   exit 1
 fi
 
+cd "${APP_DIR}"
+
 if [[ "$(id -u)" -ne 0 ]]; then
   echo "Error: run as root (needed to restart the queue worker service)." >&2
   exit 1
