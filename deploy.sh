@@ -4,8 +4,9 @@
 # Pulls the latest main, installs dependencies, builds frontend assets,
 # migrates the database, re-caches, and restarts the queue worker.
 #
-# Usage:  ./deploy.sh
-# Run ON THE SERVER as root, from the project root (/var/www/resumegen.app).
+# Usage:  ./deploy.sh   (can be invoked from any cwd, e.g. sudo /path/to/deploy.sh)
+# Run ON THE SERVER as root. Resolves its own directory from the script path,
+# so it doesn't depend on the caller's working directory.
 # See docs/DEPLOYMENT.md for first-time server setup.
 #
 # Security note: git pull / composer install / npm ci+build all execute
@@ -16,14 +17,15 @@
 # php-fpm already runs the app as), using an isolated HOME/SSH identity at
 # /var/lib/resumegen-deploy so it never touches root's own SSH config.
 #
-# NOTE: CI-based deploy (.github/workflows/ci.yml) is currently blocked --
-# Hostinger's network firewall drops SSH connections from GitHub Actions
-# runner IPs before they ever reach sshd. Until that's resolved, run this
-# script by hand after every push to main.
+# Invoked by the "Deploy to production" job in .github/workflows/ci.yml, which
+# runs on a self-hosted runner (label: resumegen-prod) living on this same
+# box as the low-privilege github-runner user -- see that file and
+# /etc/sudoers.d/github-runner for the narrowly-scoped sudo rule permitting
+# only this script to run as root.
 
 set -euo pipefail
 
-APP_DIR="${PWD}"
+APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEPLOY_HOME="/var/lib/resumegen-deploy"
 GIT_SSH_COMMAND="ssh -i ${DEPLOY_HOME}/.ssh/id_ed25519_resumegen -o IdentitiesOnly=yes -o UserKnownHostsFile=${DEPLOY_HOME}/.ssh/known_hosts"
 
