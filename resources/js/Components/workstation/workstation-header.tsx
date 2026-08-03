@@ -14,10 +14,16 @@ import { Badge } from '@/Components/ui/badge';
 import { buttonClassName } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
+import { templateKeys, templateLabels } from '@/lib/resume-templates';
 import { cn } from '@/lib/utils';
-import type { SaveStatus } from '@/types';
+import type { ResumeTemplateKey, SaveStatus } from '@/types';
 
-const TABS = ['Guide', 'Edit', 'Optimize', 'Review'] as const;
+const TABS = ['Edit', 'Review'] as const;
+export type WorkstationTab = (typeof TABS)[number];
+
+const sortedTemplateKeys = [...templateKeys].sort((a, b) =>
+    templateLabels[a].localeCompare(templateLabels[b]),
+);
 
 export function WorkstationHeader({
     resumeId,
@@ -27,14 +33,22 @@ export function WorkstationHeader({
     showSaved,
     contactErrors,
     onFixContact,
+    activeTab,
+    onTabChange,
+    template,
+    onTemplateChange,
 }: {
     resumeId: number;
     title: string;
     onTitleChange: (title: string) => void;
+    template: ResumeTemplateKey;
+    onTemplateChange: (template: ResumeTemplateKey) => void;
     saveStatus: SaveStatus;
     showSaved: boolean;
     contactErrors: ContactErrors;
     onFixContact: () => void;
+    activeTab: WorkstationTab;
+    onTabChange: (tab: WorkstationTab) => void;
 }) {
     const [renaming, setRenaming] = useState(false);
     const [duplicating, setDuplicating] = useState(false);
@@ -70,6 +84,41 @@ export function WorkstationHeader({
                 </div>
 
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    {activeTab === 'Review' && (
+                        <Menu as="div" className="relative">
+                            <MenuButton
+                                className={buttonClassName('default', 'default', 'w-full sm:w-auto')}
+                            >
+                                {templateLabels[template]}
+                                <ChevronDownIcon className="size-3.5" />
+                            </MenuButton>
+                            <MenuItems
+                                anchor="bottom end"
+                                className="z-50 max-h-72 w-56 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                            >
+                                {sortedTemplateKeys.map((key) => (
+                                    <MenuItem key={key}>
+                                        <button
+                                            type="button"
+                                            onClick={() => onTemplateChange(key)}
+                                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                        >
+                                            <CheckIcon
+                                                className={cn(
+                                                    'size-3.5 shrink-0',
+                                                    key === template
+                                                        ? 'text-indigo-600'
+                                                        : 'text-transparent',
+                                                )}
+                                            />
+                                            {templateLabels[key]}
+                                        </button>
+                                    </MenuItem>
+                                ))}
+                            </MenuItems>
+                        </Menu>
+                    )}
+
                     <Menu as="div" className="relative">
                         <MenuButton
                             className={buttonClassName('outline', 'icon')}
@@ -177,12 +226,12 @@ export function WorkstationHeader({
                     <button
                         key={tab}
                         type="button"
-                        disabled={tab !== 'Edit'}
+                        onClick={() => onTabChange(tab)}
                         className={cn(
                             'border-b-2 py-2 text-sm',
-                            tab === 'Edit'
+                            tab === activeTab
                                 ? 'border-indigo-600 font-medium text-indigo-600'
-                                : 'border-transparent text-gray-500 disabled:cursor-not-allowed disabled:opacity-50',
+                                : 'border-transparent text-gray-500 hover:text-gray-700',
                         )}
                     >
                         {tab}

@@ -3,8 +3,9 @@ import { ArrowDownIcon, ArrowUpIcon, Bars3Icon } from '@heroicons/react/24/outli
 import { useEffect, useRef, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SectionFields } from '@/Components/workstation/inspector';
+import { ResumePreview } from '@/Components/resume/resume-preview';
 import { SectionPanel } from '@/Components/workstation/section-panel';
-import { WorkstationHeader } from '@/Components/workstation/workstation-header';
+import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { Button } from '@/Components/ui/button';
 import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
@@ -32,6 +33,7 @@ export default function Workstation({
     const { id, ...initial } = resume;
     const { value: draft, set: setDraft } = useHistory<ResumeDraft>(initial);
     const isMobile = useIsMobile();
+    const [tab, setTab] = useState<WorkstationTab>('Edit');
     const [section, setSection] = useState<ResumeSectionKey>('contact');
     const [draggedSection, setDraggedSection] =
         useState<ResumeSectionKey | null>(null);
@@ -125,9 +127,21 @@ export default function Workstation({
                             saveStatus={saveStatus}
                             showSaved={hasSaved}
                             contactErrors={errors}
-                            onFixContact={() => scrollToSection('contact')}
+                            onFixContact={() => {
+                                setTab('Edit');
+                                scrollToSection('contact');
+                            }}
+                            activeTab={tab}
+                            onTabChange={setTab}
+                            template={draft.template}
+                            onTemplateChange={(template) =>
+                                setDraft({ ...draft, template })
+                            }
                         />
 
+                        {tab === 'Review' ? (
+                            <ResumePreview resume={draft} className="w-full" />
+                        ) : (
                         <main
                             aria-label="Section form"
                             className="flex min-w-0 flex-col gap-4"
@@ -220,6 +234,7 @@ export default function Workstation({
                                 </div>
                             ))}
                         </main>
+                        )}
                     </div>
                 </div>
             </div>

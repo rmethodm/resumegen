@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateResumeTitleRequest;
 use App\Models\LibrarySkill;
 use App\Models\Resume;
 use App\Models\ResumeNote;
+use App\Models\StarterProfile;
 use App\Support\DocxExport;
 use App\Support\ResumeAnalysis;
 use App\Support\ResumeDocument;
@@ -58,7 +59,7 @@ class ResumeController extends Controller
             ...$this->starterProfileContactFields($request),
         ], fn (mixed $value): bool => $value !== null));
 
-        $resume->experiences()->create(['position' => 0, 'bullets' => []]);
+        $this->seedExperiencesAndSkills($resume, $request->user()->starterProfile);
 
         return to_route('resumes.workstation', $resume);
     }
@@ -244,8 +245,18 @@ class ResumeController extends Controller
             ...$this->starterProfileContactFields($request),
         ]);
 
-        // With a profile, seed its snapshot; without one, keep the old single
-        // empty experience row so the editor never opens on nothing.
+        $this->seedExperiencesAndSkills($resume, $profile);
+
+        return $resume;
+    }
+
+    /**
+     * With a profile, seed its experience snapshot and skills; without one,
+     * keep the old single empty experience row so the editor never opens on
+     * nothing. Shared by every path that creates a resume from scratch.
+     */
+    private function seedExperiencesAndSkills(Resume $resume, ?StarterProfile $profile): void
+    {
         $experiences = $profile?->experience_snapshot ?? [];
 
         if ($profile === null) {
@@ -274,7 +285,5 @@ class ResumeController extends Controller
                 'name' => $skill['name'],
             ]);
         }
-
-        return $resume;
     }
 }
