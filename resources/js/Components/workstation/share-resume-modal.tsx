@@ -327,7 +327,7 @@ function ShareToggleRow({
                 disabled={disabled}
                 className={cn(
                     'relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50',
-                    enabled ? 'bg-indigo-600' : 'bg-gray-200',
+                    enabled ? 'bg-brand' : 'bg-gray-200',
                 )}
             >
                 <span

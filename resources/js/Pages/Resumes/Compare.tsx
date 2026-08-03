@@ -111,7 +111,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                         </span>
                     </div>
 
-                    <div className="flex-1 bg-gray-50 p-6">
+                    <div className="flex-1 bg-surface p-6">
                         <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2">
                             <CompareColumn
                                 side={left}
@@ -176,7 +176,7 @@ function CompareSidebar({
                             className={cn(
                                 'rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
                                 version.id === right.id
-                                    ? 'border-indigo-200 bg-indigo-50 text-indigo-600'
+                                    ? 'border-brand-subtle bg-brand-subtle text-brand'
                                     : 'border-gray-200 bg-transparent text-gray-900 hover:bg-gray-50',
                             )}
                         >
@@ -224,7 +224,7 @@ function VersionChip({
             className={cn(
                 'h-7 rounded-full border-0 px-3 text-[12px] font-semibold outline-none',
                 tone === 'brand'
-                    ? 'bg-indigo-50 text-indigo-600'
+                    ? 'bg-brand-subtle text-brand'
                     : 'bg-gray-100 text-gray-500',
             )}
         >
@@ -280,13 +280,13 @@ function CompareColumn({
             <p
                 className={cn(
                     'mb-2 text-[10px] font-bold uppercase tracking-wide',
-                    tone === 'brand' ? 'text-indigo-600' : 'text-gray-500',
+                    tone === 'brand' ? 'text-brand' : 'text-gray-500',
                 )}
             >
                 {label}
             </p>
 
-            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-surface-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <div className="text-lg font-extrabold">
                     {side.document.full_name}
                 </div>
@@ -349,7 +349,7 @@ function CompareColumn({
                             </p>
                             <div className="h-1.5 rounded-full bg-gray-100">
                                 <div
-                                    className="h-full rounded-full bg-indigo-600"
+                                    className="h-full rounded-full bg-brand"
                                     style={{
                                         width: `${(band.score / 25) * 100}%`,
                                     }}

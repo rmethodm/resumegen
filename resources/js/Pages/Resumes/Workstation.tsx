@@ -180,7 +180,7 @@ export default function Workstation({
                                                     : 'cursor-grab',
                                             )}
                                         />
-                                        <span className="text-[11px] font-bold tracking-[0.15em] text-indigo-600 uppercase">
+                                        <span className="text-[11px] font-bold tracking-[0.15em] text-brand uppercase">
                                             {sectionLabels[sectionKey]}
                                         </span>
                                         <div className="ml-auto flex items-center gap-1 sm:hidden">

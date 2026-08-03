@@ -5,12 +5,12 @@ type Variant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | '
 type Size = 'default' | 'sm' | 'lg' | 'icon';
 
 const variantClassNames: Record<Variant, string> = {
-    default: 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500',
+    default: 'bg-brand text-white shadow-sm hover:bg-brand-accent',
     destructive: 'bg-red-600 text-white shadow-sm hover:bg-red-500',
     outline: 'border border-gray-300 bg-white shadow-sm hover:bg-gray-50',
     secondary: 'bg-gray-100 text-gray-900 shadow-sm hover:bg-gray-200',
     ghost: 'hover:bg-gray-100',
-    link: 'text-indigo-600 underline-offset-4 hover:underline',
+    link: 'text-brand underline-offset-4 hover:underline',
 };
 
 const sizeClassNames: Record<Size, string> = {
@@ -22,7 +22,7 @@ const sizeClassNames: Record<Size, string> = {
 
 export function buttonClassName(variant: Variant = 'default', size: Size = 'default', className?: string) {
     return cn(
-        'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
+        'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
         variantClassNames[variant],
         sizeClassNames[size],
         className,

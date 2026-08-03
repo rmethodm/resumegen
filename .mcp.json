@@ -8,8 +8,16 @@
       ]
     },
     "graperoot-pro": {
-      "type": "http",
-      "url": "http://localhost:60514/mcp"
+      "type": "stdio",
+      "command": "/Users/rmethod/.graperoot-pro/venv/bin/python3",
+      "args": [
+        "/Users/rmethod/.graperoot-pro/mcp_graph_server_v7.5.py",
+        "--stdio"
+      ],
+      "env": {
+        "DG_DATA_DIR": "/Users/rmethod/Herd/Resumegen/.dual-graph-pro",
+        "DUAL_GRAPH_PROJECT_ROOT": "/Users/rmethod/Herd/Resumegen"
+      }
     }
   }
 }

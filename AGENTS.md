@@ -1,28 +1,97 @@
-# Agent instructions
+# Agent Protocol
 
-**Read `CLAUDE.md`. It is the authoritative instruction file for this repo.**
+## Authority (read if present)
+- If a field-level grounding spec applies to this project (GROUNDING.md), it outranks this file.
+  Defer to it and cite the relevant constraint when a conflict arises — field
+  validity beats project preference. (No-op if the project has none. Example:
+  github.com/OmicsGrounding/proteomics-grounding)
 
-This file used to be a verbatim copy of the Laravel Boost auto-generated guidelines block.
-That block also lives inside `CLAUDE.md` — but there it is wrapped in ~370 lines of
-hand-written corrections, without which parts of it are actively wrong. Duplicating it here
-meant an agent could read the errata without the errata sheet, so the copy was replaced with
-this pointer on 2026-07-20.
+## The prime directive: never assume, always check
+This project's entire credibility rests on this. It is not a style preference.
+- **Every result-fact — a [measurement, identifier, count, set membership, or
+  derived value] — comes from a FILE on disk or a SCRIPT that reads a file
+  (whether that file is committed to the repo or a pinned local artifact —
+  see Reproducibility below). Never from memory or recollection.** "I think
+  this [entity] belongs to [category]" is forbidden; emit the value from a
+  lookup and read it back.
+- If a fact isn't in a file you can read, either REQUEST the file or WRITE a
+  script/query to produce it. Do not fill the gap from training knowledge.
+- **For any EXTERNAL or citation claim** (a paper's figures, a DOI, a current
+  name in a controlled vocabulary, an API's behavior, a tool's limit): surface
+  it for verification — quote exactly what the source currently asserts and flag
+  it for check. Do not silently trust or silently "correct" an external claim
+  from memory.
 
-The corrections most likely to cause damage if you act on the Boost block alone:
+## Reproducibility is locked (data-driven projects; skip if not applicable)
+- **External data dependencies are pinned to a specific snapshot or version.**
+  State this in any Methods text. A reader re-running against current upstream
+  gets drift — that's expected.
+- **Verify-regenerate is free and encouraged:** re-run scripts to confirm they
+  reproduce the pinned outputs. Do this after any migration or edit that could
+  touch a derived number.
+- **Change-regenerate (re-running against CURRENT upstream and adopting the new
+  data) happens ONLY on explicit user request** — and MUST be preceded by an
+  enumerated downstream-impact trace: which caches, counts, figures, and docs
+  would change. Never change-regenerate incidentally while doing other work.
+- **Manual curation and pinned values change ONLY by deliberate, recorded
+  edits.** "Re-derive from raw" faithfully reproduces AUTOMATED steps only;
+  anything manual lives in data+code or it silently reverts.
 
-- **`laravel/cashier` is NOT installed**, despite the block listing it as a dependency. There
-  is no billing, no Stripe, no plan tiers, no paywall. Do not add one without asking.
-- **`spatie/laravel-medialibrary` is installed but unused.** Nothing in `app/` references it;
-  the resume photo feature was removed. Do not activate the medialibrary skill.
-- **Filament and Livewire are NOT installed**, despite the block listing both and carrying a
-  whole Filament rules section. The entire admin panel was deleted on 2026-07-21 and the
-  package removed; Livewire went with it as a transitive dep. There is no admin interface,
-  no admin subdomain, and no `is_master_admin`. Do not build one without asking.
-- **Dusk needs its own server** — `php artisan serve --env=dusk.local --port=8001` must be
-  running first, because Herd serves the dev database. The block's "never run commands to
-  serve the site" does not apply to the Dusk path.
+## Tripwire every derived set (data-driven projects; skip if not applicable)
+- Recompute against a known count before trusting or interpreting any derived
+  set. **Hard-stop on mismatch.** Numbers are certified against the pipeline's
+  own scripts, not eyeballed.
+- When an aggregation looks surprising, INSPECT THE RAW PRE-AGGREGATION
+  DISTRIBUTION before trusting it.
+- Project-specific tripwires (expected counts, known splits, sanity bounds) are
+  defined in NOTES.md.
 
-Also in `CLAUDE.md` and absent from the Boost block: migrations are forward-only (never
-`migrate:rollback`), Rule 5 (no LLM for anything code can answer deterministically), and the
-2026-07-21 removal of all AI, all pricing instrumentation, the Job Search feature and the whole
-admin surface — there is no AI in this app, no live pricing document, and no admin panel.
+## Files (read in this order on a cold start)
+1. This file — how to behave.
+2. PLAN.md — status block (top) + active phase.
+3. NOTES.md — why things are built the way they are; skim for relevance.
+4. JOURNAL.md — recent debriefs, only if you need the backstory.
+5. reference/ — vendored external material (docs, specs, ported source).
+   Consult targeted, only when the task needs it — do not read it wholesale.
+
+README.md is for humans arriving cold — not part of your read path, but keep
+it in sync (see below).
+
+## How to work
+- **Targeted edits only.** Never rewrite a whole file to change a few lines.
+  Edit the precise lines.
+- **Commit to main, plainly.** Standard commit messages, straight to main.
+  No branches, no squashing, no commit-message prefixes. Commit as you go.
+- **Respect the markers.** Do not reopen anything tagged `(locked)` or
+  "don't relitigate" unless explicitly told to. Do not "fix" anything tagged
+  "intentional, not a bug." Do not re-explore anything recorded as a dead-end.
+- **Keep README in sync.** If a change alters anything README describes,
+  update README in the same pass. It rots silently; treat that as a bug.
+
+## Start of session
+Read the files above. Before writing any code, sanity-check that PLAN's status
+block, its checkboxes, and NOTES agree with each other and with the actual repo
+— flag anything stale or contradictory. (This catches a botched shutdown from
+last session for free.) Then state the next step to confirm you're oriented.
+
+## End of session (shutdown routine)
+Do these in order, and reply with each step and its result so nothing is
+silently skipped — a prose "done!" hides gaps; an itemized report surfaces them.
+1. Update the status block in PLAN.md (current state + next action).
+2. Tick finished PLAN checkboxes (say "none" if nothing changed).
+3. Add new decisions / dead-ends to NOTES.md (with the right markers).
+4. Update README if anything it describes changed (say "no change" if not).
+5. Run the debrief and append it to the TOP of JOURNAL.md.
+6. Commit AND push. Report the commit hash and confirm the remote accepted the
+   push — these are two separate operations and "committed" is not "pushed."
+
+## Debrief
+Ask Q1 and Q5 every session; all five for big sessions. This is step 5 of
+shutdown, but it doesn't depend on the agent remembering to run it — you can
+trigger it directly at any point ("run the debrief"), which is the more reliable
+habit. Either way the output gets appended to the top of JOURNAL.md.
+1. What are you least confident about, and what would prove each one right or wrong?
+2. What did you assume without stating it?
+3. What's the biggest thing I'm missing here?
+4. What could I have done differently to make this session more useful?
+5. What would you suggest to improve?

@@ -110,7 +110,7 @@ export function SectionPanel({
                 Back to dashboard
             </Link>
 
-            <div className="rounded-lg border border-gray-200 bg-white p-4">
+            <div className="rounded-lg border border-surface-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <div className="text-center">
                     <p className="mb-2 text-sm font-medium text-gray-500">
                         Your resume score
@@ -129,10 +129,10 @@ export function SectionPanel({
                                 onClick={() => onSelect(section)}
                                 aria-current={selected === section}
                                 className={cn(
-                                    'flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm',
+                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-colors',
                                     selected === section
-                                        ? 'bg-indigo-50 font-medium text-indigo-600'
-                                        : 'text-gray-900 hover:bg-gray-100',
+                                        ? 'border-brand bg-brand-subtle font-medium text-brand'
+                                        : 'border-transparent text-gray-900 hover:bg-gray-100',
                                 )}
                             >
                                 <span>{sectionLabels[section]}</span>

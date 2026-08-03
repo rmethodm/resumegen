@@ -75,7 +75,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                 <div className="min-w-0 flex-1">
                     <Link
                         href={route('resumes.workstation', resume.id)}
-                        className="truncate text-sm font-semibold text-gray-900 hover:text-indigo-600"
+                        className="truncate text-sm font-semibold text-gray-900 hover:text-brand"
                     >
                         {resume.title}
                     </Link>
@@ -283,57 +283,57 @@ export default function Dashboard({
             <Head title="Dashboard" />
 
             <div className="py-8">
-                <div className="mx-auto max-w-5xl space-y-6 px-4 sm:px-6 lg:px-8">
-                    {!hasStarterProfile && (
-                        <Card className="border-indigo-100 bg-indigo-50/40 p-5 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <p className="text-sm font-bold">
-                                    Set up your starter profile
-                                </p>
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Fill it in once and every new resume starts
-                                    pre-filled.
-                                </p>
+                <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                    <Card className="gap-6 p-6">
+                        {!hasStarterProfile && (
+                            <div className="flex flex-col gap-3 rounded-md border border-brand-subtle bg-brand-subtle/60 p-5 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <p className="text-sm font-bold">
+                                        Set up your starter profile
+                                    </p>
+                                    <p className="mt-1 text-sm text-gray-500">
+                                        Fill it in once and every new resume
+                                        starts pre-filled.
+                                    </p>
+                                </div>
+                                <Link
+                                    href={route('starter-profile.edit')}
+                                    className={cn(buttonClassName('outline'), 'shrink-0')}
+                                >
+                                    Set up profile
+                                </Link>
                             </div>
-                            <Link
-                                href={route('starter-profile.edit')}
-                                className={cn(buttonClassName('outline'), 'mt-3 sm:mt-0')}
-                            >
-                                Set up profile
-                            </Link>
-                        </Card>
-                    )}
+                        )}
 
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-[10px] font-bold tracking-[0.06em] text-gray-500 uppercase">
-                                Your resumes
-                            </p>
-                            {average_score !== null && (
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Average score: {average_score}/100
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-[10px] font-bold tracking-[0.06em] text-gray-500 uppercase">
+                                    Your resumes
                                 </p>
-                            )}
+                                {average_score !== null && (
+                                    <p className="mt-1 text-sm text-gray-500">
+                                        Average score: {average_score}/100
+                                    </p>
+                                )}
+                            </div>
+                            <Button disabled={creatingResume} onClick={createResume}>
+                                <PlusIcon className="size-4" />
+                                {creatingResume ? 'Creating…' : 'New resume'}
+                            </Button>
                         </div>
-                        <Button disabled={creatingResume} onClick={createResume}>
-                            <PlusIcon className="size-4" />
-                            {creatingResume ? 'Creating…' : 'New resume'}
-                        </Button>
-                    </div>
 
-                    {resumes.length === 0 ? (
-                        <Card className="items-center p-10 text-center">
-                            <p className="text-sm text-gray-500">
+                        {resumes.length === 0 ? (
+                            <p className="py-10 text-center text-sm text-gray-500">
                                 You haven't created a resume yet.
                             </p>
-                        </Card>
-                    ) : (
-                        <div className="flex flex-col gap-3">
-                            {resumes.map((resume) => (
-                                <ResumeCard key={resume.id} resume={resume} />
-                            ))}
-                        </div>
-                    )}
+                        ) : (
+                            <div className="flex flex-col gap-3">
+                                {resumes.map((resume) => (
+                                    <ResumeCard key={resume.id} resume={resume} />
+                                ))}
+                            </div>
+                        )}
+                    </Card>
                 </div>
             </div>
         </AuthenticatedLayout>

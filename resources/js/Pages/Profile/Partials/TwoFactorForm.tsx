@@ -119,7 +119,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                             <button
                                 type="button"
                                 onClick={copyAll}
-                                className="text-sm text-indigo-600 underline hover:text-indigo-800"
+                                className="text-sm text-brand underline hover:text-brand-accent"
                             >
                                 {copied ? 'Copied!' : 'Copy all'}
                             </button>

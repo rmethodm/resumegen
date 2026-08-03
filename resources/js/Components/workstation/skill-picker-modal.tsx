@@ -123,7 +123,7 @@ export function SkillPickerModal({
                                 className={cn(
                                     'rounded-lg px-2.5 py-2 text-left text-xs font-semibold',
                                     (activeCategory?.category ?? '') === group.category
-                                        ? 'bg-indigo-50 text-indigo-600'
+                                        ? 'bg-brand-subtle text-brand'
                                         : 'text-gray-500 hover:bg-gray-50',
                                 )}
                             >
@@ -155,8 +155,8 @@ export function SkillPickerModal({
                                                 added
                                                     ? 'cursor-not-allowed border border-gray-200 bg-gray-50 text-gray-400'
                                                     : selected
-                                                      ? 'bg-indigo-600 text-white'
-                                                      : 'border border-gray-200 text-gray-900 hover:border-indigo-300',
+                                                      ? 'bg-brand text-white'
+                                                      : 'border border-gray-200 text-gray-900 hover:border-brand/40',
                                             )}
                                         >
                                             {added ? '✓' : selected ? '✓' : '+'} {name}
@@ -204,10 +204,10 @@ export function SkillPickerModal({
 
                     <TabGroup className="flex min-h-0 flex-1 flex-col">
                         <TabList className="flex gap-4 border-b border-gray-200 px-6 pt-3.5">
-                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-indigo-600 data-selected:text-indigo-600">
+                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-brand data-selected:text-brand">
                                 Soft skills
                             </Tab>
-                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-indigo-600 data-selected:text-indigo-600">
+                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-brand data-selected:text-brand">
                                 Hard skills
                             </Tab>
                         </TabList>
