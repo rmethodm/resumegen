@@ -14,3 +14,24 @@ export { default as SkillGroupEditor } from './resources/js/Components/SkillGrou
 export { default as SkillNarrativeEditor } from './resources/js/Components/SkillNarrativeEditor';
 export { default as TagInput } from './resources/js/Components/TagInput';
 export { default as TextInput } from './resources/js/Components/TextInput';
+export { ResumePreview } from './resources/js/Components/resume/resume-preview';
+export { ScoreDial } from './resources/js/Components/resume/score-dial';
+export { ScoreGauge } from './resources/js/Components/resume/score-gauge';
+export { SuggestionList } from './resources/js/Components/resume/suggestion-list';
+export { Badge } from './resources/js/Components/ui/badge';
+export { Button, buttonClassName } from './resources/js/Components/ui/button';
+export {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+    CardFooter,
+} from './resources/js/Components/ui/card';
+export { Checkbox as UiCheckbox } from './resources/js/Components/ui/checkbox';
+export { Input } from './resources/js/Components/ui/input';
+export { Label } from './resources/js/Components/ui/label';
+export { Textarea } from './resources/js/Components/ui/textarea';
+export { ShareResumeModal } from './resources/js/Components/workstation/share-resume-modal';
+export { SkillPickerModal } from './resources/js/Components/workstation/skill-picker-modal';
+export { SectionFields } from './resources/js/Components/workstation/inspector';
