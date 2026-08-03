@@ -31,7 +31,7 @@ export default function PublicShare({
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-surface">
             <Head title={`${resume.full_name}'s resume`} />
 
             <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3">
@@ -46,13 +46,13 @@ export default function PublicShare({
                         <>
                             <a
                                 href={route('share.docx', token)}
-                                className="inline-flex h-9 items-center justify-center rounded-md border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+                                className="inline-flex h-9 items-center justify-center rounded-md border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-surface"
                             >
                                 Download DOCX
                             </a>
                             <a
                                 href={route('share.pdf', token)}
-                                className="inline-flex h-9 items-center justify-center rounded-md bg-indigo-600 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
+                                className="inline-flex h-9 items-center justify-center rounded-md bg-brand px-4 text-sm font-medium text-white shadow-sm hover:bg-brand-accent"
                             >
                                 Download PDF
                             </a>
@@ -85,12 +85,12 @@ function AccessGate({
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+        <div className="flex min-h-screen items-center justify-center bg-surface px-4">
             <Head title="Enter your details to view this resume" />
 
             <form
                 onSubmit={submit}
-                className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+                className="w-full max-w-sm rounded-lg border border-surface-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
             >
                 <h1 className="text-sm font-bold text-gray-900">
                     Enter your details to view this resume

@@ -251,5 +251,1932 @@
       "recent_queries": [],
       "edited": true
     }
+  },
+  {
+    "id": "mem:1785716024474",
+    "kind": "query_association",
+    "content": "Queried during: text-gray-400 hover:text-gray-600",
+    "tags": [
+      "text",
+      "gray",
+      "400",
+      "hover",
+      "600"
+    ],
+    "files": [
+      "resources/js/Pages/Onboarding/Wizard.tsx"
+    ],
+    "file_path": "resources/js/Pages/Onboarding/Wizard.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T00:13:44.474293+00:00",
+    "created_epoch": 1785716024,
+    "updated_at": "2026-08-03T00:13:44.474298+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "text-gray-400 hover:text-gray-600"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1785705801
+    }
+  },
+  {
+    "id": "mem:1785719071457",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "match",
+      "workstation",
+      "styling",
+      "resumo",
+      "reference",
+      "white",
+      "section",
+      "headers",
+      "implemented",
+      "mockup"
+    ],
+    "files": [
+      "resources/js/Components/workstation/workstation-header.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/workstation-header.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:04:31.457262+00:00",
+    "created_epoch": 1785719071,
+    "updated_at": "2026-08-03T02:01:32.503482+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "read"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785719071454",
+    "kind": "decision",
+    "content": "Match Workstation styling to Resumo reference: white section headers, roomier padding, larger title, taller inputs, wider tab gap",
+    "tags": [
+      "match",
+      "workstation",
+      "styling",
+      "resumo",
+      "reference",
+      "white",
+      "section",
+      "headers"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx",
+      "resources/js/Components/workstation/workstation-header.tsx",
+      "resources/js/Components/ui/input.tsx"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:04:31.454236+00:00",
+    "created_epoch": 1785719071,
+    "updated_at": "2026-08-03T01:04:31.454246+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785719071455",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "match",
+      "workstation",
+      "styling",
+      "resumo",
+      "reference",
+      "white",
+      "section",
+      "headers",
+      "implemented",
+      "mockup"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:04:31.455917+00:00",
+    "created_epoch": 1785719071,
+    "updated_at": "2026-08-03T02:01:32.505426+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785719071458",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "match",
+      "workstation",
+      "styling",
+      "resumo",
+      "reference",
+      "white",
+      "section",
+      "headers"
+    ],
+    "files": [
+      "resources/js/Components/ui/input.tsx"
+    ],
+    "file_path": "resources/js/Components/ui/input.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:04:31.458533+00:00",
+    "created_epoch": 1785719071,
+    "updated_at": "2026-08-03T01:04:31.458545+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785720517567",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: routes/web.php, app/Support/ResumeDocument.php, resources/js/Components/resume/resume-preview.tsx",
+    "tags": [],
+    "files": [
+      "resources/js/Components/workstation/workstation-header.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/workstation-header.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:28:37.566986+00:00",
+    "created_epoch": 1785720517,
+    "updated_at": "2026-08-03T01:35:26.034866+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 4,
+      "co_visited": [
+        "routes/web.php",
+        "app/Support/ResumeDocument.php",
+        "resources/js/Components/resume/resume-preview.tsx",
+        "CLAUDE.md",
+        "database/factories/ResumeNoteFactory.php",
+        "app/Http/Controllers/ResumeNoteController.php",
+        "app/Http/Requests/StoreResumeNoteRequest.php",
+        "app/Http/Controllers/ResumeController.php"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785720527234",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: app/Support/ResumeExport.php, resources/js/Components/workstation/workstation-header.tsx, routes/web.php",
+    "tags": [],
+    "files": [
+      "app/Http/Controllers/ResumeController.php"
+    ],
+    "file_path": "app/Http/Controllers/ResumeController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:28:47.234065+00:00",
+    "created_epoch": 1785720527,
+    "updated_at": "2026-08-03T01:35:50.384170+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 4,
+      "co_visited": [
+        "app/Support/ResumeExport.php",
+        "resources/js/Components/workstation/workstation-header.tsx",
+        "routes/web.php",
+        "app/Models/Resume.php",
+        "database/factories/ResumeNoteFactory.php",
+        "app/Concerns/AbortsAsNotFound.php",
+        "resources/js/Components/resume/resume-preview.tsx",
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785720897975",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: app/Models/ResumeNote.php, resources/js/Components/workstation/workstation-header.tsx, CLAUDE.md",
+    "tags": [],
+    "files": [
+      "app/Http/Controllers/ResumeNoteController.php"
+    ],
+    "file_path": "app/Http/Controllers/ResumeNoteController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:34:57.975751+00:00",
+    "created_epoch": 1785720897,
+    "updated_at": "2026-08-03T01:34:57.975771+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": [
+        "app/Models/ResumeNote.php",
+        "resources/js/Components/workstation/workstation-header.tsx",
+        "CLAUDE.md"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785720897605",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: resources/js/Components/workstation/workstation-header.tsx, CLAUDE.md, database/factories/ResumeNoteFactory.php",
+    "tags": [],
+    "files": [
+      "app/Models/ResumeNote.php"
+    ],
+    "file_path": "app/Models/ResumeNote.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:34:57.605872+00:00",
+    "created_epoch": 1785720897,
+    "updated_at": "2026-08-03T01:34:57.605882+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": [
+        "resources/js/Components/workstation/workstation-header.tsx",
+        "CLAUDE.md",
+        "database/factories/ResumeNoteFactory.php"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785720898298",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: app/Http/Controllers/ResumeNoteController.php, app/Models/ResumeNote.php, resources/js/Components/workstation/workstation-header.tsx",
+    "tags": [],
+    "files": [
+      "database/factories/ResumeNoteFactory.php"
+    ],
+    "file_path": "database/factories/ResumeNoteFactory.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:34:58.298061+00:00",
+    "created_epoch": 1785720898,
+    "updated_at": "2026-08-03T01:34:58.298065+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": [
+        "app/Http/Controllers/ResumeNoteController.php",
+        "app/Models/ResumeNote.php",
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785721309041",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: database/factories/ResumeFactory.php, app/Http/Requests/UpdateResumeNoteRequest.php, resources/js/types/resume.ts",
+    "tags": [],
+    "files": [
+      "database/migrations/2026_08_02_231451_create_personal_access_tokens_table.php"
+    ],
+    "file_path": "database/migrations/2026_08_02_231451_create_personal_access_tokens_table.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:41:49.041216+00:00",
+    "created_epoch": 1785721309,
+    "updated_at": "2026-08-03T01:41:49.041226+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": [
+        "database/factories/ResumeFactory.php",
+        "app/Http/Requests/UpdateResumeNoteRequest.php",
+        "resources/js/types/resume.ts"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785722354489",
+    "kind": "interaction_pattern",
+    "content": "Repeatedly visited during recent work",
+    "tags": [],
+    "files": [
+      "resources/js/types/index.d.ts::ResumeStat"
+    ],
+    "file_path": "resources/js/types/index.d.ts",
+    "symbol_id": "resources/js/types/index.d.ts::ResumeStat",
+    "symbol_hash": "b6deb49c",
+    "created_at": "2026-08-03T01:59:14.489563+00:00",
+    "created_epoch": 1785722354,
+    "updated_at": "2026-08-03T01:59:20.463725+00:00",
+    "stale": true,
+    "stale_reason": "symbol removed",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": []
+    }
+  },
+  {
+    "id": "mem:1785722360464",
+    "kind": "stale_marker",
+    "content": "Marked stale because symbol removed",
+    "tags": [],
+    "files": [
+      "resources/js/types/index.d.ts::ResumeStat"
+    ],
+    "file_path": "resources/js/types/index.d.ts",
+    "symbol_id": "resources/js/types/index.d.ts::ResumeStat",
+    "symbol_hash": "b6deb49c",
+    "created_at": "2026-08-03T01:59:20.463732+00:00",
+    "created_epoch": 1785722360,
+    "updated_at": "2026-08-03T01:59:20.463735+00:00",
+    "stale": true,
+    "stale_reason": "symbol removed",
+    "observed_queries": [],
+    "evidence": {
+      "source_kind": "interaction_pattern"
+    }
+  },
+  {
+    "id": "mem:1785722391598",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: resources/js/types/index.d.ts::ResumeStat",
+    "tags": [],
+    "files": [
+      "resources/js/Components/ui/button.tsx"
+    ],
+    "file_path": "resources/js/Components/ui/button.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T01:59:51.598963+00:00",
+    "created_epoch": 1785722391,
+    "updated_at": "2026-08-03T01:59:51.598966+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": [
+        "resources/js/types/index.d.ts::ResumeStat"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785722492502",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "cancel"
+    ],
+    "files": [
+      "resources/js/Components/workstation/share-resume-modal.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/share-resume-modal.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.502638+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:23:26.620205+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "ResumeShareLinkController destroy route resume-share-links",
+      "share resume modal cancel share request delete share link data"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve",
+        "read"
+      ],
+      "recent_queries": [
+        "ResumeShareLinkController destroy route resume-share-links",
+        "share resume modal cancel share request delete share link data"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492498",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "built",
+      "missing"
+    ],
+    "files": [
+      "tests/Feature/PublicResumeShareControllerTest.php"
+    ],
+    "file_path": "tests/Feature/PublicResumeShareControllerTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.498671+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:23:26.624383+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "read",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492494",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "cancel"
+    ],
+    "files": [
+      "routes/web.php"
+    ],
+    "file_path": "routes/web.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.494148+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:04:35.331514+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "ResumeShareLinkController destroy route resume-share-links",
+      "share resume modal cancel share request delete share link data"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "ResumeShareLinkController destroy route resume-share-links",
+        "share resume modal cancel share request delete share link data"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492489",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "link"
+    ],
+    "files": [
+      "app/Http/Controllers/PublicResumeShareController.php"
+    ],
+    "file_path": "app/Http/Controllers/PublicResumeShareController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.489140+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:23:26.617709+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492485",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "link"
+    ],
+    "files": [
+      "app/Http/Requests/UpdateResumeShareLinkRequest.php"
+    ],
+    "file_path": "app/Http/Requests/UpdateResumeShareLinkRequest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.485954+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:04:35.326725+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492482",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only"
+    ],
+    "files": [
+      "database/factories/ResumeShareLinkFactory.php"
+    ],
+    "file_path": "database/factories/ResumeShareLinkFactory.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.482355+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T02:01:32.482363+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492479",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only"
+    ],
+    "files": [
+      "app/Models/ResumeShareLinkView.php"
+    ],
+    "file_path": "app/Models/ResumeShareLinkView.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.479284+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T02:01:32.479287+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492475",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only"
+    ],
+    "files": [
+      "database/migrations/2026_08_02_230100_create_resume_share_link_views_table.php"
+    ],
+    "file_path": "database/migrations/2026_08_02_230100_create_resume_share_link_views_table.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.475850+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T02:01:32.475879+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492473",
+    "kind": "decision",
+    "content": "Implemented mockup option 6a: Share modal + public read-only share link feature (ResumeShareLink model, routes, modal UI, public page). Also deleted 2 pre-existing duplicate migrations blocking test suite.",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only"
+    ],
+    "files": [
+      "database/migrations/2026_08_02_230000_create_resume_share_links_table.php",
+      "database/migrations/2026_08_02_230100_create_resume_share_link_views_table.php",
+      "app/Models/ResumeShareLink.php",
+      "app/Models/ResumeShareLinkView.php",
+      "app/Models/Resume.php",
+      "database/factories/ResumeShareLinkFactory.php",
+      "database/factories/ResumeShareLinkViewFactory.php",
+      "app/Http/Requests/UpdateResumeShareLinkRequest.php",
+      "app/Http/Controllers/ResumeShareLinkController.php",
+      "app/Http/Controllers/PublicResumeShareController.php",
+      "app/Http/Controllers/ResumeController.php",
+      "routes/web.php",
+      "tests/Feature/ResumeShareLinkControllerTest.php",
+      "tests/Feature/PublicResumeShareControllerTest.php",
+      "resources/js/types/resume.ts",
+      "resources/js/Components/workstation/share-resume-modal.tsx",
+      "resources/js/Components/workstation/workstation-header.tsx",
+      "resources/js/Pages/Resumes/Workstation.tsx",
+      "resources/js/Pages/Resumes/PublicShare.tsx"
+    ],
+    "file_path": "database/migrations/2026_08_02_230000_create_resume_share_links_table.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.473186+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T02:01:32.473192+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "read"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785722492474",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only"
+    ],
+    "files": [
+      "database/migrations/2026_08_02_230000_create_resume_share_links_table.php"
+    ],
+    "file_path": "database/migrations/2026_08_02_230000_create_resume_share_links_table.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.474656+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T02:01:32.474660+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492477",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "link"
+    ],
+    "files": [
+      "app/Models/ResumeShareLink.php"
+    ],
+    "file_path": "app/Models/ResumeShareLink.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.477240+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:04:35.325388+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492480",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only"
+    ],
+    "files": [
+      "app/Models/Resume.php"
+    ],
+    "file_path": "app/Models/Resume.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.480653+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T02:01:32.480689+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492484",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only"
+    ],
+    "files": [
+      "database/factories/ResumeShareLinkViewFactory.php"
+    ],
+    "file_path": "database/factories/ResumeShareLinkViewFactory.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.484360+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T02:01:32.484364+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492487",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "cancel"
+    ],
+    "files": [
+      "app/Http/Controllers/ResumeShareLinkController.php"
+    ],
+    "file_path": "app/Http/Controllers/ResumeShareLinkController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.487616+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:04:35.328014+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "ResumeShareLinkController destroy route resume-share-links",
+      "share resume modal cancel share request delete share link data"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "ResumeShareLinkController destroy route resume-share-links",
+        "share resume modal cancel share request delete share link data"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492492",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "link"
+    ],
+    "files": [
+      "app/Http/Controllers/ResumeController.php"
+    ],
+    "file_path": "app/Http/Controllers/ResumeController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.492251+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:04:35.329258+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492496",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "cancel"
+    ],
+    "files": [
+      "tests/Feature/ResumeShareLinkControllerTest.php"
+    ],
+    "file_path": "tests/Feature/ResumeShareLinkControllerTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.496729+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:04:35.335871+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "ResumeShareLinkController destroy route resume-share-links",
+      "share resume modal cancel share request delete share link data"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "read",
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "ResumeShareLinkController destroy route resume-share-links",
+        "share resume modal cancel share request delete share link data"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492500",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "link"
+    ],
+    "files": [
+      "resources/js/types/resume.ts"
+    ],
+    "file_path": "resources/js/types/resume.ts",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.500765+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T12:04:35.334901+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722492507",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "implemented",
+      "mockup",
+      "option",
+      "share",
+      "modal",
+      "public",
+      "read",
+      "only",
+      "add",
+      "link"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/PublicShare.tsx"
+    ],
+    "file_path": "resources/js/Pages/Resumes/PublicShare.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:01:32.507848+00:00",
+    "created_epoch": 1785722492,
+    "updated_at": "2026-08-03T13:19:47.111207+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722563174",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: resources/js/Components/workstation/workstation-header.tsx, resources/js/Components/ui/button.tsx, resources/js/types/index.d.ts::ResumeStat",
+    "tags": [],
+    "files": [
+      "app/Support/ResumeExport.php"
+    ],
+    "file_path": "app/Support/ResumeExport.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:02:43.173993+00:00",
+    "created_epoch": 1785722563,
+    "updated_at": "2026-08-03T02:02:47.629901+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 3,
+      "co_visited": [
+        "resources/js/Components/workstation/workstation-header.tsx",
+        "resources/js/Components/ui/button.tsx",
+        "resources/js/types/index.d.ts::ResumeStat"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785722822813",
+    "kind": "decision",
+    "content": "Built the missing resumes.export.pdf Blade view (style-driven, consumes ResumeExport::build() output) fixing PDF download app-wide; un-skipped share-link PDF tests and added ResumeDownloadTest.",
+    "tags": [
+      "built",
+      "missing",
+      "resumes",
+      "export",
+      "pdf",
+      "blade",
+      "view",
+      "style"
+    ],
+    "files": [
+      "resources/views/resumes/export/pdf.blade.php",
+      "tests/Feature/PublicResumeShareControllerTest.php",
+      "tests/Feature/ResumeDownloadTest.php"
+    ],
+    "file_path": "resources/views/resumes/export/pdf.blade.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:07:02.813204+00:00",
+    "created_epoch": 1785722822,
+    "updated_at": "2026-08-03T02:07:02.813207+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785722822815",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "built",
+      "missing",
+      "resumes",
+      "export",
+      "pdf",
+      "blade",
+      "view",
+      "style"
+    ],
+    "files": [
+      "resources/views/resumes/export/pdf.blade.php"
+    ],
+    "file_path": "resources/views/resumes/export/pdf.blade.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:07:02.815394+00:00",
+    "created_epoch": 1785722822,
+    "updated_at": "2026-08-03T02:07:02.815400+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785722822819",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "built",
+      "missing",
+      "resumes",
+      "export",
+      "pdf",
+      "blade",
+      "view",
+      "style"
+    ],
+    "files": [
+      "tests/Feature/ResumeDownloadTest.php"
+    ],
+    "file_path": "tests/Feature/ResumeDownloadTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T02:07:02.819113+00:00",
+    "created_epoch": 1785722822,
+    "updated_at": "2026-08-03T02:07:02.819119+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785757523322",
+    "kind": "decision",
+    "content": "Add cancel-share endpoint/route/button that deletes the ResumeShareLink (cascades to views)",
+    "tags": [
+      "add",
+      "cancel",
+      "share",
+      "endpoint",
+      "route",
+      "button",
+      "deletes",
+      "resumesharelink"
+    ],
+    "files": [
+      "app/Http/Controllers/ResumeShareLinkController.php",
+      "routes/web.php",
+      "resources/js/Components/workstation/share-resume-modal.tsx",
+      "tests/Feature/ResumeShareLinkControllerTest.php"
+    ],
+    "file_path": "app/Http/Controllers/ResumeShareLinkController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T11:45:23.322331+00:00",
+    "created_epoch": 1785757523,
+    "updated_at": "2026-08-03T11:45:23.322336+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "ResumeShareLinkController destroy route resume-share-links",
+      "share resume modal cancel share request delete share link data"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "read",
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "ResumeShareLinkController destroy route resume-share-links",
+        "share resume modal cancel share request delete share link data"
+      ]
+    }
+  },
+  {
+    "id": "mem:1785758675324",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "add",
+      "share",
+      "link",
+      "password",
+      "protection",
+      "expiry",
+      "date",
+      "public"
+    ],
+    "files": [
+      "database/migrations/2026_08_03_120018_add_password_and_expiry_to_resume_share_links_table.php"
+    ],
+    "file_path": "database/migrations/2026_08_03_120018_add_password_and_expiry_to_resume_share_links_table.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T12:04:35.323996+00:00",
+    "created_epoch": 1785758675,
+    "updated_at": "2026-08-03T12:04:35.324000+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785758675322",
+    "kind": "decision",
+    "content": "Add share-link password protection, expiry date, and public DOCX download",
+    "tags": [
+      "add",
+      "share",
+      "link",
+      "password",
+      "protection",
+      "expiry",
+      "date",
+      "public"
+    ],
+    "files": [
+      "database/migrations/2026_08_03_120018_add_password_and_expiry_to_resume_share_links_table.php",
+      "app/Models/ResumeShareLink.php",
+      "app/Http/Requests/UpdateResumeShareLinkRequest.php",
+      "app/Http/Controllers/ResumeShareLinkController.php",
+      "app/Http/Controllers/ResumeController.php",
+      "app/Http/Controllers/PublicResumeShareController.php",
+      "routes/web.php",
+      "resources/js/Components/workstation/share-resume-modal.tsx",
+      "resources/js/Pages/Resumes/PublicShare.tsx",
+      "resources/js/types/resume.ts",
+      "tests/Feature/ResumeShareLinkControllerTest.php",
+      "tests/Feature/PublicResumeShareControllerTest.php"
+    ],
+    "file_path": "database/migrations/2026_08_03_120018_add_password_and_expiry_to_resume_share_links_table.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T12:04:35.322167+00:00",
+    "created_epoch": 1785758675,
+    "updated_at": "2026-08-03T12:04:35.322171+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "read",
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785759806626",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "code",
+      "review",
+      "fixes",
+      "timing",
+      "safe",
+      "password",
+      "check",
+      "rotation",
+      "document",
+      "hash_equals"
+    ],
+    "files": [
+      "CLAUDE.md"
+    ],
+    "file_path": "CLAUDE.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T12:23:26.626454+00:00",
+    "created_epoch": 1785759806,
+    "updated_at": "2026-08-03T12:24:33.313455+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785759806615",
+    "kind": "decision",
+    "content": "Code review fixes: timing-safe password check, password-rotation revokes sessions, expiry date clamp, added security tests",
+    "tags": [
+      "code",
+      "review",
+      "fixes",
+      "timing",
+      "safe",
+      "password",
+      "check",
+      "rotation"
+    ],
+    "files": [
+      "app/Http/Controllers/PublicResumeShareController.php",
+      "resources/js/Components/workstation/share-resume-modal.tsx",
+      "tests/Feature/PublicResumeShareControllerTest.php",
+      "CLAUDE.md"
+    ],
+    "file_path": "app/Http/Controllers/PublicResumeShareController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T12:23:26.615641+00:00",
+    "created_epoch": 1785759806,
+    "updated_at": "2026-08-03T12:23:26.615647+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785759873310",
+    "kind": "decision",
+    "content": "Document hash_equals + password-rotation session-revocation fixes from code review",
+    "tags": [
+      "document",
+      "hash_equals",
+      "password",
+      "rotation",
+      "session",
+      "revocation",
+      "fixes",
+      "from"
+    ],
+    "files": [
+      "CLAUDE.md"
+    ],
+    "file_path": "CLAUDE.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T12:24:33.310984+00:00",
+    "created_epoch": 1785759873,
+    "updated_at": "2026-08-03T12:24:33.310988+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "register_edit"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785762586357",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "reverted",
+      "accent",
+      "from",
+      "blue",
+      "418ec6",
+      "indigo",
+      "violet",
+      "5952d2"
+    ],
+    "files": [
+      "resources/js/Components/resume/score-dial.tsx"
+    ],
+    "file_path": "resources/js/Components/resume/score-dial.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:09:46.357038+00:00",
+    "created_epoch": 1785762586,
+    "updated_at": "2026-08-03T13:09:46.357061+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785762586352",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "reverted",
+      "accent",
+      "from",
+      "blue",
+      "418ec6",
+      "indigo",
+      "violet",
+      "5952d2",
+      "applied",
+      "concept"
+    ],
+    "files": [
+      "tailwind.config.js"
+    ],
+    "file_path": "tailwind.config.js",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:09:46.352870+00:00",
+    "created_epoch": 1785762586,
+    "updated_at": "2026-08-03T13:19:47.093800+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785762586350",
+    "kind": "decision",
+    "content": "Reverted accent from blue #418ec6 to indigo-violet #5952d2 per user reference image (Resumo homepage)",
+    "tags": [
+      "reverted",
+      "accent",
+      "from",
+      "blue",
+      "418ec6",
+      "indigo",
+      "violet",
+      "5952d2"
+    ],
+    "files": [
+      "tailwind.config.js",
+      "resources/js/Components/PrimaryButton.tsx",
+      "resources/js/Components/resume/score-dial.tsx",
+      "resources/js/Pages/Welcome.tsx"
+    ],
+    "file_path": "tailwind.config.js",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:09:46.350274+00:00",
+    "created_epoch": 1785762586,
+    "updated_at": "2026-08-03T13:09:46.350279+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785762586354",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "reverted",
+      "accent",
+      "from",
+      "blue",
+      "418ec6",
+      "indigo",
+      "violet",
+      "5952d2",
+      "applied",
+      "concept"
+    ],
+    "files": [
+      "resources/js/Components/PrimaryButton.tsx"
+    ],
+    "file_path": "resources/js/Components/PrimaryButton.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:09:46.354920+00:00",
+    "created_epoch": 1785762586,
+    "updated_at": "2026-08-03T13:19:47.098805+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785762586359",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "reverted",
+      "accent",
+      "from",
+      "blue",
+      "418ec6",
+      "indigo",
+      "violet",
+      "5952d2"
+    ],
+    "files": [
+      "resources/js/Pages/Welcome.tsx"
+    ],
+    "file_path": "resources/js/Pages/Welcome.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:09:46.359855+00:00",
+    "created_epoch": 1785762586,
+    "updated_at": "2026-08-03T13:09:46.359866+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785763187106",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "applied",
+      "concept",
+      "modern",
+      "productivity",
+      "tokens",
+      "from",
+      "claude",
+      "design"
+    ],
+    "files": [
+      "resources/js/Components/workstation/section-panel.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/section-panel.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:19:47.106354+00:00",
+    "created_epoch": 1785763187,
+    "updated_at": "2026-08-03T13:19:47.106362+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785763187101",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "applied",
+      "concept",
+      "modern",
+      "productivity",
+      "tokens",
+      "from",
+      "claude",
+      "design"
+    ],
+    "files": [
+      "resources/js/Components/ui/card.tsx"
+    ],
+    "file_path": "resources/js/Components/ui/card.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:19:47.101656+00:00",
+    "created_epoch": 1785763187,
+    "updated_at": "2026-08-03T13:19:47.101668+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785763187096",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "applied",
+      "concept",
+      "modern",
+      "productivity",
+      "tokens",
+      "from",
+      "claude",
+      "design"
+    ],
+    "files": [
+      "resources/views/app.blade.php"
+    ],
+    "file_path": "resources/views/app.blade.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:19:47.096119+00:00",
+    "created_epoch": 1785763187,
+    "updated_at": "2026-08-03T13:19:47.096124+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785763187090",
+    "kind": "decision",
+    "content": "Applied Concept B (Modern Productivity) tokens from claude.ai/design review: IBM Plex Sans, exact OKLCH-derived colors, tighter 8px card radius + flatter shadow, bolder button weight",
+    "tags": [
+      "applied",
+      "concept",
+      "modern",
+      "productivity",
+      "tokens",
+      "from",
+      "claude",
+      "design"
+    ],
+    "files": [
+      "tailwind.config.js",
+      "resources/views/app.blade.php",
+      "resources/js/Components/PrimaryButton.tsx",
+      "resources/js/Components/ui/card.tsx",
+      "resources/js/Components/ui/button.tsx",
+      "resources/js/Components/workstation/section-panel.tsx",
+      "resources/js/Pages/Resumes/Compare.tsx",
+      "resources/js/Pages/Resumes/PublicShare.tsx"
+    ],
+    "file_path": "tailwind.config.js",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:19:47.090923+00:00",
+    "created_epoch": 1785763187,
+    "updated_at": "2026-08-03T13:19:47.090929+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785763187104",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "applied",
+      "concept",
+      "modern",
+      "productivity",
+      "tokens",
+      "from",
+      "claude",
+      "design"
+    ],
+    "files": [
+      "resources/js/Components/ui/button.tsx"
+    ],
+    "file_path": "resources/js/Components/ui/button.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:19:47.104027+00:00",
+    "created_epoch": 1785763187,
+    "updated_at": "2026-08-03T13:19:47.104033+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785763187108",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "applied",
+      "concept",
+      "modern",
+      "productivity",
+      "tokens",
+      "from",
+      "claude",
+      "design"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Compare.tsx"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Compare.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:19:47.108538+00:00",
+    "created_epoch": 1785763187,
+    "updated_at": "2026-08-03T13:19:47.108542+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785763588560",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "wrapped",
+      "dashboard",
+      "starter",
+      "profile",
+      "banner",
+      "header",
+      "row",
+      "resume"
+    ],
+    "files": [
+      "resources/js/Pages/Dashboard.tsx"
+    ],
+    "file_path": "resources/js/Pages/Dashboard.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:26:28.560035+00:00",
+    "created_epoch": 1785763588,
+    "updated_at": "2026-08-03T13:26:28.560047+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785763588556",
+    "kind": "decision",
+    "content": "Wrapped Dashboard's starter-profile banner, header row, and resume list in one white Card container",
+    "tags": [
+      "wrapped",
+      "dashboard",
+      "starter",
+      "profile",
+      "banner",
+      "header",
+      "row",
+      "resume"
+    ],
+    "files": [
+      "resources/js/Pages/Dashboard.tsx"
+    ],
+    "file_path": "resources/js/Pages/Dashboard.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-03T13:26:28.557001+00:00",
+    "created_epoch": 1785763588,
+    "updated_at": "2026-08-03T13:26:28.557007+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
   }
 ]

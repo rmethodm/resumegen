@@ -26,7 +26,7 @@ export function ScoreDial({
             style={{
                 width: size,
                 height: size,
-                background: `conic-gradient(#4f46e5 0 ${filled}%, #e5e7eb 0)`,
+                background: `conic-gradient(#5952d2 0 ${filled}%, #e5e7eb 0)`,
             }}
             className={cn(
                 'flex shrink-0 items-center justify-center rounded-full',

@@ -71,9 +71,9 @@ export default function StarterProfilePage({
                         You can edit it anytime.
                     </p>
 
-                    <Card className="overflow-hidden border-indigo-100 bg-indigo-50/40 p-0">
+                    <Card className="overflow-hidden border-brand-subtle bg-brand-subtle/60 p-0">
                         <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:p-6">
-                            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600">
+                            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-brand-subtle text-brand">
                                 <SparklesIcon className="size-5" />
                             </div>
                             <div className="min-w-0">
@@ -86,15 +86,15 @@ export default function StarterProfilePage({
                                 </p>
                                 <div className="mt-4 grid gap-2 text-xs text-gray-500 sm:grid-cols-3">
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-indigo-600" />
+                                        <CheckCircleIcon className="size-3.5 text-brand" />
                                         Pre-filled resumes
                                     </span>
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-indigo-600" />
+                                        <CheckCircleIcon className="size-3.5 text-brand" />
                                         Consistent contact details
                                     </span>
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-indigo-600" />
+                                        <CheckCircleIcon className="size-3.5 text-brand" />
                                         Stronger role targeting
                                     </span>
                                 </div>
@@ -112,7 +112,7 @@ export default function StarterProfilePage({
                             <>
                                 <section className="space-y-3">
                                     <div className="flex items-center gap-2">
-                                        <BriefcaseIcon className="size-4 text-indigo-600" />
+                                        <BriefcaseIcon className="size-4 text-brand" />
                                         <h2 className="text-sm font-bold">
                                             Your professional snapshot
                                         </h2>

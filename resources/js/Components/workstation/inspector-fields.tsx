@@ -35,7 +35,7 @@ function Bar({ w, dark = false }: { w: string; dark?: boolean }) {
         <span
             className={cn(
                 'h-1.5 rounded-full',
-                dark ? 'bg-gray-700/70' : 'bg-indigo-600/30',
+                dark ? 'bg-gray-700/70' : 'bg-brand/30',
             )}
             style={{ width: w }}
         />
@@ -180,7 +180,7 @@ function PartSelect({
             disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
             className={cn(
-                'h-9 rounded-md border border-gray-300 bg-white px-2 text-sm shadow-sm outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50',
+                'h-9 rounded-md border border-gray-300 bg-white px-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-50',
                 className,
             )}
         >

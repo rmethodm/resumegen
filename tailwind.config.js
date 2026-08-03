@@ -15,23 +15,23 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['IBM Plex Sans', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 brand: {
-                    DEFAULT: '#4f46e5',
-                    accent: '#7c3aed',
-                    light: '#4338ca',
-                    subtle: '#eef2ff',
+                    DEFAULT: '#5952d2',
+                    accent: '#3c3695',
+                    light: '#3c3695',
+                    subtle: '#e1e5ff',
                 },
                 surface: {
-                    DEFAULT: '#f5f5fb',
-                    border: '#eeeef5',
+                    DEFAULT: '#f2f6f9',
+                    border: '#d2d8dd',
                 },
                 ink: {
-                    DEFAULT: '#0f0f1a',
-                    muted: '#71717a',
-                    faint: '#a0a0b0',
+                    DEFAULT: '#171b1f',
+                    muted: '#50565a',
+                    faint: '#6d7277',
                 },
             },
         },

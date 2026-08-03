@@ -476,7 +476,7 @@ export function SkillsFields({
                             className={cn(
                                 'flex flex-col justify-between gap-3 rounded-xl border p-2.5 text-left',
                                 resume.skills_layout === layout
-                                    ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600'
+                                    ? 'border-brand bg-brand-subtle ring-1 ring-brand'
                                     : 'border-gray-200 hover:bg-gray-50',
                             )}
                         >
@@ -487,7 +487,7 @@ export function SkillsFields({
                                 className={cn(
                                     'text-[10px] font-bold tracking-[0.06em] uppercase',
                                     resume.skills_layout === layout
-                                        ? 'text-indigo-600'
+                                        ? 'text-brand'
                                         : 'text-gray-500',
                                 )}
                             >
@@ -503,7 +503,7 @@ export function SkillsFields({
                     <button
                         type="button"
                         onClick={() => setPicking(true)}
-                        className="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-500"
+                        className="flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-accent"
                     >
                         <PlusIcon className="size-3.5" />
                         Add skills
