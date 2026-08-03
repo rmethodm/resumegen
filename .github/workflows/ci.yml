@@ -47,6 +47,9 @@ jobs:
 
       - name: Run migrations
         run: php artisan migrate --force
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
 
       - name: Build frontend
         run: npm run build
