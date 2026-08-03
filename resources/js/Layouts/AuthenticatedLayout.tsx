@@ -35,26 +35,27 @@ export default function Authenticated({
 
     return (
         <div className="min-h-screen bg-[#f5f5fb] dark:bg-gray-900">
-            <div className="border-b border-[#eeeef5] bg-white py-2.5 pl-8 pr-4 dark:border-gray-700 dark:bg-gray-800">
+            <div role="search" className="border-b border-surface-border bg-white py-2.5 pl-8 pr-4 dark:border-gray-700 dark:bg-gray-800">
                 <div className="relative max-w-xl">
                     <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     <input
                         ref={searchRef}
                         type="text"
+                        aria-label="Search"
                         placeholder="Search or type command..."
-                        className="w-full rounded-lg border border-[#eeeef5] bg-[#f5f5fb] py-2 pl-9 pr-14 text-sm text-[#0f0f1a] placeholder:text-gray-400 focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
+                        className="w-full rounded-lg border border-surface-border bg-surface py-2 pl-9 pr-14 text-sm text-ink placeholder:text-gray-400 focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
                     />
-                    <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md border border-[#eeeef5] bg-white px-1.5 py-0.5 text-[10px] font-semibold text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">
+                    <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md border border-surface-border bg-white px-1.5 py-0.5 text-[10px] font-semibold text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">
                         ⌘K
                     </span>
                 </div>
             </div>
 
-            <header className="sticky top-0 z-30 border-b border-[#eeeef5] bg-white dark:border-gray-700 dark:bg-gray-800">
+            <header className="sticky top-0 z-30 border-b border-surface-border bg-white dark:border-gray-700 dark:bg-gray-800">
                 <div className="flex h-[52px] items-center gap-6 px-4">
                     <Link href={route('dashboard')} className="flex items-center gap-2.5">
-                        <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-gradient-to-br from-[#4f46e5] to-[#7c3aed]" />
-                        <span className="text-[15px] font-extrabold tracking-tight text-[#0f0f1a] dark:text-white">Resumegen</span>
+                        <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-gradient-to-br from-brand to-brand-accent" />
+                        <span className="text-[15px] font-extrabold tracking-tight text-ink dark:text-white">Resumegen</span>
                     </Link>
 
                     <nav className="hidden items-center gap-1 lg:flex">
@@ -65,8 +66,8 @@ export default function Authenticated({
                                 className={
                                     'rounded-lg px-3 py-1.5 text-sm font-medium transition ' +
                                     (item.active
-                                        ? 'bg-[#eef2ff] text-[#4f46e5] dark:bg-gray-700 dark:text-white'
-                                        : 'text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#0f0f1a] dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white')
+                                        ? 'bg-brand-subtle text-brand dark:bg-gray-700 dark:text-white'
+                                        : 'text-ink-muted hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white')
                                 }
                             >
                                 {item.label}
@@ -86,9 +87,9 @@ export default function Authenticated({
                             <Dropdown.Trigger>
                                 <button
                                     type="button"
-                                    className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-[#71717a] transition hover:text-[#0f0f1a] focus:outline-none dark:text-gray-400 dark:hover:text-white"
+                                    className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-ink-muted transition hover:text-ink focus:outline-none dark:text-gray-400 dark:hover:text-white"
                                 >
-                                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-[#4f46e5] to-[#7c3aed]" />
+                                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-brand to-brand-accent" />
                                     <span className="hidden sm:inline">{user.name}</span>
                                 </button>
                             </Dropdown.Trigger>
@@ -100,7 +101,7 @@ export default function Authenticated({
                             type="button"
                             aria-label="Toggle navigation"
                             onClick={() => setMobileOpen((v) => !v)}
-                            className="rounded-lg p-2 text-gray-500 hover:bg-[#f5f5fb] hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 lg:hidden"
+                            className="rounded-lg p-2 text-gray-500 hover:bg-surface hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 lg:hidden"
                         >
                             {mobileOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
                         </button>
@@ -108,7 +109,7 @@ export default function Authenticated({
                 </div>
 
                 {mobileOpen && (
-                    <nav className="flex flex-col gap-1 border-t border-[#eeeef5] px-2 py-2 dark:border-gray-700 lg:hidden">
+                    <nav className="flex flex-col gap-1 border-t border-surface-border px-2 py-2 dark:border-gray-700 lg:hidden">
                         {nav.map((item) => (
                             <Link
                                 key={item.label}
@@ -116,8 +117,8 @@ export default function Authenticated({
                                 className={
                                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ' +
                                     (item.active
-                                        ? 'bg-[#eef2ff] text-[#4f46e5] dark:bg-gray-700 dark:text-white'
-                                        : 'text-[#71717a] hover:bg-[#f5f5fb] hover:text-[#0f0f1a] dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white')
+                                        ? 'bg-brand-subtle text-brand dark:bg-gray-700 dark:text-white'
+                                        : 'text-ink-muted hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white')
                                 }
                             >
                                 <item.icon className="h-5 w-5 flex-shrink-0" />

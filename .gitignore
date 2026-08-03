@@ -33,6 +33,11 @@ Thumbs.db
 /storage/app/thumbnails
 .dual-graph-context/
 
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # design-sync (regenerated output, machine state)
 .ds-sync/
 ds-bundle/

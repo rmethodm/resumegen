@@ -153,7 +153,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             <button
                                 type="button"
                                 onClick={handleSkip}
-                                className="text-sm text-gray-400 hover:text-gray-600"
+                                className="text-sm text-gray-500 hover:text-gray-700"
                             >
                                 Skip for now
                             </button>
@@ -263,14 +263,14 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="text-sm text-gray-400 hover:text-gray-600"
+                                    className="text-sm text-gray-500 hover:text-gray-700"
                                 >
                                     ← Back
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleSkip}
-                                    className="text-sm text-gray-400 hover:text-gray-600"
+                                    className="text-sm text-gray-500 hover:text-gray-700"
                                 >
                                     Skip for now
                                 </button>
@@ -321,14 +321,14 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 <button
                                     type="button"
                                     onClick={() => setStep(2)}
-                                    className="text-sm text-gray-400 hover:text-gray-600"
+                                    className="text-sm text-gray-500 hover:text-gray-700"
                                 >
                                     ← Back
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleSkip}
-                                    className="text-sm text-gray-400 hover:text-gray-600"
+                                    className="text-sm text-gray-500 hover:text-gray-700"
                                 >
                                     Skip for now
                                 </button>
