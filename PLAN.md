@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** Robustness brainstorm — deferred remaining items
+- **Active:** Robustness brainstorm A/B/C complete
 - **Last updated:** 2026-08-04
-- **Next action:** On request only — resume NOTES.md backlog (A1–4, B7–8, C9–12). Suggested: A1+A3 → C11+C9 → B8 → B7.
+- **Next action:** User-directed; backlog open items cleared.
 
 ---
 

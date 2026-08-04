@@ -8,6 +8,7 @@ import {
 import { ScoreGauge } from '@/Components/resume/score-gauge';
 import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button, buttonClassName } from '@/Components/ui/button';
+import { JdMatchPanel } from '@/Components/workstation/jd-match-panel';
 import {
     keywordsFor,
     missingKeywords,
@@ -195,6 +196,8 @@ export function SectionPanel({
                     hasRoleFamily={hasRoleFamily}
                     onAdd={onAddKeyword}
                 />
+
+                <JdMatchPanel draft={resume} />
 
                 <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
                     Improvements
