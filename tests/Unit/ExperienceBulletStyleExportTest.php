@@ -8,10 +8,9 @@ use PHPUnit\Framework\TestCase;
 use ZipArchive;
 
 /**
- * `bullet_style` is a resume-level setting but only the Experience section
- * honors it (see ExperienceFields in inspector-sections.tsx) — Projects keep
- * a plain bullet regardless, so these tests guard that the setting doesn't
- * leak into the wrong section, not just that it renders at all.
+ * `bullet_style` is a resume-level setting shared by Work Experience and
+ * Projects (one control under ExperienceFields). Both sections must honor it
+ * in ResumeExport / DocxExport.
  */
 class ExperienceBulletStyleExportTest extends TestCase
 {
@@ -48,11 +47,13 @@ class ExperienceBulletStyleExportTest extends TestCase
 
         $view = ResumeExport::build($doc);
         $experience = collect($view['sections'])->firstWhere('title', 'Work Experience');
+        $project = collect($view['sections'])->firstWhere('title', 'Projects');
 
         $this->assertSame('bullet', $experience['bullet_style']);
+        $this->assertSame('bullet', $project['bullet_style']);
     }
 
-    public function test_bullet_style_applies_to_experience_only(): void
+    public function test_bullet_style_applies_to_experience_and_projects(): void
     {
         $view = ResumeExport::build($this->doc('numbered'));
 
@@ -60,17 +61,18 @@ class ExperienceBulletStyleExportTest extends TestCase
         $project = collect($view['sections'])->firstWhere('title', 'Projects');
 
         $this->assertSame('numbered', $experience['bullet_style']);
-        $this->assertSame('bullet', $project['bullet_style']);
+        $this->assertSame('numbered', $project['bullet_style']);
     }
 
-    public function test_docx_numbers_each_experience_bullet_independently(): void
+    public function test_docx_numbers_experience_and_project_bullets(): void
     {
         $xml = $this->docxBody($this->doc('numbered'));
 
         $this->assertStringContainsString('1.  Shipped the thing', $xml);
         $this->assertStringContainsString('2.  Fixed the bug', $xml);
-        // Projects are untouched by the experience setting.
-        $this->assertStringContainsString('•  Built it', $xml);
+        $this->assertStringContainsString('1.  Built it', $xml);
+        $this->assertStringContainsString('2.  Shared it', $xml);
+        $this->assertStringNotContainsString('•  Built it', $xml);
     }
 
     public function test_docx_indented_style_drops_the_bullet_marker(): void
@@ -80,6 +82,7 @@ class ExperienceBulletStyleExportTest extends TestCase
         $this->assertStringContainsString('>Shipped the thing<', $xml);
         $this->assertStringNotContainsString('•  Shipped the thing', $xml);
         $this->assertStringNotContainsString('1.  Shipped the thing', $xml);
+        $this->assertStringNotContainsString('•  Built it', $xml);
     }
 
     /**
@@ -90,10 +93,6 @@ class ExperienceBulletStyleExportTest extends TestCase
      */
     public function test_docx_indented_style_uses_a_plain_indent_not_a_hanging_one(): void
     {
-        // Projects always render with a hanging bullet indent regardless of
-        // the resume's bullet_style (see ResumeExport::entriesSection's
-        // default), so this only asserts the plain indent is present —
-        // hanging indents from the Projects section are expected alongside it.
         $xml = $this->docxBody($this->doc('indented'));
 
         $this->assertStringContainsString('<w:ind w:left="360"/>', $xml);
