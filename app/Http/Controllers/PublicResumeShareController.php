@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ResumeShareLink;
 use App\Support\DocxExport;
+use App\Support\PdfFonts;
 use App\Support\ResumeDocument;
 use App\Support\ResumeExport;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -76,12 +77,12 @@ class PublicResumeShareController extends Controller
 
         $doc = ResumeDocument::toArray($link->resume);
         $filename = ResumeExport::filename($doc);
-
-        $serif = in_array($link->resume->font, ['georgia', 'garamond', 'cambria', 'times'], true);
+        $pdfFont = PdfFonts::resolve($link->resume->font);
 
         return Pdf::loadView('resumes.export.pdf', [
             'view' => ResumeExport::build($doc),
-            'font' => $serif ? 'serif' : 'sans-serif',
+            'fontStack' => $pdfFont['stack'],
+            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
         ])->download("{$filename}.pdf");
     }
 
