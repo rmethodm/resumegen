@@ -69,34 +69,18 @@ export function ContactFields({
 }) {
     return (
         <>
-            {/* Target role first: Keywords band (25 pts) depends on it. */}
-            <div className="flex flex-col gap-3 rounded-xl border-2 border-brand/30 bg-brand-subtle/50 p-3.5 shadow-sm">
+            {/* Target role lives in the sticky bar above the form stack.
+                Contact keeps company + JD notes only to avoid duplicate fields. */}
+            <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3.5">
                 <div>
-                    <p className="text-[11px] font-bold tracking-[0.06em] text-brand uppercase">
-                        Target role
+                    <p className="text-[11px] font-bold tracking-[0.06em] text-gray-500 uppercase">
+                        Version labels
                     </p>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-gray-600">
-                        Scores Keywords against this role. Include a family we
-                        recognize — design, engineer, data, product, or market —
-                        so missing-keyword chips appear in the left rail. Not
-                        printed on the resume.
+                    <p className="mt-0.5 text-[11px] leading-relaxed text-gray-500">
+                        Optional. Target role is edited above this form. Company
+                        and notes are dashboard-only — not printed on the
+                        resume.
                     </p>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                    <Label className="text-xs" htmlFor="field-target-role">
-                        What role are you targeting?
-                    </Label>
-                    <AutocompleteInput
-                        id="field-target-role"
-                        endpoint="job-roles"
-                        value={resume.target_role}
-                        allowCreate={false}
-                        placeholder="e.g. Senior Software Engineer"
-                        className={autocompleteFieldClass}
-                        onChange={(target_role) =>
-                            onChange({ ...resume, target_role })
-                        }
-                    />
                 </div>
                 <Field
                     label="Target company (optional)"
@@ -112,7 +96,7 @@ export function ContactFields({
                     </Label>
                     <Textarea
                         rows={3}
-                        value={resume.target_job_description}
+                        value={resume.target_job_description ?? ''}
                         placeholder="Paste key requirements you are matching…"
                         onChange={(event) =>
                             onChange({
@@ -122,7 +106,7 @@ export function ContactFields({
                         }
                     />
                     <p className="text-[11px] text-gray-500">
-                        {resume.target_job_description.length} / 10000
+                        {(resume.target_job_description ?? '').length} / 10000
                         characters
                     </p>
                 </div>
@@ -196,13 +180,13 @@ export function SummaryFields({
             <Textarea
                 id="field-summary"
                 className="min-h-96"
-                value={resume.summary}
+                value={resume.summary ?? ''}
                 onChange={(event) =>
                     onChange({ ...resume, summary: event.target.value })
                 }
             />
             <p className="text-[11px] text-gray-500">
-                {resume.summary.length} / 2000 characters
+                {(resume.summary ?? '').length} / 2000 characters
             </p>
         </div>
     );
