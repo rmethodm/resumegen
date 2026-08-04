@@ -54,6 +54,10 @@ export default function Workstation({
     const [previewZoom, setPreviewZoom] = useState<PreviewZoom>(1);
     const [draggedSection, setDraggedSection] =
         useState<ResumeSectionKey | null>(null);
+    /** Double-click a section header to collapse/expand its form body. */
+    const [collapsedSections, setCollapsedSections] = useState<
+        ResumeSectionKey[]
+    >([]);
     // Analysis is server-owned; keep a local copy so the rail updates when
     // Inertia merges fresh props after autosave (preserveState keeps draft).
     const [liveAnalysis, setLiveAnalysis] = useState(analysis);
@@ -125,6 +129,12 @@ export default function Workstation({
     // section from the rail just scrolls its heading into view.
     function scrollToSection(target: ResumeSectionKey) {
         setSection(target);
+        // Expand if the user navigated to a collapsed section.
+        setCollapsedSections((current) =>
+            current.includes(target)
+                ? current.filter((key) => key !== target)
+                : current,
+        );
         document
             .getElementById(`section-${target}`)
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -285,6 +295,14 @@ export default function Workstation({
         }
     }
 
+    function toggleSectionCollapsed(sectionKey: ResumeSectionKey) {
+        setCollapsedSections((current) =>
+            current.includes(sectionKey)
+                ? current.filter((key) => key !== sectionKey)
+                : [...current, sectionKey],
+        );
+    }
+
     return (
         <AuthenticatedLayout>
             <Head title={draft.title} />
@@ -363,7 +381,11 @@ export default function Workstation({
                             aria-label="Section form"
                             className="flex min-w-0 flex-col gap-4"
                         >
-                            {draft.section_order.map((sectionKey) => (
+                            {draft.section_order.map((sectionKey) => {
+                                const collapsed =
+                                    collapsedSections.includes(sectionKey);
+
+                                return (
                                 <div
                                     key={sectionKey}
                                     id={`section-${sectionKey}`}
@@ -384,7 +406,26 @@ export default function Workstation({
                                             'opacity-50',
                                     )}
                                 >
-                                    <div className="flex items-center gap-2 border-b border-gray-100 bg-white px-5 py-3">
+                                    <div
+                                        aria-expanded={!collapsed}
+                                        title="Double-click to collapse or expand"
+                                        onDoubleClick={(event) => {
+                                            if (
+                                                (event.target as HTMLElement).closest(
+                                                    'button',
+                                                )
+                                            ) {
+                                                return;
+                                            }
+                                            toggleSectionCollapsed(sectionKey);
+                                        }}
+                                        className={cn(
+                                            'flex cursor-default select-none items-center gap-2 bg-white px-5 py-3',
+                                            collapsed
+                                                ? 'border-b-0'
+                                                : 'border-b border-gray-100',
+                                        )}
+                                    >
                                         <Bars3Icon
                                             className={cn(
                                                 'size-4 shrink-0 text-gray-500',
@@ -396,6 +437,11 @@ export default function Workstation({
                                         <span className="text-[11px] font-bold tracking-[0.15em] text-brand uppercase">
                                             {sectionLabels[sectionKey]}
                                         </span>
+                                        {collapsed && (
+                                            <span className="text-[10px] font-medium tracking-normal text-gray-400 normal-case">
+                                                Collapsed
+                                            </span>
+                                        )}
                                         <div className="ml-auto flex items-center gap-1">
                                             {isOptionalSection(sectionKey) && (
                                                 <Button
@@ -455,17 +501,20 @@ export default function Workstation({
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="p-6">
-                                        <SectionFields
-                                            resume={draft}
-                                            section={sectionKey}
-                                            skillLibrary={skillLibrary}
-                                            contactErrors={errors}
-                                            onChange={setDraft}
-                                        />
-                                    </div>
+                                    {!collapsed && (
+                                        <div className="p-6">
+                                            <SectionFields
+                                                resume={draft}
+                                                section={sectionKey}
+                                                skillLibrary={skillLibrary}
+                                                contactErrors={errors}
+                                                onChange={setDraft}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
-                            ))}
+                                );
+                            })}
                         </main>
                         )}
                     </div>
