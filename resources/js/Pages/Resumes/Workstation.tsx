@@ -323,6 +323,9 @@ export default function Workstation({
                             onTemplateChange={(template) =>
                                 setDraft({ ...draft, template })
                             }
+                            previewName={draft.full_name}
+                            previewHeadline={draft.headline}
+                            pageEstimateDraft={draft}
                             share={share}
                             canUndo={canUndo}
                             canRedo={canRedo}

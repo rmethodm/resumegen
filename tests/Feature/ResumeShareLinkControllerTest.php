@@ -25,6 +25,45 @@ class ResumeShareLinkControllerTest extends TestCase
         $this->assertDatabaseHas('resume_share_links', ['resume_id' => $resume->id]);
     }
 
+    public function test_workstation_share_prop_includes_view_history(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create(['require_email' => true]);
+        $link->views()->create(['email' => 'recruiter@example.com']);
+        $link->views()->create(['email' => 'hiring@company.com']);
+
+        $this->actingAs($user)
+            ->get(route('resumes.workstation', $resume))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Resumes/Workstation')
+                ->where('share.id', $link->id)
+                ->where('share.view_count', 2)
+                ->has('share.views', 2)
+                ->where('share.views', fn ($views) => collect($views)->pluck('email')->sort()->values()->all()
+                    === ['hiring@company.com', 'recruiter@example.com']));
+    }
+
+    public function test_rotating_password_persists_new_value(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create([
+            'require_password' => true,
+            'password' => 'oldpass1',
+        ]);
+
+        $this->actingAs($user)
+            ->patch(route('resume-share-links.update', $link), [
+                'password' => 'newpass2',
+                'require_password' => true,
+            ])
+            ->assertRedirect();
+
+        $this->assertSame('newpass2', $link->fresh()->password);
+    }
+
     public function test_creating_a_share_link_twice_reuses_the_existing_one(): void
     {
         $user = User::factory()->create();

@@ -179,6 +179,15 @@ class ResumeController extends Controller
     {
         abort_unless($resume->user_id === $request->user()->id, 404);
 
+        $resume->load([
+            'shareLink.views' => fn ($query) => $query->latest('id')->limit(50),
+        ]);
+
+        $shareLink = $resume->shareLink;
+        $viewCount = $shareLink !== null
+            ? (int) $shareLink->views()->count()
+            : 0;
+
         return Inertia::render($component, [
             'resume' => ResumeDocument::toArray($resume),
             'analysis' => [
@@ -218,14 +227,21 @@ class ResumeController extends Controller
             ])->all(),
             // Share modal (design doc turn 6, option 6a). Null until Maya
             // opens the modal for the first time and one is generated.
-            'share' => $resume->shareLink ? [
-                'id' => $resume->shareLink->id,
-                'url' => route('share.show', $resume->shareLink->token),
-                'allow_download' => $resume->shareLink->allow_download,
-                'require_email' => $resume->shareLink->require_email,
-                'require_password' => $resume->shareLink->require_password,
-                'password' => $resume->shareLink->password,
-                'expires_at' => $resume->shareLink->expires_at?->toDateString(),
+            'share' => $shareLink ? [
+                'id' => $shareLink->id,
+                'url' => route('share.show', $shareLink->token),
+                'allow_download' => $shareLink->allow_download,
+                'require_email' => $shareLink->require_email,
+                'require_password' => $shareLink->require_password,
+                'password' => $shareLink->password,
+                'expires_at' => $shareLink->expires_at?->toDateString(),
+                'views' => $shareLink->views
+                    ->map(fn ($view): array => [
+                        'email' => $view->email,
+                        'viewed_at' => $view->created_at?->toIso8601String() ?? '',
+                    ])
+                    ->all(),
+                'view_count' => $viewCount,
             ] : null,
         ]);
     }
