@@ -196,6 +196,12 @@ export interface ResumeVersionGroup {
     title: string;
 }
 
+/** One logged visitor email from require-email unlocks. */
+export interface ResumeShareLinkView {
+    email: string;
+    viewed_at: string;
+}
+
 /** The Share modal's backing data (design doc turn 6, option 6a). Null until generated. */
 export interface ResumeShareLink {
     id: number;
@@ -205,6 +211,9 @@ export interface ResumeShareLink {
     require_password: boolean;
     password: string | null;
     expires_at: string | null;
+    /** Recent require-email unlocks (newest first). */
+    views: ResumeShareLinkView[];
+    view_count: number;
 }
 
 export interface StarterProfileExperience {
