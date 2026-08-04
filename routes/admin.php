@@ -18,6 +18,9 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('/users/{user}/verify-email', [UserController::class, 'verifyEmail'])
         ->middleware('throttle:30,1')
         ->name('admin.users.verify-email');
+    Route::post('/users/{user}/resend-verification', [UserController::class, 'resendVerification'])
+        ->middleware('throttle:30,1')
+        ->name('admin.users.resend-verification');
     Route::post('/users/{user}/disable', [UserController::class, 'disable'])
         ->middleware('throttle:30,1')
         ->name('admin.users.disable');

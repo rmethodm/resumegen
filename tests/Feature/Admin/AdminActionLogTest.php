@@ -4,7 +4,9 @@ namespace Tests\Feature\Admin;
 
 use App\Models\AdminActionLog;
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class AdminActionLogTest extends TestCase
@@ -64,5 +66,25 @@ class AdminActionLogTest extends TestCase
             ['verify_email', 'disable', 'enable', 'revoke_tokens'],
             AdminActionLog::query()->where('target_user_id', $user->id)->pluck('action')->all(),
         );
+    }
+
+    public function test_resend_verification_notifies_and_is_logged(): void
+    {
+        Notification::fake();
+
+        $admin = User::factory()->admin()->create();
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($admin)
+            ->post($this->adminUrl('/users/'.$user->id.'/resend-verification'))
+            ->assertRedirect();
+
+        Notification::assertSentTo($user, VerifyEmail::class);
+
+        $this->assertDatabaseHas('admin_action_logs', [
+            'actor_id' => $admin->id,
+            'target_user_id' => $user->id,
+            'action' => 'resend_verification',
+        ]);
     }
 }

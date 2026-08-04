@@ -36,6 +36,8 @@ function actionLabel(action: string): string {
     switch (action) {
         case 'verify_email':
             return 'Verified email';
+        case 'resend_verification':
+            return 'Resent verification email';
         case 'disable':
             return 'Disabled login';
         case 'enable':
@@ -77,13 +79,22 @@ export default function Show({
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {!user.email_verified_at ? (
-                            <button
-                                type="button"
-                                onClick={() => postAction('admin.users.verify-email')}
-                                className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-500"
-                            >
-                                Verify email
-                            </button>
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={() => postAction('admin.users.verify-email')}
+                                    className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-500"
+                                >
+                                    Verify email
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => postAction('admin.users.resend-verification')}
+                                    className="rounded-lg border border-emerald-300 bg-white px-3 py-1.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-50"
+                                >
+                                    Resend verification
+                                </button>
+                            </>
                         ) : null}
                         {user.disabled_at ? (
                             <button

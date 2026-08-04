@@ -82,6 +82,22 @@ class UserController extends Controller
             ->with('success', 'Email marked as verified.');
     }
 
+    public function resendVerification(Request $request, User $user): RedirectResponse
+    {
+        if ($user->hasVerifiedEmail()) {
+            return redirect()
+                ->route('admin.users.show', $user)
+                ->with('success', 'Email is already verified.');
+        }
+
+        $user->sendEmailVerificationNotification();
+        $this->record($request, $user, 'resend_verification');
+
+        return redirect()
+            ->route('admin.users.show', $user)
+            ->with('success', 'Verification email sent.');
+    }
+
     public function disable(Request $request, User $user): RedirectResponse
     {
         abort_if($user->is($request->user()), 403, 'You cannot disable your own account.');
