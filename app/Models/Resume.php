@@ -51,6 +51,7 @@ class Resume extends Model
         'font',
         'density',
         'skills_layout',
+        'bullet_style',
         'section_order',
         'import_state',
         'import_error',

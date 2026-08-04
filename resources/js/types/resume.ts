@@ -101,6 +101,7 @@ export type ResumeFont =
 export type ResumeDensity = 'compact' | 'balanced' | 'spacious';
 export type ResumeSkillsLayout =
     'inline' | 'bullets' | 'grouped' | 'columns' | 'narrative';
+export type ResumeBulletStyle = 'bullet' | 'numbered' | 'indented';
 
 export type Resume = {
     id: number;
@@ -121,6 +122,7 @@ export type Resume = {
     font: ResumeFont;
     density: ResumeDensity;
     skills_layout: ResumeSkillsLayout;
+    bullet_style: ResumeBulletStyle;
     section_order: ResumeSectionKey[];
 
     experiences: ResumeExperience[];
@@ -142,6 +144,10 @@ export type ResumeSuggestion = {
     message: string;
     /** Present only when the fix is a concrete replacement bullet. */
     rewrite: string | null;
+    /** The weak-opening category (e.g. "vague assistance"), null for non-opening advice. */
+    category: string | null;
+    /** Verbs to consider when no automatic rewrite is safe; empty otherwise. */
+    verbs: string[];
 };
 
 export type ResumeAnalysis = {
