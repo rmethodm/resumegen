@@ -21,21 +21,42 @@ use Illuminate\Support\Facades\DB;
 final class ResumeDocument
 {
     /**
-     * The full built-in template catalogue: the original 6 hand-designed
-     * looks, then the 18 converted from the "PDF Resume Templates" design
-     * doc (single/matrix-engine only — see the 2026-07-26 design spec for
-     * why sidebar/band templates were dropped).
+     * Selectable resume themes. Four archetypes only — keeps PDF/export QA
+     * tractable. Retired keys still resolve via {@see resolveTemplate()}.
      *
      * @var list<string>
      */
     public const TEMPLATES = [
-        'minimal', 'modern', 'classic', 'executive', 'ats', 'skills-first',
-        'reverse-chronological', 'ats-plain', 'minimalist', 'engineering',
-        'ivy-serif', 'clinical', 'career-change', 'entry-level',
-        'metric-cards', 'sales-quota-table', 'federal', 'academic-cv',
-        'accent-rule', 'consulting-ledger', 'education', 'startup-one-pager',
-        'it-competency-matrix', 'centered-traditional',
+        'ats-plain',
+        'classic',
+        'modern',
+        'minimalist',
     ];
+
+    /**
+     * Map a stored (possibly retired) template key to a live theme.
+     * Unknown / empty values fall back to ats-plain.
+     */
+    public static function resolveTemplate(?string $template): string
+    {
+        $key = is_string($template) ? trim($template) : '';
+
+        if ($key !== '' && in_array($key, self::TEMPLATES, true)) {
+            return $key;
+        }
+
+        return match ($key) {
+            'ats', 'federal' => 'ats-plain',
+            'ivy-serif', 'centered-traditional', 'academic-cv',
+            'consulting-ledger', 'reverse-chronological', 'sales-quota-table',
+            'executive' => 'classic',
+            'entry-level', 'metric-cards', 'accent-rule', 'career-change',
+            'startup-one-pager', 'clinical', 'education', 'skills-first',
+            'engineering', 'it-competency-matrix' => 'modern',
+            'minimal', 'minimal-ruled', 'bold' => 'minimalist',
+            default => 'ats-plain',
+        };
+    }
 
     /**
      * Selectable body fonts. Kept in sync with the `fontFamily` map in
@@ -76,7 +97,7 @@ final class ResumeDocument
             'website' => $resume->website,
             'summary' => $resume->summary,
 
-            'template' => $resume->template,
+            'template' => self::resolveTemplate($resume->template),
             'font' => $resume->font,
             'density' => $resume->density,
             'skills_layout' => $resume->skills_layout,
@@ -151,7 +172,11 @@ final class ResumeDocument
                 'linkedin' => $data['linkedin'] ?? '',
                 'website' => $data['website'] ?? '',
                 'summary' => $data['summary'] ?? '',
-                'template' => $data['template'] ?? 'minimal',
+                'template' => self::resolveTemplate(
+                    isset($data['template']) && is_string($data['template'])
+                        ? $data['template']
+                        : null,
+                ),
                 'font' => $data['font'] ?? 'sans',
                 'density' => $data['density'] ?? 'balanced',
                 'skills_layout' => $data['skills_layout'] ?? 'inline',

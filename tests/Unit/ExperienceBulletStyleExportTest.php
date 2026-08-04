@@ -28,7 +28,7 @@ class ExperienceBulletStyleExportTest extends TestCase
             'location' => '',
             'linkedin' => '',
             'website' => '',
-            'template' => 'minimal',
+            'template' => 'ats-plain',
             'bullet_style' => $bulletStyle,
             'section_order' => ['experience', 'project'],
             'experiences' => [

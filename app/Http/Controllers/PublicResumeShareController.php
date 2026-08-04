@@ -78,12 +78,13 @@ class PublicResumeShareController extends Controller
         $doc = ResumeDocument::toArray($link->resume);
         $filename = ResumeExport::filename($doc);
         $pdfFont = PdfFonts::resolve($link->resume->font);
+        PdfFonts::ensureInstalled($pdfFont);
 
         return Pdf::loadView('resumes.export.pdf', [
             'view' => ResumeExport::build($doc),
             'fontStack' => $pdfFont['stack'],
             'fontFaceCss' => PdfFonts::faceCss($pdfFont),
-        ])->download("{$filename}.pdf");
+        ])->setPaper('letter')->download("{$filename}.pdf");
     }
 
     public function docx(Request $request, string $token): HttpResponse

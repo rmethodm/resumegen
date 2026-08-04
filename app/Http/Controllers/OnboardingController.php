@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\UserLimits;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,7 +34,7 @@ class OnboardingController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'linkedin_url' => ['nullable', 'url', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
-            'preferred_template' => ['nullable', 'string', 'in:classic,modern,minimal,minimal-ruled,executive,ats,skills-first,academic,bold'],
+            'preferred_template' => ['nullable', 'string', Rule::in(UserLimits::allTemplates())],
         ]);
 
         $user = $request->user();
