@@ -80,8 +80,11 @@ export function ContactFields({
                     </p>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                    <Label className="text-xs">Target role</Label>
+                    <Label className="text-xs" htmlFor="field-target-role">
+                        Target role
+                    </Label>
                     <AutocompleteInput
+                        id="field-target-role"
                         endpoint="job-roles"
                         value={resume.target_role}
                         allowCreate={false}
@@ -182,8 +185,11 @@ export function SummaryFields({
 }) {
     return (
         <div className="flex flex-col gap-1.5">
-            <Label className="text-xs">Summary</Label>
+            <Label className="text-xs" htmlFor="field-summary">
+                Summary
+            </Label>
             <Textarea
+                id="field-summary"
                 className="min-h-96"
                 value={resume.summary}
                 onChange={(event) =>
@@ -604,7 +610,7 @@ export function SkillsFields({
                     ))}
                 </div>
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div id="field-skills" tabIndex={-1} className="flex flex-col gap-1.5 outline-none">
                 <div className="flex items-center justify-between">
                     <Label className="text-xs">Skills</Label>
                     <button

@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { ArrowDownIcon, ArrowUpIcon, Bars3Icon } from '@heroicons/react/24/outline';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SectionFields } from '@/Components/workstation/inspector';
 import { ResumePreview } from '@/Components/resume/resume-preview';
@@ -12,6 +12,7 @@ import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useValidContact } from '@/hooks/use-valid-contact';
+import { analyzeResume } from '@/lib/resume-analysis';
 import {
     insertSectionInOrder,
     isOptionalSection,
@@ -20,7 +21,6 @@ import {
 import { cn } from '@/lib/utils';
 import type {
     Resume,
-    ResumeAnalysis,
     ResumeDraft,
     ResumeSectionKey,
     ResumeShareLink,
@@ -28,14 +28,22 @@ import type {
     SkillLibraryGroup,
 } from '@/types';
 
+function focusAndFlash(element: HTMLElement): void {
+    element.focus();
+    element.classList.add('ring-2', 'ring-brand', 'ring-offset-1');
+    window.setTimeout(() => {
+        element.classList.remove('ring-2', 'ring-brand', 'ring-offset-1');
+    }, 1500);
+}
+
 export default function Workstation({
     resume,
-    analysis,
     skillLibrary,
     share,
 }: {
     resume: Resume;
-    analysis: ResumeAnalysis;
+    /** Server analysis kept on the page for Inertia parity; score UI uses live draft. */
+    analysis?: unknown;
     skillLibrary: SkillLibraryGroup[];
     share: ResumeShareLink | null;
 }) {
@@ -58,13 +66,8 @@ export default function Workstation({
     const [collapsedSections, setCollapsedSections] = useState<
         ResumeSectionKey[]
     >([]);
-    // Analysis is server-owned; keep a local copy so the rail updates when
-    // Inertia merges fresh props after autosave (preserveState keeps draft).
-    const [liveAnalysis, setLiveAnalysis] = useState(analysis);
-
-    useEffect(() => {
-        setLiveAnalysis(analysis);
-    }, [analysis]);
+    // Live score from the draft (B7) — same rules as PHP ResumeAnalysis.
+    const liveAnalysis = useMemo(() => analyzeResume(draft), [draft]);
 
     // A badly formatted contact field is held back from the payload rather
     // than failing the whole save — see use-valid-contact.ts.
@@ -73,7 +76,6 @@ export default function Workstation({
         resume.email,
         resume.phone,
     );
-    // PUT back() already returns updated analysis; prop effect above syncs it.
     const saveStatus = useAutosave(route('resumes.update', id), payload);
 
     // The hook reports 'saved' from the moment it mounts, before anything
@@ -140,8 +142,6 @@ export default function Workstation({
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    const tipsStale = saveStatus === 'dirty' || saveStatus === 'saving';
-
     function applySuggestion(suggestion: ResumeSuggestion) {
         if (
             suggestion.experience === null ||
@@ -170,6 +170,9 @@ export default function Workstation({
                 };
             }),
         });
+
+        // Jump after apply so the user sees the updated bullet.
+        selectSuggestion(suggestion);
     }
 
     function selectSuggestion(suggestion: ResumeSuggestion) {
@@ -182,34 +185,44 @@ export default function Workstation({
                     `experience-bullet-${suggestion.experience}-${suggestion.bullet}`,
                 );
 
-                if (!(element instanceof HTMLElement)) {
-                    return;
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
                 }
-
-                element.focus();
-                element.classList.add('ring-2', 'ring-brand', 'ring-offset-1');
-                window.setTimeout(() => {
-                    element.classList.remove(
-                        'ring-2',
-                        'ring-brand',
-                        'ring-offset-1',
-                    );
-                }, 1500);
             }, 300);
 
             return;
         }
 
         const message = suggestion.message.toLowerCase();
+        let targetSection: ResumeSectionKey = 'experience';
+        let fieldId: string | null = null;
 
         if (message.includes('skill')) {
-            scrollToSection('skills');
+            targetSection = 'skills';
+            fieldId = 'field-skills';
         } else if (message.includes('summary')) {
-            scrollToSection('summary');
+            targetSection = 'summary';
+            fieldId = 'field-summary';
         } else if (message.includes('role') || message.includes('missing')) {
-            scrollToSection('contact');
-        } else {
-            scrollToSection('experience');
+            targetSection = 'contact';
+            fieldId = 'field-target-role';
+        } else if (suggestion.band === 'Profile') {
+            targetSection = 'contact';
+        } else if (suggestion.band === 'Keywords') {
+            targetSection = 'skills';
+            fieldId = 'field-skills';
+        }
+
+        scrollToSection(targetSection);
+
+        if (fieldId) {
+            window.setTimeout(() => {
+                const element = document.getElementById(fieldId);
+
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
+                }
+            }, 300);
         }
     }
 
@@ -316,7 +329,6 @@ export default function Workstation({
                         selected={section}
                         onSelect={scrollToSection}
                         onAddSection={addSection}
-                        stale={tipsStale}
                         onApplySuggestion={applySuggestion}
                         onSelectSuggestion={selectSuggestion}
                     />
