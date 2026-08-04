@@ -97,7 +97,6 @@ export function SectionPanel({
     selected,
     onSelect,
     onAddSection,
-    stale,
     onApplySuggestion,
     onSelectSuggestion,
     className,
@@ -108,7 +107,6 @@ export function SectionPanel({
     selected: ResumeSectionKey;
     onSelect: (section: ResumeSectionKey) => void;
     onAddSection: (section: ResumeSectionKey) => void;
-    stale: boolean;
     onApplySuggestion: (suggestion: ResumeSuggestion) => void;
     onSelectSuggestion: (suggestion: ResumeSuggestion) => void;
     className?: string;
@@ -135,6 +133,9 @@ export function SectionPanel({
                     <p className="mb-2 text-sm font-medium text-gray-500">
                         Your resume score
                     </p>
+                    <p className="mb-2 text-[10px] text-gray-400">
+                        Updates as you edit
+                    </p>
                     <ScoreGauge score={analysis.score} className="mx-auto" />
                 </div>
 
@@ -148,11 +149,14 @@ export function SectionPanel({
                                     <span>{band.label}</span>
                                     <span className="tabular-nums">
                                         {band.score}
+                                        <span className="font-normal text-gray-400">
+                                            /25
+                                        </span>
                                     </span>
                                 </div>
                                 <div className="h-1.5 rounded-full bg-gray-100">
                                     <div
-                                        className="h-full rounded-full bg-brand"
+                                        className="h-full rounded-full bg-brand transition-[width] duration-200"
                                         style={{
                                             width: `${(band.score / 25) * 100}%`,
                                         }}
@@ -166,14 +170,8 @@ export function SectionPanel({
                 <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
                     Improvements
                 </p>
-                {stale && (
-                    <p className="mb-2 px-1 text-[10px] leading-snug text-gray-500">
-                        Tips reflect last saved version
-                    </p>
-                )}
                 <SuggestionList
                     suggestions={analysis.suggestions}
-                    stale={stale}
                     onApply={onApplySuggestion}
                     onSelect={onSelectSuggestion}
                 />

@@ -152,6 +152,11 @@ export type ResumeSuggestion = {
     category: string | null;
     /** Verbs to consider when no automatic rewrite is safe; empty otherwise. */
     verbs: string[];
+    /**
+     * Score band this tip improves. Client live analysis always sets it;
+     * server payloads may omit it until PHP is updated.
+     */
+    band?: 'Profile' | 'Experience' | 'Impact' | 'Keywords';
 };
 
 export type ResumeAnalysis = {

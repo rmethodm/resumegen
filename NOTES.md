@@ -42,9 +42,9 @@ whatever a session might need to look up. Organize by topic/feature.
 
 Saved for later — do not auto-start. Pick a cluster or item numbers when resuming.
 
-**Shipped this stretch:** B5–B6 (quality MVP), D13–17 (authoring), E18–20 (share; E20 = light branding only), F21–23 (PDF fonts, template thumbs, page hints).
+**Shipped this stretch:** B5–B6 (quality MVP), D13–17 (authoring), E18–20 (share; E20 = light branding only), F21–23 (PDF fonts, template thumbs, page hints), **B7** (live draft re-score + Apply/Jump tips, 2026-08-04).
 
-**Still open (12 items):**
+**Still open (11 items):**
 
 ### A — Edit ↔ output loop
 1. Split / sticky live preview while editing (desktop), not only Review
@@ -53,7 +53,6 @@ Saved for later — do not auto-start. Pick a cluster or item numbers when resum
 4. Plain-text / ATS paste view
 
 ### B — Quality tools (leftovers)
-7. Live re-score on draft while editing
 8. Deterministic JD keyword overlap (paste JD → missing terms; no AI)
 
 ### C — Versioning & safety
@@ -62,6 +61,6 @@ Saved for later — do not auto-start. Pick a cluster or item numbers when resum
 11. Conflict / offline awareness (stale tab, failed-autosave banner + retry)
 12. Wire notes UI (model exists; no canvas UI)
 
-**Suggested order when resuming:** A1+A3 → C11+C9 → B8 → B7
+**Suggested order when resuming:** A1+A3 → C11+C9 → B8
 
 **Constraints (still apply):** no AI, no billing; surgical Laravel/Inertia/React changes.
