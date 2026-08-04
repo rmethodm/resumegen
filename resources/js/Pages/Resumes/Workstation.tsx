@@ -256,9 +256,6 @@ export default function Workstation({
                 ),
             };
         });
-        setTab('Edit');
-        // Scroll after the section mounts.
-        window.setTimeout(() => scrollToSection(sectionKey), 50);
     }
 
     /** Hide an optional section from the document; entry data is kept. */
