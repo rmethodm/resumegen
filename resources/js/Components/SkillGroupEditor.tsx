@@ -76,6 +76,7 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                         onChange={(items) => updateItems(idx, items)}
                         onBlur={onBlur}
                         placeholder="Add skill…"
+                        autocompleteEndpoint="job-skills"
                     />
                 </div>
             ))}
@@ -101,6 +102,7 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                         tags={[]}
                         onChange={(items) => promoteDraft(draft.id, items)}
                         placeholder="Add skill…"
+                        autocompleteEndpoint="job-skills"
                     />
                 </div>
             ))}

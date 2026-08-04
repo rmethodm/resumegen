@@ -1,16 +1,41 @@
 import { useEffect, useRef, useState } from 'react';
 
-type Suggestion = { id: number; title: string };
+type Endpoint = 'job-roles' | 'job-titles' | 'job-skills';
+
+type Suggestion = { id: number; label: string };
 
 type Props = {
-    endpoint: 'job-roles' | 'job-titles';
+    endpoint: Endpoint;
     value: string;
     onChange: (value: string) => void;
     placeholder?: string;
     className?: string;
     name?: string;
     id?: string;
+    /**
+     * When true (default), blurring with an unknown value POSTs it into the
+     * taxonomy. Workstation fields set this false so typos don't pollute the
+     * catalogue — onboarding keeps the default.
+     */
+    allowCreate?: boolean;
 };
+
+/** JSON keys differ: roles/titles use `title`, skills use `name`. */
+function labelFromRaw(raw: Record<string, unknown>): string {
+    if (typeof raw.title === 'string') {
+        return raw.title;
+    }
+
+    if (typeof raw.name === 'string') {
+        return raw.name;
+    }
+
+    return '';
+}
+
+function bodyKey(endpoint: Endpoint): 'title' | 'name' {
+    return endpoint === 'job-skills' ? 'name' : 'title';
+}
 
 export default function AutocompleteInput({
     endpoint,
@@ -20,6 +45,7 @@ export default function AutocompleteInput({
     className,
     name,
     id,
+    allowCreate = true,
 }: Props) {
     const [query, setQuery] = useState(value);
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -48,9 +74,15 @@ export default function AutocompleteInput({
                     { headers: { 'X-Requested-With': 'XMLHttpRequest' } },
                 );
                 if (!res.ok) return;
-                const data: Suggestion[] = await res.json();
-                setSuggestions(data);
-                setOpen(data.length > 0);
+                const data: Record<string, unknown>[] = await res.json();
+                const mapped = data
+                    .map((row) => ({
+                        id: Number(row.id),
+                        label: labelFromRaw(row),
+                    }))
+                    .filter((row) => row.label !== '');
+                setSuggestions(mapped);
+                setOpen(mapped.length > 0);
                 setActiveIndex(-1);
             } catch {
                 // silently ignore network errors
@@ -70,9 +102,9 @@ export default function AutocompleteInput({
         return () => document.removeEventListener('mousedown', handler);
     }, []);
 
-    const select = (title: string) => {
-        setQuery(title);
-        onChange(title);
+    const select = (label: string) => {
+        setQuery(label);
+        onChange(label);
         setOpen(false);
         setSuggestions([]);
     };
@@ -83,15 +115,20 @@ export default function AutocompleteInput({
 
         // Normalize to stored Proper Case if exact match exists
         const match = suggestions.find(
-            s => s.title.toLowerCase() === query.toLowerCase(),
+            (s) => s.label.toLowerCase() === query.toLowerCase(),
         );
         if (match) {
-            select(match.title);
+            select(match.label);
             return;
         }
 
-        // Auto-save unknown value
+        if (!allowCreate) {
+            return;
+        }
+
+        // Auto-save unknown value into the taxonomy
         try {
+            const key = bodyKey(endpoint);
             const res = await fetch(`/autocomplete/${endpoint}`, {
                 method: 'POST',
                 headers: {
@@ -101,11 +138,14 @@ export default function AutocompleteInput({
                             ?.content ?? '',
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify({ title: query }),
+                body: JSON.stringify({ [key]: query }),
             });
             if (res.ok) {
-                const { title } = (await res.json()) as { title: string };
-                select(title);
+                const raw = (await res.json()) as Record<string, unknown>;
+                const label = labelFromRaw(raw);
+                if (label) {
+                    select(label);
+                }
             }
         } catch {
             // fail silently — user keeps their typed value
@@ -116,13 +156,13 @@ export default function AutocompleteInput({
         if (!open || suggestions.length === 0) return;
         if (e.key === 'ArrowDown') {
             e.preventDefault();
-            setActiveIndex(i => Math.min(i + 1, suggestions.length - 1));
+            setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
-            setActiveIndex(i => Math.max(i - 1, -1));
+            setActiveIndex((i) => Math.max(i - 1, -1));
         } else if (e.key === 'Enter' && activeIndex >= 0) {
             e.preventDefault();
-            select(suggestions[activeIndex].title);
+            select(suggestions[activeIndex].label);
         } else if (e.key === 'Escape') {
             setOpen(false);
         }
@@ -138,7 +178,7 @@ export default function AutocompleteInput({
                 placeholder={placeholder}
                 className={className}
                 autoComplete="off"
-                onChange={e => {
+                onChange={(e) => {
                     setQuery(e.target.value);
                     onChange(e.target.value);
                 }}
@@ -150,14 +190,14 @@ export default function AutocompleteInput({
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
-                            onMouseDown={() => select(s.title)}
+                            onMouseDown={() => select(s.label)}
                             className={`px-3 py-2 text-sm cursor-pointer ${
                                 i === activeIndex
                                     ? 'bg-[#eef2ff] text-[#4f46e5]'
                                     : 'text-[#23232d] hover:bg-[#f5f5fb]'
                             }`}
                         >
-                            {s.title}
+                            {s.label}
                         </li>
                     ))}
                 </ul>

@@ -398,10 +398,24 @@ export function AddButton({
     );
 }
 
+/** Strip list markers people paste from Word/Docs/Markdown. */
+function cleanBulletLine(line: string): string {
+    return line.replace(/^\s*(?:[•\-*]|\d+[.)])\s*/, '').trimEnd();
+}
+
+/** Split clipboard / bulk text into one bullet per non-empty line. */
+export function splitBulletLines(text: string): string[] {
+    return text
+        .split(/\r?\n/)
+        .map(cleanBulletLine)
+        .filter((line) => line.trim() !== '');
+}
+
 /**
  * One row per bullet, reorderable by dragging the grip. The leading "• " some
- * people type is stripped so it doesn't get stored twice, and pasting several
- * lines at once splits into one bullet per line.
+ * people type is stripped so it doesn't get stored twice. Pasting several
+ * lines (or using “Paste many”) splits into one bullet per line — single-line
+ * inputs drop newlines on paste unless we intercept.
  */
 export function BulletsField({
     label,
@@ -417,11 +431,16 @@ export function BulletsField({
 }) {
     // ponytail: native HTML5 drag, no dnd library. Swap in one if touch matters.
     const [dragging, setDragging] = useState<number | null>(null);
+    const [bulkOpen, setBulkOpen] = useState(false);
+    const [bulkText, setBulkText] = useState('');
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
     // A pending focus target, not rendered state — a ref so applying it clears
     // it without a setState-in-effect. Keyed on `value` below: focus follows the
     // re-render that onChange triggers.
     const pendingFocus = useRef<number | null>(null);
+
+    // Empty list still shows one editable row so paste/type work immediately.
+    const rows = value.length === 0 ? [''] : value;
 
     /** Enter and Backspace shift which row exists, so focus follows the re-render. */
     useEffect(() => {
@@ -439,30 +458,120 @@ export function BulletsField({
         input?.setSelectionRange(input.value.length, input.value.length);
     }, [value]);
 
+    function commit(next: string[]) {
+        // Drop a sole empty row so "no bullets" stays an empty array on save.
+        if (next.length === 1 && next[0] === '') {
+            onChange([]);
+
+            return;
+        }
+
+        onChange(next);
+    }
+
     function replace(index: number, lines: string[]) {
-        onChange(value.flatMap((line, at) => (at === index ? lines : [line])));
+        const base = value.length === 0 ? [''] : value;
+        commit(base.flatMap((line, at) => (at === index ? lines : [line])));
     }
 
     function insertAfter(index: number) {
-        onChange(
-            value.flatMap((line, at) => (at === index ? [line, ''] : [line])),
+        const base = value.length === 0 ? [''] : value;
+        commit(
+            base.flatMap((line, at) => (at === index ? [line, ''] : [line])),
         );
         pendingFocus.current = index + 1;
     }
 
     function removeAt(index: number, focus: number | null = null) {
-        onChange(value.filter((_, at) => at !== index));
+        const base = value.length === 0 ? [''] : value;
+        commit(base.filter((_, at) => at !== index));
         pendingFocus.current = focus;
     }
 
     function move(from: number, to: number) {
-        onChange(reorder(value, from, to));
+        const base = value.length === 0 ? [''] : value;
+        commit(reorder(base, from, to));
+    }
+
+    function pasteAt(index: number, text: string) {
+        const lines = splitBulletLines(text);
+
+        if (lines.length === 0) {
+            return false;
+        }
+
+        const base = value.length === 0 ? [''] : [...value];
+        const current = base[index] ?? '';
+        // Multi-line paste replaces the focused row; a single line merges as
+        // normal text insertion (caller falls through when we return false).
+        if (lines.length === 1 && !text.includes('\n')) {
+            return false;
+        }
+
+        if (current.trim() === '') {
+            base.splice(index, 1, ...lines);
+        } else {
+            base.splice(index + 1, 0, ...lines);
+        }
+
+        commit(base);
+        pendingFocus.current = index + lines.length - (current.trim() === '' ? 1 : 0);
+
+        return true;
+    }
+
+    function applyBulk() {
+        const lines = splitBulletLines(bulkText);
+
+        if (lines.length === 0) {
+            setBulkOpen(false);
+            setBulkText('');
+
+            return;
+        }
+
+        const kept = value.filter((line) => line.trim() !== '');
+        commit([...kept, ...lines]);
+        setBulkOpen(false);
+        setBulkText('');
+        pendingFocus.current = kept.length + lines.length - 1;
     }
 
     return (
         <div className="flex flex-col gap-1.5">
-            <Label className="text-xs">{label}</Label>
-            {value.map((bullet, index) => (
+            <div className="flex items-center justify-between gap-2">
+                <Label className="text-xs">{label}</Label>
+                <button
+                    type="button"
+                    className="text-[11px] font-semibold text-brand hover:text-brand-accent"
+                    onClick={() => setBulkOpen((open) => !open)}
+                >
+                    {bulkOpen ? 'Cancel paste' : 'Paste many'}
+                </button>
+            </div>
+            {bulkOpen && (
+                <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2.5">
+                    <textarea
+                        value={bulkText}
+                        onChange={(event) => setBulkText(event.target.value)}
+                        rows={4}
+                        placeholder={
+                            'Paste bullets — one per line\n• Shipped feature X\n- Reduced costs by 20%'
+                        }
+                        className="w-full resize-y rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30"
+                    />
+                    <Button
+                        type="button"
+                        size="sm"
+                        className="self-end"
+                        onClick={applyBulk}
+                        disabled={splitBulletLines(bulkText).length === 0}
+                    >
+                        Add {splitBulletLines(bulkText).length || ''} bullets
+                    </Button>
+                </div>
+            )}
+            {rows.map((bullet, index) => (
                 <div
                     key={index}
                     className="flex items-center gap-1"
@@ -495,19 +604,39 @@ export function BulletsField({
                         }
                         value={bullet}
                         onChange={(event) =>
-                            replace(
-                                index,
-                                event.target.value
-                                    .split('\n')
-                                    .map((line) =>
-                                        line.replace(/^\s*[•\-*]\s*/, ''),
-                                    ),
-                            )
+                            replace(index, [
+                                cleanBulletLine(event.target.value),
+                            ])
                         }
+                        onPaste={(event) => {
+                            const text = event.clipboardData.getData('text');
+
+                            if (pasteAt(index, text)) {
+                                event.preventDefault();
+                            }
+                        }}
                         onKeyDown={(event) => {
                             if (event.key === 'Enter') {
                                 event.preventDefault();
                                 insertAfter(index);
+                            }
+
+                            // Alt+↑/↓ reorders without leaving the keyboard.
+                            if (
+                                event.altKey &&
+                                (event.key === 'ArrowUp' ||
+                                    event.key === 'ArrowDown')
+                            ) {
+                                event.preventDefault();
+                                const to =
+                                    event.key === 'ArrowUp'
+                                        ? index - 1
+                                        : index + 1;
+
+                                if (to >= 0 && to < rows.length) {
+                                    move(index, to);
+                                    pendingFocus.current = to;
+                                }
                             }
 
                             // Backspace in an empty row deletes it, landing the
@@ -515,7 +644,7 @@ export function BulletsField({
                             if (
                                 event.key === 'Backspace' &&
                                 bullet === '' &&
-                                value.length > 1
+                                rows.length > 1
                             ) {
                                 event.preventDefault();
                                 removeAt(index, Math.max(0, index - 1));
@@ -537,7 +666,7 @@ export function BulletsField({
                 variant="link"
                 size="sm"
                 className="h-auto self-start p-0 text-xs"
-                onClick={() => onChange([...value, ''])}
+                onClick={() => commit([...value, ''])}
             >
                 + Add bullet
             </Button>

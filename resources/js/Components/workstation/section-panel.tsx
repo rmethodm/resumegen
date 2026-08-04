@@ -1,9 +1,14 @@
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Link } from '@inertiajs/react';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
 import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button, buttonClassName } from '@/Components/ui/button';
-import { sectionLabels, sectionStatus } from '@/lib/resume-sections';
+import {
+    missingOptionalSections,
+    sectionLabels,
+    sectionStatus,
+} from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
 import type {
     ResumeAnalysis,
@@ -92,6 +97,7 @@ export function SectionPanel({
     analysis,
     selected,
     onSelect,
+    onAddSection,
     stale,
     onApplySuggestion,
     onSelectSuggestion,
@@ -102,11 +108,14 @@ export function SectionPanel({
     analysis: ResumeAnalysis;
     selected: ResumeSectionKey;
     onSelect: (section: ResumeSectionKey) => void;
+    onAddSection: (section: ResumeSectionKey) => void;
     stale: boolean;
     onApplySuggestion: (suggestion: ResumeSuggestion) => void;
     onSelectSuggestion: (suggestion: ResumeSuggestion) => void;
     className?: string;
 }) {
+    const addable = missingOptionalSections(resume.section_order);
+
     return (
         <aside
             className={cn(
@@ -195,18 +204,49 @@ export function SectionPanel({
                         </li>
                     ))}
                 </ul>
-                {/* ponytail: every section the model supports is already
-                    listed above, so there is nothing left to add. Wire this
-                    up if optional/custom section types are introduced. */}
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-2 w-full"
-                    disabled
-                    title="All available sections are already on this resume."
-                >
-                    + Add section
-                </Button>
+                {addable.length === 0 ? (
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 w-full"
+                        disabled
+                        title="All available sections are already on this resume."
+                    >
+                        + Add section
+                    </Button>
+                ) : (
+                    <Menu as="div" className="relative mt-2">
+                        <MenuButton
+                            className={buttonClassName(
+                                'outline',
+                                'sm',
+                                'w-full',
+                            )}
+                        >
+                            + Add section
+                        </MenuButton>
+                        <MenuItems className="absolute z-20 mt-1 w-full rounded-md border border-gray-200 bg-white py-1 shadow-lg focus:outline-none">
+                            {addable.map((section) => (
+                                <MenuItem key={section}>
+                                    {({ focus }) => (
+                                        <button
+                                            type="button"
+                                            onClick={() => onAddSection(section)}
+                                            className={cn(
+                                                'block w-full px-3 py-2 text-left text-sm',
+                                                focus
+                                                    ? 'bg-brand-subtle text-brand'
+                                                    : 'text-gray-900',
+                                            )}
+                                        >
+                                            {sectionLabels[section]}
+                                        </button>
+                                    )}
+                                </MenuItem>
+                            ))}
+                        </MenuItems>
+                    </Menu>
+                )}
             </div>
         </aside>
     );

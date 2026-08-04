@@ -63,7 +63,9 @@ final class ResumeDocument
         return [
             'id' => $resume->id,
             'title' => $resume->title,
-            'target_role' => $resume->target_role,
+            'target_role' => $resume->target_role ?? '',
+            'target_company' => $resume->target_company ?? '',
+            'target_job_description' => $resume->target_job_description ?? '',
 
             'full_name' => $resume->full_name,
             'headline' => $resume->headline,
@@ -139,6 +141,8 @@ final class ResumeDocument
             $attributes = [
                 'title' => $data['title'],
                 'target_role' => $data['target_role'] ?? '',
+                'target_company' => $data['target_company'] ?? null,
+                'target_job_description' => $data['target_job_description'] ?? null,
                 'full_name' => $data['full_name'] ?? '',
                 'headline' => $data['headline'] ?? '',
                 'email' => $data['email'] ?? '',

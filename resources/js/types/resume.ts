@@ -108,6 +108,10 @@ export type Resume = {
     title: string;
     /** Free text — the role the resume is being scored against. */
     target_role: string;
+    /** Optional company this version is tailored for (dashboard label). */
+    target_company: string;
+    /** Optional job-posting notes; not printed on the resume. */
+    target_job_description: string;
 
     full_name: string;
     headline: string;

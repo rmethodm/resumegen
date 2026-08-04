@@ -34,11 +34,25 @@ class Resume extends Model
         'certificate',
     ];
 
+    /**
+     * Sections the user may hide from the document (and re-add later).
+     * Contact, summary, experience, and skills are always present.
+     * Keep in step with resources/js/lib/resume-sections.ts optionalSections.
+     *
+     * @var list<string>
+     */
+    public const OPTIONAL_SECTIONS = [
+        'project',
+        'education',
+        'certificate',
+    ];
+
     protected $fillable = [
         'group_id',
         'title',
         'target_role',
         'target_company',
+        'target_job_description',
         'full_name',
         'headline',
         'email',
@@ -58,8 +72,9 @@ class Resume extends Model
     ];
 
     /**
-     * The stored order, repaired against {@see SECTIONS} so a section added to
-     * the app later still appears for resumes saved before it existed.
+     * The stored order, repaired so required sections always appear and a
+     * section added to the app later still shows for older rows. Optional
+     * sections the user hid stay hidden.
      *
      * @return list<string>
      */
@@ -67,7 +82,37 @@ class Resume extends Model
     {
         $stored = array_values(array_intersect($this->section_order ?? [], self::SECTIONS));
 
-        return [...$stored, ...array_values(array_diff(self::SECTIONS, $stored))];
+        if ($this->section_order === null || $stored === []) {
+            return self::SECTIONS;
+        }
+
+        $required = array_values(array_diff(self::SECTIONS, self::OPTIONAL_SECTIONS));
+        $order = $stored;
+
+        foreach ($required as $section) {
+            if (in_array($section, $order, true)) {
+                continue;
+            }
+
+            $defaultPos = array_search($section, self::SECTIONS, true);
+            $inserted = false;
+
+            foreach ($order as $index => $existing) {
+                $existingPos = array_search($existing, self::SECTIONS, true);
+
+                if ($existingPos !== false && $defaultPos !== false && $existingPos > $defaultPos) {
+                    array_splice($order, $index, 0, [$section]);
+                    $inserted = true;
+                    break;
+                }
+            }
+
+            if (! $inserted) {
+                $order[] = $section;
+            }
+        }
+
+        return array_values($order);
     }
 
     /**
