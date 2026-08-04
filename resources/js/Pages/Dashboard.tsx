@@ -10,6 +10,7 @@ import {
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { NewResumeModal } from '@/Components/dashboard/new-resume-modal';
 import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
@@ -252,25 +253,19 @@ export default function Dashboard({
     resumes,
     average_score,
     hasStarterProfile,
+    roleSamples = [],
 }: {
     resumes: ResumeSummary[];
     average_score: number | null;
     hasStarterProfile: boolean;
+    roleSamples?: {
+        id: string;
+        label: string;
+        description: string;
+        target_role: string;
+    }[];
 }) {
-    const [creatingResume, setCreatingResume] = useState(false);
-
-    function createResume() {
-        if (creatingResume) return;
-
-        router.post(
-            route('resumes.store'),
-            {},
-            {
-                onStart: () => setCreatingResume(true),
-                onFinish: () => setCreatingResume(false),
-            },
-        );
-    }
+    const [newResumeOpen, setNewResumeOpen] = useState(false);
 
     return (
         <AuthenticatedLayout
@@ -316,9 +311,9 @@ export default function Dashboard({
                                     </p>
                                 )}
                             </div>
-                            <Button disabled={creatingResume} onClick={createResume}>
+                            <Button onClick={() => setNewResumeOpen(true)}>
                                 <PlusIcon className="size-4" />
-                                {creatingResume ? 'Creating…' : 'New resume'}
+                                New resume
                             </Button>
                         </div>
 
@@ -336,6 +331,12 @@ export default function Dashboard({
                     </Card>
                 </div>
             </div>
+
+            <NewResumeModal
+                open={newResumeOpen}
+                onClose={() => setNewResumeOpen(false)}
+                roleSamples={roleSamples}
+            />
         </AuthenticatedLayout>
     );
 }

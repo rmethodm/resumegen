@@ -22,7 +22,6 @@ import {
     WorkstationFormatToolbar,
 } from '@/Components/workstation/workstation-format-toolbar';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
-import { templateLabels } from '@/lib/resume-templates';
 import { cn } from '@/lib/utils';
 import type {
     ResumeDensity,
@@ -33,7 +32,7 @@ import type {
     SaveStatus,
 } from '@/types';
 
-const TABS = ['Edit', 'Review', 'ATS'] as const;
+const TABS = ['Edit', 'Review', 'Optimize'] as const;
 export type WorkstationTab = (typeof TABS)[number];
 
 export type HeaderVersion = {
@@ -209,94 +208,8 @@ export function WorkstationHeader({
                     ))}
                 </div>
 
-                {/* Right: versions · template · share · download · more */}
+                {/* Right: share · download · more (version/template demoted) */}
                 <div className="flex flex-1 flex-wrap items-center justify-end gap-2">
-                    {versions.length > 0 && (
-                        <Menu as="div" className="relative">
-                            <MenuButton
-                                className={buttonClassName(
-                                    'outline',
-                                    'default',
-                                    'h-9 gap-1.5 px-3',
-                                )}
-                            >
-                                <span className="hidden text-gray-400 sm:inline">
-                                    Version
-                                </span>
-                                <span className="max-w-[8rem] truncate font-medium">
-                                    {versions.find((v) => v.is_current)?.title ??
-                                        title}
-                                </span>
-                                <ChevronDownIcon className="size-3.5 text-gray-500" />
-                            </MenuButton>
-                            <MenuItems
-                                anchor="bottom end"
-                                className="z-50 max-h-72 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
-                            >
-                                {versions.map((version) => (
-                                    <MenuItem key={version.id}>
-                                        <a
-                                            href={route(
-                                                'resumes.workstation',
-                                                version.id,
-                                            )}
-                                            className={cn(
-                                                'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100',
-                                                version.is_current &&
-                                                    'font-semibold text-brand',
-                                            )}
-                                        >
-                                            <span className="truncate">
-                                                {version.title}
-                                            </span>
-                                            <span className="ml-2 shrink-0 tabular-nums text-xs text-gray-400">
-                                                {version.score}
-                                            </span>
-                                        </a>
-                                    </MenuItem>
-                                ))}
-                                <div className="my-1 border-t border-gray-200" />
-                                <MenuItem>
-                                    <button
-                                        type="button"
-                                        disabled={duplicating}
-                                        onClick={() => {
-                                            setDuplicating(true);
-                                            router.post(
-                                                route(
-                                                    'resumes.duplicate',
-                                                    resumeId,
-                                                ),
-                                                undefined,
-                                                {
-                                                    onFinish: () =>
-                                                        setDuplicating(false),
-                                                },
-                                            );
-                                        }}
-                                        className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100 disabled:opacity-50"
-                                    >
-                                        <DocumentDuplicateIcon className="size-4" />
-                                        New version
-                                    </button>
-                                </MenuItem>
-                            </MenuItems>
-                        </Menu>
-                    )}
-
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setPickingTemplate(true)}
-                        className="h-9 gap-1.5 px-3"
-                    >
-                        <span className="hidden font-medium text-gray-400 sm:inline">
-                            Template
-                        </span>
-                        {templateLabels[template]}
-                        <ChevronDownIcon className="size-3.5 text-gray-500" />
-                    </Button>
-
                     <Button
                         type="button"
                         variant="outline"
@@ -367,7 +280,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 w-56 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
                         >
                             <MenuItem>
                                 <button
@@ -378,6 +291,38 @@ export function WorkstationHeader({
                                     Rename this version
                                 </button>
                             </MenuItem>
+
+                            {versions.length > 0 && (
+                                <>
+                                    <div className="my-1 border-t border-gray-200" />
+                                    <div className="px-2 py-1 text-[10px] font-bold tracking-wide text-gray-400 uppercase">
+                                        Versions
+                                    </div>
+                                    {versions.map((version) => (
+                                        <MenuItem key={version.id}>
+                                            <a
+                                                href={route(
+                                                    'resumes.workstation',
+                                                    version.id,
+                                                )}
+                                                className={cn(
+                                                    'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100',
+                                                    version.is_current &&
+                                                        'font-semibold text-brand',
+                                                )}
+                                            >
+                                                <span className="truncate">
+                                                    {version.title}
+                                                </span>
+                                                <span className="ml-2 shrink-0 tabular-nums text-xs text-gray-400">
+                                                    {version.score}
+                                                </span>
+                                            </a>
+                                        </MenuItem>
+                                    ))}
+                                </>
+                            )}
+
                             <div className="my-1 border-t border-gray-200" />
                             <MenuItem>
                                 <button
@@ -443,6 +388,8 @@ export function WorkstationHeader({
                 canRedo={canRedo}
                 onUndo={onUndo}
                 onRedo={onRedo}
+                template={template}
+                onTemplateClick={() => setPickingTemplate(true)}
                 font={font}
                 onFontChange={onFontChange}
                 density={density}

@@ -422,12 +422,20 @@ export function BulletsField({
     value,
     onChange,
     idPrefix,
+    aiEnabled = false,
+    aiBusy = false,
+    aiRemaining,
+    onRewriteBullet,
 }: {
     label: string;
     value: string[];
     onChange: (value: string[]) => void;
     /** When set, each bullet input gets id `${idPrefix}-${index}` for jump-to. */
     idPrefix?: string;
+    aiEnabled?: boolean;
+    aiBusy?: boolean;
+    aiRemaining?: number;
+    onRewriteBullet?: (index: number) => void;
 }) {
     // ponytail: native HTML5 drag, no dnd library. Swap in one if touch matters.
     const [dragging, setDragging] = useState<number | null>(null);
@@ -651,6 +659,21 @@ export function BulletsField({
                             }
                         }}
                     />
+                    {aiEnabled && onRewriteBullet && bullet.trim() !== '' && (
+                        <button
+                            type="button"
+                            disabled={aiBusy}
+                            onClick={() => onRewriteBullet(index)}
+                            title={
+                                aiRemaining !== undefined
+                                    ? `AI rewrite (${aiRemaining} left this month)`
+                                    : 'AI rewrite'
+                            }
+                            className="shrink-0 px-1 text-[10px] font-semibold text-brand hover:underline disabled:opacity-50"
+                        >
+                            AI
+                        </button>
+                    )}
                     <Button
                         variant="ghost"
                         size="icon"

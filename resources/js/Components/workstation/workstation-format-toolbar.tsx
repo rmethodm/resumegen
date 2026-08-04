@@ -8,8 +8,14 @@ import {
 } from '@heroicons/react/24/outline';
 import { buttonClassName } from '@/Components/ui/button';
 import { estimateResumePages } from '@/lib/resume-page-estimate';
+import { templateLabels } from '@/lib/resume-templates';
 import { cn } from '@/lib/utils';
-import type { ResumeDensity, ResumeDraft, ResumeFont } from '@/types';
+import type {
+    ResumeDensity,
+    ResumeDraft,
+    ResumeFont,
+    ResumeTemplateKey,
+} from '@/types';
 
 /** Display names for the document fonts ResumeDocument accepts. */
 export const fontLabels: Record<ResumeFont, string> = {
@@ -87,6 +93,8 @@ export function WorkstationFormatToolbar({
     canRedo,
     onUndo,
     onRedo,
+    template,
+    onTemplateClick,
     font,
     onFontChange,
     density,
@@ -100,6 +108,9 @@ export function WorkstationFormatToolbar({
     canRedo: boolean;
     onUndo: () => void;
     onRedo: () => void;
+    template: ResumeTemplateKey;
+    /** Opens the template picker modal (owned by the header). */
+    onTemplateClick: () => void;
     font: ResumeFont;
     onFontChange: (font: ResumeFont) => void;
     density: ResumeDensity;
@@ -169,6 +180,20 @@ export function WorkstationFormatToolbar({
             </button>
 
             <ToolbarDivider />
+
+            <button
+                type="button"
+                onClick={onTemplateClick}
+                className={buttonClassName('ghost', 'sm', 'h-8 max-w-[11rem] gap-1 px-2 font-medium')}
+                aria-label="Template"
+                title="Choose resume template"
+            >
+                <span className="hidden text-gray-400 sm:inline">Template</span>
+                <span className="min-w-0 truncate">
+                    {templateLabels[template] ?? template}
+                </span>
+                <ChevronDownIcon className="size-3.5 shrink-0 text-gray-400" />
+            </button>
 
             <Menu as="div" className="relative">
                 <MenuButton

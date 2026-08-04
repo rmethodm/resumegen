@@ -20,6 +20,7 @@ import {
 } from '@/Components/workstation/inspector-fields';
 import { SkillPickerModal } from '@/Components/workstation/skill-picker-modal';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
+import { useResumeAi } from '@/hooks/use-resume-ai';
 import { formatPhone } from '@/lib/contact-validation';
 import { cn } from '@/lib/utils';
 import type { ResumeDraft, ResumeSkill, SkillLibraryGroup } from '@/types';
@@ -167,16 +168,72 @@ export function ContactFields({
 
 export function SummaryFields({
     resume,
+    resumeId,
     onChange,
 }: {
     resume: ResumeDraft;
+    resumeId: number;
     onChange: (resume: ResumeDraft) => void;
 }) {
+    const { status, busy, generateSummary } = useResumeAi(resumeId);
+    const [aiError, setAiError] = useState<string | null>(null);
+    const [draftSummary, setDraftSummary] = useState<string | null>(null);
+
+    async function runGenerate() {
+        setAiError(null);
+        const experienceContext = resume.experiences
+            .map((experience) => {
+                const head = [experience.title, experience.company]
+                    .filter(Boolean)
+                    .join(' @ ');
+                const bullets = (experience.bullets ?? [])
+                    .filter(Boolean)
+                    .map((bullet) => `- ${bullet}`)
+                    .join('\n');
+
+                return [head, bullets].filter(Boolean).join('\n');
+            })
+            .join('\n\n');
+
+        const result = await generateSummary({
+            target_role: resume.target_role,
+            headline: resume.headline,
+            summary: resume.summary,
+            job_description: resume.target_job_description,
+            experience_context: experienceContext,
+        });
+
+        if (!result.ok) {
+            setAiError(result.message);
+
+            return;
+        }
+
+        setDraftSummary(result.summary);
+    }
+
     return (
         <div className="flex flex-col gap-1.5">
-            <Label className="text-xs" htmlFor="field-summary">
-                Summary
-            </Label>
+            <div className="flex items-center justify-between gap-2">
+                <Label className="text-xs" htmlFor="field-summary">
+                    Summary
+                </Label>
+                {status?.enabled && (
+                    <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => void runGenerate()}
+                        className="text-[11px] font-semibold text-brand hover:underline disabled:opacity-50"
+                    >
+                        {busy ? 'Generating…' : 'AI draft'}
+                        {status.quotas.summary.remaining >= 0 && (
+                            <span className="ml-1 font-normal text-gray-400">
+                                ({status.quotas.summary.remaining} left)
+                            </span>
+                        )}
+                    </button>
+                )}
+            </div>
             <Textarea
                 id="field-summary"
                 className="min-h-96"
@@ -188,20 +245,102 @@ export function SummaryFields({
             <p className="text-[11px] text-gray-500">
                 {(resume.summary ?? '').length} / 2000 characters
             </p>
+            {aiError && (
+                <p className="text-[11px] text-red-600" role="alert">
+                    {aiError}
+                </p>
+            )}
+            {draftSummary !== null && (
+                <div className="rounded-md border border-brand/30 bg-brand-subtle/40 p-3">
+                    <p className="mb-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                        AI proposal — not saved until you accept
+                    </p>
+                    <p className="text-sm leading-relaxed text-gray-800">
+                        {draftSummary}
+                    </p>
+                    <div className="mt-2 flex gap-2">
+                        <button
+                            type="button"
+                            className="text-[11px] font-semibold text-brand hover:underline"
+                            onClick={() => {
+                                onChange({ ...resume, summary: draftSummary });
+                                setDraftSummary(null);
+                            }}
+                        >
+                            Accept
+                        </button>
+                        <button
+                            type="button"
+                            className="text-[11px] font-semibold text-gray-500 hover:underline"
+                            onClick={() => setDraftSummary(null)}
+                        >
+                            Dismiss
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
 export function ExperienceFields({
     resume,
+    resumeId,
     onChange,
 }: {
     resume: ResumeDraft;
+    resumeId: number;
     onChange: (resume: ResumeDraft) => void;
 }) {
+    const { status, busy, rewriteBullet } = useResumeAi(resumeId);
+    const [rewriteFor, setRewriteFor] = useState<{
+        experienceIndex: number;
+        bulletIndex: number;
+        options: string[];
+        error: string | null;
+    } | null>(null);
+
     const dragHandle = useEntryReorder(resume.experiences, (experiences) =>
         onChange({ ...resume, experiences }),
     );
+
+    async function runRewrite(experienceIndex: number, bulletIndex: number) {
+        const bullet =
+            resume.experiences[experienceIndex]?.bullets?.[bulletIndex] ?? '';
+        if (bullet.trim() === '') {
+            return;
+        }
+
+        setRewriteFor({
+            experienceIndex,
+            bulletIndex,
+            options: [],
+            error: null,
+        });
+
+        const result = await rewriteBullet(bullet, {
+            target_role: resume.target_role,
+            job_description: resume.target_job_description,
+        });
+
+        if (!result.ok) {
+            setRewriteFor({
+                experienceIndex,
+                bulletIndex,
+                options: [],
+                error: result.message,
+            });
+
+            return;
+        }
+
+        setRewriteFor({
+            experienceIndex,
+            bulletIndex,
+            options: result.options,
+            error: null,
+        });
+    }
 
     return (
         <>
@@ -316,7 +455,69 @@ export function ExperienceFields({
                                 bullets,
                             })
                         }
+                        aiEnabled={Boolean(status?.enabled)}
+                        aiBusy={busy}
+                        aiRemaining={status?.quotas.bullet_rewrite.remaining}
+                        onRewriteBullet={
+                            status?.enabled
+                                ? (bulletIndex) =>
+                                      void runRewrite(index, bulletIndex)
+                                : undefined
+                        }
                     />
+                    {rewriteFor?.experienceIndex === index && (
+                        <div className="rounded-md border border-brand/30 bg-brand-subtle/40 p-3">
+                            <p className="mb-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                                AI rewrite options
+                            </p>
+                            {rewriteFor.error && (
+                                <p className="text-[11px] text-red-600">
+                                    {rewriteFor.error}
+                                </p>
+                            )}
+                            {busy && rewriteFor.options.length === 0 && (
+                                <p className="text-[11px] text-gray-500">
+                                    Generating…
+                                </p>
+                            )}
+                            <ul className="space-y-2">
+                                {rewriteFor.options.map((option) => (
+                                    <li key={option}>
+                                        <button
+                                            type="button"
+                                            className="w-full rounded-md border border-gray-200 bg-white px-2.5 py-2 text-left text-sm text-gray-800 hover:border-brand"
+                                            onClick={() => {
+                                                const bullets = [
+                                                    ...(resume.experiences[
+                                                        index
+                                                    ]?.bullets ?? []),
+                                                ];
+                                                bullets[rewriteFor.bulletIndex] =
+                                                    option;
+                                                patch(
+                                                    resume,
+                                                    onChange,
+                                                    'experiences',
+                                                    index,
+                                                    { bullets },
+                                                );
+                                                setRewriteFor(null);
+                                            }}
+                                        >
+                                            {option}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <button
+                                type="button"
+                                className="mt-2 text-[11px] font-semibold text-gray-500 hover:underline"
+                                onClick={() => setRewriteFor(null)}
+                            >
+                                Dismiss
+                            </button>
+                        </div>
+                    )}
                 </EntryCard>
             ))}
             <AddButton

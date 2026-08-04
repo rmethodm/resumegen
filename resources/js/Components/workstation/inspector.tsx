@@ -17,12 +17,14 @@ import type { ResumeDraft, ResumeSectionKey, SkillLibraryGroup } from '@/types';
  */
 export function SectionFields({
     resume,
+    resumeId,
     section,
     skillLibrary,
     contactErrors,
     onChange,
 }: {
     resume: ResumeDraft;
+    resumeId: number;
     section: ResumeSectionKey;
     skillLibrary: SkillLibraryGroup[];
     contactErrors: ContactErrors;
@@ -36,8 +38,20 @@ export function SectionFields({
                 onChange={onChange}
             />
         ),
-        summary: <SummaryFields resume={resume} onChange={onChange} />,
-        experience: <ExperienceFields resume={resume} onChange={onChange} />,
+        summary: (
+            <SummaryFields
+                resume={resume}
+                resumeId={resumeId}
+                onChange={onChange}
+            />
+        ),
+        experience: (
+            <ExperienceFields
+                resume={resume}
+                resumeId={resumeId}
+                onChange={onChange}
+            />
+        ),
         project: <ProjectFields resume={resume} onChange={onChange} />,
         education: <EducationFields resume={resume} onChange={onChange} />,
         skills: (

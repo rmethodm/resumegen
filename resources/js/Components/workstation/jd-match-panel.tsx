@@ -1,8 +1,18 @@
+import { PlusIcon } from '@heroicons/react/24/outline';
 import { jdKeywordOverlap } from '@/lib/jd-keyword-overlap';
+import { formatKeywordLabel } from '@/lib/resume-analysis';
 import type { ResumeDraft } from '@/types';
 
 /** Deterministic JD ↔ resume overlap (B8). */
-export function JdMatchPanel({ draft }: { draft: ResumeDraft }) {
+export function JdMatchPanel({
+    draft,
+    onAddKeyword,
+    onOpenOptimize,
+}: {
+    draft: ResumeDraft;
+    onAddKeyword?: (keyword: string) => void;
+    onOpenOptimize?: () => void;
+}) {
     const jd = draft.target_job_description ?? '';
     const overlap = jdKeywordOverlap(draft, jd);
 
@@ -13,9 +23,18 @@ export function JdMatchPanel({ draft }: { draft: ResumeDraft }) {
                     Job match
                 </p>
                 <p className="px-1 text-[11px] leading-relaxed text-gray-500">
-                    Paste a job description in Contact → Job description notes
-                    to see keyword overlap (no AI).
+                    Paste a job description on the Optimize tab to see keyword
+                    overlap (no AI).
                 </p>
+                {onOpenOptimize && (
+                    <button
+                        type="button"
+                        onClick={onOpenOptimize}
+                        className="mt-2 px-1 text-[11px] font-semibold text-brand hover:underline"
+                    >
+                        Open Optimize →
+                    </button>
+                )}
             </div>
         );
     }
@@ -40,15 +59,31 @@ export function JdMatchPanel({ draft }: { draft: ResumeDraft }) {
                         Missing from resume
                     </p>
                     <div className="flex flex-wrap gap-1 px-0.5">
-                        {overlap.missing.slice(0, 24).map((term) => (
-                            <span
-                                key={term}
-                                className="rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900"
-                            >
-                                {term}
-                            </span>
-                        ))}
+                        {overlap.missing.slice(0, 24).map((term) =>
+                            onAddKeyword ? (
+                                <button
+                                    key={term}
+                                    type="button"
+                                    onClick={() => onAddKeyword(term)}
+                                    title={`Add “${formatKeywordLabel(term)}” as a skill`}
+                                    className="inline-flex items-center gap-0.5 rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900 hover:border-amber-500"
+                                >
+                                    <PlusIcon className="size-2.5" />
+                                    {term}
+                                </button>
+                            ) : (
+                                <span
+                                    key={term}
+                                    className="rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900"
+                                >
+                                    {term}
+                                </span>
+                            ),
+                        )}
                     </div>
+                    <p className="mt-1 px-1 text-[10px] text-gray-400">
+                        Only add skills you actually have.
+                    </p>
                 </>
             )}
             {overlap.matched.length > 0 && (
@@ -67,6 +102,15 @@ export function JdMatchPanel({ draft }: { draft: ResumeDraft }) {
                         ))}
                     </div>
                 </>
+            )}
+            {onOpenOptimize && (
+                <button
+                    type="button"
+                    onClick={onOpenOptimize}
+                    className="mt-2 px-1 text-[11px] font-semibold text-brand hover:underline"
+                >
+                    Edit job description →
+                </button>
             )}
         </div>
     );

@@ -26,9 +26,24 @@ class StarterProfileController extends Controller
      */
     public function update(UpdateStarterProfileRequest $request): RedirectResponse
     {
+        $data = $request->validated();
+
+        // Every scalar column is NOT NULL DEFAULT '' (see the starter_profiles
+        // migration) — "blank" is stored as '', never null. The validation
+        // rules mark these fields nullable ("a blank profile is legitimate"),
+        // and ConvertEmptyStringsToNull turns a blank input into null before
+        // validation, so without this the DB rejects the write outright and
+        // the whole profile silently fails to save.
+        foreach ([
+            'full_name', 'headline', 'email', 'phone',
+            'location', 'target_role', 'linkedin', 'website',
+        ] as $field) {
+            $data[$field] ??= '';
+        }
+
         $request->user()->starterProfile()->updateOrCreate(
             ['user_id' => $request->user()->id],
-            $request->validated(),
+            $data,
         );
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Profile saved.')]);
