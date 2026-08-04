@@ -73,12 +73,12 @@ Default to surfacing uncertainty, not hiding it.
 - **Backend:** Laravel 13, PHP 8.5, PostgreSQL (`DB_CONNECTION=pgsql`; tests run on in-memory SQLite), Inertia.js v3
 - **Frontend:** React 19, TypeScript, Tailwind CSS v3, Vite 8
 - **Auth:** Laravel Fortify (session-based), Sanctum (API tokens) — swapped from Breeze on 2026-08-02. `app/Providers/FortifyServiceProvider.php` and `config/fortify.php` are the relevant files. `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63). Resumegen's custom 2FA system (`TwoFactorController`, `TwoFactorChallengeController`, etc.) is separate from and unrelated to Fortify's own optional two-factor feature, which stays disabled — do not enable `Features::twoFactorAuthentication()` without asking first. Disabled accounts (`users.disabled_at`) are rejected at Fortify login and by `EnsureUserNotDisabled` on web requests.
-- **Support admin:** Domain-only Inertia UI at `config('app.admin_domain')` / `APP_ADMIN_DOMAIN` (local: `admin.resumegen.test`). Gate: host + `users.is_admin` (not fillable — promote via tinker). Controllers under `App\Http\Controllers\Admin\`, routes in `routes/admin.php`.
+- **Support admin:** Domain-only Inertia UI at `config('app.admin_domain')` / `APP_ADMIN_DOMAIN` (local: `admin.resumegen.test`). Gate: host + `users.is_admin` (not fillable — promote via tinker). Controllers under `App\Http\Controllers\Admin\`, routes in `routes/admin.php` (domain scoping wired in `bootstrap/app.php`; `LoginResponse` keeps admins on the admin host after auth). Every privileged write is recorded in `admin_action_logs`. Production host + DNS/TLS setup: `docs/DEPLOYMENT.md`.
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
-- **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia` and nothing in `app/` uses `spatie/laravel-medialibrary`, though the package is still in `composer.json`.
+- **Media:** none in use. The resume photo feature was removed; `Resume` no longer implements `HasMedia` and nothing in `app/` uses `spatie/laravel-medialibrary`, though the package is still in `composer.json` — which is why Boost keeps generating a `medialibrary-development` skill and a Media Library rules block. Neither implies the feature exists.
 - **AI:** none — removed 2026-07-21. No OpenAI, no Anthropic, no `config/ai.php`, no `ai_requests`. Every remaining feature is deterministic server-side code.
 - **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe, no pricing instrumentation.
-- **Admin:** none — removed 2026-07-21. No Filament, no Livewire, no admin subdomain, no impersonation. The app has no administrative interface of any kind; the only way to change a user row or the taxonomy tables is the database or a seeder.
+- **Admin:** the support admin above is the *only* admin surface. Filament/Livewire and impersonation were removed 2026-07-21 and are not coming back without asking. Nothing edits the taxonomy tables — that is still database-or-seeder only.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
 **Conventions** (moved here from global instructions 2026-07-20 — they only apply to this stack):
@@ -150,7 +150,7 @@ The imported UI runs on Resumegen's existing Headless UI + Heroicons + Tailwind 
 
 **The app is free and unlimited.** Billing was removed on 2026-07-14: Cashier is uninstalled, there are no plan tiers, no Stripe, no payments, no `UpgradeModal`, no `featureGate`. Do not add a paywall, a tier check, or an upgrade CTA without asking first.
 
-**Laravel Boost's auto-generated context block lies about this.** It lists `laravel/cashier (CASHIER) - v16` among the installed packages. Cashier is in neither `composer.json` nor `vendor/` — verify against the filesystem, not that header. The matching `.claude/skills/cashier-stripe-development` skill and the two `mcp__plugin_stripe_stripe__*` permissions were deleted on 2026-07-19 for the same reason.
+**Laravel Boost's context block used to lie about this** — it listed `laravel/cashier (CASHIER) - v16` (and Filament, Livewire, Breeze) long after they were uninstalled. Boost was re-run on 2026-08-04 and the block is now accurate. If a stale package list resurfaces, verify against `composer.json` and `vendor/`, not that header. The `cashier-stripe-development` skill and the two `mcp__plugin_stripe_stripe__*` permissions were deleted on 2026-07-19; the skill directory came back with a stale Boost install and was removed again on 2026-08-04.
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
 **Nothing is metered.** `App\Services\UserLimits` survives but now holds only `allTemplates()` — the template allowlist. Every limit it used to enforce (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark, AI calls) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
@@ -182,9 +182,9 @@ Deleted on 2026-07-21 — code, routes, models, migrations, config and tests:
 - **All AI.** `AiService`, `AiPrompts`, `AiRequest`, `AiUsageReport`, `OpenAiUsageService`, `ModerationException`, `AiDisabledException`, `EnsureAiEnabled` + the `ai_enabled` alias, `AiSuggestionController`, `InterviewCoachController`, `ResumeImportController`, `ai:cost-alert`, `ai:prune-flagged`, `config/ai.php`, `config/openai.php`, the `openai-php/laravel` package, the Filament `AiOverviewPage` / `AiUsersPage`, the `aiEnabled` Inertia prop, `users.ai_limit_override` / `ai_blocked` / `ai_usage_reset_at`, and the `ai_requests` table. The features that went with it: bullet rewrite, bullet coach, summary generation, ATS keywords, interview coach, cover-letter AI draft, and resume PDF/LinkedIn import. Frontend: `useAiSuggestion`, `AtsMatchPanel`, `JdMatcher` (+ its test), `PdfImportModal`, `plainText.ts`.
 - **All pricing instrumentation** (see "Billing"). `JobPairing`, `BalanceTransaction`, `JobPairingService`, `config/pricing.php`, `pricing:usage`, `pricing:growth`, `GrowthSampleSeeder`, both pricing docs, and the `job_pairings` / `balance_transactions` tables.
 - **Job Search (`/jobs`).** `JobSearchService`, `app/Services/JobBoards/*`, `JobUrlImporter`, `JobSearchController`, `JobSearch` + `JobListing` models, `JobSearchPolicy`, `jobs:run-alerts`, `JobMatchesDigestMail`, `config/jobs.php`, `resources/js/Pages/Jobs/*`, the Jobs nav item and command-palette entry, and the `job_searches` / `job_listings` tables.
-- **The Filament/Livewire admin surface (2026-07-21).** `AdminPanelProvider`, all of `app/Filament/**`, Livewire, impersonation, revenue/ops dashboards, `users.is_master_admin`, audit logs, etc. **Do not reinstall Filament without asking.** A thin **support admin** returned 2026-08-04 on `APP_ADMIN_DOMAIN` (`admin.resumegen.test` local): Inertia pages under `Pages/Admin/*`, `users.is_admin` + `users.disabled_at`, domain-scoped `routes/admin.php`. Support only (search users, verify email, disable/enable login, revoke Sanctum tokens) — no taxonomy CMS, no resume edit, no impersonation, no billing.
+- **The Filament/Livewire admin surface (2026-07-21).** `AdminPanelProvider`, all of `app/Filament/**`, Livewire, impersonation, revenue/ops dashboards, `users.is_master_admin`, audit logs, etc. **Do not reinstall Filament without asking.** A thin **support admin** returned 2026-08-04 on `APP_ADMIN_DOMAIN` (`admin.resumegen.test` local): Inertia pages under `Pages/Admin/*`, `users.is_admin` + `users.disabled_at`, domain-scoped `routes/admin.php`. Support only (search users, verify email, resend verification, disable/enable login, revoke Sanctum tokens — each throttled `30,1` and written to `admin_action_logs`) — no taxonomy CMS, no resume edit, no impersonation, no billing.
 - **Impersonation.** `AdminImpersonationController`, the `admin.impersonate.destroy` route, the `impersonating` shared Inertia prop and the banner in `AuthenticatedLayout.tsx`.
-- **Admin audit log.** `AdminAuditLog` model + factory and the `admin_audit_logs` table. Nothing records privileged writes because there are no privileged writes.
+- **Admin audit log.** `AdminAuditLog` model + factory and the `admin_audit_logs` table. **Superseded 2026-08-04:** the support admin logs its own writes to a new, unrelated append-only `admin_action_logs` table (`AdminActionLog`, `AdminActionLog::record()`, `User::adminActionLogsAsTarget()`, no `updated_at`), surfaced as the last 25 actions on the user detail page. `Admin\UserController` also mirrors each action to the Laravel log. Do not resurrect `AdminAuditLog`.
 - **System events.** `SystemEvent` model + factory, the `system_events` table, the `AppServiceProvider` `MessageSent` listener, and `system-events:prune` with its schedule entry. **Outbound mail is no longer logged anywhere.**
 - **Career Hub** — deleted because the admin panel was its only editor. `CareerHubController`, `CareerArticle` model + factory, the `career_articles` table, the public `/career` and `/career/{slug}` routes, `resources/js/Pages/CareerHub/**`, the Career link on `Welcome.tsx`, and `CareerHubTest`.
 
@@ -235,7 +235,7 @@ Making rollback work would mean editing seven already-shipped migrations to no b
 
 ## Project skills are hook-enforced, not prose-enforced
 
-`.claude/skills/` holds five repo-specific skills. Two of them are wired to a `PreToolUse` hook — `.claude/hooks/nudge-project-skills.sh`, matched on `Edit|Write` in `.claude/settings.json`:
+`.claude/skills/` holds seven repo-specific skills. Five are hand-maintained (`debug-using-debugbar`, `inertia-react-development`, `laravel-best-practices`, `server-deployment`, `tailwindcss-development`); `fortify-development` and `medialibrary-development` were added by Boost on 2026-08-04 and `cashier-stripe-development` was deleted in the same run. Boost mirrors its own skills into `.agents/skills/` and `.github/skills/` too — edit `.claude/skills/` and let Boost re-sync, don't hand-edit the copies. Two skills are wired to a `PreToolUse` hook — `.claude/hooks/nudge-project-skills.sh`, matched on `Edit|Write` in `.claude/settings.json`:
 
 - editing `resources/js/**/*.tsx|jsx` → activate `inertia-react-development`
 - editing `app/**/*.php` → activate `laravel-best-practices`
@@ -261,7 +261,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 
 ---
 
-Last updated: 2026-08-02 (resume feature imported from Resumo with a relational data model, replacing the earlier JSON-column design; A/B resume variants, Cover Letters, the salary hint, and Portfolio removed earlier the same day)
+Last updated: 2026-08-04 (support admin shipped on `APP_ADMIN_DOMAIN` with an append-only `admin_action_logs`; Boost re-run refreshed the guidelines block — Cashier/Filament/Livewire/Breeze are finally gone from it — and added the `fortify-development` + `medialibrary-development` skills)
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
@@ -358,23 +358,21 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.4
-- filament/filament (FILAMENT) - v3
-- inertiajs/inertia-laravel (INERTIA_LARAVEL) - v2
-- laravel/cashier (CASHIER) - v16
+- php - 8.5
+- inertiajs/inertia-laravel (INERTIA_LARAVEL) - v3
+- laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
 - laravel/prompts (PROMPTS) - v0
 - laravel/sanctum (SANCTUM) - v4
-- livewire/livewire (LIVEWIRE) - v3
 - tightenco/ziggy (ZIGGY) - v2
 - laravel/boost (BOOST) - v2
-- laravel/breeze (BREEZE) - v2
+- laravel/dusk (DUSK) - v8
 - laravel/mcp (MCP) - v0
 - laravel/pail (PAIL) - v1
 - laravel/pint (PINT) - v1
 - phpunit/phpunit (PHPUNIT) - v12
-- @inertiajs/react (INERTIA_REACT) - v2
-- react (REACT) - v18
+- @inertiajs/react (INERTIA_REACT) - v3
+- react (REACT) - v19
 - tailwindcss (TAILWINDCSS) - v3
 
 ## Skills Activation
@@ -486,11 +484,19 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - ALWAYS use `search-docs` tool for version-specific Inertia documentation and updated code examples.
 - IMPORTANT: Activate `inertia-react-development` when working with Inertia client-side patterns.
 
-# Inertia v2
+# Inertia v3
 
-- Use all Inertia features from v1 and v2. Check the documentation before making changes to ensure the correct approach.
-- New features: deferred props, infinite scroll, merging props, polling, prefetching, once props, flash data.
+- Use all Inertia features from v1, v2, and v3. Check the documentation before making changes to ensure the correct approach.
+- New v3 features: standalone HTTP requests (`useHttp` hook), optimistic updates with automatic rollback, layout props (`useLayoutProps` hook), instant visits, simplified SSR via `@inertiajs/vite` plugin, custom exception handling for error pages.
+- Carried over from v2: deferred props, infinite scroll, merging props, polling, prefetching, once props, flash data.
 - When using deferred props, add an empty state with a pulsing or animated skeleton.
+- Axios has been removed. Use the built-in XHR client with interceptors, or install Axios separately if needed.
+- `Inertia::lazy()` / `LazyProp` has been removed. Use `Inertia::optional()` instead.
+- Prop types (`Inertia::optional()`, `Inertia::defer()`, `Inertia::merge()`) work inside nested arrays with dot-notation paths.
+- SSR works automatically in Vite dev mode with `@inertiajs/vite` - no separate Node.js server needed during development.
+- Event renames: `invalid` is now `httpException`, `exception` is now `networkError`.
+- `router.cancel()` replaced by `router.cancelAll()`.
+- The `future` configuration namespace has been removed - all v2 future options are now always enabled.
 
 === laravel/core rules ===
 
@@ -552,103 +558,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 # Inertia + React
 
 - IMPORTANT: Activate `inertia-react-development` when working with Inertia React client-side patterns.
-
-=== filament/filament rules ===
-
-## Filament
-
-- Filament is used by this application, check how and where to follow existing application conventions.
-- Filament is a Server-Driven UI (SDUI) framework for Laravel. It allows developers to define user interfaces in PHP using structured configuration objects. It is built on top of Livewire, Alpine.js, and Tailwind CSS.
-- You can use the `search-docs` tool to get information from the official Filament documentation when needed. This is very useful for Artisan command arguments, specific code examples, testing functionality, relationship management, and ensuring you're following idiomatic practices.
-- Utilize static `make()` methods for consistent component initialization.
-
-### Artisan
-
-- You must use the Filament specific Artisan commands to create new files or components for Filament. You can find these with the `list-artisan-commands` tool, or with `php artisan` and the `--help` option.
-- Inspect the required options, always pass `--no-interaction`, and valid arguments for other options when applicable.
-
-### Filament's Core Features
-
-- Actions: Handle doing something within the application, often with a button or link. Actions encapsulate the UI, the interactive modal window, and the logic that should be executed when the modal window is submitted. They can be used anywhere in the UI and are commonly used to perform one-time actions like deleting a record, sending an email, or updating data in the database based on modal form input.
-- Forms: Dynamic forms rendered within other features, such as resources, action modals, table filters, and more.
-- Infolists: Read-only lists of data.
-- Notifications: Flash notifications displayed to users within the application.
-- Panels: The top-level container in Filament that can include all other features like pages, resources, forms, tables, notifications, actions, infolists, and widgets.
-- Resources: Static classes that are used to build CRUD interfaces for Eloquent models. Typically live in `app/Filament/Resources`.
-- Schemas: Represent components that define the structure and behavior of the UI, such as forms, tables, or lists.
-- Tables: Interactive tables with filtering, sorting, pagination, and more.
-- Widgets: Small component included within dashboards, often used for displaying data in charts, tables, or as a stat.
-
-### Relationships
-
-- Determine if you can use the `relationship()` method on form components when you need `options` for a select, checkbox, repeater, or when building a `Fieldset`:
-
-<code-snippet name="Relationship example for Form Select" lang="php">
-Forms\Components\Select::make('user_id')
-    ->label('Author')
-    ->relationship('author')
-    ->required(),
-</code-snippet>
-
-## Testing
-
-- It's important to test Filament functionality for user satisfaction.
-- Ensure that you are authenticated to access the application within the test.
-- Filament uses Livewire, so start assertions with `livewire()` or `Livewire::test()`.
-
-### Example Tests
-
-<code-snippet name="Filament Table Test" lang="php">
-    livewire(ListUsers::class)
-        ->assertCanSeeTableRecords($users)
-        ->searchTable($users->first()->name)
-        ->assertCanSeeTableRecords($users->take(1))
-        ->assertCanNotSeeTableRecords($users->skip(1))
-        ->searchTable($users->last()->email)
-        ->assertCanSeeTableRecords($users->take(-1))
-        ->assertCanNotSeeTableRecords($users->take($users->count() - 1));
-</code-snippet>
-
-<code-snippet name="Filament Create Resource Test" lang="php">
-    livewire(CreateUser::class)
-        ->fillForm([
-            'name' => 'Howdy',
-            'email' => 'howdy@example.com',
-        ])
-        ->call('create')
-        ->assertNotified()
-        ->assertRedirect();
-
-    assertDatabaseHas(User::class, [
-        'name' => 'Howdy',
-        'email' => 'howdy@example.com',
-    ]);
-</code-snippet>
-
-<code-snippet name="Testing Multiple Panels (setup())" lang="php">
-    use Filament\Facades\Filament;
-
-    Filament::setCurrentPanel('app');
-</code-snippet>
-
-<code-snippet name="Calling an Action in a Test" lang="php">
-    livewire(EditInvoice::class, [
-        'invoice' => $invoice,
-    ])->callAction('send');
-
-    expect($invoice->refresh())->isSent()->toBeTrue();
-</code-snippet>
-
-## Version 3 Changes To Focus On
-
-- Resources are located in `app/Filament/Resources/` directory.
-- Resource pages (List, Create, Edit) are auto-generated within the resource's directory - e.g., `app/Filament/Resources/PostResource/Pages/`.
-- Forms use the `Forms\Components` namespace for form fields.
-- Tables use the `Tables\Columns` namespace for table columns.
-- A new `Filament\Forms\Components\RichEditor` component is available.
-- Form and table schemas now use fluent method chaining.
-- Added `php artisan filament:optimize` command for production optimization.
-- Requires implementing `FilamentUser` contract for production access control.
 
 === spatie/laravel-medialibrary rules ===
 
