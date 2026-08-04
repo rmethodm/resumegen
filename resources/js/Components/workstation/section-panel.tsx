@@ -1,6 +1,5 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Link } from '@inertiajs/react';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
 import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button, buttonClassName } from '@/Components/ui/button';
@@ -204,6 +203,9 @@ export function SectionPanel({
                         </li>
                     ))}
                 </ul>
+                {/* Direct buttons (not a dropdown): the rail scrolls with
+                    overflow-y-auto, which clipped absolute MenuItems so
+                    hidden sections looked permanently gone. */}
                 {addable.length === 0 ? (
                     <Button
                         variant="outline"
@@ -215,37 +217,22 @@ export function SectionPanel({
                         + Add section
                     </Button>
                 ) : (
-                    <Menu as="div" className="relative mt-2">
-                        <MenuButton
-                            className={buttonClassName(
-                                'outline',
-                                'sm',
-                                'w-full',
-                            )}
-                        >
-                            + Add section
-                        </MenuButton>
-                        <MenuItems className="absolute z-20 mt-1 w-full rounded-md border border-gray-200 bg-white py-1 shadow-lg focus:outline-none">
-                            {addable.map((section) => (
-                                <MenuItem key={section}>
-                                    {({ focus }) => (
-                                        <button
-                                            type="button"
-                                            onClick={() => onAddSection(section)}
-                                            className={cn(
-                                                'block w-full px-3 py-2 text-left text-sm',
-                                                focus
-                                                    ? 'bg-brand-subtle text-brand'
-                                                    : 'text-gray-900',
-                                            )}
-                                        >
-                                            {sectionLabels[section]}
-                                        </button>
-                                    )}
-                                </MenuItem>
-                            ))}
-                        </MenuItems>
-                    </Menu>
+                    <div className="mt-2 flex flex-col gap-1">
+                        <p className="px-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                            Hidden sections
+                        </p>
+                        {addable.map((section) => (
+                            <button
+                                key={section}
+                                type="button"
+                                onClick={() => onAddSection(section)}
+                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-gray-300 bg-white px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:border-brand hover:bg-brand-subtle hover:text-brand"
+                            >
+                                <PlusIcon className="size-3.5 shrink-0" />
+                                {sectionLabels[section]}
+                            </button>
+                        ))}
+                    </div>
                 )}
             </div>
         </aside>

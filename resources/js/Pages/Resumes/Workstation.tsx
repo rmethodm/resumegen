@@ -243,8 +243,19 @@ export default function Workstation({
             return;
         }
 
-        const order = insertSectionInOrder(draft.section_order, sectionKey);
-        setDraft({ ...draft, section_order: order });
+        setDraft((current) => {
+            if (current.section_order.includes(sectionKey)) {
+                return current;
+            }
+
+            return {
+                ...current,
+                section_order: insertSectionInOrder(
+                    current.section_order,
+                    sectionKey,
+                ),
+            };
+        });
         setTab('Edit');
         // Scroll after the section mounts.
         window.setTimeout(() => scrollToSection(sectionKey), 50);
@@ -256,16 +267,24 @@ export default function Workstation({
             return;
         }
 
-        const order = draft.section_order.filter((key) => key !== sectionKey);
+        setDraft((current) => {
+            if (!current.section_order.includes(sectionKey)) {
+                return current;
+            }
 
-        if (order.length === draft.section_order.length) {
-            return;
-        }
-
-        setDraft({ ...draft, section_order: order });
+            return {
+                ...current,
+                section_order: current.section_order.filter(
+                    (key) => key !== sectionKey,
+                ),
+            };
+        });
 
         if (section === sectionKey) {
-            setSection(order[0] ?? 'contact');
+            setSection(
+                draft.section_order.find((key) => key !== sectionKey) ??
+                    'contact',
+            );
         }
     }
 
