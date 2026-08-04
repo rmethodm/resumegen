@@ -18,6 +18,16 @@ class LoginResponse implements LoginResponseContract
             return redirect()->route('two-factor.challenge');
         }
 
+        $adminDomain = config('app.admin_domain');
+        if (
+            $user->isAdmin()
+            && is_string($adminDomain)
+            && $adminDomain !== ''
+            && $request->getHost() === $adminDomain
+        ) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 }

@@ -5,6 +5,8 @@ export interface User {
     name: string;
     email: string;
     email_verified_at?: string;
+    is_admin?: boolean;
+    disabled_at?: string | null;
     two_factor_confirmed_at: string | null;
     profile: {
         full_name?: string;
