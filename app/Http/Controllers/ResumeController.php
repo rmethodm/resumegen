@@ -184,6 +184,7 @@ class ResumeController extends Controller
             'resume' => ResumeDocument::toArray($resume),
             'analysis' => [
                 'score' => ResumeAnalysis::score($resume),
+                'breakdown' => ResumeAnalysis::breakdown($resume),
                 'suggestions' => ResumeAnalysis::suggestions($resume),
             ],
             'skillLibrary' => LibrarySkill::catalogue(),

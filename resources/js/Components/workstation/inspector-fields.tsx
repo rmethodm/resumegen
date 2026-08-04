@@ -407,10 +407,13 @@ export function BulletsField({
     label,
     value,
     onChange,
+    idPrefix,
 }: {
     label: string;
     value: string[];
     onChange: (value: string[]) => void;
+    /** When set, each bullet input gets id `${idPrefix}-${index}` for jump-to. */
+    idPrefix?: string;
 }) {
     // ponytail: native HTML5 drag, no dnd library. Swap in one if touch matters.
     const [dragging, setDragging] = useState<number | null>(null);
@@ -485,6 +488,11 @@ export function BulletsField({
                         ref={(element) => {
                             inputs.current[index] = element;
                         }}
+                        id={
+                            idPrefix !== undefined
+                                ? `${idPrefix}-${index}`
+                                : undefined
+                        }
                         value={bullet}
                         onChange={(event) =>
                             replace(

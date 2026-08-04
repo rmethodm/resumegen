@@ -6,6 +6,7 @@ import { SectionFields } from '@/Components/workstation/inspector';
 import { ResumePreview } from '@/Components/resume/resume-preview';
 import { SectionPanel } from '@/Components/workstation/section-panel';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
+import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
 import { Button } from '@/Components/ui/button';
 import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
@@ -19,6 +20,7 @@ import type {
     ResumeDraft,
     ResumeSectionKey,
     ResumeShareLink,
+    ResumeSuggestion,
     SkillLibraryGroup,
 } from '@/types';
 
@@ -34,12 +36,28 @@ export default function Workstation({
     share: ResumeShareLink | null;
 }) {
     const { id, ...initial } = resume;
-    const { value: draft, set: setDraft } = useHistory<ResumeDraft>(initial);
+    const {
+        value: draft,
+        set: setDraft,
+        undo,
+        redo,
+        canUndo,
+        canRedo,
+    } = useHistory<ResumeDraft>(initial);
     const isMobile = useIsMobile();
     const [tab, setTab] = useState<WorkstationTab>('Edit');
     const [section, setSection] = useState<ResumeSectionKey>('contact');
+    const [previewZoom, setPreviewZoom] = useState<PreviewZoom>(1);
     const [draggedSection, setDraggedSection] =
         useState<ResumeSectionKey | null>(null);
+    // Analysis is server-owned; keep a local copy so the rail updates when
+    // Inertia merges fresh props after autosave (preserveState keeps draft).
+    const [liveAnalysis, setLiveAnalysis] = useState(analysis);
+
+    useEffect(() => {
+        setLiveAnalysis(analysis);
+    }, [analysis]);
+
     // A badly formatted contact field is held back from the payload rather
     // than failing the whole save — see use-valid-contact.ts.
     const { payload, errors } = useValidContact(
@@ -47,6 +65,7 @@ export default function Workstation({
         resume.email,
         resume.phone,
     );
+    // PUT back() already returns updated analysis; prop effect above syncs it.
     const saveStatus = useAutosave(route('resumes.update', id), payload);
 
     // The hook reports 'saved' from the moment it mounts, before anything
@@ -63,6 +82,41 @@ export default function Workstation({
         previousStatus.current = saveStatus;
     }, [saveStatus]);
 
+    // Document undo/redo — same stack the format toolbar buttons use.
+    useEffect(() => {
+        function onKeyDown(event: KeyboardEvent) {
+            const target = event.target;
+            const typingInField =
+                target instanceof HTMLElement &&
+                (target.isContentEditable ||
+                    target.tagName === 'INPUT' ||
+                    target.tagName === 'TEXTAREA' ||
+                    target.tagName === 'SELECT');
+
+            // Allow native field undo inside inputs; only intercept when the
+            // focus is outside a form control (or with explicit meta on Mac
+            // for whole-document steps — skip when typing so OS/browser wins).
+            if (typingInField) {
+                return;
+            }
+
+            const key = event.key.toLowerCase();
+            const mod = event.metaKey || event.ctrlKey;
+
+            if (mod && key === 'z' && !event.shiftKey) {
+                event.preventDefault();
+                undo();
+            } else if (mod && (key === 'y' || (key === 'z' && event.shiftKey))) {
+                event.preventDefault();
+                redo();
+            }
+        }
+
+        document.addEventListener('keydown', onKeyDown);
+
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, [undo, redo]);
+
     // Every section renders stacked in the main form now, so "selecting" a
     // section from the rail just scrolls its heading into view.
     function scrollToSection(target: ResumeSectionKey) {
@@ -70,6 +124,79 @@ export default function Workstation({
         document
             .getElementById(`section-${target}`)
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    const tipsStale = saveStatus === 'dirty' || saveStatus === 'saving';
+
+    function applySuggestion(suggestion: ResumeSuggestion) {
+        if (
+            suggestion.experience === null ||
+            suggestion.bullet === null ||
+            !suggestion.rewrite
+        ) {
+            return;
+        }
+
+        const experienceIndex = suggestion.experience;
+        const bulletIndex = suggestion.bullet;
+        const rewrite = suggestion.rewrite;
+
+        setDraft({
+            ...draft,
+            experiences: draft.experiences.map((experience, index) => {
+                if (index !== experienceIndex) {
+                    return experience;
+                }
+
+                return {
+                    ...experience,
+                    bullets: experience.bullets.map((bullet, at) =>
+                        at === bulletIndex ? rewrite : bullet,
+                    ),
+                };
+            }),
+        });
+    }
+
+    function selectSuggestion(suggestion: ResumeSuggestion) {
+        setTab('Edit');
+
+        if (suggestion.experience !== null && suggestion.bullet !== null) {
+            scrollToSection('experience');
+            window.setTimeout(() => {
+                const element = document.getElementById(
+                    `experience-bullet-${suggestion.experience}-${suggestion.bullet}`,
+                );
+
+                if (!(element instanceof HTMLElement)) {
+                    return;
+                }
+
+                element.focus();
+                element.classList.add('ring-2', 'ring-brand', 'ring-offset-1');
+                window.setTimeout(() => {
+                    element.classList.remove(
+                        'ring-2',
+                        'ring-brand',
+                        'ring-offset-1',
+                    );
+                }, 1500);
+            }, 300);
+
+            return;
+        }
+
+        const message = suggestion.message.toLowerCase();
+
+        if (message.includes('skill')) {
+            scrollToSection('skills');
+        } else if (message.includes('summary')) {
+            scrollToSection('summary');
+        } else if (message.includes('role') || message.includes('missing')) {
+            scrollToSection('contact');
+        } else {
+            scrollToSection('experience');
+        }
     }
 
     // Native HTML5 drag-and-drop — no library needed for a plain reorder.
@@ -114,10 +241,13 @@ export default function Workstation({
                 <div className="flex flex-col gap-6 p-4 sm:p-6 lg:flex-row lg:items-start">
                     <SectionPanel
                         resumeId={id}
-                        analysis={analysis}
+                        analysis={liveAnalysis}
                         resume={draft}
                         selected={section}
                         onSelect={scrollToSection}
+                        stale={tipsStale}
+                        onApplySuggestion={applySuggestion}
+                        onSelectSuggestion={selectSuggestion}
                     />
 
                     <div className="flex min-w-0 flex-col gap-6 lg:flex-1">
@@ -141,10 +271,37 @@ export default function Workstation({
                                 setDraft({ ...draft, template })
                             }
                             share={share}
+                            canUndo={canUndo}
+                            canRedo={canRedo}
+                            onUndo={undo}
+                            onRedo={redo}
+                            font={draft.font}
+                            onFontChange={(font) =>
+                                setDraft({ ...draft, font })
+                            }
+                            density={draft.density}
+                            onDensityChange={(density) =>
+                                setDraft({ ...draft, density })
+                            }
+                            zoom={previewZoom}
+                            onZoomChange={setPreviewZoom}
                         />
 
                         {tab === 'Review' ? (
-                            <ResumePreview resume={draft} className="w-full" />
+                            <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white p-4">
+                                <div
+                                    className="origin-top-left transition-transform"
+                                    style={{
+                                        transform: `scale(${previewZoom})`,
+                                        width: `${100 / previewZoom}%`,
+                                    }}
+                                >
+                                    <ResumePreview
+                                        resume={draft}
+                                        className="w-full"
+                                    />
+                                </div>
+                            </div>
                         ) : (
                         <main
                             aria-label="Section form"

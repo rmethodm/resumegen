@@ -12,9 +12,12 @@ export function useAutosave<T extends RequestPayload>(
     url: string,
     data: T,
     delay = 1500,
+    onSuccess?: () => void,
 ): SaveStatus {
     const [status, setStatus] = useState<SaveStatus>('saved');
     const initial = useRef(true);
+    const onSuccessRef = useRef(onSuccess);
+    onSuccessRef.current = onSuccess;
 
     useEffect(() => {
         // The first run is just the server's own payload arriving.
@@ -31,7 +34,10 @@ export function useAutosave<T extends RequestPayload>(
                 preserveScroll: true,
                 preserveState: true,
                 onStart: () => setStatus('saving'),
-                onSuccess: () => setStatus('saved'),
+                onSuccess: () => {
+                    setStatus('saved');
+                    onSuccessRef.current?.();
+                },
                 onError: () => setStatus('error'),
             });
         }, delay);

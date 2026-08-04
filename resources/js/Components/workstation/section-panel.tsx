@@ -1,10 +1,16 @@
 import { Link } from '@inertiajs/react';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
+import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { sectionLabels, sectionStatus } from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
-import type { ResumeAnalysis, ResumeDraft, ResumeSectionKey } from '@/types';
+import type {
+    ResumeAnalysis,
+    ResumeDraft,
+    ResumeSectionKey,
+    ResumeSuggestion,
+} from '@/types';
 
 /** Scalar sections read as done/half-done/untouched; list sections read as a
  * count of complete entries out of entries started. */
@@ -86,6 +92,9 @@ export function SectionPanel({
     analysis,
     selected,
     onSelect,
+    stale,
+    onApplySuggestion,
+    onSelectSuggestion,
     className,
 }: {
     resumeId: number;
@@ -93,6 +102,9 @@ export function SectionPanel({
     analysis: ResumeAnalysis;
     selected: ResumeSectionKey;
     onSelect: (section: ResumeSectionKey) => void;
+    stale: boolean;
+    onApplySuggestion: (suggestion: ResumeSuggestion) => void;
+    onSelectSuggestion: (suggestion: ResumeSuggestion) => void;
     className?: string;
 }) {
     return (
@@ -118,7 +130,47 @@ export function SectionPanel({
                     <ScoreGauge score={analysis.score} className="mx-auto" />
                 </div>
 
-                <p className="mt-14 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                {/* ScoreGauge paints a full circle with half height — mt-14
+                    clears the overflow before the next rail block. */}
+                {analysis.breakdown.length > 0 && (
+                    <div className="mt-14 grid grid-cols-2 gap-2">
+                        {analysis.breakdown.map((band) => (
+                            <div key={band.label} className="space-y-1">
+                                <div className="flex justify-between text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                                    <span>{band.label}</span>
+                                    <span className="tabular-nums">
+                                        {band.score}
+                                    </span>
+                                </div>
+                                <div className="h-1.5 rounded-full bg-gray-100">
+                                    <div
+                                        className="h-full rounded-full bg-brand"
+                                        style={{
+                                            width: `${(band.score / 25) * 100}%`,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                    Improvements
+                </p>
+                {stale && (
+                    <p className="mb-2 px-1 text-[10px] leading-snug text-gray-500">
+                        Tips reflect last saved version
+                    </p>
+                )}
+                <SuggestionList
+                    suggestions={analysis.suggestions}
+                    stale={stale}
+                    onApply={onApplySuggestion}
+                    onSelect={onSelectSuggestion}
+                />
+
+                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
                     Resume sections
                 </p>
                 <ul className="space-y-1">
