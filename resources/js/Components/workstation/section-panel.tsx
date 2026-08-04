@@ -1,8 +1,20 @@
 import { Link } from '@inertiajs/react';
 import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { useMemo } from 'react';
+import {
+    KeywordChips,
+    ScoreChecklist,
+} from '@/Components/resume/score-coach';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
 import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button, buttonClassName } from '@/Components/ui/button';
+import {
+    keywordsFor,
+    missingKeywords,
+    presentKeywords,
+    scoreChecklist,
+    type ScoreChecklistItem,
+} from '@/lib/resume-analysis';
 import {
     missingOptionalSections,
     sectionLabels,
@@ -99,6 +111,8 @@ export function SectionPanel({
     onAddSection,
     onApplySuggestion,
     onSelectSuggestion,
+    onAddKeyword,
+    onJumpChecklist,
     className,
 }: {
     resumeId: number;
@@ -109,9 +123,15 @@ export function SectionPanel({
     onAddSection: (section: ResumeSectionKey) => void;
     onApplySuggestion: (suggestion: ResumeSuggestion) => void;
     onSelectSuggestion: (suggestion: ResumeSuggestion) => void;
+    onAddKeyword: (keyword: string) => void;
+    onJumpChecklist: (item: ScoreChecklistItem) => void;
     className?: string;
 }) {
     const addable = missingOptionalSections(resume.section_order);
+    const checklist = useMemo(() => scoreChecklist(resume), [resume]);
+    const missing = useMemo(() => missingKeywords(resume), [resume]);
+    const present = useMemo(() => presentKeywords(resume), [resume]);
+    const hasRoleFamily = keywordsFor(resume.target_role).length > 0;
 
     return (
         <aside
@@ -166,6 +186,15 @@ export function SectionPanel({
                         ))}
                     </div>
                 )}
+
+                <ScoreChecklist items={checklist} onJump={onJumpChecklist} />
+
+                <KeywordChips
+                    missing={missing}
+                    present={present}
+                    hasRoleFamily={hasRoleFamily}
+                    onAdd={onAddKeyword}
+                />
 
                 <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
                     Improvements

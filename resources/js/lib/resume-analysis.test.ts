@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeResume, keywordsFor } from './resume-analysis';
+import {
+    addKeywordAsSkill,
+    analyzeResume,
+    formatKeywordLabel,
+    keywordsFor,
+    missingKeywords,
+    scoreChecklist,
+} from './resume-analysis';
 import type { ResumeDraft } from '@/types';
 
 function blankDraft(overrides: Partial<ResumeDraft> = {}): ResumeDraft {
@@ -199,5 +206,84 @@ describe('analyzeResume', () => {
 
         expect(keywordTip?.band).toBe('Keywords');
         expect(keywordTip?.message).toMatch(/typescript|react|api/i);
+    });
+});
+
+describe('keyword chips helpers', () => {
+    it('lists missing keywords for an engineer role', () => {
+        const draft = blankDraft({
+            target_role: 'Software Engineer',
+            skills: [{ category: '', name: 'React' }],
+        });
+
+        const missing = missingKeywords(draft);
+
+        expect(missing).toContain('typescript');
+        expect(missing).not.toContain('react');
+    });
+
+    it('adds a keyword as a skill and raises the keywords band', () => {
+        const before = blankDraft({
+            full_name: 'Jane',
+            headline: 'Engineer',
+            email: 'a@b.com',
+            location: 'X',
+            summary: 'A'.repeat(80),
+            target_role: 'Software Engineer',
+            skills: [
+                { category: '', name: 'Go' },
+                { category: '', name: 'Docker' },
+                { category: '', name: 'Kubernetes' },
+                { category: '', name: 'AWS' },
+                { category: '', name: 'Linux' },
+            ],
+        });
+
+        const after = addKeywordAsSkill(before, 'typescript');
+        const analysis = analyzeResume(after);
+
+        expect(after.skills.some((s) => s.name === 'TypeScript')).toBe(true);
+        expect(missingKeywords(after)).not.toContain('typescript');
+        expect(
+            analysis.breakdown.find((b) => b.label === 'Keywords')!.score,
+        ).toBeGreaterThan(
+            analyzeResume(before).breakdown.find((b) => b.label === 'Keywords')!
+                .score,
+        );
+    });
+
+    it('formats known keywords for display', () => {
+        expect(formatKeywordLabel('typescript')).toBe('TypeScript');
+        expect(formatKeywordLabel('ci/cd')).toBe('CI/CD');
+        expect(formatKeywordLabel('user research')).toBe('User Research');
+    });
+});
+
+describe('scoreChecklist', () => {
+    it('marks empty draft steps incomplete', () => {
+        const items = scoreChecklist(blankDraft());
+
+        expect(items.every((item) => !item.done)).toBe(true);
+        expect(items[0].id).toBe('target-role');
+    });
+
+    it('marks completed steps done as the draft improves', () => {
+        const items = scoreChecklist(
+            blankDraft({
+                target_role: 'Product Manager',
+                full_name: 'Jane',
+                headline: 'PM',
+                email: 'a@b.com',
+                location: 'X',
+                summary: 'A'.repeat(80),
+            }),
+        );
+
+        expect(items.find((i) => i.id === 'target-role')?.done).toBe(true);
+        expect(items.find((i) => i.id === 'profile-contact')?.done).toBe(true);
+        expect(items.find((i) => i.id === 'summary')?.done).toBe(true);
+        expect(items.find((i) => i.id === 'experience-roles')?.done).toBe(
+            false,
+        );
     });
 });
