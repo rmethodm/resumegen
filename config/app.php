@@ -56,6 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Domain
+    |--------------------------------------------------------------------------
+    |
+    | Host for the support admin UI. Routes are domain-scoped so the main app
+    | host never serves /admin. Local Herd default: admin.resumegen.test
+    |
+    */
+
+    'admin_domain' => env('APP_ADMIN_DOMAIN', 'admin.resumegen.test'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
