@@ -167,7 +167,56 @@ final class ResumeExport
             'contact' => implode(' • ', $contact),
             'sections' => $sections,
             'style' => self::templateStyle((string) ($doc['template'] ?? 'minimal')),
+            'density' => self::densityScale((string) ($doc['density'] ?? 'balanced')),
         ];
+    }
+
+    /**
+     * PDF spacing/type scale for compact / balanced / spacious.
+     * Mirrors the workstation density control so export matches the intent.
+     *
+     * @return array{body: string, line: string, page_pad_y: string, page_pad_x: string, header_mb: string, section_mt: string, section_mb: string, entry_mb: string, bullet_mb: string, row_pb: string}
+     */
+    private static function densityScale(string $density): array
+    {
+        return match ($density) {
+            'compact' => [
+                'body' => '9.5pt',
+                'line' => '1.32',
+                'page_pad_y' => '0.5in',
+                'page_pad_x' => '0.65in',
+                'header_mb' => '10pt',
+                'section_mt' => '10pt',
+                'section_mb' => '4pt',
+                'entry_mb' => '5pt',
+                'bullet_mb' => '1pt',
+                'row_pb' => '2pt',
+            ],
+            'spacious' => [
+                'body' => '11pt',
+                'line' => '1.55',
+                'page_pad_y' => '0.75in',
+                'page_pad_x' => '0.8in',
+                'header_mb' => '16pt',
+                'section_mt' => '16pt',
+                'section_mb' => '8pt',
+                'entry_mb' => '11pt',
+                'bullet_mb' => '3pt',
+                'row_pb' => '6pt',
+            ],
+            default => [
+                'body' => '10.5pt',
+                'line' => '1.45',
+                'page_pad_y' => '0.65in',
+                'page_pad_x' => '0.75in',
+                'header_mb' => '14pt',
+                'section_mt' => '14pt',
+                'section_mb' => '6pt',
+                'entry_mb' => '8pt',
+                'bullet_mb' => '2pt',
+                'row_pb' => '4pt',
+            ],
+        };
     }
 
     /**
