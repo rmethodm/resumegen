@@ -1,5 +1,6 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import AutocompleteInput from '@/Components/AutocompleteInput';
 import SkillGroupEditor from '@/Components/SkillGroupEditor';
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Label } from '@/Components/ui/label';
@@ -23,6 +24,9 @@ import { formatPhone } from '@/lib/contact-validation';
 import { cn } from '@/lib/utils';
 import type { ResumeDraft, ResumeSkill, SkillLibraryGroup } from '@/types';
 import type { SkillGroup } from '@/types';
+
+const autocompleteFieldClass =
+    'flex h-10 w-full min-w-0 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm outline-none transition-colors placeholder:text-gray-400 focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500/30';
 
 type RepeatedKey = 'experiences' | 'projects' | 'education' | 'certificates';
 
@@ -65,16 +69,72 @@ export function ContactFields({
 }) {
     return (
         <>
+            <div className="flex flex-col gap-3 rounded-xl border border-brand/20 bg-brand-subtle/40 p-3.5">
+                <div>
+                    <p className="text-[11px] font-bold tracking-[0.06em] text-brand uppercase">
+                        Tailor this version
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-gray-500">
+                        Optional context for scoring and for labeling versions
+                        on the dashboard. Not printed on the resume.
+                    </p>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                    <Label className="text-xs">Target role</Label>
+                    <AutocompleteInput
+                        endpoint="job-roles"
+                        value={resume.target_role}
+                        allowCreate={false}
+                        placeholder="e.g. Senior Product Manager"
+                        className={autocompleteFieldClass}
+                        onChange={(target_role) =>
+                            onChange({ ...resume, target_role })
+                        }
+                    />
+                </div>
+                <Field
+                    label="Target company"
+                    value={resume.target_company}
+                    placeholder="e.g. Acme Corp"
+                    onChange={(target_company) =>
+                        onChange({ ...resume, target_company })
+                    }
+                />
+                <div className="flex flex-col gap-1.5">
+                    <Label className="text-xs">Job description notes</Label>
+                    <Textarea
+                        rows={4}
+                        value={resume.target_job_description}
+                        placeholder="Paste the posting or key requirements you are matching…"
+                        onChange={(event) =>
+                            onChange({
+                                ...resume,
+                                target_job_description: event.target.value,
+                            })
+                        }
+                    />
+                    <p className="text-[11px] text-gray-500">
+                        {resume.target_job_description.length} / 10000
+                        characters
+                    </p>
+                </div>
+            </div>
             <Field
                 label="Full name"
                 value={resume.full_name}
                 onChange={(full_name) => onChange({ ...resume, full_name })}
             />
-            <Field
-                label="Headline"
-                value={resume.headline}
-                onChange={(headline) => onChange({ ...resume, headline })}
-            />
+            <div className="flex flex-col gap-1.5">
+                <Label className="text-xs">Headline</Label>
+                <AutocompleteInput
+                    endpoint="job-titles"
+                    value={resume.headline}
+                    allowCreate={false}
+                    placeholder="e.g. Product Designer"
+                    className={autocompleteFieldClass}
+                    onChange={(headline) => onChange({ ...resume, headline })}
+                />
+            </div>
             <Field
                 label="Email"
                 type="email"
@@ -194,15 +254,21 @@ export function ExperienceFields({
                         remove(resume, onChange, 'experiences', index)
                     }
                 >
-                    <Field
-                        label="Job title"
-                        value={experience.title}
-                        onChange={(title) =>
-                            patch(resume, onChange, 'experiences', index, {
-                                title,
-                            })
-                        }
-                    />
+                    <div className="flex flex-col gap-1.5">
+                        <Label className="text-xs">Job title</Label>
+                        <AutocompleteInput
+                            endpoint="job-titles"
+                            value={experience.title}
+                            allowCreate={false}
+                            placeholder="e.g. Software Engineer"
+                            className={autocompleteFieldClass}
+                            onChange={(title) =>
+                                patch(resume, onChange, 'experiences', index, {
+                                    title,
+                                })
+                            }
+                        />
+                    </div>
                     <Field
                         label="Company"
                         value={experience.company}

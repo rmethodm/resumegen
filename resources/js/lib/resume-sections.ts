@@ -12,8 +12,68 @@ export const sectionLabels: Record<ResumeSectionKey, string> = {
     certificate: 'Certificate',
 };
 
-/** Sections a resume is complete without. */
-export const optionalSections: ResumeSectionKey[] = ['project', 'certificate'];
+/**
+ * Sections the user may hide (and re-add) from the rail. Everything else is
+ * always present — contact, summary, experience, skills.
+ * Must stay in step with Resume::OPTIONAL_SECTIONS.
+ */
+export const optionalSections: ResumeSectionKey[] = [
+    'project',
+    'education',
+    'certificate',
+];
+
+/** Default full catalogue order (matches Resume::SECTIONS). */
+export const allSections: ResumeSectionKey[] = [
+    'contact',
+    'summary',
+    'experience',
+    'project',
+    'education',
+    'skills',
+    'certificate',
+];
+
+export function isOptionalSection(section: ResumeSectionKey): boolean {
+    return optionalSections.includes(section);
+}
+
+/** Optional sections not currently on the resume, in default catalogue order. */
+export function missingOptionalSections(
+    sectionOrder: ResumeSectionKey[],
+): ResumeSectionKey[] {
+    return optionalSections.filter(
+        (section) => !sectionOrder.includes(section),
+    );
+}
+
+/**
+ * Insert a section into the order at its default catalogue position relative
+ * to sections already present.
+ */
+export function insertSectionInOrder(
+    order: ResumeSectionKey[],
+    section: ResumeSectionKey,
+): ResumeSectionKey[] {
+    if (order.includes(section)) {
+        return order;
+    }
+
+    const defaultIndex = allSections.indexOf(section);
+    const next = [...order];
+    let insertAt = next.length;
+
+    for (let i = 0; i < next.length; i++) {
+        if (allSections.indexOf(next[i]) > defaultIndex) {
+            insertAt = i;
+            break;
+        }
+    }
+
+    next.splice(insertAt, 0, section);
+
+    return next;
+}
 
 /**
  * Whether a section reads as done, half-done, or untouched.

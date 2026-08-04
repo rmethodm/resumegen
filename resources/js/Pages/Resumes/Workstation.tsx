@@ -12,7 +12,11 @@ import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useValidContact } from '@/hooks/use-valid-contact';
-import { sectionLabels } from '@/lib/resume-sections';
+import {
+    insertSectionInOrder,
+    isOptionalSection,
+    sectionLabels,
+} from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
 import type {
     Resume,
@@ -233,6 +237,38 @@ export default function Workstation({
         setDraft({ ...draft, section_order: order });
     }
 
+    /** Show an optional section (data kept when previously hidden). */
+    function addSection(sectionKey: ResumeSectionKey) {
+        if (!isOptionalSection(sectionKey)) {
+            return;
+        }
+
+        const order = insertSectionInOrder(draft.section_order, sectionKey);
+        setDraft({ ...draft, section_order: order });
+        setTab('Edit');
+        // Scroll after the section mounts.
+        window.setTimeout(() => scrollToSection(sectionKey), 50);
+    }
+
+    /** Hide an optional section from the document; entry data is kept. */
+    function hideSection(sectionKey: ResumeSectionKey) {
+        if (!isOptionalSection(sectionKey)) {
+            return;
+        }
+
+        const order = draft.section_order.filter((key) => key !== sectionKey);
+
+        if (order.length === draft.section_order.length) {
+            return;
+        }
+
+        setDraft({ ...draft, section_order: order });
+
+        if (section === sectionKey) {
+            setSection(order[0] ?? 'contact');
+        }
+    }
+
     return (
         <AuthenticatedLayout>
             <Head title={draft.title} />
@@ -245,6 +281,7 @@ export default function Workstation({
                         resume={draft}
                         selected={section}
                         onSelect={scrollToSection}
+                        onAddSection={addSection}
                         stale={tipsStale}
                         onApplySuggestion={applySuggestion}
                         onSelectSuggestion={selectSuggestion}
@@ -340,47 +377,63 @@ export default function Workstation({
                                         <span className="text-[11px] font-bold tracking-[0.15em] text-brand uppercase">
                                             {sectionLabels[sectionKey]}
                                         </span>
-                                        <div className="ml-auto flex items-center gap-1 sm:hidden">
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                aria-label={`Move ${sectionLabels[sectionKey]} up`}
-                                                disabled={
-                                                    draft.section_order.indexOf(
-                                                        sectionKey,
-                                                    ) === 0
-                                                }
-                                                onClick={() =>
-                                                    moveSectionByOffset(
-                                                        sectionKey,
-                                                        -1,
-                                                    )
-                                                }
-                                            >
-                                                <ArrowUpIcon className="size-4" />
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                aria-label={`Move ${sectionLabels[sectionKey]} down`}
-                                                disabled={
-                                                    draft.section_order.indexOf(
-                                                        sectionKey,
-                                                    ) ===
-                                                    draft.section_order.length -
-                                                        1
-                                                }
-                                                onClick={() =>
-                                                    moveSectionByOffset(
-                                                        sectionKey,
-                                                        1,
-                                                    )
-                                                }
-                                            >
-                                                <ArrowDownIcon className="size-4" />
-                                            </Button>
+                                        <div className="ml-auto flex items-center gap-1">
+                                            {isOptionalSection(sectionKey) && (
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 px-2 text-xs text-gray-500 hover:text-red-600"
+                                                    onClick={() =>
+                                                        hideSection(sectionKey)
+                                                    }
+                                                >
+                                                    Hide section
+                                                </Button>
+                                            )}
+                                            <div className="flex items-center gap-1 sm:hidden">
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    aria-label={`Move ${sectionLabels[sectionKey]} up`}
+                                                    disabled={
+                                                        draft.section_order.indexOf(
+                                                            sectionKey,
+                                                        ) === 0
+                                                    }
+                                                    onClick={() =>
+                                                        moveSectionByOffset(
+                                                            sectionKey,
+                                                            -1,
+                                                        )
+                                                    }
+                                                >
+                                                    <ArrowUpIcon className="size-4" />
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    aria-label={`Move ${sectionLabels[sectionKey]} down`}
+                                                    disabled={
+                                                        draft.section_order.indexOf(
+                                                            sectionKey,
+                                                        ) ===
+                                                        draft.section_order
+                                                            .length -
+                                                            1
+                                                    }
+                                                    onClick={() =>
+                                                        moveSectionByOffset(
+                                                            sectionKey,
+                                                            1,
+                                                        )
+                                                    }
+                                                >
+                                                    <ArrowDownIcon className="size-4" />
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="p-6">

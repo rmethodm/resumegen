@@ -36,6 +36,8 @@ class UpdateResumeRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'target_role' => ['nullable', 'string', 'max:255'],
+            'target_company' => ['nullable', 'string', 'max:255'],
+            'target_job_description' => ['nullable', 'string', 'max:10000'],
 
             'full_name' => ['nullable', 'string', 'max:255'],
             'headline' => ['nullable', 'string', 'max:255'],
