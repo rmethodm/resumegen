@@ -10,6 +10,7 @@ use App\Models\Resume;
 use App\Models\ResumeNote;
 use App\Models\StarterProfile;
 use App\Support\DocxExport;
+use App\Support\PdfFonts;
 use App\Support\ResumeAnalysis;
 use App\Support\ResumeDocument;
 use App\Support\ResumeExport;
@@ -148,14 +149,12 @@ class ResumeController extends Controller
 
         $doc = ResumeDocument::toArray($resume);
         $filename = ResumeExport::filename($doc);
-
-        // dompdf only ships the core PostScript fonts, so the eleven UI
-        // faces collapse to serif or sans — the closest honest mapping.
-        $serif = in_array($resume->font, ['georgia', 'garamond', 'cambria', 'times'], true);
+        $pdfFont = PdfFonts::resolve($resume->font);
 
         return Pdf::loadView('resumes.export.pdf', [
             'view' => ResumeExport::build($doc),
-            'font' => $serif ? 'serif' : 'sans-serif',
+            'fontStack' => $pdfFont['stack'],
+            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
         ])->download("{$filename}.pdf");
     }
 

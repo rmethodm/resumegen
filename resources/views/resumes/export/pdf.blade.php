@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <style>
+{!! $fontFaceCss ?? '' !!}
     body {
-        font-family: {{ $font === 'serif' ? 'Georgia, "Times New Roman", serif' : 'Helvetica, Arial, sans-serif' }};
+        font-family: {!! $fontStack !!};
         color: #181818;
         font-size: 10.5pt;
         line-height: 1.45;
