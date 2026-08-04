@@ -78,6 +78,7 @@ final class ResumeDocument
             'font' => $resume->font,
             'density' => $resume->density,
             'skills_layout' => $resume->skills_layout,
+            'bullet_style' => $resume->bullet_style,
             'section_order' => $resume->sectionOrder(),
 
             'experiences' => $resume->experiences
@@ -150,6 +151,7 @@ final class ResumeDocument
                 'font' => $data['font'] ?? 'sans',
                 'density' => $data['density'] ?? 'balanced',
                 'skills_layout' => $data['skills_layout'] ?? 'inline',
+                'bullet_style' => $data['bullet_style'] ?? 'bullet',
                 'section_order' => $data['section_order'] ?? null,
             ];
 

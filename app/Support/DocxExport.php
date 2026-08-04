@@ -100,7 +100,10 @@ final class DocxExport
 
         $out .= match ($section['kind']) {
             'text' => self::paragraph(self::run($section['text']), ['after' => '120']),
-            'entries' => implode('', array_map(self::entry(...), $section['entries'])),
+            'entries' => implode('', array_map(
+                fn (array $entry): string => self::entry($entry, $section['bullet_style'] ?? 'bullet'),
+                $section['entries'],
+            )),
             'rows' => implode('', array_map(
                 fn (array $row): string => self::paragraph(
                     self::run(trim($row['left'].($row['right'] !== '' ? '  —  '.$row['right'] : ''))),
@@ -116,7 +119,7 @@ final class DocxExport
     }
 
     /** @param  array{primary: string, secondary: string, dates: string, bullets: list<string>, description?: string}  $entry */
-    private static function entry(array $entry): string
+    private static function entry(array $entry, string $bulletStyle = 'bullet'): string
     {
         $out = self::paragraph(
             self::run($entry['primary'], ['b' => true])
@@ -132,8 +135,21 @@ final class DocxExport
             $out .= self::paragraph(self::run($entry['description']), ['after' => '40']);
         }
 
-        foreach ($entry['bullets'] as $bullet) {
-            $out .= self::paragraph(self::run('•  '.$bullet), ['after' => '20', 'indent' => '360']);
+        // Real numbered/none-marker bullets need a numbering.xml part this
+        // writer skips (see the class docblock) — a literal prefix per style
+        // is the same trade-off the always-"•" version already made.
+        foreach ($entry['bullets'] as $index => $bullet) {
+            $prefix = match ($bulletStyle) {
+                'numbered' => ($index + 1).'.  ',
+                'indented' => '',
+                default => '•  ',
+            };
+
+            $indentOpts = $bulletStyle === 'indented'
+                ? ['after' => '20', 'indentLeft' => '360']
+                : ['after' => '20', 'indent' => '360'];
+
+            $out .= self::paragraph(self::run($prefix.$bullet), $indentOpts);
         }
 
         return $out.self::paragraph('', ['after' => '80']);
@@ -172,7 +188,7 @@ final class DocxExport
     }
 
     /**
-     * @param  array{align?: string, before?: string, after?: string, indent?: string, borderColor?: string|null}  $opts
+     * @param  array{align?: string, before?: string, after?: string, indent?: string, indentLeft?: string, borderColor?: string|null}  $opts
      */
     private static function paragraph(string $runsXml, array $opts = []): string
     {
@@ -181,7 +197,12 @@ final class DocxExport
         $props .= (isset($opts['before']) || isset($opts['after']))
             ? '<w:spacing w:before="'.($opts['before'] ?? '0').'" w:after="'.($opts['after'] ?? '0').'"/>'
             : '';
+        // 'indent' is a hanging indent — the marker sits in the reserved
+        // space, so wrapped lines align under the text, not the marker.
+        // 'indentLeft' has no marker to reserve space for, so every line
+        // (including the first) gets the same plain left indent instead.
         $props .= isset($opts['indent']) ? '<w:ind w:left="'.$opts['indent'].'" w:hanging="'.$opts['indent'].'"/>' : '';
+        $props .= isset($opts['indentLeft']) ? '<w:ind w:left="'.$opts['indentLeft'].'"/>' : '';
         $props .= ! empty($opts['borderColor'])
             ? '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="4" w:color="'.$opts['borderColor'].'"/></w:pBdr>'
             : '';

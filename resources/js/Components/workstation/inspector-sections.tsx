@@ -7,6 +7,8 @@ import { Textarea } from '@/Components/ui/textarea';
 import {
     AddButton,
     BulletsField,
+    BulletStyleThumb,
+    bulletStyles,
     EntryCard,
     Field,
     LayoutThumb,
@@ -148,6 +150,41 @@ export function ExperienceFields({
 
     return (
         <>
+            <div className="flex flex-col gap-1.5">
+                <Label className="text-xs">Bullet style</Label>
+                <div className="grid grid-cols-3 gap-2">
+                    {bulletStyles.map((style) => (
+                        <button
+                            key={style}
+                            type="button"
+                            aria-pressed={resume.bullet_style === style}
+                            onClick={() =>
+                                onChange({ ...resume, bullet_style: style })
+                            }
+                            className={cn(
+                                'flex flex-col justify-between gap-3 rounded-xl border p-2.5 text-left',
+                                resume.bullet_style === style
+                                    ? 'border-brand bg-brand-subtle ring-1 ring-brand'
+                                    : 'border-gray-200 hover:bg-gray-50',
+                            )}
+                        >
+                            <span className="flex h-12 flex-col justify-center">
+                                <BulletStyleThumb style={style} />
+                            </span>
+                            <span
+                                className={cn(
+                                    'text-[10px] font-bold tracking-[0.06em] uppercase',
+                                    resume.bullet_style === style
+                                        ? 'text-brand'
+                                        : 'text-gray-500',
+                                )}
+                            >
+                                {style}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            </div>
             {resume.experiences.map((experience, index) => (
                 <EntryCard
                     key={index}

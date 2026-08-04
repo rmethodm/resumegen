@@ -215,6 +215,7 @@ final class ResumeExport
                     'dates' => self::dateRange($e['start_date'] ?? '', $e['end_date'] ?? '', (bool) ($e['is_current'] ?? false)),
                     'bullets' => self::visible($e['bullets'] ?? []),
                 ],
+                (string) ($doc['bullet_style'] ?? 'bullet'),
             ),
 
             'project' => self::entriesSection(
@@ -269,11 +270,11 @@ final class ResumeExport
      * @param  callable(array<string, mixed>): array<string, mixed>  $map
      * @return array<string, mixed>|null
      */
-    private static function entriesSection(string $title, array $entries, callable $map): ?array
+    private static function entriesSection(string $title, array $entries, callable $map, string $bulletStyle = 'bullet'): ?array
     {
         return $entries === []
             ? null
-            : ['kind' => 'entries', 'title' => $title, 'entries' => array_map($map, $entries)];
+            : ['kind' => 'entries', 'title' => $title, 'entries' => array_map($map, $entries), 'bullet_style' => $bulletStyle];
     }
 
     /**

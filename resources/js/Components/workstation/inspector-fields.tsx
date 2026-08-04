@@ -11,7 +11,7 @@ import {
     years,
 } from '@/lib/month-year';
 import { cn } from '@/lib/utils';
-import type { ResumeSkillsLayout } from '@/types';
+import type { ResumeBulletStyle, ResumeSkillsLayout } from '@/types';
 
 /** Move one item, shifting the rest — shared by every drag-reorderable list. */
 export function reorder<T>(list: T[], from: number, to: number): T[] {
@@ -103,6 +103,46 @@ export function LayoutThumb({ layout }: { layout: ResumeSkillsLayout }) {
                     <Bar w="24%" />
                     <Dot />
                     <Bar w="16%" />
+                </div>
+            );
+    }
+}
+
+export const bulletStyles: ResumeBulletStyle[] = ['bullet', 'numbered', 'indented'];
+
+/** A wordless sketch of how the style marks each experience bullet. */
+export function BulletStyleThumb({ style }: { style: ResumeBulletStyle }) {
+    switch (style) {
+        case 'numbered':
+            return (
+                <div className="flex flex-col gap-1.5">
+                    {['70%', '55%'].map((w, index) => (
+                        <span key={w} className="flex items-center gap-1.5">
+                            <span className="text-[9px] font-semibold text-gray-500">
+                                {index + 1}.
+                            </span>
+                            <Bar w={w} />
+                        </span>
+                    ))}
+                </div>
+            );
+        case 'indented':
+            return (
+                <div className="flex flex-col gap-1.5 pl-2.5">
+                    <Bar w="70%" />
+                    <Bar w="55%" />
+                </div>
+            );
+        case 'bullet':
+        default:
+            return (
+                <div className="flex flex-col gap-1.5">
+                    {['70%', '55%'].map((w) => (
+                        <span key={w} className="flex items-center gap-1.5">
+                            <Dot />
+                            <Bar w={w} />
+                        </span>
+                    ))}
                 </div>
             );
     }

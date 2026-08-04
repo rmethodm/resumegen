@@ -45,8 +45,10 @@
     .entry .secondary { font-size: 9.5pt; color: #555; }
     .entry .dates { font-size: 9pt; color: #777; text-align: right; white-space: nowrap; }
     .entry .description { font-size: 10pt; margin-top: 2pt; }
-    .entry ul { margin: 3pt 0 0 14pt; padding: 0; }
+    .entry ul, .entry ol { margin: 3pt 0 0 14pt; padding: 0; }
     .entry li { font-size: 10pt; margin-bottom: 2pt; }
+    .entry .indented-bullets { margin: 3pt 0 0 14pt; }
+    .entry .indented-bullets div { font-size: 10pt; margin-bottom: 2pt; }
 
     table.rows { width: 100%; border-collapse: collapse; }
     table.rows td { border: none; padding: 0 0 4pt; font-size: 10pt; vertical-align: top; }
@@ -96,11 +98,25 @@
                         <div class="description">{{ $entry['description'] }}</div>
                     @endif
                     @if (! empty($entry['bullets']))
-                        <ul>
-                            @foreach ($entry['bullets'] as $bullet)
-                                <li>{{ $bullet }}</li>
-                            @endforeach
-                        </ul>
+                        @if (($section['bullet_style'] ?? 'bullet') === 'numbered')
+                            <ol>
+                                @foreach ($entry['bullets'] as $bullet)
+                                    <li>{{ $bullet }}</li>
+                                @endforeach
+                            </ol>
+                        @elseif (($section['bullet_style'] ?? 'bullet') === 'indented')
+                            <div class="indented-bullets">
+                                @foreach ($entry['bullets'] as $bullet)
+                                    <div>{{ $bullet }}</div>
+                                @endforeach
+                            </div>
+                        @else
+                            <ul>
+                                @foreach ($entry['bullets'] as $bullet)
+                                    <li>{{ $bullet }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
                     @endif
                 </div>
             @endforeach

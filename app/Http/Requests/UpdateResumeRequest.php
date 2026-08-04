@@ -54,6 +54,7 @@ class UpdateResumeRequest extends FormRequest
             'font' => ['nullable', Rule::in(ResumeDocument::FONTS)],
             'density' => ['nullable', Rule::in(['compact', 'balanced', 'spacious'])],
             'skills_layout' => ['nullable', Rule::in(['inline', 'bullets', 'grouped', 'columns', 'narrative'])],
+            'bullet_style' => ['nullable', Rule::in(['bullet', 'numbered', 'indented'])],
             'section_order' => ['nullable', 'array', 'max:20'],
             'section_order.*' => [Rule::in(Resume::SECTIONS)],
 
