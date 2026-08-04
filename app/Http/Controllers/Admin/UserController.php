@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminActionLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,8 +47,26 @@ class UserController extends Controller
     {
         $user->loadCount('resumes');
 
+        $actions = AdminActionLog::query()
+            ->with(['actor:id,name,email'])
+            ->where('target_user_id', $user->id)
+            ->orderByDesc('id')
+            ->limit(25)
+            ->get()
+            ->map(fn (AdminActionLog $log) => [
+                'id' => $log->id,
+                'action' => $log->action,
+                'created_at' => $log->created_at?->toIso8601String(),
+                'actor' => $log->actor === null ? null : [
+                    'id' => $log->actor->id,
+                    'name' => $log->actor->name,
+                    'email' => $log->actor->email,
+                ],
+            ]);
+
         return Inertia::render('Admin/Users/Show', [
             'user' => $this->detailPayload($user),
+            'actions' => $actions,
         ]);
     }
 
@@ -55,10 +74,7 @@ class UserController extends Controller
     {
         if ($user->email_verified_at === null) {
             $user->forceFill(['email_verified_at' => now()])->save();
-            Log::info('admin.user.verify_email', [
-                'admin_id' => $request->user()?->id,
-                'user_id' => $user->id,
-            ]);
+            $this->record($request, $user, 'verify_email');
         }
 
         return redirect()
@@ -72,11 +88,7 @@ class UserController extends Controller
 
         $user->forceFill(['disabled_at' => now()])->save();
         $user->tokens()->delete();
-
-        Log::info('admin.user.disable', [
-            'admin_id' => $request->user()?->id,
-            'user_id' => $user->id,
-        ]);
+        $this->record($request, $user, 'disable');
 
         return redirect()
             ->route('admin.users.show', $user)
@@ -86,11 +98,7 @@ class UserController extends Controller
     public function enable(Request $request, User $user): RedirectResponse
     {
         $user->forceFill(['disabled_at' => null])->save();
-
-        Log::info('admin.user.enable', [
-            'admin_id' => $request->user()?->id,
-            'user_id' => $user->id,
-        ]);
+        $this->record($request, $user, 'enable');
 
         return redirect()
             ->route('admin.users.show', $user)
@@ -100,15 +108,26 @@ class UserController extends Controller
     public function revokeTokens(Request $request, User $user): RedirectResponse
     {
         $user->tokens()->delete();
-
-        Log::info('admin.user.revoke_tokens', [
-            'admin_id' => $request->user()?->id,
-            'user_id' => $user->id,
-        ]);
+        $this->record($request, $user, 'revoke_tokens');
 
         return redirect()
             ->route('admin.users.show', $user)
             ->with('success', 'API tokens revoked.');
+    }
+
+    private function record(Request $request, User $target, string $action): void
+    {
+        $actor = $request->user();
+        if ($actor === null) {
+            return;
+        }
+
+        AdminActionLog::record($actor, $target, $action);
+
+        Log::info('admin.user.'.$action, [
+            'admin_id' => $actor->id,
+            'user_id' => $target->id,
+        ]);
     }
 
     /**

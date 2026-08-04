@@ -39,6 +39,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(StarterProfile::class);
     }
 
+    /**
+     * Support-admin actions taken against this user (append-only).
+     *
+     * @return HasMany<AdminActionLog, $this>
+     */
+    public function adminActionLogsAsTarget(): HasMany
+    {
+        return $this->hasMany(AdminActionLog::class, 'target_user_id');
+    }
+
     protected function casts(): array
     {
         return [
