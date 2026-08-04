@@ -488,7 +488,7 @@ export function scoreChecklist(draft: ResumeDraft): ScoreChecklistItem[] {
             band: 'Keywords',
             done: draft.target_role.trim() !== '',
             section: 'contact',
-            fieldId: 'field-target-role',
+            fieldId: 'field-target-role-bar',
         },
         {
             id: 'profile-contact',
@@ -552,7 +552,7 @@ export function scoreChecklist(draft: ResumeDraft): ScoreChecklistItem[] {
             section: roleKeywords.length === 0 ? 'contact' : 'skills',
             fieldId:
                 roleKeywords.length === 0
-                    ? 'field-target-role'
+                    ? 'field-target-role-bar'
                     : 'field-skills',
         },
     ];

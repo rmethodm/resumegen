@@ -3,7 +3,7 @@ import type { ResumeDraft, ResumeSectionKey } from '@/types';
 export type SectionStatus = 'complete' | 'warning' | 'empty';
 
 export const sectionLabels: Record<ResumeSectionKey, string> = {
-    contact: 'Start - Main',
+    contact: 'Contact',
     summary: 'Professional Summary',
     experience: 'Experience',
     project: 'Project',

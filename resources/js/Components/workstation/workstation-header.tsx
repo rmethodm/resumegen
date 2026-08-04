@@ -106,7 +106,7 @@ export function WorkstationHeader({
     const [pickingTemplate, setPickingTemplate] = useState(false);
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white">
+        <div className="sticky top-[52px] z-20 rounded-lg border border-gray-200 bg-white shadow-sm">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5 sm:px-4">
                 {/* Left: title · status */}
                 <div className="flex min-w-0 flex-1 items-center gap-2">
