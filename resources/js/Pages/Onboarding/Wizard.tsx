@@ -6,9 +6,10 @@ import { FormEventHandler, useState } from 'react';
 type Step = 1 | 2 | 3;
 
 const TEMPLATE_LABELS: Record<string, string> = {
-    classic: 'Classic', modern: 'Modern', minimal: 'Minimal', 'minimal-ruled': 'Minimal Ruled',
-    executive: 'Executive', ats: 'ATS',
-    'skills-first': 'Skills-First', academic: 'Academic CV', bold: 'Minimalist Bold',
+    'ats-plain': 'ATS Plain',
+    classic: 'Classic Serif',
+    modern: 'Modern Sans',
+    minimalist: 'Minimalist',
 };
 
 function StepDots({ step }: { step: Step }) {

@@ -54,31 +54,12 @@ export type ResumeSectionKey =
     | 'skills'
     | 'certificate';
 
+/** Four kept themes — keep in sync with ResumeDocument::TEMPLATES. */
 export type ResumeTemplateKey =
-    | 'minimal'
-    | 'modern'
-    | 'classic'
-    | 'executive'
-    | 'ats'
-    | 'skills-first'
-    | 'reverse-chronological'
     | 'ats-plain'
-    | 'minimalist'
-    | 'engineering'
-    | 'ivy-serif'
-    | 'clinical'
-    | 'career-change'
-    | 'entry-level'
-    | 'metric-cards'
-    | 'sales-quota-table'
-    | 'federal'
-    | 'academic-cv'
-    | 'accent-rule'
-    | 'consulting-ledger'
-    | 'education'
-    | 'startup-one-pager'
-    | 'it-competency-matrix'
-    | 'centered-traditional';
+    | 'classic'
+    | 'modern'
+    | 'minimalist';
 export type ResumeFont =
     | 'inter'
     | 'arial'
@@ -174,6 +155,14 @@ export type ResumeAnalysis = {
     suggestions: ResumeSuggestion[];
 };
 
+/**
+ * Share payload on dashboard cards — full modal fields plus expiry flag.
+ * Null when the resume has never had a share link created.
+ */
+export type DashboardShareInfo = ResumeShareLink & {
+    is_expired: boolean;
+};
+
 /** A dashboard row: enough to list, rank, and render a card preview. */
 export type ResumeSummary = {
     id: number;
@@ -183,12 +172,15 @@ export type ResumeSummary = {
     updated_at: string | null;
     score: number;
     version_count: number;
+    /** Share status for the newest version (card row). */
+    share: DashboardShareInfo | null;
     versions: {
         id: number;
         title: string;
         target_company: string | null;
         score: number;
         is_base: boolean;
+        share: DashboardShareInfo | null;
     }[];
     /** The full document, for the dashboard card's live preview thumbnail. */
     preview: Resume;

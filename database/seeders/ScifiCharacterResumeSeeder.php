@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Resume;
 use App\Models\User;
 use App\Support\ResumeDocument;
 use Illuminate\Database\Seeder;
@@ -72,7 +71,7 @@ class ScifiCharacterResumeSeeder extends Seeder
             'linkedin' => 'linkedin.com/in/jeanlucpicard',
             'website' => 'starfleet.example/officers/picard',
             'summary' => 'Seasoned command officer and diplomatic leader with decades of multi-party negotiation, deep-space exploration, and high-stakes crisis response. Proven ability to align diverse stakeholders under pressure, uphold ethical standards without sacrificing mission outcomes, and mentor the next generation of officers. Known for calm decision-making under uncertainty, cross-cultural fluency, and translating strategic intent into disciplined execution across science, engineering, and security functions. Seeking senior leadership roles where exploration, governance, and principled command intersect.',
-            'template' => 'executive',
+            'template' => 'classic',
             'font' => 'garamond',
             'density' => 'balanced',
             'skills_layout' => 'grouped',
@@ -255,7 +254,7 @@ class ScifiCharacterResumeSeeder extends Seeder
             'linkedin' => 'linkedin.com/in/ellenripley',
             'website' => 'ops.example/ripley',
             'summary' => 'Results-driven operations leader specializing in high-risk environments, containment protocols, and life-critical systems under extreme time pressure. Combines warrant-officer pragmatism with uncompromising safety standards—willing to challenge corporate risk appetite when lives are on the line. Experience spans cargo logistics, emergency ship systems, quarantine enforcement, and multi-team coordination in isolated facilities. Recognized for decisive action, clear communication under stress, and building trust with engineers, medics, and security personnel who must execute together when plans fail. Seeking senior roles in industrial safety, incident command, or mission-critical operations.',
-            'template' => 'engineering',
+            'template' => 'modern',
             'font' => 'ibm-plex-sans',
             'density' => 'compact',
             'skills_layout' => 'grouped',
@@ -437,7 +436,7 @@ class ScifiCharacterResumeSeeder extends Seeder
             'linkedin' => 'linkedin.com/in/paulatredies',
             'website' => 'governance.example/atredies',
             'summary' => 'Strategic operator with experience spanning hereditary governance, high-stakes resource economics, and coalition leadership in austere environments. Combines formal political training with field fluency among local populations—bridging palace-level planning and on-the-ground logistics. Demonstrated ability to read multi-year power dynamics, design sustainable resource strategies, and unite disparate factions around shared survival goals. Comfortable with incomplete information, rapid role expansion, and the moral weight of decisions that reshape institutions. Seeking executive strategy roles in resource-intensive industries, geopolitical risk, or complex multi-stakeholder programs.',
-            'template' => 'consulting-ledger',
+            'template' => 'classic',
             'font' => 'libre-baskerville',
             'density' => 'balanced',
             'skills_layout' => 'grouped',
@@ -612,7 +611,7 @@ class ScifiCharacterResumeSeeder extends Seeder
             'linkedin' => 'linkedin.com/in/danascullymd',
             'website' => 'medforensics.example/scully',
             'summary' => 'Board-trained physician and federal investigator specializing at the intersection of forensic pathology, anomalous case review, and evidence-based scientific method under institutional pressure. Known for rigorous differential diagnosis, careful documentation, and willingness to challenge both fringe claims and bureaucratic assumptions with data. Experience includes autopsy leadership, field medical response, laboratory collaboration, and teaching junior agents to separate signal from noise. Brings dual fluency in clinical medicine and investigative procedure—translating complex findings for courts, task forces, and non-technical leadership. Seeking senior roles in medical investigation, public-health forensics, or science-led special programs.',
-            'template' => 'clinical',
+            'template' => 'modern',
             'font' => 'source-serif-4',
             'density' => 'balanced',
             'skills_layout' => 'grouped',

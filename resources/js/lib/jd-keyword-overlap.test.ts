@@ -16,7 +16,7 @@ function draft(overrides: Partial<ResumeDraft> = {}): ResumeDraft {
         target_role: 'Engineer',
         target_company: '',
         target_job_description: '',
-        template: 'minimal',
+        template: 'ats-plain',
         font: 'inter',
         density: 'balanced',
         skills_layout: 'inline',

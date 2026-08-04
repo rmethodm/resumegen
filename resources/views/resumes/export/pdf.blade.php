@@ -62,7 +62,9 @@
 
     p.section-text { margin: 0; font-size: {{ $d['body'] }}; }
 
-    .entry { margin-bottom: {{ $d['entry_mb'] }}; }
+    .entry {
+        margin-bottom: {{ $d['entry_mb'] }};
+    }
     .entry.cards {
         border: 1pt solid {{ $entryAccent }};
         background: #fafafa;
@@ -87,8 +89,10 @@
     .entry .indented-bullets div { font-size: {{ $d['body'] }}; margin-bottom: {{ $d['bullet_mb'] }}; }
 
     table.rows { width: 100%; border-collapse: collapse; }
+    table.rows tr { page-break-inside: avoid; }
     table.rows td { border: none; padding: 0 0 {{ $d['row_pb'] }}; font-size: {{ $d['body'] }}; vertical-align: top; }
-    table.rows td.right { text-align: right; color: #555; white-space: nowrap; }
+    table.rows td.left { width: 100%; padding-right: 10pt; }
+    table.rows td.right { text-align: right; color: #555; white-space: nowrap; width: 1%; }
 
     .skills-group { font-size: {{ $d['body'] }}; margin-bottom: 3pt; }
     .skills-inline { font-size: {{ $d['body'] }}; }
@@ -177,13 +181,15 @@
             <table class="rows">
                 @foreach ($section['rows'] as $row)
                     <tr>
-                        <td>
+                        <td class="left">
                             {{ $row['left'] }}
                             @if (! empty($row['left_sub']))
                                 <div style="color: #555; font-size: 9.5pt; margin-top: 1pt;">{{ $row['left_sub'] }}</div>
                             @endif
                         </td>
-                        <td class="right">{{ $row['right'] }}</td>
+                        @if (($row['right'] ?? '') !== '')
+                            <td class="right">{{ $row['right'] }}</td>
+                        @endif
                     </tr>
                 @endforeach
             </table>

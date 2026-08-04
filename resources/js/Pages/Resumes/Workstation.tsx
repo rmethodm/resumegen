@@ -747,29 +747,7 @@ export default function Workstation({
                         )}
 
                         {tab === 'Edit' && (
-                            <div
-                                className={cn(
-                                    'grid gap-6',
-                                    !isMobile && 'xl:grid-cols-2',
-                                )}
-                            >
-                                <div className="min-w-0">
-                                    {renderFormSections()}
-                                </div>
-                                {!isMobile && (
-                                    <div className="sticky top-4 hidden max-h-[calc(100vh-6rem)] min-w-0 overflow-y-auto xl:block">
-                                        <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
-                                            <p className="mb-2 px-1 text-[10px] font-bold tracking-wide text-gray-400 uppercase">
-                                                Live preview
-                                            </p>
-                                            <ResumePreview
-                                                resume={draft}
-                                                className="w-full origin-top scale-[0.85]"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            <div className="min-w-0">{renderFormSections()}</div>
                         )}
 
                         <div className="flex flex-col gap-3">

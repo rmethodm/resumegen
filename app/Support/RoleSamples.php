@@ -84,7 +84,7 @@ final class RoleSamples
                 'target_role' => 'Software Engineer',
                 'headline' => 'Software Engineer',
                 'summary' => 'Software engineer with 5+ years building TypeScript/React products and reliable APIs. Focused on performance, testing, and shipping measurable outcomes with cross-functional teams.',
-                'template' => 'engineering',
+                'template' => 'modern',
                 'experiences' => [
                     [
                         'title' => 'Software Engineer',
@@ -148,7 +148,7 @@ final class RoleSamples
                 'target_role' => 'Data Scientist',
                 'headline' => 'Data Scientist',
                 'summary' => 'Data scientist who turns messy product data into experiments and models stakeholders trust. Strong in SQL, Python, and dashboard storytelling that drives roadmap decisions.',
-                'template' => 'metric-cards',
+                'template' => 'modern',
                 'experiences' => [
                     [
                         'title' => 'Data Scientist',

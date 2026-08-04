@@ -72,7 +72,7 @@ class ResumeController extends Controller
                 'location' => $contact['location'] !== '' ? $contact['location'] : '',
                 'linkedin' => $contact['linkedin'] !== '' ? $contact['linkedin'] : '',
                 'website' => $contact['website'] !== '' ? $contact['website'] : '',
-                'template' => $validated['template'] ?? ($sample['document']['template'] ?? 'minimal'),
+                'template' => $validated['template'] ?? ($sample['document']['template'] ?? 'ats-plain'),
                 'font' => $validated['font'] ?? 'inter',
             ]);
 
@@ -178,12 +178,13 @@ class ResumeController extends Controller
         $doc = ResumeDocument::toArray($resume);
         $filename = ResumeExport::filename($doc);
         $pdfFont = PdfFonts::resolve($resume->font);
+        PdfFonts::ensureInstalled($pdfFont);
 
         return Pdf::loadView('resumes.export.pdf', [
             'view' => ResumeExport::build($doc),
             'fontStack' => $pdfFont['stack'],
             'fontFaceCss' => PdfFonts::faceCss($pdfFont),
-        ])->stream("{$filename}.pdf");
+        ])->setPaper('letter')->stream("{$filename}.pdf");
     }
 
     /**
@@ -250,12 +251,13 @@ class ResumeController extends Controller
         $doc = ResumeDocument::toArray($resume);
         $filename = ResumeExport::filename($doc);
         $pdfFont = PdfFonts::resolve($resume->font);
+        PdfFonts::ensureInstalled($pdfFont);
 
         return Pdf::loadView('resumes.export.pdf', [
             'view' => ResumeExport::build($doc),
             'fontStack' => $pdfFont['stack'],
             'fontFaceCss' => PdfFonts::faceCss($pdfFont),
-        ])->download("{$filename}.pdf");
+        ])->setPaper('letter')->download("{$filename}.pdf");
     }
 
     /**

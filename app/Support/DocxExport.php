@@ -105,10 +105,21 @@ final class DocxExport
                 $section['entries'],
             )),
             'rows' => implode('', array_map(
-                fn (array $row): string => self::paragraph(
-                    self::run(trim($row['left'].($row['right'] !== '' ? '  —  '.$row['right'] : ''))),
-                    ['after' => '80'],
-                ),
+                function (array $row): string {
+                    $line = trim($row['left'].(($row['right'] ?? '') !== '' ? '  —  '.$row['right'] : ''));
+                    $out = self::paragraph(
+                        self::run($line),
+                        ['after' => ! empty($row['left_sub']) ? '20' : '80'],
+                    );
+                    if (! empty($row['left_sub'])) {
+                        $out .= self::paragraph(
+                            self::run($row['left_sub'], ['i' => true, 'size' => '18']),
+                            ['after' => '80'],
+                        );
+                    }
+
+                    return $out;
+                },
                 $section['rows'],
             )),
             'skills' => self::skills($section),

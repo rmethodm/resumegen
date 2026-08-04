@@ -115,41 +115,21 @@ type TemplateStyle = {
 };
 
 const templates: Record<ResumeTemplateKey, TemplateStyle> = {
-    minimal: {
-        header: {
-            align: 'center',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: INK,
-            subColor: '#333',
-            rule: '2px solid #1f2933',
-        },
-        heading: {
-            color: '#444',
-            tracking: '0.22em',
-            transform: 'uppercase',
-            weight: 400,
-            rule: `1px solid ${RULE}`,
-        },
-    },
-    modern: {
+    'ats-plain': {
         header: {
             align: 'left',
-            nameSize: '2.2em',
+            nameSize: '2em',
             nameUpper: false,
-            nameColor: '#312e81',
-            subColor: '#4338ca',
-            rule: undefined,
-            bg: '#eef2ff',
+            nameColor: '#111',
+            subColor: '#000000',
         },
         heading: {
-            color: '#4f46e5',
-            tracking: '0.14em',
-            transform: 'uppercase',
+            color: '#16161f',
+            tracking: '0',
+            transform: 'none',
             weight: 700,
-            rule: '1px solid #c7d2fe',
+            rule: '1.5px solid #bbbbbb',
         },
-        pageAccent: '#4f46e5',
         entryStyle: 'stacked',
     },
     classic: {
@@ -171,99 +151,24 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
         },
         entryStyle: 'ruled',
     },
-    executive: {
+    modern: {
         header: {
             align: 'left',
-            nameSize: '2.5em',
-            nameUpper: true,
-            nameColor: '#0f172a',
-            nameTracking: '0.02em',
-            subColor: '#475569',
-            rule: '4px solid #0f172a',
-        },
-        heading: {
-            color: '#0f172a',
-            tracking: '0.16em',
-            transform: 'uppercase',
-            weight: 700,
-            bar: '#0f172a',
-        },
-        pageAccent: '#0f172a',
-        nameWeight: 800,
-    },
-    ats: {
-        // Deliberately unstyled: no colour, no rules, no accent bars — the
-        // layout an applicant-tracking parser reads most reliably.
-        header: {
-            align: 'left',
-            nameSize: '1.9em',
+            nameSize: '2.2em',
             nameUpper: false,
-            nameColor: '#000',
-            subColor: '#000',
+            nameColor: '#312e81',
+            subColor: '#4338ca',
+            rule: undefined,
+            bg: '#eef2ff',
         },
         heading: {
-            color: '#000',
-            tracking: '0.02em',
+            color: '#4f46e5',
+            tracking: '0.14em',
             transform: 'uppercase',
             weight: 700,
+            rule: '1px solid #c7d2fe',
         },
-        entryStyle: 'stacked',
-    },
-    'skills-first': {
-        header: {
-            align: 'center',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#047857',
-            subColor: '#444',
-            rule: '2px solid #059669',
-            bg: '#ecfdf5',
-        },
-        heading: {
-            color: '#059669',
-            tracking: '0.16em',
-            transform: 'uppercase',
-            weight: 700,
-            rule: '1px solid #a7f3cd',
-        },
-        skillsFirst: true,
-        skillsLayout: 'grouped',
-        pageAccent: '#059669',
-    },
-    'reverse-chronological': {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: true,
-            nameColor: '#111',
-            nameTracking: '0.02em',
-            subColor: '#2b4570',
-            rule: '2px solid #2b4570',
-        },
-        heading: {
-            color: '#16161f',
-            tracking: '0.1em',
-            transform: 'uppercase',
-            weight: 700,
-            rule: '1.5px solid #2b4570',
-        },
-        entryStyle: 'ruled',
-    },
-    'ats-plain': {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#111',
-            subColor: '#000000',
-        },
-        heading: {
-            color: '#16161f',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            rule: '1.5px solid #bbbbbb',
-        },
+        pageAccent: '#4f46e5',
         entryStyle: 'stacked',
     },
     minimalist: {
@@ -283,292 +188,8 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
         entryStyle: 'stacked',
         nameWeight: 500,
     },
-    engineering: {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#0f172a',
-            subColor: '#1e3a5f',
-            rule: '1px solid #1e3a5f',
-        },
-        heading: {
-            color: '#1e3a5f',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            bar: '#1e3a5f',
-        },
-        skillsLayout: 'columns',
-        pageAccent: '#1e3a5f',
-    },
-    'ivy-serif': {
-        header: {
-            align: 'center',
-            nameSize: '2.15em',
-            nameUpper: true,
-            nameColor: '#111',
-            nameTracking: '0.06em',
-            subColor: '#111111',
-            rule: '3px double #14161a',
-        },
-        heading: {
-            color: '#16161f',
-            tracking: '0.12em',
-            transform: 'uppercase',
-            weight: 700,
-            rule: '3px double #14161a',
-        },
-        entryStyle: 'ruled',
-        nameWeight: 600,
-    },
-    clinical: {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: true,
-            nameColor: '#0e5b5b',
-            nameTracking: '0.02em',
-            subColor: '#0e5b5b',
-            bg: '#f0fdfa',
-            rule: '2px solid #0e5b5b',
-        },
-        heading: {
-            color: '#0e5b5b',
-            tracking: '0.1em',
-            transform: 'uppercase',
-            weight: 700,
-            rule: '2px solid #0e5b5b',
-        },
-        entryStyle: 'stacked',
-    },
-    'career-change': {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#312e81',
-            subColor: '#4338ca',
-            rule: '2px solid #4338ca',
-        },
-        heading: {
-            color: '#4338ca',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            bar: '#4338ca',
-        },
-        entryStyle: 'cards',
-    },
-    'entry-level': {
-        header: {
-            align: 'left',
-            nameSize: '2.1em',
-            nameUpper: false,
-            nameColor: '#312e81',
-            subColor: '#3730a3',
-            bg: '#eef2ff',
-        },
-        heading: {
-            color: '#3730a3',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            rule: '1.5px solid #c7d2fe',
-        },
-        entryStyle: 'cards',
-    },
-    'metric-cards': {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#111',
-            subColor: '#4f46e5',
-            rule: '2px solid #4f46e5',
-        },
-        heading: {
-            color: '#4f46e5',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            rule: '1.5px solid #c7d2fe',
-        },
-        entryStyle: 'cards',
-        pageAccent: '#4f46e5',
-    },
-    'sales-quota-table': {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#111',
-            subColor: '#b45309',
-            rule: '2px solid #b45309',
-        },
-        heading: {
-            color: '#92400e',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            rule: '1.5px solid #f59e0b',
-        },
-        entryStyle: 'ruled',
-        pageAccent: '#b45309',
-    },
-    federal: {
-        header: {
-            align: 'left',
-            nameSize: '1.85em',
-            nameUpper: true,
-            nameColor: '#000',
-            nameTracking: '0.04em',
-            subColor: '#000',
-            rule: '1px solid #000',
-        },
-        heading: {
-            color: '#000',
-            tracking: '0.08em',
-            transform: 'uppercase',
-            weight: 700,
-            rule: '1px solid #000',
-        },
-        entryStyle: 'stacked',
-    },
-    'academic-cv': {
-        header: {
-            align: 'center',
-            nameSize: '2.1em',
-            nameUpper: false,
-            nameColor: '#111',
-            subColor: '#333',
-            rule: '1px solid #111',
-        },
-        heading: {
-            color: '#16161f',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            rule: '1px solid #111111',
-        },
-        entryStyle: 'stacked',
-        nameWeight: 600,
-    },
-    'accent-rule': {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#111',
-            subColor: '#4338ca',
-        },
-        heading: {
-            color: '#4338ca',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            bar: '#4338ca',
-            rule: '2px solid #4338ca',
-        },
-        pageAccent: '#4338ca',
-    },
-    'consulting-ledger': {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#111',
-            subColor: '#14161a',
-            rule: '1px solid #14161a',
-        },
-        heading: {
-            color: '#16161f',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            rule: '1.5px solid #14161a',
-        },
-        entryStyle: 'ruled',
-    },
-    education: {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: true,
-            nameColor: '#14532d',
-            nameTracking: '0.02em',
-            subColor: '#1f4d3a',
-            bg: '#f0fdf4',
-            rule: '2px solid #1f4d3a',
-        },
-        heading: {
-            color: '#166534',
-            tracking: '0.1em',
-            transform: 'uppercase',
-            weight: 700,
-            rule: '1.5px solid #1f4d3a',
-        },
-        entryStyle: 'stacked',
-    },
-    'startup-one-pager': {
-        header: {
-            align: 'left',
-            nameSize: '1.9em',
-            nameUpper: false,
-            nameColor: '#111',
-            subColor: '#4f46e5',
-            bg: '#eef2ff',
-        },
-        heading: {
-            color: '#4f46e5',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            rule: '1px solid #c7d2fe',
-        },
-        entryStyle: 'cards',
-        skillsLayout: 'inline',
-    },
-    'it-competency-matrix': {
-        header: {
-            align: 'left',
-            nameSize: '2em',
-            nameUpper: false,
-            nameColor: '#0f172a',
-            subColor: '#1e3a5f',
-            rule: '2px solid #1e3a5f',
-        },
-        heading: {
-            color: '#1e3a5f',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
-            bar: '#1e3a5f',
-        },
-        skillsLayout: 'columns',
-        skillsFirst: true,
-        pageAccent: '#1e3a5f',
-    },
-    'centered-traditional': {
-        header: {
-            align: 'center',
-            nameSize: '2.15em',
-            nameUpper: true,
-            nameColor: '#111',
-            nameTracking: '0.08em',
-            subColor: '#111111',
-            rule: '2px solid #111111',
-        },
-        heading: {
-            color: '#16161f',
-            tracking: '0.14em',
-            transform: 'uppercase',
-            weight: 700,
-            rule: '1.5px solid #111111',
-        },
-        entryStyle: 'ruled',
-    },
 };
+
 
 function Section({
     sectionKey,
@@ -805,7 +426,7 @@ export function ResumePreview({
     className?: string;
 }) {
     const { text, gap } = densityScale[resume.density] ?? densityScale.balanced;
-    const t = templates[resume.template] ?? templates.minimal;
+    const t = templates[resume.template] ?? templates['ats-plain'];
     const entryStyle = t.entryStyle ?? 'default';
     const entryAccent =
         t.pageAccent ?? t.heading.bar ?? t.heading.color ?? RULE;
@@ -970,12 +591,19 @@ export function ResumePreview({
                         >
                             <span className="min-w-0">
                                 <strong>{entry.name}</strong>
+                                {entry.issuer ? (
+                                    <div className="mt-0.5 text-[0.9em] text-[#555]">
+                                        {entry.issuer}
+                                    </div>
+                                ) : null}
                             </span>
-                            <span className="max-w-[55%] shrink-0 text-right">
-                                {[entry.issuer, entry.obtained_at, entry.credential_id]
-                                    .filter(Boolean)
-                                    .join(' · ')}
-                            </span>
+                            {(entry.obtained_at || entry.credential_id) ? (
+                                <span className="shrink-0 whitespace-nowrap text-right text-[#555]">
+                                    {[entry.obtained_at, entry.credential_id]
+                                        .filter(Boolean)
+                                        .join(' · ')}
+                                </span>
+                            ) : null}
                         </div>
                     ))}
                 </Section>

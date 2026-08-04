@@ -2,13 +2,13 @@
 
 namespace Tests\Unit;
 
+use App\Support\ResumeDocument;
 use App\Support\ResumeExport;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Templates must change more than accent colour: entry chrome, skills order,
- * and skills layout overrides are part of the export contract shared with the
- * React preview.
+ * Templates must change more than accent colour: entry chrome and header
+ * treatment are part of the export contract shared with the React preview.
  */
 class TemplateLayoutExportTest extends TestCase
 {
@@ -50,6 +50,14 @@ class TemplateLayoutExportTest extends TestCase
         ];
     }
 
+    public function test_catalogue_is_exactly_four_themes(): void
+    {
+        $this->assertSame(
+            ['ats-plain', 'classic', 'modern', 'minimalist'],
+            ResumeDocument::TEMPLATES,
+        );
+    }
+
     public function test_modern_uses_stacked_entries_and_header_band(): void
     {
         $view = ResumeExport::build($this->baseDoc('modern'));
@@ -59,34 +67,43 @@ class TemplateLayoutExportTest extends TestCase
         $this->assertSame('#4f46e5', $view['style']['page_accent']);
     }
 
-    public function test_metric_cards_uses_cards_entry_style(): void
+    public function test_classic_uses_ruled_entries_and_double_header_rule(): void
     {
-        $view = ResumeExport::build($this->baseDoc('metric-cards'));
+        $view = ResumeExport::build($this->baseDoc('classic'));
 
-        $this->assertSame('cards', $view['style']['entry_style']);
-        $experience = collect($view['sections'])->firstWhere('title', 'Work Experience');
-        $this->assertSame('cards', $experience['entry_style']);
+        $this->assertSame('ruled', $view['style']['entry_style']);
+        $this->assertSame('3px double #181818', $view['style']['header']['rule']);
+        $this->assertNull($view['style']['page_accent']);
     }
 
-    public function test_skills_first_reorders_skills_after_summary(): void
+    public function test_ats_plain_stays_plain_without_accents(): void
     {
-        $view = ResumeExport::build($this->baseDoc('skills-first'));
-
-        $titles = array_column($view['sections'], 'title');
-        $this->assertSame(['Summary', 'Skills', 'Work Experience'], $titles);
-        $this->assertTrue($view['style']['skills_first']);
-
-        $skills = collect($view['sections'])->firstWhere('title', 'Skills');
-        $this->assertSame('grouped', $skills['layout']);
-    }
-
-    public function test_ats_stays_plain_without_accents(): void
-    {
-        $view = ResumeExport::build($this->baseDoc('ats'));
+        $view = ResumeExport::build($this->baseDoc('ats-plain'));
 
         $this->assertNull($view['style']['header']['bg']);
         $this->assertNull($view['style']['page_accent']);
-        $this->assertNull($view['style']['heading']['rule']);
         $this->assertNull($view['style']['heading']['bar']);
+        $this->assertSame('0', $view['style']['heading']['tracking']);
+        $this->assertSame('stacked', $view['style']['entry_style']);
+    }
+
+    public function test_minimalist_uses_muted_headings(): void
+    {
+        $view = ResumeExport::build($this->baseDoc('minimalist'));
+
+        $this->assertSame('#a1a1aa', $view['style']['heading']['color']);
+        $this->assertSame(500, $view['style']['name_weight']);
+        $this->assertSame('stacked', $view['style']['entry_style']);
+    }
+
+    public function test_retired_template_keys_resolve_to_kept_themes(): void
+    {
+        $this->assertSame('ats-plain', ResumeDocument::resolveTemplate('ats'));
+        $this->assertSame('classic', ResumeDocument::resolveTemplate('ivy-serif'));
+        $this->assertSame('modern', ResumeDocument::resolveTemplate('engineering'));
+        $this->assertSame('minimalist', ResumeDocument::resolveTemplate('minimal'));
+
+        $view = ResumeExport::build($this->baseDoc('engineering'));
+        $this->assertSame('#4f46e5', $view['style']['page_accent']);
     }
 }

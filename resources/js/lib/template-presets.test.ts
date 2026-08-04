@@ -18,7 +18,7 @@ const baseDraft = {
     linkedin: '',
     website: '',
     summary: '',
-    template: 'minimal' as const,
+    template: 'ats-plain' as const,
     font: 'inter' as const,
     density: 'balanced' as const,
     skills_layout: 'inline' as const,
@@ -40,25 +40,31 @@ const baseDraft = {
 } satisfies ResumeDraft;
 
 describe('applyTemplatePreset', () => {
-    it('sets template plus font/skills for ivy-serif and skills-first', () => {
-        const ivy = applyTemplatePreset(baseDraft, 'ivy-serif');
-        expect(ivy.template).toBe('ivy-serif');
-        expect(ivy.font).toBe('libre-baskerville');
-
-        const skills = applyTemplatePreset(baseDraft, 'skills-first');
-        expect(skills.skills_layout).toBe('grouped');
-        expect(skills.font).toBe('inter');
+    it('sets classic serif font preset', () => {
+        const next = applyTemplatePreset(baseDraft, 'classic');
+        expect(next.template).toBe('classic');
+        expect(next.font).toBe('georgia');
     });
 
-    it('applies compact density for startup-one-pager', () => {
-        const next = applyTemplatePreset(baseDraft, 'startup-one-pager');
-        expect(next.density).toBe('compact');
-        expect(next.font).toBe('figtree');
+    it('sets modern sans and ats-plain presets', () => {
+        const modern = applyTemplatePreset(baseDraft, 'modern');
+        expect(modern.template).toBe('modern');
+        expect(modern.font).toBe('inter');
+
+        const ats = applyTemplatePreset(baseDraft, 'ats-plain');
+        expect(ats.font).toBe('arial');
+        expect(ats.skills_layout).toBe('inline');
+    });
+
+    it('applies spacious density for minimalist', () => {
+        const next = applyTemplatePreset(baseDraft, 'minimalist');
+        expect(next.density).toBe('spacious');
+        expect(next.font).toBe('inter');
     });
 });
 
 describe('orderSectionsForTemplate', () => {
-    it('moves skills after summary for skills-first only', () => {
+    it('leaves section order unchanged for kept themes', () => {
         const order = [
             'contact',
             'summary',
@@ -67,15 +73,11 @@ describe('orderSectionsForTemplate', () => {
             'education',
         ] as const;
 
-        expect(orderSectionsForTemplate([...order], 'minimal')).toEqual([
+        expect(orderSectionsForTemplate([...order], 'ats-plain')).toEqual([
             ...order,
         ]);
-        expect(orderSectionsForTemplate([...order], 'skills-first')).toEqual([
-            'contact',
-            'summary',
-            'skills',
-            'experience',
-            'education',
+        expect(orderSectionsForTemplate([...order], 'modern')).toEqual([
+            ...order,
         ]);
     });
 });

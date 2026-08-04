@@ -2,40 +2,148 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import {
     ArrowsRightLeftIcon,
     ChevronDownIcon,
-    DocumentDuplicateIcon,
+    ClipboardDocumentIcon,
     EllipsisVerticalIcon,
+    EnvelopeIcon,
+    LockClosedIcon,
     PlusIcon,
+    ShareIcon,
     TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { NewResumeModal } from '@/Components/dashboard/new-resume-modal';
 import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
+import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { cn } from '@/lib/utils';
-import type { ResumeSummary } from '@/types';
+import type { DashboardShareInfo, ResumeSummary } from '@/types';
 
 function scoreDotColor(score: number): string {
     if (score >= 70) return 'bg-emerald-500';
     if (score >= 40) return 'bg-amber-400';
-    return 'bg-gray-300';
+    return 'bg-red-500';
+}
+
+function ShareStatus({
+    share,
+    compact = false,
+    onOpenShare,
+}: {
+    share: DashboardShareInfo | null;
+    compact?: boolean;
+    onOpenShare: () => void;
+}) {
+    const [copied, setCopied] = useState(false);
+
+    if (!share) {
+        return (
+            <span
+                className={cn(
+                    'inline-flex items-center gap-1 text-gray-400',
+                    compact ? 'text-[10px]' : 'text-[11px]',
+                )}
+            >
+                <ShareIcon className={compact ? 'size-3' : 'size-3.5'} />
+                Not shared
+            </span>
+        );
+    }
+
+    function copyLink(event: MouseEvent) {
+        event.stopPropagation();
+        navigator.clipboard.writeText(share!.url);
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1500);
+    }
+
+    if (share.is_expired) {
+        return (
+            <span
+                className={cn(
+                    'inline-flex items-center gap-1 font-medium text-amber-700',
+                    compact ? 'text-[10px]' : 'text-[11px]',
+                )}
+            >
+                <ShareIcon className={compact ? 'size-3' : 'size-3.5'} />
+                <button
+                    type="button"
+                    onClick={onOpenShare}
+                    className="font-medium text-amber-700 underline-offset-2 hover:underline"
+                >
+                    Link expired
+                </button>
+                {share.expires_at && !compact && (
+                    <span className="font-normal text-amber-600">· {share.expires_at}</span>
+                )}
+            </span>
+        );
+    }
+
+    const viewsLabel =
+        share.view_count === 0
+            ? 'No views yet'
+            : `${share.view_count} view${share.view_count === 1 ? '' : 's'}`;
+
+    return (
+        <span
+            className={cn(
+                'inline-flex min-w-0 items-center gap-1.5 text-gray-600',
+                compact ? 'text-[10px]' : 'text-[11px]',
+            )}
+        >
+            <ShareIcon className={cn('shrink-0 text-brand', compact ? 'size-3' : 'size-3.5')} />
+            <button
+                type="button"
+                onClick={onOpenShare}
+                className="truncate font-medium text-gray-700 underline-offset-2 hover:text-brand hover:underline"
+            >
+                Shared
+            </button>
+            <span className="truncate text-gray-500">· {viewsLabel}</span>
+            {share.require_password && (
+                <LockClosedIcon
+                    className={cn('shrink-0 text-gray-400', compact ? 'size-3' : 'size-3.5')}
+                    title="Password protected"
+                    aria-label="Password protected"
+                />
+            )}
+            {share.require_email && (
+                <EnvelopeIcon
+                    className={cn('shrink-0 text-gray-400', compact ? 'size-3' : 'size-3.5')}
+                    title="Email required"
+                    aria-label="Email required"
+                />
+            )}
+            <button
+                type="button"
+                onClick={copyLink}
+                className="inline-flex shrink-0 items-center gap-0.5 rounded px-1 py-0.5 font-medium text-brand hover:bg-brand/5"
+                title="Copy share link"
+            >
+                <ClipboardDocumentIcon className={compact ? 'size-3' : 'size-3.5'} />
+                {copied ? 'Copied' : 'Copy'}
+            </button>
+        </span>
+    );
 }
 
 function ResumeCard({ resume }: { resume: ResumeSummary }) {
     const [expanded, setExpanded] = useState(false);
-    const [creatingVersion, setCreatingVersion] = useState(false);
+    // Store only the resume id so the modal re-reads share from props after
+    // Inertia reloads the dashboard (toggles, password rotate, cancel share).
+    const [shareModalResumeId, setShareModalResumeId] = useState<number | null>(null);
+    const shareModalShare: DashboardShareInfo | null =
+        shareModalResumeId === null
+            ? null
+            : shareModalResumeId === resume.id
+              ? resume.share
+              : (resume.versions.find((version) => version.id === shareModalResumeId)?.share ??
+                null);
     const hasVersions = resume.versions.length > 1;
-
-    function createVersion() {
-        if (creatingVersion) return;
-
-        router.post(route('resumes.duplicate', resume.id), undefined, {
-            onStart: () => setCreatingVersion(true),
-            onFinish: () => setCreatingVersion(false),
-        });
-    }
+    const alreadyShared = resume.share !== null;
 
     function deleteGroup() {
         if (!confirm(`Delete "${resume.title}"? This can't be undone.`)) {
@@ -84,6 +192,12 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                         {resume.target_role || 'No target role set'}
                         {resume.updated_at && ` · Updated ${resume.updated_at}`}
                     </p>
+                    <div className="mt-1">
+                        <ShareStatus
+                            share={resume.share}
+                            onOpenShare={() => setShareModalResumeId(resume.id)}
+                        />
+                    </div>
                 </div>
                 <Menu as="div" className="relative">
                     <MenuButton className={buttonClassName('outline', 'sm')}>
@@ -132,12 +246,17 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                         <MenuItem>
                             <button
                                 type="button"
-                                disabled={creatingVersion}
-                                onClick={createVersion}
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100 disabled:opacity-50"
+                                disabled={alreadyShared}
+                                onClick={() => setShareModalResumeId(resume.id)}
+                                title={
+                                    alreadyShared
+                                        ? 'This resume already has a share link'
+                                        : 'Create a share link'
+                                }
+                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
                             >
-                                <DocumentDuplicateIcon className="size-4" />
-                                {creatingVersion ? 'Creating…' : 'New version'}
+                                <ShareIcon className="size-4" />
+                                Share
                             </button>
                         </MenuItem>
                         {hasVersions && (
@@ -213,14 +332,25 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                             scoreDotColor(version.score),
                                         )}
                                     />
-                                    <span className="flex-1 truncate text-[12px] font-semibold">
-                                        {version.title}
-                                        {version.target_company && (
-                                            <span className="ml-1.5 font-normal text-gray-500">
-                                                — {version.target_company}
-                                            </span>
-                                        )}
-                                    </span>
+                                    <div className="min-w-0 flex-1">
+                                        <span className="block truncate text-[12px] font-semibold">
+                                            {version.title}
+                                            {version.target_company && (
+                                                <span className="ml-1.5 font-normal text-gray-500">
+                                                    — {version.target_company}
+                                                </span>
+                                            )}
+                                        </span>
+                                        <div className="mt-0.5">
+                                            <ShareStatus
+                                                share={version.share}
+                                                compact
+                                                onOpenShare={() =>
+                                                    setShareModalResumeId(version.id)
+                                                }
+                                            />
+                                        </div>
+                                    </div>
                                     <span className="text-[11px] text-gray-500">
                                         {version.score}/100
                                     </span>
@@ -245,6 +375,17 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                     )}
                 </div>
             )}
+
+            <ShareResumeModal
+                open={shareModalResumeId !== null}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setShareModalResumeId(null);
+                    }
+                }}
+                resumeId={shareModalResumeId ?? resume.id}
+                share={shareModalShare}
+            />
         </Card>
     );
 }

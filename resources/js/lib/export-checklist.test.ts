@@ -16,7 +16,7 @@ function blank(overrides: Partial<ResumeDraft> = {}): ResumeDraft {
         target_role: '',
         target_company: '',
         target_job_description: '',
-        template: 'minimal',
+        template: 'ats-plain',
         font: 'inter',
         density: 'balanced',
         skills_layout: 'inline',
