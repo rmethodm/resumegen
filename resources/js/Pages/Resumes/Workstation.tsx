@@ -12,7 +12,11 @@ import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useValidContact } from '@/hooks/use-valid-contact';
-import { analyzeResume } from '@/lib/resume-analysis';
+import {
+    addKeywordAsSkill,
+    analyzeResume,
+    type ScoreChecklistItem,
+} from '@/lib/resume-analysis';
 import {
     insertSectionInOrder,
     isOptionalSection,
@@ -226,6 +230,25 @@ export default function Workstation({
         }
     }
 
+    function addKeyword(keyword: string) {
+        setDraft((current) => addKeywordAsSkill(current, keyword));
+    }
+
+    function jumpChecklist(item: ScoreChecklistItem) {
+        setTab('Edit');
+        scrollToSection(item.section);
+
+        if (item.fieldId) {
+            window.setTimeout(() => {
+                const element = document.getElementById(item.fieldId!);
+
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
+                }
+            }, 300);
+        }
+    }
+
     // Native HTML5 drag-and-drop — no library needed for a plain reorder.
     function handleDrop(target: ResumeSectionKey) {
         if (!draggedSection || draggedSection === target) {
@@ -331,6 +354,8 @@ export default function Workstation({
                         onAddSection={addSection}
                         onApplySuggestion={applySuggestion}
                         onSelectSuggestion={selectSuggestion}
+                        onAddKeyword={addKeyword}
+                        onJumpChecklist={jumpChecklist}
                     />
 
                     <div className="flex min-w-0 flex-col gap-6 lg:flex-1">

@@ -42,7 +42,7 @@ whatever a session might need to look up. Organize by topic/feature.
 
 Saved for later — do not auto-start. Pick a cluster or item numbers when resuming.
 
-**Shipped this stretch:** B5–B6 (quality MVP), D13–17 (authoring), E18–20 (share; E20 = light branding only), F21–23 (PDF fonts, template thumbs, page hints), **B7** (live draft re-score + Apply/Jump tips, 2026-08-04).
+**Shipped this stretch:** B5–B6 (quality MVP), D13–17 (authoring), E18–20 (share; E20 = light branding only), F21–23 (PDF fonts, template thumbs, page hints), **B7** (live re-score + Apply/Jump), **Sprint 2** (keyword chips, target-role prominence, raise-your-score checklist, 2026-08-04).
 
 **Still open (11 items):**
 
@@ -61,6 +61,6 @@ Saved for later — do not auto-start. Pick a cluster or item numbers when resum
 11. Conflict / offline awareness (stale tab, failed-autosave banner + retry)
 12. Wire notes UI (model exists; no canvas UI)
 
-**Suggested order when resuming:** A1+A3 → C11+C9 → B8
+**Suggested order when resuming:** A3 (export checklist) → B8 → A1 → C11+C9
 
 **Constraints (still apply):** no AI, no billing; surgical Laravel/Inertia/React changes.

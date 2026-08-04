@@ -364,7 +364,8 @@ function weakOpening(
     return null;
 }
 
-function missingKeywords(draft: ResumeDraft): string[] {
+/** Keywords for the draft's target role that do not appear in the body yet. */
+export function missingKeywords(draft: ResumeDraft): string[] {
     const keywords = keywordsFor(draft.target_role);
 
     if (keywords.length === 0) {
@@ -381,6 +382,180 @@ function missingKeywords(draft: ResumeDraft): string[] {
         .toLowerCase();
 
     return keywords.filter((keyword) => !haystack.includes(keyword));
+}
+
+/** Present keywords for the draft's target role (complement of missing). */
+export function presentKeywords(draft: ResumeDraft): string[] {
+    const keywords = keywordsFor(draft.target_role);
+    const missing = new Set(missingKeywords(draft));
+
+    return keywords.filter((keyword) => !missing.has(keyword));
+}
+
+/**
+ * Display form for a catalogue keyword when inserting as a skill.
+ * Keeps multi-word phrases readable without inventing content.
+ */
+export function formatKeywordLabel(keyword: string): string {
+    const specials: Record<string, string> = {
+        typescript: 'TypeScript',
+        'ci/cd': 'CI/CD',
+        'a/b testing': 'A/B testing',
+        seo: 'SEO',
+        sql: 'SQL',
+        api: 'API',
+        etl: 'ETL',
+        figma: 'Figma',
+        react: 'React',
+        python: 'Python',
+    };
+
+    const lower = keyword.toLowerCase();
+
+    if (specials[lower]) {
+        return specials[lower];
+    }
+
+    return keyword
+        .split(' ')
+        .map((word) =>
+            word.length === 0
+                ? word
+                : word.charAt(0).toUpperCase() + word.slice(1),
+        )
+        .join(' ');
+}
+
+/**
+ * Append a missing keyword as an uncategorised skill so the Keywords band
+ * can pick it up. No-op if already present (case-insensitive).
+ */
+export function addKeywordAsSkill(
+    draft: ResumeDraft,
+    keyword: string,
+): ResumeDraft {
+    const label = formatKeywordLabel(keyword);
+    const exists = draft.skills.some(
+        (skill) => skill.name.toLowerCase() === label.toLowerCase(),
+    );
+
+    if (exists) {
+        return draft;
+    }
+
+    // Also skip if the raw keyword already matches haystack via another form.
+    const rawExists = draft.skills.some(
+        (skill) => skill.name.toLowerCase() === keyword.toLowerCase(),
+    );
+
+    if (rawExists) {
+        return draft;
+    }
+
+    return {
+        ...draft,
+        skills: [...draft.skills, { category: '', name: label }],
+    };
+}
+
+export type ScoreChecklistItem = {
+    id: string;
+    label: string;
+    band: ScoreBandLabel;
+    done: boolean;
+    /** Section to scroll to when the user picks this step. */
+    section: 'contact' | 'summary' | 'experience' | 'skills';
+    fieldId?: string;
+};
+
+/**
+ * Ordered path to raise score — used for first-session guidance.
+ * Each item maps to a concrete band and a Jump target.
+ */
+export function scoreChecklist(draft: ResumeDraft): ScoreChecklistItem[] {
+    const describedRoles = draft.experiences.filter(
+        (experience) => experience.title !== '' && experience.company !== '',
+    ).length;
+    const bullets = experienceBullets(draft.experiences);
+    const quantified = bullets.filter(isQuantified).length;
+    const roleKeywords = keywordsFor(draft.target_role);
+    const missing = missingKeywords(draft);
+
+    return [
+        {
+            id: 'target-role',
+            label: 'Set a target role (unlocks keyword scoring)',
+            band: 'Keywords',
+            done: draft.target_role.trim() !== '',
+            section: 'contact',
+            fieldId: 'field-target-role',
+        },
+        {
+            id: 'profile-contact',
+            label: 'Name, headline, email, and location',
+            band: 'Profile',
+            done:
+                draft.full_name !== '' &&
+                draft.headline !== '' &&
+                draft.email !== '' &&
+                draft.location !== '',
+            section: 'contact',
+        },
+        {
+            id: 'summary',
+            label: 'Write a summary (80+ characters)',
+            band: 'Profile',
+            done: draft.summary.length >= 80,
+            section: 'summary',
+            fieldId: 'field-summary',
+        },
+        {
+            id: 'experience-roles',
+            label: 'Add two jobs with title and company',
+            band: 'Experience',
+            done: describedRoles >= 2,
+            section: 'experience',
+        },
+        {
+            id: 'experience-bullets',
+            label: 'Add at least six experience bullets',
+            band: 'Experience',
+            done: bullets.length >= 6,
+            section: 'experience',
+        },
+        {
+            id: 'impact',
+            label: 'Put a number in at least half of your bullets',
+            band: 'Impact',
+            done: bullets.length > 0 && quantified / bullets.length >= 0.5,
+            section: 'experience',
+        },
+        {
+            id: 'skills',
+            label: 'List at least five skills',
+            band: 'Keywords',
+            done: draft.skills.length >= 5,
+            section: 'skills',
+            fieldId: 'field-skills',
+        },
+        {
+            id: 'keywords',
+            label:
+                roleKeywords.length === 0
+                    ? 'Pick a role family we recognize (e.g. engineer, design)'
+                    : 'Cover role keywords (use chips below)',
+            band: 'Keywords',
+            done:
+                roleKeywords.length > 0
+                    ? missing.length === 0
+                    : draft.target_role.trim() !== '',
+            section: roleKeywords.length === 0 ? 'contact' : 'skills',
+            fieldId:
+                roleKeywords.length === 0
+                    ? 'field-target-role'
+                    : 'field-skills',
+        },
+    ];
 }
 
 function profileScore(draft: ResumeDraft): number {

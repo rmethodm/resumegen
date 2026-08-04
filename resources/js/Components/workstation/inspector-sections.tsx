@@ -69,26 +69,29 @@ export function ContactFields({
 }) {
     return (
         <>
-            <div className="flex flex-col gap-3 rounded-xl border border-brand/20 bg-brand-subtle/40 p-3.5">
+            {/* Target role first: Keywords band (25 pts) depends on it. */}
+            <div className="flex flex-col gap-3 rounded-xl border-2 border-brand/30 bg-brand-subtle/50 p-3.5 shadow-sm">
                 <div>
                     <p className="text-[11px] font-bold tracking-[0.06em] text-brand uppercase">
-                        Tailor this version
+                        Target role
                     </p>
-                    <p className="mt-0.5 text-[11px] text-gray-500">
-                        Optional context for scoring and for labeling versions
-                        on the dashboard. Not printed on the resume.
+                    <p className="mt-0.5 text-[11px] leading-relaxed text-gray-600">
+                        Scores Keywords against this role. Include a family we
+                        recognize — design, engineer, data, product, or market —
+                        so missing-keyword chips appear in the left rail. Not
+                        printed on the resume.
                     </p>
                 </div>
                 <div className="flex flex-col gap-1.5">
                     <Label className="text-xs" htmlFor="field-target-role">
-                        Target role
+                        What role are you targeting?
                     </Label>
                     <AutocompleteInput
                         id="field-target-role"
                         endpoint="job-roles"
                         value={resume.target_role}
                         allowCreate={false}
-                        placeholder="e.g. Senior Product Manager"
+                        placeholder="e.g. Senior Software Engineer"
                         className={autocompleteFieldClass}
                         onChange={(target_role) =>
                             onChange({ ...resume, target_role })
@@ -96,19 +99,21 @@ export function ContactFields({
                     />
                 </div>
                 <Field
-                    label="Target company"
+                    label="Target company (optional)"
                     value={resume.target_company}
-                    placeholder="e.g. Acme Corp"
+                    placeholder="e.g. Acme Corp — dashboard label only"
                     onChange={(target_company) =>
                         onChange({ ...resume, target_company })
                     }
                 />
                 <div className="flex flex-col gap-1.5">
-                    <Label className="text-xs">Job description notes</Label>
+                    <Label className="text-xs">
+                        Job description notes (optional)
+                    </Label>
                     <Textarea
-                        rows={4}
+                        rows={3}
                         value={resume.target_job_description}
-                        placeholder="Paste the posting or key requirements you are matching…"
+                        placeholder="Paste key requirements you are matching…"
                         onChange={(event) =>
                             onChange({
                                 ...resume,
