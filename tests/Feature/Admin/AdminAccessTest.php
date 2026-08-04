@@ -26,6 +26,46 @@ class AdminAccessTest extends TestCase
             ->assertRedirect();
     }
 
+    public function test_guest_admin_redirect_stays_on_admin_host(): void
+    {
+        $this->get($this->adminUrl('/'))
+            ->assertRedirect($this->adminUrl('/login'));
+    }
+
+    public function test_admin_login_on_admin_host_lands_on_admin_dashboard(): void
+    {
+        $admin = User::factory()->admin()->create([
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->post($this->adminUrl('/login'), [
+            'email' => $admin->email,
+            'password' => 'password',
+        ])->assertRedirect(); // root of admin host (with or without trailing slash)
+
+        $this->assertAuthenticatedAs($admin);
+
+        $this->get($this->adminUrl('/'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->component('Admin/Dashboard'));
+    }
+
+    public function test_non_admin_login_on_admin_host_is_rejected(): void
+    {
+        $user = User::factory()->create([
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->post($this->adminUrl('/login'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])
+            ->assertRedirect($this->adminUrl('/login'))
+            ->assertSessionHas('error');
+
+        $this->assertGuest();
+    }
+
     public function test_non_admin_cannot_access_admin_dashboard(): void
     {
         $user = User::factory()->create();

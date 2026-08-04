@@ -30,6 +30,11 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Relative /login keeps guests on the current host (admin.resumegen.test
+        // vs resumegen.test). Named route('login') is absolute to APP_URL and
+        // was bouncing admin visitors onto the product login/dashboard.
+        $middleware->redirectGuestsTo(fn () => url('/login'));
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

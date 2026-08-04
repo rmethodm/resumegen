@@ -19,13 +19,24 @@ class LoginResponse implements LoginResponseContract
         }
 
         $adminDomain = config('app.admin_domain');
-        if (
-            $user->isAdmin()
-            && is_string($adminDomain)
+        $onAdminHost = is_string($adminDomain)
             && $adminDomain !== ''
-            && $request->getHost() === $adminDomain
-        ) {
-            return redirect()->intended(route('admin.dashboard'));
+            && $request->getHost() === $adminDomain;
+
+        if ($onAdminHost) {
+            if (! $user->isAdmin()) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()
+                    ->to('/login')
+                    ->with('error', 'This account does not have admin access.');
+            }
+
+            // Stay on the admin host root (admin.dashboard). Avoid intended()
+            // so a leftover product /dashboard URL cannot win.
+            return redirect()->to('/');
         }
 
         return redirect()->intended(route('dashboard', absolute: false));
