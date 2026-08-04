@@ -5,18 +5,28 @@ import type { ResumeDensity, ResumeDraft } from '@/types';
  * Not a layout engine — enough to hint whether compact density helps.
  */
 export function estimateResumePages(
-    draft: Pick<
-        ResumeDraft,
-        | 'summary'
-        | 'experiences'
-        | 'projects'
-        | 'education'
-        | 'certificates'
-        | 'skills'
-        | 'density'
-    >,
-    density: ResumeDensity = draft.density,
+    draft:
+        | Pick<
+              ResumeDraft,
+              | 'summary'
+              | 'experiences'
+              | 'projects'
+              | 'education'
+              | 'certificates'
+              | 'skills'
+              | 'density'
+          >
+        | null
+        | undefined,
+    density?: ResumeDensity,
 ): { pages: number; units: number; hint: string } {
+    if (draft == null) {
+        return { pages: 1, units: 0, hint: 'Add content to estimate pages' };
+    }
+
+    const resolvedDensity: ResumeDensity =
+        density ?? draft.density ?? 'balanced';
+
     let units = 1.2; // header / contact block
 
     const summary = draft.summary?.trim() ?? '';
@@ -48,19 +58,19 @@ export function estimateResumePages(
         spacious: 1.22,
     };
 
-    const adjusted = units * densityFactor[density];
+    const adjusted = units * (densityFactor[resolvedDensity] ?? 1);
     // ~11 content units fit a single balanced page at this heuristic scale.
-    const pages = Math.max(1, Math.ceil(adjusted / 11));
+    const pages = Math.max(1, Math.ceil(adjusted / 11) || 1);
 
     let hint: string;
     if (pages === 1) {
         hint =
-            density === 'spacious'
+            resolvedDensity === 'spacious'
                 ? 'Likely one page — spacious may spill if you add more'
                 : 'Likely fits on one page';
     } else if (pages === 2) {
         hint =
-            density === 'compact'
+            resolvedDensity === 'compact'
                 ? 'About two pages even when compact'
                 : 'About two pages — try Compact to tighten';
     } else {

@@ -124,7 +124,11 @@ export function WorkstationFormatToolbar({
     const styleLabel =
         densityStyleOptions.find((option) => option.density === density)?.label ?? 'Normal';
     const zoomLabel = `${Math.round(zoom * 100)}%`;
-    const pageEstimate = estimateResumePages(pageEstimateDraft, density);
+    // Never throw — a bad estimate used to unmount the whole workstation header.
+    const pageEstimate = estimateResumePages(
+        pageEstimateDraft ?? null,
+        density,
+    );
 
     return (
         <div
@@ -171,7 +175,9 @@ export function WorkstationFormatToolbar({
                     className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
                     aria-label="Font"
                 >
-                    <span className="max-w-[7.5rem] truncate">{fontLabels[font]}</span>
+                    <span className="max-w-[7.5rem] truncate">
+                        {fontLabels[font] ?? font ?? 'Font'}
+                    </span>
                     <ChevronDownIcon className="size-3.5 text-gray-400" />
                 </MenuButton>
                 <MenuItems
