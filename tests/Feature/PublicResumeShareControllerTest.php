@@ -25,6 +25,27 @@ class PublicResumeShareControllerTest extends TestCase
             ->where('resume.full_name', 'Maya Chen'));
     }
 
+    public function test_public_share_page_renders_for_locked_and_unlocked_states(): void
+    {
+        $openResume = Resume::factory()->create(['full_name' => 'Maya Chen']);
+        $gatedResume = Resume::factory()->create(['full_name' => 'Alex Kim']);
+        $open = ResumeShareLink::factory()->for($openResume)->create();
+        $gated = ResumeShareLink::factory()->for($gatedResume)->create(['require_email' => true]);
+
+        $this->get(route('share.show', $open->token))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Resumes/PublicShare')
+                ->where('locked', false));
+
+        $this->get(route('share.show', $gated->token))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Resumes/PublicShare')
+                ->where('locked', true)
+                ->where('resume', null));
+    }
+
     public function test_unknown_token_404s(): void
     {
         $this->get(route('share.show', 'does-not-exist'))->assertNotFound();
