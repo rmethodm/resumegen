@@ -4,7 +4,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function Login({
@@ -14,6 +14,9 @@ export default function Login({
     status?: string;
     canResetPassword: boolean;
 }) {
+    const { flash } = usePage().props as {
+        flash?: { success?: string | null; error?: string | null };
+    };
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -42,6 +45,11 @@ export default function Login({
             {status && (
                 <div className="mb-4 text-sm font-medium text-green-600">
                     {status}
+                </div>
+            )}
+            {flash?.error && (
+                <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+                    {flash.error}
                 </div>
             )}
 

@@ -1,15 +1,14 @@
 # Resumegen Context
 
 ## Current Task
-Robustness brainstorm A/B/C complete (2026-08-04).
+Support admin complete (subdomain + action logs + resend verification).
 
 ## Key Decisions
-- Live score is client-side ResumeAnalysis (parity with PHP).
-- JD match is deterministic token overlap, separate from strength score.
-- Export is gated by a soft checklist modal (blockers require name+email).
-- Snapshots are manual checkpoints; restore rewrites via ResumeDocument.
-- Autosave sends base_updated_at for multi-tab conflict detection.
+- Admin host: APP_ADMIN_DOMAIN (local admin.resumegen.test); is_admin not fillable.
+- Disable = disabled_at only; data kept; tokens revoked.
+- Guest auth redirects use host-relative /login (stay on admin host).
 
 ## Next Steps
-- Hard-refresh workstation; smoke A1–A4 / B8 / C9–C12 in UI.
-- Optional polish: role-family expand, denser rail, canvas drag for notes.
+- Prod: set APP_ADMIN_DOMAIN, DNS/TLS, migrate, promote admin via tinker.
+- Workstation UI smoke (Optimize / create / export) if not done.
+- Optional: impersonation only with explicit audit decision.
