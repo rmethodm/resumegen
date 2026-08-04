@@ -38,29 +38,25 @@ whatever a session might need to look up. Organize by topic/feature.
 
 ---
 
-## Robustness brainstorm backlog (deferred 2026-08-04)
+## Robustness brainstorm backlog (2026-08-04)
 
-Saved for later — do not auto-start. Pick a cluster or item numbers when resuming.
+**Shipped:** B5–B6, D13–17, E18–20, F21–23, B7, Sprint 2, and **A1–A4 + B8 + C9–C12** (full A/B/C).
 
-**Shipped this stretch:** B5–B6 (quality MVP), D13–17 (authoring), E18–20 (share; E20 = light branding only), F21–23 (PDF fonts, template thumbs, page hints), **B7** (live re-score + Apply/Jump), **Sprint 2** (keyword chips, target-role prominence, raise-your-score checklist, 2026-08-04).
+### A — Edit ↔ output loop — done
+1. Split live preview on Edit (xl+ desktop)
+2. PDF preview iframe (Review → PDF)
+3. Before-export checklist modal
+4. ATS plain-text tab
 
-**Still open (11 items):**
+### B — Quality tools — done
+8. Deterministic JD keyword overlap (Job match panel)
 
-### A — Edit ↔ output loop
-1. Split / sticky live preview while editing (desktop), not only Review
-2. PDF-faithful preview (server preview iframe)
-3. Before-export checklist (missing contact, empty bullets, density, 1-page estimate)
-4. Plain-text / ATS paste view
+### C — Versioning & safety — done
+9. Version switcher + new version in header
+10. Manual checkpoints (snapshot store/restore/delete)
+11. Offline/error banner + retry; base_updated_at conflict
+12. Notes list panel (canvas fields kept for later)
 
-### B — Quality tools (leftovers)
-8. Deterministic JD keyword overlap (paste JD → missing terms; no AI)
+**Still open from this backlog:** none.
 
-### C — Versioning & safety
-9. Named versions + restore from workstation (not only dashboard)
-10. Manual snapshot / restore (`ResumeSnapshot` checkpoints)
-11. Conflict / offline awareness (stale tab, failed-autosave banner + retry)
-12. Wire notes UI (model exists; no canvas UI)
-
-**Suggested order when resuming:** A3 (export checklist) → B8 → A1 → C11+C9
-
-**Constraints (still apply):** no AI, no billing; surgical Laravel/Inertia/React changes.
+**Constraints:** no AI, no billing; surgical Laravel/Inertia/React changes.

@@ -1,15 +1,15 @@
 # Resumegen Context
 
 ## Current Task
-Robustness brainstorm stretch paused. Clusters B MVP, D, E, F shipped; A/C and B leftovers deferred.
+Robustness brainstorm A/B/C complete (2026-08-04).
 
 ## Key Decisions
-- Quality tools v1 wires existing ResumeAnalysis (no live re-score, no JD panel in that MVP).
-- Optional sections hide/show without deleting data; unhide does not scroll.
-- PDF embeds OFL fonts; proprietary faces use core/clones + honest labels.
-- Public share E20 is light branding only (not full mobile/print polish).
+- Live score is client-side ResumeAnalysis (parity with PHP).
+- JD match is deterministic token overlap, separate from strength score.
+- Export is gated by a soft checklist modal (blockers require name+email).
+- Snapshots are manual checkpoints; restore rewrites via ResumeDocument.
+- Autosave sends base_updated_at for multi-tab conflict detection.
 
 ## Next Steps
-- Resume from NOTES.md → "Robustness brainstorm backlog (deferred 2026-08-04)".
-- Suggested: A1+A3, then C11+C9, then B8, then B7.
-- Do not start deferred items unless the user asks.
+- Hard-refresh workstation; smoke A1–A4 / B8 / C9–C12 in UI.
+- Optional polish: role-family expand, denser rail, canvas drag for notes.

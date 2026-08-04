@@ -1,10 +1,16 @@
-import { Head } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { ArrowDownIcon, ArrowUpIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SectionFields } from '@/Components/workstation/inspector';
 import { ResumePreview } from '@/Components/resume/resume-preview';
+import { ExportChecklistModal } from '@/Components/workstation/export-checklist-modal';
+import { NotesPanel, type WorkstationNote } from '@/Components/workstation/notes-panel';
 import { SectionPanel } from '@/Components/workstation/section-panel';
+import {
+    SnapshotsPanel,
+    type WorkstationSnapshot,
+} from '@/Components/workstation/snapshots-panel';
 import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
@@ -18,6 +24,8 @@ import {
     analyzeResume,
     type ScoreChecklistItem,
 } from '@/lib/resume-analysis';
+import { exportChecklist, type ExportCheck } from '@/lib/export-checklist';
+import { resumeToPlainText } from '@/lib/resume-plain-text';
 import {
     insertSectionInOrder,
     isOptionalSection,
@@ -25,11 +33,12 @@ import {
 } from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
 import type {
-    Resume,
     ResumeDraft,
+    ResumePageDocument,
     ResumeSectionKey,
     ResumeShareLink,
     ResumeSuggestion,
+    ResumeVersion,
     SkillLibraryGroup,
 } from '@/types';
 
@@ -45,14 +54,21 @@ export default function Workstation({
     resume,
     skillLibrary,
     share,
+    versions = [],
+    notes = [],
+    snapshots = [],
 }: {
-    resume: Resume;
+    resume: ResumePageDocument;
     /** Server analysis kept on the page for Inertia parity; score UI uses live draft. */
     analysis?: unknown;
     skillLibrary: SkillLibraryGroup[];
     share: ResumeShareLink | null;
+    versions?: ResumeVersion[];
+    notes?: WorkstationNote[];
+    snapshots?: WorkstationSnapshot[];
 }) {
-    const { id, ...initial } = resume;
+    const { id, updated_at: initialUpdatedAt, ...initial } = resume;
+    const page = usePage();
     const {
         value: draft,
         set: setDraft,
@@ -65,23 +81,62 @@ export default function Workstation({
     const [tab, setTab] = useState<WorkstationTab>('Edit');
     const [section, setSection] = useState<ResumeSectionKey>('contact');
     const [previewZoom, setPreviewZoom] = useState<PreviewZoom>(1);
+    const [reviewPreviewMode, setReviewPreviewMode] = useState<'react' | 'pdf'>(
+        'react',
+    );
     const [draggedSection, setDraggedSection] =
         useState<ResumeSectionKey | null>(null);
     /** Double-click a section header to collapse/expand its form body. */
     const [collapsedSections, setCollapsedSections] = useState<
         ResumeSectionKey[]
     >([]);
+    const [baseUpdatedAt, setBaseUpdatedAt] = useState<string | null>(
+        initialUpdatedAt ?? null,
+    );
+    const [exportOpen, setExportOpen] = useState(false);
+    const [exportFormat, setExportFormat] = useState<'pdf' | 'docx'>('pdf');
+    const [showSideTools, setShowSideTools] = useState(false);
     // Live score from the draft (B7) — same rules as PHP ResumeAnalysis.
     const liveAnalysis = useMemo(() => analyzeResume(draft), [draft]);
+    const plainText = useMemo(() => resumeToPlainText(draft), [draft]);
+    const exportGate = useMemo(() => exportChecklist(draft), [draft]);
 
     // A badly formatted contact field is held back from the payload rather
     // than failing the whole save — see use-valid-contact.ts.
-    const { payload, errors } = useValidContact(
+    const { payload: contactPayload, errors } = useValidContact(
         draft,
         resume.email,
         resume.phone,
     );
-    const saveStatus = useAutosave(route('resumes.update', id), payload);
+    const payload = useMemo(
+        () =>
+            ({
+                ...contactPayload,
+                base_updated_at: baseUpdatedAt,
+            }) as ResumeDraft & { base_updated_at: string | null },
+        [contactPayload, baseUpdatedAt],
+    );
+    const {
+        status: saveStatus,
+        offline,
+        conflict,
+        errorMessage,
+        retry: retrySave,
+    } = useAutosave(route('resumes.update', id), payload, 1500, () => {
+        // After a successful save, Inertia refreshes props — pick up new token.
+        const next = (page.props as { resume?: ResumePageDocument }).resume
+            ?.updated_at;
+        if (typeof next === 'string') {
+            setBaseUpdatedAt(next);
+        }
+    });
+
+    // Sync concurrency token when the server document reloads (restore, version).
+    useEffect(() => {
+        if (resume.updated_at) {
+            setBaseUpdatedAt(resume.updated_at);
+        }
+    }, [resume.updated_at]);
 
     // The hook reports 'saved' from the moment it mounts, before anything
     // was ever written — only flip the badge on once a save has actually
@@ -96,6 +151,36 @@ export default function Workstation({
 
         previousStatus.current = saveStatus;
     }, [saveStatus]);
+
+    function requestDownload(format: 'pdf' | 'docx') {
+        setExportFormat(format);
+        setExportOpen(true);
+    }
+
+    function confirmDownload() {
+        setExportOpen(false);
+        const href =
+            exportFormat === 'pdf'
+                ? route('resumes.download', id)
+                : route('resumes.download-docx', id);
+        window.location.href = href;
+    }
+
+    function jumpExportCheck(check: ExportCheck) {
+        setExportOpen(false);
+        setTab('Edit');
+        if (check.section) {
+            scrollToSection(check.section);
+        }
+        if (check.fieldId) {
+            window.setTimeout(() => {
+                const element = document.getElementById(check.fieldId!);
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
+                }
+            }, 300);
+        }
+    }
 
     // Document undo/redo — same stack the format toolbar buttons use.
     useEffect(() => {
@@ -364,11 +449,192 @@ export default function Workstation({
         );
     }
 
+    function renderFormSections() {
+        return (
+            <main
+                aria-label="Section form"
+                className="flex min-w-0 flex-col gap-4"
+            >
+                {draft.section_order.map((sectionKey) => {
+                    const collapsed = collapsedSections.includes(sectionKey);
+
+                    return (
+                        <div
+                            key={sectionKey}
+                            id={`section-${sectionKey}`}
+                            draggable={!isMobile}
+                            onDragStart={() => setDraggedSection(sectionKey)}
+                            onDragOver={(event) => event.preventDefault()}
+                            onDrop={() => handleDrop(sectionKey)}
+                            onDragEnd={() => setDraggedSection(null)}
+                            className={cn(
+                                'overflow-hidden rounded-lg border border-gray-200 bg-white',
+                                draggedSection === sectionKey && 'opacity-50',
+                            )}
+                        >
+                            <div
+                                aria-expanded={!collapsed}
+                                title="Double-click to collapse or expand"
+                                onDoubleClick={(event) => {
+                                    if (
+                                        (event.target as HTMLElement).closest(
+                                            'button',
+                                        )
+                                    ) {
+                                        return;
+                                    }
+                                    toggleSectionCollapsed(sectionKey);
+                                }}
+                                className={cn(
+                                    'flex cursor-default select-none items-center gap-2 bg-white px-5 py-3',
+                                    collapsed
+                                        ? 'border-b-0'
+                                        : 'border-b border-gray-100',
+                                )}
+                            >
+                                <Bars3Icon
+                                    className={cn(
+                                        'size-4 shrink-0 text-gray-500',
+                                        isMobile ? 'hidden' : 'cursor-grab',
+                                    )}
+                                />
+                                <span className="text-[11px] font-bold tracking-[0.15em] text-brand uppercase">
+                                    {sectionLabels[sectionKey]}
+                                </span>
+                                {collapsed && (
+                                    <span className="text-[10px] font-medium tracking-normal text-gray-400 normal-case">
+                                        Collapsed
+                                    </span>
+                                )}
+                                <div className="ml-auto flex items-center gap-1">
+                                    {isOptionalSection(sectionKey) && (
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 px-2 text-xs text-gray-500 hover:text-red-600"
+                                            onClick={() =>
+                                                hideSection(sectionKey)
+                                            }
+                                        >
+                                            Hide section
+                                        </Button>
+                                    )}
+                                    <div className="flex items-center gap-1 sm:hidden">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            aria-label={`Move ${sectionLabels[sectionKey]} up`}
+                                            disabled={
+                                                draft.section_order.indexOf(
+                                                    sectionKey,
+                                                ) === 0
+                                            }
+                                            onClick={() =>
+                                                moveSectionByOffset(
+                                                    sectionKey,
+                                                    -1,
+                                                )
+                                            }
+                                        >
+                                            <ArrowUpIcon className="size-4" />
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            aria-label={`Move ${sectionLabels[sectionKey]} down`}
+                                            disabled={
+                                                draft.section_order.indexOf(
+                                                    sectionKey,
+                                                ) ===
+                                                draft.section_order.length - 1
+                                            }
+                                            onClick={() =>
+                                                moveSectionByOffset(
+                                                    sectionKey,
+                                                    1,
+                                                )
+                                            }
+                                        >
+                                            <ArrowDownIcon className="size-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                            {!collapsed && (
+                                <div className="p-6">
+                                    <SectionFields
+                                        resume={draft}
+                                        section={sectionKey}
+                                        skillLibrary={skillLibrary}
+                                        contactErrors={errors}
+                                        onChange={setDraft}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </main>
+        );
+    }
+
     return (
         <AuthenticatedLayout>
             <Head title={draft.title} />
 
             <div className="flex flex-col bg-gray-50">
+                {(offline || saveStatus === 'error') && (
+                    <div
+                        className={cn(
+                            'flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2 text-sm',
+                            conflict
+                                ? 'border-amber-200 bg-amber-50 text-amber-950'
+                                : offline
+                                  ? 'border-gray-300 bg-gray-100 text-gray-800'
+                                  : 'border-red-200 bg-red-50 text-red-900',
+                        )}
+                    >
+                        <p>
+                            {errorMessage ??
+                                (offline
+                                    ? 'You are offline.'
+                                    : 'Save failed.')}
+                        </p>
+                        <div className="flex gap-2">
+                            {conflict && (
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() =>
+                                        router.reload({
+                                            only: [
+                                                'resume',
+                                                'notes',
+                                                'snapshots',
+                                                'versions',
+                                            ],
+                                        })
+                                    }
+                                >
+                                    Reload
+                                </Button>
+                            )}
+                            <Button
+                                type="button"
+                                size="sm"
+                                onClick={retrySave}
+                                disabled={offline}
+                            >
+                                Retry save
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
                 <div className="flex flex-col gap-6 p-4 sm:p-6 lg:flex-row lg:items-start">
                     <SectionPanel
                         resumeId={id}
@@ -421,6 +687,10 @@ export default function Workstation({
                             }
                             zoom={previewZoom}
                             onZoomChange={setPreviewZoom}
+                            versions={versions}
+                            onRequestDownload={requestDownload}
+                            reviewPreviewMode={reviewPreviewMode}
+                            onReviewPreviewModeChange={setReviewPreviewMode}
                         />
 
                         {tab === 'Edit' && (
@@ -432,165 +702,124 @@ export default function Workstation({
                             />
                         )}
 
-                        {tab === 'Review' ? (
-                            <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white p-4">
-                                <div
-                                    className="origin-top-left transition-transform"
-                                    style={{
-                                        transform: `scale(${previewZoom})`,
-                                        width: `${100 / previewZoom}%`,
-                                    }}
-                                >
-                                    <ResumePreview
-                                        resume={draft}
-                                        className="w-full"
+                        {tab === 'Review' && (
+                            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+                                {reviewPreviewMode === 'pdf' ? (
+                                    <iframe
+                                        title="PDF preview"
+                                        src={route('resumes.preview', id)}
+                                        className="h-[80vh] w-full bg-gray-100"
                                     />
-                                </div>
-                            </div>
-                        ) : (
-                        <main
-                            aria-label="Section form"
-                            className="flex min-w-0 flex-col gap-4"
-                        >
-                            {draft.section_order.map((sectionKey) => {
-                                const collapsed =
-                                    collapsedSections.includes(sectionKey);
-
-                                return (
-                                <div
-                                    key={sectionKey}
-                                    id={`section-${sectionKey}`}
-                                    draggable={!isMobile}
-                                    onDragStart={() =>
-                                        setDraggedSection(sectionKey)
-                                    }
-                                    onDragOver={(event) =>
-                                        event.preventDefault()
-                                    }
-                                    onDrop={() => handleDrop(sectionKey)}
-                                    onDragEnd={() =>
-                                        setDraggedSection(null)
-                                    }
-                                    className={cn(
-                                        'overflow-hidden rounded-lg border border-gray-200 bg-white',
-                                        draggedSection === sectionKey &&
-                                            'opacity-50',
-                                    )}
-                                >
-                                    <div
-                                        aria-expanded={!collapsed}
-                                        title="Double-click to collapse or expand"
-                                        onDoubleClick={(event) => {
-                                            if (
-                                                (event.target as HTMLElement).closest(
-                                                    'button',
-                                                )
-                                            ) {
-                                                return;
-                                            }
-                                            toggleSectionCollapsed(sectionKey);
-                                        }}
-                                        className={cn(
-                                            'flex cursor-default select-none items-center gap-2 bg-white px-5 py-3',
-                                            collapsed
-                                                ? 'border-b-0'
-                                                : 'border-b border-gray-100',
-                                        )}
-                                    >
-                                        <Bars3Icon
-                                            className={cn(
-                                                'size-4 shrink-0 text-gray-500',
-                                                isMobile
-                                                    ? 'hidden'
-                                                    : 'cursor-grab',
-                                            )}
-                                        />
-                                        <span className="text-[11px] font-bold tracking-[0.15em] text-brand uppercase">
-                                            {sectionLabels[sectionKey]}
-                                        </span>
-                                        {collapsed && (
-                                            <span className="text-[10px] font-medium tracking-normal text-gray-400 normal-case">
-                                                Collapsed
-                                            </span>
-                                        )}
-                                        <div className="ml-auto flex items-center gap-1">
-                                            {isOptionalSection(sectionKey) && (
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="h-8 px-2 text-xs text-gray-500 hover:text-red-600"
-                                                    onClick={() =>
-                                                        hideSection(sectionKey)
-                                                    }
-                                                >
-                                                    Hide section
-                                                </Button>
-                                            )}
-                                            <div className="flex items-center gap-1 sm:hidden">
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    aria-label={`Move ${sectionLabels[sectionKey]} up`}
-                                                    disabled={
-                                                        draft.section_order.indexOf(
-                                                            sectionKey,
-                                                        ) === 0
-                                                    }
-                                                    onClick={() =>
-                                                        moveSectionByOffset(
-                                                            sectionKey,
-                                                            -1,
-                                                        )
-                                                    }
-                                                >
-                                                    <ArrowUpIcon className="size-4" />
-                                                </Button>
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    aria-label={`Move ${sectionLabels[sectionKey]} down`}
-                                                    disabled={
-                                                        draft.section_order.indexOf(
-                                                            sectionKey,
-                                                        ) ===
-                                                        draft.section_order
-                                                            .length -
-                                                            1
-                                                    }
-                                                    onClick={() =>
-                                                        moveSectionByOffset(
-                                                            sectionKey,
-                                                            1,
-                                                        )
-                                                    }
-                                                >
-                                                    <ArrowDownIcon className="size-4" />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {!collapsed && (
-                                        <div className="p-6">
-                                            <SectionFields
+                                ) : (
+                                    <div className="overflow-x-auto p-4">
+                                        <div
+                                            className="origin-top-left transition-transform"
+                                            style={{
+                                                transform: `scale(${previewZoom})`,
+                                                width: `${100 / previewZoom}%`,
+                                            }}
+                                        >
+                                            <ResumePreview
                                                 resume={draft}
-                                                section={sectionKey}
-                                                skillLibrary={skillLibrary}
-                                                contactErrors={errors}
-                                                onChange={setDraft}
+                                                className="w-full"
                                             />
                                         </div>
-                                    )}
-                                </div>
-                                );
-                            })}
-                        </main>
+                                    </div>
+                                )}
+                            </div>
                         )}
+
+                        {tab === 'ATS' && (
+                            <div className="rounded-lg border border-gray-200 bg-white p-4">
+                                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                                    <div>
+                                        <h2 className="text-sm font-bold text-gray-900">
+                                            ATS plain text
+                                        </h2>
+                                        <p className="text-[11px] text-gray-500">
+                                            What a simple text parser would see
+                                            — single column, no layout chrome.
+                                        </p>
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => {
+                                            void navigator.clipboard.writeText(
+                                                plainText,
+                                            );
+                                        }}
+                                    >
+                                        Copy all
+                                    </Button>
+                                </div>
+                                <pre className="max-h-[70vh] overflow-auto rounded-md border border-gray-100 bg-gray-50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-gray-800">
+                                    {plainText}
+                                </pre>
+                            </div>
+                        )}
+
+                        {tab === 'Edit' && (
+                            <div
+                                className={cn(
+                                    'grid gap-6',
+                                    !isMobile && 'xl:grid-cols-2',
+                                )}
+                            >
+                                <div className="min-w-0">
+                                    {renderFormSections()}
+                                </div>
+                                {!isMobile && (
+                                    <div className="sticky top-4 hidden max-h-[calc(100vh-6rem)] min-w-0 overflow-y-auto xl:block">
+                                        <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
+                                            <p className="mb-2 px-1 text-[10px] font-bold tracking-wide text-gray-400 uppercase">
+                                                Live preview
+                                            </p>
+                                            <ResumePreview
+                                                resume={draft}
+                                                className="w-full origin-top scale-[0.85]"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        <div className="flex flex-col gap-3">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setShowSideTools((open) => !open)
+                                }
+                                className="self-start text-xs font-semibold text-brand hover:underline"
+                            >
+                                {showSideTools ? 'Hide' : 'Show'} notes &
+                                checkpoints
+                            </button>
+                            {showSideTools && (
+                                <div className="grid gap-4 md:grid-cols-2">
+                                    <NotesPanel resumeId={id} notes={notes} />
+                                    <SnapshotsPanel
+                                        resumeId={id}
+                                        snapshots={snapshots}
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <ExportChecklistModal
+                open={exportOpen}
+                checks={exportGate.checks}
+                canExport={exportGate.canExport}
+                format={exportFormat}
+                onClose={() => setExportOpen(false)}
+                onContinue={confirmDownload}
+                onJump={jumpExportCheck}
+            />
         </AuthenticatedLayout>
     );
 }

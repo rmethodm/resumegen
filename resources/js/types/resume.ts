@@ -139,6 +139,14 @@ export type Resume = {
 /** What the editor sends back; the id travels in the URL, not the body. */
 export type ResumeDraft = Omit<Resume, 'id'>;
 
+/**
+ * Document payload plus concurrency token. `updated_at` is server-owned and
+ * not written by ResumeDocument; it rides on the Inertia page for C11.
+ */
+export type ResumePageDocument = Resume & {
+    updated_at?: string | null;
+};
+
 export type SaveStatus = 'saved' | 'dirty' | 'saving' | 'error';
 
 export type ResumeSuggestion = {

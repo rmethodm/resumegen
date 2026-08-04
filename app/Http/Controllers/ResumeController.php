@@ -73,7 +73,23 @@ class ResumeController extends Controller
 
     public function update(UpdateResumeRequest $request, Resume $resume): RedirectResponse
     {
-        ResumeDocument::save($resume, $request->validated());
+        // Optimistic concurrency: client sends the updated_at it loaded.
+        // A mismatch means another tab (or restore) wrote first.
+        $base = $request->input('base_updated_at');
+        if (is_string($base) && $base !== '' && $resume->updated_at !== null) {
+            $client = strtotime($base);
+            $server = $resume->updated_at->getTimestamp();
+            if ($client !== false && abs($server - $client) > 1) {
+                return back()->withErrors([
+                    'conflict' => 'This resume changed in another tab. Reload to keep editing, or retry to overwrite.',
+                ]);
+            }
+        }
+
+        $data = $request->validated();
+        unset($data['base_updated_at']);
+
+        ResumeDocument::save($resume, $data);
 
         // A single-version resume's title *is* the dashboard card's name —
         // keep the group in sync so the rename shows up there too. Once a
@@ -83,7 +99,26 @@ class ResumeController extends Controller
             $resume->group->update(['title' => $resume->title]);
         }
 
-        return back();
+        return back()->with('updated_at', $resume->fresh()->updated_at?->toIso8601String());
+    }
+
+    /**
+     * Inline PDF stream for the workstation iframe (A2). Same render as
+     * download, Content-Disposition inline so the browser embeds it.
+     */
+    public function preview(Request $request, Resume $resume): HttpResponse
+    {
+        abort_unless($resume->user_id === $request->user()->id, 404);
+
+        $doc = ResumeDocument::toArray($resume);
+        $filename = ResumeExport::filename($doc);
+        $pdfFont = PdfFonts::resolve($resume->font);
+
+        return Pdf::loadView('resumes.export.pdf', [
+            'view' => ResumeExport::build($doc),
+            'fontStack' => $pdfFont['stack'],
+            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
+        ])->stream("{$filename}.pdf");
     }
 
     /**
@@ -180,6 +215,8 @@ class ResumeController extends Controller
         abort_unless($resume->user_id === $request->user()->id, 404);
 
         $resume->load([
+            'notes',
+            'snapshots' => fn ($query) => $query->latest('id')->limit(20),
             'shareLink.views' => fn ($query) => $query->latest('id')->limit(50),
         ]);
 
@@ -188,8 +225,12 @@ class ResumeController extends Controller
             ? (int) $shareLink->views()->count()
             : 0;
 
+        $document = ResumeDocument::toArray($resume);
+        // Concurrency token for C11 — not part of the document schema.
+        $document['updated_at'] = $resume->updated_at?->toIso8601String();
+
         return Inertia::render($component, [
-            'resume' => ResumeDocument::toArray($resume),
+            'resume' => $document,
             'analysis' => [
                 'score' => ResumeAnalysis::score($resume),
                 'breakdown' => ResumeAnalysis::breakdown($resume),
@@ -214,8 +255,8 @@ class ResumeController extends Controller
                     'is_current' => $version->id === $resume->id,
                     'has_notes' => $version->notes_count > 0,
                 ])->all(),
-            // Private per-version reminders on the canvas. Its own prop, not
-            // part of the document — ResumeDocument never learns about notes.
+            // Private per-version reminders. Its own prop, not part of the
+            // document — ResumeDocument never learns about notes.
             'notes' => $resume->notes->map(fn (ResumeNote $note): array => [
                 'id' => $note->id,
                 'body' => $note->body,
@@ -224,6 +265,12 @@ class ResumeController extends Controller
                 'width' => $note->width,
                 'height' => $note->height,
                 'created_at' => $note->created_at->diffForHumans(),
+            ])->all(),
+            'snapshots' => $resume->snapshots->map(fn ($snapshot): array => [
+                'id' => $snapshot->id,
+                'label' => $snapshot->label,
+                'created_at' => $snapshot->created_at?->toIso8601String(),
+                'created_at_human' => $snapshot->created_at?->diffForHumans(),
             ])->all(),
             // Share modal (design doc turn 6, option 6a). Null until Maya
             // opens the modal for the first time and one is generated.

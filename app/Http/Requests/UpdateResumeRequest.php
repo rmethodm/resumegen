@@ -34,6 +34,9 @@ class UpdateResumeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // Concurrency token — stripped before ResumeDocument::save().
+            'base_updated_at' => ['nullable', 'string', 'max:40'],
+
             'title' => ['required', 'string', 'max:255'],
             'target_role' => ['nullable', 'string', 'max:255'],
             'target_company' => ['nullable', 'string', 'max:255'],

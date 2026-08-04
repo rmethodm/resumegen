@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ResumeSnapshot extends Model
 {
-    protected $fillable = ['resume_id', 'document'];
+    protected $fillable = ['resume_id', 'label', 'document'];
 
     /**
      * @return BelongsTo<Resume, $this>

@@ -13,6 +13,7 @@ use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ResumeGroupController;
 use App\Http\Controllers\ResumeNoteController;
 use App\Http\Controllers\ResumeShareLinkController;
+use App\Http\Controllers\ResumeSnapshotController;
 use App\Http\Controllers\Settings\StarterProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -55,6 +56,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::put('/resumes/{resume}', [ResumeController::class, 'update'])->name('resumes.update');
     Route::get('/resumes/{resume}/export', [ResumeController::class, 'download'])->name('resumes.download');
     Route::get('/resumes/{resume}/export-docx', [ResumeController::class, 'downloadDocx'])->name('resumes.download-docx');
+    Route::get('/resumes/{resume}/preview', [ResumeController::class, 'preview'])->name('resumes.preview');
     Route::post('/resumes/{resume}/duplicate', [ResumeController::class, 'duplicate'])->name('resumes.duplicate');
     Route::patch('/resumes/{resume}/rename', [ResumeController::class, 'rename'])->name('resumes.rename');
     Route::delete('/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
@@ -66,6 +68,10 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/resumes/{resume}/notes', [ResumeNoteController::class, 'store'])->name('resume-notes.store');
     Route::patch('/resume-notes/{resumeNote}', [ResumeNoteController::class, 'update'])->name('resume-notes.update');
     Route::delete('/resume-notes/{resumeNote}', [ResumeNoteController::class, 'destroy'])->name('resume-notes.destroy');
+
+    Route::post('/resumes/{resume}/snapshots', [ResumeSnapshotController::class, 'store'])->name('resume-snapshots.store');
+    Route::post('/resumes/{resume}/snapshots/{snapshot}/restore', [ResumeSnapshotController::class, 'restore'])->name('resume-snapshots.restore');
+    Route::delete('/resumes/{resume}/snapshots/{snapshot}', [ResumeSnapshotController::class, 'destroy'])->name('resume-snapshots.destroy');
 
     Route::patch('/resume-groups/{resumeGroup}', [ResumeGroupController::class, 'update'])->name('resume-groups.update');
     Route::delete('/resume-groups/{resumeGroup}', [ResumeGroupController::class, 'destroy'])->name('resume-groups.destroy');

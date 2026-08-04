@@ -33,8 +33,15 @@ import type {
     SaveStatus,
 } from '@/types';
 
-const TABS = ['Edit', 'Review'] as const;
+const TABS = ['Edit', 'Review', 'ATS'] as const;
 export type WorkstationTab = (typeof TABS)[number];
+
+export type HeaderVersion = {
+    id: number;
+    title: string;
+    score: number;
+    is_current: boolean;
+};
 
 export function WorkstationHeader({
     resumeId,
@@ -62,6 +69,10 @@ export function WorkstationHeader({
     onDensityChange,
     zoom,
     onZoomChange,
+    versions = [],
+    onRequestDownload,
+    reviewPreviewMode = 'react',
+    onReviewPreviewModeChange,
 }: {
     resumeId: number;
     title: string;
@@ -99,6 +110,10 @@ export function WorkstationHeader({
     onDensityChange: (density: ResumeDensity) => void;
     zoom: PreviewZoom;
     onZoomChange: (zoom: PreviewZoom) => void;
+    versions?: HeaderVersion[];
+    onRequestDownload?: (format: 'pdf' | 'docx') => void;
+    reviewPreviewMode?: 'react' | 'pdf';
+    onReviewPreviewModeChange?: (mode: 'react' | 'pdf') => void;
 }) {
     const [renaming, setRenaming] = useState(false);
     const [duplicating, setDuplicating] = useState(false);
@@ -194,8 +209,81 @@ export function WorkstationHeader({
                     ))}
                 </div>
 
-                {/* Right: template · share · download · more */}
+                {/* Right: versions · template · share · download · more */}
                 <div className="flex flex-1 flex-wrap items-center justify-end gap-2">
+                    {versions.length > 0 && (
+                        <Menu as="div" className="relative">
+                            <MenuButton
+                                className={buttonClassName(
+                                    'outline',
+                                    'default',
+                                    'h-9 gap-1.5 px-3',
+                                )}
+                            >
+                                <span className="hidden text-gray-400 sm:inline">
+                                    Version
+                                </span>
+                                <span className="max-w-[8rem] truncate font-medium">
+                                    {versions.find((v) => v.is_current)?.title ??
+                                        title}
+                                </span>
+                                <ChevronDownIcon className="size-3.5 text-gray-500" />
+                            </MenuButton>
+                            <MenuItems
+                                anchor="bottom end"
+                                className="z-50 max-h-72 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                            >
+                                {versions.map((version) => (
+                                    <MenuItem key={version.id}>
+                                        <a
+                                            href={route(
+                                                'resumes.workstation',
+                                                version.id,
+                                            )}
+                                            className={cn(
+                                                'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100',
+                                                version.is_current &&
+                                                    'font-semibold text-brand',
+                                            )}
+                                        >
+                                            <span className="truncate">
+                                                {version.title}
+                                            </span>
+                                            <span className="ml-2 shrink-0 tabular-nums text-xs text-gray-400">
+                                                {version.score}
+                                            </span>
+                                        </a>
+                                    </MenuItem>
+                                ))}
+                                <div className="my-1 border-t border-gray-200" />
+                                <MenuItem>
+                                    <button
+                                        type="button"
+                                        disabled={duplicating}
+                                        onClick={() => {
+                                            setDuplicating(true);
+                                            router.post(
+                                                route(
+                                                    'resumes.duplicate',
+                                                    resumeId,
+                                                ),
+                                                undefined,
+                                                {
+                                                    onFinish: () =>
+                                                        setDuplicating(false),
+                                                },
+                                            );
+                                        }}
+                                        className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100 disabled:opacity-50"
+                                    >
+                                        <DocumentDuplicateIcon className="size-4" />
+                                        New version
+                                    </button>
+                                </MenuItem>
+                            </MenuItems>
+                        </Menu>
+                    )}
+
                     <Button
                         type="button"
                         variant="outline"
@@ -230,20 +318,42 @@ export function WorkstationHeader({
                             className="z-50 w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
                         >
                             <MenuItem>
-                                <a
-                                    href={route('resumes.download', resumeId)}
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        onRequestDownload
+                                            ? onRequestDownload('pdf')
+                                            : window.open(
+                                                  route(
+                                                      'resumes.download',
+                                                      resumeId,
+                                                  ),
+                                                  '_blank',
+                                              )
+                                    }
                                     className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
                                 >
                                     Download PDF
-                                </a>
+                                </button>
                             </MenuItem>
                             <MenuItem>
-                                <a
-                                    href={route('resumes.download-docx', resumeId)}
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        onRequestDownload
+                                            ? onRequestDownload('docx')
+                                            : window.open(
+                                                  route(
+                                                      'resumes.download-docx',
+                                                      resumeId,
+                                                  ),
+                                                  '_blank',
+                                              )
+                                    }
                                     className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
                                 >
                                     Download DOCX
-                                </a>
+                                </button>
                             </MenuItem>
                         </MenuItems>
                     </Menu>
@@ -265,7 +375,7 @@ export function WorkstationHeader({
                                     onClick={() => setRenaming(true)}
                                     className="w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
                                 >
-                                    Rename
+                                    Rename this version
                                 </button>
                             </MenuItem>
                             <div className="my-1 border-t border-gray-200" />
@@ -288,13 +398,45 @@ export function WorkstationHeader({
                                     ) : (
                                         <DocumentDuplicateIcon className="size-4" />
                                     )}
-                                    Duplicate
+                                    New version
                                 </button>
                             </MenuItem>
                         </MenuItems>
                     </Menu>
                 </div>
             </div>
+
+            {activeTab === 'Review' && onReviewPreviewModeChange && (
+                <div className="flex items-center gap-2 border-t border-gray-100 px-3 py-1.5 sm:px-4">
+                    <span className="text-[10px] font-bold tracking-wide text-gray-400 uppercase">
+                        Preview
+                    </span>
+                    <button
+                        type="button"
+                        onClick={() => onReviewPreviewModeChange('react')}
+                        className={cn(
+                            'rounded-md px-2 py-1 text-xs font-medium',
+                            reviewPreviewMode === 'react'
+                                ? 'bg-brand-subtle text-brand'
+                                : 'text-gray-500 hover:bg-gray-100',
+                        )}
+                    >
+                        Live
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => onReviewPreviewModeChange('pdf')}
+                        className={cn(
+                            'rounded-md px-2 py-1 text-xs font-medium',
+                            reviewPreviewMode === 'pdf'
+                                ? 'bg-brand-subtle text-brand'
+                                : 'text-gray-500 hover:bg-gray-100',
+                        )}
+                    >
+                        PDF
+                    </button>
+                </div>
+            )}
 
             <WorkstationFormatToolbar
                 canUndo={canUndo}
