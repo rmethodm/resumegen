@@ -212,6 +212,9 @@ export function ExperienceFields({
         <>
             <div className="flex flex-col gap-1.5">
                 <Label className="text-xs">Bullet style</Label>
+                <p className="text-[11px] text-gray-500">
+                    Applies to Work Experience and Projects.
+                </p>
                 <div className="grid grid-cols-3 gap-2">
                     {bulletStyles.map((style) => (
                         <button

@@ -280,6 +280,8 @@ final class ResumeExport
                     'description' => $p['description'] ?? '',
                     'bullets' => self::visible($p['highlights'] ?? []),
                 ],
+                // Same document-level style as experience (not a separate control).
+                (string) ($doc['bullet_style'] ?? 'bullet'),
             ),
 
             'education' => self::rowsSection(

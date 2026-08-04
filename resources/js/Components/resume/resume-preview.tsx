@@ -3,6 +3,7 @@ import { Fragment } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import type {
+    ResumeBulletStyle,
     ResumeDensity,
     ResumeDraft,
     ResumeFont,
@@ -550,11 +551,42 @@ function EntryHead({
     );
 }
 
-function Bullets({ items }: { items: string[] }) {
+/**
+ * Renders list lines using the document `bullet_style` (shared by experience
+ * and project highlights). Skills layout still uses plain discs via the
+ * default.
+ */
+function Bullets({
+    items,
+    style = 'bullet',
+}: {
+    items: string[];
+    style?: ResumeBulletStyle;
+}) {
     const visible = items.filter(Boolean);
 
     if (visible.length === 0) {
         return null;
+    }
+
+    if (style === 'numbered') {
+        return (
+            <ol className="mt-1 ml-4 list-decimal">
+                {visible.map((item, index) => (
+                    <li key={index}>{item}</li>
+                ))}
+            </ol>
+        );
+    }
+
+    if (style === 'indented') {
+        return (
+            <div className="mt-1 ml-4">
+                {visible.map((item, index) => (
+                    <div key={index}>{item}</div>
+                ))}
+            </div>
+        );
     }
 
     return (
@@ -698,7 +730,10 @@ export function ResumePreview({
                                     experience.is_current,
                                 )}
                             />
-                            <Bullets items={experience.bullets} />
+                            <Bullets
+                                items={experience.bullets}
+                                style={resume.bullet_style}
+                            />
                         </div>
                     ))}
                 </Section>
@@ -725,7 +760,10 @@ export function ResumePreview({
                             {project.description && (
                                 <p className="mt-1">{project.description}</p>
                             )}
-                            <Bullets items={project.highlights} />
+                            <Bullets
+                                items={project.highlights}
+                                style={resume.bullet_style}
+                            />
                         </div>
                     ))}
                 </Section>
