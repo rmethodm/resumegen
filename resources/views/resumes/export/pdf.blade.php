@@ -126,7 +126,12 @@
             <table class="rows">
                 @foreach ($section['rows'] as $row)
                     <tr>
-                        <td>{{ $row['left'] }}</td>
+                        <td>
+                            {{ $row['left'] }}
+                            @if (! empty($row['left_sub']))
+                                <div style="color: #555; font-size: 9.5pt; margin-top: 1pt;">{{ $row['left_sub'] }}</div>
+                            @endif
+                        </td>
                         <td class="right">{{ $row['right'] }}</td>
                     </tr>
                 @endforeach

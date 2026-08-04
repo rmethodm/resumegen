@@ -743,17 +743,18 @@ export function ResumePreview({
                             key={index}
                             className="mt-[5px] flex justify-between gap-4"
                         >
-                            <span>
-                                <strong>{entry.school}</strong>
+                            <div className="min-w-0">
+                                <div>
+                                    <strong>{entry.school}</strong>
+                                </div>
                                 {(entry.degree || entry.field) && (
-                                    <>
-                                        {'  '}
+                                    <div className="text-[0.95em]" style={{ color: '#444' }}>
                                         {[entry.degree, entry.field]
                                             .filter(Boolean)
-                                            .join(' in ')}
-                                    </>
+                                            .join(' · ')}
+                                    </div>
                                 )}
-                            </span>
+                            </div>
                             <span className="shrink-0">
                                 {entry.graduation_year}
                             </span>
@@ -785,15 +786,13 @@ export function ResumePreview({
                             key={index}
                             className="mt-[5px] flex justify-between gap-4"
                         >
-                            <span>
+                            <span className="min-w-0">
                                 <strong>{entry.name}</strong>
-                                {entry.credential_id &&
-                                    ` · ${entry.credential_id}`}
                             </span>
-                            <span className="shrink-0">
-                                {[entry.issuer, entry.obtained_at]
+                            <span className="max-w-[55%] shrink-0 text-right">
+                                {[entry.issuer, entry.obtained_at, entry.credential_id]
                                     .filter(Boolean)
-                                    .join(', ')}
+                                    .join(' · ')}
                             </span>
                         </div>
                     ))}

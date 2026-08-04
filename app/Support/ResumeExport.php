@@ -239,10 +239,14 @@ final class ResumeExport
                     $doc['education'] ?? [],
                     fn (array $e): bool => ($e['school'] ?? '') !== '',
                 )),
+                // School on its own line; degree · field underneath so the year
+                // stays aligned on the right without jamming into the title.
                 fn (array $e): array => [
-                    'left' => trim($e['school'].(($e['degree'] ?? '') !== '' || ($e['field'] ?? '') !== ''
-                        ? '  '.implode(' in ', array_filter([$e['degree'] ?? '', $e['field'] ?? '']))
-                        : '')),
+                    'left' => $e['school'] ?? '',
+                    'left_sub' => implode(' · ', array_filter([
+                        $e['degree'] ?? '',
+                        $e['field'] ?? '',
+                    ])),
                     'right' => $e['graduation_year'] ?? '',
                 ],
             ),
@@ -253,9 +257,15 @@ final class ResumeExport
                     $doc['certificates'] ?? [],
                     fn (array $c): bool => ($c['name'] ?? '') !== '',
                 )),
+                // Credential ID sits on the right with issuer/year so a long
+                // name never wraps mid-code (e.g. "TC-LA-" / "0629").
                 fn (array $c): array => [
-                    'left' => $c['name'].(($c['credential_id'] ?? '') !== '' ? ' · '.$c['credential_id'] : ''),
-                    'right' => implode(', ', array_filter([$c['issuer'] ?? '', $c['obtained_at'] ?? ''])),
+                    'left' => $c['name'] ?? '',
+                    'right' => implode(' · ', array_filter([
+                        $c['issuer'] ?? '',
+                        $c['obtained_at'] ?? '',
+                        $c['credential_id'] ?? '',
+                    ])),
                 ],
             ),
 
