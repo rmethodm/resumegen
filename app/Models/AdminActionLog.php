@@ -52,11 +52,11 @@ class AdminActionLog extends Model
     /**
      * @param  array<string, mixed>|null  $meta
      */
-    public static function record(User $actor, User $target, string $action, ?array $meta = null): self
+    public static function record(User $actor, ?User $target, string $action, ?array $meta = null): self
     {
         return self::query()->create([
             'actor_id' => $actor->id,
-            'target_user_id' => $target->id,
+            'target_user_id' => $target?->id,
             'action' => $action,
             'meta' => $meta,
             'created_at' => now(),

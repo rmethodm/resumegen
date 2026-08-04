@@ -23,6 +23,11 @@ export default function AdminLayout({
             href: route('admin.users.index'),
             active: route().current('admin.users.*') === true,
         },
+        {
+            label: 'Backups',
+            href: route('admin.backups.index'),
+            active: route().current('admin.backups.*') === true,
+        },
     ];
 
     return (
