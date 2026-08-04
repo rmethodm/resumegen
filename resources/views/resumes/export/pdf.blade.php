@@ -1,3 +1,10 @@
+@php
+    $d = $view['density'] ?? [
+        'body' => '10.5pt', 'line' => '1.45', 'page_pad_y' => '0.65in', 'page_pad_x' => '0.75in',
+        'header_mb' => '14pt', 'section_mt' => '14pt', 'section_mb' => '6pt',
+        'entry_mb' => '8pt', 'bullet_mb' => '2pt', 'row_pb' => '4pt',
+    ];
+@endphp
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,13 +14,13 @@
     body {
         font-family: {!! $fontStack !!};
         color: #181818;
-        font-size: 10.5pt;
-        line-height: 1.45;
+        font-size: {{ $d['body'] }};
+        line-height: {{ $d['line'] }};
         margin: 0;
     }
-    .page { padding: 0.65in 0.75in; }
+    .page { padding: {{ $d['page_pad_y'] }} {{ $d['page_pad_x'] }}; }
 
-    .header { text-align: {{ $view['style']['header']['align'] }}; margin-bottom: 14pt;
+    .header { text-align: {{ $view['style']['header']['align'] }}; margin-bottom: {{ $d['header_mb'] }};
         @if ($view['style']['header']['rule']) border-bottom: {{ $view['style']['header']['rule'] }}; padding-bottom: 8pt; @endif
     }
     .header h1 {
@@ -27,8 +34,8 @@
     .header .contact { font-size: 9pt; color: {{ $view['style']['header']['sub_color'] }}; }
 
     h2.section-title {
-        font-size: 10.5pt;
-        margin: 14pt 0 6pt;
+        font-size: {{ $d['body'] }};
+        margin: {{ $d['section_mt'] }} 0 {{ $d['section_mb'] }};
         color: {{ $view['style']['heading']['color'] }};
         letter-spacing: {{ $view['style']['heading']['tracking'] }};
         text-transform: {{ $view['style']['heading']['transform'] }};
@@ -37,28 +44,28 @@
         @if ($view['style']['heading']['bar']) border-left: 3pt solid {{ $view['style']['heading']['bar'] }}; padding-left: 6pt; @endif
     }
 
-    p.section-text { margin: 0; font-size: 10pt; }
+    p.section-text { margin: 0; font-size: {{ $d['body'] }}; }
 
-    .entry { margin-bottom: 8pt; }
+    .entry { margin-bottom: {{ $d['entry_mb'] }}; }
     .entry table { width: 100%; border-collapse: collapse; }
     .entry td { border: none; padding: 0; vertical-align: top; }
-    .entry .primary { font-weight: bold; font-size: 10pt; }
+    .entry .primary { font-weight: bold; font-size: {{ $d['body'] }}; }
     .entry .secondary { font-size: 9.5pt; color: #555; }
     .entry .dates { font-size: 9pt; color: #777; text-align: right; white-space: nowrap; }
-    .entry .description { font-size: 10pt; margin-top: 2pt; }
+    .entry .description { font-size: {{ $d['body'] }}; margin-top: 2pt; }
     .entry ul, .entry ol { margin: 3pt 0 0 14pt; padding: 0; }
-    .entry li { font-size: 10pt; margin-bottom: 2pt; }
+    .entry li { font-size: {{ $d['body'] }}; margin-bottom: {{ $d['bullet_mb'] }}; }
     .entry .indented-bullets { margin: 3pt 0 0 14pt; }
-    .entry .indented-bullets div { font-size: 10pt; margin-bottom: 2pt; }
+    .entry .indented-bullets div { font-size: {{ $d['body'] }}; margin-bottom: {{ $d['bullet_mb'] }}; }
 
     table.rows { width: 100%; border-collapse: collapse; }
-    table.rows td { border: none; padding: 0 0 4pt; font-size: 10pt; vertical-align: top; }
+    table.rows td { border: none; padding: 0 0 {{ $d['row_pb'] }}; font-size: {{ $d['body'] }}; vertical-align: top; }
     table.rows td.right { text-align: right; color: #555; white-space: nowrap; }
 
-    .skills-group { font-size: 10pt; margin-bottom: 3pt; }
-    .skills-inline { font-size: 10pt; }
+    .skills-group { font-size: {{ $d['body'] }}; margin-bottom: 3pt; }
+    .skills-inline { font-size: {{ $d['body'] }}; }
     .skills-bullets { margin: 0 0 0 14pt; padding: 0; }
-    .skills-bullets li { font-size: 10pt; margin-bottom: 2pt; }
+    .skills-bullets li { font-size: {{ $d['body'] }}; margin-bottom: {{ $d['bullet_mb'] }}; }
 </style>
 </head>
 <body>
