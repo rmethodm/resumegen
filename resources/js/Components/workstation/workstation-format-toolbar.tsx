@@ -130,8 +130,11 @@ export function WorkstationFormatToolbar({
         <div
             role="toolbar"
             aria-label="Document formatting"
-            className="flex flex-wrap items-center gap-1 border-t border-gray-100 px-2 py-1.5 sm:px-3"
+            className="flex flex-wrap items-center gap-1 border-t border-gray-200 bg-gray-50 px-2 py-1.5 sm:px-3"
         >
+            <span className="mr-1 hidden text-[10px] font-bold tracking-[0.08em] text-gray-500 uppercase sm:inline">
+                Format
+            </span>
             <button
                 type="button"
                 aria-label="Undo"

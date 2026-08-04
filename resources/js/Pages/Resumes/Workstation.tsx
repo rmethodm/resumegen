@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SectionFields } from '@/Components/workstation/inspector';
 import { ResumePreview } from '@/Components/resume/resume-preview';
 import { SectionPanel } from '@/Components/workstation/section-panel';
+import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
 import { Button } from '@/Components/ui/button';
@@ -208,8 +209,18 @@ export default function Workstation({
             targetSection = 'summary';
             fieldId = 'field-summary';
         } else if (message.includes('role') || message.includes('missing')) {
-            targetSection = 'contact';
-            fieldId = 'field-target-role';
+            // Sticky target-role bar is always on Edit; prefer it over Contact.
+            fieldId = 'field-target-role-bar';
+            scrollToSection('contact');
+            window.setTimeout(() => {
+                const element = document.getElementById(fieldId!);
+
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
+                }
+            }, 100);
+
+            return;
         } else if (suggestion.band === 'Profile') {
             targetSection = 'contact';
         } else if (suggestion.band === 'Keywords') {
@@ -236,6 +247,20 @@ export default function Workstation({
 
     function jumpChecklist(item: ScoreChecklistItem) {
         setTab('Edit');
+
+        // Target-role checklist item focuses the sticky bar, not Contact fields.
+        if (item.id === 'target-role' || item.fieldId === 'field-target-role') {
+            window.setTimeout(() => {
+                const element = document.getElementById('field-target-role-bar');
+
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
+                }
+            }, 50);
+
+            return;
+        }
+
         scrollToSection(item.section);
 
         if (item.fieldId) {
@@ -397,6 +422,15 @@ export default function Workstation({
                             zoom={previewZoom}
                             onZoomChange={setPreviewZoom}
                         />
+
+                        {tab === 'Edit' && (
+                            <TargetRoleBar
+                                targetRole={draft.target_role}
+                                onChange={(target_role) =>
+                                    setDraft({ ...draft, target_role })
+                                }
+                            />
+                        )}
 
                         {tab === 'Review' ? (
                             <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white p-4">
