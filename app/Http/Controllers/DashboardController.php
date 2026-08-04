@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Resume;
 use App\Support\ResumeAnalysis;
 use App\Support\ResumeDocument;
+use App\Support\RoleSamples;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -56,6 +57,7 @@ class DashboardController extends Controller
                 ? null
                 : (int) round($resumes->avg('score')),
             'hasStarterProfile' => $request->user()->starterProfile()->exists(),
+            'roleSamples' => RoleSamples::catalogue(),
         ]);
     }
 }

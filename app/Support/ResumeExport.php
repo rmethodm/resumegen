@@ -27,111 +27,133 @@ final class ResumeExport
 
     /**
      * Ported by hand from the `templates` map in `resume-preview.tsx` — keep
-     * the two in sync when a template's look changes there. PDF export used
-     * to ignore `template` entirely and always render the Minimal look; this
-     * is what makes it template-aware. dompdf has no flexbox but handles all
-     * of these (color, letter-spacing, text-transform, font-weight,
-     * border-bottom, border-left) fine, so no layout engine is needed here —
-     * only the same style values the preview already computes.
+     * the two in sync when a template's look changes there. Includes layout
+     * flags (entry_style, skills_first, header bg, page accent) so templates
+     * are more than accent colours. dompdf has no flexbox; table/border
+     * chrome is used instead.
      *
-     * @var array<string, array{header: array{align: string, name_size: string, name_upper: bool, name_color: string, name_tracking: string|null, sub_color: string, rule: string|null}, heading: array{color: string, tracking: string, transform: string, weight: int, rule: string|null, bar: string|null}}>
+     * @var array<string, array{header: array{align: string, name_size: string, name_upper: bool, name_color: string, name_tracking: string|null, sub_color: string, rule: string|null, bg: string|null}, heading: array{color: string, tracking: string, transform: string, weight: int, rule: string|null, bar: string|null}, page_accent: string|null, entry_style: string, skills_first: bool, skills_layout: string|null, name_weight: int}>
      */
     private const TEMPLATE_STYLES = [
         'minimal' => [
-            'header' => ['align' => 'center', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#181818', 'name_tracking' => null, 'sub_color' => '#333', 'rule' => '2px solid #1f2933'],
+            'header' => ['align' => 'center', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#181818', 'name_tracking' => null, 'sub_color' => '#333', 'rule' => '2px solid #1f2933', 'bg' => null],
             'heading' => ['color' => '#444', 'tracking' => '0.22em', 'transform' => 'uppercase', 'weight' => 400, 'rule' => '1px solid #c8c8c8', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'default', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'modern' => [
-            'header' => ['align' => 'left', 'name_size' => '2.2em', 'name_upper' => false, 'name_color' => '#4f46e5', 'name_tracking' => null, 'sub_color' => '#555', 'rule' => '2px solid #4f46e5'],
-            'heading' => ['color' => '#4f46e5', 'tracking' => '0.14em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1px solid #e5e7eb', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2.2em', 'name_upper' => false, 'name_color' => '#312e81', 'name_tracking' => null, 'sub_color' => '#4338ca', 'rule' => null, 'bg' => '#eef2ff'],
+            'heading' => ['color' => '#4f46e5', 'tracking' => '0.14em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1px solid #c7d2fe', 'bar' => null],
+            'page_accent' => '#4f46e5', 'entry_style' => 'stacked', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'classic' => [
-            'header' => ['align' => 'center', 'name_size' => '2.2em', 'name_upper' => false, 'name_color' => '#181818', 'name_tracking' => '0.08em', 'sub_color' => '#333', 'rule' => '3px double #181818'],
+            'header' => ['align' => 'center', 'name_size' => '2.2em', 'name_upper' => false, 'name_color' => '#181818', 'name_tracking' => '0.08em', 'sub_color' => '#333', 'rule' => '3px double #181818', 'bg' => null],
             'heading' => ['color' => '#181818', 'tracking' => '0.18em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1px solid #999', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'ruled', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'executive' => [
-            'header' => ['align' => 'left', 'name_size' => '2.5em', 'name_upper' => true, 'name_color' => '#0f172a', 'name_tracking' => '0.02em', 'sub_color' => '#475569', 'rule' => '4px solid #0f172a'],
+            'header' => ['align' => 'left', 'name_size' => '2.5em', 'name_upper' => true, 'name_color' => '#0f172a', 'name_tracking' => '0.02em', 'sub_color' => '#475569', 'rule' => '4px solid #0f172a', 'bg' => null],
             'heading' => ['color' => '#0f172a', 'tracking' => '0.16em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => null, 'bar' => '#0f172a'],
+            'page_accent' => '#0f172a', 'entry_style' => 'default', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 800,
         ],
         'ats' => [
-            'header' => ['align' => 'left', 'name_size' => '1.9em', 'name_upper' => false, 'name_color' => '#000', 'name_tracking' => null, 'sub_color' => '#000', 'rule' => null],
+            'header' => ['align' => 'left', 'name_size' => '1.9em', 'name_upper' => false, 'name_color' => '#000', 'name_tracking' => null, 'sub_color' => '#000', 'rule' => null, 'bg' => null],
             'heading' => ['color' => '#000', 'tracking' => '0.02em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => null, 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'stacked', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'skills-first' => [
-            'header' => ['align' => 'center', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#059669', 'name_tracking' => null, 'sub_color' => '#444', 'rule' => '2px solid #059669'],
+            'header' => ['align' => 'center', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#047857', 'name_tracking' => null, 'sub_color' => '#444', 'rule' => '2px solid #059669', 'bg' => '#ecfdf5'],
             'heading' => ['color' => '#059669', 'tracking' => '0.16em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1px solid #a7f3cd', 'bar' => null],
+            'page_accent' => '#059669', 'entry_style' => 'default', 'skills_first' => true, 'skills_layout' => 'grouped', 'name_weight' => 700,
         ],
         'reverse-chronological' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.02em', 'sub_color' => '#2b4570', 'rule' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.02em', 'sub_color' => '#2b4570', 'rule' => '2px solid #2b4570', 'bg' => null],
             'heading' => ['color' => '#16161f', 'tracking' => '0.1em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1.5px solid #2b4570', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'ruled', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'ats-plain' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#000000', 'rule' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#000000', 'rule' => null, 'bg' => null],
             'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #bbbbbb', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'stacked', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'minimalist' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#71717a', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => null, 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2.1em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#71717a', 'rule' => null, 'bg' => null],
+            'heading' => ['color' => '#a1a1aa', 'tracking' => '0.18em', 'transform' => 'uppercase', 'weight' => 500, 'rule' => null, 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'stacked', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 500,
         ],
         'engineering' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#1e3a5f', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #1e3a5f', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#0f172a', 'name_tracking' => null, 'sub_color' => '#1e3a5f', 'rule' => '1px solid #1e3a5f', 'bg' => null],
+            'heading' => ['color' => '#1e3a5f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => null, 'bar' => '#1e3a5f'],
+            'page_accent' => '#1e3a5f', 'entry_style' => 'default', 'skills_first' => false, 'skills_layout' => 'columns', 'name_weight' => 700,
         ],
         'ivy-serif' => [
-            'header' => ['align' => 'center', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.02em', 'sub_color' => '#111111', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.1em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '3px double #14161a', 'bar' => null],
+            'header' => ['align' => 'center', 'name_size' => '2.15em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.06em', 'sub_color' => '#111111', 'rule' => '3px double #14161a', 'bg' => null],
+            'heading' => ['color' => '#16161f', 'tracking' => '0.12em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '3px double #14161a', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'ruled', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 600,
         ],
         'clinical' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.02em', 'sub_color' => '#0e5b5b', 'rule' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#0e5b5b', 'name_tracking' => '0.02em', 'sub_color' => '#0e5b5b', 'rule' => '2px solid #0e5b5b', 'bg' => '#f0fdfa'],
             'heading' => ['color' => '#0e5b5b', 'tracking' => '0.1em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '2px solid #0e5b5b', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'stacked', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'career-change' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#4338ca', 'rule' => null],
-            'heading' => ['color' => '#4338ca', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1px solid #4338ca', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#312e81', 'name_tracking' => null, 'sub_color' => '#4338ca', 'rule' => '2px solid #4338ca', 'bg' => null],
+            'heading' => ['color' => '#4338ca', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => null, 'bar' => '#4338ca'],
+            'page_accent' => null, 'entry_style' => 'cards', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'entry-level' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#3730a3', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #3730a3', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2.1em', 'name_upper' => false, 'name_color' => '#312e81', 'name_tracking' => null, 'sub_color' => '#3730a3', 'rule' => null, 'bg' => '#eef2ff'],
+            'heading' => ['color' => '#3730a3', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #c7d2fe', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'cards', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'metric-cards' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#4f46e5', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #4f46e5', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#4f46e5', 'rule' => '2px solid #4f46e5', 'bg' => null],
+            'heading' => ['color' => '#4f46e5', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #c7d2fe', 'bar' => null],
+            'page_accent' => '#4f46e5', 'entry_style' => 'cards', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'sales-quota-table' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#b45309', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #b45309', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#b45309', 'rule' => '2px solid #b45309', 'bg' => null],
+            'heading' => ['color' => '#92400e', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #f59e0b', 'bar' => null],
+            'page_accent' => '#b45309', 'entry_style' => 'ruled', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'federal' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.02em', 'sub_color' => '#1f2937', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.1em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1.5px solid #1f2937', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '1.85em', 'name_upper' => true, 'name_color' => '#000', 'name_tracking' => '0.04em', 'sub_color' => '#000', 'rule' => '1px solid #000', 'bg' => null],
+            'heading' => ['color' => '#000', 'tracking' => '0.08em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1px solid #000', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'stacked', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'academic-cv' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#111111', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #111111', 'bar' => null],
+            'header' => ['align' => 'center', 'name_size' => '2.1em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#333', 'rule' => '1px solid #111', 'bg' => null],
+            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1px solid #111111', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'stacked', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 600,
         ],
         'accent-rule' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#4338ca', 'rule' => null],
-            'heading' => ['color' => '#4338ca', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '2px solid #4338ca', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#4338ca', 'rule' => null, 'bg' => null],
+            'heading' => ['color' => '#4338ca', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '2px solid #4338ca', 'bar' => '#4338ca'],
+            'page_accent' => '#4338ca', 'entry_style' => 'default', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'consulting-ledger' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#14161a', 'rule' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#14161a', 'rule' => '1px solid #14161a', 'bg' => null],
             'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #14161a', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'ruled', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'education' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.02em', 'sub_color' => '#1f4d3a', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.1em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1.5px solid #1f4d3a', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#14532d', 'name_tracking' => '0.02em', 'sub_color' => '#1f4d3a', 'rule' => '2px solid #1f4d3a', 'bg' => '#f0fdf4'],
+            'heading' => ['color' => '#166534', 'tracking' => '0.1em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1.5px solid #1f4d3a', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'stacked', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
         'startup-one-pager' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#4f46e5', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #4f46e5', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '1.9em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#4f46e5', 'rule' => null, 'bg' => '#eef2ff'],
+            'heading' => ['color' => '#4f46e5', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1px solid #c7d2fe', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'cards', 'skills_first' => false, 'skills_layout' => 'inline', 'name_weight' => 700,
         ],
         'it-competency-matrix' => [
-            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#111', 'name_tracking' => null, 'sub_color' => '#1e3a5f', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => '1.5px solid #1e3a5f', 'bar' => null],
+            'header' => ['align' => 'left', 'name_size' => '2em', 'name_upper' => false, 'name_color' => '#0f172a', 'name_tracking' => null, 'sub_color' => '#1e3a5f', 'rule' => '2px solid #1e3a5f', 'bg' => null],
+            'heading' => ['color' => '#1e3a5f', 'tracking' => '0.01em', 'transform' => 'none', 'weight' => 700, 'rule' => null, 'bar' => '#1e3a5f'],
+            'page_accent' => '#1e3a5f', 'entry_style' => 'default', 'skills_first' => true, 'skills_layout' => 'columns', 'name_weight' => 700,
         ],
         'centered-traditional' => [
-            'header' => ['align' => 'center', 'name_size' => '2em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.02em', 'sub_color' => '#111111', 'rule' => null],
-            'heading' => ['color' => '#16161f', 'tracking' => '0.1em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1.5px solid #111111', 'bar' => null],
+            'header' => ['align' => 'center', 'name_size' => '2.15em', 'name_upper' => true, 'name_color' => '#111', 'name_tracking' => '0.08em', 'sub_color' => '#111111', 'rule' => '2px solid #111111', 'bg' => null],
+            'heading' => ['color' => '#16161f', 'tracking' => '0.14em', 'transform' => 'uppercase', 'weight' => 700, 'rule' => '1.5px solid #111111', 'bar' => null],
+            'page_accent' => null, 'entry_style' => 'ruled', 'skills_first' => false, 'skills_layout' => null, 'name_weight' => 700,
         ],
     ];
 
@@ -149,12 +171,25 @@ final class ResumeExport
             $doc['website'] ?? '',
         ], fn (string $part): bool => $part !== '');
 
+        $template = (string) ($doc['template'] ?? 'minimal');
+        $style = self::templateStyle($template);
+        $order = self::orderSectionsForTemplate(
+            array_map('strval', $doc['section_order'] ?? []),
+            $style,
+        );
+
+        // Template may force a skills presentation (e.g. skills-first → grouped).
+        if (($style['skills_layout'] ?? null) !== null) {
+            $doc['skills_layout'] = $style['skills_layout'];
+        }
+
         $sections = [];
 
-        foreach ($doc['section_order'] ?? [] as $key) {
+        foreach ($order as $key) {
             $section = self::section($doc, (string) $key);
 
             if ($section !== null) {
+                $section['entry_style'] = $style['entry_style'] ?? 'default';
                 $sections[] = $section;
             }
         }
@@ -166,9 +201,39 @@ final class ResumeExport
             'headline' => $doc['headline'] ?? '',
             'contact' => implode(' • ', $contact),
             'sections' => $sections,
-            'style' => self::templateStyle((string) ($doc['template'] ?? 'minimal')),
+            'style' => $style,
             'density' => self::densityScale((string) ($doc['density'] ?? 'balanced')),
         ];
+    }
+
+    /**
+     * skills-first / it-competency-matrix: surface Skills after Summary
+     * without rewriting the stored section_order (mirrors the React preview).
+     *
+     * @param  list<string>  $order
+     * @param  array<string, mixed>  $style
+     * @return list<string>
+     */
+    private static function orderSectionsForTemplate(array $order, array $style): array
+    {
+        if (! ($style['skills_first'] ?? false)) {
+            return $order;
+        }
+
+        $withoutSkills = array_values(array_filter(
+            $order,
+            fn (string $key): bool => $key !== 'skills',
+        ));
+
+        if (count($withoutSkills) === count($order)) {
+            return $order;
+        }
+
+        $summaryIdx = array_search('summary', $withoutSkills, true);
+        $insertAt = $summaryIdx === false ? 0 : $summaryIdx + 1;
+        array_splice($withoutSkills, $insertAt, 0, ['skills']);
+
+        return $withoutSkills;
     }
 
     /**
@@ -220,7 +285,7 @@ final class ResumeExport
     }
 
     /**
-     * @return array{header: array{align: string, name_size: string, name_upper: bool, name_color: string, name_tracking: string|null, sub_color: string, rule: string|null}, heading: array{color: string, tracking: string, transform: string, weight: int, rule: string|null, bar: string|null}}
+     * @return array{header: array{align: string, name_size: string, name_upper: bool, name_color: string, name_tracking: string|null, sub_color: string, rule: string|null, bg: string|null}, heading: array{color: string, tracking: string, transform: string, weight: int, rule: string|null, bar: string|null}, page_accent: string|null, entry_style: string, skills_first: bool, skills_layout: string|null, name_weight: int}
      */
     private static function templateStyle(string $template): array
     {

@@ -1,6 +1,7 @@
 import '../../../css/resume-fonts.css';
 import { Fragment } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
+import { orderSectionsForTemplate } from '@/lib/template-presets';
 import { cn } from '@/lib/utils';
 import type {
     ResumeBulletStyle,
@@ -9,6 +10,7 @@ import type {
     ResumeFont,
     ResumeSectionKey,
     ResumeSkill,
+    ResumeSkillsLayout,
     ResumeTemplateKey,
 } from '@/types';
 
@@ -61,17 +63,18 @@ const densityScale: Record<ResumeDensity, { text: number; gap: number }> = {
 };
 
 /**
- * How each template dresses the sheet. Deliberately single-column across the
- * board: a two-column layout would break the direct-child section-gap selector.
- * Templates vary the header, the accent colour, and the section headings —
- * enough to read as distinct without touching that machinery.
+ * How each template dresses the sheet. Still single-column (two-column
+ * sidebars break PDF/dompdf and the section-gap selector), but each look
+ * now has real layout differences: header band, page accent, entry chrome
+ * (cards / ruled / stacked dates), skills layout override, and skills-first
+ * reordering at render time.
  *
  * Every colour is a literal, per the file-level note: the sheet is a print
  * surface and must stay legible on white in both appearances.
  *
  * This map is hand-ported to PHP as `ResumeExport::TEMPLATE_STYLES`, which
  * `pdf.blade.php` renders from — keep the two in sync when a template's
- * look changes here. (DOCX export was removed; PDF is the only exporter.)
+ * look changes here.
  */
 type HeadingStyle = {
     color: string;
@@ -84,6 +87,9 @@ type HeadingStyle = {
     bar?: string;
 };
 
+/** Experience/project entry chrome — still single-column, PDF-safe. */
+type EntryStyle = 'default' | 'stacked' | 'cards' | 'ruled';
+
 type TemplateStyle = {
     header: {
         align: 'center' | 'left';
@@ -94,8 +100,18 @@ type TemplateStyle = {
         nameTracking?: string;
         subColor: string;
         rule?: string;
+        /** Soft header band behind name/contact. */
+        bg?: string;
     };
     heading: HeadingStyle;
+    /** Left edge accent stripe on the sheet. */
+    pageAccent?: string;
+    entryStyle?: EntryStyle;
+    /** Override document skills_layout at render time. */
+    skillsLayout?: ResumeSkillsLayout;
+    /** Render Skills right after Summary without mutating section_order. */
+    skillsFirst?: boolean;
+    nameWeight?: number;
 };
 
 const templates: Record<ResumeTemplateKey, TemplateStyle> = {
@@ -121,17 +137,20 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             align: 'left',
             nameSize: '2.2em',
             nameUpper: false,
-            nameColor: '#4f46e5',
-            subColor: '#555',
-            rule: '2px solid #4f46e5',
+            nameColor: '#312e81',
+            subColor: '#4338ca',
+            rule: undefined,
+            bg: '#eef2ff',
         },
         heading: {
             color: '#4f46e5',
             tracking: '0.14em',
             transform: 'uppercase',
             weight: 700,
-            rule: '1px solid #e5e7eb',
+            rule: '1px solid #c7d2fe',
         },
+        pageAccent: '#4f46e5',
+        entryStyle: 'stacked',
     },
     classic: {
         header: {
@@ -150,6 +169,7 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             weight: 700,
             rule: '1px solid #999',
         },
+        entryStyle: 'ruled',
     },
     executive: {
         header: {
@@ -168,6 +188,8 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             weight: 700,
             bar: '#0f172a',
         },
+        pageAccent: '#0f172a',
+        nameWeight: 800,
     },
     ats: {
         // Deliberately unstyled: no colour, no rules, no accent bars — the
@@ -185,15 +207,17 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             transform: 'uppercase',
             weight: 700,
         },
+        entryStyle: 'stacked',
     },
     'skills-first': {
         header: {
             align: 'center',
             nameSize: '2em',
             nameUpper: false,
-            nameColor: '#059669',
+            nameColor: '#047857',
             subColor: '#444',
             rule: '2px solid #059669',
+            bg: '#ecfdf5',
         },
         heading: {
             color: '#059669',
@@ -202,6 +226,9 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             weight: 700,
             rule: '1px solid #a7f3cd',
         },
+        skillsFirst: true,
+        skillsLayout: 'grouped',
+        pageAccent: '#059669',
     },
     'reverse-chronological': {
         header: {
@@ -211,6 +238,7 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             nameColor: '#111',
             nameTracking: '0.02em',
             subColor: '#2b4570',
+            rule: '2px solid #2b4570',
         },
         heading: {
             color: '#16161f',
@@ -219,6 +247,7 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             weight: 700,
             rule: '1.5px solid #2b4570',
         },
+        entryStyle: 'ruled',
     },
     'ats-plain': {
         header: {
@@ -235,63 +264,74 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             weight: 700,
             rule: '1.5px solid #bbbbbb',
         },
+        entryStyle: 'stacked',
     },
     minimalist: {
         header: {
             align: 'left',
-            nameSize: '2em',
+            nameSize: '2.1em',
             nameUpper: false,
             nameColor: '#111',
             subColor: '#71717a',
         },
         heading: {
-            color: '#16161f',
-            tracking: '0.01em',
-            transform: 'none',
-            weight: 700,
+            color: '#a1a1aa',
+            tracking: '0.18em',
+            transform: 'uppercase',
+            weight: 500,
         },
+        entryStyle: 'stacked',
+        nameWeight: 500,
     },
     engineering: {
         header: {
             align: 'left',
             nameSize: '2em',
             nameUpper: false,
-            nameColor: '#111',
+            nameColor: '#0f172a',
             subColor: '#1e3a5f',
+            rule: '1px solid #1e3a5f',
         },
         heading: {
-            color: '#16161f',
+            color: '#1e3a5f',
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
-            rule: '1.5px solid #1e3a5f',
+            bar: '#1e3a5f',
         },
+        skillsLayout: 'columns',
+        pageAccent: '#1e3a5f',
     },
     'ivy-serif': {
         header: {
             align: 'center',
-            nameSize: '2em',
+            nameSize: '2.15em',
             nameUpper: true,
             nameColor: '#111',
-            nameTracking: '0.02em',
+            nameTracking: '0.06em',
             subColor: '#111111',
+            rule: '3px double #14161a',
         },
         heading: {
             color: '#16161f',
-            tracking: '0.1em',
+            tracking: '0.12em',
             transform: 'uppercase',
             weight: 700,
             rule: '3px double #14161a',
         },
+        entryStyle: 'ruled',
+        nameWeight: 600,
     },
     clinical: {
         header: {
             align: 'left',
             nameSize: '2em',
             nameUpper: true,
-            nameColor: '#111',
+            nameColor: '#0e5b5b',
             nameTracking: '0.02em',
             subColor: '#0e5b5b',
+            bg: '#f0fdfa',
+            rule: '2px solid #0e5b5b',
         },
         heading: {
             color: '#0e5b5b',
@@ -300,38 +340,43 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             weight: 700,
             rule: '2px solid #0e5b5b',
         },
+        entryStyle: 'stacked',
     },
     'career-change': {
         header: {
             align: 'left',
             nameSize: '2em',
             nameUpper: false,
-            nameColor: '#111',
+            nameColor: '#312e81',
             subColor: '#4338ca',
+            rule: '2px solid #4338ca',
         },
         heading: {
             color: '#4338ca',
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
-            rule: '1px solid #4338ca',
+            bar: '#4338ca',
         },
+        entryStyle: 'cards',
     },
     'entry-level': {
         header: {
             align: 'left',
-            nameSize: '2em',
+            nameSize: '2.1em',
             nameUpper: false,
-            nameColor: '#111',
+            nameColor: '#312e81',
             subColor: '#3730a3',
+            bg: '#eef2ff',
         },
         heading: {
-            color: '#16161f',
+            color: '#3730a3',
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
-            rule: '1.5px solid #3730a3',
+            rule: '1.5px solid #c7d2fe',
         },
+        entryStyle: 'cards',
     },
     'metric-cards': {
         header: {
@@ -340,14 +385,17 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             nameUpper: false,
             nameColor: '#111',
             subColor: '#4f46e5',
+            rule: '2px solid #4f46e5',
         },
         heading: {
-            color: '#16161f',
+            color: '#4f46e5',
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
-            rule: '1.5px solid #4f46e5',
+            rule: '1.5px solid #c7d2fe',
         },
+        entryStyle: 'cards',
+        pageAccent: '#4f46e5',
     },
     'sales-quota-table': {
         header: {
@@ -356,47 +404,55 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             nameUpper: false,
             nameColor: '#111',
             subColor: '#b45309',
+            rule: '2px solid #b45309',
         },
         heading: {
-            color: '#16161f',
+            color: '#92400e',
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
-            rule: '1.5px solid #b45309',
+            rule: '1.5px solid #f59e0b',
         },
+        entryStyle: 'ruled',
+        pageAccent: '#b45309',
     },
     federal: {
         header: {
             align: 'left',
-            nameSize: '2em',
+            nameSize: '1.85em',
             nameUpper: true,
-            nameColor: '#111',
-            nameTracking: '0.02em',
-            subColor: '#1f2937',
+            nameColor: '#000',
+            nameTracking: '0.04em',
+            subColor: '#000',
+            rule: '1px solid #000',
         },
         heading: {
-            color: '#16161f',
-            tracking: '0.1em',
+            color: '#000',
+            tracking: '0.08em',
             transform: 'uppercase',
             weight: 700,
-            rule: '1.5px solid #1f2937',
+            rule: '1px solid #000',
         },
+        entryStyle: 'stacked',
     },
     'academic-cv': {
         header: {
-            align: 'left',
-            nameSize: '2em',
+            align: 'center',
+            nameSize: '2.1em',
             nameUpper: false,
             nameColor: '#111',
-            subColor: '#111111',
+            subColor: '#333',
+            rule: '1px solid #111',
         },
         heading: {
             color: '#16161f',
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
-            rule: '1.5px solid #111111',
+            rule: '1px solid #111111',
         },
+        entryStyle: 'stacked',
+        nameWeight: 600,
     },
     'accent-rule': {
         header: {
@@ -411,8 +467,10 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
+            bar: '#4338ca',
             rule: '2px solid #4338ca',
         },
+        pageAccent: '#4338ca',
     },
     'consulting-ledger': {
         header: {
@@ -421,6 +479,7 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             nameUpper: false,
             nameColor: '#111',
             subColor: '#14161a',
+            rule: '1px solid #14161a',
         },
         heading: {
             color: '#16161f',
@@ -429,72 +488,85 @@ const templates: Record<ResumeTemplateKey, TemplateStyle> = {
             weight: 700,
             rule: '1.5px solid #14161a',
         },
+        entryStyle: 'ruled',
     },
     education: {
         header: {
             align: 'left',
             nameSize: '2em',
             nameUpper: true,
-            nameColor: '#111',
+            nameColor: '#14532d',
             nameTracking: '0.02em',
             subColor: '#1f4d3a',
+            bg: '#f0fdf4',
+            rule: '2px solid #1f4d3a',
         },
         heading: {
-            color: '#16161f',
+            color: '#166534',
             tracking: '0.1em',
             transform: 'uppercase',
             weight: 700,
             rule: '1.5px solid #1f4d3a',
         },
+        entryStyle: 'stacked',
     },
     'startup-one-pager': {
         header: {
             align: 'left',
-            nameSize: '2em',
+            nameSize: '1.9em',
             nameUpper: false,
             nameColor: '#111',
             subColor: '#4f46e5',
+            bg: '#eef2ff',
         },
         heading: {
-            color: '#16161f',
+            color: '#4f46e5',
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
-            rule: '1.5px solid #4f46e5',
+            rule: '1px solid #c7d2fe',
         },
+        entryStyle: 'cards',
+        skillsLayout: 'inline',
     },
     'it-competency-matrix': {
         header: {
             align: 'left',
             nameSize: '2em',
             nameUpper: false,
-            nameColor: '#111',
+            nameColor: '#0f172a',
             subColor: '#1e3a5f',
+            rule: '2px solid #1e3a5f',
         },
         heading: {
-            color: '#16161f',
+            color: '#1e3a5f',
             tracking: '0.01em',
             transform: 'none',
             weight: 700,
-            rule: '1.5px solid #1e3a5f',
+            bar: '#1e3a5f',
         },
+        skillsLayout: 'columns',
+        skillsFirst: true,
+        pageAccent: '#1e3a5f',
     },
     'centered-traditional': {
         header: {
             align: 'center',
-            nameSize: '2em',
+            nameSize: '2.15em',
             nameUpper: true,
             nameColor: '#111',
-            nameTracking: '0.02em',
+            nameTracking: '0.08em',
             subColor: '#111111',
+            rule: '2px solid #111111',
         },
         heading: {
             color: '#16161f',
-            tracking: '0.1em',
+            tracking: '0.14em',
             transform: 'uppercase',
             weight: 700,
             rule: '1.5px solid #111111',
         },
+        entryStyle: 'ruled',
     },
 };
 
@@ -530,16 +602,30 @@ function Section({
     );
 }
 
-/** Title/company on the left, dates on the right. */
+/** Title/company on the left, dates on the right — or stacked under the title. */
 function EntryHead({
     primary,
     secondary,
     dates,
+    stacked = false,
 }: {
     primary: string;
     secondary?: string;
     dates: string;
+    stacked?: boolean;
 }) {
+    if (stacked) {
+        return (
+            <div className="mt-[7px] first:mt-0">
+                <div className="font-bold">{primary}</div>
+                {secondary && <div className="text-[#444]">{secondary}</div>}
+                {dates && (
+                    <div className="mt-0.5 text-[0.9em] text-[#666]">{dates}</div>
+                )}
+            </div>
+        );
+    }
+
     return (
         <div className="mt-[7px] flex justify-between gap-4 first:mt-0">
             <div>
@@ -549,6 +635,40 @@ function EntryHead({
             <div className="shrink-0">{dates}</div>
         </div>
     );
+}
+
+function EntryShell({
+    style = 'default',
+    accent,
+    children,
+}: {
+    style?: EntryStyle;
+    accent?: string;
+    children: ReactNode;
+}) {
+    if (style === 'cards') {
+        return (
+            <div
+                className="mt-2 rounded border px-2.5 py-2 first:mt-0"
+                style={{ borderColor: accent ?? '#e5e7eb', background: '#fafafa' }}
+            >
+                {children}
+            </div>
+        );
+    }
+
+    if (style === 'ruled') {
+        return (
+            <div
+                className="mt-2 border-b pb-2 first:mt-0 last:border-b-0"
+                style={{ borderColor: accent ?? RULE }}
+            >
+                {children}
+            </div>
+        );
+    }
+
+    return <div className="mt-0">{children}</div>;
 }
 
 /**
@@ -623,11 +743,18 @@ function byCategory(skills: ResumeSkill[]): [string, ResumeSkill[]][] {
     return [...groups];
 }
 
-function Skills({ resume }: { resume: ResumeDraft }) {
+function Skills({
+    resume,
+    layout,
+}: {
+    resume: ResumeDraft;
+    layout?: ResumeSkillsLayout;
+}) {
     const names = resume.skills.map((skill) => skill.name);
     const groups = byCategory(resume.skills);
+    const skillsLayout = layout ?? resume.skills_layout;
 
-    switch (resume.skills_layout) {
+    switch (skillsLayout) {
         case 'bullets':
             return <Bullets items={names} />;
         case 'columns':
@@ -679,6 +806,13 @@ export function ResumePreview({
 }) {
     const { text, gap } = densityScale[resume.density] ?? densityScale.balanced;
     const t = templates[resume.template] ?? templates.minimal;
+    const entryStyle = t.entryStyle ?? 'default';
+    const entryAccent =
+        t.pageAccent ?? t.heading.bar ?? t.heading.color ?? RULE;
+    const sectionOrder = orderSectionsForTemplate(
+        resume.section_order,
+        resume.template,
+    );
 
     const contact = [
         resume.email,
@@ -720,7 +854,11 @@ export function ResumePreview({
                     head={t.heading}
                 >
                     {experiences.map((experience, index) => (
-                        <div key={index}>
+                        <EntryShell
+                            key={index}
+                            style={entryStyle}
+                            accent={entryAccent}
+                        >
                             <EntryHead
                                 primary={experience.title}
                                 secondary={experience.company}
@@ -729,12 +867,13 @@ export function ResumePreview({
                                     experience.end_date,
                                     experience.is_current,
                                 )}
+                                stacked={entryStyle === 'stacked' || entryStyle === 'cards'}
                             />
                             <Bullets
                                 items={experience.bullets}
                                 style={resume.bullet_style}
                             />
-                        </div>
+                        </EntryShell>
                     ))}
                 </Section>
             ) : null,
@@ -747,7 +886,11 @@ export function ResumePreview({
                     head={t.heading}
                 >
                     {projects.map((project, index) => (
-                        <div key={index}>
+                        <EntryShell
+                            key={index}
+                            style={entryStyle}
+                            accent={entryAccent}
+                        >
                             <EntryHead
                                 primary={project.name}
                                 secondary={project.url}
@@ -756,6 +899,7 @@ export function ResumePreview({
                                     project.end_date,
                                     false,
                                 )}
+                                stacked={entryStyle === 'stacked' || entryStyle === 'cards'}
                             />
                             {project.description && (
                                 <p className="mt-1">{project.description}</p>
@@ -764,7 +908,7 @@ export function ResumePreview({
                                 items={project.highlights}
                                 style={resume.bullet_style}
                             />
-                        </div>
+                        </EntryShell>
                     ))}
                 </Section>
             ) : null,
@@ -808,7 +952,7 @@ export function ResumePreview({
                     title="Skills"
                     head={t.heading}
                 >
-                    <Skills resume={resume} />
+                    <Skills resume={resume} layout={t.skillsLayout} />
                 </Section>
             ) : null,
 
@@ -847,6 +991,9 @@ export function ResumePreview({
                     lineHeight: 1.35,
                     color: INK,
                     '--section-gap': `${gap}px`,
+                    borderLeft: t.pageAccent
+                        ? `5px solid ${t.pageAccent}`
+                        : undefined,
                 } as CSSProperties
             }
             className={cn(
@@ -858,17 +1005,22 @@ export function ResumePreview({
             <header
                 data-section="contact"
                 className={cn(
-                    'mb-3.5 pb-2.5',
+                    'mb-3.5',
+                    t.header.bg ? 'rounded-sm px-3 py-2.5' : 'pb-2.5',
                     t.header.align === 'center' ? 'text-center' : 'text-left',
                 )}
-                style={{ borderBottom: t.header.rule }}
+                style={{
+                    borderBottom: t.header.rule,
+                    background: t.header.bg,
+                }}
             >
                 <h1
-                    className="leading-tight font-bold"
+                    className="leading-tight"
                     style={{
                         fontSize: t.header.nameSize,
                         color: t.header.nameColor,
                         letterSpacing: t.header.nameTracking,
+                        fontWeight: t.nameWeight ?? 700,
                         textTransform: t.header.nameUpper
                             ? 'uppercase'
                             : undefined,
@@ -890,7 +1042,7 @@ export function ResumePreview({
 
             {/* Fragments, not wrapper divs: the section gap is applied with a
                 direct-child selector, which a wrapper would break. */}
-            {resume.section_order.map((key) => (
+            {sectionOrder.map((key) => (
                 <Fragment key={key}>{sections[key]}</Fragment>
             ))}
         </article>

@@ -11,6 +11,10 @@ import {
     SnapshotsPanel,
     type WorkstationSnapshot,
 } from '@/Components/workstation/snapshots-panel';
+import {
+    AtsPlainTextBlock,
+    OptimizePanel,
+} from '@/Components/workstation/optimize-panel';
 import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
@@ -25,6 +29,7 @@ import {
     type ScoreChecklistItem,
 } from '@/lib/resume-analysis';
 import { exportChecklist, type ExportCheck } from '@/lib/export-checklist';
+import { applyTemplatePreset } from '@/lib/template-presets';
 import { resumeToPlainText } from '@/lib/resume-plain-text';
 import {
     insertSectionInOrder,
@@ -567,6 +572,7 @@ export default function Workstation({
                                 <div className="p-6">
                                     <SectionFields
                                         resume={draft}
+                                        resumeId={id}
                                         section={sectionKey}
                                         skillLibrary={skillLibrary}
                                         contactErrors={errors}
@@ -647,6 +653,7 @@ export default function Workstation({
                         onSelectSuggestion={selectSuggestion}
                         onAddKeyword={addKeyword}
                         onJumpChecklist={jumpChecklist}
+                        onOpenOptimize={() => setTab('Optimize')}
                     />
 
                     <div className="flex min-w-0 flex-col gap-6 lg:flex-1">
@@ -667,7 +674,7 @@ export default function Workstation({
                             onTabChange={setTab}
                             template={draft.template}
                             onTemplateChange={(template) =>
-                                setDraft({ ...draft, template })
+                                setDraft(applyTemplatePreset(draft, template))
                             }
                             previewName={draft.full_name}
                             previewHeadline={draft.headline}
@@ -729,35 +736,14 @@ export default function Workstation({
                             </div>
                         )}
 
-                        {tab === 'ATS' && (
-                            <div className="rounded-lg border border-gray-200 bg-white p-4">
-                                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                                    <div>
-                                        <h2 className="text-sm font-bold text-gray-900">
-                                            ATS plain text
-                                        </h2>
-                                        <p className="text-[11px] text-gray-500">
-                                            What a simple text parser would see
-                                            — single column, no layout chrome.
-                                        </p>
-                                    </div>
-                                    <Button
-                                        type="button"
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => {
-                                            void navigator.clipboard.writeText(
-                                                plainText,
-                                            );
-                                        }}
-                                    >
-                                        Copy all
-                                    </Button>
-                                </div>
-                                <pre className="max-h-[70vh] overflow-auto rounded-md border border-gray-100 bg-gray-50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-gray-800">
-                                    {plainText}
-                                </pre>
-                            </div>
+                        {tab === 'Optimize' && (
+                            <OptimizePanel
+                                draft={draft}
+                                onChange={setDraft}
+                                onAddKeyword={addKeyword}
+                            >
+                                <AtsPlainTextBlock plainText={plainText} />
+                            </OptimizePanel>
                         )}
 
                         {tab === 'Edit' && (

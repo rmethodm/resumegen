@@ -67,44 +67,70 @@ export function TemplatePickerModal({
                                     )}
                                 >
                                     <div
-                                        className="relative aspect-[8.5/11] w-full overflow-hidden rounded border border-gray-100 bg-white p-1.5 shadow-sm"
+                                        className="relative aspect-[8.5/11] w-full overflow-hidden rounded border border-gray-100 bg-white shadow-sm"
+                                        style={{
+                                            borderLeft: style.pageAccent
+                                                ? `3px solid ${style.pageAccent}`
+                                                : undefined,
+                                        }}
                                         aria-hidden
                                     >
-                                        <div
-                                            className="border-b pb-0.5"
-                                            style={{
-                                                textAlign: style.align,
-                                                borderColor: style.accent,
-                                                borderBottomWidth: 1.5,
-                                            }}
-                                        >
+                                        <div className="p-1.5">
                                             <div
-                                                className="truncate text-[7px] font-bold leading-tight"
-                                                style={{ color: style.nameColor }}
+                                                className="border-b pb-0.5"
+                                                style={{
+                                                    textAlign: style.align,
+                                                    borderColor: style.accent,
+                                                    borderBottomWidth: 1.5,
+                                                    background: style.headerBg,
+                                                    padding: style.headerBg
+                                                        ? '2px 3px'
+                                                        : undefined,
+                                                    borderRadius: style.headerBg
+                                                        ? 2
+                                                        : undefined,
+                                                }}
                                             >
-                                                {name}
+                                                <div
+                                                    className="truncate text-[7px] font-bold leading-tight"
+                                                    style={{ color: style.nameColor }}
+                                                >
+                                                    {name}
+                                                </div>
+                                                <div
+                                                    className="mt-0.5 truncate text-[5px] leading-tight"
+                                                    style={{ color: style.subColor }}
+                                                >
+                                                    {headline}
+                                                </div>
                                             </div>
                                             <div
-                                                className="mt-0.5 truncate text-[5px] leading-tight"
-                                                style={{ color: style.subColor }}
+                                                className="mt-1 text-[5px] font-semibold tracking-wider uppercase"
+                                                style={{
+                                                    color: style.headingColor,
+                                                    borderBottom: `1px solid ${style.accent}`,
+                                                    paddingBottom: 1,
+                                                }}
                                             >
-                                                {headline}
+                                                Experience
                                             </div>
-                                        </div>
-                                        <div
-                                            className="mt-1 text-[5px] font-semibold tracking-wider uppercase"
-                                            style={{
-                                                color: style.headingColor,
-                                                borderBottom: `1px solid ${style.accent}`,
-                                                paddingBottom: 1,
-                                            }}
-                                        >
-                                            Experience
-                                        </div>
-                                        <div className="mt-1 space-y-0.5">
-                                            <div className="h-0.5 w-[80%] rounded bg-gray-200" />
-                                            <div className="h-0.5 w-full rounded bg-gray-100" />
-                                            <div className="h-0.5 w-[90%] rounded bg-gray-100" />
+                                            <div className="mt-1 space-y-0.5">
+                                                {[0, 1].map((i) => (
+                                                    <div
+                                                        key={i}
+                                                        className={
+                                                            style.entryStyle === 'cards'
+                                                                ? 'rounded border border-gray-200 bg-gray-50 p-0.5'
+                                                                : style.entryStyle === 'ruled'
+                                                                  ? 'border-b border-gray-200 pb-0.5'
+                                                                  : ''
+                                                        }
+                                                    >
+                                                        <div className="h-0.5 w-[80%] rounded bg-gray-200" />
+                                                        <div className="mt-0.5 h-0.5 w-full rounded bg-gray-100" />
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                         {selected && (
                                             <span className="absolute top-1 right-1 rounded-full bg-brand p-0.5 text-white">

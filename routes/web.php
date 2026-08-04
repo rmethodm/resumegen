@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeShareController;
+use App\Http\Controllers\ResumeAiController;
 use App\Http\Controllers\ResumeCompareController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ResumeGroupController;
@@ -60,6 +61,15 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/resumes/{resume}/duplicate', [ResumeController::class, 'duplicate'])->name('resumes.duplicate');
     Route::patch('/resumes/{resume}/rename', [ResumeController::class, 'rename'])->name('resumes.rename');
     Route::delete('/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
+
+    // Optional AI (gated by config/ai.php — disabled by default).
+    Route::get('/ai/status', [ResumeAiController::class, 'status'])->name('ai.status');
+    Route::middleware('throttle:20,1')->group(function () {
+        Route::post('/resumes/{resume}/ai/rewrite-bullet', [ResumeAiController::class, 'rewriteBullet'])
+            ->name('resumes.ai.rewrite-bullet');
+        Route::post('/resumes/{resume}/ai/summary', [ResumeAiController::class, 'generateSummary'])
+            ->name('resumes.ai.summary');
+    });
 
     Route::post('/resumes/{resume}/share', [ResumeShareLinkController::class, 'store'])->name('resumes.share.store');
     Route::patch('/resume-share-links/{resumeShareLink}', [ResumeShareLinkController::class, 'update'])->name('resume-share-links.update');

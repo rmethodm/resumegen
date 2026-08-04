@@ -11,9 +11,11 @@ use App\Models\ResumeNote;
 use App\Models\StarterProfile;
 use App\Support\DocxExport;
 use App\Support\PdfFonts;
+use App\Support\PlainTextResumeParser;
 use App\Support\ResumeAnalysis;
 use App\Support\ResumeDocument;
 use App\Support\ResumeExport;
+use App\Support\RoleSamples;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -53,10 +55,73 @@ class ResumeController extends Controller
      */
     public function store(StoreResumeRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
+        $sampleId = $validated['sample'] ?? null;
+        $plainText = isset($validated['plain_text']) ? trim((string) $validated['plain_text']) : '';
+
+        // Role sample or paste import: seed full document (contact from sample/parse).
+        if (is_string($sampleId) && $sampleId !== '') {
+            $sample = RoleSamples::find($sampleId);
+            abort_unless($sample !== null, 422);
+
+            $contact = $this->starterProfileContactFields($request);
+            $document = array_merge($sample['document'], [
+                'full_name' => $contact['full_name'] !== '' ? $contact['full_name'] : ($sample['document']['full_name'] ?? 'Your Name'),
+                'email' => $contact['email'] !== '' ? $contact['email'] : ($sample['document']['email'] ?? ''),
+                'phone' => $contact['phone'] !== '' ? $contact['phone'] : '',
+                'location' => $contact['location'] !== '' ? $contact['location'] : '',
+                'linkedin' => $contact['linkedin'] !== '' ? $contact['linkedin'] : '',
+                'website' => $contact['website'] !== '' ? $contact['website'] : '',
+                'template' => $validated['template'] ?? ($sample['document']['template'] ?? 'minimal'),
+                'font' => $validated['font'] ?? 'inter',
+            ]);
+
+            $resume = $request->user()->resumes()->create([
+                'title' => $document['title'] ?? $sample['label'],
+            ]);
+            ResumeDocument::save($resume, $document);
+
+            return to_route('resumes.workstation', $resume->fresh());
+        }
+
+        if ($plainText !== '') {
+            $parsed = PlainTextResumeParser::parse($plainText);
+            $contact = $this->starterProfileContactFields($request);
+            $document = array_merge($parsed, [
+                'full_name' => ($parsed['full_name'] ?? '') !== ''
+                    ? $parsed['full_name']
+                    : $contact['full_name'],
+                'email' => ($parsed['email'] ?? '') !== ''
+                    ? $parsed['email']
+                    : $contact['email'],
+                'phone' => ($parsed['phone'] ?? '') !== ''
+                    ? $parsed['phone']
+                    : $contact['phone'],
+                'location' => ($parsed['location'] ?? '') !== ''
+                    ? $parsed['location']
+                    : $contact['location'],
+                'linkedin' => ($parsed['linkedin'] ?? '') !== ''
+                    ? $parsed['linkedin']
+                    : $contact['linkedin'],
+                'website' => ($parsed['website'] ?? '') !== ''
+                    ? $parsed['website']
+                    : $contact['website'],
+                'template' => $validated['template'] ?? 'ats-plain',
+                'font' => $validated['font'] ?? 'inter',
+            ]);
+
+            $resume = $request->user()->resumes()->create([
+                'title' => $document['title'] ?? 'Imported resume',
+            ]);
+            ResumeDocument::save($resume, $document);
+
+            return to_route('resumes.workstation', $resume->fresh());
+        }
+
         $resume = $request->user()->resumes()->create(array_filter([
             'title' => 'Untitled resume',
-            'template' => $request->validated('template'),
-            'font' => $request->validated('font'),
+            'template' => $validated['template'] ?? null,
+            'font' => $validated['font'] ?? null,
             ...$this->starterProfileContactFields($request),
         ], fn (mixed $value): bool => $value !== null));
 
@@ -299,9 +364,9 @@ class ResumeController extends Controller
         $profile = $request->user()->starterProfile;
 
         return [
-            'full_name' => $profile->full_name ?? $request->user()->name,
+            'full_name' => $profile?->full_name ?: $request->user()->name,
             'headline' => $profile?->headline ?? '',
-            'email' => $profile->email ?? $request->user()->email,
+            'email' => $profile?->email ?: $request->user()->email,
             'phone' => $profile?->phone ?? '',
             'location' => $profile?->location ?? '',
             'target_role' => $profile?->target_role ?? '',

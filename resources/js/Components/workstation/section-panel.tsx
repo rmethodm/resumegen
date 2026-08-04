@@ -114,6 +114,7 @@ export function SectionPanel({
     onSelectSuggestion,
     onAddKeyword,
     onJumpChecklist,
+    onOpenOptimize,
     className,
 }: {
     resumeId: number;
@@ -126,6 +127,8 @@ export function SectionPanel({
     onSelectSuggestion: (suggestion: ResumeSuggestion) => void;
     onAddKeyword: (keyword: string) => void;
     onJumpChecklist: (item: ScoreChecklistItem) => void;
+    /** Jump to Optimize tab (JD match). */
+    onOpenOptimize?: () => void;
     className?: string;
 }) {
     const addable = missingOptionalSections(resume.section_order);
@@ -133,6 +136,25 @@ export function SectionPanel({
     const missing = useMemo(() => missingKeywords(resume), [resume]);
     const present = useMemo(() => presentKeywords(resume), [resume]);
     const hasRoleFamily = keywordsFor(resume.target_role).length > 0;
+
+    function jumpBand(label: string) {
+        const open = checklist.find(
+            (item) => !item.done && item.band === label,
+        );
+        if (open) {
+            onJumpChecklist(open);
+
+            return;
+        }
+        // Band complete — still land on the related section.
+        const section: ResumeSectionKey =
+            label === 'Keywords'
+                ? 'skills'
+                : label === 'Profile'
+                  ? 'contact'
+                  : 'experience';
+        onSelect(section);
+    }
 
     return (
         <aside
@@ -165,7 +187,13 @@ export function SectionPanel({
                 {analysis.breakdown.length > 0 && (
                     <div className="mt-14 grid grid-cols-2 gap-2">
                         {analysis.breakdown.map((band) => (
-                            <div key={band.label} className="space-y-1">
+                            <button
+                                key={band.label}
+                                type="button"
+                                onClick={() => jumpBand(band.label)}
+                                title={`Fix ${band.label} — jump to next step`}
+                                className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-brand-subtle/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
+                            >
                                 <div className="flex justify-between text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
                                     <span>{band.label}</span>
                                     <span className="tabular-nums">
@@ -183,7 +211,7 @@ export function SectionPanel({
                                         }}
                                     />
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 )}
@@ -197,7 +225,11 @@ export function SectionPanel({
                     onAdd={onAddKeyword}
                 />
 
-                <JdMatchPanel draft={resume} />
+                <JdMatchPanel
+                    draft={resume}
+                    onAddKeyword={onAddKeyword}
+                    onOpenOptimize={onOpenOptimize}
+                />
 
                 <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
                     Improvements

@@ -128,6 +128,8 @@ Explicitly **not** ported from Resumo: public resume sharing/publication via `is
 
 **Cascade delete:** `experiences`/`projects`/`education`/`certificates`/`skills`/`resume_notes`/`resume_snapshots` are removed by `cascadeOnDelete` FKs on `resume_id`. `User` deletes its `resumes()` per-model (not relying on the FK cascade) so any future model-event-driven cleanup still fires.
 
+**StarterProfile NOT NULL columns vs. nullable validation (fixed 2026-08-04):** `starter_profiles`' scalar columns are `NOT NULL DEFAULT ''` — a blank field is stored as `''`, never `null`. The update request marks those same fields nullable (a blank profile is legitimate), and Laravel's `ConvertEmptyStringsToNull` middleware turns a blank form input into `null` before validation runs. Left alone, that `null` hits the `NOT NULL` column and the whole `updateOrCreate` throws, silently discarding the save. `StarterProfileController::update()` now does `$data[$field] ??= ''` over the scalar fields before writing. If another nullable-but-NOT-NULL column shows up on this model, apply the same coalesce rather than loosening the migration.
+
 ### Authorization
 `ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses `AuthorizesRequests` so `$this->authorize()` is available everywhere. Most of the imported `ResumeController`/`ResumeGroupController`/`ResumeNoteController` methods use inline `abort_unless($resume->user_id === ...)` (matching Resumo's own convention) rather than the policy — both patterns coexist, don't consolidate without checking call sites.
 
