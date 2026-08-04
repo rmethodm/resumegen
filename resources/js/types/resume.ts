@@ -152,6 +152,8 @@ export type ResumeSuggestion = {
 
 export type ResumeAnalysis = {
     score: number;
+    /** Four bands of 0–25: Profile, Experience, Impact, Keywords. */
+    breakdown: { label: string; score: number }[];
     suggestions: ResumeSuggestion[];
 };
 

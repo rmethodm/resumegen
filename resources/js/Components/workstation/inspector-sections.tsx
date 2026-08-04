@@ -245,6 +245,7 @@ export function ExperienceFields({
                     </label>
                     <BulletsField
                         label="Bullets"
+                        idPrefix={`experience-bullet-${index}`}
                         value={experience.bullets}
                         onChange={(bullets) =>
                             patch(resume, onChange, 'experiences', index, {
