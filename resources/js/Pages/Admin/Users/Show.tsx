@@ -16,6 +16,13 @@ type AdminUserDetail = {
     registration_ip: string | null;
 };
 
+type AdminAction = {
+    id: number;
+    action: string;
+    created_at: string | null;
+    actor: { id: number; name: string; email: string } | null;
+};
+
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <div className="grid grid-cols-3 gap-2 border-b border-slate-100 py-2 text-sm last:border-0">
@@ -25,7 +32,28 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
     );
 }
 
-export default function Show({ user }: { user: AdminUserDetail }) {
+function actionLabel(action: string): string {
+    switch (action) {
+        case 'verify_email':
+            return 'Verified email';
+        case 'disable':
+            return 'Disabled login';
+        case 'enable':
+            return 'Enabled login';
+        case 'revoke_tokens':
+            return 'Revoked API tokens';
+        default:
+            return action;
+    }
+}
+
+export default function Show({
+    user,
+    actions,
+}: {
+    user: AdminUserDetail;
+    actions: AdminAction[];
+}) {
     function postAction(name: string, confirmMessage?: string) {
         if (confirmMessage && !confirm(confirmMessage)) {
             return;
@@ -97,28 +125,56 @@ export default function Show({ user }: { user: AdminUserDetail }) {
         >
             <Head title={`Admin · ${user.name}`} />
 
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                <Row label="ID">{user.id}</Row>
-                <Row label="Email">{user.email}</Row>
-                <Row label="Verified">
-                    {user.email_verified_at
-                        ? new Date(user.email_verified_at).toLocaleString()
-                        : 'No'}
-                </Row>
-                <Row label="Admin">{user.is_admin ? 'Yes' : 'No'}</Row>
-                <Row label="Disabled">
-                    {user.disabled_at ? new Date(user.disabled_at).toLocaleString() : 'No'}
-                </Row>
-                <Row label="2FA">{user.has_two_factor ? 'Enabled' : 'Off'}</Row>
-                <Row label="Resumes">{user.resumes_count}</Row>
-                <Row label="API tokens">{user.tokens_count}</Row>
-                <Row label="Registration IP">{user.registration_ip || '—'}</Row>
-                <Row label="Created">
-                    {user.created_at ? new Date(user.created_at).toLocaleString() : '—'}
-                </Row>
-                <Row label="Updated">
-                    {user.updated_at ? new Date(user.updated_at).toLocaleString() : '—'}
-                </Row>
+            <div className="grid gap-4 lg:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <h2 className="mb-2 text-sm font-semibold text-slate-900">Account</h2>
+                    <Row label="ID">{user.id}</Row>
+                    <Row label="Email">{user.email}</Row>
+                    <Row label="Verified">
+                        {user.email_verified_at
+                            ? new Date(user.email_verified_at).toLocaleString()
+                            : 'No'}
+                    </Row>
+                    <Row label="Admin">{user.is_admin ? 'Yes' : 'No'}</Row>
+                    <Row label="Disabled">
+                        {user.disabled_at ? new Date(user.disabled_at).toLocaleString() : 'No'}
+                    </Row>
+                    <Row label="2FA">{user.has_two_factor ? 'Enabled' : 'Off'}</Row>
+                    <Row label="Resumes">{user.resumes_count}</Row>
+                    <Row label="API tokens">{user.tokens_count}</Row>
+                    <Row label="Registration IP">{user.registration_ip || '—'}</Row>
+                    <Row label="Created">
+                        {user.created_at ? new Date(user.created_at).toLocaleString() : '—'}
+                    </Row>
+                    <Row label="Updated">
+                        {user.updated_at ? new Date(user.updated_at).toLocaleString() : '—'}
+                    </Row>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <h2 className="mb-2 text-sm font-semibold text-slate-900">Recent admin actions</h2>
+                    {actions.length === 0 ? (
+                        <p className="text-sm text-slate-500">No support actions recorded yet.</p>
+                    ) : (
+                        <ul className="divide-y divide-slate-100">
+                            {actions.map((entry) => (
+                                <li key={entry.id} className="py-2 text-sm">
+                                    <div className="font-medium text-slate-900">
+                                        {actionLabel(entry.action)}
+                                    </div>
+                                    <div className="text-xs text-slate-500">
+                                        {entry.actor
+                                            ? `${entry.actor.name} · ${entry.actor.email}`
+                                            : 'Unknown actor'}
+                                        {entry.created_at
+                                            ? ` · ${new Date(entry.created_at).toLocaleString()}`
+                                            : ''}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
             </div>
         </AdminLayout>
     );
