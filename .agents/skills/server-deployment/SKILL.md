@@ -21,7 +21,7 @@ Do not re-derive deployment steps from memory — read these files, they are aut
 - **Deploy only fires manually** — `workflow_dispatch` on `main`, never on a bare push (free-plan substitute for required-reviewer environment protection — see comment in `ci.yml`).
 - **Build happens in CI, not on the server** — the server only receives a built `vendor/` + `public/build` via rsync and runs `deploy.sh`; it never runs Composer or npm itself.
 - **Required repo secrets**: `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`, plus a `production` environment in GitHub repo settings.
-- **Admin panel is subdomain-based** (`APP_ADMIN_DOMAIN`, default `admin.resumegen.app`), not a path — DNS/reverse proxy and `SESSION_DOMAIN` must cover it.
+- **Support admin is subdomain-based** (`APP_ADMIN_DOMAIN`, e.g. `admin.resumegen.app`), Inertia not Filament — DNS/TLS + Apache ServerAlias same DocumentRoot. Prefer `SESSION_DOMAIN=null` (host-only cookies; log in on the admin host).
 - **Failure behavior**: `deploy.sh` leaves the site in maintenance mode on failure rather than serving a half-migrated app; there's no automatic rollback, fix forward and re-run the deploy job.
 
 ## Rules

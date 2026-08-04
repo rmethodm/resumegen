@@ -9,6 +9,6 @@ Support admin complete (subdomain + action logs + resend verification).
 - Guest auth redirects use host-relative /login (stay on admin host).
 
 ## Next Steps
-- Prod: set APP_ADMIN_DOMAIN, DNS/TLS, migrate, promote admin via tinker.
+- On prod server: APP_ADMIN_DOMAIN + DNS/TLS (see docs/DEPLOYMENT.md), migrate, promote admin.
 - Workstation UI smoke (Optimize / create / export) if not done.
 - Optional: impersonation only with explicit audit decision.

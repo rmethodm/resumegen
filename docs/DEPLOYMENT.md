@@ -131,6 +131,12 @@ APP_NAME=Resumegen
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://yourdomain.com
+# Support admin (Inertia, not Filament). Must match DNS + TLS host below.
+APP_ADMIN_DOMAIN=admin.yourdomain.com
+# Leave null so product and admin each keep host-only session cookies.
+# Admins log in on the admin host. Do not set SESSION_DOMAIN unless you
+# intentionally want a shared cookie across subdomains (extra CSRF care).
+SESSION_DOMAIN=null
 
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
@@ -149,8 +155,10 @@ MAIL_PASSWORD=...
 MAIL_FROM_ADDRESS="hello@yourdomain.com"
 ```
 
-> There are no AI, billing or admin env keys. `OPENAI_*`, `STRIPE_*` and `APP_ADMIN_DOMAIN`
-> were removed with those features — if you see them in an old `.env`, delete them.
+> No billing env keys. `STRIPE_*` stays gone. Optional AI uses `AI_ENABLED` /
+> `OPENAI_API_KEY` only when you intentionally turn AI on (see `config/ai.php`).
+> If you see dead keys from old Filament/billing installs, delete them — but keep
+> **`APP_ADMIN_DOMAIN`** for the support admin.
 
 Then:
 
@@ -161,6 +169,15 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 ```
+
+**Promote the first support admin** (after migrate — needs `users.is_admin`):
+
+```bash
+php artisan tinker --execute \
+  'App\Models\User::where("email", "you@yourdomain.com")->update(["is_admin" => true]);'
+```
+
+Never mass-assign `is_admin` from the product UI; tinker/seeder only.
 
 > ⚠️ After editing `.env` again later you MUST re-run `php artisan config:cache`
 > (or `config:clear`) — cached config ignores `.env` changes otherwise.
@@ -185,7 +202,7 @@ Laravel serves from `public/`, never the project root.
 ```apache
 <VirtualHost *:80>
     ServerName yourdomain.com
-    ServerAlias www.yourdomain.com
+    ServerAlias www.yourdomain.com admin.yourdomain.com
     DocumentRoot /var/www/resumegen/public
 
     <Directory /var/www/resumegen/public>
@@ -198,6 +215,9 @@ Laravel serves from `public/`, never the project root.
 </VirtualHost>
 ```
 
+Same `DocumentRoot` for apex and admin — Laravel picks admin routes by `Host`
+(`APP_ADMIN_DOMAIN`). No second codebase.
+
 ```bash
 sudo a2enmod rewrite
 sudo a2ensite resumegen.conf
@@ -205,11 +225,13 @@ sudo a2dissite 000-default.conf
 sudo systemctl reload apache2
 ```
 
-**HTTPS** (required — secure cookies):
+**DNS:** A/AAAA (or CNAME) for `admin.yourdomain.com` → same box as apex.
+
+**HTTPS** (required — secure cookies). Include the admin host on the cert:
 
 ```bash
 sudo apt install -y certbot python3-certbot-apache
-sudo certbot --apache -d yourdomain.com -d www.yourdomain.com
+sudo certbot --apache -d yourdomain.com -d www.yourdomain.com -d admin.yourdomain.com
 ```
 
 After SSL, ensure `APP_URL` uses `https://` and re-run `php artisan config:cache`.
@@ -278,9 +300,19 @@ the free-plan substitute, per the comment in `.github/workflows/ci.yml`.) The
 Requires repo secrets `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` and a `production`
 environment configured in GitHub repo settings.
 
-**No admin subdomain.** The Filament panel was deleted on 2026-07-21 — one vhost on the
-apex domain is the whole app. If an old DNS record or vhost still points at
-`admin.<domain>`, remove it.
+**Support admin subdomain (required for ops UI).** Filament is gone; a thin Inertia
+support admin lives on `APP_ADMIN_DOMAIN` (e.g. `admin.yourdomain.com`). After
+deploy:
+
+1. DNS + TLS for that host (Part 8).
+2. `.env` has `APP_ADMIN_DOMAIN=admin.yourdomain.com` then `php artisan config:cache`.
+3. Promote yourself: `users.is_admin = true` via tinker (Part 6).
+4. Open `https://admin.yourdomain.com/login` and sign in **on that host**
+   (host-only sessions — apex login does not carry over).
+
+Capabilities: search users, force-verify email, resend verification, disable/enable
+login (data kept), revoke Sanctum tokens, view action log. No resume edit, no
+impersonation, no taxonomy CMS, no billing.
 
 **Manual deploy (no CI):** `deploy.sh` is self-sufficient — it pulls `main`, installs
 Composer/npm dependencies, builds the frontend, migrates, re-caches, and fixes
