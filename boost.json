@@ -10,12 +10,11 @@
     "nightwatch": false,
     "packages": [
         "spatie/laravel-medialibrary",
-        "barryvdh/laravel-debugbar",
-        "filament/filament"
+        "barryvdh/laravel-debugbar"
     ],
     "sail": false,
     "skills": [
-        "cashier-stripe-development",
+        "fortify-development",
         "laravel-best-practices",
         "inertia-react-development",
         "tailwindcss-development",

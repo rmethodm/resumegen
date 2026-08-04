@@ -6,7 +6,7 @@ description: >
   Artisan CLI commands. Use when the user asks to investigate a bug, diagnose a slow request,
   find duplicate queries, check what happened on a previous request, or optimize database
   performance, even if they don't explicitly mention "debugbar" or "profiling."
-compatibility: Requires Laravel with barryvdh/laravel-debugbar installed and debug mode enabled.
+compatibility: Requires Laravel with fruitcake/laravel-debugbar installed and debug mode enabled.
 ---
 
 ## Debugging and optimizing workflow
