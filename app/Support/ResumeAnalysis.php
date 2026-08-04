@@ -15,7 +15,7 @@ use App\Models\Resume;
  * methods for a real completion if the advice stops being convincing —
  * nothing outside this class knows how the score was produced.
  *
- * @phpstan-type Suggestion array{experience: int|null, bullet: int|null, message: string, rewrite: string|null}
+ * @phpstan-type Suggestion array{experience: int|null, bullet: int|null, message: string, rewrite: string|null, category: string|null, verbs: list<string>}
  */
 final class ResumeAnalysis
 {
@@ -34,21 +34,57 @@ final class ResumeAnalysis
     ];
 
     /**
-     * Openings that bury the candidate's own contribution, and the verb that
-     * replaces them. The replacement is a real edit, not a placeholder — it is
-     * what makes "Insert rewrite" in the editor honest.
+     * Openings that bury the candidate's own contribution, grouped by why
+     * they're weak. Each phrase carries the verbs a human might replace it
+     * with (shown as inspiration, never guessed at automatically) and a
+     * coaching message asking for the specific action instead.
      *
-     * @var array<string, string>
+     * `verb` is set only when swapping it in for the phrase is grammatically
+     * safe AND doesn't add a claim (leadership, ownership, results) the rest
+     * of the bullet doesn't already support — see `weakOpening()`. Most phrases
+     * here are followed by too many different constructions (gerunds, role
+     * names, unstated objects) for a blind single-verb swap to stay honest,
+     * so they're coaching-only.
+     *
+     * @var array<string, array{category: string, verbs: list<string>, coaching: string, verb: string|null}>
      */
     private const WEAK_OPENINGS = [
-        'helped with' => 'Drove',
-        'helped to' => 'Drove',
-        'worked on' => 'Delivered',
-        'responsible for' => 'Owned',
-        'assisted with' => 'Led',
-        'participated in' => 'Drove',
-        'involved in' => 'Led',
-        'was part of' => 'Led',
+        // Responsibility phrases: naming a duty without saying what was done with it.
+        'responsible for' => ['category' => 'responsibility', 'verbs' => ['Managed', 'Owned', 'Administered', 'Coordinated', 'Oversaw'], 'coaching' => 'Name what you actually managed or decided, not just that you were responsible for it.', 'verb' => 'Managed'],
+        'was responsible for' => ['category' => 'responsibility', 'verbs' => ['Managed', 'Owned', 'Administered', 'Coordinated', 'Oversaw'], 'coaching' => 'Name what you actually managed or decided, not just that you were responsible for it.', 'verb' => 'Managed'],
+        'duties included' => ['category' => 'responsibility', 'verbs' => ['Managed', 'Owned', 'Administered', 'Coordinated', 'Oversaw'], 'coaching' => 'List the duty as an action you took, not as something that was "included."', 'verb' => null],
+        'tasked with' => ['category' => 'responsibility', 'verbs' => ['Managed', 'Owned', 'Administered', 'Coordinated', 'Oversaw'], 'coaching' => 'Name the action you were tasked with, not just that you were assigned it.', 'verb' => null],
+        'in charge of' => ['category' => 'responsibility', 'verbs' => ['Managed', 'Owned', 'Administered', 'Coordinated', 'Oversaw'], 'coaching' => 'Name what being "in charge" meant you actually did.', 'verb' => null],
+        'charged with' => ['category' => 'responsibility', 'verbs' => ['Managed', 'Owned', 'Administered', 'Coordinated', 'Oversaw'], 'coaching' => 'Name the action you were charged with, not just that you were assigned it.', 'verb' => null],
+        'assigned to' => ['category' => 'responsibility', 'verbs' => ['Managed', 'Owned', 'Administered', 'Coordinated', 'Oversaw'], 'coaching' => 'Name what the assignment actually had you do.', 'verb' => null],
+        'served as' => ['category' => 'responsibility', 'verbs' => ['Managed', 'Owned', 'Administered', 'Coordinated', 'Oversaw'], 'coaching' => 'A role title alone doesn\'t say what you did in it — name the action.', 'verb' => null],
+
+        // Passive participation: present, but the bullet doesn't say what part they played.
+        'participated in' => ['category' => 'passive participation', 'verbs' => ['Streamlined', 'Organized', 'Standardized', 'Improved'], 'coaching' => 'Say what you actually did as part of it, not just that you participated.', 'verb' => null],
+        'took part in' => ['category' => 'passive participation', 'verbs' => ['Streamlined', 'Organized', 'Standardized', 'Improved'], 'coaching' => 'Say what you actually did as part of it, not just that you took part.', 'verb' => null],
+        'was involved in' => ['category' => 'passive participation', 'verbs' => ['Streamlined', 'Organized', 'Standardized', 'Improved'], 'coaching' => 'Say what your involvement actually was.', 'verb' => null],
+        'involved in' => ['category' => 'passive participation', 'verbs' => ['Streamlined', 'Organized', 'Standardized', 'Improved'], 'coaching' => 'Say what your involvement actually was.', 'verb' => null],
+        'was part of' => ['category' => 'passive participation', 'verbs' => ['Streamlined', 'Organized', 'Standardized', 'Improved'], 'coaching' => 'Say what you contributed to it, not just that you were part of it.', 'verb' => null],
+        'joined a team that' => ['category' => 'passive participation', 'verbs' => ['Streamlined', 'Organized', 'Standardized', 'Improved'], 'coaching' => 'Say what you contributed on the team, not just that you joined it.', 'verb' => null],
+        'contributed to' => ['category' => 'passive participation', 'verbs' => ['Streamlined', 'Organized', 'Standardized', 'Improved'], 'coaching' => 'Name the specific contribution you made.', 'verb' => null],
+
+        // Vague assistance: real effort, but no stated action — never auto-upgraded to a leadership verb.
+        'helped with' => ['category' => 'vague assistance', 'verbs' => ['Processed', 'Resolved', 'Prepared', 'Maintained', 'Supported'], 'coaching' => 'Name the specific action you took to help, not just that you helped.', 'verb' => null],
+        'helped to' => ['category' => 'vague assistance', 'verbs' => ['Processed', 'Resolved', 'Prepared', 'Maintained', 'Supported'], 'coaching' => 'Name the specific action you took to help, not just that you helped.', 'verb' => null],
+        'assisted with' => ['category' => 'vague assistance', 'verbs' => ['Processed', 'Resolved', 'Prepared', 'Maintained', 'Supported'], 'coaching' => 'Name the specific action you took, not just that you assisted.', 'verb' => null],
+        'aided in' => ['category' => 'vague assistance', 'verbs' => ['Processed', 'Resolved', 'Prepared', 'Maintained', 'Supported'], 'coaching' => 'Name the specific action you took, not just that you aided.', 'verb' => null],
+        'provided assistance with' => ['category' => 'vague assistance', 'verbs' => ['Processed', 'Resolved', 'Prepared', 'Maintained', 'Supported'], 'coaching' => 'Name the specific action you took, not just that you assisted.', 'verb' => null],
+
+        // Generic work phrases: a task happened, but not what it was.
+        'worked on' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name what you actually did to it — built, fixed, configured, tested?', 'verb' => null],
+        'worked with' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name what you actually did with it.', 'verb' => null],
+        'dealt with' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name the specific action you took.', 'verb' => null],
+        'handled' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name the specific action you took.', 'verb' => null],
+        'took care of' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name the specific action you took.', 'verb' => null],
+        'did' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name the specific action, not just that you did it.', 'verb' => null],
+        'performed' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name the specific action behind "performed."', 'verb' => null],
+        'utilized' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name what you did with it, not just that you used it.', 'verb' => null],
+        'used' => ['category' => 'generic work', 'verbs' => ['Configured', 'Implemented', 'Troubleshot', 'Automated', 'Repaired'], 'coaching' => 'Name what you did with it, not just that you used it.', 'verb' => null],
     ];
 
     private const MAX_SUGGESTIONS = 6;
@@ -91,12 +127,16 @@ final class ResumeAnalysis
 
         foreach ($resume->experiences as $experienceIndex => $experience) {
             foreach ($experience->bullets ?? [] as $bulletIndex => $bullet) {
-                if ($rewrite = self::rewrite($bullet)) {
+                if ($weakOpening = self::weakOpening($bullet)) {
                     $rewrites[] = [
                         'experience' => $experienceIndex,
                         'bullet' => $bulletIndex,
-                        'message' => 'Lead with the action you took, not your proximity to it.',
-                        'rewrite' => $rewrite,
+                        'message' => $weakOpening['rewrite'] !== null
+                            ? 'Lead with the action you took, not your proximity to it.'
+                            : $weakOpening['coaching'],
+                        'rewrite' => $weakOpening['rewrite'],
+                        'category' => $weakOpening['category'],
+                        'verbs' => $weakOpening['verbs'],
                     ];
                 } elseif (! self::isQuantified($bullet)) {
                     $quantify[] = [
@@ -104,6 +144,8 @@ final class ResumeAnalysis
                         'bullet' => $bulletIndex,
                         'message' => 'Quantify impact: add a number, percentage, or scale to this bullet.',
                         'rewrite' => null,
+                        'category' => null,
+                        'verbs' => [],
                     ];
                 }
             }
@@ -224,6 +266,8 @@ final class ResumeAnalysis
                 'bullet' => null,
                 'message' => 'Write a two-sentence summary — it is the first thing a recruiter reads.',
                 'rewrite' => null,
+                'category' => null,
+                'verbs' => [],
             ];
         }
 
@@ -233,6 +277,8 @@ final class ResumeAnalysis
                 'bullet' => null,
                 'message' => 'List at least five skills so keyword filters can find you.',
                 'rewrite' => null,
+                'category' => null,
+                'verbs' => [],
             ];
         }
 
@@ -244,6 +290,8 @@ final class ResumeAnalysis
                 'bullet' => null,
                 'message' => 'Missing for this role: '.implode(', ', array_slice($missing, 0, 3)).'.',
                 'rewrite' => null,
+                'category' => null,
+                'verbs' => [],
             ];
         }
 
@@ -266,19 +314,45 @@ final class ResumeAnalysis
     }
 
     /**
-     * Rebuild a bullet that opens with a weak phrase, preserving the rest of
-     * the sentence verbatim.
+     * Match a bullet that *opens* with a weak phrase (mid-sentence use is
+     * left alone — "...and participated in the rollout" is fine). Matching
+     * is by whole phrase with a word boundary after it, so "did" doesn't
+     * fire on "Didn't" and "used" doesn't fire on "user-tested".
+     *
+     * @return array{category: string, verbs: list<string>, coaching: string, rewrite: string|null}|null
      */
-    private static function rewrite(string $bullet): ?string
+    private static function weakOpening(string $bullet): ?array
     {
-        $trimmed = ltrim($bullet);
+        $trimmed = ltrim($bullet, " \t\n\r\0\x0B-–—•*\"'“”‘’");
 
-        foreach (self::WEAK_OPENINGS as $opening => $verb) {
-            if (str_starts_with(mb_strtolower($trimmed), $opening)) {
-                return $verb.mb_substr($trimmed, mb_strlen($opening));
+        foreach (self::WEAK_OPENINGS as $phrase => $definition) {
+            if (preg_match('/^'.preg_quote($phrase, '/').'\b/iu', $trimmed) !== 1) {
+                continue;
             }
+
+            $remainder = mb_substr($trimmed, mb_strlen($phrase));
+
+            return [
+                'category' => $definition['category'],
+                'verbs' => $definition['verbs'],
+                'coaching' => $definition['coaching'],
+                'rewrite' => $definition['verb'] !== null && ! self::startsWithGerund($remainder)
+                    ? $definition['verb'].$remainder
+                    : null,
+            ];
         }
 
         return null;
+    }
+
+    /**
+     * True when the text right after a matched phrase opens with an "-ing"
+     * word — "responsible for *managing* tickets" — where prefixing a verb
+     * would double up ("Managed managing tickets"). Phrases followed by a
+     * gerund get a coaching suggestion instead of a rewrite.
+     */
+    private static function startsWithGerund(string $remainder): bool
+    {
+        return preg_match('/^\s+\w+ing\b/iu', $remainder) === 1;
     }
 }

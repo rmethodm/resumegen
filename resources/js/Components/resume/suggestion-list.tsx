@@ -34,10 +34,15 @@ export function SuggestionList({
                     key={index}
                     className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3"
                 >
+                    {suggestion.category && (
+                        <span className="self-start rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium tracking-wide text-gray-500 uppercase">
+                            {suggestion.category}
+                        </span>
+                    )}
                     <p className="text-[11px] leading-relaxed text-gray-900">
                         {suggestion.message}
                     </p>
-                    {suggestion.rewrite && (
+                    {suggestion.rewrite ? (
                         <>
                             <p className="border-l-2 border-indigo-600 pl-2 text-[11px] leading-relaxed font-medium text-indigo-600">
                                 {suggestion.rewrite}
@@ -52,6 +57,12 @@ export function SuggestionList({
                                 Insert rewrite
                             </Button>
                         </>
+                    ) : (
+                        suggestion.verbs.length > 0 && (
+                            <p className="text-[11px] leading-relaxed text-gray-500">
+                                Consider: {suggestion.verbs.join(', ')}
+                            </p>
+                        )
                     )}
                 </div>
             ))}
