@@ -63,6 +63,12 @@ on_exit() {
 }
 trap on_exit EXIT
 
+# git pull runs as www-data. If a prior root-owned object landed under
+# .git/objects (manual root git, interrupted unpack, etc.), pull fails with
+# "insufficient permission for adding an object" and leaves maintenance mode on.
+echo "==> Ensuring www-data owns .git"
+chown -R www-data:www-data "${APP_DIR}/.git"
+
 echo "==> Pulling latest main"
 as_www git -C "${APP_DIR}" pull --ff-only origin main
 
