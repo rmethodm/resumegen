@@ -29,7 +29,8 @@ Live at **<url>** · Repo: **<repo>**
 - [x] Rewrite `extension/` to side panel + fill/insert (replace activity popup)
 - [x] Content-script field heuristics (name/email/phone/LinkedIn; empty-only)
 - [ ] Connect flow polish (deep link optional; paste token works today)
-- [ ] Manual QA on real ATS forms + heuristic fixes
+- [x] Stronger ATS heuristics (scored matching + Greenhouse/Workday/Ashby patterns + unit tests)
+- [ ] Manual QA on real multi-step Workday forms
 
 ## Future / if needed
 - AI open-ended answers / cover letters from extension — after basic fill works

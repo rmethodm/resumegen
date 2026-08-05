@@ -6,6 +6,8 @@ Browser extension that fills job application forms from your Resumegen resumes.
 - Empty fields only for bulk fill
 - Insert chips for the focused field
 
+After pulling heuristic updates, open `chrome://extensions` and hit **Reload** on Resumegen Apply so the new content scripts load.
+
 ## Load unpacked (local)
 
 1. Open Chrome or Edge → Extensions → Developer mode
@@ -21,8 +23,14 @@ Browser extension that fills job application forms from your Resumegen resumes.
 | `manifest.json` | MV3 + side panel |
 | `background/service-worker.js` | API + inject fill script |
 | `sidepanel/` | Main UI (wireframe states) |
-| `content/fill.js` | Field heuristics (on-demand inject) |
+| `content/fill-heuristics.js` | ATS field scoring (Greenhouse, Workday, Ashby, …) |
+| `content/fill.js` | DOM walk + empty-only fill / insert |
 | `options/` | Token + app URL |
+| `test/heuristics.test.cjs` | Node unit tests for scoring |
+
+```bash
+node --test extension/test/heuristics.test.cjs
+```
 
 ## API
 

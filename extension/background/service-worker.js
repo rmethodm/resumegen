@@ -135,9 +135,10 @@ async function ensureContentScript(tabId) {
         await chrome.tabs.sendMessage(tabId, { type: 'PING' });
         return true;
     } catch {
+        // Heuristics first, then fill runner (depends on ResumegenHeuristics global).
         await chrome.scripting.executeScript({
             target: { tabId },
-            files: ['content/fill.js'],
+            files: ['content/fill-heuristics.js', 'content/fill.js'],
         });
         return true;
     }
