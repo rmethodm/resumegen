@@ -32,7 +32,7 @@ class UpdateResumeNoteRequest extends FormRequest
         return [
             // `nullable`: clearing the textarea sends '' which the empty-string
             // middleware turns to null. The controller coerces null back to ''.
-            'body' => ['sometimes', 'nullable', 'string'],
+            'body' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'x' => ['sometimes', 'integer'],
             'y' => ['sometimes', 'integer'],
             'width' => ['sometimes', 'integer', 'min:160', 'max:800'],

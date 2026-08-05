@@ -116,13 +116,20 @@ function AccessGate({
 
                     {requireEmail && (
                         <>
+                            <label
+                                htmlFor="share-gate-email"
+                                className="mt-4 block text-xs font-medium text-gray-700"
+                            >
+                                Email
+                            </label>
                             <Input
+                                id="share-gate-email"
                                 type="email"
                                 required
                                 autoFocus
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
-                                className="mt-4"
+                                className="mt-1"
                                 placeholder="you@example.com"
                             />
                             {errors.email && (
@@ -133,14 +140,21 @@ function AccessGate({
 
                     {requirePassword && (
                         <>
+                            <label
+                                htmlFor="share-gate-password"
+                                className="mt-4 block text-xs font-medium text-gray-700"
+                            >
+                                Password
+                            </label>
                             <Input
+                                id="share-gate-password"
                                 type="password"
                                 required
                                 autoFocus={!requireEmail}
                                 maxLength={8}
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
-                                className="mt-4"
+                                className="mt-1"
                                 placeholder="Password"
                             />
                             {errors.password && (

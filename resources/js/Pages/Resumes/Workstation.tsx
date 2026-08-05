@@ -1,5 +1,10 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { ArrowDownIcon, ArrowUpIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import {
+    ArrowDownIcon,
+    ArrowUpIcon,
+    Bars3Icon,
+    ChevronDownIcon,
+} from '@heroicons/react/24/outline';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SectionFields } from '@/Components/workstation/inspector';
@@ -478,7 +483,6 @@ export default function Workstation({
                             )}
                         >
                             <div
-                                aria-expanded={!collapsed}
                                 title="Double-click to collapse or expand"
                                 onDoubleClick={(event) => {
                                     if (
@@ -503,9 +507,23 @@ export default function Workstation({
                                         isMobile ? 'hidden' : 'cursor-grab',
                                     )}
                                 />
-                                <span className="text-[11px] font-bold tracking-[0.15em] text-brand uppercase">
+                                <button
+                                    type="button"
+                                    aria-expanded={!collapsed}
+                                    aria-controls={`section-${sectionKey}-content`}
+                                    onClick={() =>
+                                        toggleSectionCollapsed(sectionKey)
+                                    }
+                                    className="flex items-center gap-1 text-[11px] font-bold tracking-[0.15em] text-brand uppercase"
+                                >
+                                    <ChevronDownIcon
+                                        className={cn(
+                                            'size-3 shrink-0 transition-transform',
+                                            collapsed && '-rotate-90',
+                                        )}
+                                    />
                                     {sectionLabels[sectionKey]}
-                                </span>
+                                </button>
                                 {collapsed && (
                                     <span className="text-[10px] font-medium tracking-normal text-gray-400 normal-case">
                                         Collapsed
@@ -569,7 +587,10 @@ export default function Workstation({
                                 </div>
                             </div>
                             {!collapsed && (
-                                <div className="p-6">
+                                <div
+                                    id={`section-${sectionKey}-content`}
+                                    className="p-6"
+                                >
                                     <SectionFields
                                         resume={draft}
                                         resumeId={id}

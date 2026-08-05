@@ -49,8 +49,11 @@ class UpdateResumeRequest extends FormRequest
             // resources/js/lib/contact-validation.ts. Keep the two in step.
             'phone' => ['nullable', 'string', 'regex:/^\(\d{3}\) \d{3}-\d{4}$/'],
             'location' => ['nullable', 'string', 'max:255'],
-            'linkedin' => ['nullable', 'string', 'max:255'],
-            'website' => ['nullable', 'string', 'max:255'],
+            // http(s) only: these render into an href, so a bare `url` rule
+            // (which accepts javascript:/data:) would be stored XSS. Matches
+            // UpdateStarterProfileRequest.
+            'linkedin' => ['nullable', 'string', 'max:255', 'url:http,https'],
+            'website' => ['nullable', 'string', 'max:255', 'url:http,https'],
             'summary' => ['nullable', 'string', 'max:2000'],
 
             // Presentation. Constrained to the sets the preview can render, so
@@ -76,7 +79,8 @@ class UpdateResumeRequest extends FormRequest
 
             'projects' => ['array', 'max:20'],
             'projects.*.name' => ['nullable', 'string', 'max:255'],
-            'projects.*.url' => ['nullable', 'string', 'max:255'],
+            // http(s) only — same href-XSS reasoning as linkedin/website above.
+            'projects.*.url' => ['nullable', 'string', 'max:255', 'url:http,https'],
             'projects.*.start_date' => ['nullable', 'string', 'max:60'],
             'projects.*.end_date' => ['nullable', 'string', 'max:60'],
             'projects.*.description' => ['nullable', 'string', 'max:2000'],

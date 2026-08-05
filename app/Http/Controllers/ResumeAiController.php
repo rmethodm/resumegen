@@ -7,6 +7,7 @@ use App\Services\AiUsageLimiter;
 use App\Services\OpenAiResumeAssistant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class ResumeAiController extends Controller
@@ -22,7 +23,7 @@ class ResumeAiController extends Controller
 
         if (! $this->assistant->enabled()) {
             return response()->json([
-                'message' => 'AI is not enabled. Set AI_ENABLED=true and OPENAI_API_KEY in the environment.',
+                'message' => 'AI assistant is not available right now.',
             ], 503);
         }
 
@@ -47,7 +48,9 @@ class ResumeAiController extends Controller
                 (string) ($data['job_description'] ?? $resume->target_job_description ?? ''),
             );
         } catch (RuntimeException $e) {
-            return response()->json(['message' => $e->getMessage()], 502);
+            Log::error('AI bullet rewrite failed', ['exception' => $e]);
+
+            return response()->json(['message' => 'AI rewrite is temporarily unavailable. Please try again later.'], 502);
         }
 
         $this->limiter->hit($user, 'bullet_rewrite');
@@ -64,7 +67,7 @@ class ResumeAiController extends Controller
 
         if (! $this->assistant->enabled()) {
             return response()->json([
-                'message' => 'AI is not enabled. Set AI_ENABLED=true and OPENAI_API_KEY in the environment.',
+                'message' => 'AI assistant is not available right now.',
             ], 503);
         }
 
@@ -108,7 +111,9 @@ class ResumeAiController extends Controller
                 (string) ($data['job_description'] ?? $resume->target_job_description ?? ''),
             );
         } catch (RuntimeException $e) {
-            return response()->json(['message' => $e->getMessage()], 502);
+            Log::error('AI summary generation failed', ['exception' => $e]);
+
+            return response()->json(['message' => 'AI summary generation is temporarily unavailable. Please try again later.'], 502);
         }
 
         $this->limiter->hit($user, 'summary');

@@ -77,9 +77,16 @@ class ProfileController extends Controller
             'preferred_template' => ['nullable', 'string', Rule::in(UserLimits::allTemplates())],
         ]);
 
-        $request->user()->update([
-            'profile' => array_filter($request->only(['full_name', 'email', 'phone', 'location', 'linkedin_url', 'website']), fn ($v) => $v !== null),
-        ]);
+        $user = $request->user();
+
+        $contactFields = array_filter(
+            $request->only(['full_name', 'email', 'phone', 'location', 'linkedin_url', 'website']),
+            fn ($v) => $v !== null,
+        );
+
+        if ($contactFields) {
+            $user->update(['profile' => array_merge($user->profile ?? [], $contactFields)]);
+        }
 
         $personaFields = array_filter(
             $request->only(['target_role', 'industry', 'years_experience', 'preferred_template']),
@@ -87,7 +94,7 @@ class ProfileController extends Controller
         );
 
         if ($personaFields) {
-            $request->user()->update($personaFields);
+            $user->update($personaFields);
         }
 
         return Redirect::route('profile.edit');

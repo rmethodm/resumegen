@@ -19,6 +19,7 @@ use App\Support\RoleSamples;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -76,10 +77,14 @@ class ResumeController extends Controller
                 'font' => $validated['font'] ?? 'inter',
             ]);
 
-            $resume = $request->user()->resumes()->create([
-                'title' => $document['title'] ?? $sample['label'],
-            ]);
-            ResumeDocument::save($resume, $document);
+            $resume = DB::transaction(function () use ($request, $document, $sample): Resume {
+                $resume = $request->user()->resumes()->create([
+                    'title' => $document['title'] ?? $sample['label'],
+                ]);
+                ResumeDocument::save($resume, $document);
+
+                return $resume;
+            });
 
             return to_route('resumes.workstation', $resume->fresh());
         }
@@ -110,22 +115,30 @@ class ResumeController extends Controller
                 'font' => $validated['font'] ?? 'inter',
             ]);
 
-            $resume = $request->user()->resumes()->create([
-                'title' => $document['title'] ?? 'Imported resume',
-            ]);
-            ResumeDocument::save($resume, $document);
+            $resume = DB::transaction(function () use ($request, $document): Resume {
+                $resume = $request->user()->resumes()->create([
+                    'title' => $document['title'] ?? 'Imported resume',
+                ]);
+                ResumeDocument::save($resume, $document);
+
+                return $resume;
+            });
 
             return to_route('resumes.workstation', $resume->fresh());
         }
 
-        $resume = $request->user()->resumes()->create(array_filter([
-            'title' => 'Untitled resume',
-            'template' => $validated['template'] ?? null,
-            'font' => $validated['font'] ?? null,
-            ...$this->starterProfileContactFields($request),
-        ], fn (mixed $value): bool => $value !== null));
+        $resume = DB::transaction(function () use ($request, $validated): Resume {
+            $resume = $request->user()->resumes()->create(array_filter([
+                'title' => 'Untitled resume',
+                'template' => $validated['template'] ?? null,
+                'font' => $validated['font'] ?? null,
+                ...$this->starterProfileContactFields($request),
+            ], fn (mixed $value): bool => $value !== null));
 
-        $this->seedExperiencesAndSkills($resume, $request->user()->starterProfile);
+            $this->seedExperiencesAndSkills($resume, $request->user()->starterProfile);
+
+            return $resume;
+        });
 
         return to_route('resumes.workstation', $resume);
     }
@@ -230,12 +243,16 @@ class ResumeController extends Controller
         $document = ResumeDocument::toArray($resume);
         $document['title'] = $resume->title.' (copy)';
 
-        $copy = $request->user()->resumes()->create([
-            'title' => $document['title'],
-            'group_id' => $resume->group_id,
-        ]);
+        $copy = DB::transaction(function () use ($request, $resume, $document): Resume {
+            $copy = $request->user()->resumes()->create([
+                'title' => $document['title'],
+                'group_id' => $resume->group_id,
+            ]);
 
-        ResumeDocument::save($copy, $document);
+            ResumeDocument::save($copy, $document);
+
+            return $copy;
+        });
 
         return to_route('resumes.workstation', $copy);
     }
@@ -381,14 +398,16 @@ class ResumeController extends Controller
     {
         $profile = $request->user()->starterProfile;
 
-        $resume = $request->user()->resumes()->create([
-            'title' => 'Untitled resume',
-            ...$this->starterProfileContactFields($request),
-        ]);
+        return DB::transaction(function () use ($request, $profile): Resume {
+            $resume = $request->user()->resumes()->create([
+                'title' => 'Untitled resume',
+                ...$this->starterProfileContactFields($request),
+            ]);
 
-        $this->seedExperiencesAndSkills($resume, $profile);
+            $this->seedExperiencesAndSkills($resume, $profile);
 
-        return $resume;
+            return $resume;
+        });
     }
 
     /**

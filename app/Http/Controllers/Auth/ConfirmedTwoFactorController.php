@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Support\RecoveryCodeGenerator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -21,22 +22,13 @@ class ConfirmedTwoFactorController extends Controller
             throw ValidationException::withMessages(['code' => 'The provided code was invalid.']);
         }
 
-        $plainCodes = [];
-        $hashedCodes = [];
-
-        for ($i = 0; $i < 8; $i++) {
-            $plain = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 5))
-                .'-'
-                .strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 5));
-            $plainCodes[] = $plain;
-            $hashedCodes[] = bcrypt($plain);
-        }
+        $codes = RecoveryCodeGenerator::generate();
 
         $user->two_factor_confirmed_at = now();
-        $user->two_factor_recovery_codes = $hashedCodes;
+        $user->two_factor_recovery_codes = $codes['hashed'];
         $user->save();
 
         return redirect()->route('profile.edit')
-            ->with('two_factor_recovery_codes', $plainCodes);
+            ->with('two_factor_recovery_codes', $codes['plain']);
     }
 }

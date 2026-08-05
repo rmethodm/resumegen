@@ -24,9 +24,13 @@ export function NotesPanel({
 }) {
     const [draftBody, setDraftBody] = useState('');
     const [busy, setBusy] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const onError = () => setError('Something went wrong. Try again.');
 
     function addNote() {
         setBusy(true);
+        setError(null);
         router.post(
             route('resume-notes.store', resumeId),
             {
@@ -38,10 +42,9 @@ export function NotesPanel({
             },
             {
                 preserveScroll: true,
-                onFinish: () => {
-                    setBusy(false);
-                    setDraftBody('');
-                },
+                onSuccess: () => setDraftBody(''),
+                onError,
+                onFinish: () => setBusy(false),
             },
         );
     }
@@ -50,13 +53,14 @@ export function NotesPanel({
         router.patch(
             route('resume-notes.update', id),
             { body },
-            { preserveScroll: true },
+            { preserveScroll: true, onError },
         );
     }
 
     function deleteNote(id: number) {
         router.delete(route('resume-notes.destroy', id), {
             preserveScroll: true,
+            onError,
         });
     }
 
@@ -70,6 +74,12 @@ export function NotesPanel({
                     Not on the resume
                 </span>
             </div>
+
+            {error && (
+                <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
+                    {error}
+                </div>
+            )}
 
             <div className="mb-3 flex flex-col gap-2">
                 <Textarea

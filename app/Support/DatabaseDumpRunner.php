@@ -19,7 +19,7 @@ class DatabaseDumpRunner
         $config = $this->pgsqlConfig();
 
         $command = sprintf(
-            'pg_dump --no-owner --no-acl -h %s -p %s -U %s -d %s | gzip > %s',
+            'pg_dump --no-owner --no-acl --clean --if-exists -h %s -p %s -U %s -d %s | gzip > %s',
             escapeshellarg($config['host']),
             escapeshellarg((string) $config['port']),
             escapeshellarg($config['username']),
@@ -108,10 +108,12 @@ class DatabaseDumpRunner
                 'stderr' => $stderr,
             ]);
 
+            // The raw stderr (hostnames, usernames, connection strings) is
+            // logged above for diagnosis but never put in the exception
+            // message — BackupController::userMessage() shows RuntimeException
+            // messages verbatim in the admin UI.
             throw new RuntimeException(
-                $stderr !== ''
-                    ? 'Database dump/restore failed: '.$stderr
-                    : 'Database dump/restore failed (exit '.$process->getExitCode().').'
+                'Database dump/restore failed (exit '.$process->getExitCode().'). Check the application log for details.'
             );
         }
     }

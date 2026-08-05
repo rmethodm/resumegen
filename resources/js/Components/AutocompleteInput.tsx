@@ -12,6 +12,7 @@ type Props = {
     className?: string;
     name?: string;
     id?: string;
+    maxLength?: number;
     /**
      * When true (default), blurring with an unknown value POSTs it into the
      * taxonomy. Workstation fields set this false so typos don't pollute the
@@ -45,6 +46,7 @@ export default function AutocompleteInput({
     className,
     name,
     id,
+    maxLength,
     allowCreate = true,
 }: Props) {
     const [query, setQuery] = useState(value);
@@ -177,6 +179,7 @@ export default function AutocompleteInput({
                 value={query}
                 placeholder={placeholder}
                 className={className}
+                maxLength={maxLength}
                 autoComplete="off"
                 onChange={(e) => {
                     setQuery(e.target.value);

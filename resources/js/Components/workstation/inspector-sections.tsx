@@ -87,6 +87,7 @@ export function ContactFields({
                     label="Target company (optional)"
                     value={resume.target_company}
                     placeholder="e.g. Acme Corp — dashboard label only"
+                    maxLength={255}
                     onChange={(target_company) =>
                         onChange({ ...resume, target_company })
                     }
@@ -99,6 +100,7 @@ export function ContactFields({
                         rows={3}
                         value={resume.target_job_description ?? ''}
                         placeholder="Paste key requirements you are matching…"
+                        maxLength={10000}
                         onChange={(event) =>
                             onChange({
                                 ...resume,
@@ -115,6 +117,7 @@ export function ContactFields({
             <Field
                 label="Full name"
                 value={resume.full_name}
+                maxLength={255}
                 onChange={(full_name) => onChange({ ...resume, full_name })}
             />
             <div className="flex flex-col gap-1.5">
@@ -125,6 +128,7 @@ export function ContactFields({
                     allowCreate={false}
                     placeholder="e.g. Product Designer"
                     className={autocompleteFieldClass}
+                    maxLength={255}
                     onChange={(headline) => onChange({ ...resume, headline })}
                 />
             </div>
@@ -133,6 +137,7 @@ export function ContactFields({
                 type="email"
                 value={resume.email}
                 error={contactErrors.email}
+                maxLength={255}
                 onChange={(email) => onChange({ ...resume, email })}
             />
             <Pair>
@@ -149,17 +154,20 @@ export function ContactFields({
                 <Field
                     label="Location"
                     value={resume.location}
+                    maxLength={255}
                     onChange={(location) => onChange({ ...resume, location })}
                 />
             </Pair>
             <Field
                 label="LinkedIn"
                 value={resume.linkedin}
+                maxLength={255}
                 onChange={(linkedin) => onChange({ ...resume, linkedin })}
             />
             <Field
                 label="Website"
                 value={resume.website}
+                maxLength={255}
                 onChange={(website) => onChange({ ...resume, website })}
             />
         </>
@@ -238,6 +246,7 @@ export function SummaryFields({
                 id="field-summary"
                 className="min-h-96"
                 value={resume.summary ?? ''}
+                maxLength={2000}
                 onChange={(event) =>
                     onChange({ ...resume, summary: event.target.value })
                 }
@@ -399,6 +408,7 @@ export function ExperienceFields({
                             allowCreate={false}
                             placeholder="e.g. Software Engineer"
                             className={autocompleteFieldClass}
+                            maxLength={255}
                             onChange={(title) =>
                                 patch(resume, onChange, 'experiences', index, {
                                     title,
@@ -409,6 +419,7 @@ export function ExperienceFields({
                     <Field
                         label="Company"
                         value={experience.company}
+                        maxLength={255}
                         onChange={(company) =>
                             patch(resume, onChange, 'experiences', index, {
                                 company,
@@ -522,6 +533,8 @@ export function ExperienceFields({
             ))}
             <AddButton
                 label="Add experience"
+                disabled={resume.experiences.length >= 20}
+                disabledReason="Limit reached (20)."
                 onClick={() =>
                     onChange({
                         ...resume,
@@ -566,6 +579,7 @@ export function ProjectFields({
                     <Field
                         label="Project name"
                         value={project.name}
+                        maxLength={255}
                         onChange={(name) =>
                             patch(resume, onChange, 'projects', index, { name })
                         }
@@ -573,6 +587,7 @@ export function ProjectFields({
                     <Field
                         label="Project URL"
                         value={project.url}
+                        maxLength={255}
                         onChange={(url) =>
                             patch(resume, onChange, 'projects', index, { url })
                         }
@@ -581,6 +596,7 @@ export function ProjectFields({
                         <Field
                             label="Start date"
                             value={project.start_date}
+                            maxLength={60}
                             onChange={(start_date) =>
                                 patch(resume, onChange, 'projects', index, {
                                     start_date,
@@ -590,6 +606,7 @@ export function ProjectFields({
                         <Field
                             label="End date"
                             value={project.end_date}
+                            maxLength={60}
                             onChange={(end_date) =>
                                 patch(resume, onChange, 'projects', index, {
                                     end_date,
@@ -602,6 +619,7 @@ export function ProjectFields({
                         <Textarea
                             rows={3}
                             value={project.description}
+                            maxLength={2000}
                             onChange={(event) =>
                                 patch(resume, onChange, 'projects', index, {
                                     description: event.target.value,
@@ -622,6 +640,8 @@ export function ProjectFields({
             ))}
             <AddButton
                 label="Add project"
+                disabled={resume.projects.length >= 20}
+                disabledReason="Limit reached (20)."
                 onClick={() =>
                     onChange({
                         ...resume,
@@ -668,6 +688,7 @@ export function EducationFields({
                     <Field
                         label="School"
                         value={entry.school}
+                        maxLength={255}
                         onChange={(school) =>
                             patch(resume, onChange, 'education', index, {
                                 school,
@@ -678,6 +699,7 @@ export function EducationFields({
                         <Field
                             label="Degree"
                             value={entry.degree}
+                            maxLength={255}
                             onChange={(degree) =>
                                 patch(resume, onChange, 'education', index, {
                                     degree,
@@ -687,6 +709,7 @@ export function EducationFields({
                         <Field
                             label="Graduation year"
                             value={entry.graduation_year}
+                            maxLength={20}
                             onChange={(graduation_year) =>
                                 patch(resume, onChange, 'education', index, {
                                     graduation_year,
@@ -697,6 +720,7 @@ export function EducationFields({
                     <Field
                         label="Field of study"
                         value={entry.field}
+                        maxLength={255}
                         onChange={(field) =>
                             patch(resume, onChange, 'education', index, {
                                 field,
@@ -707,6 +731,8 @@ export function EducationFields({
             ))}
             <AddButton
                 label="Add education"
+                disabled={resume.education.length >= 20}
+                disabledReason="Limit reached (20)."
                 onClick={() =>
                     onChange({
                         ...resume,
@@ -752,6 +778,9 @@ function fromGroups(groups: SkillGroup[]): ResumeSkill[] {
     );
 }
 
+/** Mirrors UpdateResumeRequest's skills array cap. */
+const MAX_SKILLS = 60;
+
 export function SkillsFields({
     resume,
     skillLibrary,
@@ -762,6 +791,11 @@ export function SkillsFields({
     onChange: (resume: ResumeDraft) => void;
 }) {
     const [picking, setPicking] = useState(false);
+    const atCap = resume.skills.length >= MAX_SKILLS;
+
+    function commitSkills(skills: ResumeSkill[]) {
+        onChange({ ...resume, skills: skills.slice(0, MAX_SKILLS) });
+    }
 
     return (
         <>
@@ -805,18 +839,22 @@ export function SkillsFields({
                     <Label className="text-xs">Skills</Label>
                     <button
                         type="button"
+                        disabled={atCap}
                         onClick={() => setPicking(true)}
-                        className="flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-accent"
+                        className="flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-accent disabled:opacity-50"
                     >
                         <PlusIcon className="size-3.5" />
                         Add skills
                     </button>
                 </div>
+                {atCap && (
+                    <p className="text-[11px] text-gray-500">
+                        Limit reached ({MAX_SKILLS}).
+                    </p>
+                )}
                 <SkillGroupEditor
                     groups={toGroups(resume.skills)}
-                    onChange={(groups) =>
-                        onChange({ ...resume, skills: fromGroups(groups) })
-                    }
+                    onChange={(groups) => commitSkills(fromGroups(groups))}
                 />
                 <SkillPickerModal
                     open={picking}
@@ -828,15 +866,12 @@ export function SkillsFields({
                             resume.skills.map((s) => `${s.category}|${s.name}`),
                         );
 
-                        onChange({
-                            ...resume,
-                            skills: [
-                                ...resume.skills,
-                                ...added.filter(
-                                    (s) => !present.has(`${s.category}|${s.name}`),
-                                ),
-                            ],
-                        });
+                        commitSkills([
+                            ...resume.skills,
+                            ...added.filter(
+                                (s) => !present.has(`${s.category}|${s.name}`),
+                            ),
+                        ]);
                     }}
                 />
             </div>
@@ -864,6 +899,7 @@ export function CertificateFields({
                     <Field
                         label="Certificate name"
                         value={entry.name}
+                        maxLength={255}
                         onChange={(name) =>
                             patch(resume, onChange, 'certificates', index, {
                                 name,
@@ -873,6 +909,7 @@ export function CertificateFields({
                     <Field
                         label="Issuer"
                         value={entry.issuer}
+                        maxLength={255}
                         onChange={(issuer) =>
                             patch(resume, onChange, 'certificates', index, {
                                 issuer,
@@ -883,6 +920,7 @@ export function CertificateFields({
                         <Field
                             label="Date obtained"
                             value={entry.obtained_at}
+                            maxLength={60}
                             onChange={(obtained_at) =>
                                 patch(resume, onChange, 'certificates', index, {
                                     obtained_at,
@@ -892,6 +930,7 @@ export function CertificateFields({
                         <Field
                             label="Expiration date"
                             value={entry.expires_at}
+                            maxLength={60}
                             onChange={(expires_at) =>
                                 patch(resume, onChange, 'certificates', index, {
                                     expires_at,
@@ -902,6 +941,7 @@ export function CertificateFields({
                     <Field
                         label="Credential ID"
                         value={entry.credential_id}
+                        maxLength={120}
                         onChange={(credential_id) =>
                             patch(resume, onChange, 'certificates', index, {
                                 credential_id,
@@ -912,6 +952,8 @@ export function CertificateFields({
             ))}
             <AddButton
                 label="Add certificate"
+                disabled={resume.certificates.length >= 20}
+                disabledReason="Limit reached (20)."
                 onClick={() =>
                     onChange({
                         ...resume,

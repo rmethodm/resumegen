@@ -129,6 +129,7 @@ export function WorkstationHeader({
                             autoFocus
                             defaultValue={title}
                             aria-label="Resume title"
+                            maxLength={255}
                             className="h-8 w-48 text-base font-bold sm:w-56"
                             onKeyDown={(event) => {
                                 if (event.key === 'Enter') {

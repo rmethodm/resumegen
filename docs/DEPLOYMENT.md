@@ -131,12 +131,15 @@ APP_NAME=Resumegen
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://yourdomain.com
+LOG_STACK=daily
+LOG_LEVEL=warning
 # Support admin (Inertia, not Filament). Must match DNS + TLS host below.
 APP_ADMIN_DOMAIN=admin.yourdomain.com
 # Leave null so product and admin each keep host-only session cookies.
 # Admins log in on the admin host. Do not set SESSION_DOMAIN unless you
 # intentionally want a shared cookie across subdomains (extra CSRF care).
 SESSION_DOMAIN=null
+SESSION_SECURE_COOKIE=true
 
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
@@ -147,11 +150,10 @@ DB_PASSWORD=CHANGE_ME_STRONG_PASSWORD
 
 QUEUE_CONNECTION=sync          # simplest; see Part 9 for a background worker
 
-MAIL_MAILER=smtp
-MAIL_HOST=...
-MAIL_PORT=587
-MAIL_USERNAME=...
-MAIL_PASSWORD=...
+# Registration requires email verification (MustVerifyEmail) — a broken
+# mailer means nobody can log in. This app ships resend/resend-laravel:
+MAIL_MAILER=resend
+RESEND_API_KEY=re_...
 MAIL_FROM_ADDRESS="hello@yourdomain.com"
 ```
 
@@ -240,10 +242,11 @@ After SSL, ensure `APP_URL` uses `https://` and re-run `php artisan config:cache
 
 ## Part 9 — Scheduler & queue
 
-**Scheduler (required)** — drives the remaining recurring commands, `resumes:nudge-stale`
-(daily) and `resumes:nudge-views` (weekly). Everything else that used to be scheduled —
-`system-events:prune`, `jobs:run-alerts`, `ai:cost-alert`, the revenue snapshot — is gone
-with its feature; check `routes/console.php` for the current list rather than this doc:
+**Scheduler (currently optional)** — `routes/console.php` has no scheduled commands today;
+the old nudge commands (`resumes:nudge-stale`, `resumes:nudge-views`) were deleted with
+their feature but the schedule entries lingered until 2026-08-04. Set up cron anyway so
+future scheduled commands work without a separate ops step; check `routes/console.php` for
+the current list rather than this doc:
 
 ```bash
 sudo crontab -e -u www-data
