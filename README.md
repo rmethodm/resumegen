@@ -19,7 +19,7 @@ Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps use
 - Cover letter and resignation letter builders.
 - Proofreading request flow with a paid service path.
 - Dashboard analytics, view tracking, heatmaps, strength scoring, salary hints, job-role/title/skill autocomplete, and user activity tracking.
-- **Resumegen Apply** (in progress): Sanctum token API for a browser extension that fills job forms from your resume (`/api/extension/*`; tokens managed on Profile).
+- **Resumegen Apply** (Chrome/Edge MV3): side panel fills job forms from your resume via Sanctum (`/api/extension/*`; tokens on Profile). See `extension/README.md`.
 
 ## Local Development
 
@@ -53,7 +53,7 @@ npm run build
 - `routes/web.php` - main web routes
 - `routes/api.php` - Sanctum API for Resumegen Apply (`/api/extension/*`)
 - `app/Support/ResumeFillProfile.php` - extension fill/insert payload
-- `extension/` - Chrome/Edge MV3 package (being rewritten for Apply)
+- `extension/` - Resumegen Apply (side panel + ATS fill heuristics)
 - `app/Http/Controllers` - app controllers
 - `app/Models` - domain models
 - `app/Services` - scoring, exports, thumbnails, and the template allowlist

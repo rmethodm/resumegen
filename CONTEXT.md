@@ -1,14 +1,14 @@
 # Resumegen Context
 
 ## Current Task
-Support admin complete (subdomain + action logs + resend verification).
+Resumegen Apply browser extension: form-fill MVP + ATS heuristics shipped; user validating load-unpacked.
 
 ## Key Decisions
-- Admin host: APP_ADMIN_DOMAIN (local admin.resumegen.test); is_admin not fillable.
-- Disable = disabled_at only; data kept; tokens revoked.
-- Guest auth redirects use host-relative /login (stay on admin host).
+- Apply = Chrome/Edge MV3 side panel + Sanctum `/api/extension/*` (not iframes).
+- Empty-only bulk fill; insert chips need focus; never auto-submit.
+- Field matching is scored heuristics (`fill-heuristics.js`), not full AI.
 
 ## Next Steps
-- On prod server: APP_ADMIN_DOMAIN + DNS/TLS (see docs/DEPLOYMENT.md), migrate, promote admin.
-- Workstation UI smoke (Optimize / create / export) if not done.
-- Optional: impersonation only with explicit audit decision.
+- Optional: one-click connect (vs paste token); multi-step Workday QA.
+- Optional later: job-radar (scroll-detect listings, match to resume) — product decision, not started.
+- Push local commits when ready (`main` ahead of origin).
