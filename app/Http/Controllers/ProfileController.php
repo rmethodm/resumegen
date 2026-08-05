@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Services\UserLimits;
+use App\Support\ResumeFillProfile;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -39,6 +40,19 @@ class ProfileController extends Controller
             $qrCodeSvg = $writer->writeString($qrCodeUrl);
         }
 
+        $extensionTokens = $user->tokens()
+            ->where('name', ResumeFillProfile::TOKEN_NAME)
+            ->orderByDesc('created_at')
+            ->get(['id', 'name', 'last_used_at', 'created_at'])
+            ->map(fn ($token): array => [
+                'id' => $token->id,
+                'name' => $token->name,
+                'last_used_at' => $token->last_used_at?->toIso8601String(),
+                'created_at' => $token->created_at?->toIso8601String(),
+            ])
+            ->values()
+            ->all();
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
@@ -56,6 +70,8 @@ class ProfileController extends Controller
                 'qrCodeSvg' => $qrCodeSvg,
                 'recoveryCodes' => session('two_factor_recovery_codes'),
             ],
+            'extensionTokens' => $extensionTokens,
+            'extensionTokenPlain' => session('extension_token_plain'),
         ]);
     }
 

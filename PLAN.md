@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** Robustness brainstorm A/B/C complete
-- **Last updated:** 2026-08-04
-- **Next action:** User-directed; backlog open items cleared.
+- **Active:** Resumegen Apply extension — backend spike shipped
+- **Last updated:** 2026-08-05
+- **Next action:** Extension UI rewrite (side panel + fill common fields + insert chips) against `/api/extension/*`; retire dead activity/job-saver popup code in `extension/`.
 
 ---
 
@@ -22,13 +22,18 @@ Live at **<url>** · Repo: **<repo>**
 - <what got done> — <why, in a clause> so a fresh agent knows not to undo it
 - ...
 
-## Phase 2 — <name>  ← ACTIVE
-- [x] <done item>
-- [ ] <open item>
-- [ ] <open item>
+## Phase 2 — Resumegen Apply (browser extension)  ← ACTIVE
+- [x] Product MVP + side-panel wireframes (empty-only fill, no auto-submit)
+- [x] `ResumeFillProfile` + Sanctum extension API (`/api/extension/*`)
+- [x] Profile token mint/revoke UI (`ExtensionTokenController`)
+- [ ] Rewrite `extension/` to side panel + fill/insert (replace activity popup)
+- [ ] Content-script field heuristics (name/email/phone/LinkedIn; empty-only)
+- [ ] Connect flow polish (deep link optional; paste token works today)
 
 ## Future / if needed
-- <thing> — <one line on why it's deferred, not just what it is>
+- AI open-ended answers / cover letters from extension — after basic fill works
+- Site-specific ATS maps — only with real usage data
+- Auto PDF attach — fragile host permissions
 
 ---
 

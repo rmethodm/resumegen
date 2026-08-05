@@ -7,10 +7,20 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 ## Design decisions (locked)
 
-### <Decision name> (locked)
-- What: <the decision>
-- Why: <the reasoning — this is the part that stops re-litigation>
-- Rejected: <what you considered and didn't do, and why>
+### Resumegen Apply = extension, not iframe (locked)
+- What: Job-form assist is a Chrome/Edge MV3 extension calling Resumegen’s Sanctum API; never drive third-party apply pages via iframe.
+- Why: Cross-origin iframes cannot fill forms; many career sites block framing entirely.
+- Rejected: Embedding employer sites in the SPA; remote “send clicks over IP” into iframes.
+
+### Extension auth = Sanctum PAT with ability `extension` (locked)
+- What: Tokens named `Resumegen Apply` are minted on Profile (`POST /profile/extension-tokens`); plaintext shown once; API requires ability `extension`.
+- Why: Revocable, no session cookie in the extension, same stack as existing Sanctum setup.
+- Rejected: Session cookie sharing; unauthenticated local IP sockets; reusing dead activity/thread API.
+
+### Fill profile is a dedicated DTO, not full ResumeDocument (locked)
+- What: `App\Support\ResumeFillProfile` is the wire contract for the extension (contact, inserts, latest role, top experiences).
+- Why: Editor document shape will keep growing; extension field labels must stay stable.
+- Rejected: Dumping `ResumeDocument::toArray()` into the extension.
 
 ---
 
