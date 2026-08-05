@@ -1,6 +1,6 @@
 import Dropdown from '@/Components/Dropdown';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { Bars3Icon, DocumentTextIcon, HomeIcon, MagnifyingGlassIcon, MoonIcon, SunIcon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, BriefcaseIcon, DocumentTextIcon, HomeIcon, MagnifyingGlassIcon, MoonIcon, SunIcon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
 
@@ -30,6 +30,7 @@ export default function Authenticated({
     const nav: NavItem[] = [
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
         { label: 'Resumes', href: route('resumes.index'), active: route().current('resumes.*'), icon: DocumentTextIcon },
+        { label: 'Job Imports', href: route('jobs-imports.preview'), active: route().current('jobs-imports.preview'), icon: BriefcaseIcon },
         { label: 'Profile', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
     ];
 
