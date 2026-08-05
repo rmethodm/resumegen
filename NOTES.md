@@ -22,6 +22,12 @@ re-derive. Timeless reference + the reasoning behind decisions.
 - Why: Editor document shape will keep growing; extension field labels must stay stable.
 - Rejected: Dumping `ResumeDocument::toArray()` into the extension.
 
+### Apply extension UI = side panel, empty-only fill (locked)
+- What: MV3 side panel is primary UI; bulk fill only writes empty fields; insert chips require page focus; no auto-submit.
+- Why: Matches product wireframes; reduces accidental overwrite and bot-like behavior.
+- Rejected: Popup feed (old activity extension); iframe control of employer sites.
+- Dead-end: Old `extension/popup` + extractors + `/api/activity` — removed 2026-08-05; do not restore.
+
 ---
 
 ## Intentional, not bugs

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resumegen Apply</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-title">Resumegen Apply</div>
+    <div class="header-actions">
+      <button type="button" id="menu-btn" class="btn-icon" title="Menu" aria-haspopup="true">⋮</button>
+    </div>
+  </header>
+
+  <div id="menu" class="menu hidden" role="menu">
+    <button type="button" class="menu-item" data-action="refresh" role="menuitem">Refresh resumes</button>
+    <button type="button" class="menu-item" data-action="open-app" role="menuitem">Open Resumegen</button>
+    <button type="button" class="menu-item" data-action="options" role="menuitem">Settings</button>
+    <hr class="menu-divider">
+    <button type="button" class="menu-item danger" data-action="disconnect" role="menuitem">Disconnect</button>
+  </div>
+
+  <main class="body">
+    <!-- Not connected -->
+    <section id="view-setup" class="view hidden">
+      <div class="empty-icon" aria-hidden="true">🔗</div>
+      <h1 class="headline">Connect your Resumegen account</h1>
+      <p class="body-text">
+        Pull contact details and experience from your resumes into job forms.
+        Nothing is submitted for you.
+      </p>
+      <button type="button" id="connect-btn" class="btn-primary full">Connect to Resumegen</button>
+      <p class="hint">Takes about a minute. Generate a token on Profile, then paste it in Settings.</p>
+      <button type="button" id="open-options-setup" class="btn-link">Open Settings</button>
+    </section>
+
+    <!-- Loading -->
+    <section id="view-loading" class="view hidden">
+      <p class="muted center">Loading resumes…</p>
+    </section>
+
+    <!-- No resumes -->
+    <section id="view-empty" class="view hidden">
+      <div class="status-line"><span class="dot ok"></span> Connected<span id="empty-email" class="muted"></span></div>
+      <div class="empty-icon" aria-hidden="true">📄</div>
+      <h1 class="headline">No resumes yet</h1>
+      <p class="body-text">Create a resume in Resumegen, then come back here to fill applications.</p>
+      <button type="button" id="create-resume-btn" class="btn-primary full">Create a resume</button>
+      <button type="button" id="refresh-empty-btn" class="btn-link">Refresh</button>
+    </section>
+
+    <!-- Ready -->
+    <section id="view-ready" class="view hidden">
+      <div class="status-line"><span class="dot ok"></span> Connected<span id="ready-email" class="muted"></span></div>
+
+      <div id="banner" class="banner hidden" role="status"></div>
+
+      <div class="section-label">Resume</div>
+      <label class="sr-only" for="group-select">Resume group</label>
+      <select id="group-select" class="select"></select>
+      <label class="sr-only" for="version-select">Version</label>
+      <select id="version-select" class="select"></select>
+
+      <div id="meta-line" class="meta"></div>
+      <div id="contact-line" class="meta contact"></div>
+
+      <button type="button" id="fill-btn" class="btn-primary full">Fill common fields</button>
+      <p id="fill-helper" class="hint">Only empty fields. You submit.</p>
+
+      <div class="section-label">Insert into focused field</div>
+      <div class="chips" id="insert-chips">
+        <button type="button" class="chip" data-insert="full_name" title="Insert full name into the focused field">Full name</button>
+        <button type="button" class="chip" data-insert="email" title="Insert email into the focused field">Email</button>
+        <button type="button" class="chip" data-insert="phone" title="Insert phone into the focused field">Phone</button>
+        <button type="button" class="chip" data-insert="linkedin" title="Insert LinkedIn into the focused field">LinkedIn</button>
+        <button type="button" class="chip" data-insert="location" title="Insert location into the focused field">Location</button>
+        <button type="button" class="chip" data-insert="summary" title="Insert summary into the focused field">Summary</button>
+        <button type="button" class="chip" data-insert="skills" title="Insert skills into the focused field">Skills</button>
+        <button type="button" class="chip" data-insert="latest_role" title="Insert “Title at Company (dates)”">Latest role</button>
+      </div>
+      <button type="button" id="insert-bullets-btn" class="btn-secondary full" data-insert="latest_role_bullets">
+        Latest role bullets
+      </button>
+
+      <button type="button" id="preview-toggle" class="preview-toggle">▸ Preview details</button>
+      <div id="preview" class="preview hidden"></div>
+    </section>
+
+    <!-- Help -->
+    <section id="view-help" class="view hidden">
+      <button type="button" id="help-back" class="btn-back">← Back</button>
+      <h1 class="headline left">Help</h1>
+      <h2 class="help-h">How filling works</h2>
+      <p class="body-text left">We only fill empty fields we recognize (name, email, phone, and similar). We never submit the form.</p>
+      <h2 class="help-h">Insert</h2>
+      <p class="body-text left">Click into a field on the page, then choose what to insert.</p>
+      <h2 class="help-h">We don’t fill</h2>
+      <p class="body-text left">Salary, work authorization, diversity questions, passwords, or checkboxes.</p>
+      <h2 class="help-h">Resume file</h2>
+      <p class="body-text left">Download or open your resume in Resumegen, then upload it on the employer’s site.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <button type="button" id="footer-open" class="btn-link">Open Resumegen</button>
+    <button type="button" id="footer-help" class="btn-link">Help</button>
+  </footer>
+
+  <script src="sidepanel.js" type="module"></script>
+</body>
+</html>

@@ -1,43 +1,100 @@
-const DEFAULT_API_BASE = 'https://resumegen.app/api';
+const DEFAULT_APP_BASE = 'https://resumegen.test';
 
-// ── Alarm setup ───────────────────────────────────────────────────────────────
-// Registered at top level so it persists across service worker restarts.
-chrome.alarms.create('poll', { periodInMinutes: 5 });
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
 
-chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === 'poll') {
-        pollActivity();
-    }
-});
-
-// ── Message handlers ──────────────────────────────────────────────────────────
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    if (message.type === 'GET_ACTIVITY') {
-        pollActivity().then(sendResponse);
-        return true;
-    }
-    if (message.type === 'REPLY_THREAD') {
-        replyToThread(message.threadId, message.body).then(sendResponse);
-        return true;
-    }
+    handleMessage(message).then(sendResponse).catch((err) => {
+        sendResponse({ ok: false, reason: 'error', error: String(err?.message || err) });
+    });
+    return true;
 });
 
-// ── Core functions ────────────────────────────────────────────────────────────
-
-async function getConfig() {
-    const { token, apiBase } = await chrome.storage.sync.get(['token', 'apiBase']);
-    return {
-        token,
-        base: (apiBase || DEFAULT_API_BASE).replace(/\/$/, ''),
-    };
+async function handleMessage(message) {
+    switch (message.type) {
+        case 'GET_CONFIG':
+            return { ok: true, ...(await getConfig()) };
+        case 'TEST_CONNECTION':
+            return testConnection(message.token, message.appBase);
+        case 'FETCH_RESUMES':
+            return fetchResumes();
+        case 'FETCH_FILL_PROFILE':
+            return fetchFillProfile(message.resumeId);
+        case 'FILL_COMMON_FIELDS':
+            return fillCommonFields(message.tabId, message.profile);
+        case 'INSERT_FOCUSED':
+            return insertFocused(message.tabId, message.text, message.label);
+        case 'OPEN_APP':
+            return openApp(message.path || '/dashboard');
+        case 'DISCONNECT':
+            await chrome.storage.sync.remove(['token']);
+            await chrome.storage.local.remove(['selectedGroupId', 'selectedResumeId', 'lastProfile']);
+            return { ok: true };
+        default:
+            return { ok: false, reason: 'unknown_message' };
+    }
 }
 
-async function pollActivity() {
-    const { token, base } = await getConfig();
-    if (!token) return { ok: false, reason: 'no_token' };
+async function getConfig() {
+    const { token, appBase } = await chrome.storage.sync.get(['token', 'appBase']);
+    const base = normalizeAppBase(appBase || DEFAULT_APP_BASE);
+    return { token: token || '', appBase: base, apiBase: `${base}/api` };
+}
+
+function normalizeAppBase(value) {
+    let base = String(value || DEFAULT_APP_BASE).trim().replace(/\/$/, '');
+    if (base.endsWith('/api')) {
+        base = base.slice(0, -4);
+    }
+    return base || DEFAULT_APP_BASE;
+}
+
+async function apiFetch(path, options = {}) {
+    const { token, apiBase } = await getConfig();
+    if (!token) {
+        return { ok: false, reason: 'no_token', status: 0 };
+    }
 
     try {
-        const res = await fetch(`${base}/activity`, {
+        const res = await fetch(`${apiBase}${path}`, {
+            ...options,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+                ...(options.headers || {}),
+            },
+        });
+
+        if (res.status === 401) {
+            return { ok: false, reason: 'unauthorized', status: 401 };
+        }
+
+        if (res.status === 403) {
+            const body = await res.json().catch(() => ({}));
+            return { ok: false, reason: 'forbidden', status: 403, body };
+        }
+
+        if (!res.ok) {
+            return { ok: false, reason: `http_${res.status}`, status: res.status };
+        }
+
+        const data = await res.json();
+        return { ok: true, data, status: res.status };
+    } catch (err) {
+        return { ok: false, reason: 'network_error', error: err.message, status: 0 };
+    }
+}
+
+async function testConnection(tokenOverride, appBaseOverride) {
+    const stored = await getConfig();
+    const token = tokenOverride ?? stored.token;
+    const apiBase = `${normalizeAppBase(appBaseOverride || stored.appBase)}/api`;
+
+    if (!token) {
+        return { ok: false, reason: 'no_token' };
+    }
+
+    try {
+        const res = await fetch(`${apiBase}/extension/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: 'application/json',
@@ -45,49 +102,102 @@ async function pollActivity() {
         });
 
         if (res.status === 401) {
-            await chrome.storage.local.set({ authError: true });
-            updateBadge(0);
             return { ok: false, reason: 'unauthorized' };
         }
-
         if (!res.ok) {
             return { ok: false, reason: `http_${res.status}` };
         }
 
         const data = await res.json();
-        await chrome.storage.local.set({ activity: data, authError: false, lastFetched: Date.now() });
-        updateBadge(data.unread_count ?? 0);
-        return { ok: true, data };
+        return { ok: true, name: data.name, email: data.email };
     } catch (err) {
         return { ok: false, reason: 'network_error', error: err.message };
     }
 }
 
-async function replyToThread(threadId, body) {
-    const { token, base } = await getConfig();
+async function fetchResumes() {
+    return apiFetch('/extension/resumes');
+}
 
+async function fetchFillProfile(resumeId) {
+    if (!resumeId) {
+        return { ok: false, reason: 'no_resume' };
+    }
+    const result = await apiFetch(`/extension/resumes/${resumeId}/fill-profile`);
+    if (result.ok) {
+        await chrome.storage.local.set({ lastProfile: result.data, selectedResumeId: resumeId });
+    }
+    return result;
+}
+
+async function ensureContentScript(tabId) {
     try {
-        const res = await fetch(`${base}/threads/${threadId}/reply`, {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
-            body: JSON.stringify({ body }),
+        await chrome.tabs.sendMessage(tabId, { type: 'PING' });
+        return true;
+    } catch {
+        await chrome.scripting.executeScript({
+            target: { tabId },
+            files: ['content/fill.js'],
         });
-        const responseBody = await res.json().catch(() => ({}));
-        return { status: res.status, body: responseBody };
-    } catch (err) {
-        return { status: 0, error: err.message };
+        return true;
     }
 }
 
-function updateBadge(count) {
-    if (count > 0) {
-        chrome.action.setBadgeText({ text: String(count) });
-        chrome.action.setBadgeBackgroundColor({ color: '#4f46e5' });
-    } else {
-        chrome.action.setBadgeText({ text: '' });
+async function fillCommonFields(tabId, profile) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
     }
+
+    try {
+        await ensureContentScript(id);
+        const result = await chrome.tabs.sendMessage(id, {
+            type: 'FILL_COMMON',
+            profile,
+        });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return {
+            ok: false,
+            reason: 'inject_failed',
+            error: err.message,
+            message: 'No fillable fields found on this page',
+        };
+    }
+}
+
+async function insertFocused(tabId, text, label) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
+    }
+
+    try {
+        await ensureContentScript(id);
+        const result = await chrome.tabs.sendMessage(id, {
+            type: 'INSERT_FOCUSED',
+            text,
+            label,
+        });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return {
+            ok: false,
+            reason: 'inject_failed',
+            error: err.message,
+            message: 'Click a text field on the page first, then insert.',
+        };
+    }
+}
+
+async function activeTabId() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    return tab?.id;
+}
+
+async function openApp(path) {
+    const { appBase } = await getConfig();
+    const url = `${appBase}${path.startsWith('/') ? path : `/${path}`}`;
+    await chrome.tabs.create({ url });
+    return { ok: true };
 }

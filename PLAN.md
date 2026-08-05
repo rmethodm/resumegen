@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** Resumegen Apply extension — backend spike shipped
+- **Active:** Resumegen Apply extension — side panel MVP shipped
 - **Last updated:** 2026-08-05
-- **Next action:** Extension UI rewrite (side panel + fill common fields + insert chips) against `/api/extension/*`; retire dead activity/job-saver popup code in `extension/`.
+- **Next action:** Manual load-unpacked QA on Herd; tighten field heuristics from real forms; optional one-click connect deep link.
 
 ---
 
@@ -26,9 +26,10 @@ Live at **<url>** · Repo: **<repo>**
 - [x] Product MVP + side-panel wireframes (empty-only fill, no auto-submit)
 - [x] `ResumeFillProfile` + Sanctum extension API (`/api/extension/*`)
 - [x] Profile token mint/revoke UI (`ExtensionTokenController`)
-- [ ] Rewrite `extension/` to side panel + fill/insert (replace activity popup)
-- [ ] Content-script field heuristics (name/email/phone/LinkedIn; empty-only)
+- [x] Rewrite `extension/` to side panel + fill/insert (replace activity popup)
+- [x] Content-script field heuristics (name/email/phone/LinkedIn; empty-only)
 - [ ] Connect flow polish (deep link optional; paste token works today)
+- [ ] Manual QA on real ATS forms + heuristic fixes
 
 ## Future / if needed
 - AI open-ended answers / cover letters from extension — after basic fill works
