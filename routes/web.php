@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExtensionTokenController;
+use App\Http\Controllers\JobImportsPreviewController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeShareController;
@@ -57,6 +58,10 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/settings/starter-profile', [StarterProfileController::class, 'edit'])->name('starter-profile.edit');
     Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');
     Route::post('/settings/starter-profile/skip', [StarterProfileController::class, 'skip'])->name('starter-profile.skip');
+
+    // Design-preview only — linked from nav, but see JobImportsPreviewController's
+    // docblock before adding real backend logic here.
+    Route::get('/jobs-imports-preview', JobImportsPreviewController::class)->name('jobs-imports.preview');
 
     Route::get('/resumes', [ResumeController::class, 'index'])->name('resumes.index');
     Route::post('/resumes', [ResumeController::class, 'store'])->name('resumes.store');
