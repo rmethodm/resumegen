@@ -1,9 +1,16 @@
 # Plan: Fix Code-Review Findings
 
-> **Status (2026-07-07):** Tasks 3, 4, and 5 are already implemented in code
-> (`RegisteredUserController`, `Api/AuthController`, and the `verified`
-> middleware on the main route group) — kept here for historical reference,
-> not as pending work.
+> **Superseded — historical reference only, not pending work.** This plan predates the
+> 2026-08-02 Fortify swap and 2026-08-04 AI/admin/billing changes; most file paths below no
+> longer exist. Task 1 (index on `registration_ip`) shipped as
+> `2026_06_18_111510_add_index_to_registration_ip_on_users_table.php`. Task 3's logic now
+> lives in `app/Actions/Fortify/CreateNewUser.php` (`RegisteredUserController` was deleted in
+> the Fortify swap). Task 4 targeted `Api/AuthController`, which was never built — the API
+> layer that shipped instead (`routes/api.php`) is Resumegen Apply's extension-only surface,
+> not a user auth API. Task 5 (`verified` middleware on the main route group) is implemented
+> (`routes/web.php`). Task 2 (`DemoDataSeeder`) and Task 6 (`AiSuggestionController`) both
+> target files that don't exist — Stripe/billing and the old AI controller were removed
+> 2026-07-14/21 (see CLAUDE.md's "Removed Features").
 
 ## Global Constraints
 - Stack: Laravel 13, PHP 8.4, SQLite, React 18, TypeScript, Tailwind CSS v3, Inertia.js v2

@@ -1,8 +1,13 @@
 # AI reintroduction map — Resumegen (2026-08)
 
-> Advisory only. AI was removed 2026-07-21; nothing here is live.
+> Advisory for everything below Tier 1. **Bullet rewrite and summary generate/tailor (both
+> marked ★ Tier 1 below) shipped 2026-08-04** as `ResumeAiController` + `OpenAiResumeAssistant`,
+> disabled by default via `AI_ENABLED`/`OPENAI_API_KEY` in `config/ai.php` — see CLAUDE.md's
+> "AI" section. Everything else on this map (import, JD keyword match/gap-fix, multi-section
+> tailor) is still unbuilt.
 > Complements `docs/pricing-recommendations-2026-08.md`.
-> Product rule: do **not** implement AI without explicit product approval (see CLAUDE.md).
+> Product rule: do **not** implement AI beyond the shipped Tier-1 slice without explicit
+> product approval (see CLAUDE.md).
 
 ---
 
