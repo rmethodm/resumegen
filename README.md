@@ -1,25 +1,24 @@
 # Resumegen
 
-Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create resumes, cover letters, public portfolio pages, and shareable resume links. The app also includes analytics and a small Sanctum API used by the browser extension.
+Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create and share resumes. The app also includes a small Sanctum API used by the browser extension and a thin support admin panel.
 
 ## Current Status
 
-- Laravel 13 app with React 18, Inertia 2, Tailwind CSS, Sanctum, DOMPDF, and PHPWord.
+- Laravel 13 app with React 19, Inertia v3, Tailwind CSS, Sanctum, DOMPDF, and PHPWord.
 - Mobile app work is paused. The previous Expo/mobile-only API surface was removed on 2026-07-08.
 - **The app is free and unlimited.** There is no billing, no plan tier, and nothing is metered.
-- **There is no AI.** All AI features, the pricing instrumentation, and the Job Search feature were removed on 2026-07-21. Every remaining feature is deterministic server-side code.
-- **There is no admin panel.** The Filament admin surface, impersonation, the audit log, system-event logging, and the Career Hub were removed on 2026-07-21. The job-role/title/skill taxonomy is now seeder-managed with no UI.
+- **AI is narrow and disabled by default.** A Tier-1 slice (bullet rewrite and summary generation on the Optimize tab) shipped 2026-08-04 via `App\Services\OpenAiResumeAssistant`, gated by `AI_ENABLED`/`OPENAI_API_KEY` in `config/ai.php` (both unset by default). Everything else — bullet coach, ATS keywords, interview coach, resume import — stays removed.
+- **There is a thin support admin panel**, domain-scoped to `APP_ADMIN_DOMAIN` (`admin.resumegen.test` locally). It's search/verify/disable/revoke-tokens only — no taxonomy CMS, no resume edit, no impersonation, no billing. The old Filament admin, impersonation, the audit log, system-event logging, and the Career Hub remain removed (2026-07-21).
 - Deployment notes live in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Main Product Areas
 
-- Resume builder with templates, custom sections, skill groups, project sections, photos, tags, duplication, variants, PDF export, DOCX export, HTML/PDF preview, and thumbnails.
-- Public resume sharing through `/r/{token}` with PDF/DOCX downloads, Open Graph images, section tracking, and visitor message threads.
-- Portfolio pages through `/p/{slug}` with contact messages.
-- Cover letter and resignation letter builders.
-- Proofreading request flow with a paid service path.
-- Dashboard analytics, view tracking, heatmaps, strength scoring, salary hints, job-role/title/skill autocomplete, and user activity tracking.
+- Resume builder with templates, custom sections, skill groups, project sections, tags, duplication, PDF export, DOCX export, HTML/PDF preview, and thumbnails.
+- Public resume sharing through `/r/{token}` with PDF/DOCX downloads and an optional email/password gate.
+- Dashboard analytics, strength scoring, and job-role/title/skill autocomplete.
 - **Resumegen Apply** (Chrome/Edge MV3): side panel fills job forms from your resume via Sanctum (`/api/extension/*`; tokens on Profile). See `extension/README.md`.
+
+Cover letters, resignation letters, proofreading, portfolio pages, A/B resume variants, and salary hints have all been removed — see `CLAUDE.md`'s "Removed Features" section for dates and detail.
 
 ## Local Development
 
@@ -70,7 +69,7 @@ npm run build
 
 ## Verification From Latest Scan
 
-Last scanned: 2026-07-13.
+Last scanned: 2026-08-05.
 
-- `php artisan route:list --except-vendor` succeeded and reported 141 routes.
+- `php artisan route:list --except-vendor` succeeded and reported 73 routes.
 - No application code was changed during this scan.

@@ -93,6 +93,10 @@ sudo chown -R $USER:$USER /var/www/resumegen
 cd /var/www/resumegen
 ```
 
+> The live production box uses `/var/www/resumegen.app` (note the `.app` suffix), not
+> `/var/www/resumegen` — `deploy.sh` and the CI `deploy` job below both hardcode that path.
+> Match it, or update both if you deliberately choose a different path.
+
 **Private repo?** Add a read-only deploy key instead:
 
 ```bash
@@ -283,25 +287,28 @@ sudo systemctl enable --now resumegen-queue
 
 ## Part 10 — Deploying updates
 
-Deploys are build-once-in-CI, then rsynced to the server — the server never runs
-Composer or npm itself.
+The `deploy` job in `.github/workflows/ci.yml` runs on a **self-hosted GitHub Actions
+runner living on the production box itself** (`[self-hosted, resumegen-prod]`, registered
+as the `github-runner` system user). There is no build-on-CI-then-rsync step and no SSH —
+Hostinger's network firewall drops inbound SSH from GitHub-hosted runner IPs before it
+reaches `sshd`, so the job instead runs locally on the server via a narrowly-scoped sudoers
+rule (`/etc/sudoers.d/github-runner`) permitting exactly one command as root:
+
+```bash
+sudo /var/www/resumegen.app/deploy.sh
+```
+
+`deploy.sh` itself pulls `main`, installs Composer/npm dependencies, builds the frontend,
+migrates, re-caches config/routes/views, restarts the queue worker if present, and toggles
+maintenance mode around the run (staying down on failure rather than serving broken code).
 
 Deploy only fires from a manual trigger — Actions tab "Run workflow" or
 `gh workflow run ci.yml` — never from a bare push to `main`. (Required-reviewer
 environment protection needs a paid GitHub plan; manual `workflow_dispatch` is
 the free-plan substitute, per the comment in `.github/workflows/ci.yml`.) The
-`deploy` job needs the `test` job to pass first, then:
-
-1. Builds `vendor/` (`composer install --no-dev`) and `public/build` (`npm ci && npm run build`) on the runner.
-2. `rsync`s the result to `/var/www/resumegen` on the server, excluding `.env`,
-   `storage/app/` (user-uploaded media — never deleted), `storage/logs/`,
-   `storage/framework/{cache,sessions,views}/`, `node_modules/`, and `.git/`.
-3. SSHes in and runs `./deploy.sh`, which migrates, re-caches config/routes/views,
-   restarts the queue worker if present, and toggles maintenance mode around the run
-   (staying down on failure rather than serving broken code).
-
-Requires repo secrets `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` and a `production`
-environment configured in GitHub repo settings.
+`deploy` job needs the `test` job to pass first. No `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`
+secrets are used — the runner already lives on the box; only a `production`
+environment (for the manual-approval gate) is configured in GitHub repo settings.
 
 **Support admin subdomain (required for ops UI).** Filament is gone; a thin Inertia
 support admin lives on `APP_ADMIN_DOMAIN` (e.g. `admin.yourdomain.com`). After
@@ -320,8 +327,5 @@ impersonation, no taxonomy CMS, no billing.
 **Manual deploy (no CI):** `deploy.sh` is self-sufficient — it pulls `main`, installs
 Composer/npm dependencies, builds the frontend, migrates, re-caches, and fixes
 `storage`/`bootstrap/cache` ownership. SSH in as root, `cd` to the project root, and run
-`./deploy.sh`. This is currently the *only* deploy path — the CI `deploy` job is blocked
-because Hostinger's network firewall drops SSH connections from GitHub Actions runner
-IPs before they reach `sshd`. That's parked, not fixed; revisit if automated deploys are
-worth pursuing (e.g. a self-hosted Actions runner installed directly on the server, which
-sidesteps the inbound-SSH problem entirely).
+`./deploy.sh` directly any time you want to skip GitHub Actions entirely (e.g. CI is down,
+or you're deploying a branch that hasn't been pushed).

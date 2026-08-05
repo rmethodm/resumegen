@@ -1,6 +1,8 @@
 # AI provider comparison — Resumegen (2026-08)
 
-> Advisory only. AI is not live; this does not choose a vendor for production.
+> Advisory when written; **the shipped Tier-1 slice (2026-08-04) already adopted this doc's
+> own pick** — `config/ai.php` defaults `OPENAI_MODEL` to `gpt-4o-mini`. Re-check before
+> expanding beyond Tier 1 rather than re-litigating the provider choice below.
 > Complements `docs/ai-reintroduction-map.md` and `docs/pricing-recommendations-2026-08.md`.
 > Pricing snapshot: **2026-08** from official provider docs (rates change; re-check before implementation).
 
