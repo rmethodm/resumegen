@@ -42,9 +42,13 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
 
     const copyAll = () => {
         if (recoveryCodes) {
-            navigator.clipboard.writeText(recoveryCodes.join('\n'));
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
+            navigator.clipboard
+                .writeText(recoveryCodes.join('\n'))
+                .then(() => {
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                })
+                .catch(() => undefined);
         }
     };
 

@@ -162,6 +162,7 @@ export default function TagInput({
                         }, 120);
                     }}
                     placeholder={tags.length ? '' : placeholder}
+                    maxLength={60}
                     className="min-w-[120px] flex-1 border-none p-0 text-sm focus:ring-0 outline-none bg-transparent"
                     autoComplete="off"
                 />

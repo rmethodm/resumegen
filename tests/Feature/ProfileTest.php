@@ -124,6 +124,30 @@ class ProfileTest extends TestCase
         $this->assertSame('modern', $user->preferred_template);
     }
 
+    public function test_updating_persona_merges_profile_instead_of_overwriting_it(): void
+    {
+        $user = User::factory()->create([
+            'has_completed_onboarding' => true,
+            'profile' => ['full_name' => 'Jordan Rivera', 'website' => 'https://jordan.example.com'],
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('profile.persona'), [
+                'phone' => '(415) 555-0100',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('profile.edit'));
+
+        $user->refresh();
+
+        $this->assertSame('(415) 555-0100', $user->profile['phone']);
+        $this->assertSame('Jordan Rivera', $user->profile['full_name']);
+        $this->assertSame('https://jordan.example.com', $user->profile['website']);
+    }
+
     public function test_starter_profile_rejects_a_disallowed_template(): void
     {
         $user = User::factory()->create();

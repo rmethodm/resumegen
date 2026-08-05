@@ -54,9 +54,13 @@ function ShareStatus({
 
     function copyLink(event: MouseEvent) {
         event.stopPropagation();
-        navigator.clipboard.writeText(share!.url);
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1500);
+        navigator.clipboard
+            .writeText(share!.url)
+            .then(() => {
+                setCopied(true);
+                window.setTimeout(() => setCopied(false), 1500);
+            })
+            .catch(() => undefined);
     }
 
     if (share.is_expired) {

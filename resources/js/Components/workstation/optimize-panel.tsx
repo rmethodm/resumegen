@@ -155,7 +155,7 @@ export function AtsPlainTextBlock({
                     size="sm"
                     variant="outline"
                     onClick={() => {
-                        void navigator.clipboard.writeText(plainText);
+                        navigator.clipboard.writeText(plainText).catch(() => undefined);
                     }}
                 >
                     Copy all

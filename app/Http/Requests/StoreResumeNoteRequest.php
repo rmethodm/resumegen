@@ -32,7 +32,7 @@ class StoreResumeNoteRequest extends FormRequest
             // typing, so the body may be blank but the key must exist.
             // `nullable` because ConvertEmptyStringsToNull turns '' into null;
             // the controller coerces it back to '' for the non-null column.
-            'body' => ['present', 'nullable', 'string'],
+            'body' => ['present', 'nullable', 'string', 'max:2000'],
             'x' => ['required', 'integer'],
             'y' => ['required', 'integer'],
             'width' => ['sometimes', 'integer', 'min:160', 'max:800'],

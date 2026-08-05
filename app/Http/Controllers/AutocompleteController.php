@@ -14,16 +14,22 @@ class AutocompleteController extends Controller
 {
     public function searchRoles(Request $request): JsonResponse
     {
+        $request->validate(['q' => ['nullable', 'string', 'max:150']]);
+
         return $this->search(JobRole::class, 'title', (string) $request->query('q', ''));
     }
 
     public function searchTitles(Request $request): JsonResponse
     {
+        $request->validate(['q' => ['nullable', 'string', 'max:150']]);
+
         return $this->search(JobTitle::class, 'title', (string) $request->query('q', ''));
     }
 
     public function searchSkills(Request $request): JsonResponse
     {
+        $request->validate(['q' => ['nullable', 'string', 'max:150']]);
+
         $bucket = (string) $request->query('category', '');
         $categories = $bucket !== '' ? SkillCategories::categoriesFor($bucket) : [];
 
@@ -32,12 +38,12 @@ class AutocompleteController extends Controller
 
     public function storeRole(Request $request): JsonResponse
     {
-        return $this->store(JobRole::class, 'title', $request);
+        return $this->store(JobRole::class, 'title', $request, ['source' => 'user']);
     }
 
     public function storeTitle(Request $request): JsonResponse
     {
-        return $this->store(JobTitle::class, 'title', $request);
+        return $this->store(JobTitle::class, 'title', $request, ['source' => 'user']);
     }
 
     public function storeSkills(Request $request): JsonResponse
@@ -56,14 +62,16 @@ class AutocompleteController extends Controller
             return response()->json([]);
         }
 
-        $results = $model::where($column, 'like', $q.'%')
+        $escaped = addcslashes($q, '%_\\');
+
+        $results = $model::where($column, 'like', $escaped.'%')
             ->when($categories, fn ($query) => $query->whereIn('category', $categories))
             ->orderBy($column)
             ->limit(10)
             ->get(['id', $column]);
 
         if ($results->count() < 3) {
-            $results = $model::where($column, 'like', '%'.$q.'%')
+            $results = $model::where($column, 'like', '%'.$escaped.'%')
                 ->when($categories, fn ($query) => $query->whereIn('category', $categories))
                 ->orderBy($column)
                 ->limit(10)

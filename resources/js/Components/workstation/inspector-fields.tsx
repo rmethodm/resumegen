@@ -160,6 +160,7 @@ export function Field({
     type = 'text',
     error = null,
     placeholder,
+    maxLength,
 }: {
     label: string;
     value: string;
@@ -167,6 +168,8 @@ export function Field({
     type?: string;
     error?: string | null;
     placeholder?: string;
+    /** Mirrors the matching UpdateResumeRequest rule — keep the two in step. */
+    maxLength?: number;
 }) {
     const [touched, setTouched] = useState(false);
     const messageId = useId();
@@ -179,6 +182,7 @@ export function Field({
                 type={type}
                 value={value}
                 placeholder={placeholder}
+                maxLength={maxLength}
                 onChange={(event) => onChange(event.target.value)}
                 onBlur={() => setTouched(true)}
                 aria-invalid={show}
@@ -382,19 +386,30 @@ export function EntryCard({
 export function AddButton({
     label,
     onClick,
+    disabled = false,
+    disabledReason,
 }: {
     label: string;
     onClick: () => void;
+    disabled?: boolean;
+    /** Shown under the button when `disabled` — e.g. "Limit reached (20)". */
+    disabledReason?: string;
 }) {
     return (
-        <Button
-            variant="outline"
-            size="sm"
-            onClick={onClick}
-            className="self-start"
-        >
-            <PlusIcon className="size-4" /> {label}
-        </Button>
+        <div className="flex flex-col items-start gap-1">
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={onClick}
+                disabled={disabled}
+                className="self-start"
+            >
+                <PlusIcon className="size-4" /> {label}
+            </Button>
+            {disabled && disabledReason && (
+                <p className="text-[11px] text-gray-500">{disabledReason}</p>
+            )}
+        </div>
     );
 }
 
@@ -426,6 +441,7 @@ export function BulletsField({
     aiBusy = false,
     aiRemaining,
     onRewriteBullet,
+    max = 12,
 }: {
     label: string;
     value: string[];
@@ -436,6 +452,8 @@ export function BulletsField({
     aiBusy?: boolean;
     aiRemaining?: number;
     onRewriteBullet?: (index: number) => void;
+    /** Mirrors UpdateResumeRequest's bullets/highlights array cap. */
+    max?: number;
 }) {
     // ponytail: native HTML5 drag, no dnd library. Swap in one if touch matters.
     const [dragging, setDragging] = useState<number | null>(null);
@@ -474,7 +492,9 @@ export function BulletsField({
             return;
         }
 
-        onChange(next);
+        // Every mutation (type, paste, bulk-add, Enter) routes through here,
+        // so capping here mirrors UpdateResumeRequest's array max in one place.
+        onChange(next.slice(0, max));
     }
 
     function replace(index: number, lines: string[]) {
@@ -611,6 +631,7 @@ export function BulletsField({
                                 : undefined
                         }
                         value={bullet}
+                        maxLength={500}
                         onChange={(event) =>
                             replace(index, [
                                 cleanBulletLine(event.target.value),
@@ -689,10 +710,16 @@ export function BulletsField({
                 variant="link"
                 size="sm"
                 className="h-auto self-start p-0 text-xs"
+                disabled={rows.length >= max}
                 onClick={() => commit([...value, ''])}
             >
                 + Add bullet
             </Button>
+            {rows.length >= max && (
+                <p className="text-[11px] text-gray-500">
+                    Limit reached ({max}).
+                </p>
+            )}
         </div>
     );
 }

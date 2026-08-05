@@ -8,5 +8,5 @@ class JobTitle extends Model
 {
     public const UPDATED_AT = null;
 
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'source'];
 }

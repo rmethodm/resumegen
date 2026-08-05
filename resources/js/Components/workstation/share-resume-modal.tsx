@@ -44,10 +44,18 @@ export function ShareResumeModal({
     const [copied, setCopied] = useState(false);
     const [passwordDraft, setPasswordDraft] = useState('');
     const [rotating, setRotating] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const onError = () => setError('Something went wrong. Try again.');
 
     useEffect(() => {
         if (open && share === null) {
-            router.post(route('resumes.share.store', resumeId), {}, { preserveScroll: true });
+            setError(null);
+            router.post(
+                route('resumes.share.store', resumeId),
+                {},
+                { preserveScroll: true, onError },
+            );
         }
     }, [open, share, resumeId]);
 
@@ -57,6 +65,7 @@ export function ShareResumeModal({
 
     function close() {
         setCopied(false);
+        setError(null);
         onOpenChange(false);
     }
 
@@ -65,8 +74,10 @@ export function ShareResumeModal({
             return;
         }
 
-        navigator.clipboard.writeText(share.url);
-        setCopied(true);
+        navigator.clipboard
+            .writeText(share.url)
+            .then(() => setCopied(true))
+            .catch(() => undefined);
     }
 
     function toggle(field: 'allow_download' | 'require_email' | 'require_password') {
@@ -77,7 +88,7 @@ export function ShareResumeModal({
         router.patch(
             route('resume-share-links.update', share.id),
             { [field]: !share[field] },
-            { preserveScroll: true },
+            { preserveScroll: true, onError },
         );
     }
 
@@ -89,7 +100,7 @@ export function ShareResumeModal({
         router.patch(
             route('resume-share-links.update', share.id),
             { password: passwordDraft },
-            { preserveScroll: true },
+            { preserveScroll: true, onError },
         );
     }
 
@@ -106,6 +117,7 @@ export function ShareResumeModal({
             { password: next, require_password: true },
             {
                 preserveScroll: true,
+                onError,
                 onFinish: () => setRotating(false),
             },
         );
@@ -120,7 +132,7 @@ export function ShareResumeModal({
             router.patch(
                 route('resume-share-links.update', share.id),
                 { expires_at: null },
-                { preserveScroll: true },
+                { preserveScroll: true, onError },
             );
             return;
         }
@@ -131,7 +143,7 @@ export function ShareResumeModal({
         router.patch(
             route('resume-share-links.update', share.id),
             { expires_at: toDateString(in30Days) },
-            { preserveScroll: true },
+            { preserveScroll: true, onError },
         );
     }
 
@@ -161,7 +173,7 @@ export function ShareResumeModal({
         router.patch(
             route('resume-share-links.update', share.id),
             { expires_at: toDateString(new Date(year, month - 1, day)) },
-            { preserveScroll: true },
+            { preserveScroll: true, onError },
         );
     }
 
@@ -178,7 +190,10 @@ export function ShareResumeModal({
             return;
         }
 
-        router.delete(route('resume-share-links.destroy', share.id), { preserveScroll: true });
+        router.delete(route('resume-share-links.destroy', share.id), {
+            preserveScroll: true,
+            onError,
+        });
         close();
     }
 
@@ -202,6 +217,11 @@ export function ShareResumeModal({
                     </div>
 
                     <div className="flex flex-col gap-4 overflow-y-auto px-5 py-4">
+                        {error && (
+                            <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
+                                {error}
+                            </div>
+                        )}
                         <div className="flex gap-2">
                             <div className="flex-1 truncate rounded-md border border-gray-200 px-3 py-2 text-xs font-medium text-gray-500">
                                 {share?.url ?? 'Generating link…'}
@@ -452,6 +472,7 @@ function ShareToggleRow({
                 checked={enabled}
                 onChange={onChange}
                 disabled={disabled}
+                aria-label={label}
                 className={cn(
                     'relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50',
                     enabled ? 'bg-brand' : 'bg-gray-200',

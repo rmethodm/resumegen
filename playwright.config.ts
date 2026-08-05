@@ -14,7 +14,7 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
     reporter: 'list',
     use: {
-        baseURL: 'http://resumegen.test',
+        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://resumegen.test',
         trace: 'on-first-retry',
     },
     projects: [

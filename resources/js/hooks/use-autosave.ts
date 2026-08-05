@@ -38,6 +38,9 @@ export function useAutosave<T extends RequestPayload>(
     dataRef.current = data;
     const urlRef = useRef(url);
     urlRef.current = url;
+    const settledRef = useRef(false);
+    const statusRef = useRef(status);
+    statusRef.current = status;
 
     useEffect(() => {
         function goOffline() {
@@ -67,22 +70,40 @@ export function useAutosave<T extends RequestPayload>(
 
         setStatus('saving');
         setErrorMessage(null);
+        settledRef.current = false;
 
         router.put(urlRef.current, dataRef.current, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
+                settledRef.current = true;
                 setStatus('saved');
                 setConflict(false);
                 setErrorMessage(null);
                 onSuccessRef.current?.();
             },
             onError: (errors) => {
+                settledRef.current = true;
                 setStatus('error');
                 if (errors.conflict) {
                     setConflict(true);
                     setErrorMessage(String(errors.conflict));
                 } else {
+                    const firstFieldError = Object.values(errors)[0];
+                    setErrorMessage(
+                        typeof firstFieldError === 'string' && firstFieldError !== ''
+                            ? firstFieldError
+                            : 'Save failed. Retry when ready.',
+                    );
+                }
+            },
+            onFinish: () => {
+                // onSuccess/onError only cover 2xx and 422s. A 500, an expired
+                // session redirect, or a dropped connection ends the visit
+                // without either firing — this is the fallback that stops the
+                // status from being stuck on "saving" forever.
+                if (!settledRef.current) {
+                    setStatus('error');
                     setErrorMessage('Save failed. Retry when ready.');
                 }
             },
@@ -107,12 +128,14 @@ export function useAutosave<T extends RequestPayload>(
         return () => clearTimeout(timer);
     }, [url, data, delay, put]);
 
-    // Auto-retry once when coming back online while dirty/error.
+    // Auto-retry when coming back online while dirty/error — the offline
+    // banner tells the user changes "will save when you reconnect", so this
+    // has to actually retry rather than wait for the next keystroke.
     useEffect(() => {
-        if (!offline && (status === 'error' || status === 'dirty')) {
-            // no-op: next data change or manual retry saves
+        if (!offline && (statusRef.current === 'error' || statusRef.current === 'dirty')) {
+            put();
         }
-    }, [offline, status]);
+    }, [offline, put]);
 
     return {
         status,

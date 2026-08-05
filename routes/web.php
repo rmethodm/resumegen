@@ -16,15 +16,10 @@ use App\Http\Controllers\ResumeNoteController;
 use App\Http\Controllers\ResumeShareLinkController;
 use App\Http\Controllers\ResumeSnapshotController;
 use App\Http\Controllers\Settings\StarterProfileController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-});
+Route::get('/', WelcomeController::class);
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified', 'two_factor_challenge'])
@@ -32,10 +27,14 @@ Route::get('/dashboard', DashboardController::class)
 
 // Public, token-authenticated — the recipient of a shared link has no
 // account. The token in the URL is the credential.
-Route::get('/r/{token}', [PublicResumeShareController::class, 'show'])->name('share.show');
-Route::post('/r/{token}/unlock', [PublicResumeShareController::class, 'unlock'])->name('share.unlock');
-Route::get('/r/{token}/pdf', [PublicResumeShareController::class, 'pdf'])->name('share.pdf');
-Route::get('/r/{token}/docx', [PublicResumeShareController::class, 'docx'])->name('share.docx');
+Route::middleware('throttle:30,1')->group(function () {
+    Route::get('/r/{token}', [PublicResumeShareController::class, 'show'])->name('share.show');
+    Route::get('/r/{token}/pdf', [PublicResumeShareController::class, 'pdf'])->name('share.pdf');
+    Route::get('/r/{token}/docx', [PublicResumeShareController::class, 'docx'])->name('share.docx');
+});
+Route::post('/r/{token}/unlock', [PublicResumeShareController::class, 'unlock'])
+    ->middleware('throttle:share-unlock')
+    ->name('share.unlock');
 
 Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
