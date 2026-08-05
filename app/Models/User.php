@@ -52,6 +52,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(AdminActionLog::class, 'target_user_id');
     }
 
+    /**
+     * @return HasMany<ImportedJob, $this>
+     */
+    public function importedJobs(): HasMany
+    {
+        return $this->hasMany(ImportedJob::class);
+    }
+
     protected function casts(): array
     {
         return [

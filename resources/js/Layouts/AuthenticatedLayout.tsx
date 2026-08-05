@@ -30,7 +30,7 @@ export default function Authenticated({
     const nav: NavItem[] = [
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
         { label: 'Resumes', href: route('resumes.index'), active: route().current('resumes.*'), icon: DocumentTextIcon },
-        { label: 'Job Imports', href: route('jobs-imports.preview'), active: route().current('jobs-imports.preview'), icon: BriefcaseIcon },
+        { label: 'Job Imports', href: route('jobs-imports.index'), active: route().current('jobs-imports.*'), icon: BriefcaseIcon },
         { label: 'Profile', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
     ];
 
