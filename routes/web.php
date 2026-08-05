@@ -6,7 +6,7 @@ use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExtensionTokenController;
-use App\Http\Controllers\JobImportsPreviewController;
+use App\Http\Controllers\JobImportsController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeShareController;
@@ -59,9 +59,15 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');
     Route::post('/settings/starter-profile/skip', [StarterProfileController::class, 'skip'])->name('starter-profile.skip');
 
-    // Design-preview only — linked from nav, but see JobImportsPreviewController's
-    // docblock before adding real backend logic here.
-    Route::get('/jobs-imports-preview', JobImportsPreviewController::class)->name('jobs-imports.preview');
+    // Job Imports: real search (Adzuna/USAJOBS) + persistence. Matching, gap
+    // analysis, tailoring, and cover letters stay frontend stubs — see
+    // JobImportsController's docblock before adding any of them for real.
+    Route::get('/jobs-imports', [JobImportsController::class, 'index'])->name('jobs-imports.index');
+    Route::post('/jobs-imports/search', [JobImportsController::class, 'search'])
+        ->middleware('throttle:20,1')
+        ->name('jobs-imports.search');
+    Route::post('/jobs-imports', [JobImportsController::class, 'store'])->name('jobs-imports.store');
+    Route::patch('/jobs-imports/{importedJob}', [JobImportsController::class, 'updateStatus'])->name('jobs-imports.update-status');
 
     Route::get('/resumes', [ResumeController::class, 'index'])->name('resumes.index');
     Route::post('/resumes', [ResumeController::class, 'store'])->name('resumes.store');
