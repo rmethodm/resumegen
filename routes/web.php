@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExtensionTokenController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeShareController;
@@ -40,6 +41,13 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/profile/extension-tokens', [ExtensionTokenController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('profile.extension-tokens.store');
+    Route::delete('/profile/extension-tokens/{token}', [ExtensionTokenController::class, 'destroy'])
+        ->middleware('throttle:10,1')
+        ->name('profile.extension-tokens.destroy');
 
     Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');

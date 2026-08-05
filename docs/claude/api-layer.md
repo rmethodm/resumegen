@@ -1,12 +1,21 @@
-### API layer (token-based, for the Chrome extension)
-A JSON API lives under the `/api` prefix alongside the Inertia web layer. Auth uses Laravel Sanctum personal access tokens — **not** session cookies. Tokens are issued from the web app (`POST /profile/tokens` via `PersonalTokenController`, "Browser Extension" token), not via the API itself.
+### API layer (token-based, for Resumegen Apply)
 
-**Endpoints** (all require `Authorization: Bearer {token}` and `auth:sanctum`):
-- `GET /api/activity`
-- `POST /api/threads/{thread}/reply` — throttled 20/min
+A JSON API lives under the `/api` prefix alongside the Inertia web layer. Auth uses Laravel Sanctum personal access tokens — **not** session cookies. Tokens are issued from the web app (`POST /profile/extension-tokens` via `ExtensionTokenController`, name `Resumegen Apply`, ability `extension`), not via the API itself. Plaintext is flashed once on create.
 
-**Sanctum config:** `config/sanctum.php` sets `'guard' => []` (intentionally empty) to prevent web session fallback so only token-auth works for API requests.
+**Endpoints** (all require `Authorization: Bearer {token}`, `auth:sanctum`, ability `extension`, throttle `60,1`):
 
-**API tests:** All API test files must extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). `ApiTestCase` calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum's guard cache from masking token revocation in multi-request tests.
+| Method | Path | Purpose |
+|--------|------|---------|
+| `GET` | `/api/extension/me` | Confirm token; returns `{ name, email }` |
+| `GET` | `/api/extension/resumes` | Group + version picker payload |
+| `GET` | `/api/extension/resumes/{resume}/fill-profile` | Fill/insert payload for one version |
 
-**Note:** this API previously also served a mobile companion app (`/mobile`, Expo/React Native) with resume/cover-letter/resignation-letter CRUD, registration, and push-token endpoints. Mobile development was paused and that code removed (2026-07-08) — only the endpoints the Chrome extension depends on remain.
+Payload builder: `App\Support\ResumeFillProfile`.
+
+**Sanctum config:** `config/sanctum.php` sets `'guard' => []` (intentionally empty) so only token-auth works for API requests.
+
+**API tests:** extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). It calls `$this->app['auth']->forgetGuards()` before each request so token revocation is visible mid-test.
+
+**CORS:** `config/cors.php` keeps `allowed_origins` empty. Chrome/Edge extensions with `host_permissions` for the app origin do not need browser CORS for background `fetch`.
+
+**Legacy:** older activity/thread and job-saver API docs and the `extension/` popup that polls `/api/activity` target removed features — do not revive those endpoints without an explicit product decision. Apply is the live extension API surface.

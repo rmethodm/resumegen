@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import DeleteUserForm from './Partials/DeleteUserForm';
+import ExtensionTokensForm from './Partials/ExtensionTokensForm';
 import TwoFactorForm from './Partials/TwoFactorForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
@@ -89,6 +90,8 @@ export default function Edit({
     profile,
     persona,
     allowedTemplates,
+    extensionTokens,
+    extensionTokenPlain,
 }: PageProps<{
     mustVerifyEmail: boolean;
     status?: string;
@@ -106,6 +109,13 @@ export default function Edit({
         preferred_template: string | null;
     };
     allowedTemplates: string[];
+    extensionTokens: Array<{
+        id: number;
+        name: string;
+        last_used_at: string | null;
+        created_at: string | null;
+    }>;
+    extensionTokenPlain: string | null;
 }>) {
     return (
         <AuthenticatedLayout>
@@ -133,6 +143,14 @@ export default function Edit({
                             pending={twoFactor.pending}
                             qrCodeSvg={twoFactor.qrCodeSvg}
                             recoveryCodes={twoFactor.recoveryCodes}
+                            className="max-w-xl"
+                        />
+                    </div>
+
+                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                        <ExtensionTokensForm
+                            tokens={extensionTokens}
+                            plainToken={extensionTokenPlain}
                             className="max-w-xl"
                         />
                     </div>
