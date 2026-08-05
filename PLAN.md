@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** Resumegen Apply extension — side panel MVP shipped
+- **Active:** Resumegen Apply extension — fill MVP + ATS heuristics shipped (user: works well)
 - **Last updated:** 2026-08-05
-- **Next action:** Manual load-unpacked QA on Herd; tighten field heuristics from real forms; optional one-click connect deep link.
+- **Next action:** User-directed. Optional: one-click connect; multi-step Workday QA; job-radar (scroll match) if productized.
 
 ---
 
@@ -33,6 +33,8 @@ Live at **<url>** · Repo: **<repo>**
 - [ ] Manual QA on real multi-step Workday forms
 
 ## Future / if needed
+- **Job radar** — while browsing, detect job cards and softly surface resume matches (side panel / badge; no spam toasts). Feasible; not started. Prefer allowlisted hosts + keyword score first.
+- Connect flow polish — deep link / one-click token vs paste-into-Settings
 - AI open-ended answers / cover letters from extension — after basic fill works
 - Site-specific ATS maps — only with real usage data
 - Auto PDF attach — fragile host permissions

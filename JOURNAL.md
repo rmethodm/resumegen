@@ -5,21 +5,21 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
-## YYYY-MM-DD — <session in a few words>
+## 2026-08-05 — Resumegen Apply extension MVP
 
-**Did:** <one or two lines>
+**Did:** Product wireframes → Sanctum fill-profile API + Profile tokens → MV3 side panel rewrite → scored ATS heuristics (21 node tests). User confirmed fill works. Discussed job-radar (feasible; not built). Docs/CONTEXT updated.
 
 **Least confident about (Q1):**
-- <thing> — would be proven right/wrong by <test/observation>.
+- Multi-step Workday / custom comboboxes — proven only by real-form QA.
+- Long-term store review if host_permissions stay `http(s)://*/*`.
 
-**Suggested improvement (Q5):** <one line>
+**Suggested improvement (Q5):** One-click connect (no paste token) before job-radar.
 
-<!-- For big sessions, also include: -->
-**Unstated assumptions (Q2):** <...>
-**Biggest thing being missed (Q3):** <...>
-**Could've gone better (Q4):** <...>
+**Unstated assumptions (Q2):** User remains on Chrome/Edge + Herd local token flow.
+**Biggest thing being missed (Q3):** Local commits not pushed (5+ on main).
+**Could've gone better (Q4):** Earlier discovery that `extension/` was dead activity code.
 
 ---
 
-## YYYY-MM-DD — <previous session>
+## Template — prior sessions
 ...

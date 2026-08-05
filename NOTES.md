@@ -28,29 +28,40 @@ re-derive. Timeless reference + the reasoning behind decisions.
 - Rejected: Popup feed (old activity extension); iframe control of employer sites.
 - Dead-end: Old `extension/popup` + extractors + `/api/activity` — removed 2026-08-05; do not restore.
 
+### Apply field matching = scored heuristics (locked for v2.1)
+- What: `extension/content/fill-heuristics.js` scores autocomplete + name/id/label + Workday `data-automation-id` + Ashby `_systemfield_*`; `fill.js` walks shadow DOM and same-origin iframes. Tests: `node --test extension/test/heuristics.test.cjs`.
+- Why: ATS naming is inconsistent; first-regex-wins collides first/last/full name.
+- Rejected: Dumping whole ResumeDocument; AI classification on every field (cost/latency).
+
 ---
 
 ## Intentional, not bugs
-Things that look wrong but are correct. Do not "fix" these.
-- <behavior> — <why it's intended>
+- Extension default app URL is `https://resumegen.test` — local Herd; production users set URL in Settings.
+- CORS `allowed_origins` stays empty — extension background fetch uses host_permissions, not browser CORS.
+- Fill never touches salary, EEO, passwords, checkboxes, or file inputs.
 
 ## Known permanent limitations
-- <limitation> — <why it can't/won't be solved, so nobody re-chases it>
+- Multi-step Workday/custom widgets (non-native inputs) may need site-specific work.
+- Cross-origin iframes cannot be filled or scanned.
+- Job-radar (scroll match alerts) is optional future product — not part of Apply fill MVP.
 
 ---
 
 ## Dead-ends (do not re-explore)
-- Tried <X> → got <Y> → rolled back because <reason>.
-- Did NOT <tempting shortcut> because <reason it's wrong>.
+- Iframe-driving employer apply pages → blocked by SOP / X-Frame-Options.
+- Old activity/thread extension API and popup → features removed; do not restore without product decision.
 
 ---
 
 ## Reference
-API quirks, schemas, formulas, the regex you fought with, constants —
-whatever a session might need to look up. Organize by topic/feature.
 
-### <Topic>
-<content>
+### Resumegen Apply API
+- Token: Profile → Generate connection token (`Resumegen Apply`, ability `extension`)
+- `GET /api/extension/me`
+- `GET /api/extension/resumes`
+- `GET /api/extension/resumes/{id}/fill-profile`
+- Load extension: `extension/README.md` (unpacked folder)
+- Docs: `docs/claude/api-layer.md`
 
 ---
 
