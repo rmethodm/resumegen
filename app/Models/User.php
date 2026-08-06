@@ -60,6 +60,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(ImportedJob::class);
     }
 
+    /**
+     * @return HasMany<JobApplication, $this>
+     */
+    public function jobApplications(): HasMany
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
     protected function casts(): array
     {
         return [

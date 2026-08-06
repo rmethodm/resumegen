@@ -6,7 +6,9 @@ use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExtensionTokenController;
+use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobImportsController;
+use App\Http\Controllers\MobileTokenController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeShareController;
@@ -50,6 +52,13 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         ->middleware('throttle:10,1')
         ->name('profile.extension-tokens.destroy');
 
+    Route::post('/profile/mobile-tokens', [MobileTokenController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('profile.mobile-tokens.store');
+    Route::delete('/profile/mobile-tokens/{token}', [MobileTokenController::class, 'destroy'])
+        ->middleware('throttle:10,1')
+        ->name('profile.mobile-tokens.destroy');
+
     Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
     Route::patch('/user/onboarding', [OnboardingController::class, 'complete'])->name('onboarding.complete');
@@ -68,6 +77,14 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         ->name('jobs-imports.search');
     Route::post('/jobs-imports', [JobImportsController::class, 'store'])->name('jobs-imports.store');
     Route::patch('/jobs-imports/{importedJob}', [JobImportsController::class, 'updateStatus'])->name('jobs-imports.update-status');
+
+    // Job Application Kanban: tracks applications through Saved/Applied/
+    // Interviewing/Offer/Rejected. Contacts and interview notes stay
+    // out of scope — see JobApplicationController's docblock.
+    Route::get('/job-applications', [JobApplicationController::class, 'index'])->name('job-applications.index');
+    Route::post('/job-applications', [JobApplicationController::class, 'store'])->name('job-applications.store');
+    Route::patch('/job-applications/{jobApplication}', [JobApplicationController::class, 'update'])->name('job-applications.update');
+    Route::delete('/job-applications/{jobApplication}', [JobApplicationController::class, 'destroy'])->name('job-applications.destroy');
 
     Route::get('/resumes', [ResumeController::class, 'index'])->name('resumes.index');
     Route::post('/resumes', [ResumeController::class, 'store'])->name('resumes.store');
