@@ -47,7 +47,7 @@ const emptyForm = (status: JobStatus = 'saved'): FormState => ({
     follow_up_at: '',
 });
 
-function JobCard({ job, resumeTitle, onClick }: { job: JobApplication; resumeTitle: string | null; onClick: () => void }) {
+function JobCard({ job, resumeTitle }: { job: JobApplication; resumeTitle: string | null }) {
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: job.id });
 
     return (
@@ -55,7 +55,6 @@ function JobCard({ job, resumeTitle, onClick }: { job: JobApplication; resumeTit
             ref={setNodeRef}
             {...listeners}
             {...attributes}
-            onClick={onClick}
             style={transform ? { transform: `translate(${transform.x}px, ${transform.y}px)`, zIndex: 10 } : undefined}
             className={`cursor-grab rounded-lg border border-gray-100 bg-white p-3 shadow-sm hover:border-gray-200 ${
                 isDragging ? 'opacity-50' : ''
@@ -76,13 +75,11 @@ function Column({
     label,
     jobs,
     resumesById,
-    onCardClick,
 }: {
     status: JobStatus;
     label: string;
     jobs: JobApplication[];
     resumesById: Map<number, string>;
-    onCardClick: (job: JobApplication) => void;
 }) {
     const { setNodeRef, isOver } = useDroppable({ id: status });
 
@@ -100,7 +97,6 @@ function Column({
                     key={job.id}
                     job={job}
                     resumeTitle={job.resume_id ? (resumesById.get(job.resume_id) ?? null) : null}
-                    onClick={() => onCardClick(job)}
                 />
             ))}
         </div>
@@ -173,12 +169,21 @@ export default function JobApplicationKanban({
     };
 
     const onDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (!over) return;
+        const { active, over, delta } = event;
 
         const job = applications.find((j) => j.id === active.id);
+        if (!job) return;
+
+        // dnd-kit's pointer sensor swallows the browser's click event on drag
+        // handles, so a tap with no real movement is treated as "open" instead.
+        if (Math.abs(delta.x) < 3 && Math.abs(delta.y) < 3) {
+            openEdit(job);
+            return;
+        }
+
+        if (!over) return;
         const newStatus = over.id as JobStatus;
-        if (!job || job.status === newStatus) return;
+        if (job.status === newStatus) return;
 
         router.patch(route('job-applications.update', job.id), { status: newStatus }, { preserveScroll: true });
     };
@@ -204,7 +209,6 @@ export default function JobApplicationKanban({
                                 label={column.label}
                                 jobs={applications.filter((job) => job.status === column.status)}
                                 resumesById={resumesById}
-                                onCardClick={openEdit}
                             />
                         ))}
                     </div>
