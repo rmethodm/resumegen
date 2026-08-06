@@ -75,59 +75,18 @@ export interface StrengthHistoryPoint {
     date: string;
 }
 
-export type JobStatus = 'saved' | 'applied' | 'interviewing' | 'offered' | 'rejected' | 'closed';
-
-export interface JobApplicationRow {
-    id: number;
-    company: string;
-    role: string;
-    status: JobStatus;
-    resume_id: number | null;
-    resume?: { id: number; name: string } | null;
-    applied_at: string | null;
-    follow_up_at: string | null;
-    job_url: string | null;
-    updated_at: string;
-    created_at: string;
-}
+export type JobStatus = 'saved' | 'applied' | 'interviewing' | 'offer' | 'rejected';
 
 export interface JobApplication {
     id: number;
-    user_id: number;
-    resume_id: number | null;
     company: string;
     role: string;
     status: JobStatus;
+    resume_id: number | null;
+    job_url: string | null;
+    notes: string | null;
     applied_at: string | null;
     follow_up_at: string | null;
-    notes: string | null;
-    job_url: string | null;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface FunnelStats {
-    saved: number;
-    applied: number;
-    interviewing: number;
-    offered: number;
-    rejected: number;
-    closed: number;
-}
-
-export interface InterviewNote {
-    id: number;
-    body: string;
-    created_at: string;
-}
-
-export interface ApplicationContact {
-    id: number;
-    name: string;
-    role: string | null;
-    email: string | null;
-    phone: string | null;
-    notes: string | null;
-    created_at: string;
+    created_at: string | null;
 }
 
