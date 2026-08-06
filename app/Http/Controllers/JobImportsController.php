@@ -49,7 +49,7 @@ class JobImportsController extends Controller
     {
         $data = $request->validate([
             'jobs' => ['required', 'array', 'min:1', 'max:20'],
-            'jobs.*.source' => ['required', 'string', 'in:adzuna,usajobs'],
+            'jobs.*.source' => ['required', 'string', 'in:adzuna,usajobs,greenhouse,lever,career_page'],
             'jobs.*.external_id' => ['required', 'string', 'max:190'],
             'jobs.*.title' => ['required', 'string', 'max:255'],
             'jobs.*.company' => ['nullable', 'string', 'max:255'],
