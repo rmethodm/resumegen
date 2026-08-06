@@ -2,6 +2,8 @@
 
 namespace App\Services\JobImport;
 
+use App\Models\ScrapedJob;
+
 class JobImportSearch
 {
     public function __construct(
@@ -17,7 +19,35 @@ class JobImportSearch
         return [
             ...$this->adzuna->search($keyword, $location),
             ...$this->usaJobs->search($keyword, $location),
+            ...$this->scrapedPool($keyword, $location),
         ];
+    }
+
+    /**
+     * Blends in listings the scheduled scrape (Greenhouse/Lever/career
+     * pages) already collected into the shared pool — see JobScrapePool.
+     *
+     * @return list<array{source: string, external_id: string, title: string, company: ?string, location: ?string, url: ?string, salary: ?string, description: ?string, posted_at: ?string}>
+     */
+    private function scrapedPool(string $keyword, ?string $location): array
+    {
+        return ScrapedJob::query()
+            ->where('title', 'like', "%{$keyword}%")
+            ->when($location, fn ($query, $location) => $query->where('location', 'like', "%{$location}%"))
+            ->limit(20)
+            ->get()
+            ->map(fn (ScrapedJob $job): array => [
+                'source' => $job->source,
+                'external_id' => $job->external_id,
+                'title' => $job->title,
+                'company' => $job->company,
+                'location' => $job->location,
+                'url' => $job->url,
+                'salary' => $job->salary,
+                'description' => $job->description,
+                'posted_at' => $job->posted_at?->toIso8601String(),
+            ])
+            ->all();
     }
 
     /**
