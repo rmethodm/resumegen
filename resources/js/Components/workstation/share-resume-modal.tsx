@@ -77,7 +77,7 @@ export function ShareResumeModal({
         navigator.clipboard
             .writeText(share.url)
             .then(() => setCopied(true))
-            .catch(() => undefined);
+            .catch(() => setError('Could not copy the link — copy it manually.'));
     }
 
     function toggle(field: 'allow_download' | 'require_email' | 'require_password') {

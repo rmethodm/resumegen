@@ -1,5 +1,5 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { jdKeywordOverlap } from '@/lib/jd-keyword-overlap';
 import { formatKeywordLabel } from '@/lib/resume-analysis';
 import { Button } from '@/Components/ui/button';
@@ -138,6 +138,8 @@ export function AtsPlainTextBlock({
 }: {
     plainText: string;
 }) {
+    const [copyFailed, setCopyFailed] = useState(false);
+
     return (
         <div className="rounded-lg border border-gray-200 bg-white p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
@@ -150,16 +152,26 @@ export function AtsPlainTextBlock({
                         layout chrome.
                     </p>
                 </div>
-                <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                        navigator.clipboard.writeText(plainText).catch(() => undefined);
-                    }}
-                >
-                    Copy all
-                </Button>
+                <div className="flex flex-col items-end gap-1">
+                    <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                            navigator.clipboard
+                                .writeText(plainText)
+                                .then(() => setCopyFailed(false))
+                                .catch(() => setCopyFailed(true));
+                        }}
+                    >
+                        Copy all
+                    </Button>
+                    {copyFailed && (
+                        <span className="text-[10px] font-medium text-red-600">
+                            Couldn&apos;t copy — select the text manually.
+                        </span>
+                    )}
+                </div>
             </div>
             <pre className="max-h-[50vh] overflow-auto rounded-md border border-gray-100 bg-gray-50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-gray-800">
                 {plainText}

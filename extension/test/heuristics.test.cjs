@@ -143,6 +143,32 @@ describe('matchFields assignment', () => {
     });
 });
 
+describe('bestOptionMatch', () => {
+    it('prefers exact text match over partial', () => {
+        const options = [{ text: 'State University' }, { text: 'State' }];
+        const m = H.bestOptionMatch(options, 'State');
+        assert.equal(m?.index, 1);
+        assert.equal(m?.score, 100);
+    });
+
+    it('matches on containment for combobox-filtered option lists', () => {
+        const options = [{ text: 'United States of America' }, { text: 'United Kingdom' }];
+        const m = H.bestOptionMatch(options, 'United States');
+        assert.equal(m?.index, 0);
+    });
+
+    it('returns null below the confidence threshold', () => {
+        const options = [{ text: 'Canada' }, { text: 'Mexico' }];
+        const m = H.bestOptionMatch(options, 'United States');
+        assert.equal(m, null);
+    });
+
+    it('returns null for an empty target', () => {
+        const options = [{ text: 'Canada' }];
+        assert.equal(H.bestOptionMatch(options, ''), null);
+    });
+});
+
 describe('valuesFromProfile', () => {
     it('builds degree from education', () => {
         const v = H.valuesFromProfile({
@@ -155,5 +181,54 @@ describe('valuesFromProfile', () => {
         assert.equal(v.degree, 'B.A. in Design');
         assert.equal(v.current_title, 'PM');
         assert.equal(v.skills, 'SQL, Figma');
+    });
+});
+
+describe('skills/degree/target_role/website rules', () => {
+    it('matches a skills field', () => {
+        assert.equal(bestKey({ name: 'skills', label: 'Skills' }), 'skills');
+    });
+    it('matches a degree field', () => {
+        assert.equal(bestKey({ name: 'degree', label: 'Degree' }), 'degree');
+    });
+    it('matches a desired-role field to target_role', () => {
+        assert.equal(bestKey({ name: 'desired_role', label: 'Desired role' }), 'target_role');
+    });
+    it('matches a portfolio/website field', () => {
+        assert.equal(bestKey({ name: 'website', label: 'Portfolio / Website' }), 'website');
+    });
+    it('does not match a LinkedIn field as website', () => {
+        assert.notEqual(bestKey({ name: 'linkedin_url', label: 'LinkedIn' }), 'website');
+    });
+});
+
+describe('full_name demotion', () => {
+    it('does not score full_name for a first-name-only field', () => {
+        assert.equal(H.scoreField(field({ name: 'firstName', label: 'First name' }), 'full_name'), 0);
+    });
+    it('still matches an explicit full-name field', () => {
+        assert.equal(bestKey({ name: 'full_name', label: 'Full name' }), 'full_name');
+    });
+});
+
+describe('location exclude override', () => {
+    it('excludes a real street-address field', () => {
+        assert.equal(bestKey({ name: 'address1', label: 'Street address' }), null);
+    });
+    it('does not exclude a city field just because "state" appears in its id', () => {
+        assert.equal(bestKey({ id: 'candidate_state_city', name: 'city', label: 'City' }), 'location');
+    });
+});
+
+describe('email/username score penalty', () => {
+    it('demotes a bare "username" field below the confidence threshold', () => {
+        assert.equal(H.scoreField(field({ name: 'username', label: 'Username (email)', type: 'text' }), 'email'), 0);
+    });
+    it('autocomplete=email overrides the username penalty', () => {
+        const score = H.scoreField(
+            field({ name: 'username', label: 'Username (email)', type: 'text', autocomplete: 'email' }),
+            'email',
+        );
+        assert.ok(score > 0);
     });
 });

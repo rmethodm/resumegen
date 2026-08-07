@@ -45,6 +45,9 @@ class BackupController extends Controller
 
     public function download(string $filename, DatabaseBackupService $backups): BinaryFileResponse
     {
+        // absolutePath() 404s on anything that fails assertValidFilename() —
+        // the route's ->where() regex is a second, redundant guard, not the
+        // only one.
         $path = $backups->absolutePath($filename);
 
         abort_unless(is_file($path), 404);

@@ -19,6 +19,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
     const disableForm = useForm({});
     const regenForm = useForm({});
     const [copied, setCopied] = useState(false);
+    const [copyFailed, setCopyFailed] = useState(false);
 
     const handleEnable: FormEventHandler = (e) => {
         e.preventDefault();
@@ -48,7 +49,10 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2000);
                 })
-                .catch(() => undefined);
+                .catch(() => {
+                    setCopyFailed(true);
+                    setTimeout(() => setCopyFailed(false), 2000);
+                });
         }
     };
 
@@ -125,7 +129,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                                 onClick={copyAll}
                                 className="text-sm text-brand underline hover:text-brand-accent"
                             >
-                                {copied ? 'Copied!' : 'Copy all'}
+                                {copyFailed ? "Couldn't copy" : copied ? 'Copied!' : 'Copy all'}
                             </button>
                         </div>
                     )}

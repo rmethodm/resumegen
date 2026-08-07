@@ -302,6 +302,7 @@ class ResumeController extends Controller
             'notes',
             'snapshots' => fn ($query) => $query->latest('id')->limit(20),
             'shareLink.views' => fn ($query) => $query->latest('id')->limit(50),
+            'group.resumes' => fn ($query) => $query->with(['experiences', 'skills'])->withCount('notes'),
         ]);
 
         $shareLink = $resume->shareLink;
@@ -328,10 +329,7 @@ class ResumeController extends Controller
             // One row per version in this group, current first via the id order
             // on ResumeGroup::resumes(). Score is the same general score shown
             // in the header badge, computed per sibling.
-            'versions' => $resume->group->resumes()
-                ->with(['experiences', 'skills'])
-                ->withCount('notes')
-                ->get()
+            'versions' => $resume->group->resumes
                 ->map(fn (Resume $version): array => [
                     'id' => $version->id,
                     'title' => $version->title,

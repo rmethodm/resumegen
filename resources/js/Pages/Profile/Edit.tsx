@@ -4,6 +4,7 @@ import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import ExtensionTokensForm from './Partials/ExtensionTokensForm';
+import MobileTokensForm from './Partials/MobileTokensForm';
 import TwoFactorForm from './Partials/TwoFactorForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
@@ -34,10 +35,30 @@ function PersonaForm({
         years_experience: persona.years_experience?.toString() ?? '',
         preferred_template: persona.preferred_template ?? '',
     });
+    const [status, setStatus] = React.useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+    const initial = React.useRef(true);
 
-    const save = () => {
-        router.patch(route('profile.persona'), data, { preserveScroll: true });
-    };
+    // Debounced autosave, matching the Workstation editor's pattern — but
+    // via router.patch, since profile.persona only accepts PATCH (the shared
+    // useAutosave hook is hardcoded to PUT).
+    React.useEffect(() => {
+        if (initial.current) {
+            initial.current = false;
+            return;
+        }
+
+        setStatus('saving');
+        const timer = setTimeout(() => {
+            router.patch(route('profile.persona'), data, {
+                preserveScroll: true,
+                onSuccess: () => setStatus('saved'),
+                onError: () => setStatus('error'),
+            });
+        }, 1000);
+
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
 
     const field = (label: string, key: keyof typeof data, type = 'text') => (
         <div>
@@ -47,37 +68,40 @@ function PersonaForm({
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm"
                 value={data[key]}
                 onChange={e => setData(prev => ({ ...prev, [key]: e.target.value }))}
-                onBlur={save}
             />
         </div>
     );
 
     return (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {field('Full Name', 'full_name')}
-            {field('Email', 'email', 'email')}
-            {field('Phone', 'phone', 'tel')}
-            {field('Location', 'location')}
-            {field('LinkedIn URL', 'linkedin_url', 'url')}
-            {field('Website', 'website', 'url')}
-            {field('Target Role', 'target_role')}
-            {field('Industry', 'industry')}
-            {field('Years of Experience', 'years_experience', 'number')}
-            <div>
-                <label className="block text-sm font-medium text-gray-700">Preferred Template</label>
-                <select
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm"
-                    value={data.preferred_template}
-                    onChange={e => {
-                        setData(prev => ({ ...prev, preferred_template: e.target.value }));
-                        setTimeout(save, 0);
-                    }}
-                >
-                    <option value="">No preference</option>
-                    {allowedTemplates.map(t => (
-                        <option key={t} value={t}>{t}</option>
-                    ))}
-                </select>
+        <div>
+            <div className="mb-3 h-4 text-xs font-medium">
+                {status === 'saving' && <span className="text-gray-400">Saving…</span>}
+                {status === 'saved' && <span className="text-emerald-600">Saved</span>}
+                {status === 'error' && <span className="text-red-600">Save failed — check the fields above.</span>}
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {field('Full Name', 'full_name')}
+                {field('Email', 'email', 'email')}
+                {field('Phone', 'phone', 'tel')}
+                {field('Location', 'location')}
+                {field('LinkedIn URL', 'linkedin_url', 'url')}
+                {field('Website', 'website', 'url')}
+                {field('Target Role', 'target_role')}
+                {field('Industry', 'industry')}
+                {field('Years of Experience', 'years_experience', 'number')}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Preferred Template</label>
+                    <select
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm"
+                        value={data.preferred_template}
+                        onChange={e => setData(prev => ({ ...prev, preferred_template: e.target.value }))}
+                    >
+                        <option value="">No preference</option>
+                        {allowedTemplates.map(t => (
+                            <option key={t} value={t}>{t}</option>
+                        ))}
+                    </select>
+                </div>
             </div>
         </div>
     );
@@ -92,6 +116,8 @@ export default function Edit({
     allowedTemplates,
     extensionTokens,
     extensionTokenPlain,
+    mobileTokens,
+    mobileTokenPlain,
 }: PageProps<{
     mustVerifyEmail: boolean;
     status?: string;
@@ -116,6 +142,13 @@ export default function Edit({
         created_at: string | null;
     }>;
     extensionTokenPlain: string | null;
+    mobileTokens: Array<{
+        id: number;
+        name: string;
+        last_used_at: string | null;
+        created_at: string | null;
+    }>;
+    mobileTokenPlain: string | null;
 }>) {
     return (
         <AuthenticatedLayout>
@@ -151,6 +184,14 @@ export default function Edit({
                         <ExtensionTokensForm
                             tokens={extensionTokens}
                             plainToken={extensionTokenPlain}
+                            className="max-w-xl"
+                        />
+                    </div>
+
+                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                        <MobileTokensForm
+                            tokens={mobileTokens}
+                            plainToken={mobileTokenPlain}
                             className="max-w-xl"
                         />
                     </div>
