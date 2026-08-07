@@ -48,7 +48,7 @@ export default function AdminLayout({
                                     'rounded-md px-3 py-1.5 text-sm font-medium transition ' +
                                     (item.active
                                         ? 'bg-white/15 text-white'
-                                        : 'text-slate-300 hover:bg-white/10 hover:text-white')
+                                        : 'text-slate-300 hover:bg-white/10 focus-visible:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1')
                                 }
                             >
                                 {item.label}
@@ -62,7 +62,7 @@ export default function AdminLayout({
                             href={route('logout')}
                             method="post"
                             as="button"
-                            className="rounded-md border border-white/20 px-2.5 py-1 font-medium text-white hover:bg-white/10"
+                            className="rounded-md border border-white/20 px-2.5 py-1 font-medium text-white hover:bg-white/10 focus-visible:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                         >
                             Log out
                         </Link>

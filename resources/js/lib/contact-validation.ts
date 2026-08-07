@@ -57,6 +57,23 @@ export function phoneError(value: string): string | null {
  * simple: the field is never in a state the validator has to reason about
  * beyond "how far through the shape is it".
  */
+/**
+ * Prepends https:// to a LinkedIn/website URL that's missing a scheme.
+ *
+ * Runs on blur rather than every keystroke (unlike `formatPhone`) — a URL
+ * prefix isn't safe to re-derive on a partial string, since backspacing
+ * through "https://" would just get it re-added mid-edit.
+ */
+export function formatUrl(value: string): string {
+    const trimmed = value.trim();
+
+    if (trimmed === '' || /^https?:\/\//i.test(trimmed)) {
+        return trimmed;
+    }
+
+    return `https://${trimmed}`;
+}
+
 export function formatPhone(value: string): string {
     let digits = value.replace(/\D/g, '');
 

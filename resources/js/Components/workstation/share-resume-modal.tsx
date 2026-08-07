@@ -203,7 +203,7 @@ export function ShareResumeModal({
     const viewCount = share?.view_count ?? 0;
 
     return (
-        <Dialog open={open} onClose={close} className="relative z-50">
+        <Dialog open={open} onClose={close} className="relative z-modal">
             <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
                 <DialogPanel className="flex max-h-[90vh] w-full max-w-md flex-col rounded-xl bg-white shadow-2xl">
@@ -475,7 +475,7 @@ function ShareToggleRow({
                 aria-label={label}
                 className={cn(
                     'relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50',
-                    enabled ? 'bg-brand' : 'bg-gray-200',
+                    enabled ? 'bg-accent-bg' : 'bg-gray-200',
                 )}
             >
                 <span

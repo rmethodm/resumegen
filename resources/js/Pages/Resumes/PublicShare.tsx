@@ -54,13 +54,13 @@ export default function PublicShare({
                         <>
                             <a
                                 href={route('share.docx', token)}
-                                className="inline-flex h-9 items-center justify-center rounded-md border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-surface"
+                                className="inline-flex h-9 items-center justify-center rounded-md border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                             >
                                 Download DOCX
                             </a>
                             <a
                                 href={route('share.pdf', token)}
-                                className="inline-flex h-9 items-center justify-center rounded-md bg-brand px-4 text-sm font-medium text-white shadow-sm hover:bg-brand-accent"
+                                className="inline-flex h-9 items-center justify-center rounded-md bg-accent-bg px-4 text-sm font-medium text-white shadow-sm hover:bg-accent-bg-active focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                             >
                                 Download PDF
                             </a>
@@ -182,7 +182,7 @@ function BrandMark({ size = 'sm' }: { size?: 'sm' | 'md' }) {
     return (
         <div className="flex items-center gap-2">
             <div
-                className={`${box} flex-shrink-0 rounded-md bg-gradient-to-br from-brand to-brand-accent`}
+                className={`${box} flex-shrink-0 rounded-md bg-gradient-to-br from-accent-500 to-accent-700`}
                 aria-hidden
             />
             <span className={`${type} font-extrabold tracking-tight text-gray-900`}>
@@ -199,7 +199,7 @@ function BrandFooter() {
                 Shared with{' '}
                 <a
                     href="/"
-                    className="font-medium text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline"
+                    className="font-medium text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                 >
                     Resumegen
                 </a>

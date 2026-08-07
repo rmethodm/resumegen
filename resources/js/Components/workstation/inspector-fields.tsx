@@ -1,4 +1,11 @@
-import { Bars3Icon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import {
+    ArrowDownIcon,
+    ArrowUpIcon,
+    Bars3Icon,
+    PlusIcon,
+    TrashIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/outline';
 import type { DragEvent, ReactNode } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Button } from '@/Components/ui/button';
@@ -35,7 +42,7 @@ function Bar({ w, dark = false }: { w: string; dark?: boolean }) {
         <span
             className={cn(
                 'h-1.5 rounded-full',
-                dark ? 'bg-gray-700/70' : 'bg-brand/30',
+                dark ? 'bg-gray-700/70' : 'bg-accent-bg/30',
             )}
             style={{ width: w }}
         />
@@ -157,6 +164,7 @@ export function Field({
     label,
     value,
     onChange,
+    onBlur,
     type = 'text',
     error = null,
     placeholder,
@@ -165,6 +173,8 @@ export function Field({
     label: string;
     value: string;
     onChange: (value: string) => void;
+    /** Fires after the built-in touched tracking, e.g. to normalize the value. */
+    onBlur?: () => void;
     type?: string;
     error?: string | null;
     placeholder?: string;
@@ -184,7 +194,10 @@ export function Field({
                 placeholder={placeholder}
                 maxLength={maxLength}
                 onChange={(event) => onChange(event.target.value)}
-                onBlur={() => setTouched(true)}
+                onBlur={() => {
+                    setTouched(true);
+                    onBlur?.();
+                }}
                 aria-invalid={show}
                 aria-describedby={show ? messageId : undefined}
             />
@@ -224,7 +237,7 @@ function PartSelect({
             disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
             className={cn(
-                'h-9 rounded-md border border-gray-300 bg-white px-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-50',
+                'h-9 rounded-md border border-gray-300 bg-white px-2 text-sm shadow-sm outline-none focus-visible:border-accent-500 focus-visible:ring-2 focus-visible:ring-border-focus/30 disabled:cursor-not-allowed disabled:opacity-50',
                 className,
             )}
         >
@@ -304,6 +317,9 @@ type EntryDragHandle = {
     onDragStart: () => void;
     onDragEnd: () => void;
     onDragOver: (event: DragEvent<HTMLDivElement>) => void;
+    /** Keyboard/tap alternative to dragging — undefined at a list boundary. */
+    onMoveUp?: () => void;
+    onMoveDown?: () => void;
 };
 
 /**
@@ -328,6 +344,12 @@ export function useEntryReorder<T>(
                 setDragging(index);
             }
         },
+        onMoveUp:
+            index > 0 ? () => onChange(reorder(list, index, index - 1)) : undefined,
+        onMoveDown:
+            index < list.length - 1
+                ? () => onChange(reorder(list, index, index + 1))
+                : undefined,
     });
 }
 
@@ -354,15 +376,37 @@ export function EntryCard({
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5">
                     {dragHandle && (
-                        <span
-                            draggable
-                            onDragStart={dragHandle.onDragStart}
-                            onDragEnd={dragHandle.onDragEnd}
-                            className="cursor-grab p-0.5 text-gray-500 active:cursor-grabbing"
-                            aria-label={`Reorder ${title}`}
-                        >
-                            <Bars3Icon className="size-3.5" />
-                        </span>
+                        <>
+                            <span
+                                draggable
+                                onDragStart={dragHandle.onDragStart}
+                                onDragEnd={dragHandle.onDragEnd}
+                                className="cursor-grab p-0.5 text-gray-500 active:cursor-grabbing"
+                                aria-label={`Reorder ${title}`}
+                            >
+                                <Bars3Icon className="size-3.5" />
+                            </span>
+                            <div className="flex flex-col gap-0.5">
+                                <button
+                                    type="button"
+                                    disabled={!dragHandle.onMoveUp}
+                                    onClick={dragHandle.onMoveUp}
+                                    aria-label={`Move ${title} up`}
+                                    className="p-0.5 text-gray-500 hover:text-gray-900 disabled:opacity-30"
+                                >
+                                    <ArrowUpIcon className="size-3" />
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={!dragHandle.onMoveDown}
+                                    onClick={dragHandle.onMoveDown}
+                                    aria-label={`Move ${title} down`}
+                                    className="p-0.5 text-gray-500 hover:text-gray-900 disabled:opacity-30"
+                                >
+                                    <ArrowDownIcon className="size-3" />
+                                </button>
+                            </div>
+                        </>
                     )}
                     <p className="text-[11px] font-bold tracking-[0.06em] text-gray-500 uppercase">
                         {title}
@@ -372,7 +416,13 @@ export function EntryCard({
                     variant="ghost"
                     size="icon"
                     aria-label={`Remove ${title}`}
-                    onClick={onRemove}
+                    onClick={() => {
+                        const onConfirm = onRemove;
+                        if (!window.confirm(`Remove ${title}?`)) {
+                            return;
+                        }
+                        onConfirm();
+                    }}
                     className="size-7 text-gray-500 hover:text-red-600"
                 >
                     <TrashIcon className="size-3.5" />
@@ -571,7 +621,7 @@ export function BulletsField({
                 <Label className="text-xs">{label}</Label>
                 <button
                     type="button"
-                    className="text-[11px] font-semibold text-brand hover:text-brand-accent"
+                    className="text-[11px] font-semibold text-accent-text hover:text-accent-700"
                     onClick={() => setBulkOpen((open) => !open)}
                 >
                     {bulkOpen ? 'Cancel paste' : 'Paste many'}
@@ -586,7 +636,7 @@ export function BulletsField({
                         placeholder={
                             'Paste bullets — one per line\n• Shipped feature X\n- Reduced costs by 20%'
                         }
-                        className="w-full resize-y rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30"
+                        className="w-full resize-y rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm shadow-sm outline-none focus-visible:border-accent-500 focus-visible:ring-2 focus-visible:ring-border-focus/30"
                     />
                     <Button
                         type="button"
@@ -690,7 +740,7 @@ export function BulletsField({
                                     ? `AI rewrite (${aiRemaining} left this month)`
                                     : 'AI rewrite'
                             }
-                            className="shrink-0 px-1 text-[10px] font-semibold text-brand hover:underline disabled:opacity-50"
+                            className="shrink-0 px-1 text-[10px] font-semibold text-accent-text hover:underline disabled:opacity-50"
                         >
                             AI
                         </button>
@@ -699,7 +749,16 @@ export function BulletsField({
                         variant="ghost"
                         size="icon"
                         className="size-7 text-gray-500"
-                        onClick={() => removeAt(index)}
+                        onClick={() => {
+                            const onConfirm = () => removeAt(index);
+                            if (
+                                bullet.trim() !== '' &&
+                                !window.confirm('Remove this bullet?')
+                            ) {
+                                return;
+                            }
+                            onConfirm();
+                        }}
                         aria-label="Remove bullet"
                     >
                         <XMarkIcon className="size-3.5" />

@@ -33,7 +33,7 @@ export function TemplatePickerModal({
         previewHeadline.trim() !== '' ? previewHeadline.trim() : 'Professional headline';
 
     return (
-        <Dialog open={open} onClose={() => onOpenChange(false)} className="relative z-50">
+        <Dialog open={open} onClose={() => onOpenChange(false)} className="relative z-modal">
             <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
                 <DialogPanel className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl bg-white shadow-2xl">
@@ -62,8 +62,8 @@ export function TemplatePickerModal({
                                     className={cn(
                                         'flex flex-col gap-1.5 rounded-lg border p-2 text-left transition-colors',
                                         selected
-                                            ? 'border-brand ring-2 ring-brand/30'
-                                            : 'border-gray-200 hover:border-gray-300',
+                                            ? 'border-accent-500 ring-2 ring-border-focus/30'
+                                            : 'border-gray-200 hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1',
                                     )}
                                 >
                                     <div
@@ -133,7 +133,7 @@ export function TemplatePickerModal({
                                             </div>
                                         </div>
                                         {selected && (
-                                            <span className="absolute top-1 right-1 rounded-full bg-brand p-0.5 text-white">
+                                            <span className="absolute top-1 right-1 rounded-full bg-accent-bg p-0.5 text-white">
                                                 <CheckIcon className="size-2.5" />
                                             </span>
                                         )}
@@ -150,7 +150,7 @@ export function TemplatePickerModal({
                         <button
                             type="button"
                             onClick={() => onOpenChange(false)}
-                            className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800"
+                            className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                         >
                             Done
                         </button>

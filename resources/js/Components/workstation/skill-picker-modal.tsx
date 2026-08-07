@@ -123,7 +123,7 @@ export function SkillPickerModal({
                                 className={cn(
                                     'rounded-lg px-2.5 py-2 text-left text-xs font-semibold',
                                     (activeCategory?.category ?? '') === group.category
-                                        ? 'bg-brand-subtle text-brand'
+                                        ? 'bg-accent-100 text-accent-text'
                                         : 'text-gray-500 hover:bg-gray-50',
                                 )}
                             >
@@ -155,8 +155,8 @@ export function SkillPickerModal({
                                                 added
                                                     ? 'cursor-not-allowed border border-gray-200 bg-gray-50 text-gray-400'
                                                     : selected
-                                                      ? 'bg-brand text-white'
-                                                      : 'border border-gray-200 text-gray-900 hover:border-brand/40',
+                                                      ? 'bg-accent-bg text-white'
+                                                      : 'border border-gray-200 text-gray-900 hover:border-accent-500/40',
                                             )}
                                         >
                                             {added ? '✓' : selected ? '✓' : '+'} {name}
@@ -177,7 +177,7 @@ export function SkillPickerModal({
     const totalSkills = library.reduce((sum, group) => sum + group.skills.length, 0);
 
     return (
-        <Dialog open={open} onClose={close} className="relative z-50">
+        <Dialog open={open} onClose={close} className="relative z-modal">
             <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
                 <DialogPanel className="flex max-h-[700px] w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
@@ -204,10 +204,10 @@ export function SkillPickerModal({
 
                     <TabGroup className="flex min-h-0 flex-1 flex-col">
                         <TabList className="flex gap-4 border-b border-gray-200 px-6 pt-3.5">
-                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-brand data-selected:text-brand">
+                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 data-selected:border-accent-500 data-selected:text-accent-text">
                                 Soft skills
                             </Tab>
-                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-brand data-selected:text-brand">
+                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 data-selected:border-accent-500 data-selected:text-accent-text">
                                 Hard skills
                             </Tab>
                         </TabList>

@@ -87,8 +87,17 @@ export default function BulletEditor({ bullets, onChange, onBlur }: Props) {
                     />
                     <button
                         type="button"
-                        onClick={() => deleteBullet(idx)}
-                        className="mt-[6px] text-gray-300 hover:text-red-500 transition-colors"
+                        onClick={() => {
+                            const onConfirm = () => deleteBullet(idx);
+                            if (
+                                rows[idx].trim() !== '' &&
+                                !window.confirm('Delete this bullet?')
+                            ) {
+                                return;
+                            }
+                            onConfirm();
+                        }}
+                        className="mt-[6px] text-gray-300 transition-colors hover:text-red-500 focus:outline-none focus-visible:text-red-500 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
                         tabIndex={-1}
                         aria-label="Delete bullet"
                     >

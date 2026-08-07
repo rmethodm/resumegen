@@ -1,14 +1,14 @@
-# Resumegen Context
+# Context
 
 ## Current Task
-Resumegen Apply browser extension: form-fill MVP + ATS heuristics shipped; user validating load-unpacked.
+ui-craft design pass finished — whole-app detector clean; token spine extended.
 
 ## Key Decisions
-- Apply = Chrome/Edge MV3 side panel + Sanctum `/api/extension/*` (not iframes).
-- Empty-only bulk fill; insert chips need focus; never auto-submit.
-- Field matching is scored heuristics (`fill-heuristics.js`), not full AI.
+- Shared buttons/focus: `focus-visible` rings + semantic tokens; destructive deletes use `window.confirm` + `onConfirm`
+- `surface-card` for static elevated UI; `surface-overlay` for real modals only
+- Status colors dark-remapped; radii/z/shadow tokens + gray/accent ramps; legacy `brand`/`ink` frozen
 
 ## Next Steps
-- Optional: one-click connect (vs paste token); multi-step Workday QA.
-- Optional later: job-radar (scroll-detect listings, match to resume) — product decision, not started.
-- Push local commits when ready (`main` ahead of origin).
+- Rebuild assets if needed (`npm run build` / HMR)
+- Optional: commit/push this design batch
+- Optional later: component-layer tokens, reduced-motion contract, per-surface finalize

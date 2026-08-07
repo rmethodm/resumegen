@@ -70,7 +70,7 @@ export default function Show({
                     <div>
                         <Link
                             href={route('admin.users.index')}
-                            className="text-xs font-medium text-indigo-600 hover:underline"
+                            className="text-xs font-medium text-indigo-600 hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                         >
                             ← Users
                         </Link>
@@ -83,14 +83,14 @@ export default function Show({
                                 <button
                                     type="button"
                                     onClick={() => postAction('admin.users.verify-email')}
-                                    className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-500"
+                                    className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                                 >
                                     Verify email
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => postAction('admin.users.resend-verification')}
-                                    className="rounded-lg border border-emerald-300 bg-white px-3 py-1.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-50"
+                                    className="rounded-lg border border-emerald-300 bg-white px-3 py-1.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                                 >
                                     Resend verification
                                 </button>
@@ -100,7 +100,7 @@ export default function Show({
                             <button
                                 type="button"
                                 onClick={() => postAction('admin.users.enable')}
-                                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-500"
+                                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                             >
                                 Enable login
                             </button>
@@ -113,7 +113,7 @@ export default function Show({
                                         `Disable login for ${user.email}? Data will be kept.`,
                                     )
                                 }
-                                className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-500"
+                                className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
                             >
                                 Disable login
                             </button>
@@ -126,7 +126,7 @@ export default function Show({
                                     `Revoke all API tokens for ${user.email}?`,
                                 )
                             }
-                            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 focus-visible:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                         >
                             Revoke tokens
                         </button>

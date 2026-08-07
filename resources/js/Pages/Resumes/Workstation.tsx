@@ -54,9 +54,9 @@ import type {
 
 function focusAndFlash(element: HTMLElement): void {
     element.focus();
-    element.classList.add('ring-2', 'ring-brand', 'ring-offset-1');
+    element.classList.add('ring-2', 'ring-border-focus', 'ring-offset-1');
     window.setTimeout(() => {
-        element.classList.remove('ring-2', 'ring-brand', 'ring-offset-1');
+        element.classList.remove('ring-2', 'ring-border-focus', 'ring-offset-1');
     }, 1500);
 }
 
@@ -514,7 +514,7 @@ export default function Workstation({
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="flex items-center gap-1 text-[11px] font-bold tracking-[0.15em] text-brand uppercase"
+                                    className="flex items-center gap-1 text-[11px] font-semibold tracking-tight text-text-secondary"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
@@ -535,7 +535,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 px-2 text-xs text-gray-500 hover:text-red-600"
+                                            className="h-8 px-2 text-xs text-gray-500 hover:text-red-600 focus-visible:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
                                             onClick={() =>
                                                 hideSection(sectionKey)
                                             }
@@ -543,7 +543,7 @@ export default function Workstation({
                                             Hide section
                                         </Button>
                                     )}
-                                    <div className="flex items-center gap-1 sm:hidden">
+                                    <div className="flex items-center gap-1">
                                         <Button
                                             type="button"
                                             variant="ghost"
@@ -615,6 +615,7 @@ export default function Workstation({
             <div className="flex flex-col bg-gray-50">
                 {(offline || saveStatus === 'error') && (
                     <div
+                        role="alert"
                         className={cn(
                             'flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2 text-sm',
                             conflict
@@ -777,7 +778,7 @@ export default function Workstation({
                                 onClick={() =>
                                     setShowSideTools((open) => !open)
                                 }
-                                className="self-start text-xs font-semibold text-brand hover:underline"
+                                className="self-start text-xs font-semibold text-accent-text hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                             >
                                 {showSideTools ? 'Hide' : 'Show'} notes &
                                 checkpoints

@@ -26,7 +26,7 @@ export default function Dashboard({
                     </div>
                     <Link
                         href={route('admin.users.index')}
-                        className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+                        className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                     >
                         Browse users
                     </Link>

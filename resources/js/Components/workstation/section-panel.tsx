@@ -171,8 +171,76 @@ export function SectionPanel({
                 Back to dashboard
             </Link>
 
-            <div className="rounded-lg border border-surface-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                <div className="text-center">
+            <div className="rounded-lg border border-border-subtle bg-surface-card p-4 shadow-sm">
+                <p className="mb-2 px-1 text-xs font-medium text-text-tertiary">
+                    Resume sections
+                </p>
+                <ul className="space-y-1">
+                    {resume.section_order.map((section) => (
+                        <li key={section}>
+                            <button
+                                type="button"
+                                onClick={() => onSelect(section)}
+                                aria-current={selected === section}
+                                className={cn(
+                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-colors',
+                                    selected === section
+                                        ? 'border-accent-bg bg-surface-sunken font-medium text-text-primary'
+                                        : 'border-transparent text-text-primary hover:bg-surface-raised',
+                                )}
+                            >
+                                <span>{sectionLabels[section]}</span>
+                                <span className="text-xs text-text-tertiary">
+                                    {sectionSummary(resume, section)}
+                                </span>
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+                {/* Direct buttons (not a dropdown): the rail scrolls with
+                    overflow-y-auto, which clipped absolute MenuItems so
+                    hidden sections looked permanently gone. */}
+                {addable.length === 0 ? (
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 w-full"
+                        disabled
+                        title="All available sections are already on this resume."
+                    >
+                        + Add section
+                    </Button>
+                ) : (
+                    <div className="mt-2 flex flex-col gap-1">
+                        <p className="px-1 text-[10px] font-medium text-text-tertiary">
+                            Hidden sections
+                        </p>
+                        {addable.map((section) => (
+                            <button
+                                key={section}
+                                type="button"
+                                onClick={() => onAddSection(section)}
+                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-border-default bg-surface-card px-2 py-1.5 text-left text-sm text-text-secondary transition-colors hover:border-border-focus hover:bg-surface-raised hover:text-text-primary"
+                            >
+                                <PlusIcon className="size-3.5 shrink-0" />
+                                {sectionLabels[section]}
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Score/coaching grouped under one disclosure so the section
+                nav above isn't buried behind five stacked widgets. */}
+            <details
+                open
+                className="rounded-lg border border-border-subtle bg-surface-card p-4 shadow-sm"
+            >
+                <summary className="cursor-pointer text-xs font-medium text-text-tertiary [&::-webkit-details-marker]:hidden">
+                    Score &amp; coaching
+                </summary>
+
+                <div className="mt-3 text-center">
                     <p className="mb-2 text-sm font-medium text-gray-500">
                         Your resume score
                     </p>
@@ -192,9 +260,9 @@ export function SectionPanel({
                                 type="button"
                                 onClick={() => jumpBand(band.label)}
                                 title={`Fix ${band.label} — jump to next step`}
-                                className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-brand-subtle/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
+                                className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-accent-100/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent-500"
                             >
-                                <div className="flex justify-between text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                                <div className="flex justify-between text-[10px] font-medium text-text-tertiary">
                                     <span>{band.label}</span>
                                     <span className="tabular-nums">
                                         {band.score}
@@ -203,11 +271,11 @@ export function SectionPanel({
                                         </span>
                                     </span>
                                 </div>
-                                <div className="h-1.5 rounded-full bg-gray-100">
+                                <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
                                     <div
-                                        className="h-full rounded-full bg-brand transition-[width] duration-200"
+                                        className="h-full w-full origin-left rounded-full bg-accent-bg transition-transform duration-200"
                                         style={{
-                                            width: `${(band.score / 25) * 100}%`,
+                                            transform: `scaleX(${Math.max(0, Math.min(1, band.score / 25))})`,
                                         }}
                                     />
                                 </div>
@@ -239,64 +307,7 @@ export function SectionPanel({
                     onApply={onApplySuggestion}
                     onSelect={onSelectSuggestion}
                 />
-
-                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
-                    Resume sections
-                </p>
-                <ul className="space-y-1">
-                    {resume.section_order.map((section) => (
-                        <li key={section}>
-                            <button
-                                type="button"
-                                onClick={() => onSelect(section)}
-                                aria-current={selected === section}
-                                className={cn(
-                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-colors',
-                                    selected === section
-                                        ? 'border-brand bg-brand-subtle font-medium text-brand'
-                                        : 'border-transparent text-gray-900 hover:bg-gray-100',
-                                )}
-                            >
-                                <span>{sectionLabels[section]}</span>
-                                <span className="text-xs text-gray-500">
-                                    {sectionSummary(resume, section)}
-                                </span>
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-                {/* Direct buttons (not a dropdown): the rail scrolls with
-                    overflow-y-auto, which clipped absolute MenuItems so
-                    hidden sections looked permanently gone. */}
-                {addable.length === 0 ? (
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="mt-2 w-full"
-                        disabled
-                        title="All available sections are already on this resume."
-                    >
-                        + Add section
-                    </Button>
-                ) : (
-                    <div className="mt-2 flex flex-col gap-1">
-                        <p className="px-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
-                            Hidden sections
-                        </p>
-                        {addable.map((section) => (
-                            <button
-                                key={section}
-                                type="button"
-                                onClick={() => onAddSection(section)}
-                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-gray-300 bg-white px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:border-brand hover:bg-brand-subtle hover:text-brand"
-                            >
-                                <PlusIcon className="size-3.5 shrink-0" />
-                                {sectionLabels[section]}
-                            </button>
-                        ))}
-                    </div>
-                )}
-            </div>
+            </details>
         </aside>
     );
 }

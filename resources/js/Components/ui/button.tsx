@@ -5,12 +5,13 @@ type Variant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | '
 type Size = 'default' | 'sm' | 'lg' | 'icon';
 
 const variantClassNames: Record<Variant, string> = {
-    default: 'bg-brand text-white shadow-sm hover:bg-brand-accent',
+    default: 'bg-accent-bg text-text-on-accent shadow-sm hover:bg-accent-bg-hover',
     destructive: 'bg-red-600 text-white shadow-sm hover:bg-red-500',
-    outline: 'border border-gray-300 bg-white shadow-sm hover:bg-gray-50',
-    secondary: 'bg-gray-100 text-gray-900 shadow-sm hover:bg-gray-200',
-    ghost: 'hover:bg-gray-100',
-    link: 'text-brand underline-offset-4 hover:underline',
+    outline:
+        'border border-border-default bg-surface-card text-text-primary shadow-sm hover:bg-surface-raised',
+    secondary: 'bg-surface-raised text-text-primary shadow-sm hover:bg-surface-sunken',
+    ghost: 'text-text-secondary hover:bg-surface-raised hover:text-text-primary',
+    link: 'text-accent-text underline-offset-4 hover:underline',
 };
 
 const sizeClassNames: Record<Size, string> = {
@@ -22,7 +23,7 @@ const sizeClassNames: Record<Size, string> = {
 
 export function buttonClassName(variant: Variant = 'default', size: Size = 'default', className?: string) {
     return cn(
-        'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
+        'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
         variantClassNames[variant],
         sizeClassNames[size],
         className,
