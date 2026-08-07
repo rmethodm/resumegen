@@ -145,34 +145,36 @@ export function WorkstationHeader({
                             }}
                         />
                     ) : (
-                        <span className="truncate text-base font-bold text-ink">
+                        <span className="truncate text-base font-bold text-text-primary">
                             {title || 'Untitled resume'}
                         </span>
                     )}
 
-                    {showSaved && saveStatus === 'saved' && (
-                        <Badge
-                            variant="outline"
-                            className="border-transparent bg-emerald-50 text-emerald-600"
-                        >
-                            <CheckIcon className="size-3" />
-                            Saved
-                        </Badge>
-                    )}
-                    {saveStatus === 'saving' && (
-                        <Badge
-                            variant="outline"
-                            className="border-transparent bg-gray-100 text-gray-500"
-                        >
-                            <ArrowPathIcon className="size-3 animate-spin" />
-                            Saving
-                        </Badge>
-                    )}
+                    <div role="status" aria-live="polite">
+                        {showSaved && saveStatus === 'saved' && (
+                            <Badge
+                                variant="outline"
+                                className="border-transparent bg-emerald-50 text-emerald-600"
+                            >
+                                <CheckIcon className="size-3" />
+                                Saved
+                            </Badge>
+                        )}
+                        {saveStatus === 'saving' && (
+                            <Badge
+                                variant="outline"
+                                className="border-transparent bg-gray-100 text-gray-500"
+                            >
+                                <ArrowPathIcon className="size-3 animate-spin" />
+                                Saving
+                            </Badge>
+                        )}
+                    </div>
                     {(contactErrors.email !== null || contactErrors.phone !== null) && (
                         <button
                             type="button"
                             onClick={onFixContact}
-                            className="inline-flex items-center gap-1 rounded-full border border-transparent bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600 hover:underline"
+                            className="inline-flex items-center gap-1 rounded-full border border-transparent bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1 focus-visible:underline"
                         >
                             <ExclamationTriangleIcon className="size-3" />
                             {contactErrors.email !== null && contactErrors.phone !== null
@@ -198,10 +200,10 @@ export function WorkstationHeader({
                             aria-selected={tab === activeTab}
                             onClick={() => onTabChange(tab)}
                             className={cn(
-                                'rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors',
+                                'rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
                                 tab === activeTab
-                                    ? 'bg-white font-semibold text-brand shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700',
+                                    ? 'bg-white font-semibold text-accent-text shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700 focus-visible:text-gray-700',
                             )}
                         >
                             {tab}
@@ -229,7 +231,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                            className="z-dropdown w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                         >
                             <MenuItem>
                                 <button
@@ -281,7 +283,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                            className="z-dropdown max-h-80 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                         >
                             <MenuItem>
                                 <button
@@ -309,7 +311,7 @@ export function WorkstationHeader({
                                                 className={cn(
                                                     'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100',
                                                     version.is_current &&
-                                                        'font-semibold text-brand',
+                                                        'font-semibold text-accent-text',
                                                 )}
                                             >
                                                 <span className="truncate">
@@ -361,10 +363,10 @@ export function WorkstationHeader({
                         type="button"
                         onClick={() => onReviewPreviewModeChange('react')}
                         className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium',
+                            'rounded-md px-2 py-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
                             reviewPreviewMode === 'react'
-                                ? 'bg-brand-subtle text-brand'
-                                : 'text-gray-500 hover:bg-gray-100',
+                                ? 'bg-accent-100 text-accent-text'
+                                : 'text-gray-500 hover:bg-gray-100 focus-visible:bg-gray-100',
                         )}
                     >
                         Live
@@ -373,10 +375,10 @@ export function WorkstationHeader({
                         type="button"
                         onClick={() => onReviewPreviewModeChange('pdf')}
                         className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium',
+                            'rounded-md px-2 py-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
                             reviewPreviewMode === 'pdf'
-                                ? 'bg-brand-subtle text-brand'
-                                : 'text-gray-500 hover:bg-gray-100',
+                                ? 'bg-accent-100 text-accent-text'
+                                : 'text-gray-500 hover:bg-gray-100 focus-visible:bg-gray-100',
                         )}
                     >
                         PDF

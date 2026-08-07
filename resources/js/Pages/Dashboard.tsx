@@ -102,15 +102,15 @@ function ShareStatus({
                 compact ? 'text-[10px]' : 'text-[11px]',
             )}
         >
-            <ShareIcon className={cn('shrink-0 text-brand', compact ? 'size-3' : 'size-3.5')} />
+            <ShareIcon className={cn('shrink-0 text-accent-bg', compact ? 'size-3' : 'size-3.5')} />
             <button
                 type="button"
                 onClick={onOpenShare}
-                className="truncate font-medium text-gray-700 underline-offset-2 hover:text-brand hover:underline"
+                className="truncate font-medium text-text-secondary underline-offset-2 hover:text-accent-bg hover:underline"
             >
                 Shared
             </button>
-            <span className="truncate text-gray-500">· {viewsLabel}</span>
+            <span className="truncate text-text-tertiary">· {viewsLabel}</span>
             {share.require_password && (
                 <LockClosedIcon
                     className={cn('shrink-0 text-gray-400', compact ? 'size-3' : 'size-3.5')}
@@ -128,7 +128,7 @@ function ShareStatus({
             <button
                 type="button"
                 onClick={copyLink}
-                className="inline-flex shrink-0 items-center gap-0.5 rounded px-1 py-0.5 font-medium text-brand hover:bg-brand/5"
+                className="inline-flex shrink-0 items-center gap-0.5 rounded px-1 py-0.5 font-medium text-accent-bg hover:bg-surface-sunken"
                 title="Copy share link"
             >
                 <ClipboardDocumentIcon className={compact ? 'size-3' : 'size-3.5'} />
@@ -154,20 +154,12 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
     const alreadyShared = resume.share !== null;
 
     function deleteGroup() {
-        if (!confirm(`Delete "${resume.title}"? This can't be undone.`)) {
-            return;
-        }
-
         router.delete(route('resume-groups.destroy', resume.group_id), {
             preserveScroll: true,
         });
     }
 
-    function deleteVersion(versionId: number, title: string) {
-        if (!confirm(`Delete "${title}"? This can't be undone.`)) {
-            return;
-        }
-
+    function deleteVersion(versionId: number) {
         router.delete(route('resumes.destroy', versionId), {
             preserveScroll: true,
         });
@@ -187,134 +179,164 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
 
     return (
         <Card className="p-0">
-            <div className="flex items-center gap-4 p-4">
-                <ScoreDial score={resume.score} size={48} />
-                <div className="min-w-0 flex-1">
-                    <Link
-                        href={route('resumes.workstation', resume.id)}
-                        className="truncate text-sm font-semibold text-gray-900 hover:text-brand"
-                    >
-                        {resume.title}
-                    </Link>
-                    <p className="mt-0.5 truncate text-xs text-gray-500">
-                        {resume.target_role || 'No target role set'}
-                        {resume.updated_at && ` · Updated ${resume.updated_at}`}
-                    </p>
-                    <div className="mt-1">
-                        <ShareStatus
-                            share={resume.share}
-                            onOpenShare={() => setShareModalResumeId(resume.id)}
-                        />
-                    </div>
-                </div>
-                <Menu as="div" className="relative">
-                    <MenuButton className={buttonClassName('outline', 'sm')}>
-                        Download
-                        <ChevronDownIcon className="size-3.5" />
-                    </MenuButton>
-                    <MenuItems
-                        anchor="bottom end"
-                        className="z-50 w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
-                    >
-                        <MenuItem>
-                            <a
-                                href={route('resumes.download', resume.id)}
-                                className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
-                            >
-                                Download PDF
-                            </a>
-                        </MenuItem>
-                        <MenuItem>
-                            <a
-                                href={route('resumes.download-docx', resume.id)}
-                                className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
-                            >
-                                Download DOCX
-                            </a>
-                        </MenuItem>
-                    </MenuItems>
-                </Menu>
-                <Link
-                    href={route('resumes.workstation', resume.id)}
-                    className={buttonClassName('default', 'sm')}
-                >
-                    Open
-                </Link>
-                <Menu as="div" className="relative">
-                    <MenuButton
-                        aria-label={`Actions for ${resume.title}`}
-                        className="p-1 text-gray-500 hover:text-gray-900"
-                    >
-                        <EllipsisVerticalIcon className="size-5" />
-                    </MenuButton>
-                    <MenuItems
-                        anchor="bottom end"
-                        className="z-50 w-56 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
-                    >
-                        <MenuItem>
-                            <button
-                                type="button"
-                                disabled={alreadyShared}
-                                onClick={() => setShareModalResumeId(resume.id)}
-                                title={
-                                    alreadyShared
-                                        ? 'This resume already has a share link'
-                                        : 'Create a share link'
-                                }
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
-                            >
-                                <ShareIcon className="size-4" />
-                                Share
-                            </button>
-                        </MenuItem>
-                        {hasVersions && (
-                            <MenuItem>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        router.get(
-                                            route('resume-groups.compare', resume.group_id),
-                                        )
-                                    }
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
-                                >
-                                    <ArrowsRightLeftIcon className="size-4" />
-                                    Compare versions
-                                </button>
-                            </MenuItem>
-                        )}
-                        {!hasVersions && (
-                            <MenuItem>
-                                <button
-                                    type="button"
-                                    onClick={deleteGroup}
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-red-600 data-focus:bg-red-50"
-                                >
-                                    <TrashIcon className="size-4" />
-                                    Delete resume
-                                </button>
-                            </MenuItem>
-                        )}
-                        <div className="my-1 border-t border-gray-200" />
-                        <div className="px-2 py-1.5">
-                            <p className="mb-1 text-[10px] font-semibold text-gray-500 uppercase">
-                                Rename
-                            </p>
-                            <input
-                                aria-label="Resume name"
-                                defaultValue={resume.title}
-                                maxLength={255}
-                                onBlur={(event) => renameGroup(event.target.value)}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
-                                        event.currentTarget.blur();
-                                    }
-                                }}
-                                className="w-full rounded border border-gray-300 px-2 py-1 text-xs"
+            <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
+                <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
+                    <ScoreDial score={resume.score} size={48} />
+                    <div className="min-w-0 flex-1">
+                        <Link
+                            href={route('resumes.workstation', resume.id)}
+                            className="block truncate text-sm font-semibold text-text-primary hover:text-accent-bg"
+                        >
+                            {resume.title}
+                        </Link>
+                        <p className="mt-0.5 truncate text-xs text-text-secondary">
+                            {resume.target_role || 'No target role set'}
+                            {resume.updated_at && ` · Updated ${resume.updated_at}`}
+                        </p>
+                        <div className="mt-1">
+                            <ShareStatus
+                                share={resume.share}
+                                onOpenShare={() => setShareModalResumeId(resume.id)}
                             />
                         </div>
-                    </MenuItems>
-                </Menu>
+                    </div>
+                </div>
+                <div className="flex shrink-0 items-center justify-end gap-2 sm:justify-start">
+                    <Menu as="div" className="relative hidden sm:block">
+                        <MenuButton className={buttonClassName('outline', 'sm')}>
+                            Download
+                            <ChevronDownIcon className="size-3.5" />
+                        </MenuButton>
+                        <MenuItems
+                            anchor="bottom end"
+                            className="z-dropdown w-44 rounded-md border border-border-subtle bg-surface-card p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                        >
+                            <MenuItem>
+                                <a
+                                    href={route('resumes.download', resume.id)}
+                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface-raised"
+                                >
+                                    Download PDF
+                                </a>
+                            </MenuItem>
+                            <MenuItem>
+                                <a
+                                    href={route('resumes.download-docx', resume.id)}
+                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface-raised"
+                                >
+                                    Download DOCX
+                                </a>
+                            </MenuItem>
+                        </MenuItems>
+                    </Menu>
+                    <Link
+                        href={route('resumes.workstation', resume.id)}
+                        className={buttonClassName('default', 'sm')}
+                    >
+                        Open
+                    </Link>
+                    <Menu as="div" className="relative">
+                        <MenuButton
+                            aria-label={`Actions for ${resume.title}`}
+                            className="rounded-md p-1 text-text-secondary hover:text-text-primary"
+                        >
+                            <EllipsisVerticalIcon className="size-5" />
+                        </MenuButton>
+                        <MenuItems
+                            anchor="bottom end"
+                            className="z-dropdown w-56 rounded-md border border-border-subtle bg-surface-card p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                        >
+                            <MenuItem>
+                                <a
+                                    href={route('resumes.download', resume.id)}
+                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface-raised sm:hidden"
+                                >
+                                    Download PDF
+                                </a>
+                            </MenuItem>
+                            <MenuItem>
+                                <a
+                                    href={route('resumes.download-docx', resume.id)}
+                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface-raised sm:hidden"
+                                >
+                                    Download DOCX
+                                </a>
+                            </MenuItem>
+                            <MenuItem>
+                                <button
+                                    type="button"
+                                    disabled={alreadyShared}
+                                    onClick={() => setShareModalResumeId(resume.id)}
+                                    title={
+                                        alreadyShared
+                                            ? 'This resume already has a share link'
+                                            : 'Create a share link'
+                                    }
+                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
+                                >
+                                    <ShareIcon className="size-4" />
+                                    Share
+                                </button>
+                            </MenuItem>
+                            {hasVersions && (
+                                <MenuItem>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            router.get(
+                                                route('resume-groups.compare', resume.group_id),
+                                            )
+                                        }
+                                        className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface-raised"
+                                    >
+                                        <ArrowsRightLeftIcon className="size-4" />
+                                        Compare versions
+                                    </button>
+                                </MenuItem>
+                            )}
+                            {!hasVersions && (
+                                <MenuItem>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const onConfirm = deleteGroup;
+                                            if (
+                                                !window.confirm(
+                                                    `Delete "${resume.title}"? This can't be undone.`,
+                                                )
+                                            ) {
+                                                return;
+                                            }
+                                            onConfirm();
+                                        }}
+                                        className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-error-text data-focus:bg-error-bg"
+                                    >
+                                        <TrashIcon className="size-4" />
+                                        Delete resume
+                                    </button>
+                                </MenuItem>
+                            )}
+                            <div className="my-1 border-t border-border-subtle" />
+                            <div className="px-2 py-1.5">
+                                <p className="mb-1 text-[11px] font-medium text-text-tertiary">
+                                    Rename
+                                </p>
+                                <input
+                                    aria-label="Resume name"
+                                    defaultValue={resume.title}
+                                    maxLength={255}
+                                    onBlur={(event) => renameGroup(event.target.value)}
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter') {
+                                            event.currentTarget.blur();
+                                        }
+                                    }}
+                                    className="w-full rounded-md border border-border-default bg-surface-canvas px-2 py-1 text-xs text-text-primary focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30"
+                                />
+                            </div>
+                        </MenuItems>
+                    </Menu>
+                </div>
             </div>
 
             {hasVersions && (
@@ -371,9 +393,20 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                     <button
                                         type="button"
                                         disabled={version.is_base}
-                                        onClick={() => deleteVersion(version.id, version.title)}
+                                        onClick={() => {
+                                            const onConfirm = () =>
+                                                deleteVersion(version.id);
+                                            if (
+                                                !window.confirm(
+                                                    `Delete "${version.title}"? This can't be undone.`,
+                                                )
+                                            ) {
+                                                return;
+                                            }
+                                            onConfirm();
+                                        }}
                                         aria-label={`Delete ${version.title}`}
-                                        className="text-gray-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="text-gray-400 hover:text-red-600 focus:outline-none focus-visible:text-red-600 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         <TrashIcon className="size-4" />
                                     </button>
@@ -430,12 +463,12 @@ export default function Dashboard({
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                     <Card className="gap-6 p-6">
                         {!hasStarterProfile && (
-                            <div className="flex flex-col gap-3 rounded-md border border-brand-subtle bg-brand-subtle/60 p-5 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex flex-col gap-3 rounded-md border border-border-subtle bg-surface-raised p-5 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
-                                    <p className="text-sm font-bold">
+                                    <p className="text-sm font-semibold text-text-primary">
                                         Set up your starter profile
                                     </p>
-                                    <p className="mt-1 text-sm text-gray-500">
+                                    <p className="mt-1 text-sm text-text-secondary">
                                         Fill it in once and every new resume
                                         starts pre-filled.
                                     </p>
@@ -449,13 +482,13 @@ export default function Dashboard({
                             </div>
                         )}
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
-                                <p className="text-[10px] font-bold tracking-[0.06em] text-gray-500 uppercase">
+                                <p className="text-xs font-medium text-text-tertiary">
                                     Your resumes
                                 </p>
                                 {average_score !== null && (
-                                    <p className="mt-1 text-sm text-gray-500">
+                                    <p className="mt-1 text-sm tabular-nums text-text-secondary">
                                         Average score: {average_score}/100
                                     </p>
                                 )}
@@ -467,7 +500,7 @@ export default function Dashboard({
                         </div>
 
                         {resumes.length === 0 ? (
-                            <p className="py-10 text-center text-sm text-gray-500">
+                            <p className="py-10 text-center text-sm text-text-secondary">
                                 You haven't created a resume yet.
                             </p>
                         ) : (

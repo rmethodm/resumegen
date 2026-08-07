@@ -30,7 +30,7 @@ export function JdMatchPanel({
                     <button
                         type="button"
                         onClick={onOpenOptimize}
-                        className="mt-2 px-1 text-[11px] font-semibold text-brand hover:underline"
+                        className="mt-2 px-1 text-[11px] font-semibold text-accent-text hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                     >
                         Open Optimize →
                     </button>
@@ -45,7 +45,7 @@ export function JdMatchPanel({
                 <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
                     Job match
                 </p>
-                <p className="text-sm font-bold tabular-nums text-brand">
+                <p className="text-sm font-bold tabular-nums text-accent-text">
                     {overlap.score}%
                 </p>
             </div>
@@ -66,7 +66,7 @@ export function JdMatchPanel({
                                     type="button"
                                     onClick={() => onAddKeyword(term)}
                                     title={`Add “${formatKeywordLabel(term)}” as a skill`}
-                                    className="inline-flex items-center gap-0.5 rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900 hover:border-amber-500"
+                                    className="inline-flex items-center gap-0.5 rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900 hover:border-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                                 >
                                     <PlusIcon className="size-2.5" />
                                     {term}
@@ -88,7 +88,7 @@ export function JdMatchPanel({
             )}
             {overlap.matched.length > 0 && (
                 <>
-                    <p className="mt-2 mb-1 px-1 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+                    <p className="mt-2 mb-1 px-1 text-[10px] font-semibold text-gray-400 uppercase">
                         Present
                     </p>
                     <div className="flex flex-wrap gap-1 px-0.5">
@@ -107,7 +107,7 @@ export function JdMatchPanel({
                 <button
                     type="button"
                     onClick={onOpenOptimize}
-                    className="mt-2 px-1 text-[11px] font-semibold text-brand hover:underline"
+                    className="mt-2 px-1 text-[11px] font-semibold text-accent-text hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                 >
                     Edit job description →
                 </button>

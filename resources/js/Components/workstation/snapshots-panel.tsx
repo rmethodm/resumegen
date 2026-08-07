@@ -119,8 +119,19 @@ export function SnapshotsPanel({
                             </Button>
                             <button
                                 type="button"
-                                onClick={() => remove(snapshot.id)}
-                                className="text-[11px] text-gray-400 hover:text-red-600"
+                                onClick={() => {
+                                    const label = snapshot.label?.trim();
+                                    const onConfirm = () => remove(snapshot.id);
+                                    if (
+                                        !window.confirm(
+                                            `Delete checkpoint${label ? ` “${label}”` : ''}? This can't be undone.`,
+                                        )
+                                    ) {
+                                        return;
+                                    }
+                                    onConfirm();
+                                }}
+                                className="text-[11px] text-gray-400 hover:text-red-600 focus:outline-none focus-visible:text-red-600 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
                             >
                                 Delete
                             </button>

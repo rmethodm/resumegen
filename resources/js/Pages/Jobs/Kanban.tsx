@@ -22,7 +22,7 @@ const COLUMNS: { status: JobStatus; label: string }[] = [
 const STATUS_CHIP: Record<JobStatus, string> = {
     saved: 'bg-gray-100 text-gray-500',
     applied: 'bg-blue-100 text-blue-700',
-    interviewing: 'bg-brand-subtle text-brand-accent',
+    interviewing: 'bg-accent-100 text-accent-700',
     offer: 'bg-green-100 text-green-700',
     rejected: 'bg-gray-100 text-gray-400',
 };
@@ -56,15 +56,15 @@ function JobCard({ job, resumeTitle }: { job: JobApplication; resumeTitle: strin
             {...listeners}
             {...attributes}
             style={transform ? { transform: `translate(${transform.x}px, ${transform.y}px)`, zIndex: 10 } : undefined}
-            className={`cursor-grab rounded-lg border border-gray-100 bg-white p-3 shadow-sm hover:border-gray-200 ${
+            className={`cursor-grab rounded-lg border border-gray-100 bg-white p-3 shadow-sm hover:border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/40 focus-visible:ring-offset-1 ${
                 isDragging ? 'opacity-50' : ''
             }`}
         >
-            <div className="text-sm font-bold text-ink">{job.role}</div>
+            <div className="text-sm font-bold text-text-primary">{job.role}</div>
             <div className="text-xs font-medium text-gray-500">{job.company}</div>
             {resumeTitle && <div className="mt-1.5 text-[11px] font-medium text-gray-500">Using: {resumeTitle}</div>}
             {job.follow_up_at && (
-                <div className="mt-1.5 text-[11px] font-semibold text-brand-accent">Next step: {job.follow_up_at}</div>
+                <div className="mt-1.5 text-[11px] font-semibold text-accent-700">Next step: {job.follow_up_at}</div>
             )}
         </div>
     );
@@ -86,10 +86,10 @@ function Column({
     return (
         <div
             ref={setNodeRef}
-            className={`flex w-64 flex-none flex-col gap-2 rounded-lg p-2 ${isOver ? 'bg-brand-subtle/40' : ''}`}
+            className={`flex w-64 flex-none flex-col gap-2 rounded-lg p-2 ${isOver ? 'bg-accent-100/40' : ''}`}
         >
             <div className="flex items-center gap-2 px-1">
-                <span className="text-xs font-bold text-ink">{label}</span>
+                <span className="text-xs font-bold text-text-primary">{label}</span>
                 <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${STATUS_CHIP[status]}`}>{jobs.length}</span>
             </div>
             {jobs.map((job) => (
@@ -218,7 +218,7 @@ export default function JobApplicationKanban({
             <Modal show={form !== null} onClose={closeForm}>
                 {form && (
                     <form onSubmit={submitForm} className="p-6">
-                        <h2 className="text-lg font-bold text-ink">{form.id ? 'Edit application' : 'New application'}</h2>
+                        <h2 className="text-lg font-bold text-text-primary">{form.id ? 'Edit application' : 'New application'}</h2>
 
                         <div className="mt-4 space-y-4">
                             <div>

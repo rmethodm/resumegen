@@ -83,7 +83,7 @@ function ToolbarDivider() {
 function MenuCheck({ on }: { on: boolean }) {
     return (
         <CheckIcon
-            className={cn('size-3.5 shrink-0', on ? 'text-brand' : 'text-transparent')}
+            className={cn('size-3.5 shrink-0', on ? 'text-accent-text' : 'text-transparent')}
         />
     );
 }
@@ -207,7 +207,7 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 max-h-72 w-52 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-dropdown max-h-72 w-52 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                 >
                     {fontKeys.map((key) => (
                         <MenuItem key={key}>
@@ -247,7 +247,7 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 w-40 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-dropdown w-40 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                 >
                     {densitySizeOptions.map((option) => (
                         <MenuItem key={option.density}>
@@ -280,7 +280,7 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 w-48 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-dropdown w-48 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                 >
                     {densityStyleOptions.map((option) => {
                         const optionPages = estimateResumePages(
@@ -342,7 +342,7 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom end"
-                    className="z-50 w-36 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-dropdown w-36 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                 >
                     {PREVIEW_ZOOM_OPTIONS.map((level) => (
                         <MenuItem key={level}>
@@ -383,7 +383,7 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom end"
-                    className="z-50 w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-dropdown w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                 >
                     <MenuItem>
                         <button

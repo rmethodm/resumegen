@@ -127,7 +127,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                             <button
                                 type="button"
                                 onClick={copyAll}
-                                className="text-sm text-brand underline hover:text-brand-accent"
+                                className="text-sm text-accent-text underline hover:text-accent-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                             >
                                 {copyFailed ? "Couldn't copy" : copied ? 'Copied!' : 'Copy all'}
                             </button>
@@ -138,7 +138,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                         <form onSubmit={handleRegen}>
                             <button
                                 type="submit"
-                                className="text-sm text-gray-600 underline hover:text-gray-900"
+                                className="text-sm text-gray-600 underline hover:text-gray-900 focus-visible:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                                 disabled={regenForm.processing}
                             >
                                 Regenerate recovery codes
@@ -148,7 +148,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                         <form onSubmit={handleDisable}>
                             <button
                                 type="submit"
-                                className="text-sm text-red-600 underline hover:text-red-800"
+                                className="text-sm text-red-600 underline hover:text-red-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
                                 disabled={disableForm.processing}
                             >
                                 Disable 2FA

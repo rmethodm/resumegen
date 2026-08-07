@@ -2,6 +2,243 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Token spine ──────────────────────────────────────────────
+   Primitives are RGB triplets (no `rgb()` wrapper) so Tailwind's
+   `rgb(var(--x) / <alpha-value>)` pattern in tailwind.config.js can
+   apply opacity modifiers, e.g. `bg-surface-canvas/50`.
+   Neutral ramp matches the existing ink/surface hex already in use
+   (ink.DEFAULT = --gray-900, surface.DEFAULT = --gray-100, etc).
+   Accent ramp matches hex already hardcoded inline in Welcome.tsx
+   (#4a44b8 = --accent-600, #3c3695 = --accent-700 = brand.accent). */
+:root {
+    color-scheme: light dark;
+
+    /* Primitives — neutral ramp */
+    --gray-50: 248 250 251;
+    --gray-100: 242 246 249;
+    --gray-200: 227 232 236;
+    --gray-300: 210 216 221;
+    --gray-400: 167 174 180;
+    --gray-500: 125 132 138;
+    --gray-600: 96 102 108;
+    --gray-700: 80 86 90;
+    --gray-800: 52 56 60;
+    --gray-900: 23 27 31;
+    --gray-950: 13 15 17;
+
+    /* Primitives — accent ramp (brand purple) */
+    --accent-50: 242 241 253;
+    --accent-100: 225 229 255;
+    --accent-200: 199 196 247;
+    --accent-300: 162 155 239;
+    --accent-400: 125 116 226;
+    --accent-500: 89 82 210;
+    --accent-600: 74 68 184;
+    --accent-700: 60 54 149;
+    --accent-800: 46 42 112;
+    --accent-900: 33 30 79;
+    --accent-950: 22 20 47;
+
+    /* Primitives — motion */
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
+    --duration-instant: 80ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Primitives — radii (vary by role; avoid one radius everywhere) */
+    --radius-none: 0;
+    --radius-sm: 0.125rem; /* 2px */
+    --radius-md: 0.375rem; /* 6px — inputs, chips */
+    --radius-lg: 0.625rem; /* 10px — cards */
+    --radius-xl: 0.875rem; /* 14px — modals */
+    --radius-2xl: 1.25rem; /* 20px */
+    --radius-full: 9999px;
+
+    /* Primitives — elevation (light: layered shadow; dark remaps to rings) */
+    --shadow-sm: 0 1px 2px rgb(13 15 17 / 0.05);
+    --shadow-md:
+        0 4px 6px rgb(13 15 17 / 0.07),
+        0 1px 3px rgb(13 15 17 / 0.06);
+    --shadow-lg:
+        0 10px 15px rgb(13 15 17 / 0.09),
+        0 4px 6px rgb(13 15 17 / 0.05);
+    --shadow-xl:
+        0 20px 25px rgb(13 15 17 / 0.1),
+        0 8px 10px rgb(13 15 17 / 0.04);
+
+    /* Primitives — z-index ladder (semantic layers, not magic numbers).
+       Order: sticky under menus; menus under modals; toasts/tooltips on top. */
+    --z-base: 0;
+    --z-raised: 1;
+    --z-sticky: 20;
+    --z-dropdown: 30;
+    --z-modal-backdrop: 40;
+    --z-modal: 50;
+    --z-toast: 60;
+    --z-tooltip: 70;
+
+    /* Semantics — surface stack */
+    --color-surface-canvas: var(--gray-50);
+    --color-surface-raised: var(--gray-100);
+    --color-surface-overlay: 255 255 255;
+    --color-surface-sunken: var(--gray-200);
+    --color-surface-inverse: var(--gray-900);
+
+    /* Semantics — text */
+    --color-text-primary: var(--gray-900);
+    --color-text-secondary: var(--gray-600);
+    --color-text-tertiary: var(--gray-400);
+    --color-text-on-accent: 255 255 255;
+    --color-text-on-inverse: var(--gray-50);
+
+    /* Semantics — border */
+    --color-border-subtle: var(--gray-200);
+    --color-border-default: var(--gray-300);
+    --color-border-strong: var(--gray-400);
+    --color-border-focus: var(--accent-500);
+
+    /* Semantics — accent
+       accent-text = brand-colored text (links, active labels).
+       text-on-accent = white on solid accent fills (use text-text-on-accent). */
+    --color-accent-bg: var(--accent-500);
+    --color-accent-bg-hover: var(--accent-600);
+    --color-accent-bg-active: var(--accent-700);
+    --color-accent-text: var(--accent-600);
+
+    /* Semantics — radius roles */
+    --radius-input: var(--radius-md);
+    --radius-button: var(--radius-md);
+    --radius-card: var(--radius-lg);
+    --radius-modal: var(--radius-xl);
+
+    /* Semantics — status (bg / text / border per state) */
+    --color-success-bg: 220 252 231;
+    --color-success-text: 22 163 74;
+    --color-success-border: 74 222 128;
+
+    --color-warning-bg: 254 243 199;
+    --color-warning-text: 217 119 6;
+    --color-warning-border: 251 191 36;
+
+    --color-error-bg: 254 226 226;
+    --color-error-text: 220 38 38;
+    --color-error-border: 248 113 113;
+
+    --color-info-bg: 219 234 254;
+    --color-info-text: 37 99 235;
+    --color-info-border: 96 165 250;
+}
+
+/* Dark remaps semantics only — primitives above are untouched.
+   Two paths in, same values: `useDarkMode.ts` toggles `.dark` on <html>,
+   but it only runs inside AuthenticatedLayout — guest/auth pages never
+   call it, so `.dark` alone left them stuck in light mode regardless of
+   OS preference. The `prefers-color-scheme` block below covers those
+   pages via CSS only; `:not(.dark)` keeps it from fighting the explicit
+   toggle wherever that toggle *is* present. */
+@media (prefers-color-scheme: dark) {
+    :root:not(.dark) {
+        --color-surface-canvas: var(--gray-950);
+        --color-surface-raised: var(--gray-900);
+        --color-surface-overlay: var(--gray-800);
+        --color-surface-sunken: 15 17 19;
+        --color-surface-inverse: var(--gray-50);
+
+        --color-text-primary: var(--gray-50);
+        --color-text-secondary: var(--gray-400);
+        --color-text-tertiary: var(--gray-600);
+        --color-text-on-inverse: var(--gray-900);
+
+        --color-border-subtle: var(--gray-800);
+        --color-border-default: var(--gray-700);
+        --color-border-strong: var(--gray-600);
+
+        --color-accent-bg: 106 99 224;
+        --color-accent-bg-hover: 125 116 226;
+        --color-accent-bg-active: 89 82 210;
+        --color-accent-text: 162 155 239; /* accent-300 — readable on dark canvas */
+
+        /* Shadows → hairline rings on dark (black-on-near-black is invisible). */
+        --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
+        --shadow-md: 0 0 0 1px rgb(var(--color-border-default));
+        --shadow-lg:
+            0 0 0 1px rgb(var(--color-border-default)),
+            0 8px 24px rgb(0 0 0 / 0.35);
+        --shadow-xl:
+            0 0 0 1px rgb(var(--color-border-strong)),
+            0 12px 32px rgb(0 0 0 / 0.4);
+
+        /* Status: dark surfaces + lighter text/borders (not inverted light pastels). */
+        --color-success-bg: 20 45 32;
+        --color-success-text: 134 239 172;
+        --color-success-border: 34 197 94;
+
+        --color-warning-bg: 54 36 12;
+        --color-warning-text: 253 224 71;
+        --color-warning-border: 245 158 11;
+
+        --color-error-bg: 55 20 24;
+        --color-error-text: 252 165 165;
+        --color-error-border: 248 113 113;
+
+        --color-info-bg: 18 36 58;
+        --color-info-text: 147 197 253;
+        --color-info-border: 96 165 250;
+    }
+}
+
+.dark {
+    --color-surface-canvas: var(--gray-950);
+    --color-surface-raised: var(--gray-900);
+    --color-surface-overlay: var(--gray-800);
+    --color-surface-sunken: 15 17 19;
+    --color-surface-inverse: var(--gray-50);
+
+    --color-text-primary: var(--gray-50);
+    --color-text-secondary: var(--gray-400);
+    --color-text-tertiary: var(--gray-600);
+    --color-text-on-inverse: var(--gray-900);
+
+    --color-border-subtle: var(--gray-800);
+    --color-border-default: var(--gray-700);
+    --color-border-strong: var(--gray-600);
+
+    /* Accent lightens/desaturates slightly in dark to prevent burn. */
+    --color-accent-bg: 106 99 224;
+    --color-accent-bg-hover: 125 116 226;
+    --color-accent-bg-active: 89 82 210;
+    --color-accent-text: 162 155 239;
+
+    --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
+    --shadow-md: 0 0 0 1px rgb(var(--color-border-default));
+    --shadow-lg:
+        0 0 0 1px rgb(var(--color-border-default)),
+        0 8px 24px rgb(0 0 0 / 0.35);
+    --shadow-xl:
+        0 0 0 1px rgb(var(--color-border-strong)),
+        0 12px 32px rgb(0 0 0 / 0.4);
+
+    /* Status: same remap as prefers-color-scheme block above. */
+    --color-success-bg: 20 45 32;
+    --color-success-text: 134 239 172;
+    --color-success-border: 34 197 94;
+
+    --color-warning-bg: 54 36 12;
+    --color-warning-text: 253 224 71;
+    --color-warning-border: 245 158 11;
+
+    --color-error-bg: 55 20 24;
+    --color-error-text: 252 165 165;
+    --color-error-border: 248 113 113;
+
+    --color-info-bg: 18 36 58;
+    --color-info-text: 147 197 253;
+    --color-info-border: 96 165 250;
+}
+
 html {
     scroll-behavior: smooth;
 }

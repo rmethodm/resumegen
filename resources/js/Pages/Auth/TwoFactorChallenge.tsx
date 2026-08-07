@@ -1,7 +1,8 @@
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthCenteredLayout from '@/Layouts/AuthCenteredLayout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 
@@ -23,10 +24,10 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
     };
 
     return (
-        <GuestLayout>
+        <AuthCenteredLayout>
             <Head title="Two-Factor Authentication" />
 
-            <div className="mb-4 text-sm text-gray-600">
+            <div className="mb-4 text-sm text-text-secondary">
                 {mode === 'recovery'
                     ? 'Enter one of your emergency recovery codes.'
                     : mode === 'email'
@@ -35,7 +36,8 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
             </div>
 
             {emailSent && mode !== 'email' && (
-                <div className="mb-4 text-sm text-green-600">
+                <div className="mb-4 flex items-center gap-1.5 text-sm text-success-text">
+                    <CheckCircleIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
                     A code has been sent to your email.
                 </div>
             )}
@@ -80,7 +82,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                 {mode !== 'recovery' && (
                     <button
                         type="button"
-                        className="text-gray-600 underline hover:text-gray-900"
+                        className="text-text-secondary underline hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 rounded-md"
                         onClick={() => setMode('recovery')}
                     >
                         Use a recovery code instead
@@ -89,7 +91,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                 {mode === 'recovery' && (
                     <button
                         type="button"
-                        className="text-gray-600 underline hover:text-gray-900"
+                        className="text-text-secondary underline hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 rounded-md"
                         onClick={() => setMode('totp')}
                     >
                         Use authenticator app instead
@@ -99,7 +101,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                     <div>
                         <button
                             type="button"
-                            className="text-gray-600 underline hover:text-gray-900"
+                            className="text-text-secondary underline hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 rounded-md"
                             onClick={sendEmail}
                         >
                             Send code to my email instead
@@ -113,12 +115,12 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                             e.preventDefault();
                             router.post(route('logout'));
                         }}
-                        className="text-gray-600 underline hover:text-gray-900"
+                        className="text-text-secondary underline hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 rounded-md"
                     >
                         Sign out
                     </a>
                 </div>
             </div>
-        </GuestLayout>
+        </AuthCenteredLayout>
     );
 }

@@ -79,7 +79,7 @@ export function NewResumeModal({
     }
 
     return (
-        <Dialog open={open} onClose={resetAndClose} className="relative z-50">
+        <Dialog open={open} onClose={resetAndClose} className="relative z-modal">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
                 <DialogPanel className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-5 shadow-xl">
@@ -126,7 +126,7 @@ export function NewResumeModal({
                         <div className="mt-4 flex flex-col gap-2">
                             <button
                                 type="button"
-                                className="self-start text-[11px] font-semibold text-brand hover:underline"
+                                className="self-start text-[11px] font-semibold text-accent-text hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                                 onClick={() => setMode('choose')}
                             >
                                 ← Back
@@ -138,7 +138,7 @@ export function NewResumeModal({
                                     disabled={submitting}
                                     onClick={() => createSample(sample.id)}
                                     className={cn(
-                                        'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-brand hover:bg-brand-subtle/40',
+                                        'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-accent-500 hover:bg-accent-100/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1',
                                         submitting && 'opacity-60',
                                     )}
                                 >
@@ -157,7 +157,7 @@ export function NewResumeModal({
                         <div className="mt-4 flex flex-col gap-3">
                             <button
                                 type="button"
-                                className="self-start text-[11px] font-semibold text-brand hover:underline"
+                                className="self-start text-[11px] font-semibold text-accent-text hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                                 onClick={() => setMode('choose')}
                             >
                                 ← Back
@@ -221,7 +221,7 @@ function ChoiceButton({
             disabled={disabled}
             onClick={onClick}
             className={cn(
-                'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-brand hover:bg-brand-subtle/40',
+                'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-accent-500 hover:bg-accent-100/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1',
                 disabled && 'opacity-60',
             )}
         >

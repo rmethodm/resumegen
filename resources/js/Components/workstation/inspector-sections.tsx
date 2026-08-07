@@ -21,7 +21,7 @@ import {
 import { SkillPickerModal } from '@/Components/workstation/skill-picker-modal';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
 import { useResumeAi } from '@/hooks/use-resume-ai';
-import { formatPhone } from '@/lib/contact-validation';
+import { formatPhone, formatUrl } from '@/lib/contact-validation';
 import { cn } from '@/lib/utils';
 import type { ResumeDraft, ResumeSkill, SkillLibraryGroup } from '@/types';
 import type { SkillGroup } from '@/types';
@@ -163,12 +163,21 @@ export function ContactFields({
                 value={resume.linkedin}
                 maxLength={255}
                 onChange={(linkedin) => onChange({ ...resume, linkedin })}
+                onBlur={() =>
+                    onChange({
+                        ...resume,
+                        linkedin: formatUrl(resume.linkedin),
+                    })
+                }
             />
             <Field
                 label="Website"
                 value={resume.website}
                 maxLength={255}
                 onChange={(website) => onChange({ ...resume, website })}
+                onBlur={() =>
+                    onChange({ ...resume, website: formatUrl(resume.website) })
+                }
             />
         </>
     );
@@ -231,7 +240,7 @@ export function SummaryFields({
                         type="button"
                         disabled={busy}
                         onClick={() => void runGenerate()}
-                        className="text-[11px] font-semibold text-brand hover:underline disabled:opacity-50"
+                        className="text-[11px] font-semibold text-accent-text hover:underline disabled:opacity-50"
                     >
                         {busy ? 'Generating…' : 'AI draft'}
                         {status.quotas.summary.remaining >= 0 && (
@@ -260,7 +269,7 @@ export function SummaryFields({
                 </p>
             )}
             {draftSummary !== null && (
-                <div className="rounded-md border border-brand/30 bg-brand-subtle/40 p-3">
+                <div className="rounded-md border border-accent-500/30 bg-accent-100/40 p-3">
                     <p className="mb-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
                         AI proposal — not saved until you accept
                     </p>
@@ -270,7 +279,7 @@ export function SummaryFields({
                     <div className="mt-2 flex gap-2">
                         <button
                             type="button"
-                            className="text-[11px] font-semibold text-brand hover:underline"
+                            className="text-[11px] font-semibold text-accent-text hover:underline"
                             onClick={() => {
                                 onChange({ ...resume, summary: draftSummary });
                                 setDraftSummary(null);
@@ -370,7 +379,7 @@ export function ExperienceFields({
                             className={cn(
                                 'flex flex-col justify-between gap-3 rounded-xl border p-2.5 text-left',
                                 resume.bullet_style === style
-                                    ? 'border-brand bg-brand-subtle ring-1 ring-brand'
+                                    ? 'border-accent-500 bg-accent-100 ring-1 ring-border-focus'
                                     : 'border-gray-200 hover:bg-gray-50',
                             )}
                         >
@@ -381,7 +390,7 @@ export function ExperienceFields({
                                 className={cn(
                                     'text-[10px] font-bold tracking-[0.06em] uppercase',
                                     resume.bullet_style === style
-                                        ? 'text-brand'
+                                        ? 'text-accent-text'
                                         : 'text-gray-500',
                                 )}
                             >
@@ -477,8 +486,8 @@ export function ExperienceFields({
                         }
                     />
                     {rewriteFor?.experienceIndex === index && (
-                        <div className="rounded-md border border-brand/30 bg-brand-subtle/40 p-3">
-                            <p className="mb-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                        <div className="rounded-md border border-accent-500/30 bg-accent-100/40 p-3">
+                            <p className="mb-1 text-[10px] font-semibold text-gray-500 uppercase">
                                 AI rewrite options
                             </p>
                             {rewriteFor.error && (
@@ -496,7 +505,7 @@ export function ExperienceFields({
                                     <li key={option}>
                                         <button
                                             type="button"
-                                            className="w-full rounded-md border border-gray-200 bg-white px-2.5 py-2 text-left text-sm text-gray-800 hover:border-brand"
+                                            className="w-full rounded-md border border-gray-200 bg-white px-2.5 py-2 text-left text-sm text-gray-800 hover:border-accent-500"
                                             onClick={() => {
                                                 const bullets = [
                                                     ...(resume.experiences[
@@ -813,7 +822,7 @@ export function SkillsFields({
                             className={cn(
                                 'flex flex-col justify-between gap-3 rounded-xl border p-2.5 text-left',
                                 resume.skills_layout === layout
-                                    ? 'border-brand bg-brand-subtle ring-1 ring-brand'
+                                    ? 'border-accent-500 bg-accent-100 ring-1 ring-border-focus'
                                     : 'border-gray-200 hover:bg-gray-50',
                             )}
                         >
@@ -822,9 +831,9 @@ export function SkillsFields({
                             </span>
                             <span
                                 className={cn(
-                                    'text-[10px] font-bold tracking-[0.06em] uppercase',
+                                    'text-[10px] font-bold uppercase',
                                     resume.skills_layout === layout
-                                        ? 'text-brand'
+                                        ? 'text-accent-text'
                                         : 'text-gray-500',
                                 )}
                             >
@@ -834,14 +843,14 @@ export function SkillsFields({
                     ))}
                 </div>
             </div>
-            <div id="field-skills" tabIndex={-1} className="flex flex-col gap-1.5 outline-none">
+            <div id="field-skills" tabIndex={-1} className="flex flex-col gap-1.5 outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30">
                 <div className="flex items-center justify-between">
                     <Label className="text-xs">Skills</Label>
                     <button
                         type="button"
                         disabled={atCap}
                         onClick={() => setPicking(true)}
-                        className="flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-accent disabled:opacity-50"
+                        className="flex items-center gap-1 text-xs font-semibold text-accent-text hover:text-accent-700 disabled:opacity-50"
                     >
                         <PlusIcon className="size-3.5" />
                         Add skills

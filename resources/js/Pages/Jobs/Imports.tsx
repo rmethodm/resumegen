@@ -44,7 +44,7 @@ const SOURCE_META: Record<Source, { badge: string; label: string }> = {
 const STATUS_META: Record<Status, string> = {
     New: 'bg-green-100 text-green-700',
     Saved: 'bg-gray-100 text-gray-500',
-    Tailoring: 'bg-brand-subtle text-brand-accent',
+    Tailoring: 'bg-accent-100 text-accent-700',
     Applied: 'bg-green-100 text-green-700',
     Archived: 'bg-gray-100 text-gray-400',
 };
@@ -154,8 +154,8 @@ export default function JobImportsPage({
 
                 <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
                     <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-4">
-                        <h1 className="text-base font-bold text-ink">Imported jobs</h1>
-                        <span className="rounded-full bg-brand-subtle px-2.5 py-1 text-[11px] font-bold text-brand-accent">
+                        <h1 className="text-base font-bold text-text-primary">Imported jobs</h1>
+                        <span className="rounded-full bg-accent-100 px-2.5 py-1 text-[11px] font-bold text-accent-700">
                             {jobs.length} jobs
                         </span>
                         <div className="ml-auto flex gap-2">
@@ -211,16 +211,16 @@ export default function JobImportsPage({
                                             <div
                                                 key={key}
                                                 onClick={() => toggleResult(job)}
-                                                className="flex cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 last:border-b-0 hover:bg-gray-50"
+                                                className="flex cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 last:border-b-0 hover:bg-gray-50 focus-visible:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                                             >
-                                                <span className={checked ? 'text-brand' : 'text-gray-300'}>
+                                                <span className={checked ? 'text-accent-text' : 'text-gray-300'}>
                                                     {checked ? '☑' : '☐'}
                                                 </span>
                                                 <span className={`w-fit rounded px-1.5 py-1 text-[9.5px] font-bold ${SOURCE_META[job.source].badge}`}>
                                                     {SOURCE_META[job.source].label}
                                                 </span>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="truncate text-sm font-bold text-ink">{job.title}</div>
+                                                    <div className="truncate text-sm font-bold text-text-primary">{job.title}</div>
                                                     <div className="truncate text-xs font-medium text-gray-500">
                                                         {job.company ?? 'Unknown company'} · {job.location ?? 'Unknown location'}
                                                     </div>
@@ -248,7 +248,7 @@ export default function JobImportsPage({
                                 type="button"
                                 onClick={() => setFilter(tab.key)}
                                 className={`border-b-2 pb-2.5 text-xs font-semibold ${
-                                    filter === tab.key ? 'border-brand text-brand-accent' : 'border-transparent text-gray-400'
+                                    filter === tab.key ? 'border-accent-500 text-accent-700' : 'border-transparent text-gray-400'
                                 }`}
                             >
                                 {tab.label} ({tab.count})
@@ -267,15 +267,13 @@ export default function JobImportsPage({
                                 <div
                                     key={job.id}
                                     onClick={() => setOpenJobId(job.id)}
-                                    className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-5 py-3 hover:bg-gray-50 ${
-                                        job.id === openJobId ? 'bg-brand-subtle/40' : ''
-                                    }`}
+                                    className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-5 py-3 hover:bg-gray-50 focus-visible:bg-gray-50 ${ job.id === openJobId ? 'bg-accent-100/40' : '' } focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1`}
                                 >
                                     <span className={`w-fit rounded px-1.5 py-1 text-[9.5px] font-bold ${SOURCE_META[job.source].badge}`}>
                                         {SOURCE_META[job.source].label}
                                     </span>
                                     <div className="min-w-0 flex-1">
-                                        <div className="truncate text-sm font-bold text-ink">{job.title}</div>
+                                        <div className="truncate text-sm font-bold text-text-primary">{job.title}</div>
                                         <div className="truncate text-xs font-medium text-gray-500">
                                             {job.company ?? 'Unknown company'} · {job.location ?? 'Unknown location'}
                                         </div>
@@ -291,12 +289,12 @@ export default function JobImportsPage({
                             {selectedJob ? (
                                 <>
                                     <div>
-                                        <div className="text-base font-bold text-ink">{selectedJob.title}</div>
+                                        <div className="text-base font-bold text-text-primary">{selectedJob.title}</div>
                                         <div className="mt-1 text-xs font-semibold text-gray-500">
                                             {selectedJob.company ?? 'Unknown company'} · {selectedJob.location ?? 'Unknown location'}
                                         </div>
                                         {selectedJob.salary && (
-                                            <span className="mt-2 inline-block rounded-full bg-brand-subtle px-2.5 py-1 text-[10.5px] font-bold text-brand-accent">
+                                            <span className="mt-2 inline-block rounded-full bg-accent-100 px-2.5 py-1 text-[10.5px] font-bold text-accent-700">
                                                 {selectedJob.salary}
                                             </span>
                                         )}
@@ -307,7 +305,7 @@ export default function JobImportsPage({
                                             <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">
                                                 Description
                                             </div>
-                                            <p className="text-xs leading-relaxed text-ink">{selectedJob.description}</p>
+                                            <p className="text-xs leading-relaxed text-text-primary">{selectedJob.description}</p>
                                         </div>
                                     )}
 
@@ -316,7 +314,7 @@ export default function JobImportsPage({
                                             href={selectedJob.url}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="text-xs font-semibold text-brand"
+                                            className="text-xs font-semibold text-accent-text"
                                         >
                                             View original posting →
                                         </a>
@@ -362,7 +360,7 @@ export default function JobImportsPage({
             </div>
 
             {toast && (
-                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 rounded-lg bg-ink px-3.5 py-2.5 text-xs font-semibold text-white shadow-lg">
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 rounded-lg bg-surface-inverse px-3.5 py-2.5 text-xs font-semibold text-white shadow-lg">
                     {toast}
                 </div>
             )}

@@ -20,9 +20,9 @@ function StepDots({ step }: { step: Step }) {
                     key={s}
                     className={`h-2.5 w-2.5 rounded-full transition-colors ${
                         s === step
-                            ? 'bg-brand'
+                            ? 'bg-accent-bg'
                             : s < step
-                              ? 'bg-brand/40'
+                              ? 'bg-accent-bg/40'
                               : 'bg-gray-200'
                     }`}
                 />
@@ -98,7 +98,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 value={data.target_role ?? ''}
                                 onChange={value => setData('target_role', value)}
                                 placeholder="e.g. Software Engineer"
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                             />
                             {errors.target_role && (
                                 <p className="mt-1 text-xs text-red-600">{errors.target_role}</p>
@@ -119,7 +119,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 onChange={(e) => setData('industry', e.target.value)}
                                 placeholder="e.g. Tech, Finance, Healthcare"
                                 maxLength={100}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                             />
                         </div>
 
@@ -143,7 +143,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     )
                                 }
                                 placeholder="0"
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                             />
                             {errors.years_experience && (
                                 <p className="mt-1 text-xs text-red-600">{errors.years_experience}</p>
@@ -160,7 +160,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             </button>
                             <button
                                 type="submit"
-                                className="rounded-md bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-accent focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
+                                className="rounded-md bg-accent-bg px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-accent-bg-active focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2"
                             >
                                 Next →
                             </button>
@@ -184,7 +184,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.full_name}
                                     onChange={(e) => setData('full_name', e.target.value)}
                                     placeholder="Jane Smith"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                             </div>
                             <div>
@@ -200,7 +200,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
                                     placeholder="+1 555 000 0000"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                             </div>
                             <div>
@@ -216,7 +216,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.location}
                                     onChange={(e) => setData('location', e.target.value)}
                                     placeholder="New York, NY"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                             </div>
                             <div className="col-span-2">
@@ -232,7 +232,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.linkedin_url}
                                     onChange={(e) => setData('linkedin_url', e.target.value)}
                                     placeholder="https://linkedin.com/in/..."
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                                 {errors.linkedin_url && (
                                     <p className="mt-1 text-xs text-red-600">{errors.linkedin_url}</p>
@@ -251,7 +251,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.website}
                                     onChange={(e) => setData('website', e.target.value)}
                                     placeholder="https://yoursite.com"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                                 {errors.website && (
                                     <p className="mt-1 text-xs text-red-600">{errors.website}</p>
@@ -278,7 +278,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             </div>
                             <button
                                 type="submit"
-                                className="rounded-md bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-accent focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
+                                className="rounded-md bg-accent-bg px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-accent-bg-active focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2"
                             >
                                 Continue →
                             </button>
@@ -301,7 +301,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                         }}
                                         aria-pressed={selected}
                                         title={TEMPLATE_LABELS[t] ?? t}
-                                        className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-brand ring-1 ring-brand' : 'border-gray-200 hover:border-gray-300'} ${locked ? 'opacity-60' : ''}`}
+                                        className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-accent-500 ring-1 ring-border-focus' : 'border-gray-200 hover:border-gray-300'} ${locked ? 'opacity-60' : ''}`}
                                     >
                                         <img
                                             src={`/images/templates/${t}.png`}
@@ -337,7 +337,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="rounded-md bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-accent focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:opacity-60"
+                                className="rounded-md bg-accent-bg px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-accent-bg-active focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 disabled:opacity-60"
                             >
                                 Finish →
                             </button>

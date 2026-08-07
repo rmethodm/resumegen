@@ -176,7 +176,7 @@ function CompareSidebar({
                             className={cn(
                                 'rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
                                 version.id === right.id
-                                    ? 'border-brand-subtle bg-brand-subtle text-brand'
+                                    ? 'border-accent-100 bg-accent-100 text-accent-text'
                                     : 'border-gray-200 bg-transparent text-gray-900 hover:bg-gray-50',
                             )}
                         >
@@ -222,9 +222,9 @@ function VersionChip({
             value={value.id}
             onChange={(event) => onSwap(Number(event.target.value))}
             className={cn(
-                'h-7 rounded-full border-0 px-3 text-[12px] font-semibold outline-none',
+                'h-7 rounded-full border-0 px-3 text-[12px] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
                 tone === 'brand'
-                    ? 'bg-brand-subtle text-brand'
+                    ? 'bg-accent-100 text-accent-text'
                     : 'bg-gray-100 text-gray-500',
             )}
         >
@@ -280,7 +280,7 @@ function CompareColumn({
             <p
                 className={cn(
                     'mb-2 text-[10px] font-bold uppercase tracking-wide',
-                    tone === 'brand' ? 'text-brand' : 'text-gray-500',
+                    tone === 'brand' ? 'text-accent-text' : 'text-gray-500',
                 )}
             >
                 {label}
@@ -294,14 +294,14 @@ function CompareColumn({
                     {side.document.headline} · {side.document.email}
                 </div>
 
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wide">
+                <p className="mb-1 text-[10px] font-bold uppercase">
                     Summary
                 </p>
                 <p className="mb-4 text-[12px] leading-relaxed">
                     <SummaryDiff parts={summaryParts} />
                 </p>
 
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wide">
+                <p className="mb-1 text-[10px] font-bold uppercase">
                     Experience
                 </p>
                 <div className="space-y-3">
@@ -349,7 +349,7 @@ function CompareColumn({
                             </p>
                             <div className="h-1.5 rounded-full bg-gray-100">
                                 <div
-                                    className="h-full rounded-full bg-brand"
+                                    className="h-full rounded-full bg-accent-bg"
                                     style={{
                                         width: `${(band.score / 25) * 100}%`,
                                     }}

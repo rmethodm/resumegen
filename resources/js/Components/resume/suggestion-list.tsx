@@ -30,7 +30,7 @@ export function SuggestionList({
                 >
                     <div className="flex flex-wrap items-center gap-1.5">
                         {suggestion.band && (
-                            <span className="rounded-full bg-brand-subtle px-2 py-0.5 text-[10px] font-semibold tracking-wide text-brand uppercase">
+                            <span className="rounded-full bg-accent-100 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-accent-text uppercase">
                                 {suggestion.band}
                             </span>
                         )}
@@ -44,7 +44,7 @@ export function SuggestionList({
                         {suggestion.message}
                     </p>
                     {suggestion.rewrite ? (
-                        <p className="border-l-2 border-brand pl-2 text-[11px] leading-relaxed font-medium text-brand">
+                        <p className="border-l-2 border-accent-500 pl-2 text-[11px] leading-relaxed font-medium text-accent-text">
                             {suggestion.rewrite}
                         </p>
                     ) : (

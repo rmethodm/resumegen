@@ -34,7 +34,7 @@ export function OptimizePanel({
                     </h2>
                     <p className="text-[11px] text-gray-500">
                         Paste a job description. We score keyword overlap with
-                        no AI — then you decide what to add.
+                        no AI. Then you decide what to add.
                     </p>
                 </div>
 
@@ -65,7 +65,7 @@ export function OptimizePanel({
                             <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
                                 Match score
                             </p>
-                            <p className="text-2xl font-extrabold tabular-nums text-brand">
+                            <p className="text-2xl font-extrabold tabular-nums text-accent-text">
                                 {overlap.score}
                                 <span className="text-sm font-semibold text-gray-400">
                                     %
@@ -79,8 +79,8 @@ export function OptimizePanel({
 
                         {overlap.missing.length > 0 && (
                             <div className="mb-3">
-                                <p className="mb-1.5 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
-                                    Missing — click to add as skill
+                                <p className="mb-1.5 text-[10px] font-semibold text-gray-400">
+                                    Missing (click to add as skill)
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {overlap.missing.slice(0, 32).map((term) => (
@@ -88,7 +88,7 @@ export function OptimizePanel({
                                             key={term}
                                             type="button"
                                             onClick={() => onAddKeyword(term)}
-                                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-amber-300 bg-white px-2.5 py-1 text-[11px] font-medium text-amber-900 hover:border-amber-500 hover:bg-amber-50"
+                                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-amber-300 bg-white px-2.5 py-1 text-[11px] font-medium text-amber-900 hover:border-amber-500 hover:bg-amber-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-1"
                                         >
                                             <PlusIcon className="size-3" />
                                             {formatKeywordLabel(term)}
@@ -148,7 +148,7 @@ export function AtsPlainTextBlock({
                         ATS plain text
                     </h2>
                     <p className="text-[11px] text-gray-500">
-                        What a simple text parser would see — single column, no
+                        What a simple text parser would see: single column, no
                         layout chrome.
                     </p>
                 </div>
@@ -168,7 +168,7 @@ export function AtsPlainTextBlock({
                     </Button>
                     {copyFailed && (
                         <span className="text-[10px] font-medium text-red-600">
-                            Couldn&apos;t copy — select the text manually.
+                            Couldn&apos;t copy. Select the text manually.
                         </span>
                     )}
                 </div>
