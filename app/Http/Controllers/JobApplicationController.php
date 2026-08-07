@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreJobApplicationRequest;
+use App\Http\Requests\UpdateJobApplicationRequest;
 use App\Models\JobApplication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,8 +18,6 @@ use Inertia\Response;
  */
 class JobApplicationController extends Controller
 {
-    private const STATUSES = ['saved', 'applied', 'interviewing', 'offer', 'rejected'];
-
     public function index(Request $request): Response
     {
         $applications = $request->user()->jobApplications()->latest()->get();
@@ -30,9 +29,9 @@ class JobApplicationController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreJobApplicationRequest $request): RedirectResponse
     {
-        $data = $this->validated($request);
+        $data = $request->validated();
 
         $request->user()->jobApplications()->create([
             ...$data,
@@ -42,11 +41,9 @@ class JobApplicationController extends Controller
         return back();
     }
 
-    public function update(Request $request, JobApplication $jobApplication): RedirectResponse
+    public function update(UpdateJobApplicationRequest $request, JobApplication $jobApplication): RedirectResponse
     {
-        abort_unless($jobApplication->user_id === $request->user()->id, 404);
-
-        $jobApplication->update($this->validated($request, sometimes: true));
+        $jobApplication->update($request->validated());
 
         return back();
     }
@@ -58,25 +55,6 @@ class JobApplicationController extends Controller
         $jobApplication->delete();
 
         return back();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function validated(Request $request, bool $sometimes = false): array
-    {
-        $required = $sometimes ? 'sometimes' : 'required';
-
-        return $request->validate([
-            'company' => [$required, 'string', 'max:255'],
-            'role' => [$required, 'string', 'max:255'],
-            'resume_id' => ['nullable', 'integer', Rule::exists('resumes', 'id')->where('user_id', $request->user()->id)],
-            'job_url' => ['nullable', 'string', 'max:500'],
-            'status' => ['sometimes', 'string', Rule::in(self::STATUSES)],
-            'applied_at' => ['nullable', 'date'],
-            'follow_up_at' => ['nullable', 'date'],
-            'notes' => ['nullable', 'string'],
-        ]);
     }
 
     /**

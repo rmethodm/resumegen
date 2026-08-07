@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreImportedJobsRequest;
 use App\Models\ImportedJob;
 use App\Services\JobImport\JobImportSearch;
 use Carbon\Carbon;
@@ -45,20 +46,9 @@ class JobImportsController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreImportedJobsRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'jobs' => ['required', 'array', 'min:1', 'max:20'],
-            'jobs.*.source' => ['required', 'string', 'in:adzuna,usajobs,greenhouse,lever,career_page'],
-            'jobs.*.external_id' => ['required', 'string', 'max:190'],
-            'jobs.*.title' => ['required', 'string', 'max:255'],
-            'jobs.*.company' => ['nullable', 'string', 'max:255'],
-            'jobs.*.location' => ['nullable', 'string', 'max:255'],
-            'jobs.*.url' => ['nullable', 'string', 'max:2048'],
-            'jobs.*.salary' => ['nullable', 'string', 'max:100'],
-            'jobs.*.description' => ['nullable', 'string'],
-            'jobs.*.posted_at' => ['nullable', 'string', 'max:50'],
-        ]);
+        $data = $request->validated();
 
         foreach ($data['jobs'] as $job) {
             $request->user()->importedJobs()->firstOrCreate(

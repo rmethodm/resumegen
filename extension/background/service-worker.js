@@ -1,9 +1,10 @@
-const DEFAULT_APP_BASE = 'https://resumegen.test';
+import { DEFAULT_APP_BASE, normalizeAppBase } from '../shared/app-base.js';
 
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     handleMessage(message).then(sendResponse).catch((err) => {
+        console.error('Resumegen Apply: unhandled message error', message?.type, err);
         sendResponse({ ok: false, reason: 'error', error: String(err?.message || err) });
     });
     return true;
@@ -19,8 +20,12 @@ async function handleMessage(message) {
             return fetchResumes();
         case 'FETCH_FILL_PROFILE':
             return fetchFillProfile(message.resumeId);
+        case 'SCAN_PAGE':
+            return scanPage(message.tabId, message.profile);
         case 'FILL_COMMON_FIELDS':
-            return fillCommonFields(message.tabId, message.profile);
+            return fillCommonFields(message.tabId, message.profile, message.selectedKeys);
+        case 'GET_FOCUS_CONTEXT':
+            return getFocusContext(message.tabId, message.profile);
         case 'INSERT_FOCUSED':
             return insertFocused(message.tabId, message.text, message.label);
         case 'OPEN_APP':
@@ -38,14 +43,6 @@ async function getConfig() {
     const { token, appBase } = await chrome.storage.sync.get(['token', 'appBase']);
     const base = normalizeAppBase(appBase || DEFAULT_APP_BASE);
     return { token: token || '', appBase: base, apiBase: `${base}/api` };
-}
-
-function normalizeAppBase(value) {
-    let base = String(value || DEFAULT_APP_BASE).trim().replace(/\/$/, '');
-    if (base.endsWith('/api')) {
-        base = base.slice(0, -4);
-    }
-    return base || DEFAULT_APP_BASE;
 }
 
 async function apiFetch(path, options = {}) {
@@ -135,6 +132,11 @@ async function ensureContentScript(tabId) {
         await chrome.tabs.sendMessage(tabId, { type: 'PING' });
         return true;
     } catch {
+        const tab = await chrome.tabs.get(tabId);
+        if (!tab.url || !/^https?:\/\//.test(tab.url)) {
+            throw new Error('This page cannot be filled.');
+        }
+
         // Heuristics first, then fill runner (depends on ResumegenHeuristics global).
         await chrome.scripting.executeScript({
             target: { tabId },
@@ -144,7 +146,22 @@ async function ensureContentScript(tabId) {
     }
 }
 
-async function fillCommonFields(tabId, profile) {
+async function scanPage(tabId, profile) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
+    }
+
+    try {
+        await ensureContentScript(id);
+        const result = await chrome.tabs.sendMessage(id, { type: 'SCAN_FIELDS', profile });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return { ok: false, reason: 'scan_failed', error: err.message, message: 'Could not scan this page.' };
+    }
+}
+
+async function fillCommonFields(tabId, profile, selectedKeys = null) {
     const id = tabId || (await activeTabId());
     if (!id) {
         return { ok: false, reason: 'no_tab' };
@@ -155,6 +172,7 @@ async function fillCommonFields(tabId, profile) {
         const result = await chrome.tabs.sendMessage(id, {
             type: 'FILL_COMMON',
             profile,
+            selectedKeys,
         });
         return { ok: true, ...(result || {}) };
     } catch (err) {
@@ -164,6 +182,21 @@ async function fillCommonFields(tabId, profile) {
             error: err.message,
             message: 'No fillable fields found on this page',
         };
+    }
+}
+
+async function getFocusContext(tabId, profile) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
+    }
+
+    try {
+        await ensureContentScript(id);
+        const result = await chrome.tabs.sendMessage(id, { type: 'GET_FOCUS_CONTEXT', profile });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return { ok: false, reason: 'focus_context_failed', error: err.message, message: 'Could not read the focused field.' };
     }
 }
 

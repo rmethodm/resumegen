@@ -37,6 +37,7 @@ function ShareStatus({
     onOpenShare: () => void;
 }) {
     const [copied, setCopied] = useState(false);
+    const [copyFailed, setCopyFailed] = useState(false);
 
     if (!share) {
         return (
@@ -60,7 +61,10 @@ function ShareStatus({
                 setCopied(true);
                 window.setTimeout(() => setCopied(false), 1500);
             })
-            .catch(() => undefined);
+            .catch(() => {
+                setCopyFailed(true);
+                window.setTimeout(() => setCopyFailed(false), 1500);
+            });
     }
 
     if (share.is_expired) {
@@ -128,7 +132,7 @@ function ShareStatus({
                 title="Copy share link"
             >
                 <ClipboardDocumentIcon className={compact ? 'size-3' : 'size-3.5'} />
-                {copied ? 'Copied' : 'Copy'}
+                {copyFailed ? 'Copy failed' : copied ? 'Copied' : 'Copy'}
             </button>
         </span>
     );
