@@ -146,4 +146,16 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
 });
 
+// Fake job-application pages for testing the Resumegen Apply extension
+// against common ATS field-naming conventions. Local only — never
+// registered outside development.
+if (app()->environment('local')) {
+    Route::get('/dev/job-fixtures', fn () => view('dev.job-fixtures.index'))->name('dev.job-fixtures.index');
+    Route::get('/dev/job-fixtures/{page}', function (string $page) {
+        abort_unless(in_array($page, ['workday', 'greenhouse', 'lever', 'icims', 'custom'], true), 404);
+
+        return view("dev.job-fixtures.{$page}");
+    })->name('dev.job-fixtures.show');
+}
+
 require __DIR__.'/auth.php';
