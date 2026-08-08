@@ -478,7 +478,7 @@ export default function Workstation({
                             onDrop={() => handleDrop(sectionKey)}
                             onDragEnd={() => setDraggedSection(null)}
                             className={cn(
-                                'overflow-hidden rounded-lg border border-gray-200 bg-white',
+                                'overflow-hidden rounded-lg border border-border-default bg-surface-card shadow-sm',
                                 draggedSection === sectionKey && 'opacity-50',
                             )}
                         >
@@ -495,15 +495,15 @@ export default function Workstation({
                                     toggleSectionCollapsed(sectionKey);
                                 }}
                                 className={cn(
-                                    'flex cursor-default select-none items-center gap-2 bg-white px-5 py-3',
+                                    'flex cursor-default select-none items-center gap-2 border-l-[3px] border-l-accent-bg bg-surface-raised px-5 py-3',
                                     collapsed
                                         ? 'border-b-0'
-                                        : 'border-b border-gray-100',
+                                        : 'border-b border-border-subtle',
                                 )}
                             >
                                 <Bars3Icon
                                     className={cn(
-                                        'size-4 shrink-0 text-gray-500',
+                                        'size-4 shrink-0 text-text-tertiary',
                                         isMobile ? 'hidden' : 'cursor-grab',
                                     )}
                                 />
@@ -514,7 +514,7 @@ export default function Workstation({
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="flex items-center gap-1 text-[11px] font-semibold tracking-tight text-text-secondary"
+                                    className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
@@ -525,7 +525,7 @@ export default function Workstation({
                                     {sectionLabels[sectionKey]}
                                 </button>
                                 {collapsed && (
-                                    <span className="text-[10px] font-medium tracking-normal text-gray-400 normal-case">
+                                    <span className="text-[10px] font-medium tracking-normal text-text-tertiary normal-case">
                                         Collapsed
                                     </span>
                                 )}
@@ -535,7 +535,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 px-2 text-xs text-gray-500 hover:text-red-600 focus-visible:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
+                                            className="h-8 px-2 text-xs text-text-tertiary hover:text-red-600 focus-visible:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
                                             onClick={() =>
                                                 hideSection(sectionKey)
                                             }
@@ -589,7 +589,7 @@ export default function Workstation({
                             {!collapsed && (
                                 <div
                                     id={`section-${sectionKey}-content`}
-                                    className="p-6"
+                                    className="bg-surface-card p-5 sm:p-6"
                                 >
                                     <SectionFields
                                         resume={draft}
@@ -612,7 +612,7 @@ export default function Workstation({
         <AuthenticatedLayout>
             <Head title={draft.title} />
 
-            <div className="flex flex-col bg-gray-50">
+            <div className="flex min-h-[calc(100vh-7rem)] flex-col bg-surface-canvas">
                 {(offline || saveStatus === 'error') && (
                     <div
                         role="alert"
@@ -621,7 +621,7 @@ export default function Workstation({
                             conflict
                                 ? 'border-amber-200 bg-amber-50 text-amber-950'
                                 : offline
-                                  ? 'border-gray-300 bg-gray-100 text-gray-800'
+                                  ? 'border-border-default bg-surface-sunken text-text-primary'
                                   : 'border-red-200 bg-red-50 text-red-900',
                         )}
                     >
@@ -663,7 +663,7 @@ export default function Workstation({
                     </div>
                 )}
 
-                <div className="flex flex-col gap-6 p-4 sm:p-6 lg:flex-row lg:items-start">
+                <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-6 lg:flex-row lg:items-start">
                     <SectionPanel
                         resumeId={id}
                         analysis={liveAnalysis}
@@ -678,7 +678,7 @@ export default function Workstation({
                         onOpenOptimize={() => setTab('Optimize')}
                     />
 
-                    <div className="flex min-w-0 flex-col gap-6 lg:flex-1">
+                    <div className="flex min-w-0 flex-col gap-5 sm:gap-6 lg:flex-1">
                         <WorkstationHeader
                             resumeId={id}
                             title={draft.title}
@@ -732,15 +732,15 @@ export default function Workstation({
                         )}
 
                         {tab === 'Review' && (
-                            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+                            <div className="overflow-hidden rounded-lg border border-border-default bg-surface-sunken shadow-sm">
                                 {reviewPreviewMode === 'pdf' ? (
                                     <iframe
                                         title="PDF preview"
                                         src={route('resumes.preview', id)}
-                                        className="h-[80vh] w-full bg-gray-100"
+                                        className="h-[80vh] w-full bg-surface-sunken"
                                     />
                                 ) : (
-                                    <div className="overflow-x-auto p-4">
+                                    <div className="overflow-x-auto p-4 sm:p-6">
                                         <div
                                             className="origin-top-left transition-transform"
                                             style={{
@@ -750,7 +750,7 @@ export default function Workstation({
                                         >
                                             <ResumePreview
                                                 resume={draft}
-                                                className="w-full"
+                                                className="w-full rounded-sm border border-border-subtle bg-surface-card shadow-md"
                                             />
                                         </div>
                                     </div>

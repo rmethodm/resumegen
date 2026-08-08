@@ -65,11 +65,11 @@ export function SnapshotsPanel({
     }
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <h3 className="mb-1 text-xs font-bold tracking-wide text-gray-500 uppercase">
+        <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
+            <h3 className="mb-1 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
                 Checkpoints
             </h3>
-            <p className="mb-3 text-[11px] text-gray-500">
+            <p className="mb-3 text-[11px] text-text-secondary">
                 Manual snapshots of this version. Restore rewrites the live
                 document.
             </p>
@@ -93,19 +93,19 @@ export function SnapshotsPanel({
             </div>
 
             {snapshots.length === 0 ? (
-                <p className="text-[11px] text-gray-500">No checkpoints yet.</p>
+                <p className="text-[11px] text-text-secondary">No checkpoints yet.</p>
             ) : (
                 <ul className="space-y-2">
                     {snapshots.map((snapshot) => (
                         <li
                             key={snapshot.id}
-                            className="flex items-center gap-2 rounded-md border border-gray-100 px-2 py-1.5"
+                            className="flex items-center gap-2 rounded-md border border-border-subtle bg-surface-raised px-2 py-1.5"
                         >
                             <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium text-gray-900">
+                                <p className="truncate text-sm font-medium text-text-primary">
                                     {snapshot.label || 'Untitled checkpoint'}
                                 </p>
-                                <p className="text-[10px] text-gray-400">
+                                <p className="text-[10px] text-text-tertiary">
                                     {snapshot.created_at_human}
                                 </p>
                             </div>

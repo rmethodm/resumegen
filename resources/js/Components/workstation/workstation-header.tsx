@@ -120,8 +120,8 @@ export function WorkstationHeader({
     const [pickingTemplate, setPickingTemplate] = useState(false);
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5 sm:px-4">
+        <div className="rounded-lg border border-border-default bg-surface-card shadow-sm">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border-subtle px-3 py-2.5 sm:px-4">
                 {/* Left: title · status */}
                 <div className="flex min-w-0 flex-1 items-center gap-2">
                     {renaming ? (
@@ -163,7 +163,7 @@ export function WorkstationHeader({
                         {saveStatus === 'saving' && (
                             <Badge
                                 variant="outline"
-                                className="border-transparent bg-gray-100 text-gray-500"
+                                className="border-transparent bg-surface-sunken text-text-tertiary"
                             >
                                 <ArrowPathIcon className="size-3 animate-spin" />
                                 Saving
@@ -190,7 +190,7 @@ export function WorkstationHeader({
                 <div
                     role="tablist"
                     aria-label="Workstation mode"
-                    className="inline-flex shrink-0 items-center rounded-lg border border-gray-200 bg-gray-100 p-0.5"
+                    className="inline-flex shrink-0 items-center rounded-lg border border-border-default bg-surface-sunken p-0.5"
                 >
                     {TABS.map((tab) => (
                         <button
@@ -200,10 +200,10 @@ export function WorkstationHeader({
                             aria-selected={tab === activeTab}
                             onClick={() => onTabChange(tab)}
                             className={cn(
-                                'rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
+                                'rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
                                 tab === activeTab
-                                    ? 'bg-white font-semibold text-accent-text shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700 focus-visible:text-gray-700',
+                                    ? 'bg-surface-card font-semibold text-accent-text shadow-sm'
+                                    : 'text-text-tertiary hover:text-text-primary focus-visible:text-text-primary',
                             )}
                         >
                             {tab}
@@ -355,7 +355,7 @@ export function WorkstationHeader({
             </div>
 
             {activeTab === 'Review' && onReviewPreviewModeChange && (
-                <div className="flex items-center gap-2 border-t border-gray-100 px-3 py-1.5 sm:px-4">
+                <div className="flex items-center gap-2 border-t border-border-subtle bg-surface-raised/60 px-3 py-1.5 sm:px-4">
                     <span className="text-[10px] font-bold tracking-wide text-gray-400 uppercase">
                         Preview
                     </span>

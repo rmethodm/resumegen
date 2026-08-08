@@ -54,12 +54,12 @@ const Trigger = ({ children }: PropsWithChildren) => {
 
 const Content = ({
     align = 'right',
-    width = '48',
-    contentClasses = 'py-1 bg-white',
+    width = '56',
+    contentClasses = 'bg-surface-card py-1',
     children,
 }: PropsWithChildren<{
     align?: 'left' | 'right';
-    width?: '48';
+    width?: '48' | '56' | '64';
     contentClasses?: string;
 }>) => {
     const { open, setOpen } = useContext(DropDownContext);
@@ -72,11 +72,8 @@ const Content = ({
         alignmentClasses = 'ltr:origin-top-right rtl:origin-top-left end-0';
     }
 
-    let widthClasses = '';
-
-    if (width === '48') {
-        widthClasses = 'w-48';
-    }
+    const widthClasses =
+        width === '64' ? 'w-64' : width === '48' ? 'w-48' : 'w-56';
 
     return (
         <>
@@ -90,12 +87,12 @@ const Content = ({
                 leaveTo="opacity-0 scale-95"
             >
                 <div
-                    className={`absolute z-dropdown mt-2 rounded-md shadow-lg ${alignmentClasses} ${widthClasses}`}
+                    className={`absolute z-dropdown mt-2 rounded-lg shadow-lg ${alignmentClasses} ${widthClasses}`}
                     onClick={() => setOpen(false)}
                 >
                     <div
                         className={
-                            `rounded-md ring-1 ring-black ring-opacity-5 ` +
+                            `overflow-hidden rounded-lg border border-border-subtle shadow-md ` +
                             contentClasses
                         }
                     >
@@ -116,7 +113,7 @@ const DropdownLink = ({
         <Link
             {...props}
             className={
-                'block w-full px-4 py-2 text-start text-sm leading-5 text-text-primary transition-colors duration-150 hover:bg-surface-raised focus:outline-none focus-visible:bg-surface-raised focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus ' +
+                'block w-full px-3 py-2 text-start text-sm leading-5 text-text-primary transition-colors duration-150 hover:bg-surface-raised focus:outline-none focus-visible:bg-surface-raised focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus ' +
                 className
             }
         >

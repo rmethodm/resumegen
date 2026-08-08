@@ -1,7 +1,9 @@
 import Dropdown from '@/Components/Dropdown';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import {
+    ArrowRightStartOnRectangleIcon,
     Bars3Icon,
+    ChevronDownIcon,
     DocumentTextIcon,
     HomeIcon,
     MagnifyingGlassIcon,
@@ -132,18 +134,64 @@ export default function Authenticated({
                             <Dropdown.Trigger>
                                 <button
                                     type="button"
-                                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-text-secondary transition-colors duration-150 hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/40"
+                                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-text-secondary transition-colors duration-150 hover:bg-surface-raised hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
+                                    aria-haspopup="menu"
+                                    aria-label="Account menu"
                                 >
-                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-sunken text-xs font-semibold text-text-secondary">
+                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-100 text-xs font-semibold text-accent-text">
                                         {user.name?.charAt(0)?.toUpperCase() ?? '?'}
                                     </span>
-                                    <span className="hidden sm:inline">{user.name}</span>
+                                    <span className="hidden max-w-[10rem] truncate sm:inline">
+                                        {user.name}
+                                    </span>
+                                    <ChevronDownIcon
+                                        className="hidden h-3.5 w-3.5 text-text-tertiary sm:block"
+                                        aria-hidden
+                                    />
                                 </button>
                             </Dropdown.Trigger>
-                            <Dropdown.Content>
-                                <Dropdown.Link href={route('logout')} method="post" as="button">
-                                    Log Out
-                                </Dropdown.Link>
+                            <Dropdown.Content width="64">
+                                {/* Resume-style nameplate: identity first, then actions */}
+                                <div className="border-b border-border-subtle px-3 py-3">
+                                    <div className="flex gap-2.5">
+                                        <span
+                                            className="mt-0.5 w-0.5 shrink-0 self-stretch rounded-full bg-accent-bg"
+                                            aria-hidden
+                                        />
+                                        <div className="min-w-0">
+                                            <p className="truncate text-sm font-semibold tracking-tight text-text-primary">
+                                                {user.name}
+                                            </p>
+                                            <p className="mt-0.5 truncate text-xs text-text-tertiary">
+                                                {user.email}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="py-1">
+                                    <Dropdown.Link href={route('profile.edit')}>
+                                        Profile
+                                    </Dropdown.Link>
+                                    <Dropdown.Link href={route('starter-profile.edit')}>
+                                        Starter profile
+                                    </Dropdown.Link>
+                                </div>
+
+                                <div className="border-t border-border-subtle py-1">
+                                    <Dropdown.Link
+                                        href={route('logout')}
+                                        method="post"
+                                        as="button"
+                                        className="flex items-center gap-2 text-text-secondary hover:text-text-primary"
+                                    >
+                                        <ArrowRightStartOnRectangleIcon
+                                            className="h-4 w-4 shrink-0"
+                                            aria-hidden
+                                        />
+                                        Log out
+                                    </Dropdown.Link>
+                                </div>
                             </Dropdown.Content>
                         </Dropdown>
                         <button
@@ -179,6 +227,16 @@ export default function Authenticated({
                                 {item.label}
                             </Link>
                         ))}
+                        <Link
+                            href={route('logout')}
+                            method="post"
+                            as="button"
+                            onClick={() => setMobileOpen(false)}
+                            className="mt-1 flex items-center gap-3 rounded-md border-t border-border-subtle px-3 py-2 text-sm font-medium text-text-secondary transition-colors duration-150 hover:bg-surface-raised hover:text-text-primary"
+                        >
+                            <ArrowRightStartOnRectangleIcon className="h-5 w-5 flex-shrink-0" />
+                            Log out
+                        </Link>
                     </nav>
                 )}
             </header>

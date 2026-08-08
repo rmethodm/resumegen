@@ -171,8 +171,8 @@ export function SectionPanel({
                 Back to dashboard
             </Link>
 
-            <div className="rounded-lg border border-border-subtle bg-surface-card p-4 shadow-sm">
-                <p className="mb-2 px-1 text-xs font-medium text-text-tertiary">
+            <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
+                <p className="mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
                     Resume sections
                 </p>
                 <ul className="space-y-1">
@@ -234,17 +234,17 @@ export function SectionPanel({
                 nav above isn't buried behind five stacked widgets. */}
             <details
                 open
-                className="rounded-lg border border-border-subtle bg-surface-card p-4 shadow-sm"
+                className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm"
             >
-                <summary className="cursor-pointer text-xs font-medium text-text-tertiary [&::-webkit-details-marker]:hidden">
+                <summary className="cursor-pointer text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary [&::-webkit-details-marker]:hidden">
                     Score &amp; coaching
                 </summary>
 
                 <div className="mt-3 text-center">
-                    <p className="mb-2 text-sm font-medium text-gray-500">
+                    <p className="mb-2 text-sm font-medium text-text-secondary">
                         Your resume score
                     </p>
-                    <p className="mb-2 text-[10px] text-gray-400">
+                    <p className="mb-2 text-[10px] text-text-tertiary">
                         Updates as you edit
                     </p>
                     <ScoreGauge score={analysis.score} className="mx-auto" />
@@ -266,12 +266,12 @@ export function SectionPanel({
                                     <span>{band.label}</span>
                                     <span className="tabular-nums">
                                         {band.score}
-                                        <span className="font-normal text-gray-400">
+                                        <span className="font-normal text-text-tertiary">
                                             /25
                                         </span>
                                     </span>
                                 </div>
-                                <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+                                <div className="h-1.5 overflow-hidden rounded-full bg-surface-sunken">
                                     <div
                                         className="h-full w-full origin-left rounded-full bg-accent-bg transition-transform duration-200"
                                         style={{
@@ -299,7 +299,7 @@ export function SectionPanel({
                     onOpenOptimize={onOpenOptimize}
                 />
 
-                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                <p className="mt-4 mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
                     Improvements
                 </p>
                 <SuggestionList

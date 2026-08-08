@@ -3,6 +3,7 @@ import {
     ArrowsRightLeftIcon,
     ChevronDownIcon,
     ClipboardDocumentIcon,
+    DocumentTextIcon,
     EllipsisVerticalIcon,
     EnvelopeIcon,
     LockClosedIcon,
@@ -21,10 +22,141 @@ import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { cn } from '@/lib/utils';
 import type { DashboardShareInfo, ResumeSummary } from '@/types';
 
+function scoreBand(score: number): 'good' | 'fair' | 'weak' {
+    if (score >= 70) {
+        return 'good';
+    }
+    if (score >= 40) {
+        return 'fair';
+    }
+    return 'weak';
+}
+
 function scoreDotColor(score: number): string {
-    if (score >= 70) return 'bg-emerald-500';
-    if (score >= 40) return 'bg-amber-400';
+    const band = scoreBand(score);
+    if (band === 'good') {
+        return 'bg-emerald-500';
+    }
+    if (band === 'fair') {
+        return 'bg-amber-400';
+    }
     return 'bg-red-500';
+}
+
+function scoreSegmentColor(score: number): string {
+    const band = scoreBand(score);
+    if (band === 'good') {
+        return 'bg-emerald-500';
+    }
+    if (band === 'fair') {
+        return 'bg-amber-400';
+    }
+    return 'bg-red-500';
+}
+
+/**
+ * Signature strip: every resume score as a segment of one readiness bar.
+ * Encodes portfolio strength without generic KPI cards.
+ */
+function ReadinessStrip({
+    resumes,
+    averageScore,
+}: {
+    resumes: ResumeSummary[];
+    averageScore: number | null;
+}) {
+    if (resumes.length === 0) {
+        return null;
+    }
+
+    const good = resumes.filter((r) => scoreBand(r.score) === 'good').length;
+    const needsWork = resumes.length - good;
+    const shared = resumes.filter(
+        (r) => r.share !== null && !r.share.is_expired,
+    ).length;
+
+    return (
+        <div className="rounded-lg border border-border-subtle bg-surface-card p-5 shadow-sm">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-text-tertiary">
+                        Portfolio readiness
+                    </p>
+                    <div className="mt-1 flex items-baseline gap-2">
+                        {averageScore !== null ? (
+                            <>
+                                <span className="text-3xl font-semibold tabular-nums tracking-tight text-text-primary">
+                                    {averageScore}
+                                </span>
+                                <span className="text-sm text-text-tertiary">
+                                    / 100 avg
+                                </span>
+                            </>
+                        ) : (
+                            <span className="text-sm text-text-secondary">
+                                No scores yet
+                            </span>
+                        )}
+                    </div>
+                </div>
+                <p className="text-xs text-text-secondary">
+                    <span className="tabular-nums font-medium text-text-primary">
+                        {resumes.length}
+                    </span>{' '}
+                    {resumes.length === 1 ? 'resume' : 'resumes'}
+                    {good > 0 && (
+                        <>
+                            {' · '}
+                            <span className="tabular-nums text-emerald-600 dark:text-emerald-400">
+                                {good}
+                            </span>{' '}
+                            ready
+                        </>
+                    )}
+                    {needsWork > 0 && (
+                        <>
+                            {' · '}
+                            <span className="tabular-nums text-amber-600 dark:text-amber-400">
+                                {needsWork}
+                            </span>{' '}
+                            need work
+                        </>
+                    )}
+                    {shared > 0 && (
+                        <>
+                            {' · '}
+                            <span className="tabular-nums text-text-primary">{shared}</span>{' '}
+                            shared
+                        </>
+                    )}
+                </p>
+            </div>
+
+            <div
+                className="mt-4 flex h-2.5 overflow-hidden rounded-full bg-surface-sunken"
+                role="img"
+                aria-label={`Score spectrum across ${resumes.length} resumes`}
+            >
+                {[...resumes]
+                    .sort((a, b) => b.score - a.score)
+                    .map((resume) => (
+                        <div
+                            key={resume.id}
+                            title={`${resume.title}: ${resume.score}/100`}
+                            className={cn(
+                                'min-w-[6px] flex-1 first:rounded-l-full last:rounded-r-full',
+                                scoreSegmentColor(resume.score),
+                            )}
+                            style={{ flexGrow: Math.max(resume.score, 8) }}
+                        />
+                    ))}
+            </div>
+            <p className="mt-2 text-[11px] text-text-tertiary">
+                Each segment is one resume, ordered by score. Green ≥ 70 · Amber
+                40–69 · Red under 40.
+            </p>
+        </div>
+    );
 }
 
 function ShareStatus({
@@ -43,7 +175,7 @@ function ShareStatus({
         return (
             <span
                 className={cn(
-                    'inline-flex items-center gap-1 text-gray-400',
+                    'inline-flex items-center gap-1 text-text-tertiary',
                     compact ? 'text-[10px]' : 'text-[11px]',
                 )}
             >
@@ -71,7 +203,7 @@ function ShareStatus({
         return (
             <span
                 className={cn(
-                    'inline-flex items-center gap-1 font-medium text-amber-700',
+                    'inline-flex items-center gap-1 font-medium text-amber-700 dark:text-amber-400',
                     compact ? 'text-[10px]' : 'text-[11px]',
                 )}
             >
@@ -79,12 +211,14 @@ function ShareStatus({
                 <button
                     type="button"
                     onClick={onOpenShare}
-                    className="font-medium text-amber-700 underline-offset-2 hover:underline"
+                    className="font-medium underline-offset-2 hover:underline"
                 >
                     Link expired
                 </button>
                 {share.expires_at && !compact && (
-                    <span className="font-normal text-amber-600">· {share.expires_at}</span>
+                    <span className="font-normal text-amber-600 dark:text-amber-500">
+                        · {share.expires_at}
+                    </span>
                 )}
             </span>
         );
@@ -98,29 +232,40 @@ function ShareStatus({
     return (
         <span
             className={cn(
-                'inline-flex min-w-0 items-center gap-1.5 text-gray-600',
+                'inline-flex min-w-0 items-center gap-1.5 text-text-secondary',
                 compact ? 'text-[10px]' : 'text-[11px]',
             )}
         >
-            <ShareIcon className={cn('shrink-0 text-accent-bg', compact ? 'size-3' : 'size-3.5')} />
+            <ShareIcon
+                className={cn(
+                    'shrink-0 text-accent-bg',
+                    compact ? 'size-3' : 'size-3.5',
+                )}
+            />
             <button
                 type="button"
                 onClick={onOpenShare}
-                className="truncate font-medium text-text-secondary underline-offset-2 hover:text-accent-bg hover:underline"
+                className="truncate font-medium text-text-secondary underline-offset-2 hover:text-accent-text hover:underline"
             >
                 Shared
             </button>
             <span className="truncate text-text-tertiary">· {viewsLabel}</span>
             {share.require_password && (
                 <LockClosedIcon
-                    className={cn('shrink-0 text-gray-400', compact ? 'size-3' : 'size-3.5')}
+                    className={cn(
+                        'shrink-0 text-text-tertiary',
+                        compact ? 'size-3' : 'size-3.5',
+                    )}
                     title="Password protected"
                     aria-label="Password protected"
                 />
             )}
             {share.require_email && (
                 <EnvelopeIcon
-                    className={cn('shrink-0 text-gray-400', compact ? 'size-3' : 'size-3.5')}
+                    className={cn(
+                        'shrink-0 text-text-tertiary',
+                        compact ? 'size-3' : 'size-3.5',
+                    )}
                     title="Email required"
                     aria-label="Email required"
                 />
@@ -128,7 +273,7 @@ function ShareStatus({
             <button
                 type="button"
                 onClick={copyLink}
-                className="inline-flex shrink-0 items-center gap-0.5 rounded px-1 py-0.5 font-medium text-accent-bg hover:bg-surface-sunken"
+                className="inline-flex shrink-0 items-center gap-0.5 rounded px-1 py-0.5 font-medium text-accent-text hover:bg-surface-sunken"
                 title="Copy share link"
             >
                 <ClipboardDocumentIcon className={compact ? 'size-3' : 'size-3.5'} />
@@ -178,26 +323,34 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
     }
 
     return (
-        <Card className="p-0">
+        <Card className="gap-0 overflow-hidden p-0 shadow-sm transition-shadow duration-150 hover:shadow-md">
             <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
                 <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
-                    <ScoreDial score={resume.score} size={48} />
+                    <ScoreDial score={resume.score} size={52} />
                     <div className="min-w-0 flex-1">
-                        <Link
-                            href={route('resumes.workstation', resume.id)}
-                            className="block truncate text-sm font-semibold text-text-primary hover:text-accent-bg"
-                        >
-                            {resume.title}
-                        </Link>
-                        <p className="mt-0.5 truncate text-xs text-text-secondary">
-                            {resume.target_role || 'No target role set'}
-                            {resume.updated_at && ` · Updated ${resume.updated_at}`}
-                        </p>
-                        <div className="mt-1">
-                            <ShareStatus
-                                share={resume.share}
-                                onOpenShare={() => setShareModalResumeId(resume.id)}
+                        <div className="flex gap-2.5">
+                            <span
+                                className="mt-1 w-0.5 shrink-0 self-stretch rounded-full bg-accent-bg"
+                                aria-hidden
                             />
+                            <div className="min-w-0">
+                                <Link
+                                    href={route('resumes.workstation', resume.id)}
+                                    className="block truncate text-sm font-semibold tracking-tight text-text-primary hover:text-accent-text"
+                                >
+                                    {resume.title}
+                                </Link>
+                                <p className="mt-0.5 truncate text-xs text-text-secondary">
+                                    {resume.target_role || 'No target role set'}
+                                    {resume.updated_at && ` · Updated ${resume.updated_at}`}
+                                </p>
+                                <div className="mt-1.5">
+                                    <ShareStatus
+                                        share={resume.share}
+                                        onOpenShare={() => setShareModalResumeId(resume.id)}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -238,7 +391,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                     <Menu as="div" className="relative">
                         <MenuButton
                             aria-label={`Actions for ${resume.title}`}
-                            className="rounded-md p-1 text-text-secondary hover:text-text-primary"
+                            className="rounded-md p-1 text-text-secondary transition-colors duration-150 hover:bg-surface-raised hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                         >
                             <EllipsisVerticalIcon className="size-5" />
                         </MenuButton>
@@ -340,11 +493,11 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
             </div>
 
             {hasVersions && (
-                <div className="border-t border-gray-100">
+                <div className="border-t border-border-subtle bg-surface-raised/40">
                     <button
                         type="button"
                         onClick={() => setExpanded(!expanded)}
-                        className="w-full px-4 py-1.5 text-left text-xs font-medium text-gray-500 hover:text-gray-900"
+                        className="w-full px-4 py-2 text-left text-xs font-medium text-text-secondary transition-colors duration-150 hover:text-text-primary focus:outline-none focus-visible:bg-surface-raised focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus"
                     >
                         {expanded ? 'Hide' : 'Show'} {resume.versions.length} versions
                     </button>
@@ -353,7 +506,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                             {resume.versions.map((version) => (
                                 <div
                                     key={version.id}
-                                    className="flex items-center gap-2.5 px-4 py-2 pl-10 hover:bg-gray-50"
+                                    className="flex items-center gap-2.5 px-4 py-2 pl-10 transition-colors duration-150 hover:bg-surface-raised"
                                 >
                                     <span
                                         aria-hidden="true"
@@ -363,10 +516,10 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                         )}
                                     />
                                     <div className="min-w-0 flex-1">
-                                        <span className="block truncate text-[12px] font-semibold">
+                                        <span className="block truncate text-[12px] font-semibold text-text-primary">
                                             {version.title}
                                             {version.target_company && (
-                                                <span className="ml-1.5 font-normal text-gray-500">
+                                                <span className="ml-1.5 font-normal text-text-tertiary">
                                                     — {version.target_company}
                                                 </span>
                                             )}
@@ -381,7 +534,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                             />
                                         </div>
                                     </div>
-                                    <span className="text-[11px] text-gray-500">
+                                    <span className="text-[11px] tabular-nums text-text-tertiary">
                                         {version.score}/100
                                     </span>
                                     <Link
@@ -406,7 +559,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                             onConfirm();
                                         }}
                                         aria-label={`Delete ${version.title}`}
-                                        className="text-gray-400 hover:text-red-600 focus:outline-none focus-visible:text-red-600 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="rounded-md p-1 text-text-tertiary transition-colors duration-150 hover:text-error-text focus:outline-none focus-visible:text-error-text focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         <TrashIcon className="size-4" />
                                     </button>
@@ -450,67 +603,82 @@ export default function Dashboard({
     const [newResumeOpen, setNewResumeOpen] = useState(false);
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Dashboard" />
 
             <div className="py-8">
-                <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-                    <Card className="gap-6 p-6">
-                        {!hasStarterProfile && (
-                            <div className="flex flex-col gap-3 rounded-md border border-border-subtle bg-surface-raised p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mx-auto max-w-5xl space-y-5 px-4 sm:px-6 lg:px-8">
+                    {/* Page title row */}
+                    <div className="flex flex-wrap items-end justify-between gap-3">
+                        <div>
+                            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-text-tertiary">
+                                Workspace
+                            </p>
+                            <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-text-primary">
+                                Your resumes
+                            </h1>
+                        </div>
+                        <Button onClick={() => setNewResumeOpen(true)}>
+                            <PlusIcon className="size-4" />
+                            New resume
+                        </Button>
+                    </div>
+
+                    <ReadinessStrip resumes={resumes} averageScore={average_score} />
+
+                    {!hasStarterProfile && (
+                        <div className="flex flex-col gap-3 rounded-lg border border-border-subtle bg-surface-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex gap-3">
+                                <span
+                                    className="mt-0.5 w-0.5 shrink-0 self-stretch rounded-full bg-accent-bg"
+                                    aria-hidden
+                                />
                                 <div>
                                     <p className="text-sm font-semibold text-text-primary">
                                         Set up your starter profile
                                     </p>
                                     <p className="mt-1 text-sm text-text-secondary">
-                                        Fill it in once and every new resume
-                                        starts pre-filled.
+                                        Fill it in once and every new resume starts
+                                        pre-filled.
                                     </p>
                                 </div>
-                                <Link
-                                    href={route('starter-profile.edit')}
-                                    className={cn(buttonClassName('outline'), 'shrink-0')}
-                                >
-                                    Set up profile
-                                </Link>
                             </div>
-                        )}
+                            <Link
+                                href={route('starter-profile.edit')}
+                                className={cn(buttonClassName('outline'), 'shrink-0')}
+                            >
+                                Set up profile
+                            </Link>
+                        </div>
+                    )}
 
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                            <div>
-                                <p className="text-xs font-medium text-text-tertiary">
-                                    Your resumes
-                                </p>
-                                {average_score !== null && (
-                                    <p className="mt-1 text-sm tabular-nums text-text-secondary">
-                                        Average score: {average_score}/100
-                                    </p>
-                                )}
-                            </div>
-                            <Button onClick={() => setNewResumeOpen(true)}>
+                    {resumes.length === 0 ? (
+                        <div className="flex flex-col items-center rounded-lg border border-dashed border-border-default bg-surface-card px-6 py-14 text-center shadow-sm">
+                            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-100 text-accent-text">
+                                <DocumentTextIcon className="size-6" aria-hidden />
+                            </span>
+                            <p className="mt-4 text-sm font-semibold text-text-primary">
+                                No resumes yet
+                            </p>
+                            <p className="mt-1 max-w-sm text-sm text-text-secondary">
+                                Create one to start scoring, tailoring, and exporting.
+                                Scores update as you edit.
+                            </p>
+                            <Button
+                                className="mt-5"
+                                onClick={() => setNewResumeOpen(true)}
+                            >
                                 <PlusIcon className="size-4" />
                                 New resume
                             </Button>
                         </div>
-
-                        {resumes.length === 0 ? (
-                            <p className="py-10 text-center text-sm text-text-secondary">
-                                You haven't created a resume yet.
-                            </p>
-                        ) : (
-                            <div className="flex flex-col gap-3">
-                                {resumes.map((resume) => (
-                                    <ResumeCard key={resume.id} resume={resume} />
-                                ))}
-                            </div>
-                        )}
-                    </Card>
+                    ) : (
+                        <div className="flex flex-col gap-3">
+                            {resumes.map((resume) => (
+                                <ResumeCard key={resume.id} resume={resume} />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 

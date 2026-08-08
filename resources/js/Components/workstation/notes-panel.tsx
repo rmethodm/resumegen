@@ -65,12 +65,12 @@ export function NotesPanel({
     }
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
+        <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
             <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-xs font-bold tracking-wide text-gray-500 uppercase">
+                <h3 className="text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
                     Private notes
                 </h3>
-                <span className="text-[10px] text-gray-400">
+                <span className="text-[10px] text-text-tertiary">
                     Not on the resume
                 </span>
             </div>
