@@ -1,254 +1,188 @@
+---
+name: Resumegen
+description: A calm, editorial resume builder — warm cream surfaces with a single burnt-orange accent.
+colors:
+  cream-50: "rgb(250 246 240)"
+  cream-100: "rgb(245 239 229)"
+  cream-200: "rgb(228 219 203)"
+  cream-300: "rgb(217 206 188)"
+  cream-400: "rgb(201 191 172)"
+  cream-500: "rgb(138 129 114)"
+  cream-600: "rgb(107 98 85)"
+  cream-700: "rgb(74 68 54)"
+  cream-800: "rgb(52 47 38)"
+  cream-900: "rgb(43 38 32)"
+  cream-950: "rgb(26 23 18)"
+  accent-400: "rgb(227 138 99)"
+  accent-500: "rgb(193 80 46)"
+  accent-600: "rgb(168 63 34)"
+  accent-700: "rgb(138 51 25)"
+  success-text: "rgb(122 143 63)"
+  warning-text: "rgb(212 162 76)"
+  error-text: "rgb(178 59 44)"
+  info-text: "rgb(91 122 158)"
+typography:
+  body:
+    fontFamily: "IBM Plex Sans, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.5
+  label:
+    fontFamily: "IBM Plex Sans, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.6875rem"
+    fontWeight: 500
+    letterSpacing: "0.1em"
+rounded:
+  sm: "2px"
+  md: "6px"
+  lg: "10px"
+  xl: "14px"
+  full: "9999px"
+spacing:
+  xs: "4px"
+  sm: "8px"
+  md: "12px"
+  lg: "16px"
+components:
+  button-primary:
+    backgroundColor: "{colors.accent-500}"
+    textColor: "rgb(250 246 240)"
+    rounded: "{rounded.md}"
+    padding: "8px 16px"
+  button-primary-hover:
+    backgroundColor: "{colors.accent-600}"
+  button-secondary:
+    backgroundColor: "{colors.cream-100}"
+    textColor: "{colors.cream-900}"
+    rounded: "{rounded.md}"
+    padding: "8px 16px"
+  button-outline:
+    backgroundColor: "rgb(253 251 247)"
+    textColor: "{colors.cream-900}"
+    rounded: "{rounded.md}"
+    padding: "8px 16px"
+  button-ghost:
+    backgroundColor: "transparent"
+    textColor: "{colors.cream-600}"
+    rounded: "{rounded.md}"
+    padding: "8px 16px"
+---
+
+# Design System: Resumegen
+
 ## Overview
 
-Cursor's marketing site reads as a quietly-confident developer brand that believes in editorial calm over IDE-darkness. The base canvas is **warm cream** (`{colors.canvas}` — #faf6f0, tuned from Cursor's original #f7f7f4 for the Resumegen build) holding warm near-black ink (`{colors.ink}` — #26251e) for body and display alike. The single brand voltage is **Cursor Orange** (`{colors.primary}` — #f54e00) reserved for primary CTAs and the wordmark — used scarcely.
+**Creative North Star: "The Calm Career Coach"**
 
-Type runs **CursorGothic** as the single sans family. Display sits at weight 400 with negative letter-spacing — a magazine-editorial voice rather than tech-bombastic. JetBrains Mono carries every code surface (and code surfaces are roughly half the page).
+Resumegen reads as an unhurried writing tool rather than a marketing surface — the same intent as before, on a warmer register. Cream does the load-bearing work everywhere — page canvas, card surfaces, borders, and body text all live on a single warm-neutral ramp (`--cream-50` through `--cream-950`) — and burnt orange (`--accent-500`, #c1502e) is spent only where it earns attention: the primary action, focus rings, active nav state, and links. Nothing else competes with it. Dark mode is not an inverted palette; it's the same semantic roles (surface, text, border, accent, status) remapped to darker primitives, so a component styled in tokens never needs a dark-mode-specific class.
 
-The brand's strongest visual signature is the **AI-timeline pill palette**: five pastel pills (peach `{colors.timeline-thinking}`, mint `{colors.timeline-grep}`, blue `{colors.timeline-read}`, lavender `{colors.timeline-edit}`, gold `{colors.timeline-done}`) marking AI-action stages inside in-product timeline visualizations. Used only in product UI — never as system action colors.
+The system has no atmospheric imagery, no gradients, no decorative color. Cards and panels sit flat with a 1px border and a very light `shadow-sm`; in dark mode shadows disappear entirely and are replaced by hairline rings, since a black shadow is invisible on a near-black surface. This is a tool people use for 20+ minutes writing bullet points — the interface is deliberately quiet so the resume content stays the visual focus. The shift from gray to cream leans the whole system toward paper and print rather than software chrome — closer to a manuscript than a dashboard.
 
 **Key Characteristics:**
-- Warm cream canvas, not white. Ink is warm (#26251e), not pure black.
-- Default CTA color: `{colors.primary}` (Cursor Orange #f54e00). Used scarcely, but not exclusively — a second color is a judgment call, not off-limits.
-- Display weight stays at 400 — never bold. Magazine voice.
-- AI timeline pastels: 5 dedicated tokens for in-product agent action stages.
-- Compact 8px CTA radius — developer dialect.
-- Hairline-only depth; no drop shadows.
-- 80px section rhythm.
+- Single accent color (burnt orange `--accent-500`) reserved for primary actions, focus states, and active/selected UI — everything else stays warm neutral
+- Flat surfaces with hairline borders (`--color-border-*`); shadows are a light `shadow-sm` at rest, not a design feature
+- Radius varies deliberately by role, not a single global radius: 6px for buttons/inputs/chips, 10px for cards, 14px for modals
+- Dark mode remaps semantic tokens only — primitives (the cream/accent ramps) never change, so the same component code renders correctly in both themes
+- IBM Plex Sans throughout; no secondary/mono typeface in the product UI
+- Status colors (success/warning/error/info) follow the same bg/text/border three-token pattern as every other semantic color group, tuned warmer to sit comfortably next to the accent
 
 ## Colors
 
-### Brand & Accent
-- **Cursor Orange** (`{colors.primary}` — #f54e00): Primary CTA pills, wordmark, hero accent. Used scarcely.
-- **Cursor Orange Active** (`{colors.primary-active}` — #d04200): Press state.
+The palette is almost entirely warm neutral cream, with burnt orange used sparingly as the single accent.
 
-### Surface
-- **Canvas** (`{colors.canvas}` — #faf6f0): Warm cream page floor. Resumegen build value — Cursor's original was #f7f7f4.
-- **Canvas Soft** (`{colors.canvas-soft}` — #fafaf7): IDE-pane background inside mockups.
-- **Surface Card** (`{colors.surface-card}` — #ffffff): Pure white card surface — slight contrast against the cream canvas.
-- **Surface Strong** (`{colors.surface-strong}` — #e6e5e0): Badges, tag pills.
+### Primary
+- **Resumegen Orange** (`--accent-500`, rgb(193 80 46) / #c1502e): The one accent color in the system. Used for primary button fill, focus rings (`--color-border-focus`), active section-nav indicator, links (`--color-accent-text`), and progress-bar fills. Hover/active states step down the same ramp (`--accent-600` #a83f22, `--accent-700` #8a3319) rather than lightening.
 
-### Hairlines
-- **Hairline** (`{colors.hairline}` — #e6e5e0): 1px divider.
-- **Hairline Soft** (`{colors.hairline-soft}` — #efeee8): Lighter divider.
-- **Hairline Strong** (`{colors.hairline-strong}` — #cfcdc4): Stronger panel outline.
+### Neutral
+- **Canvas Cream** (`--cream-50`, rgb(250 246 240)): Page background (light mode).
+- **Raised Cream** (`--cream-100`, rgb(245 239 229)): Secondary panel backgrounds, hover states on ghost buttons.
+- **Sunken Cream** (`--cream-200`, rgb(228 219 203)): Pressed/selected row backgrounds, track backgrounds for progress bars.
+- **Border Cream** (`--cream-300`, rgb(217 206 188)): Default border color for cards and inputs.
+- **Ink** (`--cream-900`, rgb(43 38 32)): Primary text.
+- **Umber** (`--cream-600`, rgb(107 98 85)): Secondary text, metadata, helper copy.
+- **Faint Cream** (`--cream-400`, rgb(201 191 172)): Tertiary text, disabled labels, placeholder copy.
 
-### Text
-- **Ink** (`{colors.ink}` — #26251e): Display, body emphasis. Warm near-black.
-- **Body** (`{colors.body}` — #5a5852): Default running-text.
-- **Body Strong** (`{colors.body-strong}` — #26251e): Same as ink.
-- **Muted** (`{colors.muted}` — #807d72): Sub-titles.
-- **Muted Soft** (`{colors.muted-soft}` — #a09c92): Disabled text.
-- **On Primary** (`{colors.on-primary}` — #ffffff): White text on Cursor Orange.
+### Semantic Status
+- **Success** (text rgb(122 143 63), sage green): confirmation states, completed-checklist items.
+- **Warning** (text rgb(212 162 76), gold): caution states, incomplete-but-not-broken states.
+- **Error** (text rgb(178 59 44), brick red): validation errors, destructive-action confirmation.
+- **Info** (text rgb(91 122 158), muted slate blue): neutral informational callouts.
 
-### Timeline (AI-action signature)
-- **Thinking** (`{colors.timeline-thinking}` — #dfa88f): Peach. Used inside in-product agent timeline only.
-- **Grep** (`{colors.timeline-grep}` — #9fc9a2): Mint.
-- **Read** (`{colors.timeline-read}` — #9fbbe0): Pastel blue.
-- **Edit** (`{colors.timeline-edit}` — #c0a8dd): Lavender.
-- **Done** (`{colors.timeline-done}` — #c08532): Warm gold.
+Each status color follows the same three-token pattern: a light background tint, a saturated text/icon color, and a border tone one step darker than the background — light and dark mode both honor this shape, only the literal values differ. All four were re-tuned from the original cool set so none of them read as a second accent next to the burnt orange — error in particular was pulled toward brick rather than a pure cool red, since a fire-engine red next to orange reads as one hot cluster instead of two distinct signals.
 
-### Semantic
-- **Success** (`{colors.semantic-success}` — #1f8a65): Confirmation indicators.
-- **Error** (`{colors.semantic-error}` — #cf2d56): Validation errors.
+### Named Rules
+**The One Accent Rule.** Orange appears only on the primary action, focus rings, active states, and links. If a second saturated color shows up on a static surface (a card background, a decorative panel), that's a drift from the system, not a new brand color.
 
 ## Typography
 
-### Font Family
-**CursorGothic** is the licensed display + body family. Fallback: `system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif`. Code surfaces switch to **JetBrains Mono**.
+**Body Font:** IBM Plex Sans (with ui-sans-serif, system-ui fallback)
+
+**Character:** A single, no-nonsense grotesque carries every weight of the interface — no serif, no mono, no display face. Hierarchy comes from size and weight (12–14px UI text, uppercase micro-labels at 500 weight), not from typeface switching.
 
 ### Hierarchy
+- **Body** (400, 14px / text-sm, 1.5 line-height): Primary UI copy — labels, buttons, body text in cards.
+- **Label** (500, 11px / text-[11px], uppercase, 0.1em tracking): Section headers inside panels ("Resume sections", "Score & coaching").
+- **Caption** (400, 10–12px / text-[10px]–text-xs): Metadata, helper text, secondary numbers next to a primary value.
 
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
-|---|---|---|---|---|---|
-| `{typography.display-mega}` | 72px | 400 | 1.1 | -2.16px | Homepage hero h1 |
-| `{typography.display-lg}` | 36px | 400 | 1.2 | -0.72px | Section heads |
-| `{typography.display-md}` | 26px | 400 | 1.25 | -0.325px | Sub-section heads |
-| `{typography.display-sm}` | 22px | 400 | 1.3 | -0.11px | Card group titles |
-| `{typography.title-md}` | 18px | 600 | 1.4 | 0 | Component titles |
-| `{typography.title-sm}` | 16px | 600 | 1.4 | 0 | List labels |
-| `{typography.body-md}` | 16px | 400 | 1.5 | 0 | Default body |
-| `{typography.body-tracked}` | 16px | 400 | 1.5 | 0.08px | Tracked editorial body |
-| `{typography.body-sm}` | 14px | 400 | 1.5 | 0 | Footer body |
-| `{typography.caption}` | 13px | 400 | 1.4 | 0 | Photo captions |
-| `{typography.caption-uppercase}` | 11px | 600 | 1.4 | 0.88px | Section labels, timeline pill labels |
-| `{typography.code}` | 13px | 400 | 1.5 | 0 | Code blocks — JetBrains Mono |
-| `{typography.button}` | 14px | 500 | 1.0 | 0 | CTA pill labels |
-| `{typography.nav-link}` | 14px | 500 | 1.4 | 0 | Top-nav menu |
-
-### Principles
-- **Display weight stays at 400.** Magazine voice, never bold.
-- **Negative letter-spacing on display only.** -0.11px to -2.16px tracking.
-- **JetBrains Mono on every code surface.**
-
-### Note on Font Substitutes
-CursorGothic is licensed. Open-source substitute: **Inter** at weight 400 with letter-spacing -1.5%. Or **GT Sectra** for a more editorial feel.
+### Named Rules
+**The No-Third-Face Rule.** IBM Plex Sans handles every text role, including numeric/tabular data (`tabular-nums` utility, not a mono swap). Introducing a monospace or serif face anywhere in the product UI is a system violation.
 
 ## Layout
 
-### Spacing System
-- **Base unit:** 4px.
-- **Tokens:** `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.base}` 16px · `{spacing.md}` 20px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.xxl}` 48px · `{spacing.section}` 80px.
-- **Section padding:** 80px.
-
-### Grid & Container
-- Max content width: ~1200px.
-- Editorial body: 12-column grid.
-- Feature card grids: 2-up at desktop for splits, 3-up for benefits.
-- Footer: 5-column at desktop.
-
-### Whitespace Philosophy
-Generous editorial pacing — closer to a print magazine than a tech site. The cream canvas has plenty of breathing room; cards within bands sit close (16-24px gap).
+Panels are built from a consistent card unit: `rounded-lg border border-border-default bg-surface-card p-4 shadow-sm`, stacked vertically with `gap-4`. The Workstation rail (`SectionPanel`) is a fixed `260px` column on large screens that scrolls independently (`overflow-y-auto`) from the main content; below `lg` it becomes a full-width stacked block. Spacing inside panels is tight and functional — `gap-1`/`gap-1.5` between list rows, `p-4` card padding, `mt-2`–`mt-4` between grouped sub-sections — there is no generous marketing whitespace anywhere in the builder.
 
 ## Elevation & Depth
 
-The system uses **hairline-only depth**. No drop shadows, no elevation tiers. Cards float above the canvas via 1px hairlines and the slight white-on-cream contrast.
+The system is flat by default. A single `shadow-sm` (light mode: `0 1px 2px rgb(26 23 18 / 0.05)`) sits under every card and button — barely perceptible, more a separation cue than a lift. There is no elevation scale beyond sm/md/lg/xl, and higher levels (`shadow-lg`, `shadow-xl`) are reserved for modals and dropdowns, not resting cards.
 
-| Level | Treatment | Use |
-|---|---|---|
-| Flat (canvas) | `{colors.canvas}` (#faf6f0) | Body bands, footer |
-| Card | `{colors.surface-card}` (#ffffff) | Content cards |
-| Hairline border | 1px `{colors.hairline}` | Card outlines, dividers |
-| IDE pane | `{colors.canvas-soft}` (#fafaf7) | Inside IDE mockup cards |
+### Shadow Vocabulary
+- **sm** (`0 1px 2px rgb(26 23 18 / 0.05)`): Resting cards, buttons, panels — the default and most common shadow in the app.
+- **md** (`0 4px 6px rgb(26 23 18 / 0.07), 0 1px 3px rgb(26 23 18 / 0.06)`): Hover-elevated or slightly emphasized cards.
+- **lg / xl**: Dropdowns and modals only.
 
-### Decorative Depth
-- **IDE-mockup cards** are the only "elevated" element. White card on cream canvas with internal pane structure mimicking the actual Cursor editor.
-- **Timeline pastel pills** add chromatic depth without surface elevation.
+### Named Rules
+**The Ring-Not-Shadow Rule.** In dark mode, every shadow token becomes a 1px hairline ring (`0 0 0 1px rgb(var(--color-border-*))`) instead of a darker shadow — a black shadow on a near-black surface is invisible, so depth in dark mode is communicated by a border, not a glow.
 
 ## Shapes
 
-### Border Radius Scale
-
-| Token | Value | Use |
-|---|---|---|
-| `{rounded.none}` | 0px | Reserved |
-| `{rounded.xs}` | 4px | Inline tags |
-| `{rounded.sm}` | 6px | Compact rows |
-| `{rounded.md}` | 8px | CTA buttons, form inputs |
-| `{rounded.lg}` | 12px | Cards, IDE panes |
-| `{rounded.xl}` | 16px | Larger feature cards (rare) |
-| `{rounded.pill}` | 9999px | Timeline pills, badges |
-| `{rounded.full}` | 9999px | Avatars (rare) |
+Radius is role-based, not uniform: `--radius-md` (6px) for buttons, inputs, and chips; `--radius-lg` (10px) for cards; `--radius-xl` (14px) for modals; `--radius-full` for pills/avatars/badges where used. There is no `rounded-sm` (2px) usage in the primary UI — that step exists for edge cases only. Borders are 1px and hairline-weight throughout (`--color-border-subtle/default/strong`), never heavier.
 
 ## Components
 
-### Top Navigation
-
-**`top-nav`** — Background `{colors.canvas}`, text `{colors.ink}`, height 64px. Layout: Cursor wordmark left, primary horizontal menu (Pricing / Features / Enterprise / Blog / Forum / Careers), Sign In + Download primary CTA right.
+Buttons, cards, and inputs are precise and restrained: flat fills, hairline borders, a light shadow at rest, and state changes communicated through a one-step-darker background rather than scale or shadow growth.
 
 ### Buttons
+- **Shape:** `rounded-md` (6px), heights `h-8`/`h-9`/`h-10` (sm/default/lg), icon buttons `size-11`.
+- **Primary (`default`):** `bg-accent-bg` fill, cream-50 text, `shadow-sm`, hover steps to `accent-bg-hover` (one ramp step darker, not a lighten).
+- **Secondary:** `bg-surface-raised`, primary text color, hover to `surface-sunken`.
+- **Outline:** transparent-to-card background, `border-border-default`, hover to `surface-raised`.
+- **Ghost:** no background at rest, secondary text color, hover adds `surface-raised` background + promotes text to primary.
+- **Link:** no background ever, `accent-text` color, underline only appears on hover.
+- **Destructive:** `bg-red-600` (raw Tailwind red, not a token — the only button variant not on the semantic status ramp; kept deliberately cooler than the warm error token so a destructive action still reads as distinct from the accent family).
 
-**`button-primary`** — The signature Cursor Orange CTA. Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button}` (14px / 500), padding 10px × 18px, height 40px, rounded `{rounded.md}` (8px).
+### Cards / Containers
+- **Corner Style:** `rounded-lg` (10px).
+- **Background:** `bg-surface-card` (rgb(253 251 247) in light mode, `cream-800` in dark).
+- **Shadow Strategy:** `shadow-sm` at rest; see Elevation.
+- **Border:** 1px `border-border-default`.
+- **Internal Padding:** `p-4` standard.
 
-**`button-primary-active`** — Press state. Background `{colors.primary-active}`.
+### Badges
+- **Style:** `rounded-md`, `border`, compact `px-2 py-0.5`, `text-xs`.
+- **Known drift:** `badge.tsx`'s variant colors (`bg-indigo-600`, `bg-gray-100`, `bg-red-600`) are raw Tailwind classes from the old palette, not the semantic accent/cream tokens the rest of the system now uses — worth migrating to `bg-accent-bg`/`bg-surface-raised`/etc. next time this file is touched, not treated as an intentional second palette.
 
-**`button-secondary`** — White card pill on cream canvas. Background `{colors.surface-card}`, text `{colors.ink}`, 1px `{colors.hairline-strong}` border.
-
-**`button-tertiary-text`** — Inline ink text link.
-
-**`button-download`** — Larger ink-canvas CTA. Background `{colors.ink}`, text `{colors.canvas}`, padding 12px × 20px, height 44px. Used for "Download for macOS" type CTAs.
-
-### Hero & IDE Mockups
-
-**`hero-band`** — Background `{colors.canvas}`, full-width display headline in `{typography.display-mega}` (72px / 400 / -2.16px), subhead in `{typography.body-md}`, two CTAs (`button-download` + `button-tertiary-text`), and a centered IDE-mockup card below the hero copy.
-
-**`ide-mockup-card`** — A white card containing a multi-pane IDE mockup (sidebar + main editor + chat panel + terminal). Background `{colors.surface-card}`, rounded `{rounded.lg}` (12px), 1px `{colors.hairline}` border, no padding (panes fill the card edge-to-edge).
-
-**`ide-pane`** — Individual IDE pane inside the mockup. Background `{colors.canvas-soft}`, text `{colors.body}` in `{typography.code}` (JetBrains Mono 13px), rounded `{rounded.md}` (8px), padding 16px.
-
-### Cards
-
-**`feature-card`** — Background `{colors.surface-card}`, text `{colors.ink}`, type `{typography.title-md}`, rounded `{rounded.lg}`, padding 24px. 1px `{colors.hairline}` border.
-
-**`comparison-card`** — Side-by-side "Cursor vs other tools" card. Same surface and rounding; internally split into 2 columns.
-
-**`testimonial-card`** — Quote card. Background `{colors.surface-card}`, text `{colors.body}`, rounded `{rounded.lg}`, padding 24px.
-
-### AI Timeline (signature)
-
-**`timeline-pill-thinking`** — Peach pill. Background `{colors.timeline-thinking}`, text `{colors.ink}`, type `{typography.caption-uppercase}` (11px / 600 / 0.88px tracking, uppercase), rounded `{rounded.pill}`, padding 4px × 10px. Marks "Thinking" stage in product timeline.
-
-**`timeline-pill-grep`** — Mint pill. Same shape, background `{colors.timeline-grep}`. Marks "Grepping" stage.
-
-**`timeline-pill-read`** — Pastel-blue pill. Background `{colors.timeline-read}`. Marks "Reading" stage.
-
-**`timeline-pill-edit`** — Lavender pill. Background `{colors.timeline-edit}`. Marks "Editing" stage.
-
-**`timeline-pill-done`** — Gold pill. Background `{colors.timeline-done}`, text `{colors.on-primary}` white. Marks "Done" stage.
-
-### Code
-
-**`code-block`** — Inline code block. Background `{colors.surface-card}`, text `{colors.ink}` in `{typography.code}`, rounded `{rounded.lg}`, padding 20px, 1px `{colors.hairline}` border.
-
-### Pricing
-
-**`pricing-tier-card`** — Background `{colors.surface-card}`, rounded `{rounded.lg}`, padding 32px, 1px `{colors.hairline}` border.
-
-**`pricing-tier-featured`** — Featured tier inverts to ink. Background `{colors.ink}`, text `{colors.canvas}`. Same shape, dark inversion signals "highlighted" without colored ribbon.
-
-### Forms & Tags
-
-**`text-input`** — Background `{colors.surface-card}`, text `{colors.ink}`, rounded `{rounded.md}` (8px), padding 12px × 16px, height 44px.
-
-**`badge-pill`** — Small uppercase pill. Background `{colors.surface-strong}`, text `{colors.ink}`, type `{typography.caption-uppercase}`, rounded `{rounded.pill}`, padding 4px × 10px.
-
-### CTA / Footer
-
-**`cta-band`** — Pre-footer "Try Cursor now" band. Background `{colors.canvas}`, centered display headline in `{typography.display-lg}`, single Cursor Orange CTA. 96px vertical padding.
-
-**`footer`** — Closing footer. Background `{colors.canvas}`, text `{colors.body}`. 5-column link list. 64×48px padding.
-
-**`footer-link`** — Background transparent, text `{colors.body}`, type `{typography.body-sm}`.
+### Inputs / Fields
+- **Style:** `rounded-input` (maps to `--radius-md`, 6px), `border-border-default`.
+- **Focus:** ring in `border-focus` (accent-500), matching the button focus-ring treatment for consistency.
 
 ## Do's and Don'ts
 
-### Do
-- Default to `{colors.primary}` (Cursor Orange) for primary CTAs and brand wordmark — it's the anchor color, not the only one allowed.
-- Keep display weight at 400. The editorial voice depends on this.
-- Use the cream `{colors.canvas}` page floor — never pure white.
-- Render every code surface (inline, blocks, IDE panes) in JetBrains Mono.
-- Use timeline pastels only inside in-product agent visualizations — never as system action colors.
+### Do:
+- **Do** use `bg-accent-bg` / `text-accent-text` / `border-border-focus` (the semantic token classes) for anything accent-colored — never a raw `bg-orange-*` or `bg-amber-*` utility.
+- **Do** keep shadows at `shadow-sm` for resting surfaces; reserve `shadow-lg`/`shadow-xl` for modals and dropdowns only.
+- **Do** match radius to role — buttons/inputs at `md` (6px), cards at `lg` (10px), modals at `xl` (14px) — not a single radius everywhere.
 
-### Don't
-- Prefer not to introduce a second brand action color — Cursor Orange should stay the anchor. A second color is a judgment call, not a hard block: fine for a deliberate one-off (an experiment, a status highlight) as long as it doesn't creep into a second CTA color used everywhere primary is.
-- Don't drop display to bold weights (700+). Magazine voice depends on 400.
-- Don't add drop shadows. Hairlines + ink-on-cream contrast carry the depth.
-- Don't use timeline pastels on non-timeline UI. They're scoped to the agent timeline only.
-- Don't extract a CTA color from a third-party widget (cookie consent, OneTrust). The brand's CTA is what appears on actual product CTAs.
-
-## Responsive Behavior
-
-### Breakpoints
-
-| Name | Width | Key Changes |
-|---|---|---|
-| Mobile | < 640px | Hero h1 72→32px; IDE mockup collapses to single pane preview; feature grid 1-up; nav hamburger. |
-| Tablet | 640–1024px | Hero h1 56px; IDE mockup compresses; feature grid 2-up. |
-| Desktop | 1024–1280px | Full hero h1 72px; full multi-pane IDE mockup; feature grid 3-up. |
-| Wide | > 1280px | Content caps at 1200px. |
-
-### Touch Targets
-- Primary CTA at 40px height — at WCAG AA, padded for AAA.
-- Download CTA at 44px — at AAA.
-
-### Collapsing Strategy
-- Top nav switches to hamburger below 768px.
-- IDE mockup multi-pane collapses to a single primary pane preview on mobile.
-- Feature grid: 3-up → 2-up → 1-up.
-
-## Iteration Guide
-
-1. Focus on a single component at a time.
-2. CTAs default to `{rounded.md}` (8px). Cards use `{rounded.lg}` (12px).
-3. Variants live as separate entries inside `components:`.
-4. Use `{token.refs}` everywhere — never inline hex.
-5. Hover state never documented.
-6. CursorGothic 400 for display, 400/500/600 for body. JetBrains Mono on every code surface.
-7. Cursor Orange stays the default anchor color — scarce by default, not by mandate.
-8. Timeline pastels stay scoped to in-product agent visualizations.
-
-## Known Gaps
-
-- CursorGothic is a licensed typeface; Inter is the substitute.
-- Animation timings (timeline pill entrance, IDE pane reveal) out of scope.
-- In-app surfaces (code editor, chat panel, agent timeline) only partially captured via marketing IDE mockups.
-- Form validation states beyond focus not visible on captured surfaces.
+### Don't:
+- **Don't** introduce a second accent color. Burnt orange is the only saturated brand color; everything else is warm neutral or a status color.
+- **Don't** hardcode cream/orange hex or raw Tailwind palette classes (`gray-100`, `orange-600`) in new components — use the semantic `surface-*`/`text-*`/`border-*`/`accent-*` classes so dark mode works automatically.
+- **Don't** add decorative imagery, gradients, or illustration to product UI — that language belongs to the separate marketing site (`Welcome.tsx`), not the builder.
