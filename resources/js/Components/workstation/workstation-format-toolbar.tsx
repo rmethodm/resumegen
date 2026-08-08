@@ -77,7 +77,7 @@ export const PREVIEW_ZOOM_OPTIONS = [0.75, 1, 1.25, 1.5] as const;
 export type PreviewZoom = (typeof PREVIEW_ZOOM_OPTIONS)[number];
 
 function ToolbarDivider() {
-    return <div className="mx-0.5 hidden h-5 w-px shrink-0 bg-gray-200 sm:block" aria-hidden />;
+    return <div className="mx-0.5 hidden h-5 w-px shrink-0 bg-border-default sm:block" aria-hidden />;
 }
 
 function MenuCheck({ on }: { on: boolean }) {
@@ -145,7 +145,7 @@ export function WorkstationFormatToolbar({
         <div
             role="toolbar"
             aria-label="Document formatting"
-            className="flex flex-wrap items-center gap-1 border-t border-gray-200 bg-gray-50 px-2 py-1.5 sm:px-3"
+            className="flex flex-wrap items-center gap-1 border-t border-border-subtle bg-surface-raised px-2 py-1.5 sm:px-3"
         >
             <span className="mr-1 hidden text-[10px] font-bold tracking-[0.08em] text-gray-500 uppercase sm:inline">
                 Format

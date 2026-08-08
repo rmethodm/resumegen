@@ -21,7 +21,7 @@ export function TargetRoleBar({
     return (
         <div
             className={cn(
-                'rounded-lg border border-border-subtle bg-surface-raised px-3 py-2.5 sm:px-4',
+                'rounded-lg border border-border-default bg-surface-card px-3 py-2.5 shadow-sm sm:px-4',
                 className,
             )}
         >

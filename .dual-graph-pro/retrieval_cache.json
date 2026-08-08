@@ -1,282 +1,187 @@
 {
   "entries": {
-    "logout does not work authentication fortify session sign|tf=8|te=12": {
-      "created_epoch": 1786153164,
+    "app blade php font link google fonts ibm|tf=5|te=12": {
+      "created_epoch": 1786168122,
       "files": [
-        "resources/js/Components/workstation/notes-panel.tsx",
-        "resources/js/Pages/Resumes/Workstation.tsx",
-        "resources/js/Components/workstation/inspector-fields.tsx",
-        "resources/js/Components/workstation/workstation-header.tsx",
-        ".design-sync/previews/ScoreGauge.tsx::NeedsWork",
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-        "resources/js/Components/workstation/inspector-sections.tsx",
-        "resources/js/Components/workstation/snapshots-panel.tsx"
+        "resources/js/Pages/Jobs/Kanban.tsx",
+        "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.d.ts::ApplicationLogoProps",
+        "extension/shared/app-base.js::normalizeAppBase",
+        "resources/js/Components/resume/resume-preview.tsx",
+        "resources/js/Pages/Jobs/Imports.tsx"
       ],
       "mtimes_ns": {
-        "resources/js/Components/workstation/notes-panel.tsx": 1785886103135462334,
-        "resources/js/Pages/Resumes/Workstation.tsx": 1786144504968268332,
-        "resources/js/Components/workstation/inspector-fields.tsx": 1786144504972972714,
-        "resources/js/Components/workstation/workstation-header.tsx": 1786144536129927754,
-        ".design-sync/previews/ScoreGauge.tsx::NeedsWork": 1785780223882187267,
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx": 1786144536129736962,
-        "resources/js/Components/workstation/inspector-sections.tsx": 1786144504975412634,
-        "resources/js/Components/workstation/snapshots-panel.tsx": 1786143277916648956
+        "resources/js/Pages/Jobs/Kanban.tsx": 1786144627625250910,
+        "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.d.ts::ApplicationLogoProps": 1785780804216366775,
+        "extension/shared/app-base.js::normalizeAppBase": 1786014082699072645,
+        "resources/js/Components/resume/resume-preview.tsx": 1785876555918697342,
+        "resources/js/Pages/Jobs/Imports.tsx": 1786144504970194877
       },
       "result": {
         "ok": true,
-        "query": "logout does not work authentication fortify session sign out",
+        "query": "app.blade.php font link Google Fonts IBM Plex Sans",
         "graph_files": [
           {
-            "id": "resources/js/Components/workstation/notes-panel.tsx",
+            "id": "resources/js/Pages/Jobs/Kanban.tsx",
             "kind": "file",
-            "path": "resources/js/Components/workstation/notes-panel.tsx",
+            "path": "resources/js/Pages/Jobs/Kanban.tsx",
             "ext": ".tsx",
-            "size": 5071,
+            "size": 13103,
             "keywords": [
-              "workstationnote",
-              "workstation",
-              "note",
-              "notespanel",
-              "notes",
-              "panel"
+              "jobapplicationkanban",
+              "job",
+              "application",
+              "kanban"
             ],
-            "summary": "import { router } from '@inertiajs/react';. Contains 4 functions/classes: NotesPanel, addNote, updateNote, deleteNote.",
-            "file_hash": "e0390817",
-            "_score": 23,
-            "_role": "code",
-            "_intent": "general"
-          },
-          {
-            "id": "resources/js/Pages/Resumes/Workstation.tsx",
-            "kind": "file",
-            "path": "resources/js/Pages/Resumes/Workstation.tsx",
-            "ext": ".tsx",
-            "size": 33189,
-            "keywords": [
-              "workstation"
-            ],
-            "summary": "import { Head, router, usePage } from '@inertiajs/react';. Contains 5 functions/classes: focusAndFlash, Workstation, requestDownload, confirmDownload, ....",
-            "file_hash": "7e9d49b3",
-            "_score": 23,
+            "summary": "import { DndContext, DragEndEvent, useDraggable, useDroppable } from '@dnd-kit/core';. Contains 3 functions/classes: JobCard, Column, JobApplicationKanban.",
+            "file_hash": "0a0a9261",
+            "_score": 17,
             "_role": "ui_surface",
             "_intent": "general"
           },
           {
-            "id": "resources/js/Components/workstation/inspector-fields.tsx",
-            "kind": "file",
-            "path": "resources/js/Components/workstation/inspector-fields.tsx",
-            "ext": ".tsx",
-            "size": 27744,
-            "keywords": [
-              "reorder",
-              "skilllayouts",
-              "skill",
-              "layouts",
-              "layoutthumb",
-              "layout",
-              "thumb",
-              "bulletstyles",
-              "bullet",
-              "styles",
-              "bulletstylethumb",
-              "style",
-              "field",
-              "monthyearfield",
-              "month",
-              "year",
-              "pair",
-              "useentryreorder",
-              "use",
-              "entry",
-              "entrycard",
-              "card",
-              "addbutton",
-              "add",
-              "button",
-              "splitbulletlines",
-              "split",
-              "lines",
-              "bulletsfield",
-              "bullets"
-            ],
-            "summary": "ArrowDownIcon,. Contains 5 functions/classes: reorder, Bar, Dot, LayoutThumb, ....",
-            "file_hash": "ef5196c4",
-            "_score": 17,
-            "_role": "code",
-            "_intent": "general"
-          },
-          {
-            "id": "resources/js/Components/workstation/workstation-header.tsx",
-            "kind": "file",
-            "path": "resources/js/Components/workstation/workstation-header.tsx",
-            "ext": ".tsx",
-            "size": 18994,
-            "keywords": [
-              "workstationtab",
-              "workstation",
-              "tab",
-              "headerversion",
-              "header",
-              "version",
-              "workstationheader"
-            ],
-            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 1 function: WorkstationHeader.",
-            "file_hash": "b515458c",
-            "_score": 17,
-            "_role": "code",
-            "_intent": "general"
-          },
-          {
-            "id": ".design-sync/previews/ScoreGauge.tsx::NeedsWork",
+            "id": "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.d.ts::ApplicationLogoProps",
             "kind": "symbol",
-            "path": ".design-sync/previews/ScoreGauge.tsx",
-            "ext": ".tsx",
+            "path": "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.d.ts",
+            "ext": ".ts",
             "size": 3,
             "keywords": [
-              "needswork",
-              "needs",
-              "work"
+              "applicationlogoprops",
+              "application",
+              "logo",
+              "props"
+            ],
+            "symbol_type": "model",
+            "name": "ApplicationLogoProps",
+            "line_start": 5,
+            "line_end": 7,
+            "body_hash": "f888ece3",
+            "confidence": "high",
+            "exported": true,
+            "_score": 15,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "extension/shared/app-base.js::normalizeAppBase",
+            "kind": "symbol",
+            "path": "extension/shared/app-base.js",
+            "ext": ".js",
+            "size": 7,
+            "keywords": [
+              "normalizeappbase",
+              "normalize",
+              "app",
+              "base"
             ],
             "symbol_type": "use_case",
-            "name": "NeedsWork",
-            "line_start": 6,
+            "name": "normalizeAppBase",
+            "line_start": 2,
             "line_end": 8,
-            "body_hash": "9fdd8756",
-            "confidence": "medium",
+            "body_hash": "6b956222",
+            "confidence": "high",
             "exported": true,
-            "_score": 16,
-            "_role": "code",
-            "_intent": "general"
-          },
-          {
-            "id": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-            "kind": "file",
-            "path": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-            "ext": ".tsx",
-            "size": 17374,
-            "keywords": [
-              "fontlabels",
-              "font",
-              "labels",
-              "preview_zoom_options",
-              "previewzoom",
-              "preview",
-              "zoom",
-              "workstationformattoolbar",
-              "workstation",
-              "format",
-              "toolbar"
-            ],
-            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 3 functions/classes: ToolbarDivider, MenuCheck, WorkstationFormatToolbar.",
-            "file_hash": "612359d2",
-            "_score": 16,
-            "_role": "code",
-            "_intent": "general"
-          },
-          {
-            "id": "resources/js/Components/workstation/inspector-sections.tsx",
-            "kind": "file",
-            "path": "resources/js/Components/workstation/inspector-sections.tsx",
-            "ext": ".tsx",
-            "size": 38165,
-            "keywords": [
-              "contactfields",
-              "contact",
-              "fields",
-              "summaryfields",
-              "summary",
-              "experiencefields",
-              "experience",
-              "projectfields",
-              "project"
-            ],
-            "summary": "import { PlusIcon } from '@heroicons/react/24/outline';. Contains 5 functions/classes: patch, remove, ContactFields, SummaryFields, ....",
-            "file_hash": "30a20c1f",
             "_score": 15,
             "_role": "code",
             "_intent": "general"
           },
           {
-            "id": "resources/js/Components/workstation/snapshots-panel.tsx",
+            "id": "resources/js/Components/resume/resume-preview.tsx",
             "kind": "file",
-            "path": "resources/js/Components/workstation/snapshots-panel.tsx",
+            "path": "resources/js/Components/resume/resume-preview.tsx",
             "ext": ".tsx",
-            "size": 5092,
+            "size": 22438,
             "keywords": [
-              "workstationsnapshot",
-              "workstation",
-              "snapshot",
-              "snapshotspanel",
-              "snapshots",
-              "panel"
+              "resumepreview",
+              "resume",
+              "preview"
             ],
-            "summary": "import { router } from '@inertiajs/react';. Contains 4 functions/classes: SnapshotsPanel, saveCheckpoint, restore, remove.",
-            "file_hash": "39539c8f",
+            "summary": "import '../../../css/resume-fonts.css';. Contains 5 functions/classes: Section, EntryHead, EntryShell, Bullets, ....",
+            "file_hash": "be392d5b",
             "_score": 15,
             "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Jobs/Imports.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Jobs/Imports.tsx",
+            "ext": ".tsx",
+            "size": 19882,
+            "keywords": [
+              "post",
+              "jobs-imports",
+              "jobimportspage",
+              "job",
+              "imports",
+              "page"
+            ],
+            "summary": "import { Head, Link, router, useHttp } from '@inertiajs/react';. Contains 2 functions/classes: resultKey, JobImportsPage.",
+            "file_hash": "1993a610",
+            "_score": 15,
+            "_role": "ui_surface",
             "_intent": "general"
           }
         ],
         "graph_edges": [
           {
-            "from": "resources/js/Components/workstation/notes-panel.tsx",
-            "to": "@heroicons/react/24/outline",
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "/css/resume-fonts.c",
+            "rel": "references"
+          },
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "resources/css/resume-fonts.c",
+            "rel": "references"
+          },
+          {
+            "from": "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.d.ts",
+            "to": "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.d.ts::ApplicationLogoProps",
+            "rel": "contains"
+          },
+          {
+            "from": "extension/shared/app-base.js",
+            "to": "extension/shared/app-base.js::normalizeAppBase",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/Jobs/Kanban.tsx",
+            "to": "resources/js/Pages/Jobs/Kanban.tsx::JobApplicationKanban",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "@/lib/template-presets",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Components/workstation/inspector-sections.tsx",
-            "to": "@heroicons/react/24/outline",
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "@/lib/utils",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Components/workstation/notes-panel.tsx",
-            "to": "@/Components/ui/button",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Components/workstation/notes-panel.tsx",
-            "to": "@/Components/ui/textarea",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Components/workstation/notes-panel.tsx",
-            "to": "@inertiajs/react",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Components/workstation/notes-panel.tsx",
+            "from": "resources/js/Components/resume/resume-preview.tsx",
             "to": "react",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Pages/Resumes/Workstation.tsx",
-            "to": "@/Components/workstation/notes-panel",
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "type",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "from": "resources/js/Pages/Jobs/Imports.tsx",
+            "to": "@/Components/PrimaryButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Jobs/Imports.tsx",
+            "to": "@/Components/SecondaryButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Jobs/Imports.tsx",
             "to": "@/Layouts/AuthenticatedLayout",
             "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Resumes/Workstation.tsx",
-            "to": "AuthenticatedLayout",
-            "rel": "imports"
-          },
-          {
-            "from": ".design-sync/previews/ScoreGauge.tsx",
-            "to": ".design-sync/previews/ScoreGauge.tsx::NeedsWork",
-            "rel": "contains"
-          },
-          {
-            "from": "resources/js/Components/workstation/inspector-fields.tsx",
-            "to": "resources/js/Components/workstation/inspector-fields.tsx::LayoutThumb",
-            "rel": "contains"
-          },
-          {
-            "from": "resources/js/Components/workstation/notes-panel.tsx",
-            "to": "resources/js/Components/workstation/notes-panel.tsx::NotesPanel",
-            "rel": "contains"
           }
         ],
         "grep_hits": [],

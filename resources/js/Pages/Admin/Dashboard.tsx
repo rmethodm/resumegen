@@ -10,23 +10,52 @@ export default function Dashboard({
     signups_last_7_days: number;
     disabled_count: number;
 }) {
-    const cards = [
-        { label: 'Users', value: users_count },
-        { label: 'Signups (7d)', value: signups_last_7_days },
-        { label: 'Disabled', value: disabled_count },
+    const cards: {
+        label: string;
+        value: number;
+        hint: string;
+        href: string;
+        tone?: 'warning' | 'default';
+    }[] = [
+        {
+            label: 'Users',
+            value: users_count,
+            hint: 'Total accounts',
+            href: route('admin.users.index'),
+        },
+        {
+            label: 'Signups (7d)',
+            value: signups_last_7_days,
+            hint: 'New this week',
+            href: route('admin.users.index'),
+        },
+        {
+            label: 'Disabled',
+            value: disabled_count,
+            hint: 'Login blocked',
+            href: route('admin.users.index'),
+            tone: disabled_count > 0 ? 'warning' : 'default',
+        },
     ];
 
     return (
         <AdminLayout
             header={
-                <div className="flex items-end justify-between gap-4">
+                <div className="flex flex-wrap items-end justify-between gap-4">
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900">Support dashboard</h1>
-                        <p className="mt-0.5 text-sm text-slate-500">User counts and support entry points.</p>
+                        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">
+                            Support
+                        </p>
+                        <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-slate-900">
+                            Ops pulse
+                        </h1>
+                        <p className="mt-1 text-sm text-slate-500">
+                            Account counts and the fastest path into user support.
+                        </p>
                     </div>
                     <Link
                         href={route('admin.users.index')}
-                        className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
+                        className="rounded-md bg-accent-bg px-3 py-2 text-sm font-medium text-text-on-accent shadow-sm transition-colors duration-150 hover:bg-accent-bg-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2"
                     >
                         Browse users
                     </Link>
@@ -35,19 +64,36 @@ export default function Dashboard({
         >
             <Head title="Admin" />
 
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-3">
                 {cards.map((card) => (
-                    <div
+                    <Link
                         key={card.label}
-                        className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+                        href={card.href}
+                        className="group rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-shadow duration-150 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                     >
-                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            {card.label}
+                        <div className="flex gap-2.5">
+                            <span
+                                className={
+                                    'mt-0.5 w-0.5 shrink-0 self-stretch rounded-full ' +
+                                    (card.tone === 'warning' && card.value > 0
+                                        ? 'bg-amber-500'
+                                        : 'bg-accent-bg')
+                                }
+                                aria-hidden
+                            />
+                            <div className="min-w-0">
+                                <div className="text-[11px] font-medium uppercase tracking-[0.1em] text-slate-500">
+                                    {card.label}
+                                </div>
+                                <div className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-slate-900">
+                                    {card.value}
+                                </div>
+                                <p className="mt-1 text-xs text-slate-500 group-hover:text-slate-700">
+                                    {card.hint}
+                                </p>
+                            </div>
                         </div>
-                        <div className="mt-2 text-3xl font-bold tabular-nums text-slate-900">
-                            {card.value}
-                        </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </AdminLayout>

@@ -27,7 +27,7 @@ import type { ResumeDraft, ResumeSkill, SkillLibraryGroup } from '@/types';
 import type { SkillGroup } from '@/types';
 
 const autocompleteFieldClass =
-    'flex h-10 w-full min-w-0 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm outline-none transition-colors placeholder:text-gray-400 focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500/30';
+    'flex h-10 w-full min-w-0 rounded-md border border-border-default bg-surface-overlay px-3 py-1 text-sm shadow-sm outline-none transition-colors placeholder:text-tertiary focus-visible:border-border-focus focus-visible:ring-2 focus-visible:ring-border-focus/30';
 
 type RepeatedKey = 'experiences' | 'projects' | 'education' | 'certificates';
 
@@ -72,12 +72,12 @@ export function ContactFields({
         <>
             {/* Target role lives in the sticky bar above the form stack.
                 Contact keeps company + JD notes only to avoid duplicate fields. */}
-            <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3.5">
+            <div className="flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface-sunken p-3.5">
                 <div>
-                    <p className="text-[11px] font-bold tracking-[0.06em] text-gray-500 uppercase">
+                    <p className="text-[11px] font-bold tracking-[0.06em] text-secondary uppercase">
                         Version labels
                     </p>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-gray-500">
+                    <p className="mt-0.5 text-[11px] leading-relaxed text-secondary">
                         Optional. Target role is edited above this form. Company
                         and notes are dashboard-only — not printed on the
                         resume.
@@ -108,7 +108,7 @@ export function ContactFields({
                             })
                         }
                     />
-                    <p className="text-[11px] text-gray-500">
+                    <p className="text-[11px] text-secondary">
                         {(resume.target_job_description ?? '').length} / 10000
                         characters
                     </p>
@@ -244,7 +244,7 @@ export function SummaryFields({
                     >
                         {busy ? 'Generating…' : 'AI draft'}
                         {status.quotas.summary.remaining >= 0 && (
-                            <span className="ml-1 font-normal text-gray-400">
+                            <span className="ml-1 font-normal text-tertiary">
                                 ({status.quotas.summary.remaining} left)
                             </span>
                         )}
@@ -260,20 +260,20 @@ export function SummaryFields({
                     onChange({ ...resume, summary: event.target.value })
                 }
             />
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-secondary">
                 {(resume.summary ?? '').length} / 2000 characters
             </p>
             {aiError && (
-                <p className="text-[11px] text-red-600" role="alert">
+                <p className="text-[11px] text-error-text" role="alert">
                     {aiError}
                 </p>
             )}
             {draftSummary !== null && (
                 <div className="rounded-md border border-accent-500/30 bg-accent-100/40 p-3">
-                    <p className="mb-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                    <p className="mb-1 text-[10px] font-semibold tracking-wide text-secondary uppercase">
                         AI proposal — not saved until you accept
                     </p>
-                    <p className="text-sm leading-relaxed text-gray-800">
+                    <p className="text-sm leading-relaxed text-primary">
                         {draftSummary}
                     </p>
                     <div className="mt-2 flex gap-2">
@@ -289,7 +289,7 @@ export function SummaryFields({
                         </button>
                         <button
                             type="button"
-                            className="text-[11px] font-semibold text-gray-500 hover:underline"
+                            className="text-[11px] font-semibold text-secondary hover:underline"
                             onClick={() => setDraftSummary(null)}
                         >
                             Dismiss
@@ -364,7 +364,7 @@ export function ExperienceFields({
         <>
             <div className="flex flex-col gap-1.5">
                 <Label className="text-xs">Bullet style</Label>
-                <p className="text-[11px] text-gray-500">
+                <p className="text-[11px] text-secondary">
                     Applies to Work Experience and Projects.
                 </p>
                 <div className="grid grid-cols-3 gap-2">
@@ -380,7 +380,7 @@ export function ExperienceFields({
                                 'flex flex-col justify-between gap-3 rounded-xl border p-2.5 text-left',
                                 resume.bullet_style === style
                                     ? 'border-accent-500 bg-accent-100 ring-1 ring-border-focus'
-                                    : 'border-gray-200 hover:bg-gray-50',
+                                    : 'border-border-subtle hover:bg-surface-sunken',
                             )}
                         >
                             <span className="flex h-12 flex-col justify-center">
@@ -391,7 +391,7 @@ export function ExperienceFields({
                                     'text-[10px] font-bold tracking-[0.06em] uppercase',
                                     resume.bullet_style === style
                                         ? 'text-accent-text'
-                                        : 'text-gray-500',
+                                        : 'text-secondary',
                                 )}
                             >
                                 {style}
@@ -487,16 +487,16 @@ export function ExperienceFields({
                     />
                     {rewriteFor?.experienceIndex === index && (
                         <div className="rounded-md border border-accent-500/30 bg-accent-100/40 p-3">
-                            <p className="mb-1 text-[10px] font-semibold text-gray-500 uppercase">
+                            <p className="mb-1 text-[10px] font-semibold text-secondary uppercase">
                                 AI rewrite options
                             </p>
                             {rewriteFor.error && (
-                                <p className="text-[11px] text-red-600">
+                                <p className="text-[11px] text-error-text">
                                     {rewriteFor.error}
                                 </p>
                             )}
                             {busy && rewriteFor.options.length === 0 && (
-                                <p className="text-[11px] text-gray-500">
+                                <p className="text-[11px] text-secondary">
                                     Generating…
                                 </p>
                             )}
@@ -505,7 +505,7 @@ export function ExperienceFields({
                                     <li key={option}>
                                         <button
                                             type="button"
-                                            className="w-full rounded-md border border-gray-200 bg-white px-2.5 py-2 text-left text-sm text-gray-800 hover:border-accent-500"
+                                            className="w-full rounded-md border border-border-subtle bg-surface-overlay px-2.5 py-2 text-left text-sm text-primary hover:border-accent-500"
                                             onClick={() => {
                                                 const bullets = [
                                                     ...(resume.experiences[
@@ -531,7 +531,7 @@ export function ExperienceFields({
                             </ul>
                             <button
                                 type="button"
-                                className="mt-2 text-[11px] font-semibold text-gray-500 hover:underline"
+                                className="mt-2 text-[11px] font-semibold text-secondary hover:underline"
                                 onClick={() => setRewriteFor(null)}
                             >
                                 Dismiss
@@ -823,7 +823,7 @@ export function SkillsFields({
                                 'flex flex-col justify-between gap-3 rounded-xl border p-2.5 text-left',
                                 resume.skills_layout === layout
                                     ? 'border-accent-500 bg-accent-100 ring-1 ring-border-focus'
-                                    : 'border-gray-200 hover:bg-gray-50',
+                                    : 'border-border-subtle hover:bg-surface-sunken',
                             )}
                         >
                             <span className="flex h-12 flex-col justify-center">
@@ -834,7 +834,7 @@ export function SkillsFields({
                                     'text-[10px] font-bold uppercase',
                                     resume.skills_layout === layout
                                         ? 'text-accent-text'
-                                        : 'text-gray-500',
+                                        : 'text-secondary',
                                 )}
                             >
                                 {layout}
@@ -857,7 +857,7 @@ export function SkillsFields({
                     </button>
                 </div>
                 {atCap && (
-                    <p className="text-[11px] text-gray-500">
+                    <p className="text-[11px] text-secondary">
                         Limit reached ({MAX_SKILLS}).
                     </p>
                 )}
