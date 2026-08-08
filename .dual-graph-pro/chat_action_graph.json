@@ -1379,36 +1379,16 @@
       "meta": {
         "summary": "Rebranded token spine to DESIGN.md's warm cream/coffee/orange palette, 12px radius, Inter font"
       }
+    },
+    {
+      "id": "action:edit:1786170449",
+      "type": "action",
+      "meta": {
+        "summary": "Re-rebranded token spine to DESIGN.md v2: cool-neutral/mint Mintlify-style palette (accent anchored on confirmed #00D4A4), radius scale (md 12\u21928px, 2xl 20\u219224px, buttons now pill-full), added Geist Mono font family for code"
+      }
     }
   ],
   "edges": [
-    {
-      "from": "query:(empty)",
-      "to": "content/fill.js",
-      "rel": "read",
-      "ts": 1786012832,
-      "meta": {
-        "mode": "head"
-      }
-    },
-    {
-      "from": "query:(empty)",
-      "to": "content/fill-heuristics.js",
-      "rel": "read",
-      "ts": 1786012832,
-      "meta": {
-        "mode": "head"
-      }
-    },
-    {
-      "from": "query:(empty)",
-      "to": "background/service-worker.js::ensureContentScript",
-      "rel": "read",
-      "ts": 1786012838,
-      "meta": {
-        "mode": "symbol_excerpt"
-      }
-    },
     {
       "from": "query:(empty)",
       "to": "background/service-worker.js::ensureContentScript",
@@ -4618,6 +4598,24 @@
       "to": "resources/views/app.blade.php",
       "rel": "edited",
       "ts": 1786168192
+    },
+    {
+      "from": "action:edit:1786170449",
+      "to": "resources/css/app.css",
+      "rel": "edited",
+      "ts": 1786170449
+    },
+    {
+      "from": "action:edit:1786170449",
+      "to": "tailwind.config.js",
+      "rel": "edited",
+      "ts": 1786170449
+    },
+    {
+      "from": "action:edit:1786170449",
+      "to": "resources/views/app.blade.php",
+      "rel": "edited",
+      "ts": 1786170449
     }
   ],
   "files": {
@@ -5217,11 +5215,11 @@
       "cached_chars": 4528,
       "cached_tokens_est": 1132,
       "last_action": "edited",
-      "last_ts": "2026-08-08T05:49:52.791510+00:00",
+      "last_ts": "2026-08-08T06:27:29.260580+00:00",
       "first_read_turn": 3,
-      "last_edited": 1786168177.408246,
-      "edit_count": 1,
-      "edited_count": 1
+      "last_edited": 1786170426.845172,
+      "edit_count": 2,
+      "edited_count": 2
     },
     "resources/js/hooks/useDarkMode.ts::useDarkMode": {
       "query_terms": [],
@@ -5238,11 +5236,11 @@
       "cached_chars": 6000,
       "cached_tokens_est": 1500,
       "last_action": "edited",
-      "last_ts": "2026-08-08T05:49:52.791484+00:00",
+      "last_ts": "2026-08-08T06:27:29.260554+00:00",
       "first_read_turn": 3,
-      "last_edited": 1786168171.305312,
-      "edit_count": 4,
-      "edited_count": 1
+      "last_edited": 1786170418.316278,
+      "edit_count": 7,
+      "edited_count": 2
     },
     "resources/js/Layouts/AuthSplitLayout.tsx": {
       "last_edited": 1786106311.036405,
@@ -5701,11 +5699,11 @@
       "cached_chars": 1909,
       "cached_tokens_est": 477,
       "last_action": "edited",
-      "last_ts": "2026-08-08T05:49:52.791536+00:00",
+      "last_ts": "2026-08-08T06:27:29.260604+00:00",
       "first_read_turn": 2,
-      "last_edited": 1786168141.377569,
-      "edit_count": 1,
-      "edited_count": 1
+      "last_edited": 1786170430.339713,
+      "edit_count": 2,
+      "edited_count": 2
     },
     "resources/js/Components/resume/score-dial.tsx": {
       "query_terms": [],
@@ -5735,115 +5733,6 @@
     }
   },
   "actions": [
-    {
-      "ts": 1786127036,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "function absolutePath|function assertValidFilename",
-        "hit_count": 3,
-        "hit_files": [
-          "./app/Services/DatabaseBackupService.php",
-          "./app/Services/DatabaseBackupService.php-89-        if ($filename !== basename($filename) || ! preg_match(self"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Admin/Backups",
-          "resources/js/Pages/Admin/Users",
-          "resources/js/Pages/Auth",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786127044.1349828,
-      "files": [
-        "app/Http/Controllers/Admin/BackupController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786127056,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "function render\\(Request",
-        "hit_count": 3,
-        "hit_files": [
-          "./docs/superpowers/plans/2026-06-13-ai-lockdown.md",
-          "./app/Http/Controllers/ResumeController.php",
-          "./docs/superpowers/plans/2026-06-13-ai-lockdown.md-39-        return response()->json(['error' => self"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Admin/Backups",
-          "resources/js/Pages/Admin/Users",
-          "resources/js/Pages/Auth",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786127074.055582,
-      "files": [
-        "app/Http/Controllers/ResumeController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786127075.492855,
-      "files": [
-        "app/Http/Controllers/ResumeController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786127081,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "function resumes\\(\\)",
-        "hit_count": 12,
-        "hit_files": [
-          "./app/Models/ResumeGroup.php",
-          "./docs/superpowers/plans/2026-05-28-ux-onboarding.md",
-          "./app/Models/ResumeGroup.php-31-        return $this->hasMany(Resume",
-          "./docs/superpowers/plans/2026-05-28-master-admin-section.md-172-        return $this->hasMany(Resume",
-          "./docs/superpowers/plans/2026-05-28-master-admin-section.md",
-          "./docs/superpowers/plans/2026-05-28-two-factor-authentication.md",
-          "./app/Models/User.php",
-          "./docs/superpowers/plans/2026-05-28-two-factor-authentication.md-241-        return $this->hasMany(Resume",
-          "./app/Models/User.php-31-        return $this->hasMany(Resume",
-          "./docs/superpowers/plans/2026-05-28-ux-onboarding.md-123-        return $this->hasMany(Resume"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Admin/Backups",
-          "resources/js/Pages/Admin/Users",
-          "resources/js/Pages/Auth",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786127102,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "export function useAutosave|export default function useAutosave",
-        "hit_count": 2,
-        "hit_files": [
-          "./resources/js/hooks/use-autosave.ts",
-          "./docs/superpowers/plans/2026-08-04-workstation-actionable-quality-tools.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Admin/Backups",
-          "resources/js/Pages/Admin/Users",
-          "resources/js/Pages/Auth",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
     {
       "ts": 1786127113,
       "kind": "fallback_rg",
@@ -7708,19 +7597,76 @@
       "payload": {
         "kind": "register_edit"
       }
+    },
+    {
+      "ts": 1786170290,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "brand-green|#[0-9a-fA-F]{3,6}",
+        "hit_count": 10,
+        "hit_files": [
+          "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.html",
+          "resources/js/Components/resume/resume-preview.tsx",
+          "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.html-11-    .ds-grid{display"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Jobs",
+          "ds-bundle/components/general/ApplicationLogo",
+          "extension/shared",
+          "resources/js/Components/resume"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786170406.688798,
+      "files": [
+        "resources/css/app.css"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786170411.9665868,
+      "files": [
+        "resources/css/app.css"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786170418.316277,
+      "files": [
+        "resources/css/app.css"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786170426.8451688,
+      "files": [
+        "tailwind.config.js"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786170430.339712,
+      "files": [
+        "resources/views/app.blade.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786170449,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
     }
   ],
   "decisions": [
-    {
-      "ts": 1786106341,
-      "summary": "Fixed both finalize Critical findings: focus-visible on Forgot-password link, renamed overlay-sounding class to surface-card to clear modal-pattern detector false positive",
-      "files": [
-        "resources/js/Pages/Auth/Login.tsx",
-        "resources/js/Layouts/AuthSplitLayout.tsx",
-        "tailwind.config.js"
-      ],
-      "scope": "global"
-    },
     {
       "ts": 1786106686,
       "summary": "Polish pass on auth surface: visual (not color-only) confirmation feedback, active/pressed states on buttons and toggles, on-brand checkbox color via token spine",
@@ -7950,6 +7896,16 @@
     {
       "ts": 1786168192,
       "summary": "Rebranded token spine to DESIGN.md's warm cream/coffee/orange palette, 12px radius, Inter font",
+      "files": [
+        "resources/css/app.css",
+        "tailwind.config.js",
+        "resources/views/app.blade.php"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786170449,
+      "summary": "Re-rebranded token spine to DESIGN.md v2: cool-neutral/mint Mintlify-style palette (accent anchored on confirmed #00D4A4), radius scale (md 12\u21928px, 2xl 20\u219224px, buttons now pill-full), added Geist Mono font family for code",
       "files": [
         "resources/css/app.css",
         "tailwind.config.js",

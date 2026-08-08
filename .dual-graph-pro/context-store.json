@@ -4126,7 +4126,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T12:25:13.015334+00:00",
     "created_epoch": 1786105513,
-    "updated_at": "2026-08-08T05:49:52.802228+00:00",
+    "updated_at": "2026-08-08T06:27:29.270115+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -4169,7 +4169,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T12:25:13.021630+00:00",
     "created_epoch": 1786105513,
-    "updated_at": "2026-08-08T05:49:52.805286+00:00",
+    "updated_at": "2026-08-08T06:27:29.274709+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -6780,40 +6780,6 @@
     }
   },
   {
-    "id": "mem:1786144380892",
-    "kind": "decision",
-    "content": "Dark-remap status success/warning/error/info semantic colors",
-    "tags": [
-      "dark",
-      "remap",
-      "status",
-      "success",
-      "warning",
-      "error",
-      "info",
-      "semantic"
-    ],
-    "files": [
-      "resources/css/app.css",
-      ".ui-craft/tokens.md",
-      ".ui-craft/decisions.md"
-    ],
-    "file_path": "resources/css/app.css",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T23:13:00.892927+00:00",
-    "created_epoch": 1786144380,
-    "updated_at": "2026-08-07T23:13:00.892929+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [],
-      "recent_queries": []
-    }
-  },
-  {
     "id": "mem:1786144380898",
     "kind": "edit_observation",
     "content": "Edited during active session",
@@ -7237,7 +7203,9 @@
       "warm",
       "cream",
       "coffee",
-      "orange"
+      "orange",
+      "cool",
+      "neutral"
     ],
     "files": [
       "resources/views/app.blade.php"
@@ -7247,7 +7215,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-08T05:49:52.808165+00:00",
     "created_epoch": 1786168192,
-    "updated_at": "2026-08-08T05:49:52.808171+00:00",
+    "updated_at": "2026-08-08T06:27:29.279791+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -7308,6 +7276,40 @@
       "recent_queries": [
         "app.blade.php font link Google Fonts IBM Plex Sans"
       ]
+    }
+  },
+  {
+    "id": "mem:1786170449262",
+    "kind": "decision",
+    "content": "Re-rebranded token spine to DESIGN.md v2: cool-neutral/mint Mintlify-style palette (accent anchored on confirmed #00D4A4), radius scale (md 12\u21928px, 2xl 20\u219224px, buttons now pill-full), added Geist Mono font family for code",
+    "tags": [
+      "rebranded",
+      "token",
+      "spine",
+      "design",
+      "cool",
+      "neutral",
+      "mint",
+      "mintlify"
+    ],
+    "files": [
+      "resources/css/app.css",
+      "tailwind.config.js",
+      "resources/views/app.blade.php"
+    ],
+    "file_path": "resources/css/app.css",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-08T06:27:29.262195+00:00",
+    "created_epoch": 1786170449,
+    "updated_at": "2026-08-08T06:27:29.262201+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
     }
   }
 ]

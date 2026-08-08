@@ -15,17 +15,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                // DESIGN.md's two-face system: Inter for everything, Degular
-                // Display is proprietary — Inter 500 (font-medium) at
-                // display scale is DESIGN.md's own stated open-source
-                // substitute, so `font-display` is the same stack and the
-                // distinction is carried by weight/tracking at the call site.
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
-                display: ['Inter', ...defaultTheme.fontFamily.sans],
-            },
-            letterSpacing: {
-                // DESIGN.md's eyebrow-uppercase: +1px positive tracking at 14px.
-                eyebrow: '0.0715em',
+                sans: ['IBM Plex Sans', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 // Frozen legacy hex — do not use in new UI. Prefer semantic /
