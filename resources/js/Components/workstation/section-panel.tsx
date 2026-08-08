@@ -6,8 +6,8 @@ import {
     ScoreChecklist,
 } from '@/Components/resume/score-coach';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
-import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button, buttonClassName } from '@/Components/ui/button';
+import { BackgroundColorPicker } from '@/Components/workstation/background-color-picker';
 import { JdMatchPanel } from '@/Components/workstation/jd-match-panel';
 import {
     keywordsFor,
@@ -26,7 +26,6 @@ import type {
     ResumeAnalysis,
     ResumeDraft,
     ResumeSectionKey,
-    ResumeSuggestion,
 } from '@/types';
 
 /** Scalar sections read as done/half-done/untouched; list sections read as a
@@ -110,8 +109,6 @@ export function SectionPanel({
     selected,
     onSelect,
     onAddSection,
-    onApplySuggestion,
-    onSelectSuggestion,
     onAddKeyword,
     onJumpChecklist,
     onOpenOptimize,
@@ -123,8 +120,6 @@ export function SectionPanel({
     selected: ResumeSectionKey;
     onSelect: (section: ResumeSectionKey) => void;
     onAddSection: (section: ResumeSectionKey) => void;
-    onApplySuggestion: (suggestion: ResumeSuggestion) => void;
-    onSelectSuggestion: (suggestion: ResumeSuggestion) => void;
     onAddKeyword: (keyword: string) => void;
     onJumpChecklist: (item: ScoreChecklistItem) => void;
     /** Jump to Optimize tab (JD match). */
@@ -171,67 +166,10 @@ export function SectionPanel({
                 Back to dashboard
             </Link>
 
-            <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
-                <p className="mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
-                    Resume sections
-                </p>
-                <ul className="space-y-1">
-                    {resume.section_order.map((section) => (
-                        <li key={section}>
-                            <button
-                                type="button"
-                                onClick={() => onSelect(section)}
-                                aria-current={selected === section}
-                                className={cn(
-                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-colors',
-                                    selected === section
-                                        ? 'border-accent-bg bg-surface-sunken font-medium text-text-primary'
-                                        : 'border-transparent text-text-primary hover:bg-surface-raised',
-                                )}
-                            >
-                                <span>{sectionLabels[section]}</span>
-                                <span className="text-xs text-text-tertiary">
-                                    {sectionSummary(resume, section)}
-                                </span>
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-                {/* Direct buttons (not a dropdown): the rail scrolls with
-                    overflow-y-auto, which clipped absolute MenuItems so
-                    hidden sections looked permanently gone. */}
-                {addable.length === 0 ? (
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="mt-2 w-full"
-                        disabled
-                        title="All available sections are already on this resume."
-                    >
-                        + Add section
-                    </Button>
-                ) : (
-                    <div className="mt-2 flex flex-col gap-1">
-                        <p className="px-1 text-[10px] font-medium text-text-tertiary">
-                            Hidden sections
-                        </p>
-                        {addable.map((section) => (
-                            <button
-                                key={section}
-                                type="button"
-                                onClick={() => onAddSection(section)}
-                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-border-default bg-surface-card px-2 py-1.5 text-left text-sm text-text-secondary transition-colors hover:border-border-focus hover:bg-surface-raised hover:text-text-primary"
-                            >
-                                <PlusIcon className="size-3.5 shrink-0" />
-                                {sectionLabels[section]}
-                            </button>
-                        ))}
-                    </div>
-                )}
-            </div>
+            <BackgroundColorPicker />
 
-            {/* Score/coaching grouped under one disclosure so the section
-                nav above isn't buried behind five stacked widgets. */}
+            {/* Score/coaching grouped under one disclosure, placed above the
+                section nav so it's the first thing seen in the rail. */}
             <details
                 open
                 className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm"
@@ -298,16 +236,66 @@ export function SectionPanel({
                     onAddKeyword={onAddKeyword}
                     onOpenOptimize={onOpenOptimize}
                 />
-
-                <p className="mt-4 mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
-                    Improvements
-                </p>
-                <SuggestionList
-                    suggestions={analysis.suggestions}
-                    onApply={onApplySuggestion}
-                    onSelect={onSelectSuggestion}
-                />
             </details>
+
+            <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
+                <p className="mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
+                    Resume sections
+                </p>
+                <ul className="space-y-1">
+                    {resume.section_order.map((section) => (
+                        <li key={section}>
+                            <button
+                                type="button"
+                                onClick={() => onSelect(section)}
+                                aria-current={selected === section}
+                                className={cn(
+                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-colors',
+                                    selected === section
+                                        ? 'border-accent-bg bg-surface-sunken font-medium text-text-primary'
+                                        : 'border-transparent text-text-primary hover:bg-surface-raised',
+                                )}
+                            >
+                                <span>{sectionLabels[section]}</span>
+                                <span className="text-xs text-text-tertiary">
+                                    {sectionSummary(resume, section)}
+                                </span>
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+                {/* Direct buttons (not a dropdown): the rail scrolls with
+                    overflow-y-auto, which clipped absolute MenuItems so
+                    hidden sections looked permanently gone. */}
+                {addable.length === 0 ? (
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 w-full"
+                        disabled
+                        title="All available sections are already on this resume."
+                    >
+                        + Add section
+                    </Button>
+                ) : (
+                    <div className="mt-2 flex flex-col gap-1">
+                        <p className="px-1 text-[10px] font-medium text-text-tertiary">
+                            Hidden sections
+                        </p>
+                        {addable.map((section) => (
+                            <button
+                                key={section}
+                                type="button"
+                                onClick={() => onAddSection(section)}
+                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-border-default bg-surface-card px-2 py-1.5 text-left text-sm text-text-secondary transition-colors hover:border-border-focus hover:bg-surface-raised hover:text-text-primary"
+                            >
+                                <PlusIcon className="size-3.5 shrink-0" />
+                                {sectionLabels[section]}
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
         </aside>
     );
 }

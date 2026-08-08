@@ -1,194 +1,5 @@
 [
   {
-    "id": "mem:1785883814126",
-    "kind": "query_association",
-    "content": "Queried during: href linkedin website a tag link",
-    "tags": [
-      "href",
-      "linkedin",
-      "website",
-      "tag",
-      "link"
-    ],
-    "files": [
-      "resources/js/Components/resume/resume-preview.tsx"
-    ],
-    "file_path": "resources/js/Components/resume/resume-preview.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T22:50:14.126776+00:00",
-    "created_epoch": 1785883814,
-    "updated_at": "2026-08-04T22:50:14.126781+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "href linkedin website a tag link"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "anchor_mode": "file",
-      "session_epoch": 1785882720
-    }
-  },
-  {
-    "id": "mem:1785883814600",
-    "kind": "query_association",
-    "content": "Queried during: href linkedin website link",
-    "tags": [
-      "href",
-      "linkedin",
-      "website",
-      "link"
-    ],
-    "files": [
-      "resources/js/Pages/Resumes/PublicShare.tsx"
-    ],
-    "file_path": "resources/js/Pages/Resumes/PublicShare.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T22:50:14.600213+00:00",
-    "created_epoch": 1785883814,
-    "updated_at": "2026-08-04T22:50:14.600220+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "href linkedin website link"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "anchor_mode": "file",
-      "session_epoch": 1785882720
-    }
-  },
-  {
-    "id": "mem:1785883848622",
-    "kind": "query_association",
-    "content": "Queried during: save fill forceFill update",
-    "tags": [
-      "save",
-      "fill",
-      "forcefill"
-    ],
-    "files": [
-      "app/Support/ResumeDocument.php"
-    ],
-    "file_path": "app/Support/ResumeDocument.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T22:50:48.622940+00:00",
-    "created_epoch": 1785883848,
-    "updated_at": "2026-08-04T22:50:48.622950+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "save fill forceFill update"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "anchor_mode": "file",
-      "session_epoch": 1785882720
-    }
-  },
-  {
-    "id": "mem:1785883848627",
-    "kind": "interaction_pattern",
-    "content": "Frequently read with: resources/js/Pages/Resumes/PublicShare.tsx, resources/js/Components/resume/resume-preview.tsx, resources/views/resumes/export/pdf.blade.php",
-    "tags": [
-      "save",
-      "fill",
-      "forcefill"
-    ],
-    "files": [
-      "app/Support/ResumeDocument.php"
-    ],
-    "file_path": "app/Support/ResumeDocument.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T22:50:48.627401+00:00",
-    "created_epoch": 1785883848,
-    "updated_at": "2026-08-04T22:50:48.627407+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "save fill forceFill update"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 3,
-      "co_visited": [
-        "resources/js/Pages/Resumes/PublicShare.tsx",
-        "resources/js/Components/resume/resume-preview.tsx",
-        "resources/views/resumes/export/pdf.blade.php"
-      ]
-    }
-  },
-  {
-    "id": "mem:1785883855259",
-    "kind": "query_association",
-    "content": "Queried during: throttle limiter login forgot-password register",
-    "tags": [
-      "throttle",
-      "limiter",
-      "login",
-      "forgot",
-      "password",
-      "register"
-    ],
-    "files": [
-      "vendor/laravel/fortify/routes/routes.php"
-    ],
-    "file_path": "vendor/laravel/fortify/routes/routes.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T22:50:55.259774+00:00",
-    "created_epoch": 1785883855,
-    "updated_at": "2026-08-04T22:50:55.259782+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "throttle limiter login forgot-password register"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "anchor_mode": "file",
-      "session_epoch": 1785882720
-    }
-  },
-  {
-    "id": "mem:1785884897076",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "added",
-      "login",
-      "rate",
-      "limiter",
-      "password",
-      "email",
-      "throttle"
-    ],
-    "files": [
-      "config/fortify.php"
-    ],
-    "file_path": "config/fortify.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:08:17.076011+00:00",
-    "created_epoch": 1785884897,
-    "updated_at": "2026-08-04T23:08:17.076015+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1785884897069",
     "kind": "decision",
     "content": "Added login rate limiter and password.email throttle to fix H1/M3",
@@ -4863,13 +4674,15 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T19:37:55.893167+00:00",
     "created_epoch": 1786131475,
-    "updated_at": "2026-08-08T03:04:22.528705+00:00",
+    "updated_at": "2026-08-08T11:40:03.001808+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
     "evidence": {
       "source": "graph_register_edit",
-      "recent_action_kinds": [],
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
       "recent_queries": [],
       "edited": true
     }
@@ -4898,7 +4711,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T19:37:55.904124+00:00",
     "created_epoch": 1786131475,
-    "updated_at": "2026-08-08T03:04:22.536737+00:00",
+    "updated_at": "2026-08-08T11:40:02.995477+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -4910,7 +4723,8 @@
       "recent_action_kinds": [
         "continue_retrieve",
         "retrieve",
-        "register_edit"
+        "register_edit",
+        "fallback_rg"
       ],
       "recent_queries": [
         "surface-overlay surface-card modal-without-dialog elevated surfaces",
@@ -7310,6 +7124,205 @@
       "window_sec": 120,
       "recent_action_kinds": [],
       "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786172209891",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session"
+    ],
+    "files": [
+      ".impeccable/design.json"
+    ],
+    "file_path": ".impeccable/design.json",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-08T06:56:49.891878+00:00",
+    "created_epoch": 1786172209,
+    "updated_at": "2026-08-08T06:56:49.891890+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786172209882",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session"
+    ],
+    "files": [
+      "DESIGN.md"
+    ],
+    "file_path": "DESIGN.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-08T06:56:49.882787+00:00",
+    "created_epoch": 1786172209,
+    "updated_at": "2026-08-08T06:56:49.882795+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786181722684",
+    "kind": "interaction_pattern",
+    "content": "Repeatedly visited during recent work",
+    "tags": [],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx::Workstation"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
+    "symbol_hash": "ca7c4175",
+    "created_at": "2026-08-08T09:35:22.684015+00:00",
+    "created_epoch": 1786181722,
+    "updated_at": "2026-08-08T09:35:22.684022+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": []
+    }
+  },
+  {
+    "id": "mem:1786189202985",
+    "kind": "decision",
+    "content": "Moved score & coaching panel above resume sections nav; removed Improvements/SuggestionList block and its now-dead handlers",
+    "tags": [
+      "moved",
+      "score",
+      "coaching",
+      "panel",
+      "above",
+      "resume",
+      "sections",
+      "nav"
+    ],
+    "files": [
+      "resources/js/Components/workstation/section-panel.tsx",
+      "resources/js/Pages/Resumes/Workstation.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/section-panel.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-08T11:40:02.985492+00:00",
+    "created_epoch": 1786189202,
+    "updated_at": "2026-08-08T11:40:02.985500+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786206338715",
+    "kind": "edit_observation",
+    "content": "Edited after query: OptimizePanel component improvements list job description ATS",
+    "tags": [
+      "deleted",
+      "orphaned",
+      "suggestionlist",
+      "component",
+      "score",
+      "coaching",
+      "panel",
+      "already"
+    ],
+    "files": [
+      "resources/js/Components/resume/suggestion-list.tsx"
+    ],
+    "file_path": "resources/js/Components/resume/suggestion-list.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-08T16:25:38.715849+00:00",
+    "created_epoch": 1786206338,
+    "updated_at": "2026-08-08T16:25:38.715859+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "OptimizePanel component improvements list job description ATS"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "OptimizePanel component improvements list job description ATS"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786206338707",
+    "kind": "decision",
+    "content": "Deleted orphaned SuggestionList component; score/coaching panel already above sections, Improvements block already removed in working tree",
+    "tags": [
+      "deleted",
+      "orphaned",
+      "suggestionlist",
+      "component",
+      "score",
+      "coaching",
+      "panel",
+      "already"
+    ],
+    "files": [
+      "resources/js/Components/resume/suggestion-list.tsx"
+    ],
+    "file_path": "resources/js/Components/resume/suggestion-list.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-08T16:25:38.707434+00:00",
+    "created_epoch": 1786206338,
+    "updated_at": "2026-08-08T16:25:38.707445+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "OptimizePanel component improvements list job description ATS"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg",
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "OptimizePanel component improvements list job description ATS"
+      ]
     }
   }
 ]

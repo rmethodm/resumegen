@@ -1,3 +1,680 @@
 {
-  "entries": {}
+  "entries": {
+    "design tokens css custom properties tailwind config color|tf=5|te=12": {
+      "created_epoch": 1786220549,
+      "files": [
+        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+        "tailwind.config.js",
+        "resources/js/Pages/Dashboard.tsx::scoreDotColor",
+        "resources/js/Components/resume/resume-preview.tsx"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx": 1785924695822713100,
+        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx": 1786047188640507757,
+        "tailwind.config.js": 1786170711207224935,
+        "resources/js/Pages/Dashboard.tsx::scoreDotColor": 1786157693112779635,
+        "resources/js/Components/resume/resume-preview.tsx": 1785876555918697342
+      },
+      "result": {
+        "ok": true,
+        "query": "design tokens CSS custom properties tailwind config color accent gray radius shadow font family DESIGN.md",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "ext": ".tsx",
+            "size": 4464,
+            "keywords": [
+              "extensiontokensform",
+              "extension",
+              "tokens",
+              "form"
+            ],
+            "summary": "import PrimaryButton from '@/Components/PrimaryButton';. Contains 2 functions/classes: formatWhen, ExtensionTokensForm.",
+            "file_hash": "49b90ae2",
+            "_score": 19,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "ext": ".tsx",
+            "size": 4423,
+            "keywords": [
+              "mobiletokensform",
+              "mobile",
+              "tokens",
+              "form"
+            ],
+            "summary": "import PrimaryButton from '@/Components/PrimaryButton';. Contains 2 functions/classes: formatWhen, MobileTokensForm.",
+            "file_hash": "cbc64cd3",
+            "_score": 19,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "tailwind.config.js",
+            "kind": "file",
+            "path": "tailwind.config.js",
+            "ext": ".js",
+            "size": 7484,
+            "keywords": [],
+            "summary": "import defaultTheme from 'tailwindcss/defaultTheme';. Contains 1 function: names.",
+            "file_hash": "07fb562e",
+            "_score": 18,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Dashboard.tsx::scoreDotColor",
+            "kind": "symbol",
+            "path": "resources/js/Pages/Dashboard.tsx",
+            "ext": ".tsx",
+            "size": 10,
+            "keywords": [
+              "scoredotcolor",
+              "score",
+              "dot",
+              "color"
+            ],
+            "symbol_type": "utility",
+            "name": "scoreDotColor",
+            "line_start": 34,
+            "line_end": 43,
+            "body_hash": "528a7318",
+            "confidence": "medium",
+            "exported": false,
+            "_score": 16,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/resume/resume-preview.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/resume/resume-preview.tsx",
+            "ext": ".tsx",
+            "size": 22438,
+            "keywords": [
+              "resumepreview",
+              "resume",
+              "preview"
+            ],
+            "summary": "import '../../../css/resume-fonts.css';. Contains 5 functions/classes: Section, EntryHead, EntryShell, Bullets, ....",
+            "file_hash": "be392d5b",
+            "_score": 15,
+            "_role": "code",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "tailwind.config.js",
+            "to": "@tailwindcss/forms",
+            "rel": "imports"
+          },
+          {
+            "from": "tailwind.config.js",
+            "to": "tailwindcss/defaultTheme",
+            "rel": "imports"
+          },
+          {
+            "from": ".agents/skills/daisyui/colors/SKILL.md",
+            "to": "tailwindcss",
+            "rel": "imports"
+          },
+          {
+            "from": "tailwind.config.js",
+            "to": "defaultTheme",
+            "rel": "imports"
+          },
+          {
+            "from": "tailwind.config.js",
+            "to": "forms",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "/css/resume-fonts.c",
+            "rel": "references"
+          },
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "resources/css/resume-fonts.c",
+            "rel": "references"
+          },
+          {
+            "from": ".agents/skills/daisyui/install/SKILL.md",
+            "to": "tailwindcss",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@/Components/DangerButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@/Components/PrimaryButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@inertiajs/react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "DangerButton",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    },
+    "resources css app root variables color accent surface|tf=5|te=12": {
+      "created_epoch": 1786220552,
+      "files": [
+        "resources/js/Pages/Jobs/Kanban.tsx",
+        "ds-entry.tsx",
+        "resources/js/Components/resume/resume-preview.tsx",
+        "resources/js/Pages/Dashboard.tsx",
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Jobs/Kanban.tsx": 1786144627625250910,
+        "ds-entry.tsx": 1785780795323932534,
+        "resources/js/Components/resume/resume-preview.tsx": 1785876555918697342,
+        "resources/js/Pages/Dashboard.tsx": 1786157693112779635,
+        "resources/js/Components/workstation/workstation-header.tsx": 1786158236616481145
+      },
+      "result": {
+        "ok": true,
+        "query": "resources css app.css root variables color-accent color-surface color-border color-text radius shadow font family Inter blade layout head",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Jobs/Kanban.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Jobs/Kanban.tsx",
+            "ext": ".tsx",
+            "size": 13103,
+            "keywords": [
+              "jobapplicationkanban",
+              "job",
+              "application",
+              "kanban"
+            ],
+            "summary": "import { DndContext, DragEndEvent, useDraggable, useDroppable } from '@dnd-kit/core';. Contains 3 functions/classes: JobCard, Column, JobApplicationKanban.",
+            "file_hash": "0a0a9261",
+            "_score": 23,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "ds-entry.tsx",
+            "kind": "file",
+            "path": "ds-entry.tsx",
+            "ext": ".tsx",
+            "size": 2442,
+            "keywords": [
+              "default",
+              "applicationlogo",
+              "application",
+              "logo",
+              "autocompleteinput",
+              "autocomplete",
+              "input",
+              "bulleteditor",
+              "bullet",
+              "editor",
+              "checkbox",
+              "dangerbutton",
+              "danger",
+              "button",
+              "dropdown",
+              "inputerror",
+              "error",
+              "inputlabel",
+              "label",
+              "modal",
+              "primarybutton",
+              "primary",
+              "qrcodedisplay",
+              "code",
+              "display",
+              "secondarybutton",
+              "secondary",
+              "skillgroupeditor",
+              "skill",
+              "group",
+              "skillnarrativeeditor",
+              "narrative",
+              "taginput",
+              "tag",
+              "textinput",
+              "text",
+              "resumepreview",
+              "resume",
+              "preview",
+              "scoredial",
+              "score",
+              "dial",
+              "scoregauge",
+              "gauge",
+              "suggestionlist",
+              "suggestion",
+              "list",
+              "badge",
+              "buttonclassname",
+              "class",
+              "name",
+              "card",
+              "cardheader",
+              "header",
+              "cardtitle",
+              "title",
+              "carddescription",
+              "description",
+              "cardcontent",
+              "content",
+              "cardfooter",
+              "footer",
+              "uicheckbox",
+              "textarea",
+              "shareresumemodal",
+              "share",
+              "skillpickermodal",
+              "picker",
+              "sectionfields",
+              "section",
+              "fields"
+            ],
+            "summary": "export { default as ApplicationLogo } from './resources/js/Components/ApplicationLogo';.",
+            "file_hash": "8dff6855",
+            "_score": 21,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/resume/resume-preview.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/resume/resume-preview.tsx",
+            "ext": ".tsx",
+            "size": 22438,
+            "keywords": [
+              "resumepreview",
+              "resume",
+              "preview"
+            ],
+            "summary": "import '../../../css/resume-fonts.css';. Contains 5 functions/classes: Section, EntryHead, EntryShell, Bullets, ....",
+            "file_hash": "be392d5b",
+            "_score": 21,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Dashboard.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Dashboard.tsx",
+            "ext": ".tsx",
+            "size": 31580,
+            "keywords": [],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 5 functions/classes: scoreBand, scoreDotColor, scoreSegmentColor, ReadinessStrip, ....",
+            "file_hash": "246fe18e",
+            "_score": 21,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/workstation-header.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/workstation-header.tsx",
+            "ext": ".tsx",
+            "size": 19119,
+            "keywords": [
+              "workstationtab",
+              "workstation",
+              "tab",
+              "headerversion",
+              "header",
+              "version",
+              "workstationheader"
+            ],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 1 function: WorkstationHeader.",
+            "file_hash": "35d698ee",
+            "_score": 20,
+            "_role": "code",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "/css/resume-fonts.c",
+            "rel": "references"
+          },
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "resources/css/resume-fonts.c",
+            "rel": "references"
+          },
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/ApplicationLogo",
+            "rel": "imports"
+          },
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/TextInput",
+            "rel": "imports"
+          },
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/ui/textarea",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/Components/ui/badge",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/Components/ui/input",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/Components/workstation/share-resume-modal",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/Components/workstation/template-picker-modal",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/hooks/use-valid-contact",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/lib/utils",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    },
+    "components button card input dialog select surface text|tf=5|te=12": {
+      "created_epoch": 1786220587,
+      "files": [
+        "ds-entry.tsx",
+        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+        "resources/js/Components/dashboard/new-resume-modal.tsx",
+        "resources/js/Pages/Auth/ConfirmPassword.tsx"
+      ],
+      "mtimes_ns": {
+        "ds-entry.tsx": 1785780795323932534,
+        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx": 1785924695822713100,
+        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx": 1786047188640507757,
+        "resources/js/Components/dashboard/new-resume-modal.tsx": 1786144547535938153,
+        "resources/js/Pages/Auth/ConfirmPassword.tsx": 1786106994801674162
+      },
+      "result": {
+        "ok": true,
+        "query": "Components ui button card input dialog select surface-card text-primary border-default classnames",
+        "graph_files": [
+          {
+            "id": "ds-entry.tsx",
+            "kind": "file",
+            "path": "ds-entry.tsx",
+            "ext": ".tsx",
+            "size": 2442,
+            "keywords": [
+              "default",
+              "applicationlogo",
+              "application",
+              "logo",
+              "autocompleteinput",
+              "autocomplete",
+              "input",
+              "bulleteditor",
+              "bullet",
+              "editor",
+              "checkbox",
+              "dangerbutton",
+              "danger",
+              "button",
+              "dropdown",
+              "inputerror",
+              "error",
+              "inputlabel",
+              "label",
+              "modal",
+              "primarybutton",
+              "primary",
+              "qrcodedisplay",
+              "code",
+              "display",
+              "secondarybutton",
+              "secondary",
+              "skillgroupeditor",
+              "skill",
+              "group",
+              "skillnarrativeeditor",
+              "narrative",
+              "taginput",
+              "tag",
+              "textinput",
+              "text",
+              "resumepreview",
+              "resume",
+              "preview",
+              "scoredial",
+              "score",
+              "dial",
+              "scoregauge",
+              "gauge",
+              "suggestionlist",
+              "suggestion",
+              "list",
+              "badge",
+              "buttonclassname",
+              "class",
+              "name",
+              "card",
+              "cardheader",
+              "header",
+              "cardtitle",
+              "title",
+              "carddescription",
+              "description",
+              "cardcontent",
+              "content",
+              "cardfooter",
+              "footer",
+              "uicheckbox",
+              "textarea",
+              "shareresumemodal",
+              "share",
+              "skillpickermodal",
+              "picker",
+              "sectionfields",
+              "section",
+              "fields"
+            ],
+            "summary": "export { default as ApplicationLogo } from './resources/js/Components/ApplicationLogo';.",
+            "file_hash": "8dff6855",
+            "_score": 33,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "ext": ".tsx",
+            "size": 4464,
+            "keywords": [
+              "extensiontokensform",
+              "extension",
+              "tokens",
+              "form"
+            ],
+            "summary": "import PrimaryButton from '@/Components/PrimaryButton';. Contains 2 functions/classes: formatWhen, ExtensionTokensForm.",
+            "file_hash": "49b90ae2",
+            "_score": 30,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "ext": ".tsx",
+            "size": 4423,
+            "keywords": [
+              "mobiletokensform",
+              "mobile",
+              "tokens",
+              "form"
+            ],
+            "summary": "import PrimaryButton from '@/Components/PrimaryButton';. Contains 2 functions/classes: formatWhen, MobileTokensForm.",
+            "file_hash": "cbc64cd3",
+            "_score": 30,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/dashboard/new-resume-modal.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/dashboard/new-resume-modal.tsx",
+            "ext": ".tsx",
+            "size": 9577,
+            "keywords": [
+              "rolesamplecard",
+              "role",
+              "sample",
+              "card",
+              "newresumemodal",
+              "new",
+              "resume",
+              "modal"
+            ],
+            "summary": "import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';. Contains 5 functions/classes: NewResumeModal, resetAndClose, createBlank, createSample, ....",
+            "file_hash": "b983655c",
+            "_score": 28,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Auth/ConfirmPassword.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Auth/ConfirmPassword.tsx",
+            "ext": ".tsx",
+            "size": 1929,
+            "keywords": [
+              "confirmpassword",
+              "confirm",
+              "password"
+            ],
+            "summary": "import InputError from '@/Components/InputError';. Contains 1 function: ConfirmPassword.",
+            "file_hash": "f56478d6",
+            "_score": 28,
+            "_role": "ui_surface",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/PrimaryButton",
+            "rel": "imports"
+          },
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/TextInput",
+            "rel": "imports"
+          },
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/ui/card",
+            "rel": "imports"
+          },
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/ui/input",
+            "rel": "imports"
+          },
+          {
+            "from": "ds-entry.tsx",
+            "to": "./resources/js/Components/ui/textarea",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/dashboard/new-resume-modal.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/dashboard/new-resume-modal.tsx",
+            "to": "@/Components/ui/textarea",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Auth/ConfirmPassword.tsx",
+            "to": "@/Components/PrimaryButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Auth/ConfirmPassword.tsx",
+            "to": "@/Components/TextInput",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@/Components/PrimaryButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "to": "@/Components/PrimaryButton",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    }
+  }
 }

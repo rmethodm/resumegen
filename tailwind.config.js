@@ -15,7 +15,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['IBM Plex Sans', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 // Frozen legacy hex — do not use in new UI. Prefer semantic /
