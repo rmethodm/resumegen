@@ -2,6 +2,9 @@
 *Date: 2026-06-23*
 
 > **Historical, 2026-07-21:** the resume-import feature researched here was removed along with all AI.
+> Additionally, the "Resume model fields to populate" list below (JSON columns) is doubly stale:
+> the 2026-08-02 relational rewrite moved these off JSON columns onto one-to-many tables — see
+> CLAUDE.md "Resume data model" / `App\Support\ResumeDocument`.
 
 Deep research across Enhancv, Kickresume, OpenResume, Zety, and others on how resume builder apps handle file import.
 

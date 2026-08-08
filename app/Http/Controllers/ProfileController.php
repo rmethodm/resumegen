@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use App\Services\UserLimits;
+use App\Support\MobileApiToken;
 use App\Support\ResumeFillProfile;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
@@ -40,18 +42,8 @@ class ProfileController extends Controller
             $qrCodeSvg = $writer->writeString($qrCodeUrl);
         }
 
-        $extensionTokens = $user->tokens()
-            ->where('name', ResumeFillProfile::TOKEN_NAME)
-            ->orderByDesc('created_at')
-            ->get(['id', 'name', 'last_used_at', 'created_at'])
-            ->map(fn ($token): array => [
-                'id' => $token->id,
-                'name' => $token->name,
-                'last_used_at' => $token->last_used_at?->toIso8601String(),
-                'created_at' => $token->created_at?->toIso8601String(),
-            ])
-            ->values()
-            ->all();
+        $extensionTokens = $this->tokensNamed($user, ResumeFillProfile::TOKEN_NAME);
+        $mobileTokens = $this->tokensNamed($user, MobileApiToken::TOKEN_NAME);
 
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
@@ -72,7 +64,28 @@ class ProfileController extends Controller
             ],
             'extensionTokens' => $extensionTokens,
             'extensionTokenPlain' => session('extension_token_plain'),
+            'mobileTokens' => $mobileTokens,
+            'mobileTokenPlain' => session('mobile_token_plain'),
         ]);
+    }
+
+    /**
+     * @return list<array{id: int, name: string, last_used_at: ?string, created_at: ?string}>
+     */
+    private function tokensNamed(User $user, string $name): array
+    {
+        return $user->tokens()
+            ->where('name', $name)
+            ->orderByDesc('created_at')
+            ->get(['id', 'name', 'last_used_at', 'created_at'])
+            ->map(fn ($token): array => [
+                'id' => $token->id,
+                'name' => $token->name,
+                'last_used_at' => $token->last_used_at?->toIso8601String(),
+                'created_at' => $token->created_at?->toIso8601String(),
+            ])
+            ->values()
+            ->all();
     }
 
     /**

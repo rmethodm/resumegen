@@ -42,7 +42,9 @@ const Trigger = ({ children }: PropsWithChildren) => {
 
             {open && (
                 <div
-                    className="fixed inset-0 z-modal-backdrop"
+                    // Must sit under the menu (z-dropdown). z-modal-backdrop is
+                    // higher and would swallow Log Out / menu clicks.
+                    className="fixed inset-0 z-sticky"
                     onClick={() => setOpen(false)}
                 ></div>
             )}

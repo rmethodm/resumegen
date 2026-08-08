@@ -42,7 +42,7 @@ sudo apt install -y apache2 \
   php8.5 libapache2-mod-php8.5 php8.5-cli \
   php8.5-pgsql php8.5-mbstring php8.5-xml php8.5-curl \
   php8.5-zip php8.5-gd php8.5-bcmath php8.5-intl \
-  php8.5-imagick ghostscript unzip git
+  unzip git
 
 # Composer
 curl -sS https://getcomposer.org/installer | php
@@ -55,16 +55,6 @@ sudo apt install -y nodejs
 # PostgreSQL
 sudo apt install -y postgresql postgresql-contrib
 ```
-
-**Imagick must read PDFs** (resume thumbnails render the PDF's first page). If thumbnails
-fall back to placeholders, allow PDF in ImageMagick's policy:
-
-```bash
-sudo sed -i 's/.*<policy domain="coder" rights="none" pattern="PDF".*/  <policy domain="coder" rights="read|write" pattern="PDF" \/>/' /etc/ImageMagick-6/policy.xml 2>/dev/null || true
-php -r "echo extension_loaded('imagick') ? 'imagick OK' : 'imagick MISSING', PHP_EOL;"
-```
-
-> Production requires the **Imagick PHP extension + Ghostscript binary** for thumbnails.
 
 ---
 
@@ -112,7 +102,7 @@ cat ~/.ssh/id_ed25519.pub
 
 ```bash
 composer install --no-dev --optimize-autoloader
-npm ci
+npm ci --legacy-peer-deps
 npm run build
 ```
 

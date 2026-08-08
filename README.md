@@ -17,6 +17,7 @@ Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps use
 - Public resume sharing through `/r/{token}` with PDF/DOCX downloads and an optional email/password gate.
 - Dashboard analytics, strength scoring, and job-role/title/skill autocomplete.
 - **Resumegen Apply** (Chrome/Edge MV3): side panel fills job forms from your resume via Sanctum (`/api/extension/*`; tokens on Profile). See `extension/README.md`.
+- **Job Imports** (`/jobs-imports`): live Adzuna/USAJOBS search, saved per user to `imported_jobs`; resume matching, gap analysis, tailoring, and cover letters are still frontend stubs, not implemented.
 
 Cover letters, resignation letters, proofreading, portfolio pages, A/B resume variants, and salary hints have all been removed — see `CLAUDE.md`'s "Removed Features" section for dates and detail.
 
@@ -64,12 +65,12 @@ npm run build
 
 - [CONTEXT.md](CONTEXT.md) - current project context
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) - server deployment guide
-- [AGENTS.md](AGENTS.md) - pointer to CLAUDE.md, which is authoritative for AI agents
+- [AGENTS.md](AGENTS.md) - generic agent working protocol (PLAN.md/NOTES.md/JOURNAL.md workflow); CLAUDE.md remains the authoritative source for this repo's stack, architecture, and hard rules
 - [CODEX.md](CODEX.md) - Codex-specific context policy
 
 ## Verification From Latest Scan
 
-Last scanned: 2026-08-05.
+Last scanned: 2026-08-06.
 
-- `php artisan route:list --except-vendor` succeeded and reported 73 routes.
+- `php artisan route:list --except-vendor` succeeded and reported 77 routes.
 - No application code was changed during this scan.
