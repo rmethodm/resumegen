@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-08T00:00:00Z",
+  "title": "Design System: Resumegen",
+  "extensions": {
+    "colorMeta": {
+      "accent-500": { "role": "primary", "displayName": "Resumegen Purple", "canonical": "rgb(89 82 210)", "tonalRamp": ["rgb(22 20 47)", "rgb(33 30 79)", "rgb(46 42 112)", "rgb(60 54 149)", "rgb(74 68 184)", "rgb(89 82 210)", "rgb(125 116 226)", "rgb(199 196 247)"] },
+      "gray-900": { "role": "neutral", "displayName": "Ink", "canonical": "rgb(23 27 31)", "tonalRamp": ["rgb(13 15 17)", "rgb(23 27 31)", "rgb(52 56 60)", "rgb(80 86 90)", "rgb(96 102 108)", "rgb(125 132 138)", "rgb(167 174 180)", "rgb(210 216 221)"] }
+    },
+    "typographyMeta": {
+      "body": { "displayName": "Body", "purpose": "Primary UI text — labels, buttons, form fields." },
+      "label": { "displayName": "Section Label", "purpose": "Uppercase micro-labels for panel section headers." }
+    },
+    "shadows": [
+      { "name": "sm", "value": "0 1px 2px rgba(13,15,17,0.05)", "purpose": "Default resting shadow for cards and buttons." },
+      { "name": "md", "value": "0 4px 6px rgba(13,15,17,0.07), 0 1px 3px rgba(13,15,17,0.06)", "purpose": "Hover-elevated cards." }
+    ],
+    "motion": [
+      { "name": "duration-fast", "value": "150ms", "purpose": "Default state-transition duration (colors, borders)." },
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default easing for entrances and hover transitions." }
+    ],
+    "breakpoints": [
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Default filled action button.",
+      "html": "<button class=\"ds-btn-primary\">Save resume</button>",
+      "css": ".ds-btn-primary { background: rgb(89,82,210); color: #fff; padding: 8px 16px; height: 36px; border-radius: 6px; font-size: 14px; font-weight: 500; font-family: 'IBM Plex Sans', sans-serif; border: none; box-shadow: 0 1px 2px rgba(13,15,17,0.05); transition: background 150ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: rgb(74,68,184); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px rgb(89,82,210), 0 0 0 4px #fff; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Low-emphasis action button used for secondary nav/back actions.",
+      "html": "<button class=\"ds-btn-ghost\">Back to dashboard</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: rgb(96,102,108); padding: 8px 12px; height: 32px; border-radius: 6px; font-size: 12px; font-weight: 500; font-family: 'IBM Plex Sans', sans-serif; border: none; transition: background 150ms, color 150ms; } .ds-btn-ghost:hover { background: rgb(242,246,249); color: rgb(23,27,31); }"
+    },
+    {
+      "name": "Panel Card",
+      "kind": "card",
+      "refersTo": "card-base",
+      "description": "Standard rail/panel container (SectionPanel, Score & coaching block).",
+      "html": "<div class=\"ds-card\"><p class=\"ds-card-label\">Resume sections</p></div>",
+      "css": ".ds-card { background: #fff; border: 1px solid rgb(210,216,221); border-radius: 10px; padding: 16px; box-shadow: 0 1px 2px rgba(13,15,17,0.05); } .ds-card-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: rgb(167,174,180); margin: 0 0 8px; font-family: 'IBM Plex Sans', sans-serif; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Standard form field.",
+      "html": "<input class=\"ds-input\" placeholder=\"Job title\" />",
+      "css": ".ds-input { border: 1px solid rgb(210,216,221); border-radius: 6px; padding: 8px 12px; font-size: 14px; font-family: 'IBM Plex Sans', sans-serif; color: rgb(23,27,31); background: #fff; } .ds-input:focus-visible { outline: none; border-color: rgb(89,82,210); box-shadow: 0 0 0 2px rgba(89,82,210,0.35); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calm Career Coach",
+    "overview": "Resumegen reads as a serious, unhurried writing tool rather than a marketing surface. Gray does the load-bearing work everywhere and the brand purple is spent only where it earns attention: the primary action, focus rings, active nav state, and links. Dark mode remaps semantic roles, not primitives, so a component styled in tokens never needs a dark-mode-specific class.",
+    "keyCharacteristics": [
+      "Single accent color reserved for primary actions, focus states, and active/selected UI",
+      "Flat surfaces with hairline borders; shadows are a light shadow-sm at rest, not a design feature",
+      "Radius varies by role: 6px buttons/inputs, 10px cards, 14px modals",
+      "Dark mode remaps semantic tokens only, primitives never change",
+      "IBM Plex Sans throughout, no secondary or mono typeface in product UI"
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Purple appears only on the primary action, focus rings, active states, and links.", "section": "colors" },
+      { "name": "The No-Third-Face Rule", "body": "IBM Plex Sans handles every text role including numeric data via tabular-nums, not a mono swap.", "section": "typography" },
+      { "name": "The Ring-Not-Shadow Rule", "body": "Dark mode shadows become 1px hairline rings instead of darker shadows.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use the semantic token classes (bg-accent-bg, text-accent-text, border-border-focus) for anything accent-colored",
+      "Do keep shadows at shadow-sm for resting surfaces; reserve shadow-lg/xl for modals and dropdowns",
+      "Do match radius to role: buttons/inputs at md, cards at lg, modals at xl"
+    ],
+    "donts": [
+      "Don't introduce a second accent color",
+      "Don't hardcode gray/purple hex or raw Tailwind palette classes in new components",
+      "Don't add decorative imagery, gradients, or illustration to product UI"
+    ]
+  }
+}

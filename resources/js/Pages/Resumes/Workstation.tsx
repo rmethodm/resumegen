@@ -47,7 +47,6 @@ import type {
     ResumePageDocument,
     ResumeSectionKey,
     ResumeShareLink,
-    ResumeSuggestion,
     ResumeVersion,
     SkillLibraryGroup,
 } from '@/types';
@@ -240,100 +239,6 @@ export default function Workstation({
         document
             .getElementById(`section-${target}`)
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function applySuggestion(suggestion: ResumeSuggestion) {
-        if (
-            suggestion.experience === null ||
-            suggestion.bullet === null ||
-            !suggestion.rewrite
-        ) {
-            return;
-        }
-
-        const experienceIndex = suggestion.experience;
-        const bulletIndex = suggestion.bullet;
-        const rewrite = suggestion.rewrite;
-
-        setDraft({
-            ...draft,
-            experiences: draft.experiences.map((experience, index) => {
-                if (index !== experienceIndex) {
-                    return experience;
-                }
-
-                return {
-                    ...experience,
-                    bullets: experience.bullets.map((bullet, at) =>
-                        at === bulletIndex ? rewrite : bullet,
-                    ),
-                };
-            }),
-        });
-
-        // Jump after apply so the user sees the updated bullet.
-        selectSuggestion(suggestion);
-    }
-
-    function selectSuggestion(suggestion: ResumeSuggestion) {
-        setTab('Edit');
-
-        if (suggestion.experience !== null && suggestion.bullet !== null) {
-            scrollToSection('experience');
-            window.setTimeout(() => {
-                const element = document.getElementById(
-                    `experience-bullet-${suggestion.experience}-${suggestion.bullet}`,
-                );
-
-                if (element instanceof HTMLElement) {
-                    focusAndFlash(element);
-                }
-            }, 300);
-
-            return;
-        }
-
-        const message = suggestion.message.toLowerCase();
-        let targetSection: ResumeSectionKey = 'experience';
-        let fieldId: string | null = null;
-
-        if (message.includes('skill')) {
-            targetSection = 'skills';
-            fieldId = 'field-skills';
-        } else if (message.includes('summary')) {
-            targetSection = 'summary';
-            fieldId = 'field-summary';
-        } else if (message.includes('role') || message.includes('missing')) {
-            // Sticky target-role bar is always on Edit; prefer it over Contact.
-            fieldId = 'field-target-role-bar';
-            scrollToSection('contact');
-            window.setTimeout(() => {
-                const element = document.getElementById(fieldId!);
-
-                if (element instanceof HTMLElement) {
-                    focusAndFlash(element);
-                }
-            }, 100);
-
-            return;
-        } else if (suggestion.band === 'Profile') {
-            targetSection = 'contact';
-        } else if (suggestion.band === 'Keywords') {
-            targetSection = 'skills';
-            fieldId = 'field-skills';
-        }
-
-        scrollToSection(targetSection);
-
-        if (fieldId) {
-            window.setTimeout(() => {
-                const element = document.getElementById(fieldId);
-
-                if (element instanceof HTMLElement) {
-                    focusAndFlash(element);
-                }
-            }, 300);
-        }
     }
 
     function addKeyword(keyword: string) {
@@ -535,7 +440,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 px-2 text-xs text-text-tertiary hover:text-red-600 focus-visible:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
+                                            className="h-8 px-2 text-xs text-text-tertiary hover:text-error-text focus-visible:text-error-text focus:outline-none focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1"
                                             onClick={() =>
                                                 hideSection(sectionKey)
                                             }
@@ -619,10 +524,10 @@ export default function Workstation({
                         className={cn(
                             'flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2 text-sm',
                             conflict
-                                ? 'border-amber-200 bg-amber-50 text-amber-950'
+                                ? 'border-warning-border bg-warning-bg text-warning-text'
                                 : offline
                                   ? 'border-border-default bg-surface-sunken text-text-primary'
-                                  : 'border-red-200 bg-red-50 text-red-900',
+                                  : 'border-error-border bg-error-bg text-error-text',
                         )}
                     >
                         <p>
@@ -671,8 +576,6 @@ export default function Workstation({
                         selected={section}
                         onSelect={scrollToSection}
                         onAddSection={addSection}
-                        onApplySuggestion={applySuggestion}
-                        onSelectSuggestion={selectSuggestion}
                         onAddKeyword={addKeyword}
                         onJumpChecklist={jumpChecklist}
                         onOpenOptimize={() => setTab('Optimize')}

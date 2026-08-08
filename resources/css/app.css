@@ -6,38 +6,39 @@
    Primitives are RGB triplets (no `rgb()` wrapper) so Tailwind's
    `rgb(var(--x) / <alpha-value>)` pattern in tailwind.config.js can
    apply opacity modifiers, e.g. `bg-surface-canvas/50`.
-   Neutral ramp matches the existing ink/surface hex already in use
-   (ink.DEFAULT = --gray-900, surface.DEFAULT = --gray-100, etc).
-   Accent ramp matches hex already hardcoded inline in Welcome.tsx
-   (#4a44b8 = --accent-600, #3c3695 = --accent-700 = brand.accent). */
+   Neutral ramp derived from DESIGN.md's warm cream/ink pair
+   (canvas #f7f7f4 → gray-50, ink #26251e → gray-900), running
+   through the hairline/muted stops in between.
+   Accent ramp derived from DESIGN.md's single CTA color, Cursor
+   Orange (#f54e00 → accent-500, press state #d04200 → accent-600). */
 :root {
     color-scheme: light dark;
 
-    /* Primitives — neutral ramp */
-    --gray-50: 248 250 251;
-    --gray-100: 242 246 249;
-    --gray-200: 227 232 236;
-    --gray-300: 210 216 221;
-    --gray-400: 167 174 180;
-    --gray-500: 125 132 138;
-    --gray-600: 96 102 108;
-    --gray-700: 80 86 90;
-    --gray-800: 52 56 60;
-    --gray-900: 23 27 31;
-    --gray-950: 13 15 17;
+    /* Primitives — neutral ramp (warm, not true gray) */
+    --gray-50: 247 247 244;
+    --gray-100: 239 238 232;
+    --gray-200: 230 229 224;
+    --gray-300: 207 205 196;
+    --gray-400: 160 156 146;
+    --gray-500: 144 141 130;
+    --gray-600: 128 125 114;
+    --gray-700: 96 94 84;
+    --gray-800: 67 65 55;
+    --gray-900: 38 37 30;
+    --gray-950: 24 23 18;
 
-    /* Primitives — accent ramp (brand purple) */
-    --accent-50: 242 241 253;
-    --accent-100: 225 229 255;
-    --accent-200: 199 196 247;
-    --accent-300: 162 155 239;
-    --accent-400: 125 116 226;
-    --accent-500: 89 82 210;
-    --accent-600: 74 68 184;
-    --accent-700: 60 54 149;
-    --accent-800: 46 42 112;
-    --accent-900: 33 30 79;
-    --accent-950: 22 20 47;
+    /* Primitives — accent ramp (brand orange) */
+    --accent-50: 254 240 230;
+    --accent-100: 253 224 199;
+    --accent-200: 251 198 158;
+    --accent-300: 249 160 100;
+    --accent-400: 248 116 51;
+    --accent-500: 245 78 0;
+    --accent-600: 208 66 0;
+    --accent-700: 176 56 0;
+    --accent-800: 138 44 0;
+    --accent-900: 102 33 0;
+    --accent-950: 66 21 0;
 
     /* Primitives — motion */
     --duration-fast: 150ms;
@@ -50,24 +51,20 @@
 
     /* Primitives — radii (vary by role; avoid one radius everywhere) */
     --radius-none: 0;
-    --radius-sm: 0.125rem; /* 2px */
-    --radius-md: 0.375rem; /* 6px — inputs, chips */
-    --radius-lg: 0.625rem; /* 10px — cards */
-    --radius-xl: 0.875rem; /* 14px — modals */
+    --radius-sm: 0.25rem; /* 4px — inline tags */
+    --radius-md: 0.5rem; /* 8px — buttons, inputs */
+    --radius-lg: 0.75rem; /* 12px — cards */
+    --radius-xl: 1rem; /* 16px — modals, larger cards */
     --radius-2xl: 1.25rem; /* 20px */
     --radius-full: 9999px;
 
-    /* Primitives — elevation (light: layered shadow; dark remaps to rings) */
-    --shadow-sm: 0 1px 2px rgb(13 15 17 / 0.05);
-    --shadow-md:
-        0 4px 6px rgb(13 15 17 / 0.07),
-        0 1px 3px rgb(13 15 17 / 0.06);
-    --shadow-lg:
-        0 10px 15px rgb(13 15 17 / 0.09),
-        0 4px 6px rgb(13 15 17 / 0.05);
-    --shadow-xl:
-        0 20px 25px rgb(13 15 17 / 0.1),
-        0 8px 10px rgb(13 15 17 / 0.04);
+    /* Primitives — elevation. DESIGN.md: hairline-only depth, no drop
+       shadows — cards separate from canvas via a 1px border and the
+       white-on-cream contrast, not a blurred shadow. */
+    --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
+    --shadow-md: 0 0 0 1px rgb(var(--color-border-default));
+    --shadow-lg: 0 0 0 1px rgb(var(--color-border-strong));
+    --shadow-xl: 0 0 0 1px rgb(var(--color-border-strong));
 
     /* Primitives — z-index ladder (semantic layers, not magic numbers).
        Order: sticky under menus; menus under modals; toasts/tooltips on top. */
@@ -80,8 +77,10 @@
     --z-toast: 60;
     --z-tooltip: 70;
 
-    /* Semantics — surface stack */
-    --color-surface-canvas: var(--gray-50);
+    /* Semantics — surface stack.
+       surface-canvas is hand-tuned to #faf6f0, diverging slightly from
+       --gray-50 (#f7f7f4) — see DESIGN.md's Canvas entry. */
+    --color-surface-canvas: 250 246 240;
     --color-surface-raised: var(--gray-100);
     --color-surface-overlay: 255 255 255;
     --color-surface-sunken: var(--gray-200);
@@ -114,18 +113,21 @@
     --radius-card: var(--radius-lg);
     --radius-modal: var(--radius-xl);
 
-    /* Semantics — status (bg / text / border per state) */
-    --color-success-bg: 220 252 231;
-    --color-success-text: 22 163 74;
-    --color-success-border: 74 222 128;
+    /* Semantics — status (bg / text / border per state). Success/error hex
+       come from DESIGN.md; warning/info aren't specified there (the source
+       marketing site only needed two states) so they keep the prior amber/
+       blue, which already reads warm-compatible against the cream canvas. */
+    --color-success-bg: 224 244 236;
+    --color-success-text: 31 138 101;
+    --color-success-border: 74 189 148;
 
     --color-warning-bg: 254 243 199;
     --color-warning-text: 217 119 6;
     --color-warning-border: 251 191 36;
 
-    --color-error-bg: 254 226 226;
-    --color-error-text: 220 38 38;
-    --color-error-border: 248 113 113;
+    --color-error-bg: 252 226 231;
+    --color-error-text: 207 45 86;
+    --color-error-border: 231 132 155;
 
     --color-info-bg: 219 234 254;
     --color-info-text: 37 99 235;
@@ -156,33 +158,31 @@
         --color-border-default: var(--gray-700);
         --color-border-strong: var(--gray-600);
 
-        --color-accent-bg: 106 99 224;
-        --color-accent-bg-hover: 125 116 226;
-        --color-accent-bg-active: 89 82 210;
-        --color-accent-text: 162 155 239; /* accent-300 — readable on dark canvas */
+        --color-accent-bg: 248 116 51;
+        --color-accent-bg-hover: 249 160 100;
+        --color-accent-bg-active: 245 78 0;
+        --color-accent-text: 249 160 100; /* accent-300 — readable on dark canvas */
 
-        /* Shadows → hairline rings on dark (black-on-near-black is invisible). */
+        /* Shadows stay hairline-only on dark too, per DESIGN.md's "no drop
+           shadows" rule — a black-on-near-black shadow would be invisible
+           anyway. */
         --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
         --shadow-md: 0 0 0 1px rgb(var(--color-border-default));
-        --shadow-lg:
-            0 0 0 1px rgb(var(--color-border-default)),
-            0 8px 24px rgb(0 0 0 / 0.35);
-        --shadow-xl:
-            0 0 0 1px rgb(var(--color-border-strong)),
-            0 12px 32px rgb(0 0 0 / 0.4);
+        --shadow-lg: 0 0 0 1px rgb(var(--color-border-strong));
+        --shadow-xl: 0 0 0 1px rgb(var(--color-border-strong));
 
         /* Status: dark surfaces + lighter text/borders (not inverted light pastels). */
-        --color-success-bg: 20 45 32;
-        --color-success-text: 134 239 172;
-        --color-success-border: 34 197 94;
+        --color-success-bg: 20 42 34;
+        --color-success-text: 110 214 173;
+        --color-success-border: 31 138 101;
 
         --color-warning-bg: 54 36 12;
         --color-warning-text: 253 224 71;
         --color-warning-border: 245 158 11;
 
-        --color-error-bg: 55 20 24;
-        --color-error-text: 252 165 165;
-        --color-error-border: 248 113 113;
+        --color-error-bg: 50 22 28;
+        --color-error-text: 240 140 160;
+        --color-error-border: 207 45 86;
 
         --color-info-bg: 18 36 58;
         --color-info-text: 147 197 253;
@@ -206,33 +206,30 @@
     --color-border-default: var(--gray-700);
     --color-border-strong: var(--gray-600);
 
-    /* Accent lightens/desaturates slightly in dark to prevent burn. */
-    --color-accent-bg: 106 99 224;
-    --color-accent-bg-hover: 125 116 226;
-    --color-accent-bg-active: 89 82 210;
-    --color-accent-text: 162 155 239;
+    /* Accent lightens toward accent-400 in dark to prevent burn. */
+    --color-accent-bg: 248 116 51;
+    --color-accent-bg-hover: 249 160 100;
+    --color-accent-bg-active: 245 78 0;
+    --color-accent-text: 249 160 100;
 
+    /* Hairline-only depth per DESIGN.md — no drop shadows, light or dark. */
     --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
     --shadow-md: 0 0 0 1px rgb(var(--color-border-default));
-    --shadow-lg:
-        0 0 0 1px rgb(var(--color-border-default)),
-        0 8px 24px rgb(0 0 0 / 0.35);
-    --shadow-xl:
-        0 0 0 1px rgb(var(--color-border-strong)),
-        0 12px 32px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 0 0 1px rgb(var(--color-border-strong));
+    --shadow-xl: 0 0 0 1px rgb(var(--color-border-strong));
 
     /* Status: same remap as prefers-color-scheme block above. */
-    --color-success-bg: 20 45 32;
-    --color-success-text: 134 239 172;
-    --color-success-border: 34 197 94;
+    --color-success-bg: 20 42 34;
+    --color-success-text: 110 214 173;
+    --color-success-border: 31 138 101;
 
     --color-warning-bg: 54 36 12;
     --color-warning-text: 253 224 71;
     --color-warning-border: 245 158 11;
 
-    --color-error-bg: 55 20 24;
-    --color-error-text: 252 165 165;
-    --color-error-border: 248 113 113;
+    --color-error-bg: 50 22 28;
+    --color-error-text: 240 140 160;
+    --color-error-border: 207 45 86;
 
     --color-info-bg: 18 36 58;
     --color-info-text: 147 197 253;
