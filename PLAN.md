@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** Resumegen Apply extension — fill MVP + ATS heuristics shipped (user: works well)
-- **Last updated:** 2026-08-05
-- **Next action:** User-directed. Optional: one-click connect; multi-step Workday QA; job-radar (scroll match) if productized.
+- **Active:** Resumegen Apply extension — fill MVP + ATS heuristics shipped (user: works well). Job Imports (Adzuna/USAJOBS search + save) also shipped same day.
+- **Last updated:** 2026-08-06
+- **Next action:** User-directed. Optional: one-click connect; multi-step Workday QA; job-radar (scroll match) if productized. Job Imports: resume matching/gap analysis/tailoring/cover letters remain frontend stubs only, per CLAUDE.md.
 
 ---
 
@@ -31,6 +31,11 @@ Live at **<url>** · Repo: **<repo>**
 - [ ] Connect flow polish (deep link optional; paste token works today)
 - [x] Stronger ATS heuristics (scored matching + Greenhouse/Workday/Ashby patterns + unit tests)
 - [ ] Manual QA on real multi-step Workday forms
+
+## Phase 3 — Job Imports (Adzuna/USAJOBS search)
+- [x] Design preview shell (no backend)
+- [x] Real search wired (`JobImportSearch`, `AdzunaClient`, `UsaJobsClient`; `imported_jobs` table)
+- [ ] Resume matching / gap analysis / tailoring / cover letters (deliberately out of scope, see CLAUDE.md Removed Features)
 
 ## Future / if needed
 - **Job radar** — while browsing, detect job cards and softly surface resume matches (side panel / badge; no spam toasts). Feasible; not started. Prefer allowlisted hosts + keyword score first.

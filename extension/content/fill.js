@@ -15,24 +15,38 @@
         return;
     }
 
+    let crossOriginFrameCount = 0;
+
     chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         if (message.type === 'PING') {
             sendResponse({ ok: true });
             return;
         }
         if (message.type === 'FILL_COMMON') {
-            try {
-                sendResponse(fillCommon(message.profile || {}));
-            } catch (err) {
-                sendResponse({
+            fillCommon(message.profile || {}, message.selectedKeys)
+                .then(sendResponse)
+                .catch((err) => sendResponse({
                     filled: 0,
                     skipped: 0,
                     unmatched: 0,
                     filledKeys: [],
                     message: 'Fill failed on this page.',
                     error: String(err?.message || err),
-                });
-            }
+                }));
+            return true;
+        }
+        if (message.type === 'SCAN_FIELDS') {
+            scanFields(message.profile || {})
+                .then(sendResponse)
+                .catch((err) => sendResponse({
+                    matches: [],
+                    message: 'Scan failed on this page.',
+                    error: String(err?.message || err),
+                }));
+            return true;
+        }
+        if (message.type === 'GET_FOCUS_CONTEXT') {
+            sendResponse(getFocusContext(message.profile || {}));
             return;
         }
         if (message.type === 'INSERT_FOCUSED') {
@@ -41,10 +55,68 @@
         }
     });
 
-    function fillCommon(profile) {
+    async function scanFields(profile) {
         const values = H.valuesFromProfile(profile);
         const keys = H.KEY_ORDER.filter((k) => values[k]);
+        crossOriginFrameCount = 0;
+        const fieldEls = collectFieldsDeep(document);
+        const scored = fieldEls.map((el, index) => ({
+            el,
+            index,
+            signals: H.buildSignals(extractRaw(el)),
+        }));
+        const matches = H.matchFields(scored, keys);
 
+        return {
+            matches: keys.map((key) => {
+                const match = matches[key];
+                const field = match ? scored[match.index] : null;
+                return {
+                    key,
+                    score: match?.score || 0,
+                    matched: Boolean(match),
+                    empty: Boolean(field && isEmptyField(field.el)),
+                    fieldLabel: field ? field.signals.raw?.label || field.signals.raw?.name || field.signals.raw?.id || field.signals.raw?.placeholder || 'Recognized field' : '',
+                };
+            }),
+            crossOriginFrames: crossOriginFrameCount,
+            fieldCount: fieldEls.length,
+        };
+    }
+
+    function getFocusContext(profile) {
+        const el = document.activeElement;
+        if (!el || !isEditable(el) || !isVisible(el)) {
+            return {
+                ok: false,
+                reason: 'no_focus',
+                message: 'Click a text field on the page first, then refresh suggestions.',
+            };
+        }
+
+        const raw = extractRaw(el);
+        const signals = H.buildSignals(raw);
+        const values = H.valuesFromProfile(profile);
+        const suggestions = H.KEY_ORDER
+            .filter((key) => values[key])
+            .map((key) => ({ key, score: H.scoreField(signals, key) }))
+            .filter((item) => item.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 4);
+
+        return {
+            ok: true,
+            fieldLabel: raw.label || raw.ariaLabel || raw.placeholder || raw.name || raw.id || 'Focused field',
+            suggestions,
+        };
+    }
+
+    async function fillCommon(profile, selectedKeys = null) {
+        const values = H.valuesFromProfile(profile);
+        const selected = Array.isArray(selectedKeys) ? new Set(selectedKeys) : null;
+        const keys = H.KEY_ORDER.filter((k) => values[k] && (!selected || selected.has(k)));
+
+        crossOriginFrameCount = 0;
         const fieldEls = collectFieldsDeep(document);
         const scored = fieldEls.map((el, index) => ({
             el,
@@ -73,6 +145,9 @@
             if (setFieldValue(el, values[key])) {
                 filled += 1;
                 filledKeys.push(key);
+                if (isComboboxTrigger(el)) {
+                    await trySelectComboboxOption(el, values[key]);
+                }
             } else {
                 unmatched += 1;
             }
@@ -83,12 +158,15 @@
             skipped,
             unmatched,
             filledKeys,
-            message: formatFillMessage(filled, skipped, unmatched),
+            message: formatFillMessage(filled, skipped, unmatched, crossOriginFrameCount),
         };
     }
 
-    function formatFillMessage(filled, skipped, unmatched) {
+    function formatFillMessage(filled, skipped, unmatched, crossOriginFrames) {
         if (filled === 0 && skipped === 0) {
+            if (crossOriginFrames > 0) {
+                return "This application form is in an embedded frame we can't access (cross-origin) — try opening it directly at the source site.";
+            }
             return 'No fillable fields found on this page';
         }
         const parts = [`Filled ${filled} field${filled === 1 ? '' : 's'}`];
@@ -97,6 +175,9 @@
         }
         if (unmatched > 0) {
             parts.push(`Couldn't match ${unmatched}`);
+        }
+        if (crossOriginFrames > 0) {
+            parts.push(`${crossOriginFrames} embedded frame${crossOriginFrames === 1 ? '' : 's'} couldn't be reached`);
         }
         return parts.join(' · ');
     }
@@ -167,14 +248,29 @@
                     const doc = frame.contentDocument;
                     if (doc) {
                         out.push(...collectFieldsDeep(doc, depth + 1));
+                    } else if (isCrossOriginFrame(frame)) {
+                        crossOriginFrameCount += 1;
                     }
                 } catch {
-                    // cross-origin — ignore
+                    // cross-origin — accessing contentDocument threw
+                    crossOriginFrameCount += 1;
                 }
             }
         }
 
         return out;
+    }
+
+    function isCrossOriginFrame(frame) {
+        const src = frame.getAttribute('src') || '';
+        if (!src || src.startsWith('about:') || src.startsWith('javascript:')) {
+            return false;
+        }
+        try {
+            return new URL(src, document.baseURI).origin !== window.location.origin;
+        } catch {
+            return false;
+        }
     }
 
     function isFillableControl(el) {
@@ -386,36 +482,71 @@
     }
 
     function setSelectValue(el, value) {
-        const target = value.toLowerCase().trim();
-        let best = null;
-        let bestScore = 0;
-
-        for (const opt of el.options) {
-            const t = (opt.text || '').trim().toLowerCase();
-            const v = (opt.value || '').trim().toLowerCase();
-            if (!t && !v) {
-                continue;
-            }
-            let s = 0;
-            if (t === target || v === target) {
-                s = 100;
-            } else if (t.startsWith(target) || target.startsWith(t)) {
-                s = 80;
-            } else if (t.includes(target) || target.includes(t)) {
-                s = 50;
-            }
-            if (s > bestScore) {
-                bestScore = s;
-                best = opt;
-            }
-        }
-
-        if (!best || bestScore < 50) {
+        const options = Array.from(el.options).map((opt) => ({ text: opt.text, value: opt.value }));
+        const match = H.bestOptionMatch(options, value);
+        if (!match) {
             return false;
         }
 
+        const best = el.options[match.index];
         el.value = best.value;
         fireInputEvents(el, best.value);
         return true;
+    }
+
+    /**
+     * WAI-ARIA combobox pattern: a text input that drives a separate listbox
+     * (Workday school/country typeahead, etc.). Typing alone fills the text
+     * but leaves the widget's internal "selected option" state empty, which
+     * some ATS forms reject on submit — so after typing, try to click the
+     * best-matching rendered option.
+     */
+    function isComboboxTrigger(el) {
+        if (!(el instanceof HTMLInputElement)) {
+            return false;
+        }
+        const role = (el.getAttribute('role') || '').toLowerCase();
+        const autocomplete = (el.getAttribute('aria-autocomplete') || '').toLowerCase();
+        const hasPopup = (el.getAttribute('aria-haspopup') || '').toLowerCase();
+        return role === 'combobox' || autocomplete === 'list' || autocomplete === 'both' || hasPopup === 'listbox';
+    }
+
+    function findListboxOptions(el) {
+        const ownerId = el.getAttribute('aria-controls') || el.getAttribute('aria-owns') || '';
+        let listbox = null;
+        if (ownerId) {
+            listbox = ownerId.split(/\s+/).map((id) => document.getElementById(id)).find(Boolean) || null;
+        }
+        if (!listbox) {
+            listbox = el.closest('[role="group"], .field, .form-field')?.querySelector('[role="listbox"]')
+                || document.querySelector('[role="listbox"]');
+        }
+        if (!listbox) {
+            return [];
+        }
+        return Array.from(listbox.querySelectorAll('[role="option"]')).filter(isVisible);
+    }
+
+    function wait(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function trySelectComboboxOption(el, value) {
+        const attempts = 6;
+        for (let i = 0; i < attempts; i += 1) {
+            const optionEls = findListboxOptions(el);
+            if (optionEls.length) {
+                const options = optionEls.map((node) => ({ text: node.textContent || '' }));
+                const match = H.bestOptionMatch(options, value);
+                if (match) {
+                    const target = optionEls[match.index];
+                    for (const type of ['pointerdown', 'mousedown', 'mouseup', 'click']) {
+                        target.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true }));
+                    }
+                }
+                return;
+            }
+            await wait(100);
+        }
     }
 })();

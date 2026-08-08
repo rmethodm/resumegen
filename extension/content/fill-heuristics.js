@@ -575,6 +575,48 @@
         return values;
     }
 
+    /**
+     * Fuzzy-match free text against a list of options (native <select> options
+     * or ARIA listbox option text) and return the best match above threshold.
+     * @param {Array<{ text: string, value?: string }>} options
+     * @param {string} target
+     * @returns {{ index: number, score: number } | null}
+     */
+    function bestOptionMatch(options, target) {
+        const t = normalize(target);
+        if (!t) {
+            return null;
+        }
+
+        let bestIndex = -1;
+        let bestScore = 0;
+
+        options.forEach((opt, index) => {
+            const text = normalize(opt.text || '');
+            const value = normalize(opt.value != null ? opt.value : '');
+            if (!text && !value) {
+                return;
+            }
+            let s = 0;
+            if (text === t || value === t) {
+                s = 100;
+            } else if (text.startsWith(t) || t.startsWith(text)) {
+                s = 80;
+            } else if (text.includes(t) || t.includes(text)) {
+                s = 50;
+            }
+            if (s > bestScore) {
+                bestScore = s;
+                bestIndex = index;
+            }
+        });
+
+        if (bestIndex === -1 || bestScore < 50) {
+            return null;
+        }
+        return { index: bestIndex, score: bestScore };
+    }
+
     return {
         KEY_ORDER,
         RULES,
@@ -583,5 +625,6 @@
         scoreField,
         matchFields,
         valuesFromProfile,
+        bestOptionMatch,
     };
 }));

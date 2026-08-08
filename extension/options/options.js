@@ -1,3 +1,5 @@
+import { DEFAULT_APP_BASE, normalizeAppBase } from '../shared/app-base.js';
+
 const tokenInput = document.getElementById('token');
 const appBaseInput = document.getElementById('appBase');
 const saveBtn = document.getElementById('save');
@@ -5,19 +7,9 @@ const testBtn = document.getElementById('test');
 const openProfileBtn = document.getElementById('open-profile');
 const statusEl = document.getElementById('status');
 
-const DEFAULT_APP_BASE = 'https://resumegen.test';
-
 function showStatus(msg, type) {
     statusEl.textContent = msg;
     statusEl.className = `status ${type || ''}`;
-}
-
-function normalizeAppBase(value) {
-    let base = String(value || DEFAULT_APP_BASE).trim().replace(/\/$/, '');
-    if (base.endsWith('/api')) {
-        base = base.slice(0, -4);
-    }
-    return base || DEFAULT_APP_BASE;
 }
 
 chrome.storage.sync.get(['token', 'appBase'], ({ token, appBase }) => {

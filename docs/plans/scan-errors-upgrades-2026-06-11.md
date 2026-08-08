@@ -1,5 +1,12 @@
 # App Scan — Errors & Upgrades Plan (2026-06-11)
 
+> **Historical, partially stale.** Bug 1 (BillingController) and Major E (Stripe SDK) target
+> code deleted in the 2026-07-14 billing removal — see CLAUDE.md "Billing — there is none".
+> Bug 2 (@tailwindcss/vite), Major A (Inertia v3), and Major B (React 19) are already done —
+> see `package.json`. The storage:link note under "Environment / Config" refers to
+> spatie/medialibrary, uninstalled 2026-08-04. Only the TypeScript 6, PHPUnit 13, and
+> axios/vite patch items may still be live — re-verify current versions before acting on this doc.
+
 ## Bugs to Fix
 
 ### 1. BillingController null $priceId → TypeError

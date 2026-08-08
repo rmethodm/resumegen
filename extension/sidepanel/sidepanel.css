@@ -191,6 +191,123 @@ body {
   cursor: not-allowed;
 }
 
+.scan-card,
+.review-panel {
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 12px;
+}
+
+.scan-card {
+  box-shadow: 0 4px 12px rgba(15, 15, 26, 0.04);
+}
+
+.scan-card-top,
+.review-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.scan-kicker {
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.scan-card h2,
+.review-panel h2 {
+  font-size: 14px;
+  line-height: 1.25;
+  margin: 3px 0 0;
+}
+
+.scan-count {
+  white-space: nowrap;
+  color: var(--ok);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.scan-copy,
+.review-summary {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 8px 0 12px;
+}
+
+.review-panel {
+  border-color: #d9d8f6;
+  background: #fbfbff;
+}
+
+.review-heading .section-label {
+  margin: 0;
+}
+
+.review-list {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.review-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--card);
+  cursor: pointer;
+}
+
+.review-row input {
+  accent-color: var(--brand);
+}
+
+.review-main {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.review-main strong {
+  font-size: 12px;
+}
+
+.review-main small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match-score {
+  color: var(--ok);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.review-row.needs-review .match-score {
+  color: #a16207;
+}
+
+.review-empty {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 4px 0 12px;
+}
+
 .btn-secondary {
   background: var(--card);
   color: var(--text);
@@ -218,6 +335,13 @@ body {
 
 .btn-link:hover {
   text-decoration: underline;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
 }
 
 .btn-back {
@@ -302,6 +426,25 @@ body {
   gap: 6px;
 }
 
+.insert-assistant-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.insert-assistant-head .section-label {
+  margin-top: 0;
+}
+
+.focus-context {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+  margin: -2px 0 7px;
+}
+
 .chip {
   border: 1px solid var(--border);
   background: var(--card);
@@ -315,6 +458,11 @@ body {
 .chip:hover {
   border-color: #c7c7e0;
   background: #f3f3fa;
+}
+
+.chip.recommended {
+  border-color: #b9b6f2;
+  background: #f5f4ff;
 }
 
 .banner {
