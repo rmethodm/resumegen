@@ -110,7 +110,7 @@ export function NotesPanel({
                     {notes.map((note) => (
                         <li
                             key={note.id}
-                            className="rounded-lg border border-amber-100 bg-amber-50/60 p-2"
+                            className="rounded-lg border border-warning-border bg-warning-bg p-2"
                         >
                             <Textarea
                                 rows={2}
