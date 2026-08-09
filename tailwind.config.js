@@ -33,6 +33,24 @@ export default {
                     muted: '#50565a',
                     faint: '#6d7277',
                 },
+                success: {
+                    DEFAULT: '#059669',
+                    subtle: '#d1fae5',
+                    text: '#065f46',
+                },
+                warning: {
+                    DEFAULT: '#d97706',
+                    subtle: '#fef3c7',
+                    text: '#92400e',
+                },
+                danger: {
+                    DEFAULT: '#dc2626',
+                    subtle: '#fee2e2',
+                    text: '#991b1b',
+                },
+            },
+            boxShadow: {
+                card: '0 1px 2px rgba(0,0,0,0.04)',
             },
         },
     },

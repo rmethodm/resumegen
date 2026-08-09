@@ -6,7 +6,7 @@ type Size = 'default' | 'sm' | 'lg' | 'icon';
 
 const variantClassNames: Record<Variant, string> = {
     default: 'bg-brand text-white shadow-sm hover:bg-brand-accent',
-    destructive: 'bg-red-600 text-white shadow-sm hover:bg-red-500',
+    destructive: 'bg-danger text-white shadow-sm hover:bg-danger/90',
     outline: 'border border-gray-300 bg-white shadow-sm hover:bg-gray-50',
     secondary: 'bg-gray-100 text-gray-900 shadow-sm hover:bg-gray-200',
     ghost: 'hover:bg-gray-100',

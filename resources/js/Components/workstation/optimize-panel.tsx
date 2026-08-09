@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { jdKeywordOverlap } from '@/lib/jd-keyword-overlap';
 import { formatKeywordLabel } from '@/lib/resume-analysis';
 import { Button } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
 import type { ResumeDraft } from '@/types';
@@ -27,7 +28,7 @@ export function OptimizePanel({
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="rounded-lg border border-gray-200 bg-white p-4">
+            <Card className="gap-0 p-4">
                 <div className="mb-3">
                     <h2 className="text-sm font-bold text-gray-900">
                         Optimize for a job
@@ -88,7 +89,7 @@ export function OptimizePanel({
                                             key={term}
                                             type="button"
                                             onClick={() => onAddKeyword(term)}
-                                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-amber-300 bg-white px-2.5 py-1 text-[11px] font-medium text-amber-900 hover:border-amber-500 hover:bg-amber-50"
+                                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-white px-2.5 py-1 text-[11px] font-medium text-warning-text hover:border-warning hover:bg-warning-subtle"
                                         >
                                             <PlusIcon className="size-3" />
                                             {formatKeywordLabel(term)}
@@ -107,7 +108,7 @@ export function OptimizePanel({
                                     {overlap.matched.slice(0, 24).map((term) => (
                                         <span
                                             key={term}
-                                            className="rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[11px] font-medium text-green-800"
+                                            className="rounded-full border border-success/30 bg-success-subtle px-2.5 py-1 text-[11px] font-medium text-success-text"
                                         >
                                             {formatKeywordLabel(term)}
                                         </span>
@@ -118,14 +119,14 @@ export function OptimizePanel({
 
                         {overlap.missing.length === 0 &&
                             overlap.total > 0 && (
-                                <p className="text-[11px] font-medium text-green-700">
+                                <p className="text-[11px] font-medium text-success-text">
                                     All scanned JD terms are covered. Review
                                     bullets next for impact and weak openings.
                                 </p>
                             )}
                     </div>
                 )}
-            </div>
+            </Card>
 
             {children}
         </div>
@@ -139,7 +140,7 @@ export function AtsPlainTextBlock({
     plainText: string;
 }) {
     return (
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
+        <Card className="gap-0 p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div>
                     <h2 className="text-sm font-bold text-gray-900">
@@ -161,9 +162,9 @@ export function AtsPlainTextBlock({
                     Copy all
                 </Button>
             </div>
-            <pre className="max-h-[50vh] overflow-auto rounded-md border border-gray-100 bg-gray-50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-gray-800">
+            <pre className="max-h-[50dvh] overflow-auto rounded-md border border-gray-100 bg-gray-50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-gray-800">
                 {plainText}
             </pre>
-        </div>
+        </Card>
     );
 }

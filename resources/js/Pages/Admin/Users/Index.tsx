@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import { Card } from '@/Components/ui/card';
 import { Head, Link, router } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
@@ -39,8 +40,8 @@ export default function Index({
         <AdminLayout
             header={
                 <div>
-                    <h1 className="text-xl font-bold text-slate-900">Users</h1>
-                    <p className="mt-0.5 text-sm text-slate-500">Search by email, name, or id.</p>
+                    <h1 className="text-xl font-bold text-gray-900">Users</h1>
+                    <p className="mt-0.5 text-sm text-gray-500">Search by email, name, or id.</p>
                 </div>
             }
         >
@@ -52,19 +53,19 @@ export default function Index({
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="email, name, or id"
-                    className="w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full max-w-md rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                 />
                 <button
                     type="submit"
-                    className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+                    className="rounded-lg bg-gray-900 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-800"
                 >
                     Search
                 </button>
             </form>
 
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                <table className="min-w-full divide-y divide-slate-200 text-sm">
-                    <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <Card className="gap-0 overflow-hidden py-0">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead className="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <tr>
                             <th className="px-3 py-2">ID</th>
                             <th className="px-3 py-2">User</th>
@@ -73,25 +74,25 @@ export default function Index({
                             <th className="px-3 py-2">Joined</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-gray-100">
                         {users.data.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="px-3 py-8 text-center text-slate-500">
+                                <td colSpan={5} className="px-3 py-8 text-center text-gray-500">
                                     No users match.
                                 </td>
                             </tr>
                         ) : (
                             users.data.map((user) => (
-                                <tr key={user.id} className="hover:bg-slate-50">
-                                    <td className="px-3 py-2 tabular-nums text-slate-500">{user.id}</td>
+                                <tr key={user.id} className="hover:bg-gray-50">
+                                    <td className="px-3 py-2 tabular-nums text-gray-500">{user.id}</td>
                                     <td className="px-3 py-2">
                                         <Link
                                             href={route('admin.users.show', user.id)}
-                                            className="font-medium text-indigo-700 hover:underline"
+                                            className="font-medium text-brand-accent hover:underline"
                                         >
                                             {user.name}
                                         </Link>
-                                        <div className="text-xs text-slate-500">{user.email}</div>
+                                        <div className="text-xs text-gray-500">{user.email}</div>
                                     </td>
                                     <td className="px-3 py-2">
                                         <div className="flex flex-wrap gap-1">
@@ -101,23 +102,23 @@ export default function Index({
                                                 </span>
                                             ) : null}
                                             {user.disabled_at ? (
-                                                <span className="rounded bg-red-100 px-1.5 py-0.5 text-[11px] font-semibold text-red-800">
+                                                <span className="rounded bg-danger-subtle px-1.5 py-0.5 text-[11px] font-semibold text-danger-text">
                                                     disabled
                                                 </span>
                                             ) : (
-                                                <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[11px] font-semibold text-emerald-800">
+                                                <span className="rounded bg-success-subtle px-1.5 py-0.5 text-[11px] font-semibold text-success-text">
                                                     active
                                                 </span>
                                             )}
                                             {!user.email_verified_at ? (
-                                                <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800">
+                                                <span className="rounded bg-warning-subtle px-1.5 py-0.5 text-[11px] font-semibold text-amber-800">
                                                     unverified
                                                 </span>
                                             ) : null}
                                         </div>
                                     </td>
                                     <td className="px-3 py-2 tabular-nums">{user.resumes_count}</td>
-                                    <td className="px-3 py-2 text-xs text-slate-500">
+                                    <td className="px-3 py-2 text-xs text-gray-500">
                                         {user.created_at
                                             ? new Date(user.created_at).toLocaleDateString()
                                             : '—'}
@@ -127,7 +128,7 @@ export default function Index({
                         )}
                     </tbody>
                 </table>
-            </div>
+            </Card>
 
             {users.links.length > 3 ? (
                 <div className="mt-4 flex flex-wrap gap-1">
@@ -139,15 +140,15 @@ export default function Index({
                                 className={
                                     'rounded border px-2 py-1 text-xs ' +
                                     (link.active
-                                        ? 'border-slate-900 bg-slate-900 text-white'
-                                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50')
+                                        ? 'border-gray-900 bg-gray-900 text-white'
+                                        : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50')
                                 }
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
                         ) : (
                             <span
                                 key={i}
-                                className="rounded border border-transparent px-2 py-1 text-xs text-slate-400"
+                                className="rounded border border-transparent px-2 py-1 text-xs text-gray-400"
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
                         ),

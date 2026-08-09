@@ -1,22 +1,35 @@
 import {
     Dialog,
     DialogPanel,
+    DialogTitle,
     Transition,
     TransitionChild,
 } from '@headlessui/react';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
+/**
+ * The one shared modal shell. `title`/`description`/`footer` render a
+ * sticky header and border-top footer around a scrolling body — pass them
+ * to get the standard picker/share-style layout. Omit them (raw `children`
+ * only) for simple confirm-style dialogs that manage their own layout.
+ */
 export default function Modal({
     children,
     show = false,
     maxWidth = '2xl',
     closeable = true,
     onClose = () => {},
+    title,
+    description,
+    footer,
 }: PropsWithChildren<{
     show: boolean;
-    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
     closeable?: boolean;
     onClose: CallableFunction;
+    title?: ReactNode;
+    description?: ReactNode;
+    footer?: ReactNode;
 }>) {
     const close = () => {
         if (closeable) {
@@ -30,7 +43,10 @@ export default function Modal({
         lg: 'sm:max-w-lg',
         xl: 'sm:max-w-xl',
         '2xl': 'sm:max-w-2xl',
+        '3xl': 'sm:max-w-3xl',
     }[maxWidth];
+
+    const hasChrome = title !== undefined || footer !== undefined;
 
     return (
         <Transition show={show} leave="duration-200">
@@ -53,16 +69,45 @@ export default function Modal({
 
                 <TransitionChild
                     enter="ease-out duration-300"
-                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95 motion-reduce:translate-y-0 motion-reduce:scale-100"
                     enterTo="opacity-100 translate-y-0 sm:scale-100"
                     leave="ease-in duration-200"
                     leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95 motion-reduce:translate-y-0 motion-reduce:scale-100"
                 >
                     <DialogPanel
-                        className={`mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full ${maxWidthClass}`}
+                        className={
+                            hasChrome
+                                ? `mb-6 flex max-h-[85dvh] w-full transform flex-col overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto ${maxWidthClass}`
+                                : `mb-6 w-full transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto ${maxWidthClass}`
+                        }
                     >
-                        {children}
+                        {hasChrome ? (
+                            <>
+                                {title !== undefined && (
+                                    <div className="border-b border-gray-200 px-5 py-4">
+                                        <DialogTitle className="text-sm font-bold text-gray-900">
+                                            {title}
+                                        </DialogTitle>
+                                        {description !== undefined && (
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                {description}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                                <div className="flex-1 overflow-y-auto">
+                                    {children}
+                                </div>
+                                {footer !== undefined && (
+                                    <div className="border-t border-gray-200 px-5 py-3">
+                                        {footer}
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            children
+                        )}
                     </DialogPanel>
                 </TransitionChild>
             </Dialog>

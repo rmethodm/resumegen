@@ -1,4 +1,5 @@
 import { Button } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { cn } from '@/lib/utils';
 import type { ResumeSuggestion } from '@/types';
 
@@ -24,9 +25,9 @@ export function SuggestionList({
     return (
         <div className="flex flex-col gap-3">
             {suggestions.map((suggestion, index) => (
-                <div
+                <Card
                     key={index}
-                    className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3"
+                    className="gap-2 p-3"
                 >
                     <div className="flex flex-wrap items-center gap-1.5">
                         {suggestion.band && (
@@ -75,7 +76,7 @@ export function SuggestionList({
                             </Button>
                         )}
                     </div>
-                </div>
+                </Card>
             ))}
         </div>
     );

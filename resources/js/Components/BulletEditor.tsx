@@ -83,12 +83,12 @@ export default function BulletEditor({ bullets, onChange, onBlur }: Props) {
                         onKeyDown={e => handleKey(e, idx)}
                         onBlur={onBlur}
                         placeholder="Start with an action verb…"
-                        className="flex-1 resize-none overflow-hidden rounded border-gray-200 bg-gray-50 text-sm shadow-none focus:border-indigo-400 focus:ring-0 focus:bg-white"
+                        className="flex-1 resize-none overflow-hidden rounded border-gray-200 bg-gray-50 text-sm shadow-none focus:border-brand focus:ring-0 focus:bg-white"
                     />
                     <button
                         type="button"
                         onClick={() => deleteBullet(idx)}
-                        className="mt-[6px] text-gray-300 hover:text-red-500 transition-colors"
+                        className="mt-[6px] text-gray-300 hover:text-danger transition-colors"
                         tabIndex={-1}
                         aria-label="Delete bullet"
                     >

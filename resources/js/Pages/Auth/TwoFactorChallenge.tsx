@@ -35,7 +35,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
             </div>
 
             {emailSent && mode !== 'email' && (
-                <div className="mb-4 text-sm text-green-600">
+                <div className="mb-4 text-sm text-success">
                     A code has been sent to your email.
                 </div>
             )}

@@ -62,12 +62,12 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                             onBlur={onBlur}
                             placeholder="Category (e.g. Frontend)"
                             maxLength={60}
-                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                         />
                         <button
                             type="button"
                             onClick={() => removeGroup(idx)}
-                            className="text-gray-400 hover:text-red-500 text-xs leading-none"
+                            className="-m-2 shrink-0 p-2.5 text-xs leading-none text-gray-400 hover:text-danger"
                         >
                             ✕
                         </button>
@@ -90,12 +90,12 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                             onChange={(e) => updateDraftCategory(draft.id, e.target.value)}
                             placeholder="Category (e.g. Frontend)"
                             maxLength={60}
-                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                         />
                         <button
                             type="button"
                             onClick={() => removeDraft(draft.id)}
-                            className="text-gray-400 hover:text-red-500 text-xs leading-none"
+                            className="-m-2 shrink-0 p-2.5 text-xs leading-none text-gray-400 hover:text-danger"
                         >
                             ✕
                         </button>
@@ -111,7 +111,7 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
             <button
                 type="button"
                 onClick={addGroup}
-                className="rounded-md border border-dashed border-indigo-300 py-1.5 text-xs text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50"
+                className="rounded-md border border-dashed border-brand py-1.5 text-xs text-brand hover:border-brand hover:bg-brand-subtle"
             >
                 + Add category
             </button>

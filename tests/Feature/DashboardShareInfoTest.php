@@ -32,36 +32,38 @@ class DashboardShareInfoTest extends TestCase
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('Dashboard')
-                ->has('resumes', 2)
-                ->where('resumes', function ($resumes) use ($shared, $unshared, $link) {
-                    $rows = collect($resumes)->keyBy('id');
+                ->missing('resumes') // deferred — not resolved on the initial full visit
+                ->loadDeferredProps(fn ($reload) => $reload
+                    ->has('resumes', 2)
+                    ->where('resumes', function ($resumes) use ($shared, $unshared, $link) {
+                        $rows = collect($resumes)->keyBy('id');
 
-                    $sharedRow = $rows->get($shared->id);
-                    $unsharedRow = $rows->get($unshared->id);
+                        $sharedRow = $rows->get($shared->id);
+                        $unsharedRow = $rows->get($unshared->id);
 
-                    if ($sharedRow === null || $unsharedRow === null) {
-                        return false;
-                    }
+                        if ($sharedRow === null || $unsharedRow === null) {
+                            return false;
+                        }
 
-                    $share = $sharedRow['share'] ?? null;
-                    $versionShare = collect($sharedRow['versions'])->firstWhere('id', $shared->id)['share'] ?? null;
+                        $share = $sharedRow['share'] ?? null;
+                        $versionShare = collect($sharedRow['versions'])->firstWhere('id', $shared->id)['share'] ?? null;
 
-                    return $share !== null
-                        && $share['id'] === $link->id
-                        && $share['url'] === route('share.show', $link->token)
-                        && $share['view_count'] === 2
-                        && count($share['views']) === 2
-                        && $share['require_password'] === true
-                        && $share['require_email'] === true
-                        && $share['allow_download'] === false
-                        && $share['is_expired'] === false
-                        && $share['expires_at'] === $link->expires_at?->toDateString()
-                        && array_key_exists('password', $share)
-                        && $versionShare !== null
-                        && $versionShare['view_count'] === 2
-                        && $unsharedRow['share'] === null
-                        && collect($unsharedRow['versions'])->every(fn (array $v): bool => $v['share'] === null);
-                }));
+                        return $share !== null
+                            && $share['id'] === $link->id
+                            && $share['url'] === route('share.show', $link->token)
+                            && $share['view_count'] === 2
+                            && count($share['views']) === 2
+                            && $share['require_password'] === true
+                            && $share['require_email'] === true
+                            && $share['allow_download'] === false
+                            && $share['is_expired'] === false
+                            && $share['expires_at'] === $link->expires_at?->toDateString()
+                            && array_key_exists('password', $share)
+                            && $versionShare !== null
+                            && $versionShare['view_count'] === 2
+                            && $unsharedRow['share'] === null
+                            && collect($unsharedRow['versions'])->every(fn (array $v): bool => $v['share'] === null);
+                    })));
     }
 
     public function test_dashboard_marks_expired_share_links(): void
@@ -77,6 +79,7 @@ class DashboardShareInfoTest extends TestCase
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('Dashboard')
-                ->where('resumes.0.share.is_expired', true));
+                ->loadDeferredProps(fn ($reload) => $reload
+                    ->where('resumes.0.share.is_expired', true)));
     }
 }

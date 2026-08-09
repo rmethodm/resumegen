@@ -1,4 +1,4 @@
-import { Dialog, DialogPanel, DialogTitle, Switch } from '@headlessui/react';
+import { Switch } from '@headlessui/react';
 import {
     ArrowPathIcon,
     CheckIcon,
@@ -6,6 +6,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import Modal from '@/Components/Modal';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { cn } from '@/lib/utils';
@@ -203,22 +204,32 @@ export function ShareResumeModal({
     const viewCount = share?.view_count ?? 0;
 
     return (
-        <Dialog open={open} onClose={close} className="relative z-50">
-            <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
-            <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogPanel className="flex max-h-[90vh] w-full max-w-md flex-col rounded-xl bg-white shadow-2xl">
-                    <div className="border-b border-gray-200 px-5 py-4">
-                        <DialogTitle className="text-sm font-bold text-gray-900">
-                            Share with a recruiter
-                        </DialogTitle>
-                        <p className="mt-1 text-xs text-gray-500">
-                            They&apos;ll get a read-only, printable view.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col gap-4 overflow-y-auto px-5 py-4">
+        <Modal
+            show={open}
+            onClose={close}
+            maxWidth="md"
+            title="Share with a recruiter"
+            description="They'll get a read-only, printable view."
+            footer={
+                <div className="flex justify-between">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        disabled={!share}
+                        onClick={cancelShare}
+                        title="Deletes the link and view history; old URLs stop working"
+                    >
+                        Cancel share
+                    </Button>
+                    <Button type="button" onClick={close}>
+                        Done
+                    </Button>
+                </div>
+            }
+        >
+            <div className="flex flex-col gap-4 px-5 py-4">
                         {error && (
-                            <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
+                            <div className="rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-xs font-medium text-danger-text">
                                 {error}
                             </div>
                         )}
@@ -394,25 +405,8 @@ export function ShareResumeModal({
                                 </ul>
                             )}
                         </div>
-                    </div>
-
-                    <div className="flex justify-between border-t border-gray-200 px-5 py-3">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            disabled={!share}
-                            onClick={cancelShare}
-                            title="Deletes the link and view history; old URLs stop working"
-                        >
-                            Cancel share
-                        </Button>
-                        <Button type="button" onClick={close}>
-                            Done
-                        </Button>
-                    </div>
-                </DialogPanel>
             </div>
-        </Dialog>
+        </Modal>
     );
 }
 

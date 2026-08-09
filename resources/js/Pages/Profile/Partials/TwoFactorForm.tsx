@@ -105,7 +105,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
             {enabled && (
                 <div className="mt-6 space-y-6">
                     <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-0.5 text-sm font-medium text-green-800">
+                        <span className="inline-flex items-center rounded-full bg-success-subtle px-3 py-0.5 text-sm font-medium text-success-text">
                             Enabled
                         </span>
                         <span className="text-sm text-gray-600">Two-factor authentication is active.</span>
@@ -114,7 +114,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                     {recoveryCodes && recoveryCodes.length > 0 && (
                         <div className="space-y-2">
                             <p className="text-sm font-medium text-gray-700">Recovery Codes</p>
-                            <p className="rounded border border-amber-200 bg-amber-50 p-2 text-sm text-amber-700">
+                            <p className="rounded border border-warning/30 bg-warning-subtle p-2 text-sm text-amber-700">
                                 Save these somewhere safe — they won't be shown again.
                             </p>
                             <pre className="rounded bg-gray-100 p-4 text-sm font-mono leading-relaxed">
@@ -144,7 +144,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                         <form onSubmit={handleDisable}>
                             <button
                                 type="submit"
-                                className="text-sm text-red-600 underline hover:text-red-800"
+                                className="text-sm text-danger underline hover:text-danger-text"
                                 disabled={disableForm.processing}
                             >
                                 Disable 2FA

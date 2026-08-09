@@ -1,5 +1,6 @@
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/24/outline';
+import Modal from '@/Components/Modal';
+import { Button } from '@/Components/ui/button';
 import { templateKeys, templateLabels } from '@/lib/resume-templates';
 import { templateThumbStyles } from '@/lib/template-thumb-styles';
 import { cn } from '@/lib/utils';
@@ -33,20 +34,21 @@ export function TemplatePickerModal({
         previewHeadline.trim() !== '' ? previewHeadline.trim() : 'Professional headline';
 
     return (
-        <Dialog open={open} onClose={() => onOpenChange(false)} className="relative z-50">
-            <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
-            <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogPanel className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl bg-white shadow-2xl">
-                    <div className="border-b border-gray-200 px-5 py-4">
-                        <DialogTitle className="text-sm font-bold text-gray-900">
-                            Choose a template
-                        </DialogTitle>
-                        <p className="mt-1 text-xs text-gray-500">
-                            Thumbnails use your current name and headline.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 overflow-y-auto p-4 sm:grid-cols-3 md:grid-cols-4">
+        <Modal
+            show={open}
+            onClose={() => onOpenChange(false)}
+            maxWidth="3xl"
+            title="Choose a template"
+            description="Thumbnails use your current name and headline."
+            footer={
+                <div className="flex justify-end">
+                    <Button type="button" onClick={() => onOpenChange(false)}>
+                        Done
+                    </Button>
+                </div>
+            }
+        >
+            <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3 md:grid-cols-4">
                         {sortedKeys.map((key) => {
                             const selected = key === template;
                             const style = templateThumbStyles[key];
@@ -144,19 +146,7 @@ export function TemplatePickerModal({
                                 </button>
                             );
                         })}
-                    </div>
-
-                    <div className="flex justify-end border-t border-gray-200 px-5 py-3">
-                        <button
-                            type="button"
-                            onClick={() => onOpenChange(false)}
-                            className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800"
-                        >
-                            Done
-                        </button>
-                    </div>
-                </DialogPanel>
             </div>
-        </Dialog>
+        </Modal>
     );
 }

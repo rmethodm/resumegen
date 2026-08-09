@@ -27,7 +27,7 @@ import type { ResumeDraft, ResumeSkill, SkillLibraryGroup } from '@/types';
 import type { SkillGroup } from '@/types';
 
 const autocompleteFieldClass =
-    'flex h-10 w-full min-w-0 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm outline-none transition-colors placeholder:text-gray-400 focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500/30';
+    'flex h-10 w-full min-w-0 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm outline-none transition-colors placeholder:text-gray-400 focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30';
 
 type RepeatedKey = 'experiences' | 'projects' | 'education' | 'certificates';
 
@@ -255,7 +255,7 @@ export function SummaryFields({
                 {(resume.summary ?? '').length} / 2000 characters
             </p>
             {aiError && (
-                <p className="text-[11px] text-red-600" role="alert">
+                <p className="text-[11px] text-danger" role="alert">
                     {aiError}
                 </p>
             )}
@@ -482,7 +482,7 @@ export function ExperienceFields({
                                 AI rewrite options
                             </p>
                             {rewriteFor.error && (
-                                <p className="text-[11px] text-red-600">
+                                <p className="text-[11px] text-danger">
                                     {rewriteFor.error}
                                 </p>
                             )}

@@ -42,10 +42,10 @@ const SOURCE_META: Record<Source, { badge: string; label: string }> = {
 };
 
 const STATUS_META: Record<Status, string> = {
-    New: 'bg-green-100 text-green-700',
+    New: 'bg-success-subtle text-success-text',
     Saved: 'bg-gray-100 text-gray-500',
     Tailoring: 'bg-brand-subtle text-brand-accent',
-    Applied: 'bg-green-100 text-green-700',
+    Applied: 'bg-success-subtle text-success-text',
     Archived: 'bg-gray-100 text-gray-400',
 };
 
@@ -141,13 +141,13 @@ export default function JobImportsPage({
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 {sourcesAvailable.length === 0 && (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                    <div className="rounded-lg border border-warning/30 bg-warning-subtle px-4 py-3 text-sm text-amber-800">
                         No search sources configured. Add <code>ADZUNA_APP_ID</code>/<code>ADZUNA_APP_KEY</code> or{' '}
                         <code>USAJOBS_KEY</code>/<code>USAJOBS_EMAIL</code> to your <code>.env</code> to enable search.
                     </div>
                 )}
 
-                <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                <div className="mt-4 rounded-lg border border-warning/30 bg-warning-subtle px-4 py-3 text-sm text-amber-800">
                     <strong>Search and import are real.</strong> Resume matching, gap analysis, tailoring,
                     and cover-letter drafting below are still stubs.
                 </div>
@@ -180,7 +180,7 @@ export default function JobImportsPage({
                                         placeholder="e.g. Product Designer"
                                         className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
                                     />
-                                    {errors.keyword && <div className="mt-1 text-xs text-red-600">{errors.keyword}</div>}
+                                    {errors.keyword && <div className="mt-1 text-xs text-danger">{errors.keyword}</div>}
                                 </div>
                                 <div>
                                     <label className="mb-1 block text-xs font-semibold text-gray-500">Location</label>

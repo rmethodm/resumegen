@@ -66,7 +66,7 @@ export function JdMatchPanel({
                                     type="button"
                                     onClick={() => onAddKeyword(term)}
                                     title={`Add “${formatKeywordLabel(term)}” as a skill`}
-                                    className="inline-flex items-center gap-0.5 rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900 hover:border-amber-500"
+                                    className="inline-flex items-center gap-0.5 rounded-full border border-dashed border-warning/40 bg-warning-subtle px-2 py-0.5 text-[10px] font-medium text-warning-text hover:border-warning"
                                 >
                                     <PlusIcon className="size-2.5" />
                                     {term}
@@ -74,7 +74,7 @@ export function JdMatchPanel({
                             ) : (
                                 <span
                                     key={term}
-                                    className="rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900"
+                                    className="rounded-full border border-dashed border-warning/40 bg-warning-subtle px-2 py-0.5 text-[10px] font-medium text-warning-text"
                                 >
                                     {term}
                                 </span>
@@ -95,7 +95,7 @@ export function JdMatchPanel({
                         {overlap.matched.slice(0, 16).map((term) => (
                             <span
                                 key={term}
-                                className="rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-[10px] font-medium text-green-800"
+                                className="rounded-full border border-success/30 bg-success-subtle px-2 py-0.5 text-[10px] font-medium text-success-text"
                             >
                                 {term}
                             </span>

@@ -105,7 +105,7 @@ function AccessGate({
 
                 <form
                     onSubmit={submit}
-                    className="w-full max-w-sm rounded-lg border border-surface-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                    className="w-full max-w-sm rounded-lg border border-surface-border bg-white p-6 shadow-card"
                 >
                     <h1 className="text-sm font-bold text-gray-900">
                         Enter your details to view this resume
@@ -133,7 +133,7 @@ function AccessGate({
                                 placeholder="you@example.com"
                             />
                             {errors.email && (
-                                <p className="mt-1 text-xs text-red-600">{errors.email}</p>
+                                <p className="mt-1 text-xs text-danger">{errors.email}</p>
                             )}
                         </>
                     )}
@@ -158,7 +158,7 @@ function AccessGate({
                                 placeholder="Password"
                             />
                             {errors.password && (
-                                <p className="mt-1 text-xs text-red-600">{errors.password}</p>
+                                <p className="mt-1 text-xs text-danger">{errors.password}</p>
                             )}
                         </>
                     )}

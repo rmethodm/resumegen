@@ -192,7 +192,7 @@ export function Field({
                 <p
                     id={messageId}
                     role="alert"
-                    className="text-[11px] text-red-600"
+                    className="text-[11px] text-danger"
                 >
                     {error}
                 </p>
@@ -373,7 +373,7 @@ export function EntryCard({
                     size="icon"
                     aria-label={`Remove ${title}`}
                     onClick={onRemove}
-                    className="size-7 text-gray-500 hover:text-red-600"
+                    className="size-7 text-gray-500 hover:text-danger"
                 >
                     <TrashIcon className="size-3.5" />
                 </Button>
