@@ -1929,39 +1929,16 @@
       "meta": {
         "text": "accent gray surface text border radius shadow"
       }
+    },
+    {
+      "id": "query:badge tsx button raw tailwind color drift indigo",
+      "type": "query",
+      "meta": {
+        "text": "badge.tsx button.tsx raw tailwind color drift indigo red gray"
+      }
     }
   ],
   "edges": [
-    {
-      "from": "query:surface overlay card modal without dialog elevated surfaces",
-      "to": "resources/js/Components/workstation/share-resume-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786143461
-    },
-    {
-      "from": "query:surface overlay card modal without dialog elevated surfaces",
-      "to": "resources/js/Pages/Dashboard.tsx::ResumeCard",
-      "rel": "retrieved",
-      "ts": 1786143461
-    },
-    {
-      "from": "query:surface overlay card modal without dialog elevated surfaces",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx::JobCard",
-      "rel": "retrieved",
-      "ts": 1786143461
-    },
-    {
-      "from": "query:surface overlay card modal without dialog elevated surfaces",
-      "to": "resources/js/Components/workstation/skill-picker-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786143461
-    },
-    {
-      "from": "query:surface overlay card modal without dialog elevated surfaces",
-      "to": "resources/js/Components/workstation/export-checklist-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786143461
-    },
     {
       "from": "query:surface overlay card modal without dialog elevated surfaces",
       "to": "resources/js/Components/workstation/template-picker-modal.tsx",
@@ -5138,6 +5115,36 @@
       "meta": {
         "mode": "query_excerpt"
       }
+    },
+    {
+      "from": "query:badge tsx button raw tailwind color drift indigo",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786270736
+    },
+    {
+      "from": "query:badge tsx button raw tailwind color drift indigo",
+      "to": "ds-entry.tsx",
+      "rel": "retrieved",
+      "ts": 1786270736
+    },
+    {
+      "from": "query:badge tsx button raw tailwind color drift indigo",
+      "to": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786270736
+    },
+    {
+      "from": "query:badge tsx button raw tailwind color drift indigo",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786270736
+    },
+    {
+      "from": "query:badge tsx button raw tailwind color drift indigo",
+      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786270736
     }
   ],
   "files": {
@@ -8565,6 +8572,43 @@
         "searched_dirs": [
           "resources/js/Components/workstation",
           "ds-bundle/components/workstation/SkillPickerModal"
+        ]
+      }
+    },
+    {
+      "ts": 1786270736,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "badge.tsx button.tsx raw tailwind color drift indigo red gray"
+      }
+    },
+    {
+      "ts": 1786270736,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "badge.tsx button.tsx raw tailwind color drift indigo red gray"
+      }
+    },
+    {
+      "ts": 1786270741,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "bg-indigo-600|bg-red-600|bg-gray-100",
+        "hit_count": 30,
+        "hit_files": [
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-93-- Main content",
+          "./resources/views/vendor/pagination/tailwind.blade.php",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-90-**Dark mode color classes** \u2014 add `dark",
+          "./DESIGN.md",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-92-- Nav"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages",
+          "resources/js/Pages/Profile/Partials"
         ]
       }
     }
