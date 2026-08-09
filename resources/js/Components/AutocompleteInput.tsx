@@ -202,25 +202,25 @@ export default function AutocompleteInput({
                 onBlur={handleBlur}
             />
             {isError && query.length >= 2 && (
-                <p className="mt-1 text-[11px] text-red-600" role="status">
+                <p className="mt-1 text-[11px] text-error-text" role="status">
                     Could not load suggestions.
                 </p>
             )}
             {isLoading && query.length >= 2 && !isError && (
-                <p className="mt-1 text-[11px] text-gray-400" role="status">
+                <p className="mt-1 text-[11px] text-text-tertiary" role="status">
                     Searching…
                 </p>
             )}
             {open && suggestions.length > 0 && (
-                <ul className="absolute z-dropdown top-full left-0 right-0 mt-1 bg-white border border-[#e8e8f0] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+                <ul className="absolute z-dropdown top-full left-0 right-0 mt-1 bg-surface-card border border-border-subtle rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
                             onMouseDown={() => select(s.label)}
                             className={`cursor-pointer px-3 py-2 text-sm ${
                                 i === activeIndex
-                                    ? 'bg-[#eef2ff] text-[#4f46e5]'
-                                    : 'text-[#23232d] hover:bg-[#f5f5fb] focus-visible:bg-[#f5f5fb]'
+                                    ? 'bg-accent-100 text-accent-text'
+                                    : 'text-text-primary hover:bg-surface-raised focus-visible:bg-surface-raised'
                             }`}
                         >
                             {s.label}

@@ -42,7 +42,7 @@ function Bar({ w, dark = false }: { w: string; dark?: boolean }) {
         <span
             className={cn(
                 'h-1.5 rounded-full',
-                dark ? 'bg-gray-700/70' : 'bg-accent-bg/30',
+                dark ? 'bg-surface-inverse/70' : 'bg-accent-bg/30',
             )}
             style={{ width: w }}
         />
@@ -50,7 +50,7 @@ function Bar({ w, dark = false }: { w: string; dark?: boolean }) {
 }
 
 function Dot() {
-    return <span className="size-1 shrink-0 rounded-full bg-gray-700/60" />;
+    return <span className="size-1 shrink-0 rounded-full bg-surface-inverse/60" />;
 }
 
 /** A wordless sketch of how the layout arranges skills on the page. */
@@ -125,7 +125,7 @@ export function BulletStyleThumb({ style }: { style: ResumeBulletStyle }) {
                 <div className="flex flex-col gap-1.5">
                     {['70%', '55%'].map((w, index) => (
                         <span key={w} className="flex items-center gap-1.5">
-                            <span className="text-[9px] font-semibold text-gray-500">
+                            <span className="text-[9px] font-semibold text-text-secondary">
                                 {index + 1}.
                             </span>
                             <Bar w={w} />
@@ -205,7 +205,7 @@ export function Field({
                 <p
                     id={messageId}
                     role="alert"
-                    className="text-[11px] text-red-600"
+                    className="text-[11px] text-error-text"
                 >
                     {error}
                 </p>
@@ -237,7 +237,7 @@ function PartSelect({
             disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
             className={cn(
-                'h-9 rounded-md border border-gray-300 bg-white px-2 text-sm shadow-sm outline-none focus-visible:border-accent-500 focus-visible:ring-2 focus-visible:ring-border-focus/30 disabled:cursor-not-allowed disabled:opacity-50',
+                'h-9 rounded-md border border-border-default bg-surface-card px-2 text-sm shadow-sm outline-none focus-visible:border-accent-500 focus-visible:ring-2 focus-visible:ring-border-focus/30 disabled:cursor-not-allowed disabled:opacity-50',
                 className,
             )}
         >
@@ -299,7 +299,7 @@ export function MonthYearField({
                 />
             </div>
             {unparsed !== '' && (
-                <p className="text-[11px] text-gray-500">
+                <p className="text-[11px] text-text-secondary">
                     Currently “{unparsed}”. Picking a month or year replaces it.
                 </p>
             )}
@@ -369,7 +369,7 @@ export function EntryCard({
         <div
             onDragOver={dragHandle?.onDragOver}
             className={cn(
-                'flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-3.5',
+                'flex flex-col gap-3 rounded-xl border border-border-subtle bg-surface-card p-3.5',
                 dragHandle?.dragging && 'opacity-50',
             )}
         >
@@ -381,7 +381,7 @@ export function EntryCard({
                                 draggable
                                 onDragStart={dragHandle.onDragStart}
                                 onDragEnd={dragHandle.onDragEnd}
-                                className="cursor-grab p-0.5 text-gray-500 active:cursor-grabbing"
+                                className="cursor-grab p-0.5 text-text-secondary active:cursor-grabbing"
                                 aria-label={`Reorder ${title}`}
                             >
                                 <Bars3Icon className="size-3.5" />
@@ -392,7 +392,7 @@ export function EntryCard({
                                     disabled={!dragHandle.onMoveUp}
                                     onClick={dragHandle.onMoveUp}
                                     aria-label={`Move ${title} up`}
-                                    className="p-0.5 text-gray-500 hover:text-gray-900 disabled:opacity-30"
+                                    className="p-0.5 text-text-secondary hover:text-text-primary disabled:opacity-30"
                                 >
                                     <ArrowUpIcon className="size-3" />
                                 </button>
@@ -401,14 +401,14 @@ export function EntryCard({
                                     disabled={!dragHandle.onMoveDown}
                                     onClick={dragHandle.onMoveDown}
                                     aria-label={`Move ${title} down`}
-                                    className="p-0.5 text-gray-500 hover:text-gray-900 disabled:opacity-30"
+                                    className="p-0.5 text-text-secondary hover:text-text-primary disabled:opacity-30"
                                 >
                                     <ArrowDownIcon className="size-3" />
                                 </button>
                             </div>
                         </>
                     )}
-                    <p className="text-[11px] font-bold tracking-[0.06em] text-gray-500 uppercase">
+                    <p className="text-[11px] font-bold tracking-[0.06em] text-text-secondary uppercase">
                         {title}
                     </p>
                 </div>
@@ -423,7 +423,7 @@ export function EntryCard({
                         }
                         onConfirm();
                     }}
-                    className="size-7 text-gray-500 hover:text-red-600"
+                    className="size-7 text-text-secondary hover:text-error-text"
                 >
                     <TrashIcon className="size-3.5" />
                 </Button>
@@ -457,7 +457,7 @@ export function AddButton({
                 <PlusIcon className="size-4" /> {label}
             </Button>
             {disabled && disabledReason && (
-                <p className="text-[11px] text-gray-500">{disabledReason}</p>
+                <p className="text-[11px] text-text-secondary">{disabledReason}</p>
             )}
         </div>
     );
@@ -628,7 +628,7 @@ export function BulletsField({
                 </button>
             </div>
             {bulkOpen && (
-                <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2.5">
+                <div className="flex flex-col gap-2 rounded-lg border border-border-subtle bg-surface-sunken p-2.5">
                     <textarea
                         value={bulkText}
                         onChange={(event) => setBulkText(event.target.value)}
@@ -636,7 +636,7 @@ export function BulletsField({
                         placeholder={
                             'Paste bullets — one per line\n• Shipped feature X\n- Reduced costs by 20%'
                         }
-                        className="w-full resize-y rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm shadow-sm outline-none focus-visible:border-accent-500 focus-visible:ring-2 focus-visible:ring-border-focus/30"
+                        className="w-full resize-y rounded-md border border-border-default bg-surface-card px-2.5 py-2 text-sm shadow-sm outline-none focus-visible:border-accent-500 focus-visible:ring-2 focus-visible:ring-border-focus/30"
                     />
                     <Button
                         type="button"
@@ -666,7 +666,7 @@ export function BulletsField({
                         draggable
                         onDragStart={() => setDragging(index)}
                         onDragEnd={() => setDragging(null)}
-                        className="cursor-grab p-1 text-gray-500 active:cursor-grabbing"
+                        className="cursor-grab p-1 text-text-secondary active:cursor-grabbing"
                         aria-label="Reorder bullet"
                     >
                         <Bars3Icon className="size-3.5" />
@@ -748,7 +748,7 @@ export function BulletsField({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="size-7 text-gray-500"
+                        className="size-7 text-text-secondary"
                         onClick={() => {
                             const onConfirm = () => removeAt(index);
                             if (
@@ -775,7 +775,7 @@ export function BulletsField({
                 + Add bullet
             </Button>
             {rows.length >= max && (
-                <p className="text-[11px] text-gray-500">
+                <p className="text-[11px] text-text-secondary">
                     Limit reached ({max}).
                 </p>
             )}

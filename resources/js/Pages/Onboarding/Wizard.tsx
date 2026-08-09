@@ -23,7 +23,7 @@ function StepDots({ step }: { step: Step }) {
                             ? 'bg-accent-bg'
                             : s < step
                               ? 'bg-accent-bg/40'
-                              : 'bg-gray-200'
+                              : 'bg-surface-sunken'
                     }`}
                 />
             ))}
@@ -69,10 +69,10 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
 
             <div className="w-full max-w-md">
                 <div className="mb-6 text-center">
-                    <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
+                    <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
                         {step === 1 ? 'What are you aiming for?' : step === 2 ? 'How should we reach you?' : 'Pick a starting template'}
                     </h1>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-text-secondary">
                         {step === 1
                             ? "We'll use this to pre-fill your resumes and personalize your experience."
                             : step === 2
@@ -88,7 +88,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                         <div>
                             <label
                                 htmlFor="target_role"
-                                className="block text-sm font-medium text-gray-700"
+                                className="block text-sm font-medium text-text-primary"
                             >
                                 Target role
                             </label>
@@ -98,17 +98,17 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 value={data.target_role ?? ''}
                                 onChange={value => setData('target_role', value)}
                                 placeholder="e.g. Software Engineer"
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                className="mt-1 block w-full rounded-md border border-border-default px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                             />
                             {errors.target_role && (
-                                <p className="mt-1 text-xs text-red-600">{errors.target_role}</p>
+                                <p className="mt-1 text-xs text-error-text">{errors.target_role}</p>
                             )}
                         </div>
 
                         <div>
                             <label
                                 htmlFor="industry"
-                                className="block text-sm font-medium text-gray-700"
+                                className="block text-sm font-medium text-text-primary"
                             >
                                 Industry
                             </label>
@@ -119,14 +119,14 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 onChange={(e) => setData('industry', e.target.value)}
                                 placeholder="e.g. Tech, Finance, Healthcare"
                                 maxLength={100}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                className="mt-1 block w-full rounded-md border border-border-default px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                             />
                         </div>
 
                         <div>
                             <label
                                 htmlFor="years_experience"
-                                className="block text-sm font-medium text-gray-700"
+                                className="block text-sm font-medium text-text-primary"
                             >
                                 Years of experience
                             </label>
@@ -143,10 +143,10 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     )
                                 }
                                 placeholder="0"
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                className="mt-1 block w-full rounded-md border border-border-default px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                             />
                             {errors.years_experience && (
-                                <p className="mt-1 text-xs text-red-600">{errors.years_experience}</p>
+                                <p className="mt-1 text-xs text-error-text">{errors.years_experience}</p>
                             )}
                         </div>
 
@@ -154,7 +154,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             <button
                                 type="button"
                                 onClick={handleSkip}
-                                className="text-sm text-gray-500 hover:text-gray-700"
+                                className="text-sm text-text-secondary hover:text-text-primary"
                             >
                                 Skip for now
                             </button>
@@ -174,7 +174,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             <div className="col-span-2">
                                 <label
                                     htmlFor="full_name"
-                                    className="block text-sm font-medium text-gray-700"
+                                    className="block text-sm font-medium text-text-primary"
                                 >
                                     Full name
                                 </label>
@@ -184,13 +184,13 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.full_name}
                                     onChange={(e) => setData('full_name', e.target.value)}
                                     placeholder="Jane Smith"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                    className="mt-1 block w-full rounded-md border border-border-default px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                             </div>
                             <div>
                                 <label
                                     htmlFor="phone"
-                                    className="block text-sm font-medium text-gray-700"
+                                    className="block text-sm font-medium text-text-primary"
                                 >
                                     Phone
                                 </label>
@@ -200,13 +200,13 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
                                     placeholder="+1 555 000 0000"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                    className="mt-1 block w-full rounded-md border border-border-default px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                             </div>
                             <div>
                                 <label
                                     htmlFor="location"
-                                    className="block text-sm font-medium text-gray-700"
+                                    className="block text-sm font-medium text-text-primary"
                                 >
                                     Location
                                 </label>
@@ -216,13 +216,13 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.location}
                                     onChange={(e) => setData('location', e.target.value)}
                                     placeholder="New York, NY"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                    className="mt-1 block w-full rounded-md border border-border-default px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                             </div>
                             <div className="col-span-2">
                                 <label
                                     htmlFor="linkedin_url"
-                                    className="block text-sm font-medium text-gray-700"
+                                    className="block text-sm font-medium text-text-primary"
                                 >
                                     LinkedIn URL
                                 </label>
@@ -232,16 +232,16 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.linkedin_url}
                                     onChange={(e) => setData('linkedin_url', e.target.value)}
                                     placeholder="https://linkedin.com/in/..."
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                    className="mt-1 block w-full rounded-md border border-border-default px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                                 {errors.linkedin_url && (
-                                    <p className="mt-1 text-xs text-red-600">{errors.linkedin_url}</p>
+                                    <p className="mt-1 text-xs text-error-text">{errors.linkedin_url}</p>
                                 )}
                             </div>
                             <div className="col-span-2">
                                 <label
                                     htmlFor="website"
-                                    className="block text-sm font-medium text-gray-700"
+                                    className="block text-sm font-medium text-text-primary"
                                 >
                                     Website
                                 </label>
@@ -251,10 +251,10 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.website}
                                     onChange={(e) => setData('website', e.target.value)}
                                     placeholder="https://yoursite.com"
-                                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                    className="mt-1 block w-full rounded-md border border-border-default px-3 py-2 text-sm shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                 />
                                 {errors.website && (
-                                    <p className="mt-1 text-xs text-red-600">{errors.website}</p>
+                                    <p className="mt-1 text-xs text-error-text">{errors.website}</p>
                                 )}
                             </div>
                         </div>
@@ -264,14 +264,14 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="text-sm text-gray-500 hover:text-gray-700"
+                                    className="text-sm text-text-secondary hover:text-text-primary"
                                 >
                                     ← Back
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleSkip}
-                                    className="text-sm text-gray-500 hover:text-gray-700"
+                                    className="text-sm text-text-secondary hover:text-text-primary"
                                 >
                                     Skip for now
                                 </button>
@@ -301,15 +301,15 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                         }}
                                         aria-pressed={selected}
                                         title={TEMPLATE_LABELS[t] ?? t}
-                                        className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-accent-500 ring-1 ring-border-focus' : 'border-gray-200 hover:border-gray-300'} ${locked ? 'opacity-60' : ''}`}
+                                        className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-accent-500 ring-1 ring-border-focus' : 'border-border-subtle hover:border-border-default'} ${locked ? 'opacity-60' : ''}`}
                                     >
                                         <img
                                             src={`/images/templates/${t}.png`}
                                             loading="lazy"
                                             alt=""
-                                            className="mb-1 h-24 w-full rounded border border-gray-200 bg-white object-cover object-top"
+                                            className="mb-1 h-24 w-full rounded border border-border-subtle bg-surface-card object-cover object-top"
                                         />
-                                        <span className="truncate text-[11px] font-medium text-gray-900">
+                                        <span className="truncate text-[11px] font-medium text-text-primary">
                                             {locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}
                                         </span>
                                     </button>
@@ -322,14 +322,14 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 <button
                                     type="button"
                                     onClick={() => setStep(2)}
-                                    className="text-sm text-gray-500 hover:text-gray-700"
+                                    className="text-sm text-text-secondary hover:text-text-primary"
                                 >
                                     ← Back
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleSkip}
-                                    className="text-sm text-gray-500 hover:text-gray-700"
+                                    className="text-sm text-text-secondary hover:text-text-primary"
                                 >
                                     Skip for now
                                 </button>

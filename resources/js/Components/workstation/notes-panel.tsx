@@ -76,7 +76,7 @@ export function NotesPanel({
             </div>
 
             {error && (
-                <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
+                <div className="mb-3 rounded-md border border-error-border bg-error-bg px-3 py-2 text-xs font-medium text-error-text">
                     {error}
                 </div>
             )}
@@ -102,7 +102,7 @@ export function NotesPanel({
             </div>
 
             {notes.length === 0 ? (
-                <p className="text-[11px] text-gray-500">
+                <p className="text-[11px] text-text-tertiary">
                     No notes yet. Use these for private reminders while editing.
                 </p>
             ) : (
@@ -123,14 +123,14 @@ export function NotesPanel({
                                 }}
                             />
                             <div className="mt-1 flex items-center justify-between">
-                                <span className="text-[10px] text-gray-400">
+                                <span className="text-[10px] text-text-tertiary">
                                     {note.created_at}
                                 </span>
                                 <button
                                     type="button"
                                     aria-label="Delete note"
                                     onClick={() => deleteNote(note.id)}
-                                    className="rounded p-1 text-gray-400 hover:bg-white hover:text-red-600"
+                                    className="rounded p-1 text-text-tertiary hover:bg-surface-card hover:text-error-text"
                                 >
                                     <TrashIcon className="size-3.5" />
                                 </button>

@@ -36,8 +36,8 @@ export default function AdminLayout({
     ];
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
-            <header className="border-b border-slate-800 bg-slate-900 text-white">
+        <div className="min-h-screen bg-surface-canvas text-text-primary">
+            <header className="border-b border-border-strong bg-surface-inverse text-text-on-inverse">
                 <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4">
                     <div className="flex items-center gap-2.5">
                         <span
@@ -50,7 +50,7 @@ export default function AdminLayout({
                             <span className="block text-sm font-semibold tracking-tight">
                                 Resumegen
                             </span>
-                            <span className="block text-[10px] font-medium uppercase tracking-[0.12em] text-slate-400">
+                            <span className="block text-[10px] font-medium uppercase tracking-[0.12em] text-text-on-inverse/60">
                                 Support admin
                             </span>
                         </div>
@@ -64,8 +64,8 @@ export default function AdminLayout({
                                 className={
                                     'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-150 ' +
                                     (item.active
-                                        ? 'bg-white/15 text-white'
-                                        : 'text-slate-300 hover:bg-white/10 hover:text-white focus:outline-none focus-visible:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/40')
+                                        ? 'bg-text-on-inverse/15 text-text-on-inverse'
+                                        : 'text-text-on-inverse/70 hover:bg-text-on-inverse/10 hover:text-text-on-inverse focus:outline-none focus-visible:bg-text-on-inverse/10 focus-visible:ring-2 focus-visible:ring-text-on-inverse/40')
                                 }
                             >
                                 {item.label}
@@ -78,18 +78,18 @@ export default function AdminLayout({
                             <Dropdown.Trigger>
                                 <button
                                     type="button"
-                                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-slate-200 transition-colors duration-150 hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-text-on-inverse/80 transition-colors duration-150 hover:bg-text-on-inverse/10 hover:text-text-on-inverse focus:outline-none focus-visible:ring-2 focus-visible:ring-text-on-inverse/40"
                                     aria-haspopup="menu"
                                     aria-label="Account menu"
                                 >
-                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-xs font-semibold text-white">
+                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-text-on-inverse/15 text-xs font-semibold text-text-on-inverse">
                                         {auth.user.name?.charAt(0)?.toUpperCase() ?? '?'}
                                     </span>
                                     <span className="hidden max-w-[10rem] truncate sm:inline">
                                         {auth.user.name}
                                     </span>
                                     <ChevronDownIcon
-                                        className="hidden h-3.5 w-3.5 text-slate-400 sm:block"
+                                        className="hidden h-3.5 w-3.5 text-text-on-inverse/60 sm:block"
                                         aria-hidden
                                     />
                                 </button>
@@ -140,12 +140,12 @@ export default function AdminLayout({
                 {header ? <div className="mb-4">{header}</div> : null}
 
                 {flash?.success ? (
-                    <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+                    <div className="mb-4 rounded-lg border border-success-border bg-success-bg px-3 py-2 text-sm text-success-text">
                         {flash.success}
                     </div>
                 ) : null}
                 {flash?.error ? (
-                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+                    <div className="mb-4 rounded-lg border border-error-border bg-error-bg px-3 py-2 text-sm text-error-text">
                         {flash.error}
                     </div>
                 ) : null}

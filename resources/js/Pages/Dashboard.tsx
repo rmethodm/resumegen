@@ -35,23 +35,23 @@ function scoreBand(score: number): 'good' | 'fair' | 'weak' {
 function scoreDotColor(score: number): string {
     const band = scoreBand(score);
     if (band === 'good') {
-        return 'bg-emerald-500';
+        return 'bg-success-bg';
     }
     if (band === 'fair') {
-        return 'bg-amber-400';
+        return 'bg-warning-bg';
     }
-    return 'bg-red-500';
+    return 'bg-error-bg';
 }
 
 function scoreSegmentColor(score: number): string {
     const band = scoreBand(score);
     if (band === 'good') {
-        return 'bg-emerald-500';
+        return 'bg-success-bg';
     }
     if (band === 'fair') {
-        return 'bg-amber-400';
+        return 'bg-warning-bg';
     }
-    return 'bg-red-500';
+    return 'bg-error-bg';
 }
 
 /**
@@ -107,7 +107,7 @@ function ReadinessStrip({
                     {good > 0 && (
                         <>
                             {' · '}
-                            <span className="tabular-nums text-emerald-600 dark:text-emerald-400">
+                            <span className="tabular-nums text-success-text">
                                 {good}
                             </span>{' '}
                             ready
@@ -116,7 +116,7 @@ function ReadinessStrip({
                     {needsWork > 0 && (
                         <>
                             {' · '}
-                            <span className="tabular-nums text-amber-600 dark:text-amber-400">
+                            <span className="tabular-nums text-warning-text">
                                 {needsWork}
                             </span>{' '}
                             need work
@@ -203,7 +203,7 @@ function ShareStatus({
         return (
             <span
                 className={cn(
-                    'inline-flex items-center gap-1 font-medium text-amber-700 dark:text-amber-400',
+                    'inline-flex items-center gap-1 font-medium text-warning-text',
                     compact ? 'text-[10px]' : 'text-[11px]',
                 )}
             >
@@ -216,7 +216,7 @@ function ShareStatus({
                     Link expired
                 </button>
                 {share.expires_at && !compact && (
-                    <span className="font-normal text-amber-600 dark:text-amber-500">
+                    <span className="font-normal text-warning-text">
                         · {share.expires_at}
                     </span>
                 )}
@@ -559,7 +559,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                             onConfirm();
                                         }}
                                         aria-label={`Delete ${version.title}`}
-                                        className="rounded-md p-1 text-text-tertiary transition-colors duration-150 hover:text-error-text focus:outline-none focus-visible:text-error-text focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="rounded-md p-1 text-text-tertiary transition-colors duration-150 hover:text-error-text focus:outline-none focus-visible:text-error-text focus-visible:ring-2 focus-visible:ring-error-border focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         <TrashIcon className="size-4" />
                                     </button>

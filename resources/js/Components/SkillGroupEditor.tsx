@@ -53,7 +53,7 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
     return (
         <div className="flex flex-col gap-3">
             {groups.map((group, idx) => (
-                <div key={`${uid}-${idx}`} className="rounded-md border border-gray-200 bg-gray-50 p-3">
+                <div key={`${uid}-${idx}`} className="rounded-md border border-border-subtle bg-surface-raised p-3">
                     <div className="mb-2 flex items-center gap-2">
                         <input
                             type="text"
@@ -62,12 +62,12 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                             onBlur={onBlur}
                             placeholder="Category (e.g. Frontend)"
                             maxLength={60}
-                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30"
+                            className="flex-1 rounded border border-border-default bg-surface-card px-2 py-1 text-xs font-medium focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30"
                         />
                         <button
                             type="button"
                             onClick={() => removeGroup(idx)}
-                            className="text-gray-400 hover:text-red-500 text-xs leading-none"
+                            className="text-text-tertiary hover:text-error-text text-xs leading-none"
                         >
                             ✕
                         </button>
@@ -82,7 +82,7 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                 </div>
             ))}
             {drafts.map((draft) => (
-                <div key={`${uid}-draft-${draft.id}`} className="rounded-md border border-gray-200 bg-gray-50 p-3">
+                <div key={`${uid}-draft-${draft.id}`} className="rounded-md border border-border-subtle bg-surface-raised p-3">
                     <div className="mb-2 flex items-center gap-2">
                         <input
                             type="text"
@@ -90,12 +90,12 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                             onChange={(e) => updateDraftCategory(draft.id, e.target.value)}
                             placeholder="Category (e.g. Frontend)"
                             maxLength={60}
-                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30"
+                            className="flex-1 rounded border border-border-default bg-surface-card px-2 py-1 text-xs font-medium focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30"
                         />
                         <button
                             type="button"
                             onClick={() => removeDraft(draft.id)}
-                            className="text-gray-400 hover:text-red-500 text-xs leading-none"
+                            className="text-text-tertiary hover:text-error-text text-xs leading-none"
                         >
                             ✕
                         </button>
@@ -111,7 +111,7 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
             <button
                 type="button"
                 onClick={addGroup}
-                className="rounded-md border border-dashed border-indigo-300 py-1.5 text-xs text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50"
+                className="rounded-md border border-dashed border-accent-300 py-1.5 text-xs text-accent-text hover:border-accent-500 hover:bg-accent-100"
             >
                 + Add category
             </button>

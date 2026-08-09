@@ -569,6 +569,9 @@ export default function Workstation({
                 )}
 
                 <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-6 lg:flex-row lg:items-start">
+                    {/* order-2/order-1 puts the form ahead of the coaching
+                        rail below lg, so mobile users reach the title/tabs
+                        and first field without scrolling past the rail. */}
                     <SectionPanel
                         resumeId={id}
                         analysis={liveAnalysis}
@@ -579,9 +582,10 @@ export default function Workstation({
                         onAddKeyword={addKeyword}
                         onJumpChecklist={jumpChecklist}
                         onOpenOptimize={() => setTab('Optimize')}
+                        className="order-2 lg:order-none"
                     />
 
-                    <div className="flex min-w-0 flex-col gap-5 sm:gap-6 lg:flex-1">
+                    <div className="order-1 flex min-w-0 flex-col gap-5 sm:gap-6 lg:order-none lg:flex-1">
                         <WorkstationHeader
                             resumeId={id}
                             title={draft.title}

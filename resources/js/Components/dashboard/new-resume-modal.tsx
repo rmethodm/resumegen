@@ -82,11 +82,11 @@ export function NewResumeModal({
         <Dialog open={open} onClose={resetAndClose} className="relative z-modal">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogPanel className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-5 shadow-xl">
-                    <DialogTitle className="text-base font-bold text-gray-900">
+                <DialogPanel className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-surface-card p-5 shadow-xl">
+                    <DialogTitle className="text-base font-bold text-text-primary">
                         New resume
                     </DialogTitle>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-text-secondary">
                         Start blank, use a role sample, or paste an existing
                         resume.
                     </p>
@@ -138,14 +138,14 @@ export function NewResumeModal({
                                     disabled={submitting}
                                     onClick={() => createSample(sample.id)}
                                     className={cn(
-                                        'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-accent-500 hover:bg-accent-100/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1',
+                                        'rounded-lg border border-border-subtle p-3 text-left transition-colors hover:border-accent-500 hover:bg-accent-100/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1',
                                         submitting && 'opacity-60',
                                     )}
                                 >
-                                    <p className="text-sm font-semibold text-gray-900">
+                                    <p className="text-sm font-semibold text-text-primary">
                                         {sample.label}
                                     </p>
-                                    <p className="mt-0.5 text-[12px] text-gray-500">
+                                    <p className="mt-0.5 text-[12px] text-text-secondary">
                                         {sample.description}
                                     </p>
                                 </button>
@@ -171,7 +171,7 @@ export function NewResumeModal({
                                 placeholder={`Jane Doe\nSoftware Engineer\njane@example.com\n\nSUMMARY\n…\n\nEXPERIENCE\nEngineer — Acme\n• Shipped feature X\n\nSKILLS\nTypeScript, React, SQL`}
                                 className="font-mono text-xs"
                             />
-                            <p className="text-[11px] text-gray-500">
+                            <p className="text-[11px] text-text-secondary">
                                 Heuristic import only — no AI. Use section
                                 headings like EXPERIENCE and SKILLS for best
                                 results.
@@ -221,12 +221,12 @@ function ChoiceButton({
             disabled={disabled}
             onClick={onClick}
             className={cn(
-                'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-accent-500 hover:bg-accent-100/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1',
+                'rounded-lg border border-border-subtle p-3 text-left transition-colors hover:border-accent-500 hover:bg-accent-100/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1',
                 disabled && 'opacity-60',
             )}
         >
-            <p className="text-sm font-semibold text-gray-900">{title}</p>
-            <p className="mt-0.5 text-[12px] text-gray-500">{description}</p>
+            <p className="text-sm font-semibold text-text-primary">{title}</p>
+            <p className="mt-0.5 text-[12px] text-text-secondary">{description}</p>
         </button>
     );
 }
