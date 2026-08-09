@@ -6,42 +6,58 @@
    Primitives are RGB triplets (no `rgb()` wrapper) so Tailwind's
    `rgb(var(--x) / <alpha-value>)` pattern in tailwind.config.js can
    apply opacity modifiers, e.g. `bg-surface-canvas/50`.
-   Reconciled 2026-08-08 with DESIGN.md's cream/burnt-orange system —
-   the neutral (cream-50..950) and accent-400/500/600/700 stops are
-   DESIGN.md's documented values verbatim. DESIGN.md doesn't define a
-   full 11-stop accent ramp (only 400-700, matching the design-system
-   export's own token set); accent-50/100/200/300 are interpolated
-   toward cream-50 and accent-800/900/950 toward cream-950 so classes
-   like `bg-accent-100/60` used elsewhere in the app stay defined. */
+   Reconciled 2026-08-09 with DESIGN.md's Sentry-style violet/lime
+   system. DESIGN.md documents a marketing site (two polarities: a
+   dark-violet canvas and a white canvas), not an app with a
+   light/dark toggle — the two polarities are mapped onto this app's
+   existing light/.dark split, since that's the closest fit. DESIGN.md
+   also has no status-color spec (success/warning/error/info) beyond a
+   single translucent blue focus ring reserved for keyboard focus; the
+   four status roles below are extrapolated from the documented accent
+   hues (lime/pink/violet) rather than introducing new colors, per its
+   own "don't introduce additional accent colors" rule. */
 :root {
     color-scheme: light dark;
 
-    /* Primitives — neutral ramp (DESIGN.md cream-50..950) */
-    --gray-50: 250 246 240;
-    --gray-100: 245 239 229;
-    --gray-200: 228 219 203;
-    --gray-300: 217 206 188;
-    --gray-400: 201 191 172;
-    --gray-500: 138 129 114;
-    --gray-600: 107 98 85;
-    --gray-700: 74 68 54;
-    --gray-800: 52 47 38;
-    --gray-900: 43 38 32;
-    --gray-950: 26 23 18;
+    /* Primitives — neutral ramp, white (surface-canvas-light) down to
+       primary (#150f23). Anchored on DESIGN.md's named hex stops where
+       one exists; interpolated where it doesn't. */
+    --gray-50: 255 255 255; /* surface-canvas-light / on-primary */
+    --gray-100: 240 240 240; /* surface-press-light */
+    --gray-200: 229 231 235; /* hairline-cloud #e5e7eb */
+    --gray-300: 207 207 219; /* hairline-cool #cfcfdb */
+    --gray-400: 176 172 194; /* interpolated */
+    --gray-500: 138 132 158; /* interpolated */
+    --gray-600: 107 100 130; /* interpolated, ~on-dark-muted register */
+    --gray-700: 54 45 89; /* hairline-violet #362d59 */
+    --gray-800: 31 22 51; /* ink-deep / surface-canvas-dark #1f1633 */
+    --gray-900: 21 15 35; /* primary / surface-night #150f23 */
+    --gray-950: 10 7 18; /* interpolated, darkest pressed state */
 
-    /* Primitives — accent ramp (burnt orange). 400-700 are DESIGN.md's
-       exact values; the rest are interpolated (see file header note). */
-    --accent-50: 247 235 226;
-    --accent-100: 244 218 205;
-    --accent-200: 236 187 162;
-    --accent-300: 230 154 120;
-    --accent-400: 227 138 99;
-    --accent-500: 193 80 46;
-    --accent-600: 168 63 34;
-    --accent-700: 138 51 25;
-    --accent-800: 110 44 23;
-    --accent-900: 82 37 22;
-    --accent-950: 54 30 21;
+    /* Primitives — accent ramp. #150f23 (primary) is the button color;
+       DESIGN.md is explicit that this near-black is deliberate ("don't
+       soften to a brand-violet"), so it anchors 500 rather than a
+       brighter mid-ramp stop. */
+    --accent-50: 247 245 252;
+    --accent-100: 240 235 250;
+    --accent-200: 200 190 235;
+    --accent-300: 106 95 193; /* accent-violet (link color) #6a5fc1 */
+    --accent-400: 66 32 130; /* accent-violet-deep #422082 */
+    --accent-500: 21 15 35; /* primary #150f23 */
+    --accent-600: 15 11 26;
+    --accent-700: 10 7 18;
+    --accent-800: 8 5 14;
+    --accent-900: 5 3 9;
+    --accent-950: 2 1 4;
+
+    /* Link color is distinct from the button color in DESIGN.md
+       (accent-violet #6a5fc1 vs primary #150f23) — kept as its own
+       primitive so --color-accent-text can diverge from --color-accent-bg. */
+    --link-violet: 106 95 193;
+
+    /* The one blue in the system — reserved for the keyboard-focus
+       ring only, per DESIGN.md's `{colors.ring-focus}`. */
+    --ring-focus: 59 130 246;
 
     /* Primitives — motion */
     --duration-fast: 150ms;
@@ -52,22 +68,29 @@
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Primitives — radii (DESIGN.md's role-based scale) */
+    /* Primitives — radii (DESIGN.md's role-based scale: xs 4 / sm 6 /
+       md 8 / lg 10 / xl 12 / xxl 18). DESIGN.md has no modal spec, so
+       --radius-2xl reuses its largest generic step (xxl, hero/feature
+       image containers) for modals too. */
     --radius-none: 0;
-    --radius-sm: 0.125rem; /* 2px */
-    --radius-md: 0.375rem; /* 6px — buttons, inputs, chips */
-    --radius-lg: 0.625rem; /* 10px — cards */
-    --radius-xl: 0.875rem; /* 14px — modals */
-    --radius-2xl: 1.25rem; /* 20px */
+    --radius-xs: 0.25rem; /* 4px — badges, pills, highlight chips */
+    --radius-sm: 0.375rem; /* 6px — text inputs, search */
+    --radius-md: 0.5rem; /* 8px — buttons, code blocks, selects */
+    --radius-lg: 0.625rem; /* 10px — generic containers */
+    --radius-xl: 0.75rem; /* 12px — cards */
+    --radius-2xl: 1.125rem; /* 18px — modals, large feature cards */
     --radius-full: 9999px;
 
-    /* Primitives — elevation. DESIGN.md: hairline-only depth, no drop
-       shadows — cards separate from canvas via a 1px border and the
-       white-on-cream contrast, not a blurred shadow. */
-    --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
-    --shadow-md: 0 0 0 1px rgb(var(--color-border-default));
-    --shadow-lg: 0 0 0 1px rgb(var(--color-border-strong));
-    --shadow-xl: 0 0 0 1px rgb(var(--color-border-strong));
+    /* Primitives — elevation. DESIGN.md documents real drop shadows on
+       light surfaces (its levels 1/2) but explicitly forbids them on
+       the dark canvas ("depth comes from texture and illustration, not
+       from light-on-dark shadows that would muddy the violet") — the
+       .dark / prefers-color-scheme blocks below keep the hairline-ring
+       treatment for that reason, not because it was reused unchanged. */
+    --shadow-sm: 0 2px 8px 0 rgba(0, 0, 0, 0.08); /* level 1 */
+    --shadow-md: 0 4px 10px 0 rgba(0, 0, 0, 0.09);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* level 2 */
+    --shadow-xl: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 
     /* Primitives — z-index ladder (semantic layers, not magic numbers).
        Order: sticky under menus; menus under modals; toasts/tooltips on top. */
@@ -80,18 +103,16 @@
     --z-toast: 60;
     --z-tooltip: 70;
 
-    /* Semantics — surface stack.
-       surface-canvas now equals --gray-50 exactly post-reconciliation
-       (both are DESIGN.md's cream-50, #faf6f0) — kept as its own token
-       rather than aliased, matching the rest of the surface stack. */
-    --color-surface-canvas: 250 246 240;
+    /* Semantics — surface stack. Light mode = DESIGN.md's light-canvas
+       world (white, dense/transactional surfaces). */
+    --color-surface-canvas: var(--gray-50);
     --color-surface-raised: var(--gray-100);
-    --color-surface-overlay: 253 251 247;
+    --color-surface-overlay: var(--gray-50);
     --color-surface-sunken: var(--gray-200);
     --color-surface-inverse: var(--gray-900);
 
     /* Semantics — text */
-    --color-text-primary: var(--gray-900);
+    --color-text-primary: var(--gray-800); /* ink #1f1633 */
     --color-text-secondary: var(--gray-600);
     --color-text-tertiary: var(--gray-400);
     --color-text-on-accent: var(--gray-50);
@@ -100,40 +121,43 @@
     /* Semantics — border */
     --color-border-subtle: var(--gray-200);
     --color-border-default: var(--gray-300);
-    --color-border-strong: var(--gray-400);
-    --color-border-focus: var(--accent-500);
+    --color-border-strong: var(--gray-500);
+    --color-border-focus: var(--ring-focus);
 
     /* Semantics — accent
-       accent-text = brand-colored text (links, active labels).
+       accent-text = brand-colored text (links, active labels) — DESIGN.md
+       gives links their own violet, distinct from the button color.
        text-on-accent = white on solid accent fills (use text-text-on-accent). */
     --color-accent-bg: var(--accent-500);
     --color-accent-bg-hover: var(--accent-600);
     --color-accent-bg-active: var(--accent-700);
-    --color-accent-text: var(--accent-500);
+    --color-accent-text: var(--link-violet);
 
     /* Semantics — radius roles */
-    --radius-input: var(--radius-md);
+    --radius-input: var(--radius-sm);
     --radius-button: var(--radius-md);
-    --radius-card: var(--radius-lg);
-    --radius-modal: var(--radius-xl);
+    --radius-card: var(--radius-xl);
+    --radius-modal: var(--radius-2xl);
 
-    /* Semantics — status (bg / text / border per state), verbatim from
-       DESIGN.md / the design-system token export. */
-    --color-success-bg: 234 240 219;
-    --color-success-text: 122 143 63;
-    --color-success-border: 197 210 165;
+    /* Semantics — status (bg / text / border per state). DESIGN.md has
+       no status spec; each role borrows one of its documented accent
+       hues rather than introducing a new color (lime = success, pink =
+       error, violet-mid = warning, violet-link = info). */
+    --color-success-bg: 245 251 222;
+    --color-success-text: 74 94 20;
+    --color-success-border: 194 224 140;
 
-    --color-warning-bg: 250 238 214;
-    --color-warning-text: 212 162 76;
-    --color-warning-border: 232 200 140;
+    --color-warning-bg: 237 233 242;
+    --color-warning-text: 79 64 92;
+    --color-warning-border: 180 168 196;
 
-    --color-error-bg: 247 224 219;
-    --color-error-text: 178 59 44;
-    --color-error-border: 216 156 140;
+    --color-error-bg: 255 235 241;
+    --color-error-text: 168 40 80;
+    --color-error-border: 240 180 200;
 
-    --color-info-bg: 228 235 244;
-    --color-info-text: 91 122 158;
-    --color-info-border: 180 199 222;
+    --color-info-bg: 235 233 247;
+    --color-info-text: 66 58 140;
+    --color-info-border: 180 174 224;
 }
 
 /* Dark remaps semantics only — primitives above are untouched.
@@ -145,87 +169,110 @@
    toggle wherever that toggle *is* present. */
 @media (prefers-color-scheme: dark) {
     :root:not(.dark) {
-        --color-surface-canvas: var(--gray-950);
+        /* DESIGN.md's dark canvas is ink-deep (#1f1633, gray-800) with
+           cards/code-blocks nested one step darker at "night" (#150f23,
+           gray-900) — inverted from the usual raised-is-lighter pattern,
+           because that's how the two tokens actually relate in the spec. */
+        --color-surface-canvas: var(--gray-800);
         --color-surface-raised: var(--gray-900);
-        --color-surface-overlay: var(--gray-800);
-        --color-surface-sunken: 35 31 25;
+        --color-surface-overlay: var(--gray-900);
+        --color-surface-sunken: var(--gray-700);
         --color-surface-inverse: var(--gray-50);
 
         --color-text-primary: var(--gray-50);
-        --color-text-secondary: var(--gray-400);
+        --color-text-secondary: var(--gray-300); /* ~on-dark-muted rgba(255,255,255,.72) */
         --color-text-tertiary: var(--gray-600);
         --color-text-on-inverse: var(--gray-900);
 
-        --color-border-subtle: 58 52 43;
-        --color-border-default: 74 68 57;
-        --color-border-strong: 97 89 75;
+        --color-border-subtle: var(--gray-700);
+        --color-border-default: var(--gray-600);
+        --color-border-strong: var(--gray-500);
 
-        /* Accent (bg/hover/active/text) is intentionally NOT redefined
-           here — the design-system export keeps the burnt-orange accent
-           constant across themes rather than lightening it, so these
-           fall through to the :root values above. */
+        /* button-primary polarity-flips to button-inverted on the dark
+           canvas per DESIGN.md — white fill, ink-deep text, pressed to
+           the press-light/press-stronger fills. */
+        --color-accent-bg: var(--gray-50);
+        --color-accent-bg-hover: var(--gray-100);
+        --color-accent-bg-active: 239 239 239; /* surface-press-stronger #efefef */
+        --color-text-on-accent: 26 26 26; /* ink-press #1a1a1a */
+        --color-accent-text: var(--gray-50); /* link-on-dark: white, underline-only */
 
-        /* Shadows stay hairline-only on dark too, per DESIGN.md's "no drop
-           shadows" rule — a black-on-near-black shadow would be invisible
-           anyway. */
+        /* Shadows stay hairline-only on dark, per DESIGN.md: "Don't apply
+           drop shadows to cards on dark canvas... depth comes from
+           texture and illustration." */
         --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
         --shadow-md: 0 0 0 1px rgb(var(--color-border-default));
         --shadow-lg: 0 0 0 1px rgb(var(--color-border-strong));
         --shadow-xl: 0 0 0 1px rgb(var(--color-border-strong));
 
-        /* Status: dark bg/border per DESIGN.md's token export; text stays
-           the same saturated value as light mode (also per that export). */
-        --color-success-bg: 46 54 30;
-        --color-success-border: 74 89 45;
+        /* Status: darker bg/border, and (unlike the old cream palette)
+           text is also relit here — the extrapolated dark-ink text
+           values from :root read as near-invisible on a near-black
+           canvas, so each role uses its saturated hue directly as text. */
+        --color-success-bg: 30 36 14;
+        --color-success-text: 194 239 78;
+        --color-success-border: 60 72 30;
 
-        --color-warning-bg: 58 45 22;
-        --color-warning-border: 97 76 40;
+        --color-warning-bg: 30 26 36;
+        --color-warning-text: 180 168 196;
+        --color-warning-border: 58 48 68;
 
-        --color-error-bg: 56 30 27;
-        --color-error-border: 107 52 44;
+        --color-error-bg: 36 18 24;
+        --color-error-text: 250 127 170;
+        --color-error-border: 80 40 54;
 
-        --color-info-bg: 30 40 54;
-        --color-info-border: 58 79 105;
+        --color-info-bg: 24 22 40;
+        --color-info-text: 150 140 220;
+        --color-info-border: 56 50 90;
     }
 }
 
 .dark {
-    --color-surface-canvas: var(--gray-950);
+    --color-surface-canvas: var(--gray-800);
     --color-surface-raised: var(--gray-900);
-    --color-surface-overlay: var(--gray-800);
-    --color-surface-sunken: 35 31 25;
+    --color-surface-overlay: var(--gray-900);
+    --color-surface-sunken: var(--gray-700);
     --color-surface-inverse: var(--gray-50);
 
     --color-text-primary: var(--gray-50);
-    --color-text-secondary: var(--gray-400);
+    --color-text-secondary: var(--gray-300);
     --color-text-tertiary: var(--gray-600);
     --color-text-on-inverse: var(--gray-900);
 
-    --color-border-subtle: 58 52 43;
-    --color-border-default: 74 68 57;
-    --color-border-strong: 97 89 75;
+    --color-border-subtle: var(--gray-700);
+    --color-border-default: var(--gray-600);
+    --color-border-strong: var(--gray-500);
 
-    /* Accent stays constant across themes — see the matching comment in
-       the prefers-color-scheme block above. */
+    /* Button polarity flip — see the matching comment in the
+       prefers-color-scheme block above. */
+    --color-accent-bg: var(--gray-50);
+    --color-accent-bg-hover: var(--gray-100);
+    --color-accent-bg-active: 239 239 239;
+    --color-text-on-accent: 26 26 26;
+    --color-accent-text: var(--gray-50);
 
-    /* Hairline-only depth per DESIGN.md — no drop shadows, light or dark. */
+    /* Hairline-only depth per DESIGN.md — no drop shadows on dark canvas. */
     --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
     --shadow-md: 0 0 0 1px rgb(var(--color-border-default));
     --shadow-lg: 0 0 0 1px rgb(var(--color-border-strong));
     --shadow-xl: 0 0 0 1px rgb(var(--color-border-strong));
 
     /* Status: same remap as prefers-color-scheme block above. */
-    --color-success-bg: 46 54 30;
-    --color-success-border: 74 89 45;
+    --color-success-bg: 30 36 14;
+    --color-success-text: 194 239 78;
+    --color-success-border: 60 72 30;
 
-    --color-warning-bg: 58 45 22;
-    --color-warning-border: 97 76 40;
+    --color-warning-bg: 30 26 36;
+    --color-warning-text: 180 168 196;
+    --color-warning-border: 58 48 68;
 
-    --color-error-bg: 56 30 27;
-    --color-error-border: 107 52 44;
+    --color-error-bg: 36 18 24;
+    --color-error-text: 250 127 170;
+    --color-error-border: 80 40 54;
 
-    --color-info-bg: 30 40 54;
-    --color-info-border: 58 79 105;
+    --color-info-bg: 24 22 40;
+    --color-info-text: 150 140 220;
+    --color-info-border: 56 50 90;
 }
 
 html {

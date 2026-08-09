@@ -1936,69 +1936,27 @@
       "meta": {
         "text": "badge.tsx button.tsx raw tailwind color drift indigo red gray"
       }
+    },
+    {
+      "id": "query:ibm plex sans font import app css tailwind",
+      "type": "query",
+      "meta": {
+        "text": "IBM Plex Sans font import app.css tailwind config font family google fonts link"
+      }
+    },
+    {
+      "id": "resources/js/app.tsx",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1786271266",
+      "type": "action",
+      "meta": {
+        "summary": ""
+      }
     }
   ],
   "edges": [
-    {
-      "from": "query:surface overlay card modal without dialog elevated surfaces",
-      "to": "resources/js/Components/workstation/template-picker-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786143461
-    },
-    {
-      "from": "query:surface overlay card modal without dialog elevated surfaces",
-      "to": "resources/js/Components/Modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786143461
-    },
-    {
-      "from": "action:edit:1786143490",
-      "to": "resources/js/Pages/Welcome.tsx",
-      "rel": "edited",
-      "ts": 1786143490
-    },
-    {
-      "from": "action:edit:1786143490",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "edited",
-      "ts": 1786143490
-    },
-    {
-      "from": "action:edit:1786143490",
-      "to": "resources/js/Layouts/AuthenticatedLayout.tsx",
-      "rel": "edited",
-      "ts": 1786143490
-    },
-    {
-      "from": "action:edit:1786143490",
-      "to": "resources/js/Components/SecondaryButton.tsx",
-      "rel": "edited",
-      "ts": 1786143490
-    },
-    {
-      "from": "action:edit:1786143490",
-      "to": "resources/js/Components/TextInput.tsx",
-      "rel": "edited",
-      "ts": 1786143490
-    },
-    {
-      "from": "action:edit:1786143490",
-      "to": "resources/js/Components/ui/input.tsx",
-      "rel": "edited",
-      "ts": 1786143490
-    },
-    {
-      "from": "action:edit:1786143490",
-      "to": "resources/js/Components/ui/card.tsx",
-      "rel": "edited",
-      "ts": 1786143490
-    },
-    {
-      "from": "action:edit:1786143490",
-      "to": "resources/js/Components/ui/button.tsx",
-      "rel": "edited",
-      "ts": 1786143490
-    },
     {
       "from": "action:edit:1786143490",
       "to": "resources/js/Components/workstation/section-panel.tsx",
@@ -5145,6 +5103,69 @@
       "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
       "rel": "retrieved",
       "ts": 1786270736
+    },
+    {
+      "from": "query:ibm plex sans font import app css tailwind",
+      "to": "resources/js/Pages/Jobs/Imports.tsx",
+      "rel": "retrieved",
+      "ts": 1786270964
+    },
+    {
+      "from": "query:ibm plex sans font import app css tailwind",
+      "to": "resources/js/Components/resume/resume-preview.tsx",
+      "rel": "retrieved",
+      "ts": 1786270964
+    },
+    {
+      "from": "query:ibm plex sans font import app css tailwind",
+      "to": "tailwind.config.js",
+      "rel": "retrieved",
+      "ts": 1786270964
+    },
+    {
+      "from": "query:ibm plex sans font import app css tailwind",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx",
+      "rel": "retrieved",
+      "ts": 1786270964
+    },
+    {
+      "from": "query:ibm plex sans font import app css tailwind",
+      "to": "resources/js/app.tsx",
+      "rel": "retrieved",
+      "ts": 1786270964
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/views/app.blade.php",
+      "rel": "read",
+      "ts": 1786271015,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "action:edit:1786271266",
+      "to": "resources/css/app.css",
+      "rel": "edited",
+      "ts": 1786271266
+    },
+    {
+      "from": "action:edit:1786271266",
+      "to": "tailwind.config.js",
+      "rel": "edited",
+      "ts": 1786271266
+    },
+    {
+      "from": "action:edit:1786271266",
+      "to": "resources/views/app.blade.php",
+      "rel": "edited",
+      "ts": 1786271266
+    },
+    {
+      "from": "action:edit:1786271266",
+      "to": "DESIGN.md",
+      "rel": "edited",
+      "ts": 1786271266
     }
   ],
   "files": {
@@ -5776,9 +5797,12 @@
       "cached_content": "import defaultTheme from 'tailwindcss/defaultTheme';\nimport forms from '@tailwindcss/forms';\n\n/** @type {import('tailwindcss').Config} */\nexport default {\n    darkMode: 'class',\n\n    content: [\n        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',\n        './sto",
       "cached_chars": 7470,
       "cached_tokens_est": 1867,
-      "last_action": "read",
-      "last_ts": 1786258867,
-      "first_read_turn": 3
+      "last_action": "edited",
+      "last_ts": "2026-08-09T10:27:46.971066+00:00",
+      "first_read_turn": 3,
+      "last_edited": 1786271202.97705,
+      "edit_count": 2,
+      "edited_count": 1
     },
     "resources/js/hooks/useDarkMode.ts::useDarkMode": {
       "query_terms": [],
@@ -5802,9 +5826,12 @@
       "cached_content": "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\n/* \u2500\u2500 Token spine \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   Primitives are RGB triplets (no `rgb()` wrapper) so Tailwind's\n   `rgb(var(--x) / <alpha-value>)` pattern in tailwind.config.js can\n   apply opacity modifiers, e.g. `bg-sur",
       "cached_chars": 6000,
       "cached_tokens_est": 1500,
-      "last_action": "read",
-      "last_ts": 1786264602,
-      "first_read_turn": 3
+      "last_action": "edited",
+      "last_ts": "2026-08-09T10:27:46.971045+00:00",
+      "first_read_turn": 3,
+      "last_edited": 1786271197.850369,
+      "edit_count": 4,
+      "edited_count": 1
     },
     "resources/js/Layouts/AuthSplitLayout.tsx": {
       "last_edited": 1786106311.036405,
@@ -6332,14 +6359,14 @@
     "resources/views/app.blade.php": {
       "query_terms": [],
       "cached_content": "<!DOCTYPE html>\n<html lang=\"{{ str_replace('_', '-', app()->getLocale()) }}\">\n    <head>\n        <script>\n        (function() {\n            var stored = localStorage.getItem('theme');\n            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;\n            if (stored === ",
-      "cached_chars": 1909,
-      "cached_tokens_est": 477,
+      "cached_chars": 1901,
+      "cached_tokens_est": 475,
       "last_action": "edited",
-      "last_ts": "2026-08-08T06:27:29.260604+00:00",
+      "last_ts": "2026-08-09T10:27:46.971089+00:00",
       "first_read_turn": 2,
-      "last_edited": 1786220776.904843,
-      "edit_count": 3,
-      "edited_count": 2
+      "last_edited": 1786271205.6637921,
+      "edit_count": 1,
+      "edited_count": 1
     },
     "resources/js/Components/resume/score-dial.tsx": {
       "query_terms": [],
@@ -6391,8 +6418,8 @@
       "last_edited": 1786223397.768419,
       "edit_count": 8,
       "last_action": "edited",
-      "last_ts": "2026-08-09T01:05:12.173350+00:00",
-      "edited_count": 2
+      "last_ts": "2026-08-09T10:27:46.971124+00:00",
+      "edited_count": 3
     },
     ".impeccable/design.json": {
       "last_edited": 1786172205.9004622,
@@ -6586,256 +6613,6 @@
     }
   },
   "actions": [
-    {
-      "type": "edit_auto",
-      "ts": 1786258128.2980568,
-      "files": [
-        "resources/js/Components/workstation/workstation-header.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786258138,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "sticky top-|z-header|AuthenticatedLayout",
-        "hit_count": 25,
-        "hit_files": [
-          "resources/js/Layouts/AuthenticatedLayout.tsx",
-          "resources/js/Pages/Welcome.tsx",
-          "resources/js/Pages/Jobs/Imports.tsx",
-          "resources/js/Pages/Resumes/Workstation.tsx",
-          "resources/js/Pages/Jobs/Kanban.tsx",
-          "resources/js/Pages/Resumes/Compare.tsx",
-          "resources/js/Pages/Admin/Backups/Index.tsx"
-        ]
-      }
-    },
-    {
-      "ts": 1786258148,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "z-sticky|zIndex",
-        "hit_count": 11,
-        "hit_files": [
-          "./resources/css/app.css",
-          "./resources/js/Pages/Jobs/Kanban.tsx-59-            className={`cursor-grab rounded-lg border border-gray-100 bg-white p-3 shadow-sm hover",
-          "./resources/js/Pages/Welcome.tsx",
-          "./resources/js/Components/Dropdown.tsx",
-          "./resources/js/Layouts/AuthenticatedLayout.tsx",
-          "./docs/superpowers/plans/2026-06-08-kanban-swimlane.md-187-        opacity",
-          "./docs/superpowers/plans/2026-07-17-builder-preview-left-skills-panel.md",
-          "./tailwind.config.js",
-          "./resources/js/Pages/Jobs/Kanban.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/general/CardDescription",
-          "ds-bundle/components/general/SkillGroupEditor",
-          "ds-bundle/components/general/SkillNarrativeEditor",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
-    {
-      "ts": 1786258157,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "overflow-|<main",
-        "hit_count": 14,
-        "hit_files": [
-          "resources/js/Components/workstation/section-panel.tsx",
-          "resources/js/Components/workstation/workstation-header.tsx",
-          "resources/js/Components/workstation/optimize-panel.tsx",
-          "resources/js/Components/workstation/skill-picker-modal.tsx",
-          "resources/js/Components/workstation/share-resume-modal.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/general/CardDescription",
-          "ds-bundle/components/general/SkillGroupEditor",
-          "ds-bundle/components/general/SkillNarrativeEditor",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258165.238741,
-      "files": [
-        "resources/js/Components/workstation/workstation-header.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258183.0315251,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258186.5463932,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258201.1786041,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258204.5797498,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258215.626495,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786258244,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "gray-\\d|red-\\d|amber-\\d|green-\\d|bg-white",
-        "hit_count": 0,
-        "hit_files": []
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258260.083046,
-      "files": [
-        "resources/js/Components/workstation/notes-panel.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258264.2339342,
-      "files": [
-        "resources/js/Components/workstation/notes-panel.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258267.7403069,
-      "files": [
-        "resources/js/Components/workstation/notes-panel.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258281.172849,
-      "files": [
-        "resources/js/Pages/Resumes/Workstation.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258292.465266,
-      "files": [
-        "resources/js/Components/workstation/jd-match-panel.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786258439,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786258534,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "(bg|text|border)-(gray|red|blue|green|amber|yellow|purple|indigo|slate)-[0-9]{2,3}",
-        "hit_count": 344,
-        "hit_files": [
-          "resources/js/Pages/Settings/StarterProfile.tsx",
-          "resources/js/Pages/Jobs/Imports.tsx",
-          "resources/js/Pages/Admin/Dashboard.tsx",
-          "resources/js/Pages/Admin/Users/Index.tsx",
-          "resources/js/Pages/Onboarding/Wizard.tsx",
-          "resources/js/Pages/Profile/Edit.tsx",
-          "resources/js/Layouts/PublicLayout.tsx",
-          "resources/js/Layouts/AdminLayout.tsx",
-          "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
-          "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
-          "resources/js/Components/InputError.tsx",
-          "resources/js/Pages/Dashboard.tsx",
-          "resources/js/Components/InputLabel.tsx",
-          "resources/js/Components/Modal.tsx",
-          "resources/js/Components/DangerButton.tsx"
-        ]
-      }
-    },
-    {
-      "ts": 1786258682,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "surface-card|surface:",
-        "hit_count": 15,
-        "hit_files": [
-          "resources/js/Components/workstation/notes-panel.tsx",
-          "resources/js/Components/workstation/export-checklist-modal.tsx",
-          "resources/js/Components/workstation/section-panel.tsx",
-          "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/general/CardDescription",
-          "ds-bundle/components/general/SkillGroupEditor",
-          "ds-bundle/components/general/SkillNarrativeEditor",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
-    {
-      "ts": 1786258688,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "surface:",
-        "hit_count": 3,
-        "hit_files": [
-          "./docs/mockups/workstation-header-option-d.html",
-          "./tailwind.config.js",
-          "./STYLESEED.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/general/CardDescription",
-          "ds-bundle/components/general/SkillGroupEditor",
-          "ds-bundle/components/general/SkillNarrativeEditor",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
     {
       "ts": 1786258719,
       "kind": "fallback_rg",
@@ -8610,6 +8387,114 @@
           "resources/js/Pages",
           "resources/js/Pages/Profile/Partials"
         ]
+      }
+    },
+    {
+      "ts": 1786270964,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "IBM Plex Sans font import app.css tailwind config font family google fonts link"
+      }
+    },
+    {
+      "ts": 1786270964,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "IBM Plex Sans font import app.css tailwind config font family google fonts link"
+      }
+    },
+    {
+      "ts": 1786270970,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "IBM Plex|fonts.bunny|fonts.googleapis|font-family",
+        "hit_count": 6,
+        "hit_files": [
+          "resources/js/Components/resume/resume-preview.tsx",
+          "resources/js/Components/workstation/workstation-format-toolbar.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Jobs",
+          "resources/js/Components/resume",
+          "resources/js"
+        ]
+      }
+    },
+    {
+      "ts": 1786271015,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/views/app.blade.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 1901
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786271144.2272372,
+      "files": [
+        "resources/css/app.css"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786271154.483656,
+      "files": [
+        "resources/css/app.css"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786271170.8665621,
+      "files": [
+        "resources/css/app.css"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786271197.850368,
+      "files": [
+        "resources/css/app.css"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786271200.682328,
+      "files": [
+        "tailwind.config.js"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786271202.977049,
+      "files": [
+        "tailwind.config.js"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786271205.66379,
+      "files": [
+        "resources/views/app.blade.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786271267,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
       }
     }
   ],

@@ -15,7 +15,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Rubik', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 // Frozen legacy hex — do not use in new UI. Prefer semantic /
@@ -114,6 +114,7 @@ export default {
                 },
             },
             borderRadius: {
+                xs: 'var(--radius-xs)',
                 sm: 'var(--radius-sm)',
                 md: 'var(--radius-md)',
                 lg: 'var(--radius-lg)',
