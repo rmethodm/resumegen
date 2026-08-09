@@ -6,6 +6,7 @@ import {
     ScoreChecklist,
 } from '@/Components/resume/score-coach';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
+import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { JdMatchPanel } from '@/Components/workstation/jd-match-panel';
 import {
@@ -25,6 +26,7 @@ import type {
     ResumeAnalysis,
     ResumeDraft,
     ResumeSectionKey,
+    ResumeSuggestion,
 } from '@/types';
 
 /** Scalar sections read as done/half-done/untouched; list sections read as a
@@ -108,6 +110,8 @@ export function SectionPanel({
     selected,
     onSelect,
     onAddSection,
+    onApplySuggestion,
+    onSelectSuggestion,
     onAddKeyword,
     onJumpChecklist,
     onOpenOptimize,
@@ -119,6 +123,8 @@ export function SectionPanel({
     selected: ResumeSectionKey;
     onSelect: (section: ResumeSectionKey) => void;
     onAddSection: (section: ResumeSectionKey) => void;
+    onApplySuggestion: (suggestion: ResumeSuggestion) => void;
+    onSelectSuggestion: (suggestion: ResumeSuggestion) => void;
     onAddKeyword: (keyword: string) => void;
     onJumpChecklist: (item: ScoreChecklistItem) => void;
     /** Jump to Optimize tab (JD match). */
@@ -165,43 +171,43 @@ export function SectionPanel({
                 Back to dashboard
             </Link>
 
-            {/* Score/coaching, placed above the section nav so it's the
-                first thing seen in the rail. */}
-            <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
+            <div className="rounded-lg border border-surface-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <div className="text-center">
-                    <p className="mb-2 text-sm font-medium text-text-secondary">
+                    <p className="mb-2 text-sm font-medium text-gray-500">
                         Your resume score
                     </p>
-                    <p className="mb-2 text-[10px] text-text-tertiary">
+                    <p className="mb-2 text-[10px] text-gray-400">
                         Updates as you edit
                     </p>
                     <ScoreGauge score={analysis.score} className="mx-auto" />
                 </div>
 
+                {/* ScoreGauge paints a full circle with half height — mt-14
+                    clears the overflow before the next rail block. */}
                 {analysis.breakdown.length > 0 && (
-                    <div className="mt-4 grid grid-cols-2 gap-2">
+                    <div className="mt-14 grid grid-cols-2 gap-2">
                         {analysis.breakdown.map((band) => (
                             <button
                                 key={band.label}
                                 type="button"
                                 onClick={() => jumpBand(band.label)}
                                 title={`Fix ${band.label} — jump to next step`}
-                                className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-accent-100/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent-500"
+                                className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-brand-subtle/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
                             >
-                                <div className="flex justify-between text-[10px] font-medium text-text-tertiary">
+                                <div className="flex justify-between text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
                                     <span>{band.label}</span>
                                     <span className="tabular-nums">
                                         {band.score}
-                                        <span className="font-normal text-text-tertiary">
+                                        <span className="font-normal text-gray-400">
                                             /25
                                         </span>
                                     </span>
                                 </div>
-                                <div className="h-1.5 overflow-hidden rounded-full bg-surface-sunken">
+                                <div className="h-1.5 rounded-full bg-gray-100">
                                     <div
-                                        className="h-full w-full origin-left rounded-full bg-accent-bg transition-transform duration-200"
+                                        className="h-full rounded-full bg-brand transition-[width] duration-200"
                                         style={{
-                                            transform: `scaleX(${Math.max(0, Math.min(1, band.score / 25))})`,
+                                            width: `${(band.score / 25) * 100}%`,
                                         }}
                                     />
                                 </div>
@@ -209,25 +215,32 @@ export function SectionPanel({
                         ))}
                     </div>
                 )}
-            </div>
 
-            <ScoreChecklist items={checklist} onJump={onJumpChecklist} />
+                <ScoreChecklist items={checklist} onJump={onJumpChecklist} />
 
-            <KeywordChips
-                missing={missing}
-                present={present}
-                hasRoleFamily={hasRoleFamily}
-                onAdd={onAddKeyword}
-            />
+                <KeywordChips
+                    missing={missing}
+                    present={present}
+                    hasRoleFamily={hasRoleFamily}
+                    onAdd={onAddKeyword}
+                />
 
-            <JdMatchPanel
-                draft={resume}
-                onAddKeyword={onAddKeyword}
-                onOpenOptimize={onOpenOptimize}
-            />
+                <JdMatchPanel
+                    draft={resume}
+                    onAddKeyword={onAddKeyword}
+                    onOpenOptimize={onOpenOptimize}
+                />
 
-            <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
-                <p className="mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
+                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                    Improvements
+                </p>
+                <SuggestionList
+                    suggestions={analysis.suggestions}
+                    onApply={onApplySuggestion}
+                    onSelect={onSelectSuggestion}
+                />
+
+                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
                     Resume sections
                 </p>
                 <ul className="space-y-1">
@@ -238,14 +251,14 @@ export function SectionPanel({
                                 onClick={() => onSelect(section)}
                                 aria-current={selected === section}
                                 className={cn(
-                                    'flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors',
+                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-colors',
                                     selected === section
-                                        ? 'bg-surface-sunken font-medium text-text-primary'
-                                        : 'text-text-primary hover:bg-surface-raised',
+                                        ? 'border-brand bg-brand-subtle font-medium text-brand'
+                                        : 'border-transparent text-gray-900 hover:bg-gray-100',
                                 )}
                             >
                                 <span>{sectionLabels[section]}</span>
-                                <span className="text-xs text-text-tertiary">
+                                <span className="text-xs text-gray-500">
                                     {sectionSummary(resume, section)}
                                 </span>
                             </button>
@@ -267,7 +280,7 @@ export function SectionPanel({
                     </Button>
                 ) : (
                     <div className="mt-2 flex flex-col gap-1">
-                        <p className="px-1 text-[10px] font-medium text-text-tertiary">
+                        <p className="px-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
                             Hidden sections
                         </p>
                         {addable.map((section) => (
@@ -275,7 +288,7 @@ export function SectionPanel({
                                 key={section}
                                 type="button"
                                 onClick={() => onAddSection(section)}
-                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-border-default bg-surface-card px-2 py-1.5 text-left text-sm text-text-secondary transition-colors hover:border-border-focus hover:bg-surface-raised hover:text-text-primary"
+                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-gray-300 bg-white px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:border-brand hover:bg-brand-subtle hover:text-brand"
                             >
                                 <PlusIcon className="size-3.5 shrink-0" />
                                 {sectionLabels[section]}

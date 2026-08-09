@@ -28,7 +28,7 @@ export default function SkillNarrativeEditor({ narratives, onChange, onBlur }: P
     return (
         <div className="flex flex-col gap-3">
             {narratives.map((n, idx) => (
-                <div key={n.id} className="rounded-md border border-border-subtle bg-surface-raised p-3">
+                <div key={n.id} className="rounded-md border border-gray-200 bg-gray-50 p-3">
                     <div className="mb-2 flex items-center gap-2">
                         <input
                             type="text"
@@ -36,20 +36,12 @@ export default function SkillNarrativeEditor({ narratives, onChange, onBlur }: P
                             onChange={(e) => updateName(idx, e.target.value)}
                             onBlur={onBlur}
                             placeholder="Skill name (e.g. Proactive Communication)"
-                            className="flex-1 rounded border border-border-default bg-surface-card px-2 py-1 text-xs font-semibold focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30"
+                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
                         <button
                             type="button"
-                            onClick={() => {
-                                const label = n.name.trim() || 'this skill';
-                                const onConfirm = () => remove(idx);
-                                if (!window.confirm(`Remove ${label}?`)) {
-                                    return;
-                                }
-                                onConfirm();
-                            }}
-                            className="text-xs leading-none text-text-tertiary hover:text-error-text focus:outline-none focus-visible:text-error-text focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1"
-                            aria-label="Remove skill"
+                            onClick={() => remove(idx)}
+                            className="text-gray-400 hover:text-red-500 text-xs leading-none"
                         >
                             ✕
                         </button>
@@ -60,15 +52,15 @@ export default function SkillNarrativeEditor({ narratives, onChange, onBlur }: P
                         onBlur={onBlur}
                         rows={3}
                         placeholder={'One bullet per line\nDemonstrated ability to…\nProficient in…'}
-                        className="w-full resize-none rounded border border-border-default bg-surface-card px-2 py-1.5 text-xs focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30"
+                        className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
                     />
-                    <p className="mt-0.5 text-[10px] text-text-tertiary">One bullet point per line</p>
+                    <p className="mt-0.5 text-[10px] text-gray-400">One bullet point per line</p>
                 </div>
             ))}
             <button
                 type="button"
                 onClick={add}
-                className="rounded-md border border-dashed border-accent-300 py-1.5 text-xs text-accent-text hover:border-accent-500 hover:bg-accent-100"
+                className="rounded-md border border-dashed border-indigo-300 py-1.5 text-xs text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50"
             >
                 + Add skill
             </button>

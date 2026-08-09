@@ -26,8 +26,8 @@
     <!-- Not connected -->
     <section id="view-setup" class="view hidden">
       <div class="empty-icon" aria-hidden="true">🔗</div>
-      <h1 id="setup-headline" class="headline">Connect your Resumegen account</h1>
-      <p id="setup-body" class="body-text">
+      <h1 class="headline">Connect your Resumegen account</h1>
+      <p class="body-text">
         Pull contact details and experience from your resumes into job forms.
         Nothing is submitted for you.
       </p>
@@ -66,39 +66,10 @@
       <div id="meta-line" class="meta"></div>
       <div id="contact-line" class="meta contact"></div>
 
-      <div class="scan-card">
-        <div class="scan-card-top">
-          <div>
-            <div class="scan-kicker">Before you fill</div>
-            <h2 id="scan-title">Scan this page for safe matches</h2>
-          </div>
-          <span id="scan-count" class="scan-count">Not scanned</span>
-        </div>
-        <p id="scan-helper" class="scan-copy">We’ll look for recognizable empty fields. You review the matches before anything is entered.</p>
-        <button type="button" id="scan-btn" class="btn-primary full">Scan page</button>
-      </div>
+      <button type="button" id="fill-btn" class="btn-primary full">Fill common fields</button>
+      <p id="fill-helper" class="hint">Only empty fields. You submit.</p>
 
-      <section id="review-panel" class="review-panel hidden" aria-labelledby="review-title">
-        <div class="review-heading">
-          <div>
-            <div class="section-label">Fill review</div>
-            <h2 id="review-title">Choose what to fill</h2>
-          </div>
-          <button type="button" id="review-clear" class="btn-link">Clear</button>
-        </div>
-        <p id="review-summary" class="review-summary"></p>
-        <div id="review-list" class="review-list"></div>
-        <button type="button" id="fill-btn" class="btn-primary full">Fill selected fields</button>
-        <p id="fill-helper" class="hint">Only empty fields. You submit.</p>
-      </section>
-
-      <div class="insert-assistant-head">
-        <div>
-          <div class="section-label">Insert assistant</div>
-          <p id="focus-context" class="focus-context">Click a field on the application, then refresh suggestions.</p>
-        </div>
-        <button type="button" id="refresh-focus-btn" class="btn-link">Refresh</button>
-      </div>
+      <div class="section-label">Insert into focused field</div>
       <div class="chips" id="insert-chips">
         <button type="button" class="chip" data-insert="full_name" title="Insert full name into the focused field">Full name</button>
         <button type="button" class="chip" data-insert="email" title="Insert email into the focused field">Email</button>

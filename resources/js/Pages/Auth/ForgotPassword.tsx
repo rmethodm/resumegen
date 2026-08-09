@@ -1,8 +1,7 @@
-import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import AuthCenteredLayout from '@/Layouts/AuthCenteredLayout';
+import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -18,18 +17,17 @@ export default function ForgotPassword({ status }: { status?: string }) {
     };
 
     return (
-        <AuthCenteredLayout>
+        <GuestLayout>
             <Head title="Forgot Password" />
 
-            <div className="mb-4 text-sm text-text-secondary">
+            <div className="mb-4 text-sm text-gray-600">
                 Forgot your password? No problem. Just let us know your email
                 address and we will email you a password reset link that will
                 allow you to choose a new one.
             </div>
 
             {status && (
-                <div className="mb-4 flex items-center gap-1.5 text-sm font-medium text-success-text">
-                    <CheckCircleIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <div className="mb-4 text-sm font-medium text-green-600">
                     {status}
                 </div>
             )}
@@ -53,6 +51,6 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     </PrimaryButton>
                 </div>
             </form>
-        </AuthCenteredLayout>
+        </GuestLayout>
     );
 }

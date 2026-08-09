@@ -21,7 +21,7 @@ export function TargetRoleBar({
     return (
         <div
             className={cn(
-                'rounded-lg border border-border-default bg-surface-card px-3 py-2.5 shadow-sm sm:px-4',
+                'rounded-lg border-2 border-brand/30 bg-brand-subtle/60 px-3 py-2.5 sm:px-4',
                 className,
             )}
         >
@@ -29,7 +29,7 @@ export function TargetRoleBar({
                 <div className="min-w-0 flex-1">
                     <label
                         htmlFor="field-target-role-bar"
-                        className="mb-1 block text-[11px] font-medium text-text-tertiary"
+                        className="mb-1 block text-[11px] font-bold tracking-[0.06em] text-brand uppercase"
                     >
                         Target role
                     </label>
@@ -39,11 +39,11 @@ export function TargetRoleBar({
                         value={targetRole}
                         allowCreate={false}
                         placeholder="e.g. Senior Software Engineer"
-                        className="h-9 w-full rounded-md border border-border-default bg-surface-card px-3 text-sm text-text-primary shadow-sm focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/30"
+                        className="h-9 w-full rounded-md border border-gray-300 bg-white px-3 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                         onChange={onChange}
                     />
                 </div>
-                <p className="shrink-0 pb-1 text-[11px] leading-snug text-text-secondary sm:max-w-[14rem]">
+                <p className="shrink-0 pb-1 text-[11px] leading-snug text-gray-600 sm:max-w-[14rem]">
                     {targetRole.trim() === ''
                         ? 'Sets the Keywords score band. Not printed on the resume.'
                         : recognized

@@ -47,15 +47,16 @@ import type {
     ResumePageDocument,
     ResumeSectionKey,
     ResumeShareLink,
+    ResumeSuggestion,
     ResumeVersion,
     SkillLibraryGroup,
 } from '@/types';
 
 function focusAndFlash(element: HTMLElement): void {
     element.focus();
-    element.classList.add('ring-2', 'ring-border-focus', 'ring-offset-1');
+    element.classList.add('ring-2', 'ring-brand', 'ring-offset-1');
     window.setTimeout(() => {
-        element.classList.remove('ring-2', 'ring-border-focus', 'ring-offset-1');
+        element.classList.remove('ring-2', 'ring-brand', 'ring-offset-1');
     }, 1500);
 }
 
@@ -241,6 +242,100 @@ export default function Workstation({
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function applySuggestion(suggestion: ResumeSuggestion) {
+        if (
+            suggestion.experience === null ||
+            suggestion.bullet === null ||
+            !suggestion.rewrite
+        ) {
+            return;
+        }
+
+        const experienceIndex = suggestion.experience;
+        const bulletIndex = suggestion.bullet;
+        const rewrite = suggestion.rewrite;
+
+        setDraft({
+            ...draft,
+            experiences: draft.experiences.map((experience, index) => {
+                if (index !== experienceIndex) {
+                    return experience;
+                }
+
+                return {
+                    ...experience,
+                    bullets: experience.bullets.map((bullet, at) =>
+                        at === bulletIndex ? rewrite : bullet,
+                    ),
+                };
+            }),
+        });
+
+        // Jump after apply so the user sees the updated bullet.
+        selectSuggestion(suggestion);
+    }
+
+    function selectSuggestion(suggestion: ResumeSuggestion) {
+        setTab('Edit');
+
+        if (suggestion.experience !== null && suggestion.bullet !== null) {
+            scrollToSection('experience');
+            window.setTimeout(() => {
+                const element = document.getElementById(
+                    `experience-bullet-${suggestion.experience}-${suggestion.bullet}`,
+                );
+
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
+                }
+            }, 300);
+
+            return;
+        }
+
+        const message = suggestion.message.toLowerCase();
+        let targetSection: ResumeSectionKey = 'experience';
+        let fieldId: string | null = null;
+
+        if (message.includes('skill')) {
+            targetSection = 'skills';
+            fieldId = 'field-skills';
+        } else if (message.includes('summary')) {
+            targetSection = 'summary';
+            fieldId = 'field-summary';
+        } else if (message.includes('role') || message.includes('missing')) {
+            // Sticky target-role bar is always on Edit; prefer it over Contact.
+            fieldId = 'field-target-role-bar';
+            scrollToSection('contact');
+            window.setTimeout(() => {
+                const element = document.getElementById(fieldId!);
+
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
+                }
+            }, 100);
+
+            return;
+        } else if (suggestion.band === 'Profile') {
+            targetSection = 'contact';
+        } else if (suggestion.band === 'Keywords') {
+            targetSection = 'skills';
+            fieldId = 'field-skills';
+        }
+
+        scrollToSection(targetSection);
+
+        if (fieldId) {
+            window.setTimeout(() => {
+                const element = document.getElementById(fieldId);
+
+                if (element instanceof HTMLElement) {
+                    focusAndFlash(element);
+                }
+            }, 300);
+        }
+    }
+
     function addKeyword(keyword: string) {
         setDraft((current) => addKeywordAsSkill(current, keyword));
     }
@@ -383,7 +478,7 @@ export default function Workstation({
                             onDrop={() => handleDrop(sectionKey)}
                             onDragEnd={() => setDraggedSection(null)}
                             className={cn(
-                                'overflow-hidden rounded-lg border border-border-default bg-surface-card shadow-sm',
+                                'overflow-hidden rounded-lg border border-gray-200 bg-white',
                                 draggedSection === sectionKey && 'opacity-50',
                             )}
                         >
@@ -400,15 +495,15 @@ export default function Workstation({
                                     toggleSectionCollapsed(sectionKey);
                                 }}
                                 className={cn(
-                                    'flex cursor-default select-none items-center gap-2 border-l-[3px] border-l-accent-bg bg-surface-raised px-5 py-3',
+                                    'flex cursor-default select-none items-center gap-2 bg-white px-5 py-3',
                                     collapsed
                                         ? 'border-b-0'
-                                        : 'border-b border-border-subtle',
+                                        : 'border-b border-gray-100',
                                 )}
                             >
                                 <Bars3Icon
                                     className={cn(
-                                        'size-4 shrink-0 text-text-tertiary',
+                                        'size-4 shrink-0 text-gray-500',
                                         isMobile ? 'hidden' : 'cursor-grab',
                                     )}
                                 />
@@ -419,7 +514,7 @@ export default function Workstation({
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary"
+                                    className="flex items-center gap-1 text-[11px] font-bold tracking-[0.15em] text-brand uppercase"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
@@ -430,7 +525,7 @@ export default function Workstation({
                                     {sectionLabels[sectionKey]}
                                 </button>
                                 {collapsed && (
-                                    <span className="text-[10px] font-medium tracking-normal text-text-tertiary normal-case">
+                                    <span className="text-[10px] font-medium tracking-normal text-gray-400 normal-case">
                                         Collapsed
                                     </span>
                                 )}
@@ -440,7 +535,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 px-2 text-xs text-text-tertiary hover:text-error-text focus-visible:text-error-text focus:outline-none focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1"
+                                            className="h-8 px-2 text-xs text-gray-500 hover:text-red-600"
                                             onClick={() =>
                                                 hideSection(sectionKey)
                                             }
@@ -448,7 +543,7 @@ export default function Workstation({
                                             Hide section
                                         </Button>
                                     )}
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1 sm:hidden">
                                         <Button
                                             type="button"
                                             variant="ghost"
@@ -494,7 +589,7 @@ export default function Workstation({
                             {!collapsed && (
                                 <div
                                     id={`section-${sectionKey}-content`}
-                                    className="bg-surface-card p-5 sm:p-6"
+                                    className="p-6"
                                 >
                                     <SectionFields
                                         resume={draft}
@@ -517,17 +612,16 @@ export default function Workstation({
         <AuthenticatedLayout>
             <Head title={draft.title} />
 
-            <div className="flex min-h-[calc(100vh-7rem)] flex-col bg-surface-canvas">
+            <div className="flex flex-col bg-gray-50">
                 {(offline || saveStatus === 'error') && (
                     <div
-                        role="alert"
                         className={cn(
                             'flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2 text-sm',
                             conflict
-                                ? 'border-warning-border bg-warning-bg text-warning-text'
+                                ? 'border-amber-200 bg-amber-50 text-amber-950'
                                 : offline
-                                  ? 'border-border-default bg-surface-sunken text-text-primary'
-                                  : 'border-error-border bg-error-bg text-error-text',
+                                  ? 'border-gray-300 bg-gray-100 text-gray-800'
+                                  : 'border-red-200 bg-red-50 text-red-900',
                         )}
                     >
                         <p>
@@ -568,10 +662,7 @@ export default function Workstation({
                     </div>
                 )}
 
-                <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-6 lg:flex-row lg:items-start">
-                    {/* order-2/order-1 puts the form ahead of the coaching
-                        rail below lg, so mobile users reach the title/tabs
-                        and first field without scrolling past the rail. */}
+                <div className="flex flex-col gap-6 p-4 sm:p-6 lg:flex-row lg:items-start">
                     <SectionPanel
                         resumeId={id}
                         analysis={liveAnalysis}
@@ -579,13 +670,14 @@ export default function Workstation({
                         selected={section}
                         onSelect={scrollToSection}
                         onAddSection={addSection}
+                        onApplySuggestion={applySuggestion}
+                        onSelectSuggestion={selectSuggestion}
                         onAddKeyword={addKeyword}
                         onJumpChecklist={jumpChecklist}
                         onOpenOptimize={() => setTab('Optimize')}
-                        className="order-2 lg:order-none"
                     />
 
-                    <div className="order-1 flex min-w-0 flex-col gap-5 sm:gap-6 lg:order-none lg:flex-1">
+                    <div className="flex min-w-0 flex-col gap-6 lg:flex-1">
                         <WorkstationHeader
                             resumeId={id}
                             title={draft.title}
@@ -639,15 +731,15 @@ export default function Workstation({
                         )}
 
                         {tab === 'Review' && (
-                            <div className="overflow-hidden rounded-lg border border-border-default bg-surface-sunken shadow-sm">
+                            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
                                 {reviewPreviewMode === 'pdf' ? (
                                     <iframe
                                         title="PDF preview"
                                         src={route('resumes.preview', id)}
-                                        className="h-[80vh] w-full bg-surface-sunken"
+                                        className="h-[80vh] w-full bg-gray-100"
                                     />
                                 ) : (
-                                    <div className="overflow-x-auto p-4 sm:p-6">
+                                    <div className="overflow-x-auto p-4">
                                         <div
                                             className="origin-top-left transition-transform"
                                             style={{
@@ -657,7 +749,7 @@ export default function Workstation({
                                         >
                                             <ResumePreview
                                                 resume={draft}
-                                                className="w-full rounded-sm border border-border-subtle bg-surface-card shadow-md"
+                                                className="w-full"
                                             />
                                         </div>
                                     </div>
@@ -685,7 +777,7 @@ export default function Workstation({
                                 onClick={() =>
                                     setShowSideTools((open) => !open)
                                 }
-                                className="self-start text-xs font-semibold text-accent-text hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
+                                className="self-start text-xs font-semibold text-brand hover:underline"
                             >
                                 {showSideTools ? 'Hide' : 'Show'} notes &
                                 checkpoints

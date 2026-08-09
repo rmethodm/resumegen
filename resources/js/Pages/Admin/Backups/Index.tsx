@@ -1,4 +1,3 @@
-import Modal from '@/Components/Modal';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
@@ -56,6 +55,9 @@ export default function Index({
     }
 
     function deleteBackup(filename: string) {
+        if (!window.confirm(`Delete backup ${filename}?`)) {
+            return;
+        }
         router.delete(route('admin.backups.destroy', { filename }));
     }
 
@@ -86,22 +88,17 @@ export default function Index({
             header={
                 <div className="flex flex-wrap items-end justify-between gap-4">
                     <div>
-                        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-text-secondary">
-                            Support
-                        </p>
-                        <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-text-primary">
-                            Database backups
-                        </h1>
-                        <p className="mt-1 max-w-xl text-sm text-text-secondary">
-                            Manual PostgreSQL dumps on this server (max {max_backups}).
-                            Restore replaces the live database.
+                        <h1 className="text-xl font-bold text-slate-900">Database backups</h1>
+                        <p className="mt-0.5 text-sm text-slate-500">
+                            Manual PostgreSQL dumps stored on this server (max {max_backups}). Restore
+                            replaces the live database.
                         </p>
                     </div>
                     <button
                         type="button"
                         onClick={createBackup}
                         disabled={creating || !engine_ok}
-                        className="rounded-md bg-accent-bg px-3 py-2 text-sm font-medium text-text-on-accent shadow-sm transition-colors duration-150 hover:bg-accent-bg-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {creating ? 'Creating…' : 'Create backup'}
                     </button>
@@ -111,75 +108,53 @@ export default function Index({
             <Head title="Admin · Backups" />
 
             {!engine_ok ? (
-                <div className="mb-4 rounded-lg border border-warning-border bg-warning-bg px-3 py-2.5 text-sm text-warning-text">
-                    <p className="font-medium">Backups unavailable here</p>
-                    <p className="mt-0.5 text-warning-text/90">
-                        Requires PostgreSQL (
-                        <code className="rounded bg-warning-border/50 px-1 font-mono text-xs">
-                            DB_CONNECTION=pgsql
-                        </code>
-                        ). Create and restore stay disabled on this environment.
-                    </p>
+                <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                    Backups require PostgreSQL (<code className="font-mono text-xs">DB_CONNECTION=pgsql</code>
+                    ). Create and restore are disabled on this environment.
                 </div>
             ) : null}
 
-            <div className="mb-4 flex gap-2.5 rounded-lg border border-border-subtle bg-surface-card px-3 py-2.5 text-sm text-text-secondary shadow-sm">
-                <span
-                    className="mt-0.5 w-0.5 shrink-0 self-stretch rounded-full bg-accent-bg"
-                    aria-hidden
-                />
-                <p>
-                    Create a fresh backup before restoring if you need a way back. Oldest
-                    dumps are removed automatically when the list exceeds {max_backups}.
-                </p>
+            <div className="mb-4 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">
+                Create a fresh backup before restoring if you need a way back. Oldest dumps are removed
+                automatically when the list exceeds {max_backups}.
             </div>
 
-            <div className="overflow-x-auto rounded-lg border border-border-subtle bg-surface-card shadow-sm">
-                <table className="min-w-full divide-y divide-border-subtle text-sm">
-                    <thead className="sticky top-0 bg-surface-sunken text-left text-[11px] font-medium uppercase tracking-[0.08em] text-text-secondary">
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <table className="min-w-full divide-y divide-slate-200 text-sm">
+                    <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                         <tr>
-                            <th className="px-3 py-2.5">Filename</th>
-                            <th className="px-3 py-2.5">Size</th>
-                            <th className="px-3 py-2.5">Created</th>
-                            <th className="px-3 py-2.5 text-right">Actions</th>
+                            <th className="px-3 py-2">Filename</th>
+                            <th className="px-3 py-2">Size</th>
+                            <th className="px-3 py-2">Created</th>
+                            <th className="px-3 py-2 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-border-subtle">
+                    <tbody className="divide-y divide-slate-100">
                         {backups.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="px-3 py-12 text-center">
-                                    <p className="text-sm font-medium text-text-primary">
-                                        No backups yet
-                                    </p>
-                                    <p className="mt-1 text-sm text-text-secondary">
-                                        {engine_ok
-                                            ? 'Create one before any restore.'
-                                            : 'Engine is offline on this environment.'}
-                                    </p>
+                                <td colSpan={4} className="px-3 py-8 text-center text-slate-500">
+                                    No backups yet.
                                 </td>
                             </tr>
                         ) : (
                             backups.map((row) => (
-                                <tr
-                                    key={row.filename}
-                                    className="transition-colors duration-150 hover:bg-surface-raised"
-                                >
-                                    <td className="px-3 py-2.5 font-mono text-xs text-text-primary">
+                                <tr key={row.filename} className="hover:bg-slate-50/80">
+                                    <td className="px-3 py-2 font-mono text-xs text-slate-800">
                                         {row.filename}
                                     </td>
-                                    <td className="px-3 py-2.5 tabular-nums text-text-secondary">
+                                    <td className="px-3 py-2 tabular-nums text-slate-600">
                                         {formatBytes(row.size_bytes)}
                                     </td>
-                                    <td className="px-3 py-2.5 tabular-nums text-text-secondary">
+                                    <td className="px-3 py-2 text-slate-600">
                                         {formatWhen(row.created_at)}
                                     </td>
-                                    <td className="px-3 py-2.5">
+                                    <td className="px-3 py-2">
                                         <div className="flex flex-wrap justify-end gap-2">
                                             <a
                                                 href={route('admin.backups.download', {
                                                     filename: row.filename,
                                                 })}
-                                                className="rounded-md border border-border-subtle bg-surface-card px-2 py-1 text-xs font-medium text-text-secondary transition-colors duration-150 hover:bg-surface-raised focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                                className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
                                             >
                                                 Download
                                             </a>
@@ -187,25 +162,14 @@ export default function Index({
                                                 type="button"
                                                 onClick={() => openRestore(row.filename)}
                                                 disabled={!engine_ok}
-                                                className="rounded-md border border-warning-border bg-warning-bg px-2 py-1 text-xs font-medium text-warning-text transition-colors duration-150 hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-warning-border disabled:opacity-50"
+                                                className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-medium text-amber-900 hover:bg-amber-100 disabled:opacity-50"
                                             >
                                                 Restore
                                             </button>
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    const onConfirm = () =>
-                                                        deleteBackup(row.filename);
-                                                    if (
-                                                        !window.confirm(
-                                                            `Delete backup ${row.filename}?`,
-                                                        )
-                                                    ) {
-                                                        return;
-                                                    }
-                                                    onConfirm();
-                                                }}
-                                                className="rounded-md border border-error-border bg-error-bg px-2 py-1 text-xs font-medium text-error-text transition-colors duration-150 hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1"
+                                                onClick={() => deleteBackup(row.filename)}
+                                                className="rounded-md border border-red-200 bg-red-50 px-2 py-1 text-xs font-medium text-red-800 hover:bg-red-100"
                                             >
                                                 Delete
                                             </button>
@@ -218,70 +182,74 @@ export default function Index({
                 </table>
             </div>
 
-            <Modal show={restoreTarget !== null} maxWidth="md" onClose={closeRestore}>
-                <form onSubmit={submitRestore} className="p-5">
-                    <h2
-                        id="restore-title"
-                        className="text-lg font-semibold tracking-tight text-text-primary"
+            {restoreTarget ? (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="restore-title"
+                        className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-5 shadow-xl"
                     >
-                        Restore database
-                    </h2>
-                    <p className="mt-2 text-sm text-text-secondary">
-                        This replaces the <strong>live</strong> database with{' '}
-                        <code className="rounded bg-surface-raised px-1 font-mono text-xs">
-                            {restoreTarget}
-                        </code>
-                        . Type the filename exactly to confirm.
-                    </p>
+                        <h2 id="restore-title" className="text-lg font-bold text-slate-900">
+                            Restore database
+                        </h2>
+                        <p className="mt-2 text-sm text-slate-600">
+                            This replaces the <strong>live</strong> database with{' '}
+                            <code className="rounded bg-slate-100 px-1 font-mono text-xs">
+                                {restoreTarget}
+                            </code>
+                            . Type the filename exactly to confirm.
+                        </p>
 
-                    <div className="mt-4 space-y-3">
-                        <div>
-                            <label
-                                htmlFor="confirmation"
-                                className="block text-[11px] font-medium uppercase tracking-[0.08em] text-text-secondary"
-                            >
-                                Filename confirmation
-                            </label>
-                            <input
-                                id="confirmation"
-                                type="text"
-                                autoComplete="off"
-                                value={restoreForm.data.confirmation}
-                                onChange={(e) =>
-                                    restoreForm.setData('confirmation', e.target.value)
-                                }
-                                className="mt-1 w-full rounded-md border border-border-default px-3 py-2 font-mono text-sm shadow-sm focus:border-accent-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
-                                placeholder={restoreTarget ?? ''}
-                            />
-                            {(restoreForm.errors.confirmation || errors?.confirmation) && (
-                                <p className="mt-1 text-xs text-error-text">
-                                    {restoreForm.errors.confirmation || errors?.confirmation}
-                                </p>
-                            )}
-                        </div>
+                        <form onSubmit={submitRestore} className="mt-4 space-y-3">
+                            <div>
+                                <label
+                                    htmlFor="confirmation"
+                                    className="block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                                >
+                                    Filename confirmation
+                                </label>
+                                <input
+                                    id="confirmation"
+                                    type="text"
+                                    autoComplete="off"
+                                    value={restoreForm.data.confirmation}
+                                    onChange={(e) =>
+                                        restoreForm.setData('confirmation', e.target.value)
+                                    }
+                                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    placeholder={restoreTarget}
+                                />
+                                {(restoreForm.errors.confirmation || errors?.confirmation) && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {restoreForm.errors.confirmation || errors?.confirmation}
+                                    </p>
+                                )}
+                            </div>
 
-                        <div className="flex justify-end gap-2 pt-1">
-                            <button
-                                type="button"
-                                onClick={closeRestore}
-                                className="rounded-md border border-border-subtle px-3 py-2 text-sm font-medium text-text-secondary transition-colors duration-150 hover:bg-surface-raised focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={
-                                    restoreForm.processing ||
-                                    restoreForm.data.confirmation !== restoreTarget
-                                }
-                                className="rounded-md bg-warning-text px-3 py-2 text-sm font-medium text-text-on-accent transition-colors duration-150 hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-warning-border focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                                {restoreForm.processing ? 'Restoring…' : 'Restore now'}
-                            </button>
-                        </div>
+                            <div className="flex justify-end gap-2 pt-1">
+                                <button
+                                    type="button"
+                                    onClick={closeRestore}
+                                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={
+                                        restoreForm.processing ||
+                                        restoreForm.data.confirmation !== restoreTarget
+                                    }
+                                    className="rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    {restoreForm.processing ? 'Restoring…' : 'Restore now'}
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </Modal>
+                </div>
+            ) : null}
         </AdminLayout>
     );
 }

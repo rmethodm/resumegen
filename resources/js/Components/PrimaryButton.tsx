@@ -8,11 +8,10 @@ export default function PrimaryButton({
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
     return (
         <button
-            type="submit"
             {...props}
             className={
-                `inline-flex items-center justify-center rounded-md border border-transparent bg-accent-bg px-4 py-2 text-sm font-medium text-text-on-accent shadow-sm transition-colors duration-150 hover:bg-accent-bg-hover active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas ${
-                    disabled ? 'cursor-not-allowed opacity-50 active:scale-100' : ''
+                `inline-flex items-center rounded-lg border border-transparent bg-gradient-to-br from-[#5952d2] to-[#3c3695] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#5952d2] focus:ring-offset-2 ${
+                    disabled ? 'opacity-50 cursor-not-allowed' : ''
                 } ` + className
             }
             disabled={disabled}

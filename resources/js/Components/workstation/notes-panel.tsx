@@ -65,18 +65,18 @@ export function NotesPanel({
     }
 
     return (
-        <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
             <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
+                <h3 className="text-xs font-bold tracking-wide text-gray-500 uppercase">
                     Private notes
                 </h3>
-                <span className="text-[10px] text-text-tertiary">
+                <span className="text-[10px] text-gray-400">
                     Not on the resume
                 </span>
             </div>
 
             {error && (
-                <div className="mb-3 rounded-md border border-error-border bg-error-bg px-3 py-2 text-xs font-medium text-error-text">
+                <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
                     {error}
                 </div>
             )}
@@ -102,7 +102,7 @@ export function NotesPanel({
             </div>
 
             {notes.length === 0 ? (
-                <p className="text-[11px] text-text-tertiary">
+                <p className="text-[11px] text-gray-500">
                     No notes yet. Use these for private reminders while editing.
                 </p>
             ) : (
@@ -110,7 +110,7 @@ export function NotesPanel({
                     {notes.map((note) => (
                         <li
                             key={note.id}
-                            className="rounded-lg border border-warning-border bg-warning-bg p-2"
+                            className="rounded-lg border border-amber-100 bg-amber-50/60 p-2"
                         >
                             <Textarea
                                 rows={2}
@@ -123,14 +123,14 @@ export function NotesPanel({
                                 }}
                             />
                             <div className="mt-1 flex items-center justify-between">
-                                <span className="text-[10px] text-text-tertiary">
+                                <span className="text-[10px] text-gray-400">
                                     {note.created_at}
                                 </span>
                                 <button
                                     type="button"
                                     aria-label="Delete note"
                                     onClick={() => deleteNote(note.id)}
-                                    className="rounded p-1 text-text-tertiary hover:bg-surface-card hover:text-error-text"
+                                    className="rounded p-1 text-gray-400 hover:bg-white hover:text-red-600"
                                 >
                                     <TrashIcon className="size-3.5" />
                                 </button>

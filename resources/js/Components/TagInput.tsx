@@ -22,8 +22,6 @@ export default function TagInput({
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
     const [activeIndex, setActiveIndex] = useState(-1);
     const [open, setOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -55,30 +53,19 @@ export default function TagInput({
         }
 
         debounceRef.current = setTimeout(async () => {
-            setIsLoading(true);
-            setIsError(false);
             try {
                 const res = await fetch(
                     `/autocomplete/${autocompleteEndpoint}?q=${encodeURIComponent(input.trim())}`,
                     { headers: { 'X-Requested-With': 'XMLHttpRequest' } },
                 );
-                if (!res.ok) {
-                    setIsError(true);
-                    setSuggestions([]);
-                    setOpen(false);
-                    return;
-                }
+                if (!res.ok) return;
                 const data: Suggestion[] = await res.json();
                 const filtered = data.filter((s) => !tags.includes(s.name));
                 setSuggestions(filtered);
                 setOpen(filtered.length > 0);
                 setActiveIndex(-1);
             } catch {
-                setIsError(true);
-                setSuggestions([]);
-                setOpen(false);
-            } finally {
-                setIsLoading(false);
+                // ignore network errors
             }
         }, 150);
 
@@ -139,13 +126,13 @@ export default function TagInput({
     return (
         <div ref={containerRef} className="relative">
             <div
-                className="flex flex-wrap gap-1.5 rounded-md border border-border-default bg-surface-card px-2 py-1.5 shadow-sm focus-within:border-accent-500 focus-within:ring-1 focus-within:ring-accent-500 cursor-text"
+                className="flex flex-wrap gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 cursor-text"
                 onClick={() => inputRef.current?.focus()}
             >
                 {tags.map((tag, i) => (
                     <span
                         key={i}
-                        className="flex items-center gap-1 rounded-full bg-accent-100 px-2 py-0.5 text-xs text-accent-text"
+                        className="flex items-center gap-1 rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-800"
                     >
                         {tag}
                         <button
@@ -154,7 +141,7 @@ export default function TagInput({
                                 e.stopPropagation();
                                 removeTag(i);
                             }}
-                            className="leading-none text-accent-500 hover:text-accent-text focus:outline-none focus-visible:text-accent-text focus-visible:ring-2 focus-visible:ring-accent-500"
+                            className="text-indigo-400 hover:text-indigo-700 leading-none"
                         >
                             ×
                         </button>
@@ -176,22 +163,12 @@ export default function TagInput({
                     }}
                     placeholder={tags.length ? '' : placeholder}
                     maxLength={60}
-                    className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-sm outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-border-focus/30"
+                    className="min-w-[120px] flex-1 border-none p-0 text-sm focus:ring-0 outline-none bg-transparent"
                     autoComplete="off"
                 />
             </div>
-            {isError && input.trim().length >= 2 && (
-                <p className="mt-1 text-[11px] text-error-text" role="status">
-                    Could not load suggestions.
-                </p>
-            )}
-            {isLoading && input.trim().length >= 2 && !isError && (
-                <p className="mt-1 text-[11px] text-text-tertiary" role="status">
-                    Searching…
-                </p>
-            )}
             {open && suggestions.length > 0 && (
-                <ul className="absolute z-dropdown top-full left-0 right-0 mt-1 max-h-52 overflow-y-auto rounded-lg border border-border-subtle bg-surface-card py-1 shadow-lg">
+                <ul className="absolute z-50 top-full left-0 right-0 mt-1 max-h-52 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
@@ -201,8 +178,8 @@ export default function TagInput({
                             }}
                             className={`cursor-pointer px-3 py-2 text-sm ${
                                 i === activeIndex
-                                    ? 'bg-accent-50 text-accent-text'
-                                    : 'text-text-primary hover:bg-surface-raised focus-visible:bg-surface-raised'
+                                    ? 'bg-indigo-50 text-indigo-700'
+                                    : 'text-gray-900 hover:bg-gray-50'
                             }`}
                         >
                             {s.name}

@@ -3,32 +3,28 @@ import { cn } from '@/lib/utils';
 /** Ring fill by score band — matches dashboard version dots (green / amber / red). */
 function scoreRingColor(score: number | null): string {
     if (score === null) {
-        return 'rgb(var(--gray-300))';
+        return '#d1d5db'; // gray-300
     }
     if (score >= 70) {
-        return 'rgb(var(--color-success-text))';
+        return '#10b981'; // emerald-500
     }
     if (score >= 40) {
-        return 'rgb(var(--color-warning-text))';
+        return '#fbbf24'; // amber-400
     }
-    return 'rgb(var(--color-error-text))';
-}
-
-function scoreTrackColor(): string {
-    return 'rgb(var(--gray-200))';
+    return '#ef4444'; // red-500
 }
 
 function scoreTextClass(score: number | null): string {
     if (score === null) {
-        return 'text-text-tertiary';
+        return 'text-gray-400';
     }
     if (score >= 70) {
-        return 'text-success-text';
+        return 'text-emerald-600';
     }
     if (score >= 40) {
-        return 'text-warning-text';
+        return 'text-amber-600';
     }
-    return 'text-error-text';
+    return 'text-red-600';
 }
 
 /**
@@ -58,7 +54,7 @@ export function ScoreDial({
             style={{
                 width: size,
                 height: size,
-                background: `conic-gradient(${ring} 0 ${filled}%, ${scoreTrackColor()} 0)`,
+                background: `conic-gradient(${ring} 0 ${filled}%, #e5e7eb 0)`,
             }}
             className={cn(
                 'flex shrink-0 items-center justify-center rounded-full',
@@ -68,7 +64,7 @@ export function ScoreDial({
             <div
                 style={{ width: size - 14, height: size - 14 }}
                 className={cn(
-                    'flex items-center justify-center rounded-full bg-surface-card text-[13px] font-extrabold tabular-nums',
+                    'flex items-center justify-center rounded-full bg-white text-[13px] font-extrabold',
                     scoreTextClass(score),
                 )}
             >
