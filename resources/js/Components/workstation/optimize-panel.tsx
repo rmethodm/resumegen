@@ -167,7 +167,7 @@ export function AtsPlainTextBlock({
                         Copy all
                     </Button>
                     {copyFailed && (
-                        <span className="text-[10px] font-medium text-red-600">
+                        <span className="text-[10px] font-medium text-error-text">
                             Couldn&apos;t copy. Select the text manually.
                         </span>
                     )}

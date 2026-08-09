@@ -155,7 +155,7 @@ export function SkillPickerModal({
                                                 added
                                                     ? 'cursor-not-allowed border border-border-subtle bg-surface-sunken text-tertiary'
                                                     : selected
-                                                      ? 'bg-accent-bg text-white'
+                                                      ? 'bg-accent-bg text-text-on-accent'
                                                       : 'border border-border-subtle text-primary hover:border-accent-500/40',
                                             )}
                                         >
@@ -180,7 +180,7 @@ export function SkillPickerModal({
         <Dialog open={open} onClose={close} className="relative z-modal">
             <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogPanel className="flex max-h-[700px] w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-surface-overlay shadow-2xl">
+                <DialogPanel className="flex max-h-[700px] w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-surface-overlay shadow-xl">
                     <div className="border-b border-border-subtle px-6 py-4">
                         <DialogTitle className="text-[15px] font-bold text-primary">
                             Add skills

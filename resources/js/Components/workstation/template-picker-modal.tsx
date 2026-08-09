@@ -36,7 +36,7 @@ export function TemplatePickerModal({
         <Dialog open={open} onClose={() => onOpenChange(false)} className="relative z-modal">
             <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogPanel className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl bg-surface-card shadow-2xl">
+                <DialogPanel className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl bg-surface-card shadow-xl">
                     <div className="border-b border-border-subtle px-5 py-4">
                         <DialogTitle className="text-sm font-bold text-text-primary">
                             Choose a template
@@ -133,7 +133,7 @@ export function TemplatePickerModal({
                                             </div>
                                         </div>
                                         {selected && (
-                                            <span className="absolute top-1 right-1 rounded-full bg-accent-bg p-0.5 text-white">
+                                            <span className="absolute top-1 right-1 rounded-full bg-accent-bg p-0.5 text-text-on-accent">
                                                 <CheckIcon className="size-2.5" />
                                             </span>
                                         )}

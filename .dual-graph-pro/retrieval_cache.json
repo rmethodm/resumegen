@@ -1,3 +1,749 @@
 {
-  "entries": {}
+  "entries": {
+    "workstation tsx resume editor page layout sectionpanel inspector|tf=5|te=12": {
+      "created_epoch": 1786263712,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx",
+        "resources/js/Pages/Resumes/Compare.tsx",
+        "resources/js/Components/workstation/share-resume-modal.tsx",
+        "resources/js/Pages/Dashboard.tsx::ResumeCard",
+        "resources/js/Components/resume/resume-preview.tsx"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Resumes/Workstation.tsx": 1786258281152005972,
+        "resources/js/Pages/Resumes/Compare.tsx": 1786258987978006440,
+        "resources/js/Components/workstation/share-resume-modal.tsx": 1786261028553301077,
+        "resources/js/Pages/Dashboard.tsx::ResumeCard": 1786258987204315784,
+        "resources/js/Components/resume/resume-preview.tsx": 1785876555918697342
+      },
+      "result": {
+        "ok": true,
+        "query": "Workstation.tsx resume editor page layout, SectionPanel, inspector, resume-preview components",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Resumes/Workstation.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Resumes/Workstation.tsx",
+            "ext": ".tsx",
+            "size": 30650,
+            "keywords": [
+              "workstation"
+            ],
+            "summary": "import { Head, router, usePage } from '@inertiajs/react';. Contains 5 functions/classes: focusAndFlash, Workstation, requestDownload, confirmDownload, ....",
+            "file_hash": "202c055b",
+            "_score": 37,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Pages/Resumes/Compare.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Resumes/Compare.tsx",
+            "ext": ".tsx",
+            "size": 14408,
+            "keywords": [
+              "resumecompare",
+              "resume",
+              "compare"
+            ],
+            "summary": "import { Head, Link, router } from '@inertiajs/react';. Contains 5 functions/classes: ResumeCompare, swap, CompareSidebar, Legend, ....",
+            "file_hash": "e16e3b1e",
+            "_score": 31,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Components/workstation/share-resume-modal.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/share-resume-modal.tsx",
+            "ext": ".tsx",
+            "size": 19725,
+            "keywords": [
+              "shareresumemodal",
+              "share",
+              "resume",
+              "modal"
+            ],
+            "summary": "import { Dialog, DialogPanel, DialogTitle, Switch } from '@headlessui/react';. Contains 5 functions/classes: ShareResumeModal, close, copyLink, toggle, ....",
+            "file_hash": "194d7868",
+            "_score": 30,
+            "_role": "code",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Pages/Dashboard.tsx::ResumeCard",
+            "kind": "symbol",
+            "path": "resources/js/Pages/Dashboard.tsx",
+            "ext": ".tsx",
+            "size": 101,
+            "keywords": [
+              "resumecard",
+              "resume",
+              "card"
+            ],
+            "symbol_type": "utility",
+            "name": "ResumeCard",
+            "line_start": 285,
+            "line_end": 385,
+            "body_hash": "cc2093c9",
+            "confidence": "medium",
+            "exported": false,
+            "_score": 30,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Components/resume/resume-preview.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/resume/resume-preview.tsx",
+            "ext": ".tsx",
+            "size": 22438,
+            "keywords": [
+              "resumepreview",
+              "resume",
+              "preview"
+            ],
+            "summary": "import '../../../css/resume-fonts.css';. Contains 5 functions/classes: Section, EntryHead, EntryShell, Bullets, ....",
+            "file_hash": "be392d5b",
+            "_score": 29,
+            "_role": "code",
+            "_intent": "edit"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/resume/resume-preview",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/inspector",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/export-checklist-modal",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/notes-panel",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/section-panel",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/target-role-bar",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/workstation-format-toolbar",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/workstation-header",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Layouts/AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "@/lib/template-presets",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    },
+    "tailwind design tokens css theme colors canvas cream|tf=5|te=12": {
+      "created_epoch": 1786263745,
+      "files": [
+        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+        "tailwind.config.js",
+        "resources/js/Components/resume/resume-preview.tsx",
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx": 1786259030374378901,
+        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx": 1786259040589877466,
+        "tailwind.config.js": 1786246289277961210,
+        "resources/js/Components/resume/resume-preview.tsx": 1785876555918697342,
+        "resources/js/Pages/Resumes/Workstation.tsx": 1786258281152005972
+      },
+      "result": {
+        "ok": true,
+        "query": "tailwind design tokens CSS theme colors canvas cream coral font families spacing radius DESIGN.md",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "ext": ".tsx",
+            "size": 4526,
+            "keywords": [
+              "extensiontokensform",
+              "extension",
+              "tokens",
+              "form"
+            ],
+            "summary": "import PrimaryButton from '@/Components/PrimaryButton';. Contains 2 functions/classes: formatWhen, ExtensionTokensForm.",
+            "file_hash": "2a72b6f0",
+            "_score": 19,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "ext": ".tsx",
+            "size": 4485,
+            "keywords": [
+              "mobiletokensform",
+              "mobile",
+              "tokens",
+              "form"
+            ],
+            "summary": "import PrimaryButton from '@/Components/PrimaryButton';. Contains 2 functions/classes: formatWhen, MobileTokensForm.",
+            "file_hash": "ac91b329",
+            "_score": 19,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "tailwind.config.js",
+            "kind": "file",
+            "path": "tailwind.config.js",
+            "ext": ".js",
+            "size": 7476,
+            "keywords": [],
+            "summary": "import defaultTheme from 'tailwindcss/defaultTheme';. Contains 1 function: names.",
+            "file_hash": "2462ce3f",
+            "_score": 18,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/resume/resume-preview.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/resume/resume-preview.tsx",
+            "ext": ".tsx",
+            "size": 22438,
+            "keywords": [
+              "resumepreview",
+              "resume",
+              "preview"
+            ],
+            "summary": "import '../../../css/resume-fonts.css';. Contains 5 functions/classes: Section, EntryHead, EntryShell, Bullets, ....",
+            "file_hash": "be392d5b",
+            "_score": 15,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Resumes/Workstation.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Resumes/Workstation.tsx",
+            "ext": ".tsx",
+            "size": 30650,
+            "keywords": [
+              "workstation"
+            ],
+            "summary": "import { Head, router, usePage } from '@inertiajs/react';. Contains 5 functions/classes: focusAndFlash, Workstation, requestDownload, confirmDownload, ....",
+            "file_hash": "202c055b",
+            "_score": 15,
+            "_role": "ui_surface",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "tailwind.config.js",
+            "to": "tailwindcss/defaultTheme",
+            "rel": "imports"
+          },
+          {
+            "from": ".agents/skills/daisyui/colors/SKILL.md",
+            "to": "tailwindcss",
+            "rel": "imports"
+          },
+          {
+            "from": "tailwind.config.js",
+            "to": "@tailwindcss/forms",
+            "rel": "imports"
+          },
+          {
+            "from": "tailwind.config.js",
+            "to": "defaultTheme",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "/css/resume-fonts.c",
+            "rel": "references"
+          },
+          {
+            "from": "resources/js/Components/resume/resume-preview.tsx",
+            "to": "resources/css/resume-fonts.c",
+            "rel": "references"
+          },
+          {
+            "from": ".agents/skills/daisyui/install/SKILL.md",
+            "to": "tailwindcss",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@/Components/DangerButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@/Components/PrimaryButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@inertiajs/react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "DangerButton",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "PrimaryButton",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [
+          {
+            "file": "resources/js/Components/resume/score-gauge.tsx",
+            "overlap": 1,
+            "cached_chars": 3052,
+            "cached_tokens_est": 763,
+            "last_action": "edited"
+          }
+        ],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": [
+            "resources/js/Components/resume/score-gauge.tsx"
+          ]
+        }
+      }
+    },
+    "workstation tsx jsx render structure spacing shadow border|tf=5|te=12": {
+      "created_epoch": 1786263809,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx",
+        "resources/js/Components/workstation/background-color-picker.tsx",
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+        "resources/js/Pages/Dashboard.tsx",
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Resumes/Workstation.tsx": 1786258281152005972,
+        "resources/js/Components/workstation/background-color-picker.tsx": -1,
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx": 1786258234116300712,
+        "resources/js/Pages/Dashboard.tsx": 1786258987204315784,
+        "resources/js/Components/workstation/workstation-header.tsx": 1786258165207516711
+      },
+      "result": {
+        "ok": true,
+        "query": "Workstation.tsx JSX render structure spacing shadow border accent color classes",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Resumes/Workstation.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Resumes/Workstation.tsx",
+            "ext": ".tsx",
+            "size": 30650,
+            "keywords": [
+              "workstation"
+            ],
+            "summary": "import { Head, router, usePage } from '@inertiajs/react';. Contains 5 functions/classes: focusAndFlash, Workstation, requestDownload, confirmDownload, ....",
+            "file_hash": "202c055b",
+            "_score": 26,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/background-color-picker.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/background-color-picker.tsx",
+            "ext": ".tsx",
+            "size": 1974,
+            "keywords": [
+              "backgroundcolorpicker",
+              "background",
+              "color",
+              "picker"
+            ],
+            "summary": "import { useEffect, useState } from 'react';. Contains 4 functions/classes: hexToRgbTriplet, BackgroundColorPicker, apply, reset.",
+            "file_hash": "b0bf764c",
+            "_score": 23,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "ext": ".tsx",
+            "size": 15787,
+            "keywords": [
+              "fontlabels",
+              "font",
+              "labels",
+              "preview_zoom_options",
+              "previewzoom",
+              "preview",
+              "zoom",
+              "workstationformattoolbar",
+              "workstation",
+              "format",
+              "toolbar"
+            ],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 3 functions/classes: ToolbarDivider, MenuCheck, WorkstationFormatToolbar.",
+            "file_hash": "b37e886a",
+            "_score": 22,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Dashboard.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Dashboard.tsx",
+            "ext": ".tsx",
+            "size": 31515,
+            "keywords": [],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 5 functions/classes: scoreBand, scoreDotColor, scoreSegmentColor, ReadinessStrip, ....",
+            "file_hash": "8a331a49",
+            "_score": 21,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/workstation-header.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/workstation-header.tsx",
+            "ext": ".tsx",
+            "size": 19520,
+            "keywords": [
+              "workstationtab",
+              "workstation",
+              "tab",
+              "headerversion",
+              "header",
+              "version",
+              "workstationheader"
+            ],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 1 function: WorkstationHeader.",
+            "file_hash": "c745e523",
+            "_score": 20,
+            "_role": "code",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Components/workstation/background-color-picker.tsx",
+            "to": "react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/background-color-picker.tsx",
+            "to": "resources/js/Components/workstation/background-color-picker.tsx::BackgroundColorPicker",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/background-color-picker.tsx",
+            "to": "resources/js/Components/workstation/background-color-picker.tsx::hexToRgbTriplet",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/lib/resume-page-estimate",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/lib/resume-templates",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/lib/utils",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@headlessui/react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "type",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/Components/ui/badge",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-header.tsx",
+            "to": "@/Components/ui/input",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [
+          {
+            "file": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
+            "overlap": 2,
+            "cached_chars": 3696,
+            "cached_tokens_est": 924,
+            "last_action": "read"
+          }
+        ],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": [
+            "resources/js/Pages/Resumes/Workstation.tsx::Workstation"
+          ]
+        }
+      }
+    },
+    "background color picker workstation component|tf=5|te=12": {
+      "created_epoch": 1786263987,
+      "files": [
+        "resources/js/Components/workstation/background-color-picker.tsx",
+        "resources/js/Components/workstation/skill-picker-modal.tsx",
+        "ds-bundle/components/workstation/SkillPickerModal/SkillPickerModal.d.ts::SkillPickerModalProps",
+        "resources/js/Components/workstation/template-picker-modal.tsx",
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "mtimes_ns": {
+        "resources/js/Components/workstation/background-color-picker.tsx": -1,
+        "resources/js/Components/workstation/skill-picker-modal.tsx": 1786246289270647162,
+        "ds-bundle/components/workstation/SkillPickerModal/SkillPickerModal.d.ts::SkillPickerModalProps": 1785780804225966958,
+        "resources/js/Components/workstation/template-picker-modal.tsx": 1786260995713010838,
+        "resources/js/Components/workstation/workstation-header.tsx": 1786258165207516711
+      },
+      "result": {
+        "ok": true,
+        "query": "background color picker workstation component",
+        "graph_files": [
+          {
+            "id": "resources/js/Components/workstation/background-color-picker.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/background-color-picker.tsx",
+            "ext": ".tsx",
+            "size": 1974,
+            "keywords": [
+              "backgroundcolorpicker",
+              "background",
+              "color",
+              "picker"
+            ],
+            "summary": "import { useEffect, useState } from 'react';. Contains 4 functions/classes: hexToRgbTriplet, BackgroundColorPicker, apply, reset.",
+            "file_hash": "b0bf764c",
+            "_score": 36,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "ext": ".tsx",
+            "size": 10194,
+            "keywords": [
+              "skillpickermodal",
+              "skill",
+              "picker",
+              "modal"
+            ],
+            "summary": "DialogPanel,. Contains 5 functions/classes: skillKey, SkillPickerModal, reset, close, ....",
+            "file_hash": "a5efb35c",
+            "_score": 22,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "ds-bundle/components/workstation/SkillPickerModal/SkillPickerModal.d.ts::SkillPickerModalProps",
+            "kind": "symbol",
+            "path": "ds-bundle/components/workstation/SkillPickerModal/SkillPickerModal.d.ts",
+            "ext": ".ts",
+            "size": 3,
+            "keywords": [
+              "skillpickermodalprops",
+              "skill",
+              "picker",
+              "modal",
+              "props"
+            ],
+            "symbol_type": "model",
+            "name": "SkillPickerModalProps",
+            "line_start": 5,
+            "line_end": 7,
+            "body_hash": "4561958a",
+            "confidence": "high",
+            "exported": true,
+            "_score": 21,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/template-picker-modal.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/template-picker-modal.tsx",
+            "ext": ".tsx",
+            "size": 9310,
+            "keywords": [
+              "templatepickermodal",
+              "template",
+              "picker",
+              "modal"
+            ],
+            "summary": "import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';. Contains 1 function: TemplatePickerModal.",
+            "file_hash": "453d2102",
+            "_score": 21,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/workstation-header.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/workstation-header.tsx",
+            "ext": ".tsx",
+            "size": 19520,
+            "keywords": [
+              "workstationtab",
+              "workstation",
+              "tab",
+              "headerversion",
+              "header",
+              "version",
+              "workstationheader"
+            ],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 1 function: WorkstationHeader.",
+            "file_hash": "c745e523",
+            "_score": 20,
+            "_role": "code",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Components/workstation/background-color-picker.tsx",
+            "to": "react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/background-color-picker.tsx",
+            "to": "resources/js/Components/workstation/background-color-picker.tsx::BackgroundColorPicker",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/background-color-picker.tsx",
+            "to": "resources/js/Components/workstation/background-color-picker.tsx::hexToRgbTriplet",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "to": "@/Components/ui/input",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "to": "@/lib/utils",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "to": "@/types",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "to": "@heroicons/react/24/outline",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "to": "react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/skill-picker-modal.tsx",
+            "to": "type",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/template-picker-modal.tsx",
+            "to": "@/lib/resume-templates",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/template-picker-modal.tsx",
+            "to": "@/lib/template-thumb-styles",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    }
+  }
 }
