@@ -6,36 +6,42 @@
    Primitives are RGB triplets (no `rgb()` wrapper) so Tailwind's
    `rgb(var(--x) / <alpha-value>)` pattern in tailwind.config.js can
    apply opacity modifiers, e.g. `bg-surface-canvas/50`.
-   Basic black-and-white reset: neutral and accent ramps are grayscale so
-   token-based app chrome cannot reintroduce color. */
+   Reconciled 2026-08-08 with DESIGN.md's cream/burnt-orange system —
+   the neutral (cream-50..950) and accent-400/500/600/700 stops are
+   DESIGN.md's documented values verbatim. DESIGN.md doesn't define a
+   full 11-stop accent ramp (only 400-700, matching the design-system
+   export's own token set); accent-50/100/200/300 are interpolated
+   toward cream-50 and accent-800/900/950 toward cream-950 so classes
+   like `bg-accent-100/60` used elsewhere in the app stay defined. */
 :root {
     color-scheme: light dark;
 
-    /* Primitives — grayscale ramp */
-    --gray-50: 255 255 255;
-    --gray-100: 250 250 250;
-    --gray-200: 229 229 229;
-    --gray-300: 212 212 212;
-    --gray-400: 163 163 163;
-    --gray-500: 115 115 115;
-    --gray-600: 82 82 82;
-    --gray-700: 64 64 64;
-    --gray-800: 38 38 38;
-    --gray-900: 23 23 23;
-    --gray-950: 0 0 0;
+    /* Primitives — neutral ramp (DESIGN.md cream-50..950) */
+    --gray-50: 250 246 240;
+    --gray-100: 245 239 229;
+    --gray-200: 228 219 203;
+    --gray-300: 217 206 188;
+    --gray-400: 201 191 172;
+    --gray-500: 138 129 114;
+    --gray-600: 107 98 85;
+    --gray-700: 74 68 54;
+    --gray-800: 52 47 38;
+    --gray-900: 43 38 32;
+    --gray-950: 26 23 18;
 
-    /* Primitives — accent aliases to grayscale */
-    --accent-50: var(--gray-50);
-    --accent-100: var(--gray-100);
-    --accent-200: var(--gray-200);
-    --accent-300: var(--gray-300);
-    --accent-400: var(--gray-600);
-    --accent-500: var(--gray-950);
-    --accent-600: var(--gray-900);
-    --accent-700: var(--gray-800);
-    --accent-800: var(--gray-700);
-    --accent-900: var(--gray-600);
-    --accent-950: var(--gray-950);
+    /* Primitives — accent ramp (burnt orange). 400-700 are DESIGN.md's
+       exact values; the rest are interpolated (see file header note). */
+    --accent-50: 247 235 226;
+    --accent-100: 244 218 205;
+    --accent-200: 236 187 162;
+    --accent-300: 230 154 120;
+    --accent-400: 227 138 99;
+    --accent-500: 193 80 46;
+    --accent-600: 168 63 34;
+    --accent-700: 138 51 25;
+    --accent-800: 110 44 23;
+    --accent-900: 82 37 22;
+    --accent-950: 54 30 21;
 
     /* Primitives — motion */
     --duration-fast: 150ms;
@@ -74,10 +80,13 @@
     --z-toast: 60;
     --z-tooltip: 70;
 
-    /* Semantics — surface stack */
-    --color-surface-canvas: var(--gray-50);
+    /* Semantics — surface stack.
+       surface-canvas now equals --gray-50 exactly post-reconciliation
+       (both are DESIGN.md's cream-50, #faf6f0) — kept as its own token
+       rather than aliased, matching the rest of the surface stack. */
+    --color-surface-canvas: 250 246 240;
     --color-surface-raised: var(--gray-100);
-    --color-surface-overlay: var(--gray-50);
+    --color-surface-overlay: 253 251 247;
     --color-surface-sunken: var(--gray-200);
     --color-surface-inverse: var(--gray-900);
 
@@ -108,22 +117,23 @@
     --radius-card: var(--radius-lg);
     --radius-modal: var(--radius-xl);
 
-    /* Semantics — status stays grayscale; labels carry meaning, not color. */
-    --color-success-bg: var(--gray-50);
-    --color-success-text: var(--gray-950);
-    --color-success-border: var(--gray-300);
+    /* Semantics — status (bg / text / border per state), verbatim from
+       DESIGN.md / the design-system token export. */
+    --color-success-bg: 234 240 219;
+    --color-success-text: 122 143 63;
+    --color-success-border: 197 210 165;
 
-    --color-warning-bg: var(--gray-50);
-    --color-warning-text: var(--gray-950);
-    --color-warning-border: var(--gray-300);
+    --color-warning-bg: 250 238 214;
+    --color-warning-text: 212 162 76;
+    --color-warning-border: 232 200 140;
 
-    --color-error-bg: var(--gray-50);
-    --color-error-text: var(--gray-950);
-    --color-error-border: var(--gray-300);
+    --color-error-bg: 247 224 219;
+    --color-error-text: 178 59 44;
+    --color-error-border: 216 156 140;
 
-    --color-info-bg: var(--gray-50);
-    --color-info-text: var(--gray-950);
-    --color-info-border: var(--gray-300);
+    --color-info-bg: 228 235 244;
+    --color-info-text: 91 122 158;
+    --color-info-border: 180 199 222;
 }
 
 /* Dark remaps semantics only — primitives above are untouched.
@@ -138,7 +148,7 @@
         --color-surface-canvas: var(--gray-950);
         --color-surface-raised: var(--gray-900);
         --color-surface-overlay: var(--gray-800);
-        --color-surface-sunken: var(--gray-800);
+        --color-surface-sunken: 35 31 25;
         --color-surface-inverse: var(--gray-50);
 
         --color-text-primary: var(--gray-50);
@@ -146,9 +156,14 @@
         --color-text-tertiary: var(--gray-600);
         --color-text-on-inverse: var(--gray-900);
 
-        --color-border-subtle: var(--gray-800);
-        --color-border-default: var(--gray-700);
-        --color-border-strong: var(--gray-600);
+        --color-border-subtle: 58 52 43;
+        --color-border-default: 74 68 57;
+        --color-border-strong: 97 89 75;
+
+        /* Accent (bg/hover/active/text) is intentionally NOT redefined
+           here — the design-system export keeps the burnt-orange accent
+           constant across themes rather than lightening it, so these
+           fall through to the :root values above. */
 
         /* Shadows stay hairline-only on dark too, per DESIGN.md's "no drop
            shadows" rule — a black-on-near-black shadow would be invisible
@@ -158,21 +173,19 @@
         --shadow-lg: 0 0 0 1px rgb(var(--color-border-strong));
         --shadow-xl: 0 0 0 1px rgb(var(--color-border-strong));
 
-        --color-success-bg: var(--gray-950);
-        --color-success-text: var(--gray-50);
-        --color-success-border: var(--gray-700);
+        /* Status: dark bg/border per DESIGN.md's token export; text stays
+           the same saturated value as light mode (also per that export). */
+        --color-success-bg: 46 54 30;
+        --color-success-border: 74 89 45;
 
-        --color-warning-bg: var(--gray-950);
-        --color-warning-text: var(--gray-50);
-        --color-warning-border: var(--gray-700);
+        --color-warning-bg: 58 45 22;
+        --color-warning-border: 97 76 40;
 
-        --color-error-bg: var(--gray-950);
-        --color-error-text: var(--gray-50);
-        --color-error-border: var(--gray-700);
+        --color-error-bg: 56 30 27;
+        --color-error-border: 107 52 44;
 
-        --color-info-bg: var(--gray-950);
-        --color-info-text: var(--gray-50);
-        --color-info-border: var(--gray-700);
+        --color-info-bg: 30 40 54;
+        --color-info-border: 58 79 105;
     }
 }
 
@@ -180,7 +193,7 @@
     --color-surface-canvas: var(--gray-950);
     --color-surface-raised: var(--gray-900);
     --color-surface-overlay: var(--gray-800);
-    --color-surface-sunken: var(--gray-800);
+    --color-surface-sunken: 35 31 25;
     --color-surface-inverse: var(--gray-50);
 
     --color-text-primary: var(--gray-50);
@@ -188,9 +201,12 @@
     --color-text-tertiary: var(--gray-600);
     --color-text-on-inverse: var(--gray-900);
 
-    --color-border-subtle: var(--gray-800);
-    --color-border-default: var(--gray-700);
-    --color-border-strong: var(--gray-600);
+    --color-border-subtle: 58 52 43;
+    --color-border-default: 74 68 57;
+    --color-border-strong: 97 89 75;
+
+    /* Accent stays constant across themes — see the matching comment in
+       the prefers-color-scheme block above. */
 
     /* Hairline-only depth per DESIGN.md — no drop shadows, light or dark. */
     --shadow-sm: 0 0 0 1px rgb(var(--color-border-subtle));
@@ -199,21 +215,17 @@
     --shadow-xl: 0 0 0 1px rgb(var(--color-border-strong));
 
     /* Status: same remap as prefers-color-scheme block above. */
-    --color-success-bg: var(--gray-950);
-    --color-success-text: var(--gray-50);
-    --color-success-border: var(--gray-700);
+    --color-success-bg: 46 54 30;
+    --color-success-border: 74 89 45;
 
-    --color-warning-bg: var(--gray-950);
-    --color-warning-text: var(--gray-50);
-    --color-warning-border: var(--gray-700);
+    --color-warning-bg: 58 45 22;
+    --color-warning-border: 97 76 40;
 
-    --color-error-bg: var(--gray-950);
-    --color-error-text: var(--gray-50);
-    --color-error-border: var(--gray-700);
+    --color-error-bg: 56 30 27;
+    --color-error-border: 107 52 44;
 
-    --color-info-bg: var(--gray-950);
-    --color-info-text: var(--gray-50);
-    --color-info-border: var(--gray-700);
+    --color-info-bg: 30 40 54;
+    --color-info-border: 58 79 105;
 }
 
 html {

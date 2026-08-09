@@ -21,19 +21,19 @@ export default {
                 // Frozen legacy hex — do not use in new UI. Prefer semantic /
                 // ramp classes below. Kept only so unmigrated call sites compile.
                 brand: {
-                    DEFAULT: '#000000',
-                    accent: '#000000',
-                    light: '#404040',
-                    subtle: '#f5f5f5',
+                    DEFAULT: '#5952d2',
+                    accent: '#3c3695',
+                    light: '#3c3695',
+                    subtle: '#e1e5ff',
                 },
                 surface: {
-                    DEFAULT: '#ffffff',
-                    border: '#d4d4d4',
+                    DEFAULT: '#f2f6f9',
+                    border: '#d2d8dd',
                 },
                 ink: {
-                    DEFAULT: '#000000',
-                    muted: '#525252',
-                    faint: '#737373',
+                    DEFAULT: '#171b1f',
+                    muted: '#50565a',
+                    faint: '#6d7277',
                 },
 
                 // Primitive ramps (theme-stable; semantics remap for dark).
