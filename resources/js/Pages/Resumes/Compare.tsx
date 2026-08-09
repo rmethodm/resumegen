@@ -102,9 +102,9 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                     </div>
 
                     <div className="flex items-center gap-4 border-b border-border-subtle bg-surface-card px-6 py-2 text-[11px] text-text-secondary">
-                        <Legend swatch="bg-emerald-200" label="Added" />
-                        <Legend swatch="bg-red-200" label="Removed" />
-                        <Legend swatch="bg-yellow-200" label="Changed" />
+                        <Legend swatch="bg-gray-200" label="Added" />
+                        <Legend swatch="bg-gray-300" label="Removed" />
+                        <Legend swatch="bg-gray-100" label="Changed" />
                         <span className="ml-auto">
                             Comparing bullets by position — reordered roles
                             may not align.
@@ -251,7 +251,7 @@ function SummaryDiff({ parts }: { parts: DiffPart[] }) {
                 .map((part, index) => (
                     <span
                         key={index}
-                        className={cn(part.added && 'bg-yellow-200')}
+                        className={cn(part.added && 'bg-gray-100')}
                     >
                         {part.value}
                     </span>
@@ -327,9 +327,9 @@ function CompareColumn({
                                             key={bulletIndex}
                                             className={cn(
                                                 'rounded px-1 py-0.5',
-                                                part.added && 'bg-emerald-200',
+                                                part.added && 'bg-gray-200',
                                                 part.removed &&
-                                                    'bg-red-200 line-through',
+                                                    'bg-gray-300 line-through',
                                             )}
                                         >
                                             {part.value}

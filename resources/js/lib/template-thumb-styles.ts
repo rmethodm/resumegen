@@ -34,12 +34,12 @@ export const templateThumbStyles: Record<ResumeTemplateKey, TemplateThumbStyle> 
     },
     modern: {
         align: 'left',
-        nameColor: '#312e81',
-        subColor: '#4338ca',
-        headingColor: '#4f46e5',
-        accent: '#4f46e5',
-        headerBg: '#eef2ff',
-        pageAccent: '#4f46e5',
+        nameColor: '#111',
+        subColor: '#444',
+        headingColor: '#181818',
+        accent: '#181818',
+        headerBg: '#f5f5f5',
+        pageAccent: '#181818',
         entryStyle: 'stacked',
     },
     minimalist: {
