@@ -6,7 +6,7 @@ type Variant = 'default' | 'secondary' | 'destructive' | 'outline';
 const variantClassNames: Record<Variant, string> = {
     default: 'border-transparent bg-accent-bg text-text-on-accent',
     secondary: 'border-transparent bg-surface-raised text-text-primary',
-    destructive: 'border-transparent bg-red-600 text-white',
+    destructive: 'border-transparent bg-error-text text-text-on-accent',
     outline: 'border-border-default text-text-secondary',
 };
 

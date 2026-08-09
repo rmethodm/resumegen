@@ -6,7 +6,7 @@ type Size = 'default' | 'sm' | 'lg' | 'icon';
 
 const variantClassNames: Record<Variant, string> = {
     default: 'bg-accent-bg text-text-on-accent shadow-sm hover:bg-accent-bg-hover',
-    destructive: 'bg-red-600 text-white shadow-sm hover:bg-red-500',
+    destructive: 'bg-error-text text-text-on-accent shadow-sm hover:opacity-90',
     outline:
         'border border-border-default bg-surface-card text-text-primary shadow-sm hover:bg-surface-raised',
     secondary: 'bg-surface-raised text-text-primary shadow-sm hover:bg-surface-sunken',

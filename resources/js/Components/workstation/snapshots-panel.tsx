@@ -131,7 +131,7 @@ export function SnapshotsPanel({
                                     }
                                     onConfirm();
                                 }}
-                                className="text-[11px] text-gray-400 hover:text-red-600 focus:outline-none focus-visible:text-red-600 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
+                                className="text-[11px] text-text-tertiary hover:text-error-text focus:outline-none focus-visible:text-error-text focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1"
                             >
                                 Delete
                             </button>

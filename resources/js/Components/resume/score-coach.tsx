@@ -24,12 +24,12 @@ export function ScoreChecklist({
     }
 
     return (
-        <div className="mt-4 border-t border-gray-100 pt-4">
+        <div>
             <div className="mb-2 flex items-baseline justify-between px-1">
-                <p className="text-xs font-medium text-text-tertiary">
+                <p className="text-xs font-medium tracking-[0.08em] text-text-tertiary uppercase">
                     Raise your score
                 </p>
-                <p className="text-[10px] tabular-nums text-gray-400">
+                <p className="text-[10px] tabular-nums text-text-tertiary">
                     {doneCount}/{items.length}
                 </p>
             </div>
@@ -44,31 +44,23 @@ export function ScoreChecklist({
                             className={cn(
                                 'flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-[11px] leading-snug transition-colors',
                                 item.done
-                                    ? 'cursor-default text-gray-400'
-                                    : 'text-gray-800 hover:bg-accent-100 hover:text-accent-text focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1',
+                                    ? 'cursor-default text-text-tertiary'
+                                    : 'text-text-primary hover:bg-accent-100 hover:text-accent-text focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1',
                             )}
                         >
                             <span
                                 className={cn(
-                                    'mt-0.5 flex size-3.5 shrink-0 items-center justify-center rounded-full border',
+                                    'mt-0.5 inline-flex shrink-0 items-center rounded-md border px-1.5 py-0.5 text-[10px] font-semibold',
                                     item.done
-                                        ? 'border-green-500 bg-green-500 text-white'
-                                        : 'border-gray-300 bg-white',
+                                        ? 'border-success-border bg-success-bg text-success-text'
+                                        : 'border-error-border bg-error-bg text-error-text',
                                 )}
                                 aria-hidden
                             >
-                                {item.done && (
-                                    <CheckIcon className="size-2.5 stroke-[3]" />
-                                )}
+                                {item.done ? 'Done' : 'Missing'}
                             </span>
                             <span className="min-w-0 flex-1">
-                                <span
-                                    className={cn(
-                                        item.done && 'line-through',
-                                    )}
-                                >
-                                    {item.label}
-                                </span>
+                                <span>{item.label}</span>
                                 <span className="mt-0.5 block text-[10px] font-medium text-text-tertiary">
                                     {item.band}
                                 </span>
@@ -95,9 +87,9 @@ export function KeywordChips({
 }) {
     if (!hasRoleFamily) {
         return (
-            <div className="mt-4 border-t border-gray-100 pt-4">
-                <p className="mb-1 px-1 text-xs font-medium text-text-tertiary">
-                    Role keywords
+            <div>
+                <p className="mb-1 px-1 text-xs font-medium tracking-[0.08em] text-text-tertiary uppercase">
+                    Keywords
                 </p>
                 <p className="px-1 text-[11px] leading-relaxed text-text-secondary">
                     Set a target role that includes a family we score — design,
@@ -113,11 +105,11 @@ export function KeywordChips({
     }
 
     return (
-        <div className="mt-4 border-t border-gray-100 pt-4">
-            <p className="mb-1 px-1 text-xs font-medium text-text-tertiary">
-                Role keywords
+        <div>
+            <p className="mb-1 px-1 text-xs font-medium tracking-[0.08em] text-text-tertiary uppercase">
+                Keywords
             </p>
-            <p className="mb-2 px-1 text-[10px] leading-snug text-gray-500">
+            <p className="mb-2 px-1 text-[10px] leading-snug text-text-tertiary">
                 Click a missing term to add it as a skill. Only add skills you
                 actually have.
             </p>
@@ -142,7 +134,7 @@ export function KeywordChips({
                     {present.map((keyword) => (
                         <span
                             key={keyword}
-                            className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-[11px] font-medium text-green-800"
+                            className="inline-flex items-center gap-1 rounded-full border border-success-border bg-success-bg px-2 py-0.5 text-[11px] font-medium text-success-text"
                         >
                             <CheckIcon className="size-3" />
                             {formatKeywordLabel(keyword)}
@@ -151,7 +143,7 @@ export function KeywordChips({
                 </div>
             )}
             {missing.length === 0 && present.length > 0 && (
-                <p className="mt-2 px-1 text-[10px] text-green-700">
+                <p className="mt-2 px-1 text-[10px] text-success-text">
                     All role keywords are covered.
                 </p>
             )}

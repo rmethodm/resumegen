@@ -69,7 +69,7 @@ export default function BulletEditor({ bullets, onChange, onBlur }: Props) {
         <div className="flex flex-col gap-0.5">
             {rows.map((bullet, idx) => (
                 <div key={idx} className="flex items-start gap-1">
-                    <span className="mt-[7px] text-xs text-gray-400 select-none">•</span>
+                    <span className="mt-[7px] text-xs text-text-tertiary select-none">•</span>
                     <textarea
                         ref={el => { refs.current[idx] = el; }}
                         value={bullet}
@@ -83,7 +83,7 @@ export default function BulletEditor({ bullets, onChange, onBlur }: Props) {
                         onKeyDown={e => handleKey(e, idx)}
                         onBlur={onBlur}
                         placeholder="Start with an action verb…"
-                        className="flex-1 resize-none overflow-hidden rounded border-gray-200 bg-gray-50 text-sm shadow-none focus:border-indigo-400 focus:ring-0 focus:bg-white"
+                        className="flex-1 resize-none overflow-hidden rounded border-border-subtle bg-surface-raised text-sm shadow-none focus:border-accent-400 focus:ring-0 focus:bg-surface-card"
                     />
                     <button
                         type="button"
@@ -97,7 +97,7 @@ export default function BulletEditor({ bullets, onChange, onBlur }: Props) {
                             }
                             onConfirm();
                         }}
-                        className="mt-[6px] text-gray-300 transition-colors hover:text-red-500 focus:outline-none focus-visible:text-red-500 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
+                        className="mt-[6px] text-text-tertiary transition-colors hover:text-error-text focus:outline-none focus-visible:text-error-text focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1"
                         tabIndex={-1}
                         aria-label="Delete bullet"
                     >

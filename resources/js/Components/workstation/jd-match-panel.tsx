@@ -18,11 +18,11 @@ export function JdMatchPanel({
 
     if (jd.trim() === '') {
         return (
-            <div className="mt-4 border-t border-gray-100 pt-4">
-                <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <div>
+                <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-text-tertiary uppercase">
                     Job match
                 </p>
-                <p className="px-1 text-[11px] leading-relaxed text-gray-500">
+                <p className="px-1 text-[11px] leading-relaxed text-text-tertiary">
                     Paste a job description on the Optimize tab to see keyword
                     overlap (no AI).
                 </p>
@@ -40,22 +40,22 @@ export function JdMatchPanel({
     }
 
     return (
-        <div className="mt-4 border-t border-gray-100 pt-4">
+        <div>
             <div className="mb-2 flex items-baseline justify-between px-1">
-                <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                <p className="text-xs font-semibold tracking-wide text-text-tertiary uppercase">
                     Job match
                 </p>
                 <p className="text-sm font-bold tabular-nums text-accent-text">
                     {overlap.score}%
                 </p>
             </div>
-            <p className="mb-2 px-1 text-[10px] text-gray-500">
+            <p className="mb-2 px-1 text-[10px] text-text-tertiary">
                 {overlap.matched.length} of {overlap.total} JD terms found in
                 your resume (deterministic tokens).
             </p>
             {overlap.missing.length > 0 && (
                 <>
-                    <p className="mb-1 px-1 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+                    <p className="mb-1 px-1 text-[10px] font-semibold tracking-wide text-text-tertiary uppercase">
                         Missing from resume
                     </p>
                     <div className="flex flex-wrap gap-1 px-0.5">
@@ -66,7 +66,7 @@ export function JdMatchPanel({
                                     type="button"
                                     onClick={() => onAddKeyword(term)}
                                     title={`Add “${formatKeywordLabel(term)}” as a skill`}
-                                    className="inline-flex items-center gap-0.5 rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900 hover:border-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
+                                    className="inline-flex items-center gap-0.5 rounded-full border border-dashed border-warning-border bg-warning-bg px-2 py-0.5 text-[10px] font-medium text-warning-text hover:border-warning-text focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                                 >
                                     <PlusIcon className="size-2.5" />
                                     {term}
@@ -74,28 +74,25 @@ export function JdMatchPanel({
                             ) : (
                                 <span
                                     key={term}
-                                    className="rounded-full border border-dashed border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-900"
+                                    className="rounded-full border border-dashed border-warning-border bg-warning-bg px-2 py-0.5 text-[10px] font-medium text-warning-text"
                                 >
                                     {term}
                                 </span>
                             ),
                         )}
                     </div>
-                    <p className="mt-1 px-1 text-[10px] text-gray-400">
-                        Only add skills you actually have.
-                    </p>
                 </>
             )}
             {overlap.matched.length > 0 && (
                 <>
-                    <p className="mt-2 mb-1 px-1 text-[10px] font-semibold text-gray-400 uppercase">
+                    <p className="mt-2 mb-1 px-1 text-[10px] font-semibold text-text-tertiary uppercase">
                         Present
                     </p>
                     <div className="flex flex-wrap gap-1 px-0.5">
                         {overlap.matched.slice(0, 16).map((term) => (
                             <span
                                 key={term}
-                                className="rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-[10px] font-medium text-green-800"
+                                className="rounded-full border border-success-border bg-success-bg px-2 py-0.5 text-[10px] font-medium text-success-text"
                             >
                                 {term}
                             </span>

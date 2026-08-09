@@ -22,7 +22,7 @@ export function CardTitle({ className, ...props }: React.ComponentProps<'div'>) 
 }
 
 export function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
-    return <div className={cn('text-sm text-gray-500', className)} {...props} />;
+    return <div className={cn('text-sm text-text-secondary', className)} {...props} />;
 }
 
 export function CardContent({ className, ...props }: React.ComponentProps<'div'>) {

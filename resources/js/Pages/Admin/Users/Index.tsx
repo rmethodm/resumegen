@@ -29,10 +29,10 @@ function StatusChip({
     tone?: 'neutral' | 'ok' | 'warn' | 'danger' | 'admin';
 }) {
     const tones = {
-        neutral: 'bg-slate-100 text-slate-700',
-        ok: 'bg-emerald-50 text-emerald-800',
-        warn: 'bg-amber-50 text-amber-900',
-        danger: 'bg-red-50 text-red-800',
+        neutral: 'bg-surface-raised text-text-secondary',
+        ok: 'bg-success-bg text-success-text',
+        warn: 'bg-warning-bg text-warning-text',
+        danger: 'bg-error-bg text-error-text',
         admin: 'bg-accent-100 text-accent-text',
     };
 
@@ -65,18 +65,18 @@ export default function Index({
         <AdminLayout
             header={
                 <div>
-                    <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-text-secondary">
                         Support
                     </p>
-                    <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-slate-900">
+                    <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-text-primary">
                         Users
                     </h1>
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-text-secondary">
                         Search by email, name, or id
                         {users.total > 0 ? (
                             <>
                                 {' · '}
-                                <span className="tabular-nums font-medium text-slate-700">
+                                <span className="tabular-nums font-medium text-text-secondary">
                                     {users.total}
                                 </span>{' '}
                                 total
@@ -90,7 +90,7 @@ export default function Index({
 
             <form
                 onSubmit={search}
-                className="mb-4 flex flex-col gap-2 rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:flex-row sm:items-center"
+                className="mb-4 flex flex-col gap-2 rounded-lg border border-border-subtle bg-surface-card p-3 shadow-sm sm:flex-row sm:items-center"
             >
                 <label className="sr-only" htmlFor="admin-user-search">
                     Search users
@@ -101,19 +101,19 @@ export default function Index({
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="email, name, or id"
-                    className="w-full flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-accent-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                    className="w-full flex-1 rounded-md border border-border-default bg-surface-card px-3 py-2 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-accent-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                 />
                 <button
                     type="submit"
-                    className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-1"
+                    className="rounded-md bg-surface-inverse px-3 py-2 text-sm font-medium text-text-on-inverse transition-colors duration-150 hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1"
                 >
                     Search
                 </button>
             </form>
 
-            <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
-                <table className="min-w-full divide-y divide-slate-200 text-sm">
-                    <thead className="sticky top-0 bg-slate-50 text-left text-[11px] font-medium uppercase tracking-[0.08em] text-slate-500">
+            <div className="overflow-x-auto rounded-lg border border-border-subtle bg-surface-card shadow-sm">
+                <table className="min-w-full divide-y divide-border-subtle text-sm">
+                    <thead className="sticky top-0 bg-surface-sunken text-left text-[11px] font-medium uppercase tracking-[0.08em] text-text-secondary">
                         <tr>
                             <th className="px-3 py-2.5">ID</th>
                             <th className="px-3 py-2.5">User</th>
@@ -122,14 +122,14 @@ export default function Index({
                             <th className="px-3 py-2.5">Joined</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-border-subtle">
                         {users.data.length === 0 ? (
                             <tr>
                                 <td colSpan={5} className="px-3 py-12 text-center">
-                                    <p className="text-sm font-medium text-slate-800">
+                                    <p className="text-sm font-medium text-text-primary">
                                         No users match
                                     </p>
-                                    <p className="mt-1 text-sm text-slate-500">
+                                    <p className="mt-1 text-sm text-text-secondary">
                                         Try another email, name, or numeric id.
                                     </p>
                                 </td>
@@ -138,19 +138,19 @@ export default function Index({
                             users.data.map((user) => (
                                 <tr
                                     key={user.id}
-                                    className="transition-colors duration-150 hover:bg-slate-50"
+                                    className="transition-colors duration-150 hover:bg-surface-raised"
                                 >
-                                    <td className="px-3 py-2.5 font-mono text-xs tabular-nums text-slate-500">
+                                    <td className="px-3 py-2.5 font-mono text-xs tabular-nums text-text-secondary">
                                         {user.id}
                                     </td>
                                     <td className="px-3 py-2.5">
                                         <Link
                                             href={route('admin.users.show', user.id)}
-                                            className="font-medium text-slate-900 underline-offset-2 hover:text-accent-text hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                                            className="font-medium text-text-primary underline-offset-2 hover:text-accent-text hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                                         >
                                             {user.name}
                                         </Link>
-                                        <div className="mt-0.5 font-mono text-xs text-slate-500">
+                                        <div className="mt-0.5 font-mono text-xs text-text-secondary">
                                             {user.email}
                                         </div>
                                     </td>
@@ -169,10 +169,10 @@ export default function Index({
                                             ) : null}
                                         </div>
                                     </td>
-                                    <td className="px-3 py-2.5 tabular-nums text-slate-700">
+                                    <td className="px-3 py-2.5 tabular-nums text-text-secondary">
                                         {user.resumes_count}
                                     </td>
-                                    <td className="px-3 py-2.5 text-xs tabular-nums text-slate-500">
+                                    <td className="px-3 py-2.5 text-xs tabular-nums text-text-secondary">
                                         {user.created_at
                                             ? new Date(user.created_at).toLocaleDateString()
                                             : '—'}
@@ -194,15 +194,15 @@ export default function Index({
                                 className={
                                     'rounded-md border px-2.5 py-1 text-xs font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus ' +
                                     (link.active
-                                        ? 'border-slate-900 bg-slate-900 text-white'
-                                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50')
+                                        ? 'border-surface-inverse bg-surface-inverse text-text-on-inverse'
+                                        : 'border-border-subtle bg-surface-card text-text-secondary hover:bg-surface-raised')
                                 }
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
                         ) : (
                             <span
                                 key={i}
-                                className="rounded-md border border-transparent px-2.5 py-1 text-xs text-slate-400"
+                                className="rounded-md border border-transparent px-2.5 py-1 text-xs text-text-tertiary"
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
                         ),

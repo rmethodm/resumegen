@@ -62,10 +62,10 @@ function PersonaForm({
 
     const field = (label: string, key: keyof typeof data, type = 'text') => (
         <div>
-            <label className="block text-sm font-medium text-gray-700">{label}</label>
+            <label className="block text-sm font-medium text-text-primary">{label}</label>
             <input
                 type={type}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-border-focus focus:ring-border-focus sm:text-sm"
+                className="mt-1 block w-full rounded-md border-border-default shadow-sm focus:border-border-focus focus:ring-border-focus sm:text-sm"
                 value={data[key]}
                 onChange={e => setData(prev => ({ ...prev, [key]: e.target.value }))}
             />
@@ -75,9 +75,9 @@ function PersonaForm({
     return (
         <div>
             <div className="mb-3 h-4 text-xs font-medium">
-                {status === 'saving' && <span className="text-gray-400">Saving…</span>}
-                {status === 'saved' && <span className="text-emerald-600">Saved</span>}
-                {status === 'error' && <span className="text-red-600">Save failed — check the fields above.</span>}
+                {status === 'saving' && <span className="text-text-tertiary">Saving…</span>}
+                {status === 'saved' && <span className="text-success-text">Saved</span>}
+                {status === 'error' && <span className="text-error-text">Save failed — check the fields above.</span>}
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {field('Full Name', 'full_name')}
@@ -90,9 +90,9 @@ function PersonaForm({
                 {field('Industry', 'industry')}
                 {field('Years of Experience', 'years_experience', 'number')}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Preferred Template</label>
+                    <label className="block text-sm font-medium text-text-primary">Preferred Template</label>
                     <select
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-border-focus focus:ring-border-focus sm:text-sm"
+                        className="mt-1 block w-full rounded-md border-border-default shadow-sm focus:border-border-focus focus:ring-border-focus sm:text-sm"
                         value={data.preferred_template}
                         onChange={e => setData(prev => ({ ...prev, preferred_template: e.target.value }))}
                     >
@@ -158,19 +158,19 @@ export default function Edit({
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
 
                     <div className="mb-2">
-                        <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Profile</h1>
-                        <p className="mt-1 text-sm text-[#a0a0b0]">Manage your account settings</p>
+                        <h1 className="text-xl font-extrabold tracking-tight text-text-primary">Profile</h1>
+                        <p className="mt-1 text-sm text-text-secondary">Manage your account settings</p>
                     </div>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-border-subtle bg-surface-card p-6 shadow-sm">
                         <UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} className="max-w-xl" />
                     </div>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-border-subtle bg-surface-card p-6 shadow-sm">
                         <UpdatePasswordForm className="max-w-xl" />
                     </div>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-border-subtle bg-surface-card p-6 shadow-sm">
                         <TwoFactorForm
                             enabled={twoFactor.enabled}
                             pending={twoFactor.pending}
@@ -180,7 +180,7 @@ export default function Edit({
                         />
                     </div>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-border-subtle bg-surface-card p-6 shadow-sm">
                         <ExtensionTokensForm
                             tokens={extensionTokens}
                             plainToken={extensionTokenPlain}
@@ -188,7 +188,7 @@ export default function Edit({
                         />
                     </div>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-border-subtle bg-surface-card p-6 shadow-sm">
                         <MobileTokensForm
                             tokens={mobileTokens}
                             plainToken={mobileTokenPlain}
@@ -196,11 +196,11 @@ export default function Edit({
                         />
                     </div>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-border-subtle bg-surface-card p-6 shadow-sm">
                         <section className="space-y-6">
                             <header>
-                                <h2 className="text-lg font-medium text-gray-900">Starter Profile</h2>
-                                <p className="mt-1 text-sm text-gray-600">
+                                <h2 className="text-lg font-medium text-text-primary">Starter Profile</h2>
+                                <p className="mt-1 text-sm text-text-secondary">
                                     Pre-fills the contact section and defaults on every new resume you create.
                                 </p>
                             </header>
@@ -209,7 +209,7 @@ export default function Edit({
                         </section>
                     </div>
 
-                    <div className="rounded-xl border border-red-100 bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <div className="rounded-xl border border-error-border bg-surface-card p-6 shadow-sm">
                         <DeleteUserForm className="max-w-xl" />
                     </div>
                 </div>

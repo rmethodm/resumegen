@@ -23,12 +23,12 @@ export default class ErrorBoundary extends Component<Props, State> {
         if (this.state.hasError) {
             return (
                 <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center">
-                    <p className="text-lg font-semibold text-gray-900">Something went wrong.</p>
-                    <p className="text-sm text-gray-600">Reload the page to try again.</p>
+                    <p className="text-lg font-semibold text-text-primary">Something went wrong.</p>
+                    <p className="text-sm text-text-secondary">Reload the page to try again.</p>
                     <button
                         type="button"
                         onClick={() => window.location.reload()}
-                        className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
+                        className="rounded-md bg-surface-inverse px-4 py-2 text-sm font-medium text-text-on-inverse hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1"
                     >
                         Reload
                     </button>

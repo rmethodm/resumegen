@@ -25,11 +25,11 @@ type AdminAction = {
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
     return (
-        <div className="grid grid-cols-3 gap-2 border-b border-slate-100 py-2.5 text-sm last:border-0">
-            <div className="text-xs font-medium uppercase tracking-[0.06em] text-slate-500">
+        <div className="grid grid-cols-3 gap-2 border-b border-border-subtle py-2.5 text-sm last:border-0">
+            <div className="text-xs font-medium uppercase tracking-[0.06em] text-text-secondary">
                 {label}
             </div>
-            <div className="col-span-2 text-slate-900">{children}</div>
+            <div className="col-span-2 text-text-primary">{children}</div>
         </div>
     );
 }
@@ -59,10 +59,10 @@ function StatusChip({
     tone?: 'neutral' | 'ok' | 'warn' | 'danger' | 'admin';
 }) {
     const tones = {
-        neutral: 'bg-slate-100 text-slate-700',
-        ok: 'bg-emerald-50 text-emerald-800',
-        warn: 'bg-amber-50 text-amber-900',
-        danger: 'bg-red-50 text-red-800',
+        neutral: 'bg-surface-raised text-text-secondary',
+        ok: 'bg-success-bg text-success-text',
+        warn: 'bg-warning-bg text-warning-text',
+        danger: 'bg-error-bg text-error-text',
         admin: 'bg-accent-100 text-accent-text',
     };
 
@@ -104,7 +104,7 @@ export default function Show({
                     <div className="min-w-0">
                         <Link
                             href={route('admin.users.index')}
-                            className="text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-800 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                            className="text-xs font-medium text-text-secondary underline-offset-2 hover:text-text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                         >
                             ← Users
                         </Link>
@@ -114,10 +114,10 @@ export default function Show({
                                 aria-hidden
                             />
                             <div className="min-w-0">
-                                <h1 className="truncate text-xl font-semibold tracking-tight text-slate-900">
+                                <h1 className="truncate text-xl font-semibold tracking-tight text-text-primary">
                                     {user.name}
                                 </h1>
-                                <p className="mt-0.5 truncate font-mono text-sm text-slate-500">
+                                <p className="mt-0.5 truncate font-mono text-sm text-text-secondary">
                                     {user.email}
                                 </p>
                                 <div className="mt-2 flex flex-wrap gap-1">
@@ -147,14 +147,14 @@ export default function Show({
                                 <button
                                     type="button"
                                     onClick={() => postAction('admin.users.verify-email')}
-                                    className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1"
+                                    className="rounded-md bg-success-text px-3 py-1.5 text-sm font-medium text-text-on-accent transition-colors duration-150 hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-success-text focus-visible:ring-offset-1"
                                 >
                                     Verify email
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => postAction('admin.users.resend-verification')}
-                                    className="rounded-md border border-emerald-300 bg-white px-3 py-1.5 text-sm font-medium text-emerald-900 transition-colors duration-150 hover:bg-emerald-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1"
+                                    className="rounded-md border border-success-border bg-surface-card px-3 py-1.5 text-sm font-medium text-success-text transition-colors duration-150 hover:bg-success-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-success-text focus-visible:ring-offset-1"
                                 >
                                     Resend verification
                                 </button>
@@ -177,7 +177,7 @@ export default function Show({
                                         `Disable login for ${user.email}? Data will be kept.`,
                                     )
                                 }
-                                className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
+                                className="rounded-md bg-error-text px-3 py-1.5 text-sm font-medium text-text-on-accent transition-colors duration-150 hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1"
                             >
                                 Disable login
                             </button>
@@ -190,7 +190,7 @@ export default function Show({
                                     `Revoke all API tokens for ${user.email}?`,
                                 )
                             }
-                            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 transition-colors duration-150 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1"
+                            className="rounded-md border border-border-default bg-surface-card px-3 py-1.5 text-sm font-medium text-text-primary transition-colors duration-150 hover:bg-surface-raised focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1"
                         >
                             Revoke tokens
                         </button>
@@ -201,8 +201,8 @@ export default function Show({
             <Head title={`Admin · ${user.name}`} />
 
             <div className="grid gap-4 lg:grid-cols-2">
-                <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-                    <h2 className="text-[11px] font-medium uppercase tracking-[0.1em] text-slate-500">
+                <section className="rounded-lg border border-border-subtle bg-surface-card p-4 shadow-sm">
+                    <h2 className="text-[11px] font-medium uppercase tracking-[0.1em] text-text-secondary">
                         Account file
                     </h2>
                     <div className="mt-2">
@@ -248,12 +248,12 @@ export default function Show({
                     </div>
                 </section>
 
-                <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-                    <h2 className="text-[11px] font-medium uppercase tracking-[0.1em] text-slate-500">
+                <section className="rounded-lg border border-border-subtle bg-surface-card p-4 shadow-sm">
+                    <h2 className="text-[11px] font-medium uppercase tracking-[0.1em] text-text-secondary">
                         Recent admin actions
                     </h2>
                     {actions.length === 0 ? (
-                        <p className="mt-3 text-sm text-slate-500">
+                        <p className="mt-3 text-sm text-text-secondary">
                             No support actions recorded yet.
                         </p>
                     ) : (
@@ -261,17 +261,17 @@ export default function Show({
                             {actions.map((entry) => (
                                 <li
                                     key={entry.id}
-                                    className="flex gap-2.5 border-b border-slate-100 py-2.5 last:border-0"
+                                    className="flex gap-2.5 border-b border-border-subtle py-2.5 last:border-0"
                                 >
                                     <span
                                         className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-bg"
                                         aria-hidden
                                     />
                                     <div className="min-w-0">
-                                        <div className="text-sm font-medium text-slate-900">
+                                        <div className="text-sm font-medium text-text-primary">
                                             {actionLabel(entry.action)}
                                         </div>
-                                        <div className="mt-0.5 text-xs text-slate-500">
+                                        <div className="mt-0.5 text-xs text-text-secondary">
                                             {entry.actor
                                                 ? `${entry.actor.name} · ${entry.actor.email}`
                                                 : 'Unknown actor'}

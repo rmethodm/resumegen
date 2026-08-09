@@ -36,13 +36,13 @@ export default function PublicShare({
     }
 
     return (
-        <div className="flex min-h-screen flex-col bg-surface">
+        <div className="flex min-h-screen flex-col bg-surface-canvas">
             <Head title={`${resume.full_name}'s resume`} />
 
-            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3 sm:px-6">
+            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle bg-surface-card px-4 py-3 sm:px-6">
                 <div className="flex min-w-0 items-center gap-3">
                     <BrandMark />
-                    <span className="truncate text-sm font-medium text-gray-500">
+                    <span className="truncate text-sm font-medium text-text-secondary">
                         Shared by {resume.full_name}
                     </span>
                 </div>
@@ -54,13 +54,13 @@ export default function PublicShare({
                         <>
                             <a
                                 href={route('share.docx', token)}
-                                className="inline-flex h-9 items-center justify-center rounded-md border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
+                                className="inline-flex h-9 items-center justify-center rounded-md border border-border-default bg-surface-card px-4 text-sm font-medium text-text-primary shadow-sm hover:bg-surface-sunken focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                             >
                                 Download DOCX
                             </a>
                             <a
                                 href={route('share.pdf', token)}
-                                className="inline-flex h-9 items-center justify-center rounded-md bg-accent-bg px-4 text-sm font-medium text-white shadow-sm hover:bg-accent-bg-active focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
+                                className="inline-flex h-9 items-center justify-center rounded-md bg-accent-bg px-4 text-sm font-medium text-text-on-accent shadow-sm hover:bg-accent-bg-active focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
                             >
                                 Download PDF
                             </a>
@@ -95,7 +95,7 @@ function AccessGate({
     };
 
     return (
-        <div className="flex min-h-screen flex-col bg-surface">
+        <div className="flex min-h-screen flex-col bg-surface-canvas">
             <Head title="Enter your details to view this resume" />
 
             <div className="flex flex-1 flex-col items-center justify-center px-4 py-10">
@@ -105,12 +105,12 @@ function AccessGate({
 
                 <form
                     onSubmit={submit}
-                    className="w-full max-w-sm rounded-lg border border-surface-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                    className="w-full max-w-sm rounded-lg border border-border-default bg-surface-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                 >
-                    <h1 className="text-sm font-bold text-gray-900">
+                    <h1 className="text-sm font-bold text-text-primary">
                         Enter your details to view this resume
                     </h1>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-text-secondary">
                         The sender has restricted who can view this link.
                     </p>
 
@@ -118,7 +118,7 @@ function AccessGate({
                         <>
                             <label
                                 htmlFor="share-gate-email"
-                                className="mt-4 block text-xs font-medium text-gray-700"
+                                className="mt-4 block text-xs font-medium text-text-primary"
                             >
                                 Email
                             </label>
@@ -133,7 +133,7 @@ function AccessGate({
                                 placeholder="you@example.com"
                             />
                             {errors.email && (
-                                <p className="mt-1 text-xs text-red-600">{errors.email}</p>
+                                <p className="mt-1 text-xs text-error-text">{errors.email}</p>
                             )}
                         </>
                     )}
@@ -142,7 +142,7 @@ function AccessGate({
                         <>
                             <label
                                 htmlFor="share-gate-password"
-                                className="mt-4 block text-xs font-medium text-gray-700"
+                                className="mt-4 block text-xs font-medium text-text-primary"
                             >
                                 Password
                             </label>
@@ -158,7 +158,7 @@ function AccessGate({
                                 placeholder="Password"
                             />
                             {errors.password && (
-                                <p className="mt-1 text-xs text-red-600">{errors.password}</p>
+                                <p className="mt-1 text-xs text-error-text">{errors.password}</p>
                             )}
                         </>
                     )}
@@ -185,7 +185,7 @@ function BrandMark({ size = 'sm' }: { size?: 'sm' | 'md' }) {
                 className={`${box} flex-shrink-0 rounded-md bg-gradient-to-br from-accent-500 to-accent-700`}
                 aria-hidden
             />
-            <span className={`${type} font-extrabold tracking-tight text-gray-900`}>
+            <span className={`${type} font-extrabold tracking-tight text-text-primary`}>
                 Resumegen
             </span>
         </div>
@@ -194,12 +194,12 @@ function BrandMark({ size = 'sm' }: { size?: 'sm' | 'md' }) {
 
 function BrandFooter() {
     return (
-        <footer className="border-t border-gray-100 px-4 py-3 text-center">
-            <p className="text-[11px] text-gray-400">
+        <footer className="border-t border-border-subtle px-4 py-3 text-center">
+            <p className="text-[11px] text-text-tertiary">
                 Shared with{' '}
                 <a
                     href="/"
-                    className="font-medium text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
+                    className="font-medium text-text-secondary underline-offset-2 hover:text-text-primary hover:underline focus-visible:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400/50 focus-visible:ring-offset-1"
                 >
                     Resumegen
                 </a>

@@ -43,13 +43,13 @@ export default function Dashboard({
             header={
                 <div className="flex flex-wrap items-end justify-between gap-4">
                     <div>
-                        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">
+                        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-text-secondary">
                             Support
                         </p>
-                        <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-slate-900">
+                        <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-text-primary">
                             Ops pulse
                         </h1>
-                        <p className="mt-1 text-sm text-slate-500">
+                        <p className="mt-1 text-sm text-text-secondary">
                             Account counts and the fastest path into user support.
                         </p>
                     </div>
@@ -69,26 +69,26 @@ export default function Dashboard({
                     <Link
                         key={card.label}
                         href={card.href}
-                        className="group rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-shadow duration-150 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                        className="group rounded-lg border border-border-subtle bg-surface-card p-4 shadow-sm transition-shadow duration-150 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                     >
                         <div className="flex gap-2.5">
                             <span
                                 className={
                                     'mt-0.5 w-0.5 shrink-0 self-stretch rounded-full ' +
                                     (card.tone === 'warning' && card.value > 0
-                                        ? 'bg-amber-500'
+                                        ? 'bg-warning-text'
                                         : 'bg-accent-bg')
                                 }
                                 aria-hidden
                             />
                             <div className="min-w-0">
-                                <div className="text-[11px] font-medium uppercase tracking-[0.1em] text-slate-500">
+                                <div className="text-[11px] font-medium uppercase tracking-[0.1em] text-text-secondary">
                                     {card.label}
                                 </div>
-                                <div className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-slate-900">
+                                <div className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-text-primary">
                                     {card.value}
                                 </div>
-                                <p className="mt-1 text-xs text-slate-500 group-hover:text-slate-700">
+                                <p className="mt-1 text-xs text-text-secondary group-hover:text-text-primary">
                                     {card.hint}
                                 </p>
                             </div>

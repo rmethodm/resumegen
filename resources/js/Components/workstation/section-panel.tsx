@@ -7,7 +7,6 @@ import {
 } from '@/Components/resume/score-coach';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
 import { Button, buttonClassName } from '@/Components/ui/button';
-import { BackgroundColorPicker } from '@/Components/workstation/background-color-picker';
 import { JdMatchPanel } from '@/Components/workstation/jd-match-panel';
 import {
     keywordsFor,
@@ -166,19 +165,10 @@ export function SectionPanel({
                 Back to dashboard
             </Link>
 
-            <BackgroundColorPicker />
-
-            {/* Score/coaching grouped under one disclosure, placed above the
-                section nav so it's the first thing seen in the rail. */}
-            <details
-                open
-                className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm"
-            >
-                <summary className="cursor-pointer text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary [&::-webkit-details-marker]:hidden">
-                    Score &amp; coaching
-                </summary>
-
-                <div className="mt-3 text-center">
+            {/* Score/coaching, placed above the section nav so it's the
+                first thing seen in the rail. */}
+            <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
+                <div className="text-center">
                     <p className="mb-2 text-sm font-medium text-text-secondary">
                         Your resume score
                     </p>
@@ -188,10 +178,8 @@ export function SectionPanel({
                     <ScoreGauge score={analysis.score} className="mx-auto" />
                 </div>
 
-                {/* ScoreGauge paints a full circle with half height — mt-14
-                    clears the overflow before the next rail block. */}
                 {analysis.breakdown.length > 0 && (
-                    <div className="mt-14 grid grid-cols-2 gap-2">
+                    <div className="mt-4 grid grid-cols-2 gap-2">
                         {analysis.breakdown.map((band) => (
                             <button
                                 key={band.label}
@@ -221,22 +209,22 @@ export function SectionPanel({
                         ))}
                     </div>
                 )}
+            </div>
 
-                <ScoreChecklist items={checklist} onJump={onJumpChecklist} />
+            <ScoreChecklist items={checklist} onJump={onJumpChecklist} />
 
-                <KeywordChips
-                    missing={missing}
-                    present={present}
-                    hasRoleFamily={hasRoleFamily}
-                    onAdd={onAddKeyword}
-                />
+            <KeywordChips
+                missing={missing}
+                present={present}
+                hasRoleFamily={hasRoleFamily}
+                onAdd={onAddKeyword}
+            />
 
-                <JdMatchPanel
-                    draft={resume}
-                    onAddKeyword={onAddKeyword}
-                    onOpenOptimize={onOpenOptimize}
-                />
-            </details>
+            <JdMatchPanel
+                draft={resume}
+                onAddKeyword={onAddKeyword}
+                onOpenOptimize={onOpenOptimize}
+            />
 
             <div className="rounded-lg border border-border-default bg-surface-card p-4 shadow-sm">
                 <p className="mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
@@ -250,10 +238,10 @@ export function SectionPanel({
                                 onClick={() => onSelect(section)}
                                 aria-current={selected === section}
                                 className={cn(
-                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-colors',
+                                    'flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors',
                                     selected === section
-                                        ? 'border-accent-bg bg-surface-sunken font-medium text-text-primary'
-                                        : 'border-transparent text-text-primary hover:bg-surface-raised',
+                                        ? 'bg-surface-sunken font-medium text-text-primary'
+                                        : 'text-text-primary hover:bg-surface-raised',
                                 )}
                             >
                                 <span>{sectionLabels[section]}</span>

@@ -57,7 +57,7 @@ export default function StarterProfilePage({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold text-gray-800">
+                <h2 className="text-xl font-semibold text-text-primary">
                     Starter profile
                 </h2>
             }
@@ -66,7 +66,7 @@ export default function StarterProfilePage({
 
             <div className="py-8">
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-text-secondary">
                         Set this up once and every new resume starts pre-filled.
                         You can edit it anytime.
                     </p>
@@ -80,11 +80,11 @@ export default function StarterProfilePage({
                                 <p className="text-base font-bold tracking-tight">
                                     Build your career source of truth
                                 </p>
-                                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-gray-500">
+                                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary">
                                     Add the details you want reused when
                                     creating new resumes.
                                 </p>
-                                <div className="mt-4 grid gap-2 text-xs text-gray-500 sm:grid-cols-3">
+                                <div className="mt-4 grid gap-2 text-xs text-text-secondary sm:grid-cols-3">
                                     <span className="flex items-center gap-2">
                                         <CheckCircleIcon className="size-3.5 text-accent-text" />
                                         Pre-filled resumes
@@ -245,7 +245,7 @@ export default function StarterProfilePage({
                                     {experiences.map((experience, index) => (
                                         <div
                                             key={index}
-                                            className="grid gap-2 rounded-md border border-gray-200 p-3"
+                                            className="grid gap-2 rounded-md border border-border-default p-3"
                                         >
                                             <div className="grid gap-2 sm:grid-cols-2">
                                                 <Input
