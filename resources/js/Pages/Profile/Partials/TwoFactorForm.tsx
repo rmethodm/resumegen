@@ -19,7 +19,6 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
     const disableForm = useForm({});
     const regenForm = useForm({});
     const [copied, setCopied] = useState(false);
-    const [copyFailed, setCopyFailed] = useState(false);
 
     const handleEnable: FormEventHandler = (e) => {
         e.preventDefault();
@@ -49,18 +48,15 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2000);
                 })
-                .catch(() => {
-                    setCopyFailed(true);
-                    setTimeout(() => setCopyFailed(false), 2000);
-                });
+                .catch(() => undefined);
         }
     };
 
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-text-primary">Two-Factor Authentication</h2>
-                <p className="mt-1 text-sm text-text-secondary">
+                <h2 className="text-lg font-medium text-gray-900">Two-Factor Authentication</h2>
+                <p className="mt-1 text-sm text-gray-600">
                     Add extra security to your account using a time-based one-time password.
                 </p>
             </header>
@@ -77,11 +73,11 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
             {/* State 2: Pending confirmation */}
             {pending && qrCodeSvg && (
                 <div className="mt-6 space-y-4">
-                    <p className="text-sm text-text-secondary">
+                    <p className="text-sm text-gray-600">
                         Scan this QR code with your authenticator app, then enter the 6-digit code below to confirm.
                     </p>
                     <div
-                        className="inline-block rounded border border-border-subtle p-2"
+                        className="inline-block rounded border border-gray-200 p-2"
                         dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
                     />
                     <form onSubmit={handleConfirm} className="space-y-4">
@@ -109,27 +105,27 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
             {enabled && (
                 <div className="mt-6 space-y-6">
                     <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center rounded-full bg-success-bg px-3 py-0.5 text-sm font-medium text-success-text">
+                        <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-0.5 text-sm font-medium text-green-800">
                             Enabled
                         </span>
-                        <span className="text-sm text-text-secondary">Two-factor authentication is active.</span>
+                        <span className="text-sm text-gray-600">Two-factor authentication is active.</span>
                     </div>
 
                     {recoveryCodes && recoveryCodes.length > 0 && (
                         <div className="space-y-2">
-                            <p className="text-sm font-medium text-text-primary">Recovery Codes</p>
-                            <p className="rounded border border-warning-border bg-warning-bg p-2 text-sm text-warning-text">
+                            <p className="text-sm font-medium text-gray-700">Recovery Codes</p>
+                            <p className="rounded border border-amber-200 bg-amber-50 p-2 text-sm text-amber-700">
                                 Save these somewhere safe — they won't be shown again.
                             </p>
-                            <pre className="rounded bg-surface-raised p-4 text-sm font-mono leading-relaxed">
+                            <pre className="rounded bg-gray-100 p-4 text-sm font-mono leading-relaxed">
                                 {recoveryCodes.join('\n')}
                             </pre>
                             <button
                                 type="button"
                                 onClick={copyAll}
-                                className="text-sm text-accent-text underline hover:text-accent-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
+                                className="text-sm text-brand underline hover:text-brand-accent"
                             >
-                                {copyFailed ? "Couldn't copy" : copied ? 'Copied!' : 'Copy all'}
+                                {copied ? 'Copied!' : 'Copy all'}
                             </button>
                         </div>
                     )}
@@ -138,7 +134,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                         <form onSubmit={handleRegen}>
                             <button
                                 type="submit"
-                                className="text-sm text-text-secondary underline hover:text-text-primary focus-visible:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus/50 focus-visible:ring-offset-1"
+                                className="text-sm text-gray-600 underline hover:text-gray-900"
                                 disabled={regenForm.processing}
                             >
                                 Regenerate recovery codes
@@ -148,7 +144,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                         <form onSubmit={handleDisable}>
                             <button
                                 type="submit"
-                                className="text-sm text-error-text underline hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1"
+                                className="text-sm text-red-600 underline hover:text-red-800"
                                 disabled={disableForm.processing}
                             >
                                 Disable 2FA

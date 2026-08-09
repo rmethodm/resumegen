@@ -57,7 +57,7 @@ export default function StarterProfilePage({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold text-text-primary">
+                <h2 className="text-xl font-semibold text-gray-800">
                     Starter profile
                 </h2>
             }
@@ -66,35 +66,35 @@ export default function StarterProfilePage({
 
             <div className="py-8">
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
-                    <p className="text-sm text-text-secondary">
+                    <p className="text-sm text-gray-600">
                         Set this up once and every new resume starts pre-filled.
                         You can edit it anytime.
                     </p>
 
-                    <Card className="overflow-hidden border-accent-100 bg-accent-100/60 p-0">
+                    <Card className="overflow-hidden border-brand-subtle bg-brand-subtle/60 p-0">
                         <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:p-6">
-                            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-accent-100 text-accent-text">
+                            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-brand-subtle text-brand">
                                 <SparklesIcon className="size-5" />
                             </div>
                             <div className="min-w-0">
                                 <p className="text-base font-bold tracking-tight">
                                     Build your career source of truth
                                 </p>
-                                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary">
+                                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-gray-500">
                                     Add the details you want reused when
                                     creating new resumes.
                                 </p>
-                                <div className="mt-4 grid gap-2 text-xs text-text-secondary sm:grid-cols-3">
+                                <div className="mt-4 grid gap-2 text-xs text-gray-500 sm:grid-cols-3">
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-accent-text" />
+                                        <CheckCircleIcon className="size-3.5 text-brand" />
                                         Pre-filled resumes
                                     </span>
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-accent-text" />
+                                        <CheckCircleIcon className="size-3.5 text-brand" />
                                         Consistent contact details
                                     </span>
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-accent-text" />
+                                        <CheckCircleIcon className="size-3.5 text-brand" />
                                         Stronger role targeting
                                     </span>
                                 </div>
@@ -112,7 +112,7 @@ export default function StarterProfilePage({
                             <>
                                 <section className="space-y-3">
                                     <div className="flex items-center gap-2">
-                                        <BriefcaseIcon className="size-4 text-accent-text" />
+                                        <BriefcaseIcon className="size-4 text-brand" />
                                         <h2 className="text-sm font-bold">
                                             Your professional snapshot
                                         </h2>
@@ -245,7 +245,7 @@ export default function StarterProfilePage({
                                     {experiences.map((experience, index) => (
                                         <div
                                             key={index}
-                                            className="grid gap-2 rounded-md border border-border-default p-3"
+                                            className="grid gap-2 rounded-md border border-gray-200 p-3"
                                         >
                                             <div className="grid gap-2 sm:grid-cols-2">
                                                 <Input
@@ -336,27 +336,14 @@ export default function StarterProfilePage({
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
-                                                    onClick={() => {
-                                                        const label =
-                                                            experience.company?.trim() ||
-                                                            experience.title?.trim() ||
-                                                            `role ${index + 1}`;
-                                                        const onConfirm = () =>
-                                                            setExperiences(
-                                                                experiences.filter(
-                                                                    (_, i) =>
-                                                                        i !== index,
-                                                                ),
-                                                            );
-                                                        if (
-                                                            !window.confirm(
-                                                                `Remove ${label}?`,
-                                                            )
-                                                        ) {
-                                                            return;
-                                                        }
-                                                        onConfirm();
-                                                    }}
+                                                    onClick={() =>
+                                                        setExperiences(
+                                                            experiences.filter(
+                                                                (_, i) =>
+                                                                    i !== index,
+                                                            ),
+                                                        )
+                                                    }
                                                 >
                                                     Remove
                                                 </Button>
@@ -409,26 +396,13 @@ export default function StarterProfilePage({
                                             <Button
                                                 type="button"
                                                 variant="ghost"
-                                                onClick={() => {
-                                                    const label =
-                                                        skill.name?.trim() ||
-                                                        `skill ${index + 1}`;
-                                                    const onConfirm = () =>
-                                                        setSkills(
-                                                            skills.filter(
-                                                                (_, i) =>
-                                                                    i !== index,
-                                                            ),
-                                                        );
-                                                    if (
-                                                        !window.confirm(
-                                                            `Remove ${label}?`,
-                                                        )
-                                                    ) {
-                                                        return;
-                                                    }
-                                                    onConfirm();
-                                                }}
+                                                onClick={() =>
+                                                    setSkills(
+                                                        skills.filter(
+                                                            (_, i) => i !== index,
+                                                        ),
+                                                    )
+                                                }
                                             >
                                                 Remove
                                             </Button>

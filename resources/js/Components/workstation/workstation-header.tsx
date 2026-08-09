@@ -120,12 +120,10 @@ export function WorkstationHeader({
     const [pickingTemplate, setPickingTemplate] = useState(false);
 
     return (
-        <div className="sticky top-[52px] z-raised rounded-lg border border-border-default bg-surface-card shadow-sm">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border-subtle px-3 py-2.5 sm:px-4">
-                {/* Left: title · status. basis-full forces the title onto its
-                    own row on narrow viewports instead of being squeezed to
-                    a sliver alongside the tabs and action buttons. */}
-                <div className="flex min-w-0 flex-1 basis-full items-center gap-2 sm:basis-auto">
+        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5 sm:px-4">
+                {/* Left: title · status */}
+                <div className="flex min-w-0 flex-1 items-center gap-2">
                     {renaming ? (
                         <Input
                             autoFocus
@@ -147,36 +145,34 @@ export function WorkstationHeader({
                             }}
                         />
                     ) : (
-                        <span className="truncate text-base font-bold text-text-primary">
+                        <span className="truncate text-base font-bold text-ink">
                             {title || 'Untitled resume'}
                         </span>
                     )}
 
-                    <div role="status" aria-live="polite">
-                        {showSaved && saveStatus === 'saved' && (
-                            <Badge
-                                variant="outline"
-                                className="border-transparent bg-success-bg text-success-text"
-                            >
-                                <CheckIcon className="size-3" />
-                                Saved
-                            </Badge>
-                        )}
-                        {saveStatus === 'saving' && (
-                            <Badge
-                                variant="outline"
-                                className="border-transparent bg-surface-sunken text-text-tertiary"
-                            >
-                                <ArrowPathIcon className="size-3 animate-spin" />
-                                Saving
-                            </Badge>
-                        )}
-                    </div>
+                    {showSaved && saveStatus === 'saved' && (
+                        <Badge
+                            variant="outline"
+                            className="border-transparent bg-emerald-50 text-emerald-600"
+                        >
+                            <CheckIcon className="size-3" />
+                            Saved
+                        </Badge>
+                    )}
+                    {saveStatus === 'saving' && (
+                        <Badge
+                            variant="outline"
+                            className="border-transparent bg-gray-100 text-gray-500"
+                        >
+                            <ArrowPathIcon className="size-3 animate-spin" />
+                            Saving
+                        </Badge>
+                    )}
                     {(contactErrors.email !== null || contactErrors.phone !== null) && (
                         <button
                             type="button"
                             onClick={onFixContact}
-                            className="inline-flex items-center gap-1 rounded-full border border-transparent bg-error-bg px-2.5 py-0.5 text-xs font-medium text-error-text hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-error-text focus-visible:ring-offset-1 focus-visible:underline"
+                            className="inline-flex items-center gap-1 rounded-full border border-transparent bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600 hover:underline"
                         >
                             <ExclamationTriangleIcon className="size-3" />
                             {contactErrors.email !== null && contactErrors.phone !== null
@@ -192,7 +188,7 @@ export function WorkstationHeader({
                 <div
                     role="tablist"
                     aria-label="Workstation mode"
-                    className="inline-flex shrink-0 items-center rounded-md bg-surface-raised p-0.5"
+                    className="inline-flex shrink-0 items-center rounded-lg border border-gray-200 bg-gray-100 p-0.5"
                 >
                     {TABS.map((tab) => (
                         <button
@@ -202,10 +198,10 @@ export function WorkstationHeader({
                             aria-selected={tab === activeTab}
                             onClick={() => onTabChange(tab)}
                             className={cn(
-                                'rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
+                                'rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors',
                                 tab === activeTab
-                                    ? 'bg-surface-card text-text-primary shadow-sm'
-                                    : 'text-text-tertiary hover:text-text-primary focus-visible:text-text-primary',
+                                    ? 'bg-white font-semibold text-brand shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700',
                             )}
                         >
                             {tab}
@@ -233,7 +229,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-dropdown w-44 rounded-md border border-border-default bg-surface-card p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                            className="z-50 w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
                         >
                             <MenuItem>
                                 <button
@@ -249,7 +245,7 @@ export function WorkstationHeader({
                                                   '_blank',
                                               )
                                     }
-                                    className="block w-full rounded px-2 py-1.5 text-left text-sm text-text-primary data-focus:bg-surface-raised"
+                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
                                 >
                                     Download PDF
                                 </button>
@@ -268,7 +264,7 @@ export function WorkstationHeader({
                                                   '_blank',
                                               )
                                     }
-                                    className="block w-full rounded px-2 py-1.5 text-left text-sm text-text-primary data-focus:bg-surface-raised"
+                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
                                 >
                                     Download DOCX
                                 </button>
@@ -285,13 +281,13 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-dropdown max-h-80 w-64 overflow-y-auto rounded-md border border-border-default bg-surface-card p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
                         >
                             <MenuItem>
                                 <button
                                     type="button"
                                     onClick={() => setRenaming(true)}
-                                    className="w-full rounded px-2 py-1.5 text-left text-sm text-text-primary data-focus:bg-surface-raised"
+                                    className="w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
                                 >
                                     Rename this version
                                 </button>
@@ -299,8 +295,8 @@ export function WorkstationHeader({
 
                             {versions.length > 0 && (
                                 <>
-                                    <div className="my-1 border-t border-border-subtle" />
-                                    <div className="px-2 py-1 text-[10px] font-bold tracking-wide text-text-tertiary uppercase">
+                                    <div className="my-1 border-t border-gray-200" />
+                                    <div className="px-2 py-1 text-[10px] font-bold tracking-wide text-gray-400 uppercase">
                                         Versions
                                     </div>
                                     {versions.map((version) => (
@@ -311,15 +307,15 @@ export function WorkstationHeader({
                                                     version.id,
                                                 )}
                                                 className={cn(
-                                                    'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm text-text-primary data-focus:bg-surface-raised',
+                                                    'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100',
                                                     version.is_current &&
-                                                        'font-semibold text-accent-text',
+                                                        'font-semibold text-brand',
                                                 )}
                                             >
                                                 <span className="truncate">
                                                     {version.title}
                                                 </span>
-                                                <span className="ml-2 shrink-0 tabular-nums text-xs text-text-tertiary">
+                                                <span className="ml-2 shrink-0 tabular-nums text-xs text-gray-400">
                                                     {version.score}
                                                 </span>
                                             </a>
@@ -328,7 +324,7 @@ export function WorkstationHeader({
                                 </>
                             )}
 
-                            <div className="my-1 border-t border-border-subtle" />
+                            <div className="my-1 border-t border-gray-200" />
                             <MenuItem>
                                 <button
                                     type="button"
@@ -341,7 +337,7 @@ export function WorkstationHeader({
                                             { onFinish: () => setDuplicating(false) },
                                         );
                                     }}
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-text-primary data-focus:bg-surface-raised disabled:opacity-50"
+                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100 disabled:opacity-50"
                                 >
                                     {duplicating ? (
                                         <ArrowPathIcon className="size-4 animate-spin" />
@@ -357,18 +353,18 @@ export function WorkstationHeader({
             </div>
 
             {activeTab === 'Review' && onReviewPreviewModeChange && (
-                <div className="flex items-center gap-2 border-t border-border-subtle bg-surface-raised/60 px-3 py-1.5 sm:px-4">
-                    <span className="text-[10px] font-bold tracking-wide text-text-tertiary uppercase">
+                <div className="flex items-center gap-2 border-t border-gray-100 px-3 py-1.5 sm:px-4">
+                    <span className="text-[10px] font-bold tracking-wide text-gray-400 uppercase">
                         Preview
                     </span>
                     <button
                         type="button"
                         onClick={() => onReviewPreviewModeChange('react')}
                         className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
+                            'rounded-md px-2 py-1 text-xs font-medium',
                             reviewPreviewMode === 'react'
-                                ? 'bg-accent-100 text-accent-text'
-                                : 'text-text-tertiary hover:bg-surface-raised focus-visible:bg-surface-raised',
+                                ? 'bg-brand-subtle text-brand'
+                                : 'text-gray-500 hover:bg-gray-100',
                         )}
                     >
                         Live
@@ -377,10 +373,10 @@ export function WorkstationHeader({
                         type="button"
                         onClick={() => onReviewPreviewModeChange('pdf')}
                         className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
+                            'rounded-md px-2 py-1 text-xs font-medium',
                             reviewPreviewMode === 'pdf'
-                                ? 'bg-accent-100 text-accent-text'
-                                : 'text-text-tertiary hover:bg-surface-raised focus-visible:bg-surface-raised',
+                                ? 'bg-brand-subtle text-brand'
+                                : 'text-gray-500 hover:bg-gray-100',
                         )}
                     >
                         PDF

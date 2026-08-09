@@ -77,7 +77,7 @@ export function ShareResumeModal({
         navigator.clipboard
             .writeText(share.url)
             .then(() => setCopied(true))
-            .catch(() => setError('Could not copy the link — copy it manually.'));
+            .catch(() => undefined);
     }
 
     function toggle(field: 'allow_download' | 'require_email' | 'require_password') {
@@ -203,27 +203,27 @@ export function ShareResumeModal({
     const viewCount = share?.view_count ?? 0;
 
     return (
-        <Dialog open={open} onClose={close} className="relative z-modal">
+        <Dialog open={open} onClose={close} className="relative z-50">
             <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogPanel className="flex max-h-[90vh] w-full max-w-md flex-col rounded-xl bg-surface-card shadow-xl">
-                    <div className="border-b border-border-subtle px-5 py-4">
-                        <DialogTitle className="text-sm font-bold text-text-primary">
+                <DialogPanel className="flex max-h-[90vh] w-full max-w-md flex-col rounded-xl bg-white shadow-2xl">
+                    <div className="border-b border-gray-200 px-5 py-4">
+                        <DialogTitle className="text-sm font-bold text-gray-900">
                             Share with a recruiter
                         </DialogTitle>
-                        <p className="mt-1 text-xs text-text-secondary">
+                        <p className="mt-1 text-xs text-gray-500">
                             They&apos;ll get a read-only, printable view.
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-4 overflow-y-auto px-5 py-4">
                         {error && (
-                            <div className="rounded-md border border-error-border bg-error-bg px-3 py-2 text-xs font-medium text-error-text">
+                            <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
                                 {error}
                             </div>
                         )}
                         <div className="flex gap-2">
-                            <div className="flex-1 truncate rounded-md border border-border-subtle px-3 py-2 text-xs font-medium text-text-secondary">
+                            <div className="flex-1 truncate rounded-md border border-gray-200 px-3 py-2 text-xs font-medium text-gray-500">
                                 {share?.url ?? 'Generating link…'}
                             </div>
                             <Button
@@ -262,7 +262,7 @@ export function ShareResumeModal({
                                 onChange={() => toggle('require_password')}
                             />
                             {share?.require_password && (
-                                <div className="flex flex-col gap-2 rounded-md border border-border-subtle bg-surface-sunken p-2.5">
+                                <div className="flex flex-col gap-2 rounded-md border border-gray-100 bg-gray-50 p-2.5">
                                     <div className="flex gap-2">
                                         <Input
                                             value={passwordDraft}
@@ -272,7 +272,7 @@ export function ShareResumeModal({
                                                 setPasswordDraft(e.target.value.slice(0, 8))
                                             }
                                             onBlur={savePassword}
-                                            className="bg-surface-card"
+                                            className="bg-white"
                                         />
                                         <Button
                                             type="button"
@@ -291,7 +291,7 @@ export function ShareResumeModal({
                                             Rotate
                                         </Button>
                                     </div>
-                                    <p className="text-[11px] leading-snug text-text-secondary">
+                                    <p className="text-[11px] leading-snug text-gray-500">
                                         Changing or rotating the password immediately signs out
                                         anyone who already unlocked with the old one. They must
                                         enter the new password.
@@ -316,7 +316,7 @@ export function ShareResumeModal({
                                         onChange={(e) =>
                                             updateExpiryPart('month', Number(e.target.value))
                                         }
-                                        className="h-9 flex-1 rounded-md border border-border-default bg-surface-card px-2 text-xs"
+                                        className="h-9 flex-1 rounded-md border border-gray-300 bg-white px-2 text-xs"
                                     >
                                         {MONTHS.map((label, index) => (
                                             <option key={label} value={index + 1}>
@@ -329,7 +329,7 @@ export function ShareResumeModal({
                                         onChange={(e) =>
                                             updateExpiryPart('day', Number(e.target.value))
                                         }
-                                        className="h-9 w-16 rounded-md border border-border-default bg-surface-card px-2 text-xs"
+                                        className="h-9 w-16 rounded-md border border-gray-300 bg-white px-2 text-xs"
                                     >
                                         {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                                             <option key={day} value={day}>
@@ -342,7 +342,7 @@ export function ShareResumeModal({
                                         onChange={(e) =>
                                             updateExpiryPart('year', Number(e.target.value))
                                         }
-                                        className="h-9 w-20 rounded-md border border-border-default bg-surface-card px-2 text-xs"
+                                        className="h-9 w-20 rounded-md border border-gray-300 bg-white px-2 text-xs"
                                     >
                                         {Array.from({ length: 6 }, (_, i) => thisYear + i).map(
                                             (year) => (
@@ -356,37 +356,37 @@ export function ShareResumeModal({
                             )}
                         </div>
 
-                        <div className="rounded-md border border-border-subtle">
-                            <div className="flex items-center justify-between border-b border-border-subtle px-3 py-2">
-                                <span className="text-xs font-medium text-text-primary">
+                        <div className="rounded-md border border-gray-100">
+                            <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-900">
                                     View history
                                 </span>
-                                <span className="text-[11px] text-text-tertiary">
+                                <span className="text-[11px] text-gray-400">
                                     {viewCount === 0
                                         ? 'No views yet'
                                         : `${viewCount} view${viewCount === 1 ? '' : 's'}`}
                                 </span>
                             </div>
                             {!share?.require_email ? (
-                                <p className="px-3 py-2.5 text-[11px] leading-snug text-text-secondary">
+                                <p className="px-3 py-2.5 text-[11px] leading-snug text-gray-500">
                                     Turn on &quot;Require email to view&quot; to log who opens the
                                     link.
                                 </p>
                             ) : views.length === 0 ? (
-                                <p className="px-3 py-2.5 text-[11px] leading-snug text-text-secondary">
+                                <p className="px-3 py-2.5 text-[11px] leading-snug text-gray-500">
                                     No one has entered an email yet.
                                 </p>
                             ) : (
-                                <ul className="max-h-36 overflow-y-auto divide-y divide-border-subtle">
+                                <ul className="max-h-36 overflow-y-auto divide-y divide-gray-50">
                                     {views.map((view) => (
                                         <li
                                             key={`${view.email}-${view.viewed_at}`}
                                             className="flex items-start justify-between gap-2 px-3 py-2"
                                         >
-                                            <span className="min-w-0 truncate text-xs font-medium text-text-primary">
+                                            <span className="min-w-0 truncate text-xs font-medium text-gray-800">
                                                 {view.email}
                                             </span>
-                                            <span className="shrink-0 text-[11px] text-text-tertiary">
+                                            <span className="shrink-0 text-[11px] text-gray-400">
                                                 {formatViewedAt(view.viewed_at)}
                                             </span>
                                         </li>
@@ -396,7 +396,7 @@ export function ShareResumeModal({
                         </div>
                     </div>
 
-                    <div className="flex justify-between border-t border-border-subtle px-5 py-3">
+                    <div className="flex justify-between border-t border-gray-200 px-5 py-3">
                         <Button
                             type="button"
                             variant="outline"
@@ -467,7 +467,7 @@ function ShareToggleRow({
 }) {
     return (
         <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-text-primary">{label}</span>
+            <span className="text-xs font-medium text-gray-900">{label}</span>
             <Switch
                 checked={enabled}
                 onChange={onChange}
@@ -475,12 +475,12 @@ function ShareToggleRow({
                 aria-label={label}
                 className={cn(
                     'relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50',
-                    enabled ? 'bg-accent-bg' : 'bg-surface-sunken',
+                    enabled ? 'bg-brand' : 'bg-gray-200',
                 )}
             >
                 <span
                     className={cn(
-                        'inline-block size-3.5 transform rounded-full bg-surface-card transition-transform',
+                        'inline-block size-3.5 transform rounded-full bg-white transition-transform',
                         enabled ? 'translate-x-4.5' : 'translate-x-1',
                     )}
                 />

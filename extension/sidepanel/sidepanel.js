@@ -12,13 +12,6 @@ const INSERT_LABELS = {
     latest_role_bullets: 'Latest role bullets',
 };
 
-const FIELD_LABELS = {
-    first_name: 'First name', last_name: 'Last name', email: 'Email', phone: 'Phone',
-    linkedin: 'LinkedIn', website: 'Website', location: 'Location', school: 'School',
-    degree: 'Degree', summary: 'Summary', current_title: 'Current title',
-    current_company: 'Current company', target_role: 'Target role', skills: 'Skills', full_name: 'Full name',
-};
-
 let state = {
     groups: [],
     user: null,
@@ -27,9 +20,6 @@ let state = {
     profile: null,
     previewOpen: false,
     previousView: 'ready',
-    scan: null,
-    selectedKeys: [],
-    focusContext: null,
 };
 
 // ── Views ─────────────────────────────────────────────────────────────────────
@@ -59,24 +49,6 @@ function closeMenu() {
     $('menu').classList.add('hidden');
 }
 
-const SETUP_COPY = {
-    unauthorized: {
-        headline: 'Reconnect Resumegen',
-        body: "Your connection token no longer works — it may have been revoked or replaced. Generate a new one on Profile, then paste it in Settings.",
-    },
-    default: {
-        headline: 'Connect your Resumegen account',
-        body: 'Pull contact details and experience from your resumes into job forms. Nothing is submitted for you.',
-    },
-};
-
-function showSetup(reason) {
-    const copy = SETUP_COPY[reason] || SETUP_COPY.default;
-    $('setup-headline').textContent = copy.headline;
-    $('setup-body').textContent = copy.body;
-    showView('setup');
-}
-
 // ── Messaging ─────────────────────────────────────────────────────────────────
 
 function send(type, payload = {}) {
@@ -88,7 +60,7 @@ function send(type, payload = {}) {
 async function init() {
     const config = await send('GET_CONFIG');
     if (!config?.token) {
-        showSetup();
+        showView('setup');
         return;
     }
     await loadResumes();
@@ -102,7 +74,7 @@ async function loadResumes() {
 
     if (!result?.ok) {
         if (result?.reason === 'no_token' || result?.reason === 'unauthorized') {
-            showSetup(result.reason);
+            showView('setup');
             return;
         }
         showView('ready');
@@ -203,7 +175,7 @@ async function loadProfile() {
     const result = await send('FETCH_FILL_PROFILE', { resumeId: version.id });
     if (!result?.ok) {
         if (result?.reason === 'unauthorized') {
-            showSetup('unauthorized');
+            showView('setup');
             return;
         }
         setBanner("Couldn't load resume data. Check your connection and try again.", 'error');
@@ -233,56 +205,6 @@ function renderMeta() {
         p.contact?.phone,
         p.contact?.location,
     ].filter(Boolean).join(' · ');
-}
-
-function renderScan() {
-    const scan = state.scan;
-    const panel = $('review-panel');
-    if (!scan) {
-        panel.classList.add('hidden');
-        $('scan-count').textContent = 'Not scanned';
-        $('scan-title').textContent = 'Scan this page for safe matches';
-        $('scan-helper').textContent = 'We’ll look for recognizable empty fields. You review the matches before anything is entered.';
-        return;
-    }
-
-    const matches = scan.matches || [];
-    const fillable = matches.filter((item) => item.matched && item.empty);
-    const selected = new Set(state.selectedKeys);
-    $('scan-count').textContent = `${fillable.length} ready`;
-    $('scan-title').textContent = fillable.length ? 'Review before filling' : 'Nothing ready to fill';
-    $('scan-helper').textContent = scan.crossOriginFrames
-        ? `${scan.crossOriginFrames} embedded frame${scan.crossOriginFrames === 1 ? '' : 's'} couldn’t be reached.`
-        : 'Only empty fields are eligible. Existing values stay untouched.';
-    $('review-summary').textContent = `${selected.size} selected · ${fillable.length} empty matches found`;
-    $('review-list').innerHTML = fillable.map((item) => {
-        const strong = item.score >= 70;
-        return `<label class="review-row ${strong ? '' : 'needs-review'}">
-          <input type="checkbox" data-review-key="${esc(item.key)}" ${selected.has(item.key) ? 'checked' : ''}>
-          <span class="review-main"><strong>${esc(FIELD_LABELS[item.key] || item.key)}</strong><small>${esc(item.fieldLabel || 'Recognized field')}</small></span>
-          <span class="match-score">${strong ? 'Strong match' : 'Review'}</span>
-        </label>`;
-    }).join('') || '<p class="review-empty">No recognizable empty fields found on this page.</p>';
-    panel.classList.toggle('hidden', fillable.length === 0);
-}
-
-function renderFocusAssistant() {
-    const context = state.focusContext;
-    const text = $('focus-context');
-    const chips = [...document.querySelectorAll('#insert-chips [data-insert]')];
-    if (!context?.ok) {
-        text.textContent = context?.message || 'Click a field on the application, then refresh suggestions.';
-        chips.forEach((chip) => chip.classList.remove('recommended'));
-        return;
-    }
-
-    const ranked = new Map((context.suggestions || []).map((item) => [item.key, item.score]));
-    text.textContent = `Focused field: ${context.fieldLabel}. Most relevant suggestions are first.`;
-    chips.sort((a, b) => (ranked.get(b.dataset.insert) || 0) - (ranked.get(a.dataset.insert) || 0));
-    chips.forEach((chip) => {
-        chip.classList.toggle('recommended', ranked.has(chip.dataset.insert));
-        $('insert-chips').appendChild(chip);
-    });
 }
 
 function renderPreview() {
@@ -363,19 +285,15 @@ async function onFill() {
         setBanner('Select a resume first.', 'warn');
         return;
     }
-    if (state.scan && state.selectedKeys.length === 0) {
-        setBanner('Select at least one field to fill.', 'warn');
-        return;
-    }
 
     const btn = $('fill-btn');
     btn.disabled = true;
     btn.textContent = 'Filling…';
 
-    const result = await send('FILL_COMMON_FIELDS', { profile: state.profile, selectedKeys: state.selectedKeys });
+    const result = await send('FILL_COMMON_FIELDS', { profile: state.profile });
 
     btn.disabled = false;
-    btn.textContent = 'Fill selected fields';
+    btn.textContent = 'Fill common fields';
 
     if (!result?.ok) {
         setBanner(result?.message || 'No fillable fields found on this page', 'warn');
@@ -386,29 +304,6 @@ async function onFill() {
     const kind = result.filled > 0 ? 'success' : 'warn';
     setBanner(result.message || `Filled ${result.filled || 0} fields`, kind);
     $('fill-helper').textContent = 'Review the form before you submit.';
-}
-
-async function onScan() {
-    if (!state.profile) {
-        setBanner('Select a resume first.', 'warn');
-        return;
-    }
-    const btn = $('scan-btn');
-    btn.disabled = true;
-    btn.textContent = 'Scanning…';
-    const result = await send('SCAN_PAGE', { profile: state.profile });
-    btn.disabled = false;
-    btn.textContent = 'Scan again';
-    if (!result?.ok) {
-        setBanner(result?.message || 'Could not scan this page.', 'error');
-        return;
-    }
-    state.scan = result;
-    state.selectedKeys = (result.matches || [])
-        .filter((item) => item.matched && item.empty)
-        .map((item) => item.key);
-    renderScan();
-    setBanner('Review the matches before filling.', 'success');
 }
 
 async function onInsert(key) {
@@ -428,19 +323,6 @@ async function onInsert(key) {
     setBanner(result.message || `Inserted ${label} into the focused field.`, 'success');
 }
 
-async function refreshFocusAssistant() {
-    if (!state.profile) {
-        return;
-    }
-    const btn = $('refresh-focus-btn');
-    btn.disabled = true;
-    btn.textContent = 'Reading…';
-    state.focusContext = await send('GET_FOCUS_CONTEXT', { profile: state.profile });
-    btn.disabled = false;
-    btn.textContent = 'Refresh';
-    renderFocusAssistant();
-}
-
 // ── Events ────────────────────────────────────────────────────────────────────
 
 $('connect-btn').addEventListener('click', () => {
@@ -451,20 +333,6 @@ $('open-options-setup').addEventListener('click', () => chrome.runtime.openOptio
 $('create-resume-btn').addEventListener('click', () => send('OPEN_APP', { path: '/dashboard' }));
 $('refresh-empty-btn').addEventListener('click', () => loadResumes());
 $('fill-btn').addEventListener('click', onFill);
-$('scan-btn').addEventListener('click', onScan);
-$('refresh-focus-btn').addEventListener('click', refreshFocusAssistant);
-$('review-clear').addEventListener('click', () => {
-    state.selectedKeys = [];
-    renderScan();
-});
-$('review-list').addEventListener('change', (e) => {
-    const key = e.target.dataset.reviewKey;
-    if (!key) return;
-    const selected = new Set(state.selectedKeys);
-    e.target.checked ? selected.add(key) : selected.delete(key);
-    state.selectedKeys = [...selected];
-    renderScan();
-});
 $('footer-open').addEventListener('click', () => send('OPEN_APP', { path: '/dashboard' }));
 $('footer-help').addEventListener('click', () => {
     state.previousView = $('view-ready').classList.contains('hidden') ? 'setup' : 'ready';
@@ -486,11 +354,6 @@ $('group-select').addEventListener('change', async (e) => {
     });
     renderPickers();
     setBanner('');
-    state.scan = null;
-    state.selectedKeys = [];
-    state.focusContext = null;
-    renderScan();
-    renderFocusAssistant();
     await loadProfile();
 });
 
@@ -498,11 +361,6 @@ $('version-select').addEventListener('change', async (e) => {
     state.selectedResumeId = Number(e.target.value) || e.target.value;
     await chrome.storage.local.set({ selectedResumeId: state.selectedResumeId });
     setBanner('');
-    state.scan = null;
-    state.selectedKeys = [];
-    state.focusContext = null;
-    renderScan();
-    renderFocusAssistant();
     await loadProfile();
 });
 
@@ -558,11 +416,8 @@ $('menu').addEventListener('click', async (e) => {
                 profile: null,
                 previewOpen: false,
                 previousView: 'ready',
-                scan: null,
-                selectedKeys: [],
-                focusContext: null,
             };
-            showSetup();
+            showView('setup');
         }
     }
 });

@@ -58,7 +58,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                 />
 
                 <div className="flex min-w-0 flex-1 flex-col">
-                    <div className="flex items-center justify-between border-b border-border-subtle bg-surface-card px-6 py-3">
+                    <div className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3">
                         <div className="flex items-center gap-2">
                             <h1 className="text-[15px] font-bold">
                                 {group.title}
@@ -71,7 +71,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                                 onSwap={(id) => swap('left', id)}
                                 tone="neutral"
                             />
-                            <span className="text-[11px] text-text-secondary">
+                            <span className="text-[11px] text-gray-500">
                                 vs
                             </span>
                             <VersionChip
@@ -101,7 +101,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 border-b border-border-subtle bg-surface-card px-6 py-2 text-[11px] text-text-secondary">
+                    <div className="flex items-center gap-4 border-b border-gray-200 bg-white px-6 py-2 text-[11px] text-gray-500">
                         <Legend swatch="bg-emerald-200" label="Added" />
                         <Legend swatch="bg-red-200" label="Removed" />
                         <Legend swatch="bg-yellow-200" label="Changed" />
@@ -111,7 +111,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                         </span>
                     </div>
 
-                    <div className="flex-1 bg-surface-canvas p-6">
+                    <div className="flex-1 bg-surface p-6">
                         <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2">
                             <CompareColumn
                                 side={left}
@@ -147,12 +147,12 @@ function CompareSidebar({
     onSelect: (id: number) => void;
 }) {
     return (
-        <aside className="flex w-[200px] shrink-0 flex-col gap-5 border-r border-border-subtle bg-surface-card p-4">
+        <aside className="flex w-[200px] shrink-0 flex-col gap-5 border-r border-gray-200 bg-white p-4">
             <div>
-                <p className="mb-2 text-[10px] font-bold tracking-wide text-text-secondary uppercase">
+                <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-500 uppercase">
                     Sections
                 </p>
-                <div className="flex flex-col gap-0.5 text-xs font-semibold text-text-primary">
+                <div className="flex flex-col gap-0.5 text-xs font-semibold text-gray-900">
                     <span className="rounded-md px-2 py-1.5">
                         {sectionLabels.summary}
                     </span>
@@ -163,7 +163,7 @@ function CompareSidebar({
             </div>
 
             <div>
-                <p className="mb-2 text-[10px] font-bold tracking-wide text-text-secondary uppercase">
+                <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-500 uppercase">
                     Versions
                 </p>
                 <div className="flex flex-col gap-1.5">
@@ -176,8 +176,8 @@ function CompareSidebar({
                             className={cn(
                                 'rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
                                 version.id === right.id
-                                    ? 'border-accent-100 bg-accent-100 text-accent-text'
-                                    : 'border-border-subtle bg-transparent text-text-primary hover:bg-surface-sunken',
+                                    ? 'border-brand-subtle bg-brand-subtle text-brand'
+                                    : 'border-gray-200 bg-transparent text-gray-900 hover:bg-gray-50',
                             )}
                         >
                             {version.title}
@@ -222,10 +222,10 @@ function VersionChip({
             value={value.id}
             onChange={(event) => onSwap(Number(event.target.value))}
             className={cn(
-                'h-7 rounded-full border-0 px-3 text-[12px] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1',
+                'h-7 rounded-full border-0 px-3 text-[12px] font-semibold outline-none',
                 tone === 'brand'
-                    ? 'bg-accent-100 text-accent-text'
-                    : 'bg-surface-sunken text-text-secondary',
+                    ? 'bg-brand-subtle text-brand'
+                    : 'bg-gray-100 text-gray-500',
             )}
         >
             <option value={value.id}>{value.title}</option>
@@ -280,28 +280,28 @@ function CompareColumn({
             <p
                 className={cn(
                     'mb-2 text-[10px] font-bold uppercase tracking-wide',
-                    tone === 'brand' ? 'text-accent-text' : 'text-text-secondary',
+                    tone === 'brand' ? 'text-brand' : 'text-gray-500',
                 )}
             >
                 {label}
             </p>
 
-            <div className="rounded-lg border border-border-default bg-surface-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+            <div className="rounded-lg border border-surface-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <div className="text-lg font-extrabold">
                     {side.document.full_name}
                 </div>
-                <div className="mb-3 text-[11px] text-text-secondary">
+                <div className="mb-3 text-[11px] text-gray-500">
                     {side.document.headline} · {side.document.email}
                 </div>
 
-                <p className="mb-1 text-[10px] font-bold uppercase">
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-wide">
                     Summary
                 </p>
                 <p className="mb-4 text-[12px] leading-relaxed">
                     <SummaryDiff parts={summaryParts} />
                 </p>
 
-                <p className="mb-1 text-[10px] font-bold uppercase">
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-wide">
                     Experience
                 </p>
                 <div className="space-y-3">
@@ -341,15 +341,15 @@ function CompareColumn({
                     })}
                 </div>
 
-                <div className="mt-4 grid grid-cols-4 gap-2 border-t border-border-subtle pt-3">
+                <div className="mt-4 grid grid-cols-4 gap-2 border-t border-gray-200 pt-3">
                     {side.breakdown.map((band) => (
                         <div key={band.label} className="space-y-1">
-                            <p className="text-[10px] font-semibold text-text-secondary uppercase">
+                            <p className="text-[10px] font-semibold text-gray-500 uppercase">
                                 {band.label}
                             </p>
-                            <div className="h-1.5 rounded-full bg-surface-sunken">
+                            <div className="h-1.5 rounded-full bg-gray-100">
                                 <div
-                                    className="h-full rounded-full bg-accent-bg"
+                                    className="h-full rounded-full bg-brand"
                                     style={{
                                         width: `${(band.score / 25) * 100}%`,
                                     }}
