@@ -31,11 +31,11 @@ export default function AdminLayout({
     ];
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
-            <header className="border-b border-slate-200 bg-slate-900 text-white">
+        <div className="min-h-screen bg-gray-100 text-gray-900">
+            <header className="border-b border-gray-200 bg-gray-900 text-white">
                 <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4">
                     <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-md bg-gradient-to-br from-indigo-400 to-violet-500" />
+                        <div className="h-7 w-7 rounded-md bg-gradient-to-br from-brand to-brand-accent" />
                         <span className="text-sm font-bold tracking-tight">Resumegen Admin</span>
                     </div>
 
@@ -48,7 +48,7 @@ export default function AdminLayout({
                                     'rounded-md px-3 py-1.5 text-sm font-medium transition ' +
                                     (item.active
                                         ? 'bg-white/15 text-white'
-                                        : 'text-slate-300 hover:bg-white/10 hover:text-white')
+                                        : 'text-gray-300 hover:bg-white/10 hover:text-white')
                                 }
                             >
                                 {item.label}
@@ -56,7 +56,7 @@ export default function AdminLayout({
                         ))}
                     </nav>
 
-                    <div className="ml-auto flex items-center gap-3 text-xs text-slate-300">
+                    <div className="ml-auto flex items-center gap-3 text-xs text-gray-300">
                         <span className="hidden sm:inline">{auth.user.email}</span>
                         <Link
                             href={route('logout')}
@@ -74,12 +74,12 @@ export default function AdminLayout({
                 {header ? <div className="mb-4">{header}</div> : null}
 
                 {flash?.success ? (
-                    <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+                    <div className="mb-4 rounded-lg border border-success/30 bg-success-subtle px-3 py-2 text-sm text-success-text">
                         {flash.success}
                     </div>
                 ) : null}
                 {flash?.error ? (
-                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+                    <div className="mb-4 rounded-lg border border-danger/30 bg-danger-subtle px-3 py-2 text-sm text-danger-text">
                         {flash.error}
                     </div>
                 ) : null}

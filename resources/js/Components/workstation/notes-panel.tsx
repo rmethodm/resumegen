@@ -2,6 +2,7 @@ import { router } from '@inertiajs/react';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { Button } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { Textarea } from '@/Components/ui/textarea';
 
 export type WorkstationNote = {
@@ -65,7 +66,7 @@ export function NotesPanel({
     }
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
+        <Card className="gap-0 p-4">
             <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-xs font-bold tracking-wide text-gray-500 uppercase">
                     Private notes
@@ -76,7 +77,7 @@ export function NotesPanel({
             </div>
 
             {error && (
-                <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
+                <div className="mb-3 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-xs font-medium text-danger-text">
                     {error}
                 </div>
             )}
@@ -110,7 +111,7 @@ export function NotesPanel({
                     {notes.map((note) => (
                         <li
                             key={note.id}
-                            className="rounded-lg border border-amber-100 bg-amber-50/60 p-2"
+                            className="rounded-lg border border-warning-subtle bg-warning-subtle/60 p-2"
                         >
                             <Textarea
                                 rows={2}
@@ -130,7 +131,7 @@ export function NotesPanel({
                                     type="button"
                                     aria-label="Delete note"
                                     onClick={() => deleteNote(note.id)}
-                                    className="rounded p-1 text-gray-400 hover:bg-white hover:text-red-600"
+                                    className="rounded p-1 text-gray-400 hover:bg-white hover:text-danger"
                                 >
                                     <TrashIcon className="size-3.5" />
                                 </button>
@@ -139,6 +140,6 @@ export function NotesPanel({
                     ))}
                 </ul>
             )}
-        </div>
+        </Card>
     );
 }

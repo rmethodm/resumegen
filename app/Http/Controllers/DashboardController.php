@@ -15,7 +15,24 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request): Response
     {
-        $resumes = $request->user()->resumes()
+        return Inertia::render('Dashboard', [
+            // Deferred: this eager-loads 6 relations per resume and scores
+            // every version server-side, so it scales with the user's resume
+            // count. hasStarterProfile/roleSamples are cheap and load
+            // immediately; average_score is derived client-side from the
+            // deferred resumes instead of being computed (and shipped) twice.
+            'resumes' => Inertia::defer(fn () => $this->resumesForDashboard($request)),
+            'hasStarterProfile' => $request->user()->starterProfile()->exists(),
+            'roleSamples' => RoleSamples::catalogue(),
+        ]);
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function resumesForDashboard(Request $request): array
+    {
+        return $request->user()->resumes()
             ->with([
                 'experiences',
                 'skills',
@@ -61,18 +78,8 @@ class DashboardController extends Controller
                         ->all(),
                 ];
             })
-            ->values();
-
-        return Inertia::render('Dashboard', [
-            'resumes' => $resumes->all(),
-            // Null rather than 0 when there is nothing to average, so the dial
-            // shows an empty state instead of a score the user did not earn.
-            'average_score' => $resumes->isEmpty()
-                ? null
-                : (int) round($resumes->avg('score')),
-            'hasStarterProfile' => $request->user()->starterProfile()->exists(),
-            'roleSamples' => RoleSamples::catalogue(),
-        ]);
+            ->values()
+            ->all();
     }
 
     /**

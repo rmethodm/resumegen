@@ -36,12 +36,12 @@ export default function SkillNarrativeEditor({ narratives, onChange, onBlur }: P
                             onChange={(e) => updateName(idx, e.target.value)}
                             onBlur={onBlur}
                             placeholder="Skill name (e.g. Proactive Communication)"
-                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                         />
                         <button
                             type="button"
                             onClick={() => remove(idx)}
-                            className="text-gray-400 hover:text-red-500 text-xs leading-none"
+                            className="-m-2 shrink-0 p-2.5 text-xs leading-none text-gray-400 hover:text-danger"
                         >
                             ✕
                         </button>
@@ -52,7 +52,7 @@ export default function SkillNarrativeEditor({ narratives, onChange, onBlur }: P
                         onBlur={onBlur}
                         rows={3}
                         placeholder={'One bullet per line\nDemonstrated ability to…\nProficient in…'}
-                        className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+                        className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand resize-none"
                     />
                     <p className="mt-0.5 text-[10px] text-gray-400">One bullet point per line</p>
                 </div>
@@ -60,7 +60,7 @@ export default function SkillNarrativeEditor({ narratives, onChange, onBlur }: P
             <button
                 type="button"
                 onClick={add}
-                className="rounded-md border border-dashed border-indigo-300 py-1.5 text-xs text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50"
+                className="rounded-md border border-dashed border-brand py-1.5 text-xs text-brand hover:border-brand hover:bg-brand-subtle"
             >
                 + Add skill
             </button>

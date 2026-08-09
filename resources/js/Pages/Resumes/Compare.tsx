@@ -2,6 +2,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, buttonClassName } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { diffBullets, diffSummary } from '@/lib/resume-diff';
 import type { DiffPart } from '@/lib/resume-diff';
 import { sectionLabels } from '@/lib/resume-sections';
@@ -102,8 +103,8 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                     </div>
 
                     <div className="flex items-center gap-4 border-b border-gray-200 bg-white px-6 py-2 text-[11px] text-gray-500">
-                        <Legend swatch="bg-emerald-200" label="Added" />
-                        <Legend swatch="bg-red-200" label="Removed" />
+                        <Legend swatch="bg-success/30" label="Added" />
+                        <Legend swatch="bg-danger/30" label="Removed" />
                         <Legend swatch="bg-yellow-200" label="Changed" />
                         <span className="ml-auto">
                             Comparing bullets by position — reordered roles
@@ -286,7 +287,7 @@ function CompareColumn({
                 {label}
             </p>
 
-            <div className="rounded-lg border border-surface-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+            <Card className="gap-0 p-6">
                 <div className="text-lg font-extrabold">
                     {side.document.full_name}
                 </div>
@@ -327,9 +328,9 @@ function CompareColumn({
                                             key={bulletIndex}
                                             className={cn(
                                                 'rounded px-1 py-0.5',
-                                                part.added && 'bg-emerald-200',
+                                                part.added && 'bg-success/30',
                                                 part.removed &&
-                                                    'bg-red-200 line-through',
+                                                    'bg-danger/30 line-through',
                                             )}
                                         >
                                             {part.value}
@@ -361,7 +362,7 @@ function CompareColumn({
                         </div>
                     ))}
                 </div>
-            </div>
+            </Card>
         </div>
     );
 }

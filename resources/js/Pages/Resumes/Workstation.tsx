@@ -24,6 +24,7 @@ import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
 import { Button } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -469,7 +470,7 @@ export default function Workstation({
                     const collapsed = collapsedSections.includes(sectionKey);
 
                     return (
-                        <div
+                        <Card
                             key={sectionKey}
                             id={`section-${sectionKey}`}
                             draggable={!isMobile}
@@ -478,7 +479,7 @@ export default function Workstation({
                             onDrop={() => handleDrop(sectionKey)}
                             onDragEnd={() => setDraggedSection(null)}
                             className={cn(
-                                'overflow-hidden rounded-lg border border-gray-200 bg-white',
+                                'gap-0 overflow-hidden py-0',
                                 draggedSection === sectionKey && 'opacity-50',
                             )}
                         >
@@ -535,7 +536,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 px-2 text-xs text-gray-500 hover:text-red-600"
+                                            className="h-8 px-2 text-xs text-gray-500 hover:text-danger"
                                             onClick={() =>
                                                 hideSection(sectionKey)
                                             }
@@ -543,7 +544,7 @@ export default function Workstation({
                                             Hide section
                                         </Button>
                                     )}
-                                    <div className="flex items-center gap-1 sm:hidden">
+                                    <div className="flex items-center gap-1 md:hidden">
                                         <Button
                                             type="button"
                                             variant="ghost"
@@ -601,7 +602,7 @@ export default function Workstation({
                                     />
                                 </div>
                             )}
-                        </div>
+                        </Card>
                     );
                 })}
             </main>
@@ -618,10 +619,10 @@ export default function Workstation({
                         className={cn(
                             'flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2 text-sm',
                             conflict
-                                ? 'border-amber-200 bg-amber-50 text-amber-950'
+                                ? 'border-warning/30 bg-warning-subtle text-warning-text'
                                 : offline
                                   ? 'border-gray-300 bg-gray-100 text-gray-800'
-                                  : 'border-red-200 bg-red-50 text-red-900',
+                                  : 'border-danger/30 bg-danger-subtle text-danger-text',
                         )}
                     >
                         <p>
@@ -731,17 +732,17 @@ export default function Workstation({
                         )}
 
                         {tab === 'Review' && (
-                            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+                            <Card className="gap-0 overflow-hidden py-0">
                                 {reviewPreviewMode === 'pdf' ? (
                                     <iframe
                                         title="PDF preview"
                                         src={route('resumes.preview', id)}
-                                        className="h-[80vh] w-full bg-gray-100"
+                                        className="h-[80dvh] w-full bg-gray-100"
                                     />
                                 ) : (
                                     <div className="overflow-x-auto p-4">
                                         <div
-                                            className="origin-top-left transition-transform"
+                                            className="origin-top-left transition-transform motion-reduce:transition-none"
                                             style={{
                                                 transform: `scale(${previewZoom})`,
                                                 width: `${100 / previewZoom}%`,
@@ -754,7 +755,7 @@ export default function Workstation({
                                         </div>
                                     </div>
                                 )}
-                            </div>
+                            </Card>
                         )}
 
                         {tab === 'Optimize' && (

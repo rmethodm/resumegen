@@ -1,6 +1,6 @@
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
+import Modal from '@/Components/Modal';
 import { Button } from '@/Components/ui/button';
 import { Textarea } from '@/Components/ui/textarea';
 import { cn } from '@/lib/utils';
@@ -79,19 +79,15 @@ export function NewResumeModal({
     }
 
     return (
-        <Dialog open={open} onClose={resetAndClose} className="relative z-50">
-            <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-            <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogPanel className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-5 shadow-xl">
-                    <DialogTitle className="text-base font-bold text-gray-900">
-                        New resume
-                    </DialogTitle>
-                    <p className="mt-1 text-sm text-gray-500">
-                        Start blank, use a role sample, or paste an existing
-                        resume.
-                    </p>
-
-                    {mode === 'choose' && (
+        <Modal
+            show={open}
+            onClose={resetAndClose}
+            maxWidth="lg"
+            title="New resume"
+            description="Start blank, use a role sample, or paste an existing resume."
+        >
+            <div className="p-5">
+                {mode === 'choose' && (
                         <div className="mt-4 flex flex-col gap-2">
                             <ChoiceButton
                                 title="Blank (from starter profile)"
@@ -198,9 +194,8 @@ export function NewResumeModal({
                             </div>
                         </div>
                     )}
-                </DialogPanel>
             </div>
-        </Dialog>
+        </Modal>
     );
 }
 

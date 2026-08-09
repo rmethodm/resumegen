@@ -23,7 +23,7 @@ const STATUS_CHIP: Record<JobStatus, string> = {
     saved: 'bg-gray-100 text-gray-500',
     applied: 'bg-blue-100 text-blue-700',
     interviewing: 'bg-brand-subtle text-brand-accent',
-    offer: 'bg-green-100 text-green-700',
+    offer: 'bg-success-subtle text-success-text',
     rejected: 'bg-gray-100 text-gray-400',
 };
 

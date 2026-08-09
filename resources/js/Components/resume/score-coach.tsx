@@ -51,7 +51,7 @@ export function ScoreChecklist({
                                 className={cn(
                                     'mt-0.5 flex size-3.5 shrink-0 items-center justify-center rounded-full border',
                                     item.done
-                                        ? 'border-green-500 bg-green-500 text-white'
+                                        ? 'border-success bg-success text-white'
                                         : 'border-gray-300 bg-white',
                                 )}
                                 aria-hidden
@@ -141,7 +141,7 @@ export function KeywordChips({
                     {present.map((keyword) => (
                         <span
                             key={keyword}
-                            className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-[11px] font-medium text-green-800"
+                            className="inline-flex items-center gap-1 rounded-full border border-success/30 bg-success-subtle px-2 py-0.5 text-[11px] font-medium text-success-text"
                         >
                             <CheckIcon className="size-3" />
                             {formatKeywordLabel(keyword)}
@@ -150,7 +150,7 @@ export function KeywordChips({
                 </div>
             )}
             {missing.length === 0 && present.length > 0 && (
-                <p className="mt-2 px-1 text-[10px] text-green-700">
+                <p className="mt-2 px-1 text-[10px] text-success-text">
                     All role keywords are covered.
                 </p>
             )}

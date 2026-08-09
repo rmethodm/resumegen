@@ -1,7 +1,4 @@
 import {
-    Dialog,
-    DialogPanel,
-    DialogTitle,
     Tab,
     TabGroup,
     TabList,
@@ -10,6 +7,7 @@ import {
 } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useMemo, useState } from 'react';
+import Modal from '@/Components/Modal';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { cn } from '@/lib/utils';
@@ -177,61 +175,56 @@ export function SkillPickerModal({
     const totalSkills = library.reduce((sum, group) => sum + group.skills.length, 0);
 
     return (
-        <Dialog open={open} onClose={close} className="relative z-50">
-            <div className="fixed inset-0 bg-black/35" aria-hidden="true" />
-            <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogPanel className="flex max-h-[700px] w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
-                    <div className="border-b border-gray-200 px-6 py-4">
-                        <DialogTitle className="text-[15px] font-bold text-gray-900">
-                            Add skills
-                        </DialogTitle>
-                        <p className="mt-0.5 text-[11.5px] text-gray-500">
-                            {totalSkills} skills from Indeed's resume guide, organized by category
-                        </p>
+        <Modal
+            show={open}
+            onClose={close}
+            maxWidth="3xl"
+            title="Add skills"
+            description={`${totalSkills} skills from Indeed's resume guide, organized by category`}
+            footer={
+                <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-500">
+                        {pending.size} skill{pending.size === 1 ? '' : 's'} added
+                    </span>
+                    <div className="flex gap-2.5">
+                        <Button variant="secondary" onClick={close}>
+                            Cancel
+                        </Button>
+                        <Button disabled={pending.size === 0} onClick={confirm}>
+                            Add to resume
+                        </Button>
                     </div>
-
-                    <div className="px-6 pt-3.5">
-                        <div className="relative">
-                            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
-                            <Input
-                                value={query}
-                                onChange={(event) => setQuery(event.target.value)}
-                                placeholder="Search skills…"
-                                className="pl-9"
-                            />
-                        </div>
+                </div>
+            }
+        >
+            <div className="flex h-[560px] flex-col">
+                <div className="px-6 pt-3.5">
+                    <div className="relative">
+                        <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+                        <Input
+                            value={query}
+                            onChange={(event) => setQuery(event.target.value)}
+                            placeholder="Search skills…"
+                            className="pl-9"
+                        />
                     </div>
+                </div>
 
-                    <TabGroup className="flex min-h-0 flex-1 flex-col">
-                        <TabList className="flex gap-4 border-b border-gray-200 px-6 pt-3.5">
-                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-brand data-selected:text-brand">
-                                Soft skills
-                            </Tab>
-                            <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-brand data-selected:text-brand">
-                                Hard skills
-                            </Tab>
-                        </TabList>
-                        <TabPanels className="flex min-h-0 flex-1">
-                            <TabPanel className="flex min-h-0 flex-1">{renderTab('soft')}</TabPanel>
-                            <TabPanel className="flex min-h-0 flex-1">{renderTab('hard')}</TabPanel>
-                        </TabPanels>
-                    </TabGroup>
-
-                    <div className="flex items-center justify-between border-t border-gray-200 px-6 py-3.5">
-                        <span className="text-xs font-medium text-gray-500">
-                            {pending.size} skill{pending.size === 1 ? '' : 's'} added
-                        </span>
-                        <div className="flex gap-2.5">
-                            <Button variant="secondary" onClick={close}>
-                                Cancel
-                            </Button>
-                            <Button disabled={pending.size === 0} onClick={confirm}>
-                                Add to resume
-                            </Button>
-                        </div>
-                    </div>
-                </DialogPanel>
+                <TabGroup className="flex min-h-0 flex-1 flex-col">
+                    <TabList className="flex gap-4 border-b border-gray-200 px-6 pt-3.5">
+                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-brand data-selected:text-brand">
+                            Soft skills
+                        </Tab>
+                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-gray-500 outline-none data-selected:border-brand data-selected:text-brand">
+                            Hard skills
+                        </Tab>
+                    </TabList>
+                    <TabPanels className="flex min-h-0 flex-1">
+                        <TabPanel className="flex min-h-0 flex-1">{renderTab('soft')}</TabPanel>
+                        <TabPanel className="flex min-h-0 flex-1">{renderTab('hard')}</TabPanel>
+                    </TabPanels>
+                </TabGroup>
             </div>
-        </Dialog>
+        </Modal>
     );
 }

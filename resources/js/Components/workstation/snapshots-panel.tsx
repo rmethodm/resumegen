@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
 
 export type WorkstationSnapshot = {
@@ -65,7 +66,7 @@ export function SnapshotsPanel({
     }
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
+        <Card className="gap-0 p-4">
             <h3 className="mb-1 text-xs font-bold tracking-wide text-gray-500 uppercase">
                 Checkpoints
             </h3>
@@ -120,7 +121,7 @@ export function SnapshotsPanel({
                             <button
                                 type="button"
                                 onClick={() => remove(snapshot.id)}
-                                className="text-[11px] text-gray-400 hover:text-red-600"
+                                className="text-[11px] text-gray-400 hover:text-danger"
                             >
                                 Delete
                             </button>
@@ -128,6 +129,6 @@ export function SnapshotsPanel({
                     ))}
                 </ul>
             )}
-        </div>
+        </Card>
     );
 }

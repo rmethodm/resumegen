@@ -2,6 +2,7 @@ import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
+import { Card } from '@/Components/ui/card';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import ExtensionTokensForm from './Partials/ExtensionTokensForm';
 import TwoFactorForm from './Partials/TwoFactorForm';
@@ -129,15 +130,15 @@ export default function Edit({
                         <p className="mt-1 text-sm text-[#a0a0b0]">Manage your account settings</p>
                     </div>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <Card className="p-6">
                         <UpdateProfileInformationForm mustVerifyEmail={mustVerifyEmail} status={status} className="max-w-xl" />
-                    </div>
+                    </Card>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <Card className="p-6">
                         <UpdatePasswordForm className="max-w-xl" />
-                    </div>
+                    </Card>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <Card className="p-6">
                         <TwoFactorForm
                             enabled={twoFactor.enabled}
                             pending={twoFactor.pending}
@@ -145,17 +146,17 @@ export default function Edit({
                             recoveryCodes={twoFactor.recoveryCodes}
                             className="max-w-xl"
                         />
-                    </div>
+                    </Card>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <Card className="p-6">
                         <ExtensionTokensForm
                             tokens={extensionTokens}
                             plainToken={extensionTokenPlain}
                             className="max-w-xl"
                         />
-                    </div>
+                    </Card>
 
-                    <div className="rounded-xl border border-[#eeeef5] bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <Card className="p-6">
                         <section className="space-y-6">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">Starter Profile</h2>
@@ -166,11 +167,11 @@ export default function Edit({
 
                             <PersonaForm profile={profile ?? {}} persona={persona} allowedTemplates={allowedTemplates} />
                         </section>
-                    </div>
+                    </Card>
 
-                    <div className="rounded-xl border border-red-100 bg-white p-6 shadow-[0_1px_3px_rgba(79,70,229,0.05)]">
+                    <Card className="border-danger-subtle p-6">
                         <DeleteUserForm className="max-w-xl" />
-                    </div>
+                    </Card>
                 </div>
             </div>
         </AuthenticatedLayout>

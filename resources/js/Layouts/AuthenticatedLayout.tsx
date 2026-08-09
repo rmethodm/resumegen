@@ -37,7 +37,7 @@ export default function Authenticated({
 
     return (
         <div className="min-h-screen bg-[#f5f5fb] dark:bg-gray-900">
-            <div role="search" className="border-b border-surface-border bg-white py-2.5 pl-8 pr-4 dark:border-gray-700 dark:bg-gray-800">
+            <div role="search" className="border-b border-surface-border bg-white py-2.5 [padding-left:max(2rem,env(safe-area-inset-left))] [padding-right:max(1rem,env(safe-area-inset-right))] dark:border-gray-700 dark:bg-gray-800">
                 <div className="relative max-w-xl">
                     <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     <input
@@ -45,7 +45,7 @@ export default function Authenticated({
                         type="text"
                         aria-label="Search"
                         placeholder="Search or type command..."
-                        className="w-full rounded-lg border border-surface-border bg-surface py-2 pl-9 pr-14 text-sm text-ink placeholder:text-gray-400 focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
+                        className="w-full rounded-lg border border-surface-border bg-surface py-2 pl-9 pr-14 text-sm text-ink placeholder:text-gray-400 focus:border-brand focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
                     />
                     <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md border border-surface-border bg-white px-1.5 py-0.5 text-[10px] font-semibold text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">
                         ⌘K
@@ -54,7 +54,7 @@ export default function Authenticated({
             </div>
 
             <header className="sticky top-0 z-30 border-b border-surface-border bg-white dark:border-gray-700 dark:bg-gray-800">
-                <div className="flex h-[52px] items-center gap-6 px-4">
+                <div className="flex h-[52px] items-center gap-6 [padding-left:max(1rem,env(safe-area-inset-left))] [padding-right:max(1rem,env(safe-area-inset-right))]">
                     <Link href={route('dashboard')} className="flex items-center gap-2.5">
                         <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-gradient-to-br from-brand to-brand-accent" />
                         <span className="text-[15px] font-extrabold tracking-tight text-ink dark:text-white">Resumegen</span>

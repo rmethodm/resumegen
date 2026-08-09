@@ -8,6 +8,7 @@ import {
 import { ScoreGauge } from '@/Components/resume/score-gauge';
 import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button, buttonClassName } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { JdMatchPanel } from '@/Components/workstation/jd-match-panel';
 import {
     keywordsFor,
@@ -171,7 +172,7 @@ export function SectionPanel({
                 Back to dashboard
             </Link>
 
-            <div className="rounded-lg border border-surface-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+            <Card className="gap-0 p-4">
                 <div className="text-center">
                     <p className="mb-2 text-sm font-medium text-gray-500">
                         Your resume score
@@ -296,7 +297,7 @@ export function SectionPanel({
                         ))}
                     </div>
                 )}
-            </div>
+            </Card>
         </aside>
     );
 }

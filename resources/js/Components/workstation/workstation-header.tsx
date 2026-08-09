@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { buttonClassName } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { TemplatePickerModal } from '@/Components/workstation/template-picker-modal';
@@ -120,7 +121,7 @@ export function WorkstationHeader({
     const [pickingTemplate, setPickingTemplate] = useState(false);
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+        <Card className="gap-0 py-0">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5 sm:px-4">
                 {/* Left: title · status */}
                 <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -153,7 +154,7 @@ export function WorkstationHeader({
                     {showSaved && saveStatus === 'saved' && (
                         <Badge
                             variant="outline"
-                            className="border-transparent bg-emerald-50 text-emerald-600"
+                            className="border-transparent bg-success-subtle text-success"
                         >
                             <CheckIcon className="size-3" />
                             Saved
@@ -172,7 +173,7 @@ export function WorkstationHeader({
                         <button
                             type="button"
                             onClick={onFixContact}
-                            className="inline-flex items-center gap-1 rounded-full border border-transparent bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600 hover:underline"
+                            className="inline-flex items-center gap-1 rounded-full border border-transparent bg-warning-subtle px-2.5 py-0.5 text-xs font-medium text-warning hover:underline"
                         >
                             <ExclamationTriangleIcon className="size-3" />
                             {contactErrors.email !== null && contactErrors.phone !== null
@@ -274,7 +275,7 @@ export function WorkstationHeader({
 
                     <Menu as="div" className="relative">
                         <MenuButton
-                            className={buttonClassName('outline', 'icon', 'size-9')}
+                            className={buttonClassName('outline', 'icon')}
                             aria-label="More actions"
                         >
                             <EllipsisVerticalIcon className="size-4" />
@@ -416,6 +417,6 @@ export function WorkstationHeader({
                 resumeId={resumeId}
                 share={share}
             />
-        </div>
+        </Card>
     );
 }

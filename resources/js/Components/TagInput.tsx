@@ -126,13 +126,13 @@ export default function TagInput({
     return (
         <div ref={containerRef} className="relative">
             <div
-                className="flex flex-wrap gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 cursor-text"
+                className="flex flex-wrap gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 shadow-sm focus-within:border-brand focus-within:ring-1 focus-within:ring-brand cursor-text"
                 onClick={() => inputRef.current?.focus()}
             >
                 {tags.map((tag, i) => (
                     <span
                         key={i}
-                        className="flex items-center gap-1 rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-800"
+                        className="flex items-center gap-1 rounded-full bg-brand-subtle px-2 py-0.5 text-xs text-brand-accent"
                     >
                         {tag}
                         <button
@@ -141,7 +141,7 @@ export default function TagInput({
                                 e.stopPropagation();
                                 removeTag(i);
                             }}
-                            className="text-indigo-400 hover:text-indigo-700 leading-none"
+                            className="text-brand hover:text-brand-accent leading-none"
                         >
                             ×
                         </button>
@@ -178,7 +178,7 @@ export default function TagInput({
                             }}
                             className={`cursor-pointer px-3 py-2 text-sm ${
                                 i === activeIndex
-                                    ? 'bg-indigo-50 text-indigo-700'
+                                    ? 'bg-brand-subtle text-brand-accent'
                                     : 'text-gray-900 hover:bg-gray-50'
                             }`}
                         >

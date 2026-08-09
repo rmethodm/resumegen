@@ -43,12 +43,12 @@ export default function Login({
             </p>
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mb-4 text-sm font-medium text-success">
                     {status}
                 </div>
             )}
             {flash?.error && (
-                <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+                <div className="mb-4 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-sm font-medium text-danger-text">
                     {flash.error}
                 </div>
             )}

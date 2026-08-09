@@ -101,7 +101,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                             />
                             {errors.target_role && (
-                                <p className="mt-1 text-xs text-red-600">{errors.target_role}</p>
+                                <p className="mt-1 text-xs text-danger">{errors.target_role}</p>
                             )}
                         </div>
 
@@ -146,7 +146,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                             />
                             {errors.years_experience && (
-                                <p className="mt-1 text-xs text-red-600">{errors.years_experience}</p>
+                                <p className="mt-1 text-xs text-danger">{errors.years_experience}</p>
                             )}
                         </div>
 
@@ -235,7 +235,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                                 />
                                 {errors.linkedin_url && (
-                                    <p className="mt-1 text-xs text-red-600">{errors.linkedin_url}</p>
+                                    <p className="mt-1 text-xs text-danger">{errors.linkedin_url}</p>
                                 )}
                             </div>
                             <div className="col-span-2">
@@ -254,7 +254,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                                 />
                                 {errors.website && (
-                                    <p className="mt-1 text-xs text-red-600">{errors.website}</p>
+                                    <p className="mt-1 text-xs text-danger">{errors.website}</p>
                                 )}
                             </div>
                         </div>

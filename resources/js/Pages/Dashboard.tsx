@@ -10,7 +10,7 @@ import {
     ShareIcon,
     TrashIcon,
 } from '@heroicons/react/24/outline';
-import { Head, Link, router } from '@inertiajs/react';
+import { Deferred, Head, Link, router } from '@inertiajs/react';
 import { useState, type MouseEvent } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { NewResumeModal } from '@/Components/dashboard/new-resume-modal';
@@ -22,9 +22,9 @@ import { cn } from '@/lib/utils';
 import type { DashboardShareInfo, ResumeSummary } from '@/types';
 
 function scoreDotColor(score: number): string {
-    if (score >= 70) return 'bg-emerald-500';
+    if (score >= 70) return 'bg-success';
     if (score >= 40) return 'bg-amber-400';
-    return 'bg-red-500';
+    return 'bg-danger';
 }
 
 function ShareStatus({
@@ -80,7 +80,7 @@ function ShareStatus({
                     Link expired
                 </button>
                 {share.expires_at && !compact && (
-                    <span className="font-normal text-amber-600">· {share.expires_at}</span>
+                    <span className="font-normal text-warning">· {share.expires_at}</span>
                 )}
             </span>
         );
@@ -284,7 +284,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                 <button
                                     type="button"
                                     onClick={deleteGroup}
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-red-600 data-focus:bg-red-50"
+                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-danger data-focus:bg-danger-subtle"
                                 >
                                     <TrashIcon className="size-4" />
                                     Delete resume
@@ -369,7 +369,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                         disabled={version.is_base}
                                         onClick={() => deleteVersion(version.id, version.title)}
                                         aria-label={`Delete ${version.title}`}
-                                        className="text-gray-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="text-gray-400 hover:text-danger disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         <TrashIcon className="size-4" />
                                     </button>
@@ -394,14 +394,26 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
     );
 }
 
+function ResumeCardSkeleton() {
+    return (
+        <Card className="animate-pulse gap-0 p-0">
+            <div className="flex items-center gap-4 p-4">
+                <div className="size-12 shrink-0 rounded-full bg-gray-200" />
+                <div className="min-w-0 flex-1">
+                    <div className="h-3.5 w-1/3 rounded bg-gray-200" />
+                    <div className="mt-2 h-3 w-1/2 rounded bg-gray-100" />
+                </div>
+            </div>
+        </Card>
+    );
+}
+
 export default function Dashboard({
     resumes,
-    average_score,
     hasStarterProfile,
     roleSamples = [],
 }: {
-    resumes: ResumeSummary[];
-    average_score: number | null;
+    resumes: ResumeSummary[] | undefined;
     hasStarterProfile: boolean;
     roleSamples?: {
         id: string;
@@ -450,9 +462,14 @@ export default function Dashboard({
                                 <p className="text-[10px] font-bold tracking-[0.06em] text-gray-500 uppercase">
                                     Your resumes
                                 </p>
-                                {average_score !== null && (
+                                {resumes && resumes.length > 0 && (
                                     <p className="mt-1 text-sm text-gray-500">
-                                        Average score: {average_score}/100
+                                        Average score:{' '}
+                                        {Math.round(
+                                            resumes.reduce((sum, r) => sum + r.score, 0) /
+                                                resumes.length,
+                                        )}
+                                        /100
                                     </p>
                                 )}
                             </div>
@@ -462,17 +479,28 @@ export default function Dashboard({
                             </Button>
                         </div>
 
-                        {resumes.length === 0 ? (
-                            <p className="py-10 text-center text-sm text-gray-500">
-                                You haven't created a resume yet.
-                            </p>
-                        ) : (
-                            <div className="flex flex-col gap-3">
-                                {resumes.map((resume) => (
-                                    <ResumeCard key={resume.id} resume={resume} />
-                                ))}
-                            </div>
-                        )}
+                        <Deferred
+                            data="resumes"
+                            fallback={
+                                <div className="flex flex-col gap-3">
+                                    <ResumeCardSkeleton />
+                                    <ResumeCardSkeleton />
+                                    <ResumeCardSkeleton />
+                                </div>
+                            }
+                        >
+                            {resumes && resumes.length === 0 ? (
+                                <p className="py-10 text-center text-sm text-gray-500">
+                                    You haven't created a resume yet.
+                                </p>
+                            ) : (
+                                <div className="flex flex-col gap-3">
+                                    {resumes?.map((resume) => (
+                                        <ResumeCard key={resume.id} resume={resume} />
+                                    ))}
+                                </div>
+                            )}
+                        </Deferred>
                     </Card>
                 </div>
             </div>
