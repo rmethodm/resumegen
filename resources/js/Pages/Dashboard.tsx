@@ -3,12 +3,14 @@ import {
     ArrowsRightLeftIcon,
     ChevronDownIcon,
     ClipboardDocumentIcon,
+    DocumentTextIcon,
     EllipsisVerticalIcon,
     EnvelopeIcon,
     LockClosedIcon,
     PlusIcon,
     ShareIcon,
     TrashIcon,
+    UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Deferred, Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState, type MouseEvent } from 'react';
@@ -507,46 +509,79 @@ export default function Dashboard({
             <div className="py-6 sm:py-8">
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col gap-5">
-                        {!hasStarterProfile && (
-                            <Shell innerClassName="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-                                <div>
-                                    <p className="text-sm font-bold text-ink">
-                                        Set up your starter profile
+                        {/* Bento header: score snapshot + quick start */}
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
+                            <Shell className="md:col-span-3" innerClassName="flex items-center gap-4 p-5 sm:p-6">
+                                <ScoreDial score={averageScore} size={64} />
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+                                        Overview
                                     </p>
+                                    <h2 className="mt-1 text-lg font-bold tracking-tight text-ink">
+                                        {resumes === undefined
+                                            ? 'Loading your resumes…'
+                                            : resumes.length === 0
+                                              ? 'No resumes yet'
+                                              : `${resumes.length} resume${resumes.length === 1 ? '' : 's'}`}
+                                    </h2>
                                     <p className="mt-1 text-sm text-ink-muted">
-                                        Fill it in once and every new resume starts pre-filled.
+                                        {averageScore !== null
+                                            ? `Average strength score ${averageScore}/100`
+                                            : resumes === undefined
+                                              ? 'Scores load with your list.'
+                                              : 'Create a resume to see your average score.'}
                                     </p>
                                 </div>
+                            </Shell>
+
+                            <Shell className="md:col-span-2" innerClassName="flex flex-col gap-2 p-4 sm:p-5">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+                                    Quick start
+                                </p>
+                                <Button
+                                    type="button"
+                                    onClick={() => setNewResumeOpen(true)}
+                                    className="group w-full justify-between rounded-full"
+                                >
+                                    <span className="inline-flex items-center gap-2">
+                                        <DocumentTextIcon className="size-4" />
+                                        New resume
+                                    </span>
+                                    <span className="flex size-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105">
+                                        <PlusIcon className="size-3.5" />
+                                    </span>
+                                </Button>
                                 <Link
                                     href={route('starter-profile.edit')}
-                                    className={cn(buttonClassName('outline'), 'shrink-0 rounded-full')}
+                                    className={cn(
+                                        buttonClassName('outline'),
+                                        'w-full justify-between rounded-full',
+                                    )}
                                 >
-                                    Set up profile
+                                    <span className="inline-flex items-center gap-2">
+                                        <UserCircleIcon className="size-4" />
+                                        {hasStarterProfile ? 'Edit starter profile' : 'Set up starter profile'}
+                                    </span>
+                                    <span className="text-ink-faint">→</span>
                                 </Link>
+                            </Shell>
+                        </div>
+
+                        {!hasStarterProfile && (
+                            <Shell innerClassName="border-l-4 border-l-brand p-4 sm:px-5">
+                                <p className="text-sm font-bold text-ink">
+                                    Tip: fill your starter profile once
+                                </p>
+                                <p className="mt-1 text-sm text-ink-muted">
+                                    Every new resume can pre-fill from it — contact, summary, and more.
+                                </p>
                             </Shell>
                         )}
 
                         <div className="flex items-end justify-between gap-4">
-                            <div>
-                                <p className="text-[10px] font-bold tracking-[0.12em] text-ink-faint uppercase">
-                                    Your resumes
-                                </p>
-                                {averageScore !== null && (
-                                    <p className="mt-1 text-sm text-ink-muted">
-                                        Average score: {averageScore}/100
-                                    </p>
-                                )}
-                            </div>
-                            <Button
-                                type="button"
-                                onClick={() => setNewResumeOpen(true)}
-                                className="group rounded-full"
-                            >
-                                New resume
-                                <span className="flex size-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105">
-                                    <PlusIcon className="size-3.5" />
-                                </span>
-                            </Button>
+                            <p className="text-[10px] font-bold tracking-[0.12em] text-ink-faint uppercase">
+                                Your resumes
+                            </p>
                         </div>
 
                         <Deferred
