@@ -16,6 +16,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['IBM Plex Sans', ...defaultTheme.fontFamily.sans],
+                // Marketing display only — body UI stays IBM Plex.
+                display: ['"Source Serif 4"', 'Georgia', 'Times New Roman', 'serif'],
             },
             colors: {
                 brand: {
@@ -23,6 +25,8 @@ export default {
                     accent: '#3c3695',
                     light: '#3c3695',
                     subtle: '#e1e5ff',
+                    // Slightly desaturated fill for large marketing CTAs.
+                    soft: '#5e58c4',
                 },
                 surface: {
                     DEFAULT: '#f2f6f9',
