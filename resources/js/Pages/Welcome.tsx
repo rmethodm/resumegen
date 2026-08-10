@@ -1,10 +1,58 @@
 import { Head, Link } from '@inertiajs/react';
-import { PageProps } from '@/types';
 import { useEffect, useRef, useState } from 'react';
+import { buttonClassName } from '@/Components/ui/button';
+import { Shell } from '@/Components/ui/shell';
+import { cn } from '@/lib/utils';
+import type { PageProps } from '@/types';
 
 const SLIDES = [
-    { tab: 'My Resumes', label: 'Resume Builder' },
-    { tab: 'Shares',     label: 'Share Analytics' },
+    { tab: 'Edit', label: 'Live editor' },
+    { tab: 'Share', label: 'Share link' },
+] as const;
+
+const FEATURES = [
+    {
+        title: 'ATS-friendly templates',
+        desc: 'Four clean themes — ATS Plain, Classic Serif, Modern Sans, Minimalist — tuned for real hiring systems.',
+        tag: '4 templates',
+        span: 'sm:col-span-2',
+    },
+    {
+        title: 'PDF & DOCX export',
+        desc: 'Download print-ready PDF or editable DOCX with no watermarks and no limits.',
+        tag: 'Unlimited',
+        span: '',
+    },
+    {
+        title: 'Share links',
+        desc: 'Send a live link. Optional password, email gate, expiry, and download control — without publishing a public profile.',
+        tag: 'Private by default',
+        span: '',
+    },
+    {
+        title: 'Versions & compare',
+        desc: 'Keep tailored versions of the same resume, score them, and compare side by side before you apply.',
+        tag: 'Built in',
+        span: 'sm:col-span-2',
+    },
+] as const;
+
+const STEPS = [
+    {
+        n: '1',
+        title: 'Start from a template',
+        desc: 'Pick a layout and fill sections in a live editor — starter profile can pre-fill the basics.',
+    },
+    {
+        n: '2',
+        title: 'Tighten the story',
+        desc: 'Reorder sections, polish bullets, and check the Review preview before you send anything out.',
+    },
+    {
+        n: '3',
+        title: 'Export or share',
+        desc: 'Download PDF/DOCX, or send a gated link recruiters can open without an account.',
+    },
 ] as const;
 
 export default function Welcome({ auth }: PageProps) {
@@ -18,444 +66,450 @@ export default function Welcome({ auth }: PageProps) {
     function goTo(n: number) {
         const next = ((n % SLIDES.length) + SLIDES.length) % SLIDES.length;
         setActiveSlide(next);
-        if (timerRef.current) clearInterval(timerRef.current);
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+        }
         timerRef.current = setInterval(() => {
-            if (!pausedRef.current) setActiveSlide(s => (s + 1) % SLIDES.length);
+            if (!pausedRef.current) {
+                setActiveSlide((s) => (s + 1) % SLIDES.length);
+            }
         }, 4000);
     }
 
     useEffect(() => {
         timerRef.current = setInterval(() => {
-            if (!pausedRef.current) setActiveSlide(s => (s + 1) % SLIDES.length);
+            if (!pausedRef.current) {
+                setActiveSlide((s) => (s + 1) % SLIDES.length);
+            }
         }, 4000);
+
         return () => {
-            if (timerRef.current) clearInterval(timerRef.current);
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
         };
     }, []);
 
     return (
         <>
-            <Head title="ResumeGen — Build a resume that gets you hired" />
-            <div className="scroll-smooth font-sans">
-
-                {/* ── Nav ──────────────────────────────────────── */}
-                <nav className="sticky top-0 z-20 h-[60px] border-b border-[#e5e7eb] bg-white">
-                    <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
-                        {/* Logo */}
+            <Head title="Resumegen — Build a resume that gets you hired" />
+            <div className="min-h-[100dvh] scroll-smooth bg-surface font-sans text-ink">
+                {/* Floating nav island */}
+                <div
+                    className={cn(
+                        'sticky top-0 z-30 px-3 pt-3 sm:px-4 sm:pt-4',
+                        '[padding-top:max(0.75rem,env(safe-area-inset-top))]',
+                    )}
+                >
+                    <nav
+                        className={cn(
+                            'mx-auto flex h-14 max-w-6xl items-center gap-4 rounded-2xl border border-surface-border/80',
+                            'bg-white/90 px-4 shadow-ambient backdrop-blur-xl',
+                        )}
+                    >
                         <div className="flex items-center gap-2.5">
-                            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#5952d2] to-[#4a44b8]" />
-                            <span className="text-[15px] font-extrabold tracking-tight text-[#0f172a]">Resumegen</span>
+                            <div className="h-7 w-7 rounded-lg bg-brand shadow-shell" aria-hidden />
+                            <span className="text-[15px] font-extrabold tracking-tight text-ink">
+                                Resumegen
+                            </span>
                         </div>
-                        {/* Centre links */}
-                        <div className="hidden items-center gap-7 md:flex">
-                            <a href="#features" className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">Features</a>
-                            <a href="#how-it-works" className="text-sm text-[#6b7280] hover:text-[#0f172a] transition">How it works</a>
+                        <div className="ml-auto hidden items-center gap-6 md:flex">
+                            <a
+                                href="#features"
+                                className="text-sm text-ink-muted transition-colors duration-soft ease-soft hover:text-ink"
+                            >
+                                Features
+                            </a>
+                            <a
+                                href="#how-it-works"
+                                className="text-sm text-ink-muted transition-colors duration-soft ease-soft hover:text-ink"
+                            >
+                                How it works
+                            </a>
                         </div>
-                        {/* Actions */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                             {isLoggedIn ? (
                                 <Link
                                     href={route('dashboard')}
-                                    className="rounded-lg bg-gradient-to-br from-[#5952d2] to-[#4a44b8] px-4 py-1.5 text-sm font-bold text-white hover:opacity-90 transition"
+                                    className={cn(buttonClassName('default', 'sm'), 'rounded-full')}
                                 >
-                                    Go to app →
+                                    Go to app
+                                    <span className="flex size-5 items-center justify-center rounded-full bg-white/15 text-xs">
+                                        →
+                                    </span>
                                 </Link>
                             ) : (
                                 <>
                                     <Link
                                         href={route('login')}
-                                        className="text-sm font-semibold text-[#5952d2] hover:text-[#433dab] transition"
+                                        className="hidden text-sm font-semibold text-brand transition-colors duration-soft ease-soft hover:text-brand-accent sm:inline"
                                     >
                                         Log in
                                     </Link>
                                     <Link
                                         href={route('register')}
-                                        className="rounded-lg bg-gradient-to-br from-[#5952d2] to-[#4a44b8] px-4 py-1.5 text-sm font-bold text-white hover:opacity-90 transition"
+                                        className={cn(buttonClassName('default', 'sm'), 'group rounded-full')}
                                     >
-                                        Get started free
+                                        Get started
+                                        <span className="flex size-5 items-center justify-center rounded-full bg-white/15 text-xs transition-transform duration-soft ease-soft group-hover:translate-x-0.5">
+                                            →
+                                        </span>
                                     </Link>
                                 </>
                             )}
                         </div>
-                    </div>
-                </nav>
+                    </nav>
+                </div>
 
-                {/* ── Hero ─────────────────────────────────────── */}
-                <section className="relative overflow-hidden bg-gradient-to-b from-[#fafafe] to-white px-6 pb-16 pt-20 text-center">
-                    {/* Glow */}
+                {/* Editorial split hero */}
+                <section className="relative overflow-hidden px-4 pb-16 pt-10 sm:px-6 sm:pt-14 lg:pt-16">
                     <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
-                        <div className="h-[300px] w-[600px] rounded-full bg-[#5952d2]/5 blur-3xl" />
+                        <div className="h-[280px] w-[520px] rounded-full bg-brand/10 blur-3xl" />
                     </div>
 
-                    {/* Badge */}
-                    <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-[#e1e5ff] px-3 py-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#5952d2]" />
-                        <span className="text-xs font-bold text-[#4a44b8]">Professional Resume Builder</span>
-                    </div>
-
-                    {/* Headline */}
-                    <h1 className="mx-auto mb-5 max-w-2xl text-[42px] font-black leading-[1.1] tracking-tight text-[#0f172a] sm:text-5xl">
-                        Land more interviews<br />
-                        with a{' '}
-                        <span className="bg-gradient-to-r from-[#5952d2] to-[#4a44b8] bg-clip-text text-transparent">
-                            standout resume
-                        </span>
-                    </h1>
-
-                    {/* Subtext */}
-                    <p className="mx-auto mb-8 max-w-lg text-base leading-relaxed text-[#6b7280] sm:text-lg">
-                        Build a polished resume with 9 ATS-friendly templates, export to PDF or DOCX, and share a live link that shows you exactly who's reading it.
-                    </p>
-
-                    {/* CTAs */}
-                    <div className="mb-3 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                        <Link
-                            href={route(isLoggedIn ? 'dashboard' : 'register')}
-                            className="rounded-xl bg-gradient-to-br from-[#5952d2] to-[#4a44b8] px-7 py-3 text-base font-bold text-white shadow-lg shadow-[#5952d2]/25 hover:opacity-90 transition"
-                        >
-                            Create my resume — it's free →
-                        </Link>
-                        <a
-                            href="#how-it-works"
-                            className="flex items-center gap-2 text-sm font-semibold text-[#6b7280] hover:text-[#0f172a] transition"
-                        >
-                            ▶ See how it works
-                        </a>
-                    </div>
-
-                    {/* Trust note */}
-                    <p className="text-xs text-[#9ca3af]">No credit card required · Free forever plan</p>
-
-                    {/* App screenshot mockup */}
-                    <div
-                        className="relative mx-auto mt-14 max-w-4xl overflow-hidden rounded-xl border border-[#e5e7eb] shadow-2xl shadow-[#5952d2]/10"
-                        onMouseEnter={() => { pausedRef.current = true; }}
-                        onMouseLeave={() => { pausedRef.current = false; }}
-                    >
-                        {/* Window toolbar */}
-                        <div className="flex items-center gap-6 border-b border-[#e5e7eb] bg-white px-4 py-2.5">
-                            <div className="flex gap-1.5">
-                                <span className="h-3 w-3 rounded-full bg-[#ff5f56]" />
-                                <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
-                                <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
+                    <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-12">
+                        <div className="text-left">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-brand-subtle px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+                                Professional resume builder
+                            </span>
+                            <h1 className="mt-5 max-w-xl text-4xl font-black leading-[1.08] tracking-tight text-ink sm:text-5xl">
+                                Land more interviews with a{' '}
+                                <span className="text-brand">standout resume</span>
+                            </h1>
+                            <p className="mt-5 max-w-md text-base leading-relaxed text-ink-muted sm:text-lg">
+                                Build, export, and share a polished resume — free forever. No credit card,
+                                no plan tiers, no watermark.
+                            </p>
+                            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                                <Link
+                                    href={ctaHref}
+                                    className={cn(buttonClassName('default', 'lg'), 'group rounded-full px-7')}
+                                >
+                                    Create my resume
+                                    <span className="flex size-7 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105">
+                                        →
+                                    </span>
+                                </Link>
+                                <a
+                                    href="#how-it-works"
+                                    className="text-sm font-semibold text-ink-muted transition-colors duration-soft ease-soft hover:text-ink"
+                                >
+                                    See how it works
+                                </a>
                             </div>
-                            <div className="flex gap-1">
+                            <p className="mt-4 text-xs text-ink-faint">
+                                Free forever · PDF & DOCX · Share links with optional password
+                            </p>
+                        </div>
+
+                        {/* Product stage */}
+                        <div
+                            className="lg:justify-self-end"
+                            onMouseEnter={() => {
+                                pausedRef.current = true;
+                            }}
+                            onMouseLeave={() => {
+                                pausedRef.current = false;
+                            }}
+                        >
+                            <Shell className="w-full max-w-xl shadow-ambient" innerClassName="overflow-hidden">
+                                <div className="flex items-center gap-3 border-b border-surface-border bg-white px-4 py-2.5">
+                                    <div className="flex gap-1.5">
+                                        <span className="size-2.5 rounded-full bg-danger/70" />
+                                        <span className="size-2.5 rounded-full bg-warning/70" />
+                                        <span className="size-2.5 rounded-full bg-success/70" />
+                                    </div>
+                                    <div className="flex gap-1">
+                                        {SLIDES.map((slide, i) => (
+                                            <button
+                                                key={slide.tab}
+                                                type="button"
+                                                onClick={() => goTo(i)}
+                                                className={cn(
+                                                    'rounded-full px-3 py-1 text-xs font-semibold transition-colors duration-soft ease-soft',
+                                                    i === activeSlide
+                                                        ? 'bg-brand-subtle text-brand'
+                                                        : 'text-ink-faint hover:text-ink-muted',
+                                                )}
+                                            >
+                                                {slide.tab}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="relative h-52 bg-surface sm:h-60">
+                                    <div
+                                        className={cn(
+                                            'absolute inset-0 flex transition-opacity duration-soft ease-soft',
+                                            activeSlide === 0
+                                                ? 'opacity-100'
+                                                : 'pointer-events-none opacity-0',
+                                        )}
+                                    >
+                                        <div className="w-36 shrink-0 border-r border-surface-border bg-white/80 px-3 py-3 sm:w-40">
+                                            <p className="mb-2 text-[9px] font-bold uppercase tracking-widest text-ink-faint">
+                                                Sections
+                                            </p>
+                                            {['Summary', 'Experience', 'Skills'].map((label, i) => (
+                                                <div
+                                                    key={label}
+                                                    className={cn(
+                                                        'mb-1 flex items-center gap-2 rounded-md px-2 py-1.5',
+                                                        i === 0 ? 'bg-brand-subtle' : '',
+                                                    )}
+                                                >
+                                                    <span
+                                                        className={cn(
+                                                            'size-1.5 rounded-full',
+                                                            i === 0 ? 'bg-brand' : 'bg-surface-border',
+                                                        )}
+                                                    />
+                                                    <span
+                                                        className={cn(
+                                                            'text-[10px]',
+                                                            i === 0
+                                                                ? 'font-semibold text-brand'
+                                                                : 'text-ink-muted',
+                                                        )}
+                                                    >
+                                                        {label}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="flex-1 px-5 py-4">
+                                            <p className="text-sm font-bold text-ink">Alex Johnson</p>
+                                            <p className="mb-3 text-xs text-ink-muted">
+                                                Senior Product Manager
+                                            </p>
+                                            <div className="mb-1 h-2 w-full rounded-full bg-brand-subtle" />
+                                            <div className="mb-3 h-2 w-4/5 rounded-full bg-brand-subtle" />
+                                            <div className="mb-1 h-2 w-2/5 rounded-full bg-brand-subtle" />
+                                            <div className="mb-1 h-2 w-full rounded-full bg-white" />
+                                            <div className="h-2 w-3/4 rounded-full bg-white" />
+                                        </div>
+                                    </div>
+                                    <div
+                                        className={cn(
+                                            'absolute inset-0 px-4 py-4 transition-opacity duration-soft ease-soft',
+                                            activeSlide === 1
+                                                ? 'opacity-100'
+                                                : 'pointer-events-none opacity-0',
+                                        )}
+                                    >
+                                        <p className="mb-3 text-[11px] font-bold text-ink">
+                                            Share with a recruiter
+                                        </p>
+                                        <div className="mb-3 rounded-lg border border-surface-border bg-white px-3 py-2">
+                                            <p className="truncate font-mono text-[10px] text-ink-muted">
+                                                resumegen.test/r/a8f3c2…
+                                            </p>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {['Password', 'Email gate', 'Expiry', 'Downloads'].map(
+                                                (label) => (
+                                                    <div
+                                                        key={label}
+                                                        className="rounded-lg border border-surface-border bg-white px-3 py-2"
+                                                    >
+                                                        <p className="text-[10px] font-semibold text-ink">
+                                                            {label}
+                                                        </p>
+                                                        <p className="mt-0.5 text-[9px] text-ink-faint">
+                                                            Optional
+                                                        </p>
+                                                    </div>
+                                                ),
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </Shell>
+                            <div className="mt-3 flex items-center justify-center gap-1.5">
                                 {SLIDES.map((slide, i) => (
                                     <button
                                         key={slide.tab}
+                                        type="button"
                                         onClick={() => goTo(i)}
-                                        className={
-                                            i === activeSlide
-                                                ? 'rounded-md bg-[#e1e5ff] px-3 py-1 text-xs font-bold text-[#5952d2] cursor-pointer'
-                                                : 'px-3 py-1 text-xs text-[#9ca3af] cursor-pointer hover:text-[#6b7280] transition-colors'
-                                        }
+                                        aria-label={`Go to ${slide.label}`}
+                                        className="flex items-center justify-center p-2"
                                     >
-                                        {slide.tab}
+                                        <span
+                                            className={cn(
+                                                'h-1.5 rounded-full transition-all duration-soft ease-soft',
+                                                i === activeSlide
+                                                    ? 'w-5 bg-brand'
+                                                    : 'w-1.5 bg-surface-border hover:bg-ink-faint',
+                                            )}
+                                        />
                                     </button>
                                 ))}
                             </div>
-                        </div>
-                        {/* Slides container */}
-                        <div className="relative h-48 sm:h-56">
-                        {/* Slide 0 — Resume Builder */}
-                        <div className={`absolute inset-0 flex bg-[#f9fafb] transition-opacity duration-500 ${activeSlide === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                            {/* Sidebar */}
-                            <div className="w-36 flex-shrink-0 border-r border-[#f3f4f6] bg-[#fafafa] px-3 py-3 sm:w-44">
-                                <p className="mb-1.5 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Document</p>
-                                <div className="mb-1 flex items-center gap-2 rounded-md bg-[#e1e5ff] px-2 py-1.5">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-[#5952d2]" />
-                                    <span className="text-[10px] font-semibold text-[#5952d2]">Edit Content</span>
-                                </div>
-                                <div className="flex items-center gap-2 px-2 py-1.5">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
-                                    <span className="text-[10px] text-[#6b7280]">Appearance</span>
-                                </div>
-                                <p className="mb-1.5 mt-3 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Export</p>
-                                <div className="flex items-center gap-2 px-2 py-1.5">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
-                                    <span className="text-[10px] text-[#6b7280]">Download PDF</span>
-                                </div>
-                                <div className="flex items-center gap-2 px-2 py-1.5">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-[#e5e7eb]" />
-                                    <span className="text-[10px] text-[#6b7280]">Share Link</span>
-                                </div>
-                            </div>
-                            {/* Editor panel */}
-                            <div className="flex-1 px-5 py-4">
-                                <p className="text-sm font-black text-[#0f172a]">Alex Johnson</p>
-                                <p className="mb-3 text-xs text-[#6b7280]">Senior Product Manager</p>
-                                <p className="mb-1.5 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Summary</p>
-                                <div className="mb-1 h-2 w-full rounded-full bg-[#e1e5ff]" />
-                                <div className="mb-2 h-2 w-4/5 rounded-full bg-[#e1e5ff]" />
-                                <p className="mb-1.5 mt-3 text-[8px] font-bold uppercase tracking-widest text-[#9ca3af]">Experience</p>
-                                <div className="mb-1 h-2 w-2/5 rounded-full bg-[#e1e5ff]" />
-                                <div className="mb-1 h-2 w-full rounded-full bg-[#f3f4f6]" />
-                                <div className="h-2 w-3/4 rounded-full bg-[#f3f4f6]" />
-                            </div>
-                            {/* PDF preview panel */}
-                            <div className="hidden w-44 flex-shrink-0 border-l border-[#f3f4f6] bg-white px-3 py-4 sm:block">
-                                <div className="mb-2 h-3 w-3/4 rounded-full bg-[#e1e5ff]" />
-                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-1.5 w-4/5 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-3 h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-px w-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-1.5 w-full rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-1.5 w-4/5 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-3 h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-px w-full bg-[#f3f4f6]" />
-                                <div className="mb-1 h-1.5 w-4/5 rounded-full bg-[#f3f4f6]" />
-                                <div className="h-1.5 w-3/5 rounded-full bg-[#f3f4f6]" />
-                            </div>
-                        </div>
-                        {/* end slide 0 */}
-                        {/* Slide 1 — Share Analytics */}
-                        <div className={`absolute inset-0 bg-[#f9fafb] px-4 py-3 transition-opacity duration-500 ${activeSlide === 1 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                            <div className="mb-2.5 flex items-center justify-between">
-                                <p className="text-[11px] font-black text-[#0f172a]">Share Links</p>
-                                <span className="rounded-md bg-gradient-to-br from-[#5952d2] to-[#4a44b8] px-2 py-0.5 text-[8px] font-bold text-white">+ New link</span>
-                            </div>
-                            {/* Stat row */}
-                            <div className="mb-2.5 grid grid-cols-3 gap-2">
-                                {[
-                                    { n: '48', l: 'views' },
-                                    { n: '31', l: 'visitors' },
-                                    { n: '3', l: 'questions' },
-                                ].map(({ n, l }) => (
-                                    <div key={l} className="rounded-md border border-[#e5e7eb] bg-white px-2 py-1.5">
-                                        <p className="text-[11px] font-black leading-none text-[#0f172a]">{n}</p>
-                                        <p className="mt-0.5 text-[7px] font-bold uppercase tracking-widest text-[#9ca3af]">{l}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            {/* Table header */}
-                            <div className="grid grid-cols-4 border-b border-[#e5e7eb] pb-1 text-[7px] font-bold uppercase tracking-widest text-[#9ca3af]">
-                                <span className="col-span-2">Link</span><span>Views</span><span>Last seen</span>
-                            </div>
-                            {/* Row 1 */}
-                            <div className="grid grid-cols-4 items-center border-b border-[#f3f4f6] py-1.5 text-[8px] text-[#374151]">
-                                <span className="col-span-2 font-bold">Recruiter — Google</span>
-                                <span>21</span>
-                                <span>2h ago</span>
-                            </div>
-                            {/* Row 2 */}
-                            <div className="grid grid-cols-4 items-center border-b border-[#f3f4f6] py-1.5 text-[8px] text-[#374151]">
-                                <span className="col-span-2 font-bold">LinkedIn profile</span>
-                                <span>19</span>
-                                <span>Yesterday</span>
-                            </div>
-                            {/* Row 3 */}
-                            <div className="grid grid-cols-4 items-center py-1.5 text-[8px] text-[#374151]">
-                                <span className="col-span-2 font-bold">Referral — Stripe</span>
-                                <span>8</span>
-                                <span>3d ago</span>
-                            </div>
-                        </div>
+                            <p className="text-center text-xs font-semibold text-brand">
+                                {SLIDES[activeSlide].label}
+                            </p>
                         </div>
                     </div>
-
-                    {/* Carousel dot indicators */}
-                    <div className="mt-4 flex items-center justify-center gap-1.5">
-                        {SLIDES.map((slide, i) => (
-                            <button
-                                key={slide.tab}
-                                onClick={() => goTo(i)}
-                                aria-label={`Go to ${slide.label}`}
-                                className="flex items-center justify-center p-2"
-                            >
-                                <span
-                                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                                        i === activeSlide
-                                            ? 'w-5 bg-[#5952d2]'
-                                            : 'w-1.5 bg-[#d1d5db] hover:bg-[#9691e2]'
-                                    }`}
-                                />
-                            </button>
-                        ))}
-                    </div>
-                    {/* Slide label */}
-                    <p className="mt-1.5 min-h-[18px] text-center text-xs font-bold text-[#5952d2]">
-                        {SLIDES[activeSlide].label}
-                    </p>
                 </section>
 
-                {/* ── Social proof bar ──────────────────────────── */}
-                <div className="border-y border-[#f1f5f9] bg-[#f8fafc] py-4 px-6">
-                    <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-10 gap-y-3">
+                {/* Proof strip */}
+                <div className="border-y border-surface-border/80 bg-white/70 py-4">
+                    <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-4">
                         {[
-                            { num: 'No card', label: 'needed to start' },
-                            { num: '9',      label: 'resume templates' },
-                            { num: 'Free',   label: 'to get started' },
-                            { num: '∞',      label: 'free — no plans' },
+                            { num: 'Free', label: 'forever' },
+                            { num: '4', label: 'templates' },
+                            { num: 'PDF + DOCX', label: 'export' },
+                            { num: 'No card', label: 'required' },
                         ].map(({ num, label }) => (
-                            <div key={label} className="flex items-center gap-2">
-                                <span className="text-lg font-black text-[#0f172a]">{num}</span>
-                                <span className="text-sm text-[#9ca3af]">{label}</span>
+                            <div key={label} className="flex items-baseline gap-2">
+                                <span className="text-base font-black text-ink">{num}</span>
+                                <span className="text-sm text-ink-faint">{label}</span>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* ── How it works ──────────────────────────────── */}
-                <section id="how-it-works" className="bg-white px-6 py-20">
-                    <div className="mx-auto max-w-4xl">
-                        <h2 className="mb-2 text-center text-3xl font-black tracking-tight text-[#0f172a]">
-                            Get hired in 3 steps
-                        </h2>
-                        <p className="mb-14 text-center text-sm text-[#6b7280]">
-                            From blank page to interview-ready in minutes
+                {/* How it works */}
+                <section id="how-it-works" className="px-4 py-20 sm:px-6 sm:py-24">
+                    <div className="mx-auto max-w-5xl">
+                        <p className="text-center text-[10px] font-bold uppercase tracking-[0.18em] text-ink-faint">
+                            How it works
                         </p>
-                        <div className="relative grid grid-cols-1 gap-12 sm:grid-cols-3">
-                            {/* Connector line (desktop only) */}
-                            <div className="pointer-events-none absolute left-[calc(16.67%+22px)] right-[calc(16.67%+22px)] top-[22px] hidden h-px bg-gradient-to-r from-[#c7c4ee] via-[#9691e2] to-[#c7c4ee] sm:block" />
-                            {[
-                                {
-                                    n: '1',
-                                    title: 'Pick a template',
-                                    desc: 'Start from any of 9 ATS-friendly templates and fill in your details in a live side-by-side editor.',
-                                },
-                                {
-                                    n: '2',
-                                    title: 'Craft your content',
-                                    desc: 'Write strong bullet points and a compelling summary. Choose from 9 professional templates to make it stand out.',
-                                },
-                                {
-                                    n: '3',
-                                    title: 'Share & apply',
-                                    desc: 'Download as PDF or DOCX, or share a live public link recruiters can view anytime.',
-                                },
-                            ].map(({ n, title, desc }) => (
-                                <div key={n} className="relative text-center">
-                                    <div className="relative z-10 mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-[#5952d2] to-[#4a44b8] shadow-lg shadow-[#5952d2]/30">
-                                        <span className="text-base font-black text-white">{n}</span>
-                                    </div>
-                                    <h3 className="mb-2 text-[15px] font-black text-[#0f172a]">{title}</h3>
-                                    <p className="text-sm leading-relaxed text-[#6b7280]">{desc}</p>
-                                </div>
+                        <h2 className="mt-2 text-center text-3xl font-black tracking-tight text-ink">
+                            Interview-ready in three steps
+                        </h2>
+                        <p className="mx-auto mt-3 max-w-lg text-center text-sm text-ink-muted">
+                            From blank page to download or share link — without a paywall.
+                        </p>
+                        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            {STEPS.map(({ n, title, desc }) => (
+                                <Shell key={n} innerClassName="h-full p-6 text-left">
+                                    <span className="flex size-10 items-center justify-center rounded-full bg-brand text-sm font-black text-white shadow-shell">
+                                        {n}
+                                    </span>
+                                    <h3 className="mt-4 text-[15px] font-bold text-ink">{title}</h3>
+                                    <p className="mt-2 text-sm leading-relaxed text-ink-muted">{desc}</p>
+                                </Shell>
                             ))}
                         </div>
                     </div>
                 </section>
 
-                {/* ── Features ──────────────────────────────────── */}
-                <section id="features" className="border-t border-[#e5e7eb] bg-[#fafafe] px-6 py-20">
-                    <div className="mx-auto max-w-4xl">
-                        <h2 className="mb-2 text-center text-3xl font-black tracking-tight text-[#0f172a]">
-                            Everything you need to get the job
-                        </h2>
-                        <p className="mb-14 text-center text-sm text-[#6b7280]">
-                            Built for job seekers who want an edge
+                {/* Features bento */}
+                <section id="features" className="border-t border-surface-border/80 bg-white px-4 py-20 sm:px-6 sm:py-24">
+                    <div className="mx-auto max-w-5xl">
+                        <p className="text-center text-[10px] font-bold uppercase tracking-[0.18em] text-ink-faint">
+                            Features
                         </p>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            {[
-                                {
-                                    icon: '✦',
-                                    title: '9 Professional Templates',
-                                    desc: 'From Classic and ATS-optimized to Modern, Executive, and Bold — all 9 free.',
-                                    tag: 'All 9 free',
-                                },
-                                {
-                                    icon: '◈',
-                                    title: 'PDF & DOCX Export',
-                                    desc: 'Download your resume as a print-ready PDF or an editable DOCX — no watermarks, no limits.',
-                                    tag: 'Free',
-                                },
-                                {
-                                    icon: '⇗',
-                                    title: 'Public Share Links',
-                                    desc: 'Share a live link to your resume. Recruiters can view, leave questions, and download — you get notified instantly.',
-                                    tag: 'Free',
-                                },
-                                {
-                                    icon: '📊',
-                                    title: 'Share Analytics',
-                                    desc: 'See how many people opened your link, which sections they spent longest on, and when they last looked.',
-                                    tag: 'Free',
-                                },
-                            ].map(({ icon, title, desc, tag }) => (
-                                <div
+                        <h2 className="mt-2 text-center text-3xl font-black tracking-tight text-ink">
+                            Everything you need to apply with confidence
+                        </h2>
+                        <p className="mx-auto mt-3 max-w-lg text-center text-sm text-ink-muted">
+                            Built for job seekers who want a sharp document — not another subscription.
+                        </p>
+                        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            {FEATURES.map(({ title, desc, tag, span }) => (
+                                <Shell
                                     key={title}
-                                    className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+                                    className={span}
+                                    innerClassName="flex h-full flex-col p-6"
                                 >
-                                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#5952d2] to-[#4a44b8] text-lg">
-                                        {icon}
-                                    </div>
-                                    <h3 className="mb-2 text-[15px] font-black text-[#0f172a]">{title}</h3>
-                                    <p className="mb-3 text-sm leading-relaxed text-[#6b7280]">{desc}</p>
-                                    <span className="inline-block rounded-full bg-[#e1e5ff] px-2.5 py-0.5 text-[11px] font-bold text-[#4a44b8]">
+                                    <span className="inline-flex w-fit rounded-full bg-brand-subtle px-2.5 py-0.5 text-[11px] font-bold text-brand">
                                         {tag}
                                     </span>
-                                </div>
+                                    <h3 className="mt-4 text-[15px] font-bold text-ink">{title}</h3>
+                                    <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-muted">
+                                        {desc}
+                                    </p>
+                                </Shell>
                             ))}
                         </div>
                     </div>
                 </section>
 
-                {/* ── Pricing ───────────────────────────────────── */}
-                <section id="pricing" className="border-t border-[#e5e7eb] bg-white px-6 py-20">
-                    <div className="mx-auto max-w-2xl text-center">
-                        <h2 className="mb-2 text-3xl font-black tracking-tight text-[#0f172a]">
+                {/* Pricing — free forever */}
+                <section id="pricing" className="border-t border-surface-border/80 px-4 py-20 sm:px-6 sm:py-24">
+                    <div className="mx-auto max-w-lg text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-faint">
+                            Pricing
+                        </p>
+                        <h2 className="mt-2 text-3xl font-black tracking-tight text-ink">
                             Free. All of it.
                         </h2>
-                        <p className="mb-10 text-sm text-[#6b7280]">
-                            Every feature, every template, no plan to pick and nothing to pay.
+                        <p className="mt-3 text-sm text-ink-muted">
+                            Every feature, every template — no plan to pick and nothing to pay.
                         </p>
-
-                        <div className="rounded-2xl border-2 border-[#5952d2] p-8 shadow-lg shadow-[#5952d2]/10">
-                            <div className="mb-1 flex items-end justify-center gap-1">
-                                <span className="text-5xl font-black leading-none text-[#0f172a]">$0</span>
+                        <Shell className="mt-10 text-left" innerClassName="p-8">
+                            <div className="flex items-end gap-1">
+                                <span className="text-5xl font-black leading-none text-ink">$0</span>
+                                <span className="mb-1 text-sm text-ink-faint">forever</span>
                             </div>
-                            <p className="mb-6 text-xs text-[#9ca3af]">No card, no trial, no upsell</p>
-                            <ul className="mx-auto mb-8 grid max-w-md grid-cols-1 gap-2 text-left sm:grid-cols-2">
+                            <p className="mt-2 text-xs text-ink-faint">No card, no trial, no upsell</p>
+                            <ul className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
                                 {[
                                     'Unlimited resumes',
-                                    'All 9 templates',
+                                    'All templates',
                                     'PDF + DOCX export',
-                                    'Public share links',
-                                ].map((f) => (
-                                    <li key={f} className="flex items-center gap-2 text-sm text-[#374151]">
-                                        <span className="text-[11px] font-black text-[#5952d2]">✓</span> {f}
+                                    'Gated share links',
+                                ].map((item) => (
+                                    <li key={item} className="flex items-center gap-2 text-sm text-ink">
+                                        <span className="text-brand" aria-hidden>
+                                            ✓
+                                        </span>
+                                        {item}
                                     </li>
                                 ))}
                             </ul>
                             <Link
                                 href={ctaHref}
-                                className="block rounded-lg bg-gradient-to-br from-[#5952d2] to-[#4a44b8] py-2.5 text-center text-sm font-bold text-white shadow-md shadow-[#5952d2]/30 hover:opacity-90 transition"
+                                className={cn(
+                                    buttonClassName('default'),
+                                    'mt-8 flex w-full justify-center rounded-full',
+                                )}
                             >
                                 Get started free
                             </Link>
-                        </div>
+                        </Shell>
                     </div>
                 </section>
 
-                {/* ── Footer CTA ────────────────────────────────── */}
-                <section className="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] px-6 py-16 text-center">
-                    <h2 className="mb-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
-                        Ready to land your next interview?
-                    </h2>
-                    <p className="mb-8 text-sm text-[#c7c4ee]">
-                        Join thousands of job seekers who built their resume with Resumegen
-                    </p>
-                    <Link
-                        href={ctaHref}
-                        className="inline-block rounded-xl bg-white px-8 py-3 text-sm font-black text-[#5952d2] hover:bg-[#e1e5ff] transition"
+                {/* Closing CTA */}
+                <section className="px-4 pb-20 sm:px-6">
+                    <Shell
+                        className="mx-auto max-w-5xl"
+                        innerClassName="bg-ink px-6 py-14 text-center sm:px-10"
                     >
-                        Create my resume — it's free →
-                    </Link>
+                        <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+                            Ready for the next interview?
+                        </h2>
+                        <p className="mx-auto mt-3 max-w-md text-sm text-white/70">
+                            Build a resume you are proud to send — then export or share in one click.
+                        </p>
+                        <Link
+                            href={ctaHref}
+                            className={cn(
+                                buttonClassName('secondary', 'lg'),
+                                'mt-8 inline-flex rounded-full bg-white text-brand hover:bg-brand-subtle',
+                            )}
+                        >
+                            Create my resume
+                        </Link>
+                    </Shell>
                 </section>
 
-                {/* ── Footer ────────────────────────────────────── */}
-                <footer className="bg-[#0f172a] px-6 py-5">
+                <footer className="border-t border-surface-border/80 px-4 py-6 sm:px-6">
                     <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 sm:flex-row">
-                        <span className="text-sm font-black text-white">Resumegen</span>
-                        <span className="text-xs text-[#4b5563]">© {new Date().getFullYear()} Resumegen. All rights reserved.</span>
-                        <div className="flex gap-5">
-                            <span className="text-xs text-[#6b7280] cursor-pointer hover:text-[#9ca3af] transition">Privacy</span>
-                            <span className="text-xs text-[#6b7280] cursor-pointer hover:text-[#9ca3af] transition">Terms</span>
-                            <span className="text-xs text-[#6b7280] cursor-pointer hover:text-[#9ca3af] transition">Contact</span>
+                        <span className="text-sm font-bold text-ink">Resumegen</span>
+                        <span className="text-xs text-ink-faint">
+                            © {new Date().getFullYear()} Resumegen. All rights reserved.
+                        </span>
+                        <div className="flex gap-5 text-xs text-ink-muted">
+                            <span>Privacy</span>
+                            <span>Terms</span>
+                            <span>Contact</span>
                         </div>
                     </div>
                 </footer>
-
             </div>
         </>
     );
