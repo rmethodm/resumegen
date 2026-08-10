@@ -270,19 +270,44 @@ export default function JobApplicationKanban({
                     </Button>
                 </div>
 
-                <DndContext onDragEnd={onDragEnd}>
-                    <div className="flex gap-3 overflow-x-auto pb-4">
-                        {COLUMNS.map((column) => (
-                            <Column
-                                key={column.status}
-                                status={column.status}
-                                label={column.label}
-                                jobs={applications.filter((job) => job.status === column.status)}
-                                resumesById={resumesById}
-                            />
-                        ))}
-                    </div>
-                </DndContext>
+                {applications.length === 0 ? (
+                    <Shell innerClassName="px-6 py-14 text-center sm:px-10">
+                        <span className="inline-flex items-center rounded-full bg-brand-subtle px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+                            Pipeline
+                        </span>
+                        <h3 className="mt-4 text-lg font-bold tracking-tight text-ink">
+                            No applications yet
+                        </h3>
+                        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ink-muted">
+                            Track roles from Saved through Offer. Add your first application, then
+                            drag cards across columns as you move through the process.
+                        </p>
+                        <Button
+                            type="button"
+                            onClick={openCreate}
+                            className="group mt-6 rounded-full"
+                        >
+                            New application
+                            <span className="flex size-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105">
+                                +
+                            </span>
+                        </Button>
+                    </Shell>
+                ) : (
+                    <DndContext onDragEnd={onDragEnd}>
+                        <div className="flex gap-3 overflow-x-auto pb-4">
+                            {COLUMNS.map((column) => (
+                                <Column
+                                    key={column.status}
+                                    status={column.status}
+                                    label={column.label}
+                                    jobs={applications.filter((job) => job.status === column.status)}
+                                    resumesById={resumesById}
+                                />
+                            ))}
+                        </div>
+                    </DndContext>
+                )}
             </div>
 
             <Modal show={form !== null} onClose={closeForm} maxWidth="lg" title={form?.id ? 'Edit application' : 'New application'}>

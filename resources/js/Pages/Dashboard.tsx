@@ -39,7 +39,7 @@ function ShareStatus({
         return (
             <span
                 className={cn(
-                    'inline-flex items-center gap-1 text-gray-400',
+                    'inline-flex items-center gap-1 text-ink-faint',
                     compact ? 'text-[10px]' : 'text-[11px]',
                 )}
             >
@@ -91,7 +91,7 @@ function ShareStatus({
     return (
         <span
             className={cn(
-                'inline-flex min-w-0 items-center gap-1.5 text-gray-600',
+                'inline-flex min-w-0 items-center gap-1.5 text-ink-muted',
                 compact ? 'text-[10px]' : 'text-[11px]',
             )}
         >
@@ -99,21 +99,21 @@ function ShareStatus({
             <button
                 type="button"
                 onClick={onOpenShare}
-                className="truncate font-medium text-gray-700 underline-offset-2 hover:text-brand hover:underline"
+                className="truncate font-medium text-ink underline-offset-2 hover:text-brand hover:underline"
             >
                 Shared
             </button>
-            <span className="truncate text-gray-500">· {viewsLabel}</span>
+            <span className="truncate text-ink-muted">· {viewsLabel}</span>
             {share.require_password && (
                 <LockClosedIcon
-                    className={cn('shrink-0 text-gray-400', compact ? 'size-3' : 'size-3.5')}
+                    className={cn('shrink-0 text-ink-faint', compact ? 'size-3' : 'size-3.5')}
                     title="Password protected"
                     aria-label="Password protected"
                 />
             )}
             {share.require_email && (
                 <EnvelopeIcon
-                    className={cn('shrink-0 text-gray-400', compact ? 'size-3' : 'size-3.5')}
+                    className={cn('shrink-0 text-ink-faint', compact ? 'size-3' : 'size-3.5')}
                     title="Email required"
                     aria-label="Email required"
                 />
@@ -131,7 +131,14 @@ function ShareStatus({
     );
 }
 
-function ResumeCard({ resume }: { resume: ResumeSummary }) {
+function ResumeCard({
+    resume,
+    compact = false,
+}: {
+    resume: ResumeSummary;
+    /** Denser row for secondary list items after the first. */
+    compact?: boolean;
+}) {
     const [expanded, setExpanded] = useState(false);
     // Badge props stay lean; full modal payload is fetched when the id is set.
     // Re-fetch when `resume` updates after Inertia `back()` from modal actions.
@@ -220,39 +227,72 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
     return (
         <>
         <Shell innerClassName="overflow-hidden">
-            <div className="flex items-center gap-4 p-4">
-                <ScoreDial score={resume.score} size={48} />
+            <div
+                className={cn(
+                    'flex items-center gap-3 sm:gap-4',
+                    compact ? 'px-3.5 py-3' : 'p-4',
+                )}
+            >
+                <ScoreDial score={resume.score} size={compact ? 40 : 48} />
                 <div className="min-w-0 flex-1">
-                    <Link
-                        href={route('resumes.workstation', resume.id)}
-                        className="truncate text-sm font-semibold text-ink hover:text-brand"
-                    >
-                        {resume.title}
-                    </Link>
-                    <p className="mt-0.5 truncate text-xs text-gray-500">
+                    <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
+                        <Link
+                            href={route('resumes.workstation', resume.id)}
+                            className={cn(
+                                'truncate font-semibold text-ink hover:text-brand',
+                                compact ? 'text-[13px]' : 'text-sm',
+                            )}
+                        >
+                            {resume.title}
+                        </Link>
+                        {resume.share !== null && (
+                            <span
+                                className={cn(
+                                    'rounded-full px-1.5 py-0.5 text-[10px] font-semibold',
+                                    resume.share.is_expired
+                                        ? 'bg-warning-subtle text-warning-text'
+                                        : 'bg-brand-subtle text-brand',
+                                )}
+                            >
+                                {resume.share.is_expired ? 'Expired link' : 'Shared'}
+                            </span>
+                        )}
+                    </div>
+                    <p className="mt-0.5 truncate text-xs text-ink-muted">
                         {resume.target_role || 'No target role set'}
                         {resume.updated_at && ` · Updated ${resume.updated_at}`}
                     </p>
-                    <div className="mt-1">
-                        <ShareStatus
-                            share={resume.share}
-                            onOpenShare={() => setShareModalResumeId(resume.id)}
-                        />
-                    </div>
+                    {!compact && (
+                        <div className="mt-1">
+                            <ShareStatus
+                                share={resume.share}
+                                onOpenShare={() => setShareModalResumeId(resume.id)}
+                            />
+                        </div>
+                    )}
+                    {compact && resume.share !== null && (
+                        <div className="mt-0.5">
+                            <ShareStatus
+                                share={resume.share}
+                                compact
+                                onOpenShare={() => setShareModalResumeId(resume.id)}
+                            />
+                        </div>
+                    )}
                 </div>
-                <Menu as="div" className="relative">
+                <Menu as="div" className={cn('relative', compact && 'hidden sm:block')}>
                     <MenuButton className={buttonClassName('outline', 'sm')}>
                         Download
                         <ChevronDownIcon className="size-3.5" />
                     </MenuButton>
                     <MenuItems
                         anchor="bottom end"
-                        className="z-50 w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                        className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                     >
                         <MenuItem>
                             <a
                                 href={route('resumes.download', resume.id)}
-                                className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 Download PDF
                             </a>
@@ -260,7 +300,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                         <MenuItem>
                             <a
                                 href={route('resumes.download-docx', resume.id)}
-                                className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 Download DOCX
                             </a>
@@ -276,13 +316,13 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                 <Menu as="div" className="relative">
                     <MenuButton
                         aria-label={`Actions for ${resume.title}`}
-                        className="p-1 text-gray-500 hover:text-gray-900"
+                        className="p-1 text-ink-muted hover:text-ink"
                     >
                         <EllipsisVerticalIcon className="size-5" />
                     </MenuButton>
                     <MenuItems
                         anchor="bottom end"
-                        className="z-50 w-56 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                        className="z-50 w-56 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                     >
                         <MenuItem>
                             <button
@@ -294,7 +334,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                         ? 'This resume already has a share link'
                                         : 'Create a share link'
                                 }
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
+                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
                             >
                                 <ShareIcon className="size-4" />
                                 Share
@@ -309,7 +349,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                             route('resume-groups.compare', resume.group_id),
                                         )
                                     }
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     <ArrowsRightLeftIcon className="size-4" />
                                     Compare versions
@@ -328,9 +368,9 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                 </button>
                             </MenuItem>
                         )}
-                        <div className="my-1 border-t border-gray-200" />
+                        <div className="my-1 border-t border-surface-border" />
                         <div className="px-2 py-1.5">
-                            <p className="mb-1 text-[10px] font-semibold text-gray-500 uppercase">
+                            <p className="mb-1 text-[10px] font-semibold text-ink-muted uppercase">
                                 Rename
                             </p>
                             <input
@@ -343,7 +383,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                         event.currentTarget.blur();
                                     }
                                 }}
-                                className="w-full rounded border border-gray-300 px-2 py-1 text-xs"
+                                className="w-full rounded border border-surface-border px-2 py-1 text-xs"
                             />
                         </div>
                     </MenuItems>
@@ -351,11 +391,11 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
             </div>
 
             {hasVersions && (
-                <div className="border-t border-gray-100">
+                <div className="border-t border-surface-border/80">
                     <button
                         type="button"
                         onClick={() => setExpanded(!expanded)}
-                        className="w-full px-4 py-1.5 text-left text-xs font-medium text-gray-500 hover:text-gray-900"
+                        className="w-full px-4 py-1.5 text-left text-xs font-medium text-ink-muted hover:text-ink"
                     >
                         {expanded ? 'Hide' : 'Show'} {resume.versions.length} versions
                     </button>
@@ -364,7 +404,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                             {resume.versions.map((version) => (
                                 <div
                                     key={version.id}
-                                    className="flex items-center gap-2.5 px-4 py-2 pl-10 hover:bg-gray-50"
+                                    className="flex items-center gap-2.5 px-4 py-2 pl-10 hover:bg-surface/60"
                                 >
                                     <span
                                         aria-hidden="true"
@@ -377,7 +417,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                         <span className="block truncate text-[12px] font-semibold">
                                             {version.title}
                                             {version.target_company && (
-                                                <span className="ml-1.5 font-normal text-gray-500">
+                                                <span className="ml-1.5 font-normal text-ink-muted">
                                                     — {version.target_company}
                                                 </span>
                                             )}
@@ -392,7 +432,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                             />
                                         </div>
                                     </div>
-                                    <span className="text-[11px] text-gray-500">
+                                    <span className="text-[11px] text-ink-muted">
                                         {version.score}/100
                                     </span>
                                     <Link
@@ -406,7 +446,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                         disabled={version.is_base}
                                         onClick={() => deleteVersion(version.id, version.title)}
                                         aria-label={`Delete ${version.title}`}
-                                        className="text-gray-400 hover:text-danger disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="text-ink-faint hover:text-danger disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         <TrashIcon className="size-4" />
                                     </button>
@@ -499,7 +539,7 @@ export default function Dashboard({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold text-gray-800">
+                <h2 className="text-xl font-semibold text-ink">
                     Dashboard
                 </h2>
             }
@@ -597,9 +637,13 @@ export default function Dashboard({
                             {resumes && resumes.length === 0 ? (
                                 <EmptyResumes onCreate={() => setNewResumeOpen(true)} />
                             ) : (
-                                <div className="flex flex-col gap-3">
-                                    {resumes?.map((resume) => (
-                                        <ResumeCard key={resume.id} resume={resume} />
+                                <div className="flex flex-col gap-2.5">
+                                    {resumes?.map((resume, index) => (
+                                        <ResumeCard
+                                            key={resume.id}
+                                            resume={resume}
+                                            compact={index > 0}
+                                        />
                                     ))}
                                 </div>
                             )}
