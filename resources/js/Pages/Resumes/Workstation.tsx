@@ -718,11 +718,12 @@ export default function Workstation({
 
                 <div
                     className={cn(
-                        'mx-auto flex w-full max-w-6xl flex-col gap-5 px-3 pb-5 sm:px-4 lg:flex-row lg:items-start lg:gap-5',
+                        'px-3 pb-5 sm:px-4',
                         '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
                         '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
+                <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 lg:flex-row lg:items-start lg:gap-5">
                     <SectionPanel
                         resumeId={id}
                         analysis={liveAnalysis}
@@ -813,6 +814,7 @@ export default function Workstation({
                             )}
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
 
