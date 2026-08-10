@@ -1,8 +1,7 @@
 import { Head, Link, router, useHttp } from '@inertiajs/react';
 import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
+import { Button } from '@/Components/ui/button';
 
 // ponytail: resume matching, gap analysis, tailoring, and cover letters are
 // all removed features (see CLAUDE.md "Removed Features") — those actions
@@ -159,11 +158,11 @@ export default function JobImportsPage({
                             {jobs.length} jobs
                         </span>
                         <div className="ml-auto flex gap-2">
-                            <SecondaryButton onClick={() => setSearchOpen((v) => !v)}>
+                            <Button variant="outline" onClick={() => setSearchOpen((v) => !v)}>
                                 {searchOpen ? 'Close search' : 'Search jobs'}
-                            </SecondaryButton>
+                            </Button>
                             <Link href={route('profile.edit')}>
-                                <PrimaryButton type="button">Get browser extension</PrimaryButton>
+                                <Button type="button">Get browser extension</Button>
                             </Link>
                         </div>
                     </div>
@@ -192,13 +191,13 @@ export default function JobImportsPage({
                                         className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
                                     />
                                 </div>
-                                <PrimaryButton type="submit" disabled={processing}>
+                                <Button type="submit" disabled={processing}>
                                     {processing ? 'Searching…' : 'Search'}
-                                </PrimaryButton>
+                                </Button>
                                 {selectedResults.size > 0 && (
-                                    <SecondaryButton type="button" onClick={importSelected} disabled={importing}>
+                                    <Button variant="outline" type="button" onClick={importSelected} disabled={importing}>
                                         {importing ? 'Importing…' : `Import ${selectedResults.size} selected`}
-                                    </SecondaryButton>
+                                    </Button>
                                 )}
                             </form>
 
@@ -336,20 +335,21 @@ export default function JobImportsPage({
                                         </select>
                                     </div>
 
-                                    <PrimaryButton
+                                    <Button
                                         type="button"
                                         className="w-full justify-center"
                                         onClick={stub('resume tailoring')}
                                     >
                                         Tailor resume to this job
-                                    </PrimaryButton>
-                                    <SecondaryButton
+                                    </Button>
+                                    <Button
                                         type="button"
+                                        variant="outline"
                                         className="w-full justify-center"
                                         onClick={stub('cover letter drafting')}
                                     >
                                         Draft cover letter
-                                    </SecondaryButton>
+                                    </Button>
                                 </>
                             ) : (
                                 <div className="flex flex-1 items-center justify-center px-6 text-center text-xs font-medium text-gray-400">

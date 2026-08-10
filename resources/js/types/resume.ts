@@ -156,14 +156,24 @@ export type ResumeAnalysis = {
 };
 
 /**
- * Share payload on dashboard cards — full modal fields plus expiry flag.
+ * Badge-level share status on dashboard cards — no password, no view rows.
+ * Full modal payload is loaded on demand via `resumes.share.show`.
  * Null when the resume has never had a share link created.
  */
-export type DashboardShareInfo = ResumeShareLink & {
+export type DashboardShareBadge = {
+    id: number;
+    url: string;
+    require_password: boolean;
+    require_email: boolean;
+    expires_at: string | null;
+    view_count: number;
     is_expired: boolean;
 };
 
-/** A dashboard row: enough to list, rank, and render a card preview. */
+/** @deprecated Prefer DashboardShareBadge — kept as an alias for older imports. */
+export type DashboardShareInfo = DashboardShareBadge;
+
+/** A dashboard row: enough to list, rank, and open the share modal. */
 export type ResumeSummary = {
     id: number;
     group_id: number;
@@ -173,17 +183,15 @@ export type ResumeSummary = {
     score: number;
     version_count: number;
     /** Share status for the newest version (card row). */
-    share: DashboardShareInfo | null;
+    share: DashboardShareBadge | null;
     versions: {
         id: number;
         title: string;
         target_company: string | null;
         score: number;
         is_base: boolean;
-        share: DashboardShareInfo | null;
+        share: DashboardShareBadge | null;
     }[];
-    /** The full document, for the dashboard card's live preview thumbnail. */
-    preview: Resume;
 };
 
 /** One entry in the workstation's version switcher. */

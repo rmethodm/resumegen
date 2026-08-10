@@ -5,13 +5,12 @@ import {
     Transition,
     TransitionChild,
 } from '@headlessui/react';
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode, useId } from 'react';
 
 /**
- * The one shared modal shell. `title`/`description`/`footer` render a
- * sticky header and border-top footer around a scrolling body — pass them
- * to get the standard picker/share-style layout. Omit them (raw `children`
- * only) for simple confirm-style dialogs that manage their own layout.
+ * The one shared modal shell. Optional `title` / `description` / `footer` render
+ * as sticky header and border-top footer around a scrolling body. Omit them for
+ * simple confirm-style dialogs that manage their own layout — still one tree.
  */
 export default function Modal({
     children,
@@ -26,7 +25,7 @@ export default function Modal({
     show: boolean;
     maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
     closeable?: boolean;
-    onClose: CallableFunction;
+    onClose: () => void;
     title?: ReactNode;
     description?: ReactNode;
     footer?: ReactNode;
@@ -46,7 +45,9 @@ export default function Modal({
         '3xl': 'sm:max-w-3xl',
     }[maxWidth];
 
-    const hasChrome = title !== undefined || footer !== undefined;
+    const descriptionId = useId();
+    const hasDescription = description !== undefined;
+    const hasHeader = title !== undefined || hasDescription;
 
     return (
         <Transition show={show} leave="duration-200">
@@ -55,6 +56,7 @@ export default function Modal({
                 id="modal"
                 className="fixed inset-0 z-50 flex transform items-center overflow-y-auto px-4 py-6 transition-all sm:px-0"
                 onClose={close}
+                aria-describedby={hasDescription ? descriptionId : undefined}
             >
                 <TransitionChild
                     enter="ease-out duration-300"
@@ -76,37 +78,36 @@ export default function Modal({
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95 motion-reduce:translate-y-0 motion-reduce:scale-100"
                 >
                     <DialogPanel
-                        className={
-                            hasChrome
-                                ? `mb-6 flex max-h-[85dvh] w-full transform flex-col overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto ${maxWidthClass}`
-                                : `mb-6 w-full transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto ${maxWidthClass}`
-                        }
+                        className={`mb-6 flex max-h-[85dvh] w-full transform flex-col overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto ${maxWidthClass}`}
                     >
-                        {hasChrome ? (
-                            <>
+                        {hasHeader && (
+                            <div className="border-b border-gray-200 px-5 py-4">
                                 {title !== undefined && (
-                                    <div className="border-b border-gray-200 px-5 py-4">
-                                        <DialogTitle className="text-sm font-bold text-gray-900">
-                                            {title}
-                                        </DialogTitle>
-                                        {description !== undefined && (
-                                            <p className="mt-1 text-xs text-gray-500">
-                                                {description}
-                                            </p>
-                                        )}
-                                    </div>
+                                    <DialogTitle className="text-sm font-bold text-gray-900">
+                                        {title}
+                                    </DialogTitle>
                                 )}
-                                <div className="flex-1 overflow-y-auto">
-                                    {children}
-                                </div>
-                                {footer !== undefined && (
-                                    <div className="border-t border-gray-200 px-5 py-3">
-                                        {footer}
-                                    </div>
+                                {hasDescription && (
+                                    <p
+                                        id={descriptionId}
+                                        className={
+                                            title !== undefined
+                                                ? 'mt-1 text-xs text-gray-500'
+                                                : 'text-xs text-gray-500'
+                                        }
+                                    >
+                                        {description}
+                                    </p>
                                 )}
-                            </>
-                        ) : (
-                            children
+                            </div>
+                        )}
+                        <div className="min-h-0 flex-1 overflow-y-auto">
+                            {children}
+                        </div>
+                        {footer !== undefined && (
+                            <div className="border-t border-gray-200 px-5 py-3">
+                                {footer}
+                            </div>
                         )}
                     </DialogPanel>
                 </TransitionChild>

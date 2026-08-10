@@ -1,7 +1,6 @@
-import PrimaryButton from '@/Components/PrimaryButton';
-import DangerButton from '@/Components/DangerButton';
 import { router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import { Button } from '@/Components/ui/button';
 
 type ExtensionToken = {
     id: number;
@@ -80,21 +79,21 @@ export default function ExtensionTokensForm({
                         {plainToken}
                     </code>
                     <div className="mt-3 flex flex-wrap gap-2">
-                        <PrimaryButton type="button" onClick={copyToken}>
+                        <Button type="button" onClick={copyToken}>
                             {copied ? 'Copied' : 'Copy token'}
-                        </PrimaryButton>
+                        </Button>
                     </div>
                 </div>
             ) : null}
 
             <div className="mt-6">
-                <PrimaryButton
+                <Button
                     type="button"
                     onClick={createToken}
                     disabled={createForm.processing}
                 >
                     Generate connection token
-                </PrimaryButton>
+                </Button>
             </div>
 
             {tokens.length > 0 ? (
@@ -113,9 +112,9 @@ export default function ExtensionTokensForm({
                                         : ' · Never used'}
                                 </div>
                             </div>
-                            <DangerButton type="button" onClick={() => revoke(token.id)}>
+                            <Button variant="destructive" type="button" onClick={() => revoke(token.id)}>
                                 Revoke
-                            </DangerButton>
+                            </Button>
                         </li>
                     ))}
                 </ul>

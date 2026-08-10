@@ -2,12 +2,11 @@ import { DndContext, DragEndEvent, useDraggable, useDroppable } from '@dnd-kit/c
 import { Head, router } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
 import { JobApplication, JobStatus } from '@/types';
+import { Button } from '@/Components/ui/button';
 
 type ResumeOption = { id: number; title: string };
 
@@ -195,9 +194,9 @@ export default function JobApplicationKanban({
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div className="mb-4 flex items-center justify-between">
                     <div className="text-xs font-semibold text-gray-500">{applications.length} tracked</div>
-                    <PrimaryButton type="button" onClick={openCreate}>
+                    <Button type="button" onClick={openCreate}>
                         + New application
-                    </PrimaryButton>
+                    </Button>
                 </div>
 
                 <DndContext onDragEnd={onDragEnd}>
@@ -293,19 +292,19 @@ export default function JobApplicationKanban({
 
                         <div className="mt-6 flex items-center justify-between">
                             {form.id ? (
-                                <SecondaryButton type="button" onClick={deleteApplication} disabled={processing}>
+                                <Button variant="outline" type="button" onClick={deleteApplication} disabled={processing}>
                                     Delete
-                                </SecondaryButton>
+                                </Button>
                             ) : (
                                 <span />
                             )}
                             <div className="flex gap-2">
-                                <SecondaryButton type="button" onClick={closeForm}>
+                                <Button variant="outline" type="button" onClick={closeForm}>
                                     Cancel
-                                </SecondaryButton>
-                                <PrimaryButton type="submit" disabled={processing}>
+                                </Button>
+                                <Button type="submit" disabled={processing}>
                                     Save
-                                </PrimaryButton>
+                                </Button>
                             </div>
                         </div>
                     </form>

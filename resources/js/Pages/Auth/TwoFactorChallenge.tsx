@@ -1,9 +1,9 @@
 import InputError from '@/Components/InputError';
-import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
+import { Button } from '@/Components/ui/button';
 
 type Mode = 'totp' | 'recovery' | 'email';
 
@@ -72,7 +72,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                 <InputError message={errors.code} className="mt-2" />
 
                 <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton disabled={processing}>Verify</PrimaryButton>
+                    <Button disabled={processing}>Verify</Button>
                 </div>
             </form>
 

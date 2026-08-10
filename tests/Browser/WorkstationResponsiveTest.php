@@ -42,8 +42,7 @@ class WorkstationResponsiveTest extends DuskTestCase
             $browser->loginAs($user)
                 ->resize($width, $height)
                 ->visit(route('resumes.workstation', $resume))
-                ->waitForText($resume->title ?: 'Untitled resume')
-                ->script('return [document.documentElement.scrollWidth, document.documentElement.clientWidth]');
+                ->waitForText($resume->title ?: 'Untitled resume');
 
             $overflow = $browser->script(
                 'return document.documentElement.scrollWidth - document.documentElement.clientWidth'
