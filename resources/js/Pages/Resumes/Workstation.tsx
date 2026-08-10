@@ -749,7 +749,7 @@ export default function Workstation({
                         )}
 
                         {tab === 'Review' && (
-                            <div className="overflow-hidden rounded-xl bg-surface ring-1 ring-ink/5">
+                            <div className="overflow-hidden rounded-lg bg-surface ring-1 ring-ink/5">
                                 {reviewPreviewMode === 'pdf' ? (
                                     <iframe
                                         title="PDF preview"
@@ -766,7 +766,7 @@ export default function Workstation({
                                             }}
                                         >
                                             {/* Paper stage — soft ambient lift so the page reads as a document */}
-                                            <div className="rounded-md bg-white shadow-ambient ring-1 ring-ink/5">
+                                            <div className="rounded-lg bg-white shadow-ambient ring-1 ring-ink/5">
                                                 <ResumePreview
                                                     resume={draft}
                                                     className="w-full"

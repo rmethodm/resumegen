@@ -122,7 +122,7 @@ export function WorkstationHeader({
     return (
         <div
             className={cn(
-                'overflow-hidden rounded-2xl border border-surface-border/80',
+                'overflow-hidden rounded-lg border border-surface-border/80',
                 'bg-white/90 shadow-ambient backdrop-blur-xl',
             )}
         >
