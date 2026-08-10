@@ -29,9 +29,9 @@
         <link rel="icon" type="image/svg+xml" href="/r-monogram.svg">
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
+        <!-- Fonts: IBM Plex for product UI; Source Serif 4 for marketing display -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:400,500,600,700|source-serif-4:600,700&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @routes
