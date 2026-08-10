@@ -1,3 +1,202 @@
 {
-  "entries": {}
+  "entries": {
+    "new skill files added export surface parity applying|tf=5|te=12": {
+      "created_epoch": 1786370295,
+      "files": [
+        "resources/js/types/resume.ts::StarterProfileSkill",
+        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+        "resources/js/Components/workstation/export-checklist-modal.tsx",
+        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+        ".design-sync/previews/InputLabel.tsx::Required"
+      ],
+      "mtimes_ns": {
+        "resources/js/types/resume.ts::StarterProfileSkill": 1786346980705914130,
+        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx": -1,
+        "resources/js/Components/workstation/export-checklist-modal.tsx": 1786316038875471253,
+        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx": 1786347635995449371,
+        ".design-sync/previews/InputLabel.tsx::Required": 1782464292000000000
+      },
+      "result": {
+        "ok": true,
+        "query": "new skill files added: export-surface-parity, applying-design-tokens-only, applying-options-across-surfaces, applying-ui-conventions, following-existing-conventions, verifying-ui-behavior",
+        "graph_files": [
+          {
+            "id": "resources/js/types/resume.ts::StarterProfileSkill",
+            "kind": "symbol",
+            "path": "resources/js/types/resume.ts",
+            "ext": ".ts",
+            "size": 4,
+            "keywords": [
+              "starterprofileskill",
+              "starter",
+              "profile",
+              "skill"
+            ],
+            "symbol_type": "model",
+            "name": "StarterProfileSkill",
+            "line_start": 240,
+            "line_end": 243,
+            "body_hash": "1975a761",
+            "confidence": "high",
+            "exported": true,
+            "_score": 21,
+            "_role": "code",
+            "_intent": "feature"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "ext": ".tsx",
+            "size": 4485,
+            "keywords": [
+              "mobiletokensform",
+              "mobile",
+              "tokens",
+              "form"
+            ],
+            "summary": "import PrimaryButton from '@/Components/PrimaryButton';. Contains 2 functions/classes: formatWhen, MobileTokensForm.",
+            "file_hash": "ac91b329",
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "feature"
+          },
+          {
+            "id": "resources/js/Components/workstation/export-checklist-modal.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/export-checklist-modal.tsx",
+            "ext": ".tsx",
+            "size": 3983,
+            "keywords": [
+              "exportchecklistmodal",
+              "export",
+              "checklist",
+              "modal"
+            ],
+            "summary": "import { Button } from '@/Components/ui/button';. Contains 1 function: ExportChecklistModal.",
+            "file_hash": "66a0d196",
+            "_score": 19,
+            "_role": "code",
+            "_intent": "feature"
+          },
+          {
+            "id": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "ext": ".tsx",
+            "size": 4401,
+            "keywords": [
+              "extensiontokensform",
+              "extension",
+              "tokens",
+              "form"
+            ],
+            "summary": "import { router, useForm } from '@inertiajs/react';. Contains 2 functions/classes: formatWhen, ExtensionTokensForm.",
+            "file_hash": "1d890739",
+            "_score": 19,
+            "_role": "ui_surface",
+            "_intent": "feature"
+          },
+          {
+            "id": ".design-sync/previews/InputLabel.tsx::Required",
+            "kind": "symbol",
+            "path": ".design-sync/previews/InputLabel.tsx",
+            "ext": ".tsx",
+            "size": 8,
+            "keywords": [
+              "required"
+            ],
+            "symbol_type": "use_case",
+            "name": "Required",
+            "line_start": 6,
+            "line_end": 13,
+            "body_hash": "6970a64c",
+            "confidence": "medium",
+            "exported": true,
+            "_score": 17,
+            "_role": "code",
+            "_intent": "feature"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Components/workstation/export-checklist-modal.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": ".design-sync/previews/InputLabel.tsx",
+            "to": ".design-sync/previews/InputLabel.tsx::Required",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/types/resume.ts",
+            "to": "resources/js/types/resume.ts::StarterProfileSkill",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/export-checklist-modal.tsx",
+            "to": "@/Components/Modal",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/export-checklist-modal.tsx",
+            "to": "@/lib/export-checklist",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/export-checklist-modal.tsx",
+            "to": "@/lib/utils",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/export-checklist-modal.tsx",
+            "to": "Modal",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/export-checklist-modal.tsx",
+            "to": "type",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "@inertiajs/react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+            "to": "react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+            "to": "@/Components/DangerButton",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [
+          {
+            "file": "resources/css/app.css",
+            "overlap": 1,
+            "cached_chars": 6000,
+            "cached_tokens_est": 1500,
+            "last_action": "edited"
+          }
+        ],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": [
+            "resources/css/app.css"
+          ]
+        }
+      }
+    }
+  }
 }

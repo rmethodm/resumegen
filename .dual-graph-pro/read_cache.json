@@ -1,1 +1,1 @@
-{"resources/js/Pages/Resumes/Workstation.tsx": {"offset": 61, "limit": 101, "ts": 1786263815}, "resources/js/Components/workstation/background-color-picker.tsx": {"offset": 17, "limit": 44, "ts": 1786263996}}
+{"resources/js/Components/Modal.tsx": {"offset": 15, "limit": 101, "ts": 1786346731}, "resources/js/Pages/Dashboard.tsx": {"offset": 29, "limit": 106, "ts": 1786346731}, "resources/js/Components/resume/score-dial.tsx": {"offset": 33, "limit": 42, "ts": 1786346731}, "resources/js/Components/resume/score-gauge.tsx": {"offset": 2, "limit": 10, "ts": 1786346731}}

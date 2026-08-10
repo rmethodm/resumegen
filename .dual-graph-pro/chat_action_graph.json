@@ -1961,888 +1961,251 @@
       "meta": {
         "summary": ""
       }
+    },
+    {
+      "id": "query:design system tokens typography spacing color components buttons",
+      "type": "query",
+      "meta": {
+        "text": "design system tokens typography spacing color components buttons inputs cards modals app.css tailwind.config"
+      }
+    },
+    {
+      "id": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
+      "type": "query",
+      "meta": {
+        "text": "PrimaryButton SecondaryButton DangerButton Checkbox ui button component usage across pages"
+      }
+    },
+    {
+      "id": "query:viewport height dvh svh usages across components modals",
+      "type": "query",
+      "meta": {
+        "text": "viewport height vh dvh svh usages across components and modals"
+      }
+    },
+    {
+      "id": "query:dashboard tsx average_score resumes prop usage",
+      "type": "query",
+      "meta": {
+        "text": "Dashboard.tsx average_score resumes prop usage"
+      }
+    },
+    {
+      "id": "resources/js/Pages/Resumes/Compare.tsx::Props",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Components/AutocompleteInput.tsx::Props",
+      "type": "file"
+    },
+    {
+      "id": "query:dashboard tsx resumes prop usage after deferred load",
+      "type": "query",
+      "meta": {
+        "text": "Dashboard.tsx resumes prop usage after deferred load, all references to resumes variable"
+      }
+    },
+    {
+      "id": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "type": "query",
+      "meta": {
+        "text": "score dial dashboard dots PrimaryButton SecondaryButton DangerButton Checkbox Modal hasChrome DashboardController resumes preview share"
+      }
+    },
+    {
+      "id": "action:edit:1786347063",
+      "type": "action",
+      "meta": {
+        "summary": "Score band helper, lean dashboard share, Modal single layout, button wrappers deleted"
+      }
+    },
+    {
+      "id": "resources/js/lib/score-band.ts",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Controllers/DashboardController.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Controllers/ResumeShareLinkController.php",
+      "type": "file"
+    },
+    {
+      "id": "tests/Feature/DashboardShareInfoTest.php",
+      "type": "file"
+    },
+    {
+      "id": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "type": "query",
+      "meta": {
+        "text": "Welcome Dashboard Workstation AuthenticatedLayout design tokens brand UI surface preview"
+      }
+    },
+    {
+      "id": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "type": "query",
+      "meta": {
+        "text": "AuthenticatedLayout Dashboard Card Button GuestLayout Login tailwind config surface brand"
+      }
+    },
+    {
+      "id": "action:edit:1786347671",
+      "type": "action",
+      "meta": {
+        "summary": "Wave 1 soft-skill: floating nav island, Shell bezels, button physics"
+      }
+    },
+    {
+      "id": "resources/js/Components/ui/shell.tsx",
+      "type": "file"
+    },
+    {
+      "id": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "type": "query",
+      "meta": {
+        "text": "Welcome PublicShare Dashboard GuestLayout marketing hero share page"
+      }
+    },
+    {
+      "id": "action:edit:1786347841",
+      "type": "action",
+      "meta": {
+        "summary": "Wave 2: Welcome editorial split, dashboard bento, public share stage"
+      }
+    },
+    {
+      "id": "query:workstation review preview kanban jobcard drag shell section",
+      "type": "query",
+      "meta": {
+        "text": "Workstation Review preview Kanban JobCard drag shell section-panel"
+      }
+    },
+    {
+      "id": "resources/js/Components/workstation/workstation-format-toolbar.tsx::PreviewZoom",
+      "type": "file"
+    },
+    {
+      "id": "extension/sidepanel/sidepanel.js::renderPreview",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1786347973",
+      "type": "action",
+      "meta": {
+        "summary": "Wave 3: review paper stage, Kanban shell lift, search honesty"
+      }
+    },
+    {
+      "id": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "type": "query",
+      "meta": {
+        "text": "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
+      }
+    },
+    {
+      "id": "resources/js/Components/workstation/workstation-header.tsx::WorkstationTab",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/lib/template-presets.ts::orderSectionsForTemplate",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Components/workstation/inspector-fields.tsx::EntryCard",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1786348148",
+      "type": "action",
+      "meta": {
+        "summary": "Restrained Edit-tab spacing and quieter section chrome"
+      }
+    },
+    {
+      "id": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "type": "query",
+      "meta": {
+        "text": "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+      }
+    },
+    {
+      "id": "resources/js/Pages/Admin/Backups/Index.tsx::formatBytes",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx::formatWhen",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx::formatWhen",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Components/workstation/share-resume-modal.tsx::formatViewedAt",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1786348416",
+      "type": "action",
+      "meta": {
+        "summary": "Workstation header below main nav, max-w-6xl island"
+      }
+    },
+    {
+      "id": "action:edit:1786349170",
+      "type": "action",
+      "meta": {
+        "summary": "P0: legal pages, branded errors, BrandMark, skip links"
+      }
+    },
+    {
+      "id": "resources/js/Components/BrandMark.tsx",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Controllers/LegalController.php",
+      "type": "file"
+    },
+    {
+      "id": "resources/views/errors/layout.blade.php",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Pages/Legal/Privacy.tsx",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Pages/Legal/Terms.tsx",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1786349343",
+      "type": "action",
+      "meta": {
+        "summary": "P1 Welcome: display font, timeline, product hero, soft CTAs"
+      }
+    },
+    {
+      "id": "action:edit:1786349573",
+      "type": "action",
+      "meta": {
+        "summary": "P2: logout fix, command sheet, kanban empty, list rhythm"
+      }
+    },
+    {
+      "id": "query:new skill files added export surface parity applying",
+      "type": "query",
+      "meta": {
+        "text": "new skill files added: export-surface-parity, applying-design-tokens-only, applying-options-across-surfaces, applying-ui-conventions, following-existing-conventions, verifying-ui-behavior"
+      }
+    },
+    {
+      "id": "resources/js/types/resume.ts::StarterProfileSkill",
+      "type": "file"
     }
   ],
   "edges": [
-    {
-      "from": "query:admin backups index restore modal dialog",
-      "to": "resources/js/Components/dashboard/new-resume-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786143537
-    },
-    {
-      "from": "query:admin backups index restore modal dialog",
-      "to": "resources/js/Components/workstation/skill-picker-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786143537
-    },
-    {
-      "from": "query:admin backups index restore modal dialog",
-      "to": "resources/js/Pages/Admin/Users/Show.tsx::AdminAction",
-      "rel": "retrieved",
-      "ts": 1786143537
-    },
-    {
-      "from": "action:edit:1786143567",
-      "to": "resources/js/Pages/Admin/Backups/Index.tsx",
-      "rel": "edited",
-      "ts": 1786143567
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Components/SkillGroupEditor.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Components/TagInput.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Components/workstation/inspector-sections.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Components/workstation/skill-picker-modal.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Layouts/AuthenticatedLayout.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Pages/Admin/Users/Index.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Pages/Onboarding/Wizard.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786143802",
-      "to": "resources/js/Pages/Resumes/Compare.tsx",
-      "rel": "edited",
-      "ts": 1786143802
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/workstation/section-panel.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Admin/Users/Index.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/workstation/optimize-panel.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/workstation/inspector-sections.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/workstation/jd-match-panel.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Resumes/Compare.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/AutocompleteInput.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/TagInput.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/QRCodeDisplay.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/dashboard/new-resume-modal.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/error-boundary.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/resume/score-coach.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/workstation/export-checklist-modal.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Components/workstation/template-picker-modal.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Layouts/AdminLayout.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Admin/Dashboard.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Admin/Users/Show.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Jobs/Imports.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Resumes/PublicShare.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144029",
-      "to": "resources/js/Pages/Welcome.tsx",
-      "rel": "edited",
-      "ts": 1786144029
-    },
-    {
-      "from": "action:edit:1786144380",
-      "to": "resources/css/app.css",
-      "rel": "edited",
-      "ts": 1786144380
-    },
-    {
-      "from": "action:edit:1786144380",
-      "to": ".ui-craft/tokens.md",
-      "rel": "edited",
-      "ts": 1786144380
-    },
-    {
-      "from": "action:edit:1786144380",
-      "to": ".ui-craft/decisions.md",
-      "rel": "edited",
-      "ts": 1786144380
-    },
-    {
-      "from": "action:edit:1786144620",
-      "to": "resources/css/app.css",
-      "rel": "edited",
-      "ts": 1786144620
-    },
-    {
-      "from": "action:edit:1786144620",
-      "to": "tailwind.config.js",
-      "rel": "edited",
-      "ts": 1786144620
-    },
-    {
-      "from": "action:edit:1786144620",
-      "to": ".ui-craft/tokens.md",
-      "rel": "edited",
-      "ts": 1786144620
-    },
-    {
-      "from": "action:edit:1786144620",
-      "to": ".ui-craft/decisions.md",
-      "rel": "edited",
-      "ts": 1786144620
-    },
-    {
-      "from": "action:edit:1786144620",
-      "to": ".ui-craft/patterns.md",
-      "rel": "edited",
-      "ts": 1786144620
-    },
-    {
-      "from": "action:edit:1786144620",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx",
-      "rel": "edited",
-      "ts": 1786144620
-    },
-    {
-      "from": "action:edit:1786144620",
-      "to": "resources/js/Components/Modal.tsx",
-      "rel": "edited",
-      "ts": 1786144620
-    },
-    {
-      "from": "action:edit:1786144620",
-      "to": "resources/js/Components/Dropdown.tsx",
-      "rel": "edited",
-      "ts": 1786144620
-    },
-    {
-      "from": "query:logout does not work authentication fortify session sign",
-      "to": "resources/js/Components/workstation/notes-panel.tsx",
-      "rel": "retrieved",
-      "ts": 1786153164
-    },
-    {
-      "from": "query:logout does not work authentication fortify session sign",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx",
-      "rel": "retrieved",
-      "ts": 1786153164
-    },
-    {
-      "from": "query:logout does not work authentication fortify session sign",
-      "to": "resources/js/Components/workstation/inspector-fields.tsx",
-      "rel": "retrieved",
-      "ts": 1786153164
-    },
-    {
-      "from": "query:logout does not work authentication fortify session sign",
-      "to": "resources/js/Components/workstation/workstation-header.tsx",
-      "rel": "retrieved",
-      "ts": 1786153164
-    },
-    {
-      "from": "query:logout does not work authentication fortify session sign",
-      "to": ".design-sync/previews/ScoreGauge.tsx::NeedsWork",
-      "rel": "retrieved",
-      "ts": 1786153164
-    },
-    {
-      "from": "query:logout does not work authentication fortify session sign",
-      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-      "rel": "retrieved",
-      "ts": 1786153164
-    },
-    {
-      "from": "query:logout does not work authentication fortify session sign",
-      "to": "resources/js/Components/workstation/inspector-sections.tsx",
-      "rel": "retrieved",
-      "ts": 1786153164
-    },
-    {
-      "from": "query:logout does not work authentication fortify session sign",
-      "to": "resources/js/Components/workstation/snapshots-panel.tsx",
-      "rel": "retrieved",
-      "ts": 1786153164
-    },
-    {
-      "from": "action:edit:1786153276",
-      "to": "resources/js/Components/Dropdown.tsx",
-      "rel": "edited",
-      "ts": 1786153276
-    },
-    {
-      "from": "query:tailwind config design tokens css theme colors typography",
-      "to": "tailwind.config.js",
-      "rel": "retrieved",
-      "ts": 1786154683
-    },
-    {
-      "from": "query:tailwind config design tokens css theme colors typography",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786154683
-    },
-    {
-      "from": "query:tailwind config design tokens css theme colors typography",
-      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786154683
-    },
-    {
-      "from": "query:tailwind config design tokens css theme colors typography",
-      "to": "extension/background/service-worker.js::getConfig",
-      "rel": "retrieved",
-      "ts": 1786154683
-    },
-    {
-      "from": "query:tailwind config design tokens css theme colors typography",
-      "to": "extension/sidepanel/sidepanel.js::showSetup",
-      "rel": "retrieved",
-      "ts": 1786154683
-    },
-    {
-      "from": "query:(empty)",
-      "to": "tailwind.config.js",
-      "rel": "read",
-      "ts": 1786154685,
-      "meta": {
-        "mode": "full"
-      }
-    },
-    {
-      "from": "query:app css root variables color tokens dark mode",
-      "to": "resources/js/hooks/useDarkMode.ts",
-      "rel": "retrieved",
-      "ts": 1786154728
-    },
-    {
-      "from": "query:app css root variables color tokens dark mode",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786154728
-    },
-    {
-      "from": "query:app css root variables color tokens dark mode",
-      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786154728
-    },
-    {
-      "from": "query:app css root variables color tokens dark mode",
-      "to": "resources/js/Pages/Auth/TwoFactorChallenge.tsx::Mode",
-      "rel": "retrieved",
-      "ts": 1786154728
-    },
-    {
-      "from": "query:app css root variables color tokens dark mode",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx",
-      "rel": "retrieved",
-      "ts": 1786154728
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/css/app.css",
-      "rel": "read",
-      "ts": 1786154731,
-      "meta": {
-        "mode": "full"
-      }
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/views/app.blade.php",
-      "rel": "read",
-      "ts": 1786154872,
-      "meta": {
-        "mode": "full"
-      }
-    },
-    {
-      "from": "query:shared components button card input used across workstation",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786155272
-    },
-    {
-      "from": "query:shared components button card input used across workstation",
-      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-      "rel": "retrieved",
-      "ts": 1786155272
-    },
-    {
-      "from": "query:shared components button card input used across workstation",
-      "to": "resources/js/Components/workstation/workstation-header.tsx",
-      "rel": "retrieved",
-      "ts": 1786155272
-    },
-    {
-      "from": "query:shared components button card input used across workstation",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx",
-      "rel": "retrieved",
-      "ts": 1786155272
-    },
-    {
-      "from": "query:shared components button card input used across workstation",
-      "to": "resources/js/Components/dashboard/new-resume-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786155272
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Components/ui/button.tsx",
-      "rel": "read",
-      "ts": 1786155280,
-      "meta": {
-        "mode": "symbol_excerpt"
-      }
-    },
-    {
-      "from": "query:authenticatedlayout top navigation bar structure classes",
-      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-      "rel": "retrieved",
-      "ts": 1786155315
-    },
-    {
-      "from": "query:authenticatedlayout top navigation bar structure classes",
-      "to": "resources/js/Pages/Resumes/Compare.tsx",
-      "rel": "retrieved",
-      "ts": 1786155315
-    },
-    {
-      "from": "query:authenticatedlayout top navigation bar structure classes",
-      "to": "resources/js/Components/workstation/inspector-fields.tsx",
-      "rel": "retrieved",
-      "ts": 1786155315
-    },
-    {
-      "from": "query:authenticatedlayout top navigation bar structure classes",
-      "to": "resources/js/Pages/Auth/Register.tsx",
-      "rel": "retrieved",
-      "ts": 1786155315
-    },
-    {
-      "from": "query:authenticatedlayout top navigation bar structure classes",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786155315
-    },
-    {
-      "from": "query:frontend design system tokens brief landing welcome authenticated",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786157353
-    },
-    {
-      "from": "query:frontend design system tokens brief landing welcome authenticated",
-      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786157353
-    },
-    {
-      "from": "query:frontend design system tokens brief landing welcome authenticated",
-      "to": "resources/js/Layouts/AuthenticatedLayout.tsx",
-      "rel": "retrieved",
-      "ts": 1786157353
-    },
-    {
-      "from": "query:frontend design system tokens brief landing welcome authenticated",
-      "to": "resources/js/Pages/Welcome.tsx",
-      "rel": "retrieved",
-      "ts": 1786157353
-    },
-    {
-      "from": "query:frontend design system tokens brief landing welcome authenticated",
-      "to": ".design-sync/previews/InputLabel.tsx::Required",
-      "rel": "retrieved",
-      "ts": 1786157353
-    },
-    {
-      "from": "query:frontend design system tokens brief landing welcome authenticated",
-      "to": ".design-sync/previews/UiCheckbox.tsx",
-      "rel": "retrieved",
-      "ts": 1786157353
-    },
-    {
-      "from": "query:frontend design system tokens brief landing welcome authenticated",
-      "to": "ds-bundle/components/general/UiCheckbox/UiCheckbox.d.ts::UiCheckboxProps",
-      "rel": "retrieved",
-      "ts": 1786157353
-    },
-    {
-      "from": "query:frontend design system tokens brief landing welcome authenticated",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786157353
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated",
-      "rel": "read",
-      "ts": 1786157402,
-      "meta": {
-        "mode": "symbol_excerpt"
-      }
-    },
-    {
-      "from": "action:edit:1786157450",
-      "to": "resources/js/Layouts/AuthenticatedLayout.tsx",
-      "rel": "edited",
-      "ts": 1786157450
-    },
-    {
-      "from": "action:edit:1786157450",
-      "to": "resources/js/Components/Dropdown.tsx",
-      "rel": "edited",
-      "ts": 1786157450
-    },
-    {
-      "from": "query:adminlayout account menu logout admin chrome",
-      "to": "resources/js/Layouts/AdminLayout.tsx",
-      "rel": "retrieved",
-      "ts": 1786157498
-    },
-    {
-      "from": "query:adminlayout account menu logout admin chrome",
-      "to": "resources/js/Pages/Admin/Users/Index.tsx",
-      "rel": "retrieved",
-      "ts": 1786157498
-    },
-    {
-      "from": "query:adminlayout account menu logout admin chrome",
-      "to": "resources/js/Pages/Admin/Users/Show.tsx",
-      "rel": "retrieved",
-      "ts": 1786157498
-    },
-    {
-      "from": "query:adminlayout account menu logout admin chrome",
-      "to": ".design-sync/previews/Dropdown.tsx::AccountMenu",
-      "rel": "retrieved",
-      "ts": 1786157498
-    },
-    {
-      "from": "query:adminlayout account menu logout admin chrome",
-      "to": "resources/js/Pages/Admin/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786157498
-    },
-    {
-      "from": "action:edit:1786157544",
-      "to": "resources/js/Layouts/AdminLayout.tsx",
-      "rel": "edited",
-      "ts": 1786157544
-    },
-    {
-      "from": "query:dashboard resume groups version tray empty state design",
-      "to": "resources/js/types/resume.ts",
-      "rel": "retrieved",
-      "ts": 1786157592
-    },
-    {
-      "from": "query:dashboard resume groups version tray empty state design",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786157592
-    },
-    {
-      "from": "query:dashboard resume groups version tray empty state design",
-      "to": "resources/js/Pages/Resumes/Compare.tsx",
-      "rel": "retrieved",
-      "ts": 1786157592
-    },
-    {
-      "from": "query:dashboard resume groups version tray empty state design",
-      "to": "resources/js/Components/dashboard/new-resume-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786157592
-    },
-    {
-      "from": "query:dashboard resume groups version tray empty state design",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx::FormState",
-      "rel": "retrieved",
-      "ts": 1786157592
-    },
-    {
-      "from": "query:dashboard resume groups version tray empty state design",
-      "to": ".design-sync/previews/AutocompleteInput.tsx",
-      "rel": "retrieved",
-      "ts": 1786157592
-    },
-    {
-      "from": "query:dashboard resume groups version tray empty state design",
-      "to": ".design-sync/previews/BulletEditor.tsx",
-      "rel": "retrieved",
-      "ts": 1786157592
-    },
-    {
-      "from": "query:dashboard resume groups version tray empty state design",
-      "to": ".design-sync/previews/SkillGroupEditor.tsx",
-      "rel": "retrieved",
-      "ts": 1786157592
-    },
-    {
-      "from": "action:edit:1786157704",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "edited",
-      "ts": 1786157704
-    },
-    {
-      "from": "action:edit:1786157704",
-      "to": "resources/js/Components/resume/score-dial.tsx",
-      "rel": "edited",
-      "ts": 1786157704
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Admin/Users/Index.tsx",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Admin/Backups/Index.tsx",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Admin/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Admin/Users/Show.tsx::AdminAction",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx::JobCard",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Auth/TwoFactorChallenge.tsx::Mode",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Jobs/Imports.tsx::ImportedJob",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Onboarding/Wizard.tsx::Step",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "query:admin pages dashboard users backups index content",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx::ExtensionToken",
-      "rel": "retrieved",
-      "ts": 1786157868
-    },
-    {
-      "from": "action:edit:1786157977",
-      "to": "resources/js/Pages/Admin/Dashboard.tsx",
-      "rel": "edited",
-      "ts": 1786157977
-    },
-    {
-      "from": "action:edit:1786157977",
-      "to": "resources/js/Pages/Admin/Users/Index.tsx",
-      "rel": "edited",
-      "ts": 1786157977
-    },
-    {
-      "from": "action:edit:1786157977",
-      "to": "resources/js/Pages/Admin/Users/Show.tsx",
-      "rel": "edited",
-      "ts": 1786157977
-    },
-    {
-      "from": "action:edit:1786157977",
-      "to": "resources/js/Pages/Admin/Backups/Index.tsx",
-      "rel": "edited",
-      "ts": 1786157977
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "resources/js/Components/workstation/inspector-fields.tsx",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "resources/js/Components/workstation/inspector-sections.tsx::RepeatedKey",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "resources/js/Components/workstation/inspector.tsx::SectionFields",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "resources/js/Components/workstation/section-panel.tsx",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "ds-bundle/components/workstation/SectionFields/SectionFields.d.ts::SectionFieldsProps",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "resources/js/Components/resume/resume-preview.tsx",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": "resources/js/Components/workstation/workstation-header.tsx",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "query:workstation layout panels section rail inspector preview surface",
-      "to": ".design-sync/previews/SectionFields.tsx",
-      "rel": "retrieved",
-      "ts": 1786158113
-    },
-    {
-      "from": "action:edit:1786158262",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx",
-      "rel": "edited",
-      "ts": 1786158262
-    },
-    {
-      "from": "action:edit:1786158262",
-      "to": "resources/js/Components/workstation/workstation-header.tsx",
-      "rel": "edited",
-      "ts": 1786158262
-    },
-    {
-      "from": "action:edit:1786158262",
-      "to": "resources/js/Components/workstation/section-panel.tsx",
-      "rel": "edited",
-      "ts": 1786158262
-    },
-    {
-      "from": "action:edit:1786158262",
-      "to": "resources/js/Components/workstation/target-role-bar.tsx",
-      "rel": "edited",
-      "ts": 1786158262
-    },
-    {
-      "from": "action:edit:1786158262",
-      "to": "resources/js/Components/workstation/notes-panel.tsx",
-      "rel": "edited",
-      "ts": 1786158262
-    },
-    {
-      "from": "action:edit:1786158262",
-      "to": "resources/js/Components/workstation/snapshots-panel.tsx",
-      "rel": "edited",
-      "ts": 1786158262
-    },
-    {
-      "from": "action:edit:1786158262",
-      "to": "resources/js/Components/workstation/optimize-panel.tsx",
-      "rel": "edited",
-      "ts": 1786158262
-    },
-    {
-      "from": "action:edit:1786158262",
-      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-      "rel": "edited",
-      "ts": 1786158262
-    },
-    {
-      "from": "query:workstation design tokens colors spacing typography components audit",
-      "to": "resources/js/Components/workstation/workstation-header.tsx",
-      "rel": "retrieved",
-      "ts": 1786166188
-    },
-    {
-      "from": "query:workstation design tokens colors spacing typography components audit",
-      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-      "rel": "retrieved",
-      "ts": 1786166188
-    },
-    {
-      "from": "query:workstation design tokens colors spacing typography components audit",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786166188
-    },
-    {
-      "from": "query:workstation design tokens colors spacing typography components audit",
-      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786166188
-    },
     {
       "from": "query:workstation design tokens colors spacing typography components audit",
       "to": "resources/js/Pages/Resumes/Workstation.tsx",
@@ -5173,6 +4536,882 @@
       "to": "DESIGN.md",
       "rel": "edited",
       "ts": 1786271795
+    },
+    {
+      "from": "query:design system tokens typography spacing color components buttons",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786313780
+    },
+    {
+      "from": "query:design system tokens typography spacing color components buttons",
+      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786313780
+    },
+    {
+      "from": "query:design system tokens typography spacing color components buttons",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx",
+      "rel": "retrieved",
+      "ts": 1786313780
+    },
+    {
+      "from": "query:design system tokens typography spacing color components buttons",
+      "to": "resources/js/Pages/Auth/ConfirmPassword.tsx",
+      "rel": "retrieved",
+      "ts": 1786313780
+    },
+    {
+      "from": "query:design system tokens typography spacing color components buttons",
+      "to": "resources/js/Pages/Auth/ResetPassword.tsx",
+      "rel": "retrieved",
+      "ts": 1786313780
+    },
+    {
+      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
+      "to": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786314574
+    },
+    {
+      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786314574
+    },
+    {
+      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
+      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786314574
+    },
+    {
+      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786314574
+    },
+    {
+      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
+      "to": "ds-entry.tsx",
+      "rel": "retrieved",
+      "ts": 1786314574
+    },
+    {
+      "from": "query:viewport height dvh svh usages across components modals",
+      "to": "resources/js/Pages/Auth/ConfirmPassword.tsx",
+      "rel": "retrieved",
+      "ts": 1786317361
+    },
+    {
+      "from": "query:viewport height dvh svh usages across components modals",
+      "to": "resources/js/Pages/Auth/Login.tsx",
+      "rel": "retrieved",
+      "ts": 1786317361
+    },
+    {
+      "from": "query:viewport height dvh svh usages across components modals",
+      "to": "resources/js/Pages/Auth/Register.tsx",
+      "rel": "retrieved",
+      "ts": 1786317361
+    },
+    {
+      "from": "query:viewport height dvh svh usages across components modals",
+      "to": "resources/js/Pages/Auth/ResetPassword.tsx",
+      "rel": "retrieved",
+      "ts": 1786317361
+    },
+    {
+      "from": "query:viewport height dvh svh usages across components modals",
+      "to": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
+      "rel": "retrieved",
+      "ts": 1786317361
+    },
+    {
+      "from": "query:dashboard tsx average_score resumes prop usage",
+      "to": "resources/js/Pages/Resumes/Compare.tsx::Props",
+      "rel": "retrieved",
+      "ts": 1786317752
+    },
+    {
+      "from": "query:dashboard tsx average_score resumes prop usage",
+      "to": "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx::Props",
+      "rel": "retrieved",
+      "ts": 1786317752
+    },
+    {
+      "from": "query:dashboard tsx average_score resumes prop usage",
+      "to": "resources/js/Pages/Admin/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786317752
+    },
+    {
+      "from": "query:dashboard tsx average_score resumes prop usage",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786317752
+    },
+    {
+      "from": "query:dashboard tsx average_score resumes prop usage",
+      "to": "resources/js/Components/AutocompleteInput.tsx::Props",
+      "rel": "retrieved",
+      "ts": 1786317752
+    },
+    {
+      "from": "query:dashboard tsx resumes prop usage after deferred load",
+      "to": "resources/js/Pages/Resumes/Compare.tsx::Props",
+      "rel": "retrieved",
+      "ts": 1786319344
+    },
+    {
+      "from": "query:dashboard tsx resumes prop usage after deferred load",
+      "to": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
+      "rel": "retrieved",
+      "ts": 1786319344
+    },
+    {
+      "from": "query:dashboard tsx resumes prop usage after deferred load",
+      "to": "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx::Props",
+      "rel": "retrieved",
+      "ts": 1786319344
+    },
+    {
+      "from": "query:dashboard tsx resumes prop usage after deferred load",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1786319344
+    },
+    {
+      "from": "query:dashboard tsx resumes prop usage after deferred load",
+      "to": "resources/js/Pages/Admin/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786319344
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Components/workstation/share-resume-modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Pages/Resumes/PublicShare.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "ds-entry.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Components/dashboard/new-resume-modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": ".design-sync/previews/Modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Components/workstation/skill-picker-modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Components/workstation/template-picker-modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Pages/Auth/Login.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Pages/Auth/Register.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
+      "to": "resources/js/Pages/Resumes/Compare.tsx",
+      "rel": "retrieved",
+      "ts": 1786346722
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Components/Modal.tsx",
+      "rel": "read",
+      "ts": 1786346731,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Pages/Dashboard.tsx::ShareStatus",
+      "rel": "read",
+      "ts": 1786346731,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Components/resume/score-dial.tsx",
+      "rel": "read",
+      "ts": 1786346731,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Components/resume/score-gauge.tsx",
+      "rel": "read",
+      "ts": 1786346731,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "resources/js/lib/score-band.ts",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "resources/js/Components/resume/score-dial.tsx",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "resources/js/Components/Modal.tsx",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "app/Http/Controllers/DashboardController.php",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "app/Http/Controllers/ResumeShareLinkController.php",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "resources/js/types/resume.ts",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "routes/web.php",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "action:edit:1786347063",
+      "to": "tests/Feature/DashboardShareInfoTest.php",
+      "rel": "edited",
+      "ts": 1786347063
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": "resources/js/Components/workstation/workstation-header.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": ".design-sync/previews/InputLabel.tsx::Required",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": ".design-sync/previews/UiCheckbox.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": "resources/js/Pages/Admin/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:welcome dashboard workstation authenticatedlayout design tokens brand surface",
+      "to": "resources/js/Pages/Welcome.tsx",
+      "rel": "retrieved",
+      "ts": 1786347308
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Auth/Login.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Resumes/PublicShare.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Auth/VerifyEmail.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Components/dashboard/new-resume-modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "query:authenticatedlayout dashboard card button guestlayout login tailwind config",
+      "to": "resources/js/Pages/Auth/ConfirmPassword.tsx",
+      "rel": "retrieved",
+      "ts": 1786347484
+    },
+    {
+      "from": "action:edit:1786347671",
+      "to": "resources/js/Layouts/AuthenticatedLayout.tsx",
+      "rel": "edited",
+      "ts": 1786347671
+    },
+    {
+      "from": "action:edit:1786347671",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "edited",
+      "ts": 1786347671
+    },
+    {
+      "from": "action:edit:1786347671",
+      "to": "resources/js/Components/ui/shell.tsx",
+      "rel": "edited",
+      "ts": 1786347671
+    },
+    {
+      "from": "action:edit:1786347671",
+      "to": "resources/js/Components/ui/button.tsx",
+      "rel": "edited",
+      "ts": 1786347671
+    },
+    {
+      "from": "action:edit:1786347671",
+      "to": "tailwind.config.js",
+      "rel": "edited",
+      "ts": 1786347671
+    },
+    {
+      "from": "action:edit:1786347671",
+      "to": "resources/js/Layouts/GuestLayout.tsx",
+      "rel": "edited",
+      "ts": 1786347671
+    },
+    {
+      "from": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "to": "resources/js/Pages/Resumes/PublicShare.tsx",
+      "rel": "retrieved",
+      "ts": 1786347698
+    },
+    {
+      "from": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786347698
+    },
+    {
+      "from": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "to": "resources/js/Pages/Admin/Dashboard.tsx",
+      "rel": "retrieved",
+      "ts": 1786347698
+    },
+    {
+      "from": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "to": "resources/js/Pages/Jobs/Imports.tsx",
+      "rel": "retrieved",
+      "ts": 1786347698
+    },
+    {
+      "from": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "to": "resources/js/Pages/Settings/StarterProfile.tsx",
+      "rel": "retrieved",
+      "ts": 1786347698
+    },
+    {
+      "from": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "to": "resources/js/Pages/Welcome.tsx",
+      "rel": "retrieved",
+      "ts": 1786347698
+    },
+    {
+      "from": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1786347698
+    },
+    {
+      "from": "query:welcome publicshare dashboard guestlayout marketing hero share page",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx::JobCard",
+      "rel": "retrieved",
+      "ts": 1786347698
+    },
+    {
+      "from": "action:edit:1786347841",
+      "to": "resources/js/Pages/Welcome.tsx",
+      "rel": "edited",
+      "ts": 1786347841
+    },
+    {
+      "from": "action:edit:1786347841",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "edited",
+      "ts": 1786347841
+    },
+    {
+      "from": "action:edit:1786347841",
+      "to": "resources/js/Pages/Resumes/PublicShare.tsx",
+      "rel": "edited",
+      "ts": 1786347841
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "resources/js/Components/workstation/section-panel.tsx",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "resources/js/Components/resume/resume-preview.tsx",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx::PreviewZoom",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "extension/sidepanel/sidepanel.js::renderPreview",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "ds-bundle/components/resume/ResumePreview/ResumePreview.d.ts::ResumePreviewProps",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "resources/js/Components/workstation/notes-panel.tsx",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "resources/js/Components/workstation/optimize-panel.tsx",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "query:workstation review preview kanban jobcard drag shell section",
+      "to": "resources/js/Components/workstation/snapshots-panel.tsx",
+      "rel": "retrieved",
+      "ts": 1786347879
+    },
+    {
+      "from": "action:edit:1786347973",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "edited",
+      "ts": 1786347973
+    },
+    {
+      "from": "action:edit:1786347973",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx",
+      "rel": "edited",
+      "ts": 1786347973
+    },
+    {
+      "from": "action:edit:1786347973",
+      "to": "resources/js/Components/workstation/section-panel.tsx",
+      "rel": "edited",
+      "ts": 1786347973
+    },
+    {
+      "from": "action:edit:1786347973",
+      "to": "resources/js/Layouts/AuthenticatedLayout.tsx",
+      "rel": "edited",
+      "ts": 1786347973
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/Pages/Profile/Edit.tsx",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/Components/workstation/workstation-header.tsx::WorkstationTab",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/Components/workstation/inspector-sections.tsx::RepeatedKey",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/Components/workstation/inspector.tsx::SectionFields",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "ds-bundle/components/workstation/SectionFields/SectionFields.d.ts::SectionFieldsProps",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/Pages/Dashboard.tsx::ResumeCard",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx::JobCard",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/lib/template-presets.ts::orderSectionsForTemplate",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "query:workstation edit tab renderformsections sectionfields inspector sections targetrolebar",
+      "to": "resources/js/Components/workstation/inspector-fields.tsx::EntryCard",
+      "rel": "retrieved",
+      "ts": 1786348066
+    },
+    {
+      "from": "action:edit:1786348148",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "edited",
+      "ts": 1786348148
+    },
+    {
+      "from": "action:edit:1786348148",
+      "to": "resources/js/Components/workstation/target-role-bar.tsx",
+      "rel": "edited",
+      "ts": 1786348148
+    },
+    {
+      "from": "action:edit:1786348148",
+      "to": "resources/js/Components/workstation/inspector-fields.tsx",
+      "rel": "edited",
+      "ts": 1786348148
+    },
+    {
+      "from": "action:edit:1786348148",
+      "to": "resources/js/Components/workstation/inspector-sections.tsx",
+      "rel": "edited",
+      "ts": 1786348148
+    },
+    {
+      "from": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+      "rel": "retrieved",
+      "ts": 1786348354
+    },
+    {
+      "from": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "to": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786348354
+    },
+    {
+      "from": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1786348354
+    },
+    {
+      "from": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "to": "resources/js/Components/workstation/workstation-header.tsx",
+      "rel": "retrieved",
+      "ts": 1786348354
+    },
+    {
+      "from": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "to": "resources/js/Pages/Admin/Backups/Index.tsx::formatBytes",
+      "rel": "retrieved",
+      "ts": 1786348354
+    },
+    {
+      "from": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx::formatWhen",
+      "rel": "retrieved",
+      "ts": 1786348354
+    },
+    {
+      "from": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx::formatWhen",
+      "rel": "retrieved",
+      "ts": 1786348354
+    },
+    {
+      "from": "query:workstationheader workstation format toolbar authenticatedlayout",
+      "to": "resources/js/Components/workstation/share-resume-modal.tsx::formatViewedAt",
+      "rel": "retrieved",
+      "ts": 1786348354
+    },
+    {
+      "from": "action:edit:1786348416",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "edited",
+      "ts": 1786348416
+    },
+    {
+      "from": "action:edit:1786348416",
+      "to": "resources/js/Components/workstation/workstation-header.tsx",
+      "rel": "edited",
+      "ts": 1786348416
+    },
+    {
+      "from": "action:edit:1786348416",
+      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+      "rel": "edited",
+      "ts": 1786348416
+    },
+    {
+      "from": "action:edit:1786349170",
+      "to": "resources/js/Components/BrandMark.tsx",
+      "rel": "edited",
+      "ts": 1786349170
+    },
+    {
+      "from": "action:edit:1786349170",
+      "to": "app/Http/Controllers/LegalController.php",
+      "rel": "edited",
+      "ts": 1786349170
+    },
+    {
+      "from": "action:edit:1786349170",
+      "to": "resources/js/Layouts/AuthenticatedLayout.tsx",
+      "rel": "edited",
+      "ts": 1786349170
+    },
+    {
+      "from": "action:edit:1786349170",
+      "to": "resources/views/errors/layout.blade.php",
+      "rel": "edited",
+      "ts": 1786349170
+    },
+    {
+      "from": "action:edit:1786349170",
+      "to": "resources/js/Pages/Legal/Privacy.tsx",
+      "rel": "edited",
+      "ts": 1786349170
+    },
+    {
+      "from": "action:edit:1786349170",
+      "to": "resources/js/Pages/Legal/Terms.tsx",
+      "rel": "edited",
+      "ts": 1786349170
+    },
+    {
+      "from": "action:edit:1786349343",
+      "to": "resources/js/Pages/Welcome.tsx",
+      "rel": "edited",
+      "ts": 1786349343
+    },
+    {
+      "from": "action:edit:1786349343",
+      "to": "tailwind.config.js",
+      "rel": "edited",
+      "ts": 1786349343
+    },
+    {
+      "from": "action:edit:1786349343",
+      "to": "resources/views/app.blade.php",
+      "rel": "edited",
+      "ts": 1786349343
+    },
+    {
+      "from": "action:edit:1786349573",
+      "to": "resources/js/Layouts/AuthenticatedLayout.tsx",
+      "rel": "edited",
+      "ts": 1786349573
+    },
+    {
+      "from": "action:edit:1786349573",
+      "to": "resources/js/Components/Dropdown.tsx",
+      "rel": "edited",
+      "ts": 1786349573
+    },
+    {
+      "from": "action:edit:1786349573",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "edited",
+      "ts": 1786349573
+    },
+    {
+      "from": "action:edit:1786349573",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx",
+      "rel": "edited",
+      "ts": 1786349573
+    },
+    {
+      "from": "query:new skill files added export surface parity applying",
+      "to": "resources/js/types/resume.ts::StarterProfileSkill",
+      "rel": "retrieved",
+      "ts": 1786370295
+    },
+    {
+      "from": "query:new skill files added export surface parity applying",
+      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786370295
+    },
+    {
+      "from": "query:new skill files added export surface parity applying",
+      "to": "resources/js/Components/workstation/export-checklist-modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786370295
+    },
+    {
+      "from": "query:new skill files added export surface parity applying",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786370295
+    },
+    {
+      "from": "query:new skill files added export surface parity applying",
+      "to": ".design-sync/previews/InputLabel.tsx::Required",
+      "rel": "retrieved",
+      "ts": 1786370295
     }
   ],
   "files": {
@@ -5296,11 +5535,12 @@
       "cached_content": "<?php\n\nuse App\\Http\\Controllers\\Auth\\ConfirmedTwoFactorController;\nuse App\\Http\\Controllers\\Auth\\TwoFactorController;\nuse App\\Http\\Controllers\\Auth\\TwoFactorRecoveryCodesController;\nuse App\\Http\\Controllers\\AutocompleteController;\nuse App\\Http\\Controllers\\DashboardController;\nuse App\\Http\\Controller",
       "cached_chars": 3000,
       "cached_tokens_est": 750,
-      "last_action": "read",
-      "last_ts": 1786069973,
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:31:03.843120+00:00",
       "first_read_turn": 3,
       "last_edited": 1786069990.4487438,
-      "edit_count": 1
+      "edit_count": 1,
+      "edited_count": 1
     },
     "app/Http/Controllers/ExtensionTokenController.php": {
       "query_terms": [],
@@ -5412,8 +5652,8 @@
       "edited_count": 2
     },
     "resources/js/Pages/Profile/Edit.tsx": {
-      "last_edited": 1786259004.972105,
-      "edit_count": 9,
+      "last_edited": 1786315216.996284,
+      "edit_count": 11,
       "last_action": "edited",
       "last_ts": "2026-08-09T07:04:55.478519+00:00",
       "edited_count": 2
@@ -5587,8 +5827,8 @@
       "last_edited": 1786258962.955887,
       "edit_count": 6,
       "last_action": "edited",
-      "last_ts": "2026-08-09T07:04:33.128559+00:00",
-      "edited_count": 3
+      "last_ts": "2026-08-10T08:12:53.393317+00:00",
+      "edited_count": 5
     },
     "resources/js/Layouts/AuthenticatedLayout.tsx": {
       "query_terms": [
@@ -5604,9 +5844,12 @@
       "cached_content": "import Dropdown from '@/Components/Dropdown';\nimport { useDarkMode } from '@/hooks/useDarkMode';\nimport {\n    ArrowRightStartOnRectangleIcon,\n    Bars3Icon,\n    ChevronDownIcon,\n    DocumentTextIcon,\n    HomeIcon,\n    MagnifyingGlassIcon,\n    MoonIcon,\n    SunIcon,\n    UserCircleIcon,\n    XMarkIcon,",
       "cached_chars": 12301,
       "cached_tokens_est": 3075,
-      "last_action": "read",
-      "last_ts": 1786234995,
-      "first_read_turn": 15
+      "last_action": "edited",
+      "last_ts": "2026-08-10T08:12:53.393297+00:00",
+      "first_read_turn": 15,
+      "last_edited": 1786317428.50542,
+      "edit_count": 3,
+      "edited_count": 4
     },
     "CLAUDE.md": {
       "last_edited": 1786124681.054274,
@@ -5688,11 +5931,11 @@
       "cached_chars": 14049,
       "cached_tokens_est": 3512,
       "last_action": "edited",
-      "last_ts": "2026-08-09T06:53:59.950356+00:00",
+      "last_ts": "2026-08-10T07:53:36.733906+00:00",
       "first_read_turn": 10,
-      "last_edited": 1786258281.17285,
-      "edit_count": 2,
-      "edited_count": 2
+      "last_edited": 1786317561.128572,
+      "edit_count": 10,
+      "edited_count": 5
     },
     "resources/js/Components/workstation/inspector-sections.tsx": {
       "query_terms": [],
@@ -5700,11 +5943,11 @@
       "cached_chars": 3000,
       "cached_tokens_est": 750,
       "last_action": "edited",
-      "last_ts": "2026-08-08T05:21:14.683543+00:00",
+      "last_ts": "2026-08-10T07:49:08.025268+00:00",
       "first_read_turn": 2,
       "last_edited": 1786166431.8194199,
       "edit_count": 14,
-      "edited_count": 3
+      "edited_count": 4
     },
     "resources/js/lib/contact-validation.ts": {
       "query_terms": [],
@@ -5724,11 +5967,11 @@
       "cached_chars": 3000,
       "cached_tokens_est": 750,
       "last_action": "edited",
-      "last_ts": "2026-08-09T07:39:25.552543+00:00",
+      "last_ts": "2026-08-10T07:49:08.025262+00:00",
       "first_read_turn": 3,
       "last_edited": 1786261075.676269,
       "edit_count": 16,
-      "edited_count": 3
+      "edited_count": 4
     },
     "resources/js/Components/workstation/inspector-fields.tsx::Field": {
       "last_action": "edited",
@@ -5775,8 +6018,8 @@
       "last_edited": 1786244134.988677,
       "edit_count": 5,
       "last_action": "edited",
-      "last_ts": "2026-08-09T02:57:32.763734+00:00",
-      "edited_count": 5
+      "last_ts": "2026-08-10T08:09:03.647279+00:00",
+      "edited_count": 7
     },
     "resources/js/Components/resume/score-coach.tsx": {
       "query_terms": [],
@@ -5805,11 +6048,11 @@
       "cached_chars": 7470,
       "cached_tokens_est": 1867,
       "last_action": "edited",
-      "last_ts": "2026-08-09T10:36:35.748416+00:00",
+      "last_ts": "2026-08-10T08:09:03.647289+00:00",
       "first_read_turn": 3,
-      "last_edited": 1786271750.739808,
-      "edit_count": 3,
-      "edited_count": 2
+      "last_edited": 1786317502.788278,
+      "edit_count": 5,
+      "edited_count": 4
     },
     "resources/js/hooks/useDarkMode.ts::useDarkMode": {
       "query_terms": [],
@@ -5869,12 +6112,12 @@
       "last_action": "read",
       "last_ts": 1786142712,
       "first_read_turn": 1,
-      "last_edited": 1786155425.823099,
-      "edit_count": 1
+      "last_edited": 1786314615.3814669,
+      "edit_count": 2
     },
     "resources/js/Components/Checkbox.tsx": {
-      "last_edited": 1786106582.0531251,
-      "edit_count": 1,
+      "last_edited": 1786314627.8917062,
+      "edit_count": 2,
       "last_action": "edited",
       "last_ts": "2026-08-07T12:44:46.497410+00:00",
       "edited_count": 1
@@ -5943,18 +6186,18 @@
       "edit_count": 1
     },
     "resources/js/Components/workstation/share-resume-modal.tsx": {
-      "last_edited": 1786264128.0891688,
-      "edit_count": 9,
+      "last_edited": 1786315709.585061,
+      "edit_count": 13,
       "last_action": "edited",
       "last_ts": "2026-08-09T07:39:25.552531+00:00",
       "edited_count": 1
     },
     "resources/js/Pages/Dashboard.tsx": {
-      "last_edited": 1786258987.2271261,
-      "edit_count": 8,
+      "last_edited": 1786317785.746947,
+      "edit_count": 11,
       "last_action": "edited",
-      "last_ts": "2026-08-09T07:04:33.128571+00:00",
-      "edited_count": 5
+      "last_ts": "2026-08-10T08:12:53.393312+00:00",
+      "edited_count": 9
     },
     "resources/js/Components/workstation/optimize-panel.tsx": {
       "query_terms": [],
@@ -5964,8 +6207,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-09T02:57:32.763779+00:00",
       "first_read_turn": 3,
-      "last_edited": 1786264122.2177238,
-      "edit_count": 6,
+      "last_edited": 1786317378.523962,
+      "edit_count": 12,
       "edited_count": 2
     },
     "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx": {
@@ -6012,11 +6255,11 @@
       "cached_chars": 11817,
       "cached_tokens_est": 2954,
       "last_action": "edited",
-      "last_ts": "2026-08-09T06:45:43.817230+00:00",
+      "last_ts": "2026-08-10T07:46:13.832146+00:00",
       "first_read_turn": 4,
-      "last_edited": 1786257896.083404,
-      "edit_count": 9,
-      "edited_count": 4
+      "last_edited": 1786314862.867064,
+      "edit_count": 12,
+      "edited_count": 5
     },
     "PRODUCT.md": {
       "last_edited": 1786128779.869685,
@@ -6041,15 +6284,15 @@
       "cached_chars": 17788,
       "cached_tokens_est": 4447,
       "last_action": "edited",
-      "last_ts": "2026-08-09T06:53:59.950308+00:00",
+      "last_ts": "2026-08-10T07:53:36.733914+00:00",
       "first_read_turn": 9,
-      "last_edited": 1786258165.238742,
-      "edit_count": 10,
-      "edited_count": 4
+      "last_edited": 1786317331.043149,
+      "edit_count": 14,
+      "edited_count": 5
     },
     "resources/js/Components/workstation/export-checklist-modal.tsx": {
-      "last_edited": 1786258052.611636,
-      "edit_count": 4,
+      "last_edited": 1786315639.6039228,
+      "edit_count": 7,
       "last_action": "edited",
       "last_ts": "2026-08-09T06:53:59.950288+00:00",
       "edited_count": 3
@@ -6072,8 +6315,8 @@
       "last_ts": "2026-08-07T22:58:10.024747+00:00",
       "first_read_turn": 1,
       "edited_count": 2,
-      "last_edited": 1786155430.225735,
-      "edit_count": 1
+      "last_edited": 1786314622.070911,
+      "edit_count": 2
     },
     "resources/js/Components/DangerButton.tsx": {
       "query_terms": [],
@@ -6084,34 +6327,35 @@
       "last_ts": "2026-08-09T07:04:48.277590+00:00",
       "first_read_turn": 1,
       "edited_count": 2,
-      "last_edited": 1786258878.394148,
-      "edit_count": 1
+      "last_edited": 1786314624.9295082,
+      "edit_count": 2
     },
     "resources/js/Components/ui/button.tsx": {
       "query_terms": [],
       "cached_content": "import * as React from 'react';\nimport { cn } from '@/lib/utils';\n\ntype Variant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';\ntype Size = 'default' | 'sm' | 'lg' | 'icon';\n\nconst variantClassNames: Record<Variant, string> = {\n    default: 'bg-accent-bg text-text-on-accent",
       "cached_chars": 1707,
       "cached_tokens_est": 426,
-      "last_action": "read",
-      "last_ts": 1786234010,
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:41:11.662319+00:00",
       "first_read_turn": 1,
       "last_edited": 1786258763.842148,
-      "edit_count": 1
+      "edit_count": 1,
+      "edited_count": 1
     },
     "resources/js/Components/Modal.tsx": {
       "query_terms": [],
-      "cached_content": "export default function Modal({\n    children,\n    show = false,\n    maxWidth = '2xl',\n    closeable = true,\n    onClose = () => {},\n}: PropsWithChildren<{\n    show: boolean;\n    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';\n    closeable?: boolean;\n    onClose: CallableFunction;\n}>) {\n    const clos",
-      "cached_chars": 2120,
-      "cached_tokens_est": 530,
+      "cached_content": "export default function Modal({\n    children,\n    show = false,\n    maxWidth = '2xl',\n    closeable = true,\n    onClose = () => {},\n    title,\n    description,\n    footer,\n}: PropsWithChildren<{\n    show: boolean;\n    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';\n    closeable?: boolean;\n   ",
+      "cached_chars": 4055,
+      "cached_tokens_est": 1013,
       "last_action": "edited",
-      "last_ts": "2026-08-07T23:17:00.508237+00:00",
+      "last_ts": "2026-08-10T07:31:03.843082+00:00",
       "first_read_turn": 1,
-      "edited_count": 2
+      "edited_count": 1
     },
     "resources/js/Components/Dropdown.tsx": {
       "last_action": "edited",
-      "last_ts": "2026-08-08T02:50:50.709925+00:00",
-      "edited_count": 4
+      "last_ts": "2026-08-10T08:12:53.393308+00:00",
+      "edited_count": 5
     },
     "resources/js/Components/NavLink.tsx": {
       "last_action": "edited",
@@ -6134,8 +6378,8 @@
     },
     "resources/js/Components/workstation/workstation-format-toolbar.tsx": {
       "last_action": "edited",
-      "last_ts": "2026-08-09T06:53:59.950324+00:00",
-      "edited_count": 5,
+      "last_ts": "2026-08-10T07:53:36.733920+00:00",
+      "edited_count": 6,
       "last_edited": 1786258215.626496,
       "edit_count": 13
     },
@@ -6144,9 +6388,10 @@
       "cached_content": "export function TargetRoleBar({\n    targetRole,\n    onChange,\n    className,\n}: {\n    targetRole: string;\n    onChange: (targetRole: string) => void;\n    className?: string;\n}) {\n    const familyKeywords = keywordsFor(targetRole);\n    const recognized = familyKeywords.length > 0;\n\n    return (\n     ",
       "cached_chars": 2026,
       "cached_tokens_est": 506,
-      "last_action": "read",
-      "last_ts": 1786234006,
-      "first_read_turn": 11
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:49:08.025258+00:00",
+      "first_read_turn": 11,
+      "edited_count": 1
     },
     "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx::DeleteUserForm": {
       "query_terms": [],
@@ -6168,22 +6413,22 @@
       "last_action": "edited",
       "last_ts": "2026-08-09T07:04:48.277706+00:00",
       "edited_count": 2,
-      "last_edited": 1786258929.8071501,
-      "edit_count": 3
+      "last_edited": 1786317326.758173,
+      "edit_count": 4
     },
     "resources/js/Components/workstation/snapshots-panel.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-09T07:39:25.552562+00:00",
       "edited_count": 3,
-      "last_edited": 1786261079.179538,
-      "edit_count": 1
+      "last_edited": 1786314942.905807,
+      "edit_count": 4
     },
     "resources/js/Pages/Admin/Backups/Index.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-08T02:59:37.493807+00:00",
       "edited_count": 3,
-      "last_edited": 1786258965.3192341,
-      "edit_count": 4
+      "last_edited": 1786317627.317975,
+      "edit_count": 9
     },
     "resources/js/Pages/Settings/StarterProfile.tsx": {
       "last_action": "edited",
@@ -6210,15 +6455,15 @@
       "last_action": "edited",
       "last_ts": "2026-08-09T07:39:25.552596+00:00",
       "edited_count": 2,
-      "last_edited": 1786260976.0422258,
-      "edit_count": 1
+      "last_edited": 1786317515.940634,
+      "edit_count": 2
     },
     "resources/js/Components/SkillGroupEditor.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-09T07:04:48.277688+00:00",
       "edited_count": 2,
-      "last_edited": 1786258911.897464,
-      "edit_count": 3
+      "last_edited": 1786317318.802227,
+      "edit_count": 4
     },
     "resources/js/Components/TagInput.tsx": {
       "last_action": "edited",
@@ -6231,15 +6476,15 @@
       "last_action": "edited",
       "last_ts": "2026-08-08T05:21:14.683581+00:00",
       "edited_count": 2,
-      "last_edited": 1786264146.547677,
-      "edit_count": 11
+      "last_edited": 1786315669.802325,
+      "edit_count": 13
     },
     "resources/js/Pages/Admin/Users/Index.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-08T02:59:37.493772+00:00",
       "edited_count": 3,
-      "last_edited": 1786258926.698947,
-      "edit_count": 4
+      "last_edited": 1786315101.832541,
+      "edit_count": 7
     },
     "resources/js/Pages/Onboarding/Wizard.tsx": {
       "last_action": "edited",
@@ -6259,8 +6504,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-09T07:04:14.207968+00:00",
       "edited_count": 3,
-      "last_edited": 1786258988.000771,
-      "edit_count": 10
+      "last_edited": 1786315061.654704,
+      "edit_count": 13
     },
     "resources/js/Components/workstation/jd-match-panel.tsx": {
       "query_terms": [],
@@ -6292,8 +6537,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-09T07:39:25.552577+00:00",
       "edited_count": 2,
-      "last_edited": 1786261092.607723,
-      "edit_count": 4
+      "last_edited": 1786315583.087808,
+      "edit_count": 7
     },
     "resources/js/Components/error-boundary.tsx": {
       "last_action": "edited",
@@ -6306,29 +6551,29 @@
       "last_action": "edited",
       "last_ts": "2026-08-09T07:39:25.552507+00:00",
       "edited_count": 2,
-      "last_edited": 1786264137.329891,
-      "edit_count": 6
+      "last_edited": 1786315644.401945,
+      "edit_count": 10
     },
     "resources/js/Layouts/AdminLayout.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-08T02:52:24.508264+00:00",
       "edited_count": 2,
-      "last_edited": 1786258883.844268,
-      "edit_count": 5
+      "last_edited": 1786316249.299569,
+      "edit_count": 6
     },
     "resources/js/Pages/Admin/Dashboard.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-08T02:59:37.493753+00:00",
       "edited_count": 2,
-      "last_edited": 1786258894.948826,
-      "edit_count": 2
+      "last_edited": 1786315080.919335,
+      "edit_count": 4
     },
     "resources/js/Pages/Admin/Users/Show.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-08T02:59:37.493795+00:00",
       "edited_count": 2,
-      "last_edited": 1786258995.461107,
-      "edit_count": 7
+      "last_edited": 1786315120.050762,
+      "edit_count": 11
     },
     "resources/js/Pages/Jobs/Imports.tsx": {
       "last_action": "edited",
@@ -6339,10 +6584,10 @@
     },
     "resources/js/Pages/Resumes/PublicShare.tsx": {
       "last_action": "edited",
-      "last_ts": "2026-08-09T07:04:14.207984+00:00",
-      "edited_count": 2,
-      "last_edited": 1786259029.1555781,
-      "edit_count": 4
+      "last_ts": "2026-08-10T07:44:01.412295+00:00",
+      "edited_count": 3,
+      "last_edited": 1786317519.936716,
+      "edit_count": 5
     },
     ".ui-craft/tokens.md": {
       "query_terms": [],
@@ -6369,30 +6614,28 @@
       "cached_chars": 1901,
       "cached_tokens_est": 475,
       "last_action": "edited",
-      "last_ts": "2026-08-09T10:36:35.748446+00:00",
+      "last_ts": "2026-08-10T08:09:03.647299+00:00",
       "first_read_turn": 2,
       "last_edited": 1786271757.7876842,
       "edit_count": 2,
-      "edited_count": 2
+      "edited_count": 3
     },
     "resources/js/Components/resume/score-dial.tsx": {
       "query_terms": [],
       "cached_content": "export function ScoreDial({\n    score,\n    size = 52,\n    className,\n}: {\n    score: number | null;\n    size?: number;\n    className?: string;\n}) {\n    const filled = score ?? 0;\n    const ring = scoreRingColor(score);\n\n    return (\n        <div\n            role=\"img\"\n            aria-label={\n      ",
-      "cached_chars": 1160,
-      "cached_tokens_est": 290,
+      "cached_chars": 1127,
+      "cached_tokens_est": 281,
       "last_action": "edited",
-      "last_ts": "2026-08-09T02:57:32.763705+00:00",
+      "last_ts": "2026-08-10T07:31:03.843073+00:00",
       "first_read_turn": 3,
-      "last_edited": 1786244120.300477,
-      "edit_count": 2,
-      "edited_count": 2
+      "edited_count": 1
     },
     "resources/js/Components/workstation/notes-panel.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-09T06:53:59.950337+00:00",
       "edited_count": 2,
-      "last_edited": 1786264114.640279,
-      "edit_count": 4
+      "last_edited": 1786314928.211447,
+      "edit_count": 7
     },
     "resources/js/Components/workstation/target-role-bar.tsx::TargetRoleBar": {
       "query_terms": [],
@@ -6476,7 +6719,9 @@
     "resources/js/Components/resume/suggestion-list.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-08T16:25:38.705450+00:00",
-      "edited_count": 1
+      "edited_count": 1,
+      "last_edited": 1786315186.636516,
+      "edit_count": 3
     },
     "resources/js/Components/workstation/background-color-picker.tsx": {
       "last_edited": 1786244111.553288,
@@ -6486,25 +6731,13 @@
       "edited_count": 2
     },
     "resources/js/Components/resume/score-gauge.tsx": {
-      "query_terms": [
-        "scoregauge",
-        "conic",
-        "gradient",
-        "svg",
-        "semicircle",
-        "colors",
-        "export",
-        "function"
-      ],
-      "cached_content": "import { cn } from '@/lib/utils';\n\nfunction scoreLabel(score: number | null): string {\n    if (score === null) {\n        return 'No score yet';\n    }\n    if (score >= 90) return 'Excellent';\n    if (score >= 75) return 'Very Good';\n    if (score >= 60) return 'Good';\n    if (score >= 40) return 'Fai",
-      "cached_chars": 3052,
-      "cached_tokens_est": 763,
-      "last_action": "edited",
-      "last_ts": "2026-08-09T03:34:28.221997+00:00",
-      "first_read_turn": 9,
-      "last_edited": 1786246338.504317,
-      "edit_count": 7,
-      "edited_count": 4
+      "query_terms": [],
+      "cached_content": "function scoreLabel(score: number | null): string {\n    if (score === null) {\n        return 'No score yet';\n    }\n    if (score >= 90) return 'Excellent';\n    if (score >= 75) return 'Very Good';\n    if (score >= 60) return 'Good';\n    if (score >= 40) return 'Fair';\n    return 'Needs Work';\n}",
+      "cached_chars": 295,
+      "cached_tokens_est": 73,
+      "last_action": "read",
+      "last_ts": 1786346731,
+      "first_read_turn": 9
     },
     "resources/js/lib/resume-analysis.ts": {
       "query_terms": [],
@@ -6568,11 +6801,11 @@
       "edited_count": 1
     },
     "resources/js/Layouts/GuestLayout.tsx": {
-      "last_edited": 1786259012.048984,
-      "edit_count": 1,
+      "last_edited": 1786316245.7820532,
+      "edit_count": 2,
       "last_action": "edited",
-      "last_ts": "2026-08-09T07:04:55.478576+00:00",
-      "edited_count": 1
+      "last_ts": "2026-08-10T07:41:11.662335+00:00",
+      "edited_count": 2
     },
     "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx": {
       "last_edited": 1786259017.377713,
@@ -6617,1132 +6850,93 @@
       "last_action": "read",
       "last_ts": 1786263996,
       "first_read_turn": 4
+    },
+    "/private/tmp/claude-501/-Users-rmethod-Herd-Resumegen/7fda1bda-bfeb-40f5-951c-d7068084e83a/scratchpad/repoint_colors.py": {
+      "last_edited": 1786316027.441889,
+      "edit_count": 1
+    },
+    "app/Http/Controllers/DashboardController.php": {
+      "last_edited": 1786317715.9281359,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:31:03.843095+00:00",
+      "edited_count": 1
+    },
+    "tests/Feature/DashboardShareInfoTest.php": {
+      "last_edited": 1786317833.571031,
+      "edit_count": 2,
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:31:03.843132+00:00",
+      "edited_count": 1
+    },
+    "tests/Browser/WorkstationResponsiveTest.php": {
+      "last_edited": 1786318062.4450471,
+      "edit_count": 3
+    },
+    "/Users/rmethod/Desktop/resumegen-ui-audit-followups.md": {
+      "last_edited": 1786318773.527082,
+      "edit_count": 1
+    },
+    "TODO_code-reviewer.md": {
+      "last_edited": 1786319506.538615,
+      "edit_count": 1
+    },
+    "resources/js/Pages/Dashboard.tsx::ShareStatus": {
+      "query_terms": [],
+      "cached_content": "function ShareStatus({\n    share,\n    compact = false,\n    onOpenShare,\n}: {\n    share: DashboardShareInfo | null;\n    compact?: boolean;\n    onOpenShare: () => void;\n}) {\n    const [copied, setCopied] = useState(false);\n\n    if (!share) {\n        return (\n            <span\n                className",
+      "cached_chars": 3581,
+      "cached_tokens_est": 895,
+      "last_action": "read",
+      "last_ts": 1786346731,
+      "first_read_turn": 1
+    },
+    "resources/js/lib/score-band.ts": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:31:03.843059+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Controllers/ResumeShareLinkController.php": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:31:03.843105+00:00",
+      "edited_count": 1
+    },
+    "resources/js/types/resume.ts": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:31:03.843112+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Components/ui/shell.tsx": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T07:41:11.662313+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Components/BrandMark.tsx": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T08:06:10.835972+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Controllers/LegalController.php": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T08:06:10.835986+00:00",
+      "edited_count": 1
+    },
+    "resources/views/errors/layout.blade.php": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T08:06:10.836004+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Pages/Legal/Privacy.tsx": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T08:06:10.836017+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Pages/Legal/Terms.tsx": {
+      "last_action": "edited",
+      "last_ts": "2026-08-10T08:06:10.836028+00:00",
+      "edited_count": 1
     }
   },
   "actions": [
-    {
-      "ts": 1786258861,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "destructive",
-        "hit_count": 30,
-        "hit_files": [
-          "./DESIGN.md.BAK",
-          "./CONTEXT.md",
-          "./public/dictionaries/en_US.dic",
-          "./app/Models/ResumeSnapshot.php-11- * ResumeDocument",
-          "./app/Models/ResumeSnapshot.php",
-          "./docs/superpowers/specs/2026-06-13-admin-content-management-design.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Settings",
-          "resources/js/Pages",
-          "resources/js/Pages/Onboarding"
-        ]
-      }
-    },
-    {
-      "ts": 1786258864,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "design token names success warning error info accent surface text border in app.css tailwind config"
-      }
-    },
-    {
-      "ts": 1786258864,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "design token names success warning error info accent surface text border in app.css tailwind config"
-      }
-    },
-    {
-      "ts": 1786258867,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "tailwind.config.js",
-        "query": "",
-        "mode": "full",
-        "response_chars": 7470
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258873.0364501,
-      "files": [
-        "resources/js/Layouts/AdminLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258874.7227268,
-      "files": [
-        "resources/js/Layouts/AdminLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258876.839527,
-      "files": [
-        "resources/js/Layouts/AdminLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258878.394146,
-      "files": [
-        "resources/js/Components/DangerButton.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258880.576899,
-      "files": [
-        "resources/js/Components/InputError.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258881.646519,
-      "files": [
-        "resources/js/Layouts/AdminLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258883.844267,
-      "files": [
-        "resources/js/Layouts/AdminLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258884.1453362,
-      "files": [
-        "resources/js/Components/InputLabel.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258888.1882381,
-      "files": [
-        "resources/js/Pages/Admin/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258893.843989,
-      "files": [
-        "resources/js/Components/error-boundary.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258894.9488242,
-      "files": [
-        "resources/js/Pages/Admin/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258900.084915,
-      "files": [
-        "resources/js/Pages/Admin/Users/Index.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258903.215441,
-      "files": [
-        "resources/js/Components/SkillGroupEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258904.114114,
-      "files": [
-        "resources/js/Pages/Admin/Users/Index.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258908.759028,
-      "files": [
-        "resources/js/Components/SkillGroupEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258911.897463,
-      "files": [
-        "resources/js/Components/SkillGroupEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258919.8014872,
-      "files": [
-        "resources/js/Components/SkillNarrativeEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786258920,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "gray-4|indigo-6|purple-6|blue-6|bg-brand|text-brand|border-brand|text-ink",
-        "hit_count": 9,
-        "hit_files": [
-          "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx",
-          "resources/js/Pages/Jobs/Kanban.tsx",
-          "resources/js/Pages/Jobs/Imports.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258923.2979681,
-      "files": [
-        "resources/js/Pages/Admin/Users/Index.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258926.10922,
-      "files": [
-        "resources/js/Components/SkillNarrativeEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258926.698945,
-      "files": [
-        "resources/js/Pages/Admin/Users/Index.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258929.807146,
-      "files": [
-        "resources/js/Components/SkillNarrativeEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258932.475324,
-      "files": [
-        "resources/js/Pages/Admin/Backups/Index.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258933.2210822,
-      "files": [
-        "resources/js/Pages/Settings/StarterProfile.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258934.817346,
-      "files": [
-        "resources/js/Components/BulletEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258935.136984,
-      "files": [
-        "resources/js/Pages/Settings/StarterProfile.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258935.580173,
-      "files": [
-        "resources/js/Pages/Jobs/Imports.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258936.860173,
-      "files": [
-        "resources/js/Pages/Admin/Backups/Index.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258937.019737,
-      "files": [
-        "resources/js/Pages/Settings/StarterProfile.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258937.658802,
-      "files": [
-        "resources/js/Pages/Settings/StarterProfile.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258939.1655,
-      "files": [
-        "resources/js/Components/BulletEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258941.127846,
-      "files": [
-        "resources/js/Pages/Onboarding/Wizard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258943.274383,
-      "files": [
-        "resources/js/Components/BulletEditor.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258943.8032131,
-      "files": [
-        "resources/js/Pages/Onboarding/Wizard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258953.6286669,
-      "files": [
-        "resources/js/Components/TagInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258953.759603,
-      "files": [
-        "resources/js/Pages/Admin/Backups/Index.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258954.437737,
-      "files": [
-        "resources/js/Pages/Onboarding/Wizard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258956.837526,
-      "files": [
-        "resources/js/Components/TagInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258958.110255,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258959.426414,
-      "files": [
-        "resources/js/Components/TagInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258960.346524,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258962.5871701,
-      "files": [
-        "resources/js/Components/TagInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258962.9558852,
-      "files": [
-        "resources/js/Pages/Jobs/Kanban.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258963.372855,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258965.319232,
-      "files": [
-        "resources/js/Pages/Admin/Backups/Index.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258965.364416,
-      "files": [
-        "resources/js/Components/TagInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258966.706656,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258968.978831,
-      "files": [
-        "resources/js/Components/TagInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258969.98926,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258972.707073,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258972.763653,
-      "files": [
-        "resources/js/Pages/Admin/Users/Show.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258973.472343,
-      "files": [
-        "resources/js/Pages/Admin/Users/Show.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258974.1840682,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258974.2432508,
-      "files": [
-        "resources/js/Pages/Onboarding/Wizard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258975.433589,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258977.077268,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258977.875516,
-      "files": [
-        "resources/js/Pages/Admin/Users/Show.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258977.969274,
-      "files": [
-        "resources/js/Components/AutocompleteInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258978.296097,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258980.6647081,
-      "files": [
-        "resources/js/Pages/Onboarding/Wizard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258980.7624042,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258981.8010828,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258982.597861,
-      "files": [
-        "resources/js/Pages/Admin/Users/Show.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258982.8590379,
-      "files": [
-        "resources/js/Pages/Onboarding/Wizard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258983.01001,
-      "files": [
-        "resources/js/Components/AutocompleteInput.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258984.528895,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258986.731661,
-      "files": [
-        "resources/js/Pages/Profile/Edit.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258987.227125,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258988.0007691,
-      "files": [
-        "resources/js/Pages/Resumes/Compare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258988.0765371,
-      "files": [
-        "resources/js/Pages/Admin/Users/Show.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258988.9161952,
-      "files": [
-        "resources/js/Pages/Profile/Edit.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258989.463309,
-      "files": [
-        "resources/js/Components/QRCodeDisplay.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258989.705981,
-      "files": [
-        "resources/js/Pages/Admin/Users/Show.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258990.1871219,
-      "files": [
-        "resources/js/Pages/Profile/Edit.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786258992,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "gray-|indigo-|purple-|blue-|bg-brand|text-brand|border-brand|text-ink|bg-surface[^-]|surface-border",
-        "hit_count": 24,
-        "hit_files": [
-          "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx",
-          "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-          "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786258995.4611058,
-      "files": [
-        "resources/js/Pages/Admin/Users/Show.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259004.9721029,
-      "files": [
-        "resources/js/Pages/Profile/Edit.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259008.809139,
-      "files": [
-        "resources/js/Layouts/PublicLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259010.598208,
-      "files": [
-        "resources/js/Pages/Resumes/PublicShare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259012.048982,
-      "files": [
-        "resources/js/Layouts/GuestLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259015.751158,
-      "files": [
-        "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259017.377711,
-      "files": [
-        "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259022.029241,
-      "files": [
-        "resources/js/Pages/Resumes/PublicShare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259024.248176,
-      "files": [
-        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259024.60738,
-      "files": [
-        "resources/js/Pages/Resumes/PublicShare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259027.069661,
-      "files": [
-        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259029.1555772,
-      "files": [
-        "resources/js/Pages/Resumes/PublicShare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259029.458241,
-      "files": [
-        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259030.400661,
-      "files": [
-        "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259034.0799732,
-      "files": [
-        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259036.740099,
-      "files": [
-        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259039.4732108,
-      "files": [
-        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259040.612888,
-      "files": [
-        "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259044.049407,
-      "files": [
-        "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259046.326015,
-      "files": [
-        "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259050.5902588,
-      "files": [
-        "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259052.2247639,
-      "files": [
-        "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259053.9897962,
-      "files": [
-        "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786259054,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259057.909568,
-      "files": [
-        "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259059.517387,
-      "files": [
-        "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259061.153739,
-      "files": [
-        "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786259062,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "gray-|slate-|red-|amber-|yellow-|green-|blue-|indigo-|purple-",
-        "hit_count": 4,
-        "hit_files": [
-          "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
-          "resources/js/Pages/Jobs/Imports.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259064.449119,
-      "files": [
-        "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786259065.6801841,
-      "files": [
-        "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786259073,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786259088,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786259095,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786260913,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "(bg|text|border)-(gray|slate|red|blue|green|amber|yellow|purple|indigo|emerald)-[0-9]{2,3}\\b",
-        "hit_count": 74,
-        "hit_files": [
-          "resources/js/Components/workstation/notes-panel.tsx",
-          "resources/js/Components/ui/badge.tsx",
-          "resources/js/Components/workstation/template-picker-modal.tsx",
-          "resources/js/Components/ui/checkbox.tsx",
-          "resources/js/Components/Modal.tsx",
-          "resources/js/Components/workstation/inspector-fields.tsx",
-          "resources/js/Pages/Resumes/Compare.tsx",
-          "resources/js/Components/dashboard/new-resume-modal.tsx",
-          "resources/js/Components/workstation/snapshots-panel.tsx",
-          "resources/js/Components/workstation/optimize-panel.tsx",
-          "resources/js/Components/ui/card.tsx",
-          "resources/js/Components/ui/textarea.tsx",
-          "resources/js/Components/workstation/share-resume-modal.tsx"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786260976.0422242,
-      "files": [
-        "resources/js/Components/ui/card.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786260978.212131,
-      "files": [
-        "resources/js/Components/ui/checkbox.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786260978.727324,
-      "files": [
-        "resources/js/Components/ui/badge.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786260981.014656,
-      "files": [
-        "resources/js/Components/ui/textarea.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786260986.065671,
-      "files": [
-        "resources/js/Components/workstation/template-picker-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786260988.780308,
-      "files": [
-        "resources/js/Components/workstation/template-picker-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786260992.07678,
-      "files": [
-        "resources/js/Components/workstation/template-picker-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786260995.7406678,
-      "files": [
-        "resources/js/Components/workstation/template-picker-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261005.1258502,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261008.4035351,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261010.035889,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261016.5786948,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261025.286113,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261026.388145,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261028.573162,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261034.4514802,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261045.130132,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261046.771286,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261048.9659169,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261050.899955,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
     {
       "type": "edit_auto",
       "ts": 1786261063.141672,
@@ -8445,99 +7639,1559 @@
       "payload": {
         "kind": "register_edit"
       }
-    }
-  ],
-  "decisions": [
-    {
-      "ts": 1786157977,
-      "summary": "Admin content pages design pass: ops desk case-file UI",
-      "files": [
-        "resources/js/Pages/Admin/Dashboard.tsx",
-        "resources/js/Pages/Admin/Users/Index.tsx",
-        "resources/js/Pages/Admin/Users/Show.tsx",
-        "resources/js/Pages/Admin/Backups/Index.tsx"
-      ],
-      "scope": "global"
     },
     {
-      "ts": 1786158262,
-      "summary": "Workstation desk/paper surface hierarchy for panel separation",
-      "files": [
-        "resources/js/Pages/Resumes/Workstation.tsx",
-        "resources/js/Components/workstation/workstation-header.tsx",
-        "resources/js/Components/workstation/section-panel.tsx",
-        "resources/js/Components/workstation/target-role-bar.tsx",
-        "resources/js/Components/workstation/notes-panel.tsx",
-        "resources/js/Components/workstation/snapshots-panel.tsx",
-        "resources/js/Components/workstation/optimize-panel.tsx",
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "scope": "global"
+      "ts": 1786313780,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "design system tokens typography spacing color components buttons inputs cards modals app.css tailwind.config"
+      }
     },
     {
-      "ts": 1786168192,
-      "summary": "Rebranded token spine to DESIGN.md's warm cream/coffee/orange palette, 12px radius, Inter font",
-      "files": [
-        "resources/css/app.css",
-        "tailwind.config.js",
-        "resources/views/app.blade.php"
-      ],
-      "scope": "global"
+      "ts": 1786313780,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "design system tokens typography spacing color components buttons inputs cards modals app.css tailwind.config"
+      }
     },
     {
-      "ts": 1786170449,
-      "summary": "Re-rebranded token spine to DESIGN.md v2: cool-neutral/mint Mintlify-style palette (accent anchored on confirmed #00D4A4), radius scale (md 12\u21928px, 2xl 20\u219224px, buttons now pill-full), added Geist Mono font family for code",
+      "type": "edit_auto",
+      "ts": 1786314525.5075898,
       "files": [
-        "resources/css/app.css",
-        "tailwind.config.js",
-        "resources/views/app.blade.php"
+        "tailwind.config.js"
       ],
-      "scope": "global"
+      "source": "graph_sync_hook"
     },
     {
-      "ts": 1786189202,
-      "summary": "Moved score & coaching panel above resume sections nav; removed Improvements/SuggestionList block and its now-dead handlers",
-      "files": [
-        "resources/js/Components/workstation/section-panel.tsx",
-        "resources/js/Pages/Resumes/Workstation.tsx"
-      ],
-      "scope": "global"
+      "ts": 1786314574,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "PrimaryButton SecondaryButton DangerButton Checkbox ui button component usage across pages"
+      }
     },
     {
-      "ts": 1786206338,
-      "summary": "Deleted orphaned SuggestionList component; score/coaching panel already above sections, Improvements block already removed in working tree",
-      "files": [
-        "resources/js/Components/resume/suggestion-list.tsx"
-      ],
-      "scope": "file"
+      "ts": 1786314574,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "PrimaryButton SecondaryButton DangerButton Checkbox ui button component usage across pages"
+      }
     },
     {
-      "ts": 1786234178,
-      "summary": "Un-collapsed rail score/coaching disclosure into always-visible cards per design mockup",
-      "files": [
-        "resources/js/Components/workstation/section-panel.tsx",
-        "resources/js/Components/resume/score-coach.tsx",
-        "resources/js/Components/workstation/jd-match-panel.tsx"
-      ],
-      "scope": "global"
+      "ts": 1786314590,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "PrimaryButton|SecondaryButton|DangerButton",
+        "hit_count": 91,
+        "hit_files": [
+          "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
+          "resources/js/Pages/Jobs/Imports.tsx",
+          "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
     },
     {
-      "ts": 1786234594,
-      "summary": "Restyled tab pill (bg-surface-raised, no border, active=text-primary) to match mockup CSS",
+      "ts": 1786314591,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "from '@/Components/Checkbox'|from '@/Components/ui/checkbox'",
+        "hit_count": 3,
+        "hit_files": [
+          "resources/js/Pages/Auth/Login.tsx",
+          "resources/js/Pages/Auth/Register.tsx",
+          "resources/js/Pages/Settings/StarterProfile.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
+    },
+    {
+      "ts": 1786314612,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "<Checkbox",
+        "hit_count": 3,
+        "hit_files": [
+          "resources/js/Pages/Auth/Login.tsx",
+          "resources/js/Pages/Auth/Register.tsx",
+          "resources/js/Pages/Settings/StarterProfile.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314615.3814662,
+      "files": [
+        "resources/js/Components/PrimaryButton.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314622.070909,
+      "files": [
+        "resources/js/Components/SecondaryButton.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314624.929506,
+      "files": [
+        "resources/js/Components/DangerButton.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314627.891705,
+      "files": [
+        "resources/js/Components/Checkbox.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786314648,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "rounded-lg border border-transparent|text-indigo-600|uppercase tracking-widest",
+        "hit_count": 7,
+        "hit_files": [
+          "resources/js/Pages/Welcome.tsx",
+          "resources/js/Pages/Admin/Users/Show.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
+    },
+    {
+      "ts": 1786314716,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "from '@/Components/Modal'",
+        "hit_count": 3,
+        "hit_files": [
+          "resources/js/Pages/Jobs/Kanban.tsx",
+          "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314830.27562,
+      "files": [
+        "resources/js/Components/workstation/section-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786314847,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "^            </div>$",
+        "hit_count": 5,
+        "hit_files": [
+          "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+          "resources/js/Pages/Jobs/Kanban.tsx",
+          "resources/js/Pages/Auth/VerifyEmail.tsx",
+          "resources/js/Pages/Welcome.tsx",
+          "resources/js/Pages/Onboarding/Wizard.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314860.1402009,
+      "files": [
+        "resources/js/Components/workstation/section-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314862.867063,
+      "files": [
+        "resources/js/Components/workstation/section-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314907.92731,
       "files": [
         "resources/js/Components/workstation/workstation-header.tsx"
       ],
-      "scope": "file"
+      "source": "graph_sync_hook"
     },
     {
-      "ts": 1786235152,
-      "summary": "Replaced hardcoded hex/gray colors with semantic design tokens in gauge and checklist",
+      "type": "edit_auto",
+      "ts": 1786314910.9458098,
       "files": [
-        "resources/js/Components/resume/score-gauge.tsx",
-        "resources/js/Components/resume/score-coach.tsx"
+        "resources/js/Components/workstation/workstation-header.tsx"
       ],
-      "scope": "global"
+      "source": "graph_sync_hook"
     },
+    {
+      "type": "edit_auto",
+      "ts": 1786314913.2153559,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314923.073131,
+      "files": [
+        "resources/js/Components/workstation/notes-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314925.903389,
+      "files": [
+        "resources/js/Components/workstation/notes-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314928.211445,
+      "files": [
+        "resources/js/Components/workstation/notes-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314935.160909,
+      "files": [
+        "resources/js/Components/workstation/snapshots-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314940.086236,
+      "files": [
+        "resources/js/Components/workstation/snapshots-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314942.905806,
+      "files": [
+        "resources/js/Components/workstation/snapshots-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314951.8704581,
+      "files": [
+        "resources/js/Components/workstation/optimize-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314954.502083,
+      "files": [
+        "resources/js/Components/workstation/optimize-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314959.5075252,
+      "files": [
+        "resources/js/Components/workstation/optimize-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314963.744716,
+      "files": [
+        "resources/js/Components/workstation/optimize-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786314966.070699,
+      "files": [
+        "resources/js/Components/workstation/optimize-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786315001,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "from '@/Components/ui/card'",
+        "hit_count": 2,
+        "hit_files": [
+          "resources/js/Pages/Settings/StarterProfile.tsx",
+          "resources/js/Pages/Dashboard.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315007.723456,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315031.915921,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315034.48294,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315040.9293702,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315043.654166,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315056.241287,
+      "files": [
+        "resources/js/Pages/Resumes/Compare.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315059.1784909,
+      "files": [
+        "resources/js/Pages/Resumes/Compare.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315061.6547031,
+      "files": [
+        "resources/js/Pages/Resumes/Compare.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315076.720445,
+      "files": [
+        "resources/js/Pages/Admin/Dashboard.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315080.9193332,
+      "files": [
+        "resources/js/Pages/Admin/Dashboard.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315094.1516979,
+      "files": [
+        "resources/js/Pages/Admin/Users/Index.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315099.194737,
+      "files": [
+        "resources/js/Pages/Admin/Users/Index.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315101.8325388,
+      "files": [
+        "resources/js/Pages/Admin/Users/Index.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315109.955063,
+      "files": [
+        "resources/js/Pages/Admin/Users/Show.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315113.723454,
+      "files": [
+        "resources/js/Pages/Admin/Users/Show.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315117.654641,
+      "files": [
+        "resources/js/Pages/Admin/Users/Show.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315120.05076,
+      "files": [
+        "resources/js/Pages/Admin/Users/Show.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315131.6193228,
+      "files": [
+        "resources/js/Pages/Admin/Backups/Index.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315134.4104729,
+      "files": [
+        "resources/js/Pages/Admin/Backups/Index.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315136.828458,
+      "files": [
+        "resources/js/Pages/Admin/Backups/Index.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315178.312393,
+      "files": [
+        "resources/js/Components/resume/suggestion-list.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315183.663815,
+      "files": [
+        "resources/js/Components/resume/suggestion-list.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315186.6365151,
+      "files": [
+        "resources/js/Components/resume/suggestion-list.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315206.292363,
+      "files": [
+        "resources/js/Pages/Profile/Edit.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315216.9962811,
+      "files": [
+        "resources/js/Pages/Profile/Edit.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315508.570195,
+      "files": [
+        "resources/js/Components/Modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315534.600716,
+      "files": [
+        "resources/js/Components/Modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315551.88582,
+      "files": [
+        "resources/js/Components/workstation/export-checklist-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315558.189634,
+      "files": [
+        "resources/js/Components/workstation/export-checklist-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786315563,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "ExportChecklistModal",
+        "hit_count": 2,
+        "hit_files": [
+          "resources/js/Pages/Resumes/Workstation.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315568.469829,
+      "files": [
+        "resources/js/Components/dashboard/new-resume-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315576.04553,
+      "files": [
+        "resources/js/Components/dashboard/new-resume-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315583.087806,
+      "files": [
+        "resources/js/Components/dashboard/new-resume-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315604.6595268,
+      "files": [
+        "resources/js/Components/workstation/template-picker-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315610.181327,
+      "files": [
+        "resources/js/Components/workstation/template-picker-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315614.082677,
+      "files": [
+        "resources/js/Components/workstation/template-picker-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315633.790621,
+      "files": [
+        "resources/js/Components/Modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315639.603921,
+      "files": [
+        "resources/js/Components/workstation/export-checklist-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315644.401943,
+      "files": [
+        "resources/js/Components/workstation/template-picker-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315655.8001149,
+      "files": [
+        "resources/js/Components/workstation/skill-picker-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315669.8023229,
+      "files": [
+        "resources/js/Components/workstation/skill-picker-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315691.914646,
+      "files": [
+        "resources/js/Components/workstation/share-resume-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315697.855367,
+      "files": [
+        "resources/js/Components/workstation/share-resume-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315703.017456,
+      "files": [
+        "resources/js/Components/workstation/share-resume-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786315709.5850601,
+      "files": [
+        "resources/js/Components/workstation/share-resume-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786316027.441887,
+      "files": [
+        "/private/tmp/claude-501/-Users-rmethod-Herd-Resumegen/7fda1bda-bfeb-40f5-951c-d7068084e83a/scratchpad/repoint_colors.py"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786316224,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "NavLink",
+        "hit_count": 40,
+        "hit_files": [
+          "./docs/superpowers/specs/2026-06-02-ui-redesign-design.md",
+          "./docs/superpowers/specs/2026-07-14-app-layout-four-and-command-palette-design.md",
+          "./docs/superpowers/plans/2026-06-08-recruiter-multi-seat.md",
+          "./docs/superpowers/specs/2026-07-05-ai-career-coach-design.md",
+          "./docs/superpowers/specs/2026-06-02-ui-redesign-design.md-108-Active",
+          "./docs/superpowers/specs/2026-07-05-resignation-letter-generator-design.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786316245.782052,
+      "files": [
+        "resources/js/Layouts/GuestLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786316249.2995672,
+      "files": [
+        "resources/js/Layouts/AdminLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317318.8022258,
+      "files": [
+        "resources/js/Components/SkillGroupEditor.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317326.7581708,
+      "files": [
+        "resources/js/Components/SkillNarrativeEditor.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317331.043147,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317352.7859662,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317361,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "viewport height vh dvh svh usages across components and modals"
+      }
+    },
+    {
+      "ts": 1786317361,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "viewport height vh dvh svh usages across components and modals"
+      }
+    },
+    {
+      "ts": 1786317367,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "vh\\]",
+        "hit_count": 9,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-07-17-builder-preview-left-skills-panel.md",
+          "./docs/superpowers/plans/2026-07-08-onboarding-preview-and-dashboard-nudge-plan.md",
+          "./resources/js/Pages/Resumes/Workstation.tsx",
+          "./docs/superpowers/plans/2026-06-02-ui-redesign.md",
+          "./docs/superpowers/plans/2026-05-28-productivity.md",
+          "./resources/js/Components/workstation/optimize-panel.tsx",
+          "./resources/js/Components/Modal.tsx-82-                                ",
+          "./resources/js/Components/Modal.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317375.048707,
+      "files": [
+        "resources/js/Components/Modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317378.523961,
+      "files": [
+        "resources/js/Components/workstation/optimize-panel.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317399,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "safe-area|env\\(safe",
+        "hit_count": 1,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-07-07-mobile-app-phase1.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317413.077151,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317422.819941,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317428.505418,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317450.987245,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317457,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "function moveSectionByOffset",
+        "hit_count": 1,
+        "hit_files": [
+          "./resources/js/Pages/Resumes/Workstation.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317502.788277,
+      "files": [
+        "tailwind.config.js"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317507,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "shadow-\\[0_1px_2px_rgba",
+        "hit_count": 4,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-07-19-builder-preview-left-palette.md",
+          "./resources/js/Pages/Resumes/PublicShare.tsx",
+          "./resources/js/Components/ui/card.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317515.940633,
+      "files": [
+        "resources/js/Components/ui/card.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317519.936714,
+      "files": [
+        "resources/js/Pages/Resumes/PublicShare.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317552.978302,
+      "files": [
+        "resources/js/Components/Modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317561.1285708,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317569,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "transition",
+        "hit_count": 5,
+        "hit_files": [
+          "./public/dictionaries/en_US.dic",
+          "./docs/superpowers/specs/2026-06-06-hero-carousel-design.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317612.307744,
+      "files": [
+        "resources/js/Pages/Admin/Backups/Index.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317627.317972,
+      "files": [
+        "resources/js/Pages/Admin/Backups/Index.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317670,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "class DashboardController",
+        "hit_count": 2,
+        "hit_files": [
+          "./app/Http/Controllers/Admin/DashboardController.php",
+          "./app/Http/Controllers/DashboardController.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786317698,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "interface ResumeSummary|type ResumeSummary",
+        "hit_count": 3,
+        "hit_files": [
+          "./resources/js/types/resume.ts",
+          "./docs/superpowers/plans/2026-07-07-mobile-app-phase2-editing.md",
+          "./docs/superpowers/plans/2026-07-07-mobile-app-phase1.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317715.928134,
+      "files": [
+        "app/Http/Controllers/DashboardController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317744,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "average_score|resumes\\.",
+        "hit_count": 20,
+        "hit_files": [
+          "./routes/api.php",
+          "./CLAUDE.md-129-Explicitly **not** ported from Resumo",
+          "./routes/api.php-22-Route",
+          "./CLAUDE.md-201-- **Portfolio.** `PortfolioController`, `PortfolioMessage` model + mail + factory, the public `/p/{slug}` page and settings page (`resources/js/Pages/Portfolio/Show.tsx`, `resources/js/Pages/Settings/Portfolio.tsx`), the Portfolio nav item, and `users.portfolio_slug` / `portfolio_headline` / `portfolio_bio` / `portfolio_is_public` / `portfolio_links`. (Correction, 2026-08-04",
+          "./CLAUDE.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786317752,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Dashboard.tsx average_score resumes prop usage"
+      }
+    },
+    {
+      "ts": 1786317752,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Dashboard.tsx average_score resumes prop usage"
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317771.3028202,
+      "files": [
+        "resources/js/Pages/Dashboard.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317777.476444,
+      "files": [
+        "resources/js/Pages/Dashboard.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317785.7469451,
+      "files": [
+        "resources/js/Pages/Dashboard.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317802,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "average_score",
+        "hit_count": 2,
+        "hit_files": [
+          "./app/Http/Controllers/DashboardController.php-24-            'resumes' => Inertia",
+          "./app/Http/Controllers/DashboardController.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages/Admin",
+          "resources/js/Pages",
+          "resources/js/Components"
+        ]
+      }
+    },
+    {
+      "ts": 1786317809,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "Dashboard",
+        "hit_count": 9,
+        "hit_files": [
+          "resources/js/Pages/Dashboard.tsx-24-function scoreDotColor(score",
+          "resources/js/Pages/Dashboard.tsx",
+          "resources/js/Pages/Admin/Dashboard.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages/Admin",
+          "resources/js/Pages",
+          "resources/js/Components"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317829.86113,
+      "files": [
+        "tests/Feature/DashboardShareInfoTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786317833.57103,
+      "files": [
+        "tests/Feature/DashboardShareInfoTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786317844,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "resumes|average_score",
+        "hit_count": 20,
+        "hit_files": [
+          "resources/js/Pages/Welcome.tsx-7-    { tab",
+          "resources/js/Pages/Onboarding/Wizard.tsx",
+          "resources/js/Pages/Welcome.tsx",
+          "resources/js/Pages/Admin/Users/Show.tsx",
+          "resources/js/Pages/Resumes/Compare.tsx",
+          "resources/js/Pages/Admin/Users/Index.tsx",
+          "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages/Admin",
+          "resources/js/Pages",
+          "resources/js/Components"
+        ]
+      }
+    },
+    {
+      "ts": 1786317879,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "class JobImportsController",
+        "hit_count": 1,
+        "hit_files": [
+          "./app/Http/Controllers/JobImportsController.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages/Admin",
+          "resources/js/Pages",
+          "resources/js/Components"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786318013.311594,
+      "files": [
+        "tests/Browser/WorkstationResponsiveTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786318058.138133,
+      "files": [
+        "tests/Browser/WorkstationResponsiveTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786318062.445045,
+      "files": [
+        "tests/Browser/WorkstationResponsiveTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786318773.5270798,
+      "files": [
+        "/Users/rmethod/Desktop/resumegen-ui-audit-followups.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786319344,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Dashboard.tsx resumes prop usage after deferred load, all references to resumes variable"
+      }
+    },
+    {
+      "ts": 1786319344,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Dashboard.tsx resumes prop usage after deferred load, all references to resumes variable"
+      }
+    },
+    {
+      "ts": 1786319377,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "aria-label.*Move.*up",
+        "hit_count": 1,
+        "hit_files": [
+          "resources/js/Pages/Resumes/Workstation.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Auth",
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages/Admin"
+        ]
+      }
+    },
+    {
+      "ts": 1786319385,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "useIsMobile",
+        "hit_count": 2,
+        "hit_files": [
+          "resources/js/Pages/Resumes/Workstation.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Auth",
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages/Admin"
+        ]
+      }
+    },
+    {
+      "ts": 1786319390,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "MOBILE_BREAKPOINT|768",
+        "hit_count": 17,
+        "hit_files": [
+          "./tests/Browser/WorkstationResponsiveTest.php",
+          "./composer.lock-3182-                \"url\"",
+          "./playwright.config.ts",
+          "./composer.lock"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Auth",
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages/Admin"
+        ]
+      }
+    },
+    {
+      "ts": 1786319417,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "from '@/Components/NavLink'|from '@/Components/ResponsiveNavLink'",
+        "hit_count": 2,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-06-02-ui-redesign.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Auth",
+          "resources/js/Pages/Profile/Partials",
+          "resources/js/Pages/Admin"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786319506.538614,
+      "files": [
+        "TODO_code-reviewer.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786346722,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "score dial dashboard dots PrimaryButton SecondaryButton DangerButton Checkbox Modal hasChrome DashboardController resumes preview share"
+      }
+    },
+    {
+      "ts": 1786346722,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "score dial dashboard dots PrimaryButton SecondaryButton DangerButton Checkbox Modal hasChrome DashboardController resumes preview share"
+      }
+    },
+    {
+      "ts": 1786346731,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Components/Modal.tsx",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 4055
+      }
+    },
+    {
+      "ts": 1786346731,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Pages/Dashboard.tsx::ShareStatus",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 3581
+      }
+    },
+    {
+      "ts": 1786346731,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Components/resume/score-dial.tsx",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 1127
+      }
+    },
+    {
+      "ts": 1786346731,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Components/resume/score-gauge.tsx",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 295
+      }
+    },
+    {
+      "ts": 1786347063,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786347308,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Welcome Dashboard Workstation AuthenticatedLayout design tokens brand UI surface preview"
+      }
+    },
+    {
+      "ts": 1786347308,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Welcome Dashboard Workstation AuthenticatedLayout design tokens brand UI surface preview"
+      }
+    },
+    {
+      "ts": 1786347484,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "AuthenticatedLayout Dashboard Card Button GuestLayout Login tailwind config surface brand"
+      }
+    },
+    {
+      "ts": 1786347484,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "AuthenticatedLayout Dashboard Card Button GuestLayout Login tailwind config surface brand"
+      }
+    },
+    {
+      "ts": 1786347671,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786347698,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Welcome PublicShare Dashboard GuestLayout marketing hero share page"
+      }
+    },
+    {
+      "ts": 1786347698,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Welcome PublicShare Dashboard GuestLayout marketing hero share page"
+      }
+    },
+    {
+      "ts": 1786347841,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786347879,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Workstation Review preview Kanban JobCard drag shell section-panel"
+      }
+    },
+    {
+      "ts": 1786347879,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Workstation Review preview Kanban JobCard drag shell section-panel"
+      }
+    },
+    {
+      "ts": 1786347973,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786348066,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
+      }
+    },
+    {
+      "ts": 1786348066,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
+      }
+    },
+    {
+      "ts": 1786348148,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786348354,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+      }
+    },
+    {
+      "ts": 1786348354,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+      }
+    },
+    {
+      "ts": 1786348416,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786349170,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786349343,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786349573,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786370294,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "new skill files added: export-surface-parity, applying-design-tokens-only, applying-options-across-surfaces, applying-ui-conventions, following-existing-conventions, verifying-ui-behavior"
+      }
+    },
+    {
+      "ts": 1786370295,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "new skill files added: export-surface-parity, applying-design-tokens-only, applying-options-across-surfaces, applying-ui-conventions, following-existing-conventions, verifying-ui-behavior"
+      }
+    }
+  ],
+  "decisions": [
     {
       "ts": 1786235423,
       "summary": "Reconciled app.css token spine (neutrals/accent/radius/status/dark) with DESIGN.md's cream/burnt-orange system",
@@ -8673,6 +9327,111 @@
         "resources/js/Components/ui/checkbox.tsx",
         "resources/js/Components/ui/badge.tsx",
         "resources/js/Components/ui/textarea.tsx"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786347063,
+      "summary": "Score band helper, lean dashboard share, Modal single layout, button wrappers deleted",
+      "files": [
+        "resources/js/lib/score-band.ts",
+        "resources/js/Components/resume/score-dial.tsx",
+        "resources/js/Components/Modal.tsx",
+        "app/Http/Controllers/DashboardController.php",
+        "app/Http/Controllers/ResumeShareLinkController.php",
+        "resources/js/Pages/Dashboard.tsx",
+        "resources/js/types/resume.ts",
+        "routes/web.php",
+        "tests/Feature/DashboardShareInfoTest.php"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786347671,
+      "summary": "Wave 1 soft-skill: floating nav island, Shell bezels, button physics",
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx",
+        "resources/js/Pages/Dashboard.tsx",
+        "resources/js/Components/ui/shell.tsx",
+        "resources/js/Components/ui/button.tsx",
+        "tailwind.config.js",
+        "resources/js/Layouts/GuestLayout.tsx"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786347841,
+      "summary": "Wave 2: Welcome editorial split, dashboard bento, public share stage",
+      "files": [
+        "resources/js/Pages/Welcome.tsx",
+        "resources/js/Pages/Dashboard.tsx",
+        "resources/js/Pages/Resumes/PublicShare.tsx"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786347973,
+      "summary": "Wave 3: review paper stage, Kanban shell lift, search honesty",
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx",
+        "resources/js/Pages/Jobs/Kanban.tsx",
+        "resources/js/Components/workstation/section-panel.tsx",
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786348148,
+      "summary": "Restrained Edit-tab spacing and quieter section chrome",
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx",
+        "resources/js/Components/workstation/target-role-bar.tsx",
+        "resources/js/Components/workstation/inspector-fields.tsx",
+        "resources/js/Components/workstation/inspector-sections.tsx"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786348416,
+      "summary": "Workstation header below main nav, max-w-6xl island",
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx",
+        "resources/js/Components/workstation/workstation-header.tsx",
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786349170,
+      "summary": "P0: legal pages, branded errors, BrandMark, skip links",
+      "files": [
+        "resources/js/Components/BrandMark.tsx",
+        "app/Http/Controllers/LegalController.php",
+        "resources/js/Layouts/AuthenticatedLayout.tsx",
+        "resources/views/errors/layout.blade.php",
+        "resources/js/Pages/Legal/Privacy.tsx",
+        "resources/js/Pages/Legal/Terms.tsx"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786349343,
+      "summary": "P1 Welcome: display font, timeline, product hero, soft CTAs",
+      "files": [
+        "resources/js/Pages/Welcome.tsx",
+        "tailwind.config.js",
+        "resources/views/app.blade.php"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1786349573,
+      "summary": "P2: logout fix, command sheet, kanban empty, list rhythm",
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx",
+        "resources/js/Components/Dropdown.tsx",
+        "resources/js/Pages/Dashboard.tsx",
+        "resources/js/Pages/Jobs/Kanban.tsx"
       ],
       "scope": "global"
     }
