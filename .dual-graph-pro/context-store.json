@@ -1,75 +1,6 @@
 [
   {
-    "id": "mem:1785887454310",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "l10",
-      "added",
-      "composite",
-      "resume_id",
-      "position",
-      "indexes",
-      "experiences",
-      "projects"
-    ],
-    "files": [
-      "database/migrations/2026_08_04_235020_add_composite_resume_id_position_indexes.php"
-    ],
-    "file_path": "database/migrations/2026_08_04_235020_add_composite_resume_id_position_indexes.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:50:54.310536+00:00",
-    "created_epoch": 1785887454,
-    "updated_at": "2026-08-04T23:50:54.310546+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785887454302",
-    "kind": "decision",
-    "content": "L10: added composite (resume_id, position) indexes on experiences/projects/education/certificates, replacing the redundant single-column resume_id indexes",
-    "tags": [
-      "l10",
-      "added",
-      "composite",
-      "resume_id",
-      "position",
-      "indexes",
-      "experiences",
-      "projects"
-    ],
-    "files": [
-      "database/migrations/2026_08_04_235020_add_composite_resume_id_position_indexes.php"
-    ],
-    "file_path": "database/migrations/2026_08_04_235020_add_composite_resume_id_position_indexes.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:50:54.302195+00:00",
-    "created_epoch": 1785887454,
-    "updated_at": "2026-08-04T23:50:54.302200+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "register_edit"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1785887529582",
+    "id": "mem:1785887529576",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -83,50 +14,14 @@
       "env"
     ],
     "files": [
-      "package-lock.json"
+      "package.json"
     ],
-    "file_path": "package-lock.json",
+    "file_path": "package.json",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-04T23:52:09.582315+00:00",
+    "created_at": "2026-08-04T23:52:09.576341+00:00",
     "created_epoch": 1785887529,
-    "updated_at": "2026-08-04T23:52:09.582321+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785887529569",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "l11",
-      "playwright",
-      "baseurl",
-      "now",
-      "overridable",
-      "via",
-      "playwright_base_url",
-      "env"
-    ],
-    "files": [
-      "playwright.config.ts"
-    ],
-    "file_path": "playwright.config.ts",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:52:09.569606+00:00",
-    "created_epoch": 1785887529,
-    "updated_at": "2026-08-04T23:52:09.569620+00:00",
+    "updated_at": "2026-08-04T23:52:09.576352+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -178,7 +73,7 @@
     }
   },
   {
-    "id": "mem:1785887529576",
+    "id": "mem:1785887529569",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -192,14 +87,50 @@
       "env"
     ],
     "files": [
-      "package.json"
+      "playwright.config.ts"
     ],
-    "file_path": "package.json",
+    "file_path": "playwright.config.ts",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-04T23:52:09.576341+00:00",
+    "created_at": "2026-08-04T23:52:09.569606+00:00",
     "created_epoch": 1785887529,
-    "updated_at": "2026-08-04T23:52:09.576352+00:00",
+    "updated_at": "2026-08-04T23:52:09.569620+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "register_edit"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785887529582",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "l11",
+      "playwright",
+      "baseurl",
+      "now",
+      "overridable",
+      "via",
+      "playwright_base_url",
+      "env"
+    ],
+    "files": [
+      "package-lock.json"
+    ],
+    "file_path": "package-lock.json",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-04T23:52:09.582315+00:00",
+    "created_epoch": 1785887529,
+    "updated_at": "2026-08-04T23:52:09.582321+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -249,164 +180,6 @@
     }
   },
   {
-    "id": "mem:1785888470381",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side",
-      "width",
-      "animation"
-    ],
-    "files": [
-      "resources/js/Components/AutocompleteInput.tsx"
-    ],
-    "file_path": "resources/js/Components/AutocompleteInput.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.381231+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-09T07:04:48.322924+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785888470365",
-    "kind": "decision",
-    "content": "M9 finish: mirrored every UpdateResumeRequest validation cap client-side - maxLength on all scalar text inputs/textareas, per-array count caps (20 for experiences/projects/education/certificates, 60 total skills) with disabled Add buttons + limit-reached messaging, and 12-bullet/highlight cap enforced centrally in BulletsField's commit()",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side"
-    ],
-    "files": [
-      "resources/js/Components/workstation/inspector-fields.tsx",
-      "resources/js/Components/workstation/inspector-sections.tsx",
-      "resources/js/Components/AutocompleteInput.tsx",
-      "resources/js/Components/TagInput.tsx",
-      "resources/js/Components/SkillGroupEditor.tsx",
-      "resources/js/Components/workstation/workstation-header.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-fields.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.365343+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-05T00:07:50.365355+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1785888470376",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side",
-      "pair",
-      "remaining"
-    ],
-    "files": [
-      "resources/js/Components/workstation/inspector-sections.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.376903+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-10T07:49:08.039360+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785888470385",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side",
-      "pair",
-      "remaining"
-    ],
-    "files": [
-      "resources/js/Components/TagInput.tsx"
-    ],
-    "file_path": "resources/js/Components/TagInput.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.385017+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-09T07:04:48.293196+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1785888470392",
     "kind": "edit_observation",
     "content": "Edited during active session",
@@ -453,7 +226,165 @@
     }
   },
   {
-    "id": "mem:1785924753997",
+    "id": "mem:1785888470385",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "finish",
+      "mirrored",
+      "every",
+      "updateresumerequest",
+      "validation",
+      "cap",
+      "client",
+      "side",
+      "pair",
+      "remaining"
+    ],
+    "files": [
+      "resources/js/Components/TagInput.tsx"
+    ],
+    "file_path": "resources/js/Components/TagInput.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-05T00:07:50.385017+00:00",
+    "created_epoch": 1785888470,
+    "updated_at": "2026-08-09T07:04:48.293196+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "register_edit"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785888470376",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "finish",
+      "mirrored",
+      "every",
+      "updateresumerequest",
+      "validation",
+      "cap",
+      "client",
+      "side",
+      "pair",
+      "remaining"
+    ],
+    "files": [
+      "resources/js/Components/workstation/inspector-sections.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-05T00:07:50.376903+00:00",
+    "created_epoch": 1785888470,
+    "updated_at": "2026-08-10T07:49:08.039360+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785888470365",
+    "kind": "decision",
+    "content": "M9 finish: mirrored every UpdateResumeRequest validation cap client-side - maxLength on all scalar text inputs/textareas, per-array count caps (20 for experiences/projects/education/certificates, 60 total skills) with disabled Add buttons + limit-reached messaging, and 12-bullet/highlight cap enforced centrally in BulletsField's commit()",
+    "tags": [
+      "finish",
+      "mirrored",
+      "every",
+      "updateresumerequest",
+      "validation",
+      "cap",
+      "client",
+      "side"
+    ],
+    "files": [
+      "resources/js/Components/workstation/inspector-fields.tsx",
+      "resources/js/Components/workstation/inspector-sections.tsx",
+      "resources/js/Components/AutocompleteInput.tsx",
+      "resources/js/Components/TagInput.tsx",
+      "resources/js/Components/SkillGroupEditor.tsx",
+      "resources/js/Components/workstation/workstation-header.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/inspector-fields.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-05T00:07:50.365343+00:00",
+    "created_epoch": 1785888470,
+    "updated_at": "2026-08-05T00:07:50.365355+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1785888470381",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "finish",
+      "mirrored",
+      "every",
+      "updateresumerequest",
+      "validation",
+      "cap",
+      "client",
+      "side",
+      "width",
+      "animation"
+    ],
+    "files": [
+      "resources/js/Components/AutocompleteInput.tsx"
+    ],
+    "file_path": "resources/js/Components/AutocompleteInput.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-05T00:07:50.381231+00:00",
+    "created_epoch": 1785888470,
+    "updated_at": "2026-08-09T07:04:48.322924+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "register_edit"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785924753995",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -467,14 +398,14 @@
       "mint"
     ],
     "files": [
-      "app/Http/Controllers/Api/ExtensionController.php"
+      "app/Support/ResumeFillProfile.php"
     ],
-    "file_path": "app/Http/Controllers/Api/ExtensionController.php",
+    "file_path": "app/Support/ResumeFillProfile.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:33.997946+00:00",
+    "created_at": "2026-08-05T10:12:33.995113+00:00",
     "created_epoch": 1785924753,
-    "updated_at": "2026-08-05T10:12:33.997949+00:00",
+    "updated_at": "2026-08-05T10:12:33.995119+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -527,7 +458,7 @@
     }
   },
   {
-    "id": "mem:1785924753995",
+    "id": "mem:1785924753997",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -541,14 +472,14 @@
       "mint"
     ],
     "files": [
-      "app/Support/ResumeFillProfile.php"
+      "app/Http/Controllers/Api/ExtensionController.php"
     ],
-    "file_path": "app/Support/ResumeFillProfile.php",
+    "file_path": "app/Http/Controllers/Api/ExtensionController.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:33.995113+00:00",
+    "created_at": "2026-08-05T10:12:33.997946+00:00",
     "created_epoch": 1785924753,
-    "updated_at": "2026-08-05T10:12:33.995119+00:00",
+    "updated_at": "2026-08-05T10:12:33.997949+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -560,7 +491,7 @@
     }
   },
   {
-    "id": "mem:1785924754031",
+    "id": "mem:1785924754028",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -574,155 +505,14 @@
       "mint"
     ],
     "files": [
-      "tests/Feature/ExtensionTokenTest.php"
+      "tests/Feature/Api/ExtensionApiTest.php"
     ],
-    "file_path": "tests/Feature/ExtensionTokenTest.php",
+    "file_path": "tests/Feature/Api/ExtensionApiTest.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.031636+00:00",
+    "created_at": "2026-08-05T10:12:34.028885+00:00",
     "created_epoch": 1785924754,
-    "updated_at": "2026-08-05T10:12:34.031639+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754026",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint",
-      "migration",
-      "sweep"
-    ],
-    "files": [
-      "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
-    ],
-    "file_path": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.026153+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-09T07:04:55.519470+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754014",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint",
-      "added",
-      "mobile"
-    ],
-    "files": [
-      "routes/api.php"
-    ],
-    "file_path": "routes/api.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.014893+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-06T20:13:36.992569+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754011",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint"
-    ],
-    "files": [
-      "app/Http/Controllers/ExtensionTokenController.php"
-    ],
-    "file_path": "app/Http/Controllers/ExtensionTokenController.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.011623+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-05T10:12:34.011633+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754017",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint",
-      "added",
-      "mobile"
-    ],
-    "files": [
-      "routes/web.php"
-    ],
-    "file_path": "routes/web.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.017672+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-10T07:31:03.868258+00:00",
+    "updated_at": "2026-08-05T10:12:34.028891+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -772,7 +562,42 @@
     }
   },
   {
-    "id": "mem:1785924754028",
+    "id": "mem:1785924754017",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "apply",
+      "extension",
+      "backend",
+      "fill",
+      "profile",
+      "api",
+      "token",
+      "mint",
+      "added",
+      "mobile"
+    ],
+    "files": [
+      "routes/web.php"
+    ],
+    "file_path": "routes/web.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-05T10:12:34.017672+00:00",
+    "created_epoch": 1785924754,
+    "updated_at": "2026-08-10T07:31:03.868258+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785924754011",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -786,14 +611,120 @@
       "mint"
     ],
     "files": [
-      "tests/Feature/Api/ExtensionApiTest.php"
+      "app/Http/Controllers/ExtensionTokenController.php"
     ],
-    "file_path": "tests/Feature/Api/ExtensionApiTest.php",
+    "file_path": "app/Http/Controllers/ExtensionTokenController.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.028885+00:00",
+    "created_at": "2026-08-05T10:12:34.011623+00:00",
     "created_epoch": 1785924754,
-    "updated_at": "2026-08-05T10:12:34.028891+00:00",
+    "updated_at": "2026-08-05T10:12:34.011633+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785924754014",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "apply",
+      "extension",
+      "backend",
+      "fill",
+      "profile",
+      "api",
+      "token",
+      "mint",
+      "added",
+      "mobile"
+    ],
+    "files": [
+      "routes/api.php"
+    ],
+    "file_path": "routes/api.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-05T10:12:34.014893+00:00",
+    "created_epoch": 1785924754,
+    "updated_at": "2026-08-06T20:13:36.992569+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785924754026",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "apply",
+      "extension",
+      "backend",
+      "fill",
+      "profile",
+      "api",
+      "token",
+      "mint",
+      "migration",
+      "sweep"
+    ],
+    "files": [
+      "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
+    ],
+    "file_path": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-05T10:12:34.026153+00:00",
+    "created_epoch": 1785924754,
+    "updated_at": "2026-08-09T07:04:55.519470+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1785924754031",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "apply",
+      "extension",
+      "backend",
+      "fill",
+      "profile",
+      "api",
+      "token",
+      "mint"
+    ],
+    "files": [
+      "tests/Feature/ExtensionTokenTest.php"
+    ],
+    "file_path": "tests/Feature/ExtensionTokenTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-05T10:12:34.031636+00:00",
+    "created_epoch": 1785924754,
+    "updated_at": "2026-08-05T10:12:34.031639+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -832,7 +763,7 @@
     }
   },
   {
-    "id": "mem:1786012469970",
+    "id": "mem:1786012469967",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -846,14 +777,14 @@
       "fixed"
     ],
     "files": [
-      "docs/research/2026-06-23-resume-import-industry-research.md"
+      "docs/plans/scan-errors-upgrades-2026-06-11.md"
     ],
-    "file_path": "docs/research/2026-06-23-resume-import-industry-research.md",
+    "file_path": "docs/plans/scan-errors-upgrades-2026-06-11.md",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.970800+00:00",
+    "created_at": "2026-08-06T10:34:29.967953+00:00",
     "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.970801+00:00",
+    "updated_at": "2026-08-06T10:34:29.967955+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -867,7 +798,7 @@
     }
   },
   {
-    "id": "mem:1786012469958",
+    "id": "mem:1786012469955",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -881,14 +812,14 @@
       "fixed"
     ],
     "files": [
-      "PLAN.md"
+      "README.md"
     ],
-    "file_path": "PLAN.md",
+    "file_path": "README.md",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.958479+00:00",
+    "created_at": "2026-08-06T10:34:29.955089+00:00",
     "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.958481+00:00",
+    "updated_at": "2026-08-06T10:34:29.955094+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -942,7 +873,7 @@
     }
   },
   {
-    "id": "mem:1786012469955",
+    "id": "mem:1786012469958",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -956,14 +887,14 @@
       "fixed"
     ],
     "files": [
-      "README.md"
+      "PLAN.md"
     ],
-    "file_path": "README.md",
+    "file_path": "PLAN.md",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.955089+00:00",
+    "created_at": "2026-08-06T10:34:29.958479+00:00",
     "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.955094+00:00",
+    "updated_at": "2026-08-06T10:34:29.958481+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -977,7 +908,7 @@
     }
   },
   {
-    "id": "mem:1786012469967",
+    "id": "mem:1786012469970",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -991,14 +922,14 @@
       "fixed"
     ],
     "files": [
-      "docs/plans/scan-errors-upgrades-2026-06-11.md"
+      "docs/research/2026-06-23-resume-import-industry-research.md"
     ],
-    "file_path": "docs/plans/scan-errors-upgrades-2026-06-11.md",
+    "file_path": "docs/research/2026-06-23-resume-import-industry-research.md",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.967953+00:00",
+    "created_at": "2026-08-06T10:34:29.970800+00:00",
     "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.967955+00:00",
+    "updated_at": "2026-08-06T10:34:29.970801+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -1037,26 +968,72 @@
     }
   },
   {
-    "id": "mem:1786012819928",
+    "id": "mem:1786012819930",
     "kind": "stale_marker",
     "content": "Marked stale because symbol removed",
     "tags": [],
     "files": [
-      "resources/js/Components/resume/score-gauge.tsx::scoreLabel"
+      "resources/js/Components/resume/score-dial.tsx::ScoreDial",
+      "resources/js/Pages/Dashboard.tsx"
     ],
-    "file_path": "resources/js/Components/resume/score-gauge.tsx",
-    "symbol_id": "resources/js/Components/resume/score-gauge.tsx::scoreLabel",
-    "symbol_hash": "37d37eaf",
-    "created_at": "2026-08-06T10:40:19.911633+00:00",
+    "file_path": "resources/js/Components/resume/score-dial.tsx",
+    "symbol_id": "resources/js/Components/resume/score-dial.tsx::ScoreDial",
+    "symbol_hash": "74f5612e",
+    "created_at": "2026-08-06T10:40:19.911635+00:00",
     "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911634+00:00",
+    "updated_at": "2026-08-06T10:40:19.911639+00:00",
     "stale": true,
     "stale_reason": "symbol removed",
     "observed_queries": [
-      "color score circle"
+      "dashboard score circles colored resume strength score",
+      "score gauge circle"
+    ],
+    "evidence": {
+      "source_kind": "decision"
+    }
+  },
+  {
+    "id": "mem:1786012819926",
+    "kind": "stale_marker",
+    "content": "Marked stale because symbol removed",
+    "tags": [],
+    "files": [
+      "resources/js/Pages/Dashboard.tsx::ResumeCard"
+    ],
+    "file_path": "resources/js/Pages/Dashboard.tsx",
+    "symbol_id": "resources/js/Pages/Dashboard.tsx::ResumeCard",
+    "symbol_hash": "c794c67a",
+    "created_at": "2026-08-06T10:40:19.911630+00:00",
+    "created_epoch": 1786012819,
+    "updated_at": "2026-08-06T10:40:19.911631+00:00",
+    "stale": true,
+    "stale_reason": "symbol removed",
+    "observed_queries": [
+      "score gauge circle"
     ],
     "evidence": {
       "source_kind": "query_association"
+    }
+  },
+  {
+    "id": "mem:1786012819913",
+    "kind": "stale_marker",
+    "content": "Marked stale because symbol removed",
+    "tags": [],
+    "files": [
+      "resources/js/Components/workstation/inspector-sections.tsx::ExperienceFields"
+    ],
+    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
+    "symbol_id": "resources/js/Components/workstation/inspector-sections.tsx::ExperienceFields",
+    "symbol_hash": "e201b086",
+    "created_at": "2026-08-06T10:40:19.911606+00:00",
+    "created_epoch": 1786012819,
+    "updated_at": "2026-08-06T10:40:19.911609+00:00",
+    "stale": true,
+    "stale_reason": "symbol removed",
+    "observed_queries": [],
+    "evidence": {
+      "source_kind": "edit_observation"
     }
   },
   {
@@ -1085,72 +1062,26 @@
     }
   },
   {
-    "id": "mem:1786012819913",
+    "id": "mem:1786012819928",
     "kind": "stale_marker",
     "content": "Marked stale because symbol removed",
     "tags": [],
     "files": [
-      "resources/js/Components/workstation/inspector-sections.tsx::ExperienceFields"
+      "resources/js/Components/resume/score-gauge.tsx::scoreLabel"
     ],
-    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
-    "symbol_id": "resources/js/Components/workstation/inspector-sections.tsx::ExperienceFields",
-    "symbol_hash": "e201b086",
-    "created_at": "2026-08-06T10:40:19.911606+00:00",
+    "file_path": "resources/js/Components/resume/score-gauge.tsx",
+    "symbol_id": "resources/js/Components/resume/score-gauge.tsx::scoreLabel",
+    "symbol_hash": "37d37eaf",
+    "created_at": "2026-08-06T10:40:19.911633+00:00",
     "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911609+00:00",
-    "stale": true,
-    "stale_reason": "symbol removed",
-    "observed_queries": [],
-    "evidence": {
-      "source_kind": "edit_observation"
-    }
-  },
-  {
-    "id": "mem:1786012819926",
-    "kind": "stale_marker",
-    "content": "Marked stale because symbol removed",
-    "tags": [],
-    "files": [
-      "resources/js/Pages/Dashboard.tsx::ResumeCard"
-    ],
-    "file_path": "resources/js/Pages/Dashboard.tsx",
-    "symbol_id": "resources/js/Pages/Dashboard.tsx::ResumeCard",
-    "symbol_hash": "c794c67a",
-    "created_at": "2026-08-06T10:40:19.911630+00:00",
-    "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911631+00:00",
+    "updated_at": "2026-08-06T10:40:19.911634+00:00",
     "stale": true,
     "stale_reason": "symbol removed",
     "observed_queries": [
-      "score gauge circle"
+      "color score circle"
     ],
     "evidence": {
       "source_kind": "query_association"
-    }
-  },
-  {
-    "id": "mem:1786012819930",
-    "kind": "stale_marker",
-    "content": "Marked stale because symbol removed",
-    "tags": [],
-    "files": [
-      "resources/js/Components/resume/score-dial.tsx::ScoreDial",
-      "resources/js/Pages/Dashboard.tsx"
-    ],
-    "file_path": "resources/js/Components/resume/score-dial.tsx",
-    "symbol_id": "resources/js/Components/resume/score-dial.tsx::ScoreDial",
-    "symbol_hash": "74f5612e",
-    "created_at": "2026-08-06T10:40:19.911635+00:00",
-    "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911639+00:00",
-    "stale": true,
-    "stale_reason": "symbol removed",
-    "observed_queries": [
-      "dashboard score circles colored resume strength score",
-      "score gauge circle"
-    ],
-    "evidence": {
-      "source_kind": "decision"
     }
   },
   {
@@ -1205,7 +1136,7 @@
     }
   },
   {
-    "id": "mem:1786047216986",
+    "id": "mem:1786047216989",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -1219,14 +1150,47 @@
       "crud"
     ],
     "files": [
-      "app/Http/Controllers/MobileTokenController.php"
+      "app/Http/Controllers/Api/ResumeController.php"
     ],
-    "file_path": "app/Http/Controllers/MobileTokenController.php",
+    "file_path": "app/Http/Controllers/Api/ResumeController.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-06T20:13:36.986727+00:00",
+    "created_at": "2026-08-06T20:13:36.989781+00:00",
     "created_epoch": 1786047216,
-    "updated_at": "2026-08-06T20:13:36.986733+00:00",
+    "updated_at": "2026-08-06T20:13:36.989789+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786047216983",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "added",
+      "mobile",
+      "sanctum",
+      "token",
+      "issuance",
+      "full",
+      "resume",
+      "crud"
+    ],
+    "files": [
+      "app/Support/MobileApiToken.php"
+    ],
+    "file_path": "app/Support/MobileApiToken.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-06T20:13:36.983210+00:00",
+    "created_epoch": 1786047216,
+    "updated_at": "2026-08-06T20:13:36.983213+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -1277,7 +1241,7 @@
     }
   },
   {
-    "id": "mem:1786047216983",
+    "id": "mem:1786047216986",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -1291,47 +1255,14 @@
       "crud"
     ],
     "files": [
-      "app/Support/MobileApiToken.php"
+      "app/Http/Controllers/MobileTokenController.php"
     ],
-    "file_path": "app/Support/MobileApiToken.php",
+    "file_path": "app/Http/Controllers/MobileTokenController.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-06T20:13:36.983210+00:00",
+    "created_at": "2026-08-06T20:13:36.986727+00:00",
     "created_epoch": 1786047216,
-    "updated_at": "2026-08-06T20:13:36.983213+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786047216989",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "added",
-      "mobile",
-      "sanctum",
-      "token",
-      "issuance",
-      "full",
-      "resume",
-      "crud"
-    ],
-    "files": [
-      "app/Http/Controllers/Api/ResumeController.php"
-    ],
-    "file_path": "app/Http/Controllers/Api/ResumeController.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T20:13:36.989781+00:00",
-    "created_epoch": 1786047216,
-    "updated_at": "2026-08-06T20:13:36.989789+00:00",
+    "updated_at": "2026-08-06T20:13:36.986733+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -1475,7 +1406,7 @@
     }
   },
   {
-    "id": "mem:1786100674520",
+    "id": "mem:1786100674516",
     "kind": "edit_observation",
     "content": "Edited after query: resume preview pdf export linkedin website contact link render template",
     "tags": [
@@ -1488,57 +1419,14 @@
       "blur"
     ],
     "files": [
-      "resources/js/Components/workstation/inspector-sections.tsx::ContactFields"
+      "resources/js/Components/workstation/inspector-fields.tsx::Field"
     ],
-    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
-    "symbol_id": "resources/js/Components/workstation/inspector-sections.tsx::ContactFields",
-    "symbol_hash": "76a00fa4",
-    "created_at": "2026-08-07T11:04:34.520038+00:00",
+    "file_path": "resources/js/Components/workstation/inspector-fields.tsx",
+    "symbol_id": "resources/js/Components/workstation/inspector-fields.tsx::Field",
+    "symbol_hash": "5a448cc4",
+    "created_at": "2026-08-07T11:04:34.516464+00:00",
     "created_epoch": 1786100674,
-    "updated_at": "2026-08-07T11:04:34.520041+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "resume preview pdf export linkedin website contact link render template",
-      "linkedin website url contact field resume format normalize"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve",
-        "read"
-      ],
-      "recent_queries": [
-        "resume preview pdf export linkedin website contact link render template",
-        "linkedin website url contact field resume format normalize"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786100674511",
-    "kind": "edit_observation",
-    "content": "Edited after query: resume preview pdf export linkedin website contact link render template",
-    "tags": [
-      "added",
-      "formaturl",
-      "prepend",
-      "https",
-      "linkedin",
-      "website",
-      "blur"
-    ],
-    "files": [
-      "resources/js/lib/contact-validation.ts"
-    ],
-    "file_path": "resources/js/lib/contact-validation.ts",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T11:04:34.511833+00:00",
-    "created_epoch": 1786100674,
-    "updated_at": "2026-08-07T11:04:34.511841+00:00",
+    "updated_at": "2026-08-07T11:04:34.516474+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -1605,7 +1493,7 @@
     }
   },
   {
-    "id": "mem:1786100674516",
+    "id": "mem:1786100674511",
     "kind": "edit_observation",
     "content": "Edited after query: resume preview pdf export linkedin website contact link render template",
     "tags": [
@@ -1618,14 +1506,14 @@
       "blur"
     ],
     "files": [
-      "resources/js/Components/workstation/inspector-fields.tsx::Field"
+      "resources/js/lib/contact-validation.ts"
     ],
-    "file_path": "resources/js/Components/workstation/inspector-fields.tsx",
-    "symbol_id": "resources/js/Components/workstation/inspector-fields.tsx::Field",
-    "symbol_hash": "5a448cc4",
-    "created_at": "2026-08-07T11:04:34.516464+00:00",
+    "file_path": "resources/js/lib/contact-validation.ts",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T11:04:34.511833+00:00",
     "created_epoch": 1786100674,
-    "updated_at": "2026-08-07T11:04:34.516474+00:00",
+    "updated_at": "2026-08-07T11:04:34.511841+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -1648,45 +1536,44 @@
     }
   },
   {
-    "id": "mem:1786101179737",
+    "id": "mem:1786100674520",
     "kind": "edit_observation",
-    "content": "Edited after query: AuthenticatedLayout navigation links list nav items command palette",
+    "content": "Edited after query: resume preview pdf export linkedin website contact link render template",
     "tags": [
-      "removed",
-      "job",
-      "imports",
-      "applications",
-      "nav",
-      "links",
-      "routes",
-      "pages"
+      "added",
+      "formaturl",
+      "prepend",
+      "https",
+      "linkedin",
+      "website",
+      "blur"
     ],
     "files": [
-      "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated"
+      "resources/js/Components/workstation/inspector-sections.tsx::ContactFields"
     ],
-    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
-    "symbol_id": "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated",
-    "symbol_hash": "0ae3c886",
-    "created_at": "2026-08-07T11:12:59.737205+00:00",
-    "created_epoch": 1786101179,
-    "updated_at": "2026-08-07T11:12:59.737210+00:00",
+    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
+    "symbol_id": "resources/js/Components/workstation/inspector-sections.tsx::ContactFields",
+    "symbol_hash": "76a00fa4",
+    "created_at": "2026-08-07T11:04:34.520038+00:00",
+    "created_epoch": 1786100674,
+    "updated_at": "2026-08-07T11:04:34.520041+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
-      "AuthenticatedLayout navigation links list nav items command palette",
-      "navigation nav links Job Imports Job Applications menu items sidebar"
+      "resume preview pdf export linkedin website contact link render template",
+      "linkedin website url contact field resume format normalize"
     ],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
         "fallback_rg",
-        "read",
         "continue_retrieve",
-        "retrieve"
+        "retrieve",
+        "read"
       ],
       "recent_queries": [
-        "AuthenticatedLayout navigation links list nav items command palette",
-        "navigation nav links Job Imports Job Applications menu items sidebar"
+        "resume preview pdf export linkedin website contact link render template",
+        "linkedin website url contact field resume format normalize"
       ],
       "edited": true
     }
@@ -1735,33 +1622,47 @@
     }
   },
   {
-    "id": "mem:1786102884887",
-    "kind": "interaction_pattern",
-    "content": "Repeatedly visited during recent work",
+    "id": "mem:1786101179737",
+    "kind": "edit_observation",
+    "content": "Edited after query: AuthenticatedLayout navigation links list nav items command palette",
     "tags": [
-      "feature",
-      "card",
-      "icon",
-      "rendering"
+      "removed",
+      "job",
+      "imports",
+      "applications",
+      "nav",
+      "links",
+      "routes",
+      "pages"
     ],
     "files": [
-      "resources/js/Pages/Welcome.tsx::Welcome"
+      "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated"
     ],
-    "file_path": "resources/js/Pages/Welcome.tsx",
-    "symbol_id": "resources/js/Pages/Welcome.tsx::Welcome",
-    "symbol_hash": "4c6cb6f5",
-    "created_at": "2026-08-07T11:41:24.887689+00:00",
-    "created_epoch": 1786102884,
-    "updated_at": "2026-08-07T11:41:24.887701+00:00",
+    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
+    "symbol_id": "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated",
+    "symbol_hash": "0ae3c886",
+    "created_at": "2026-08-07T11:12:59.737205+00:00",
+    "created_epoch": 1786101179,
+    "updated_at": "2026-08-07T11:12:59.737210+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
-      "feature card icon rendering"
+      "AuthenticatedLayout navigation links list nav items command palette",
+      "navigation nav links Job Imports Job Applications menu items sidebar"
     ],
     "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": []
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "AuthenticatedLayout navigation links list nav items command palette",
+        "navigation nav links Job Imports Job Applications menu items sidebar"
+      ],
+      "edited": true
     }
   },
   {
@@ -1792,6 +1693,36 @@
       "source": "graph_read",
       "anchor_mode": "symbol",
       "session_epoch": 1786102264
+    }
+  },
+  {
+    "id": "mem:1786102884887",
+    "kind": "interaction_pattern",
+    "content": "Repeatedly visited during recent work",
+    "tags": [
+      "feature",
+      "card",
+      "icon",
+      "rendering"
+    ],
+    "files": [
+      "resources/js/Pages/Welcome.tsx::Welcome"
+    ],
+    "file_path": "resources/js/Pages/Welcome.tsx",
+    "symbol_id": "resources/js/Pages/Welcome.tsx::Welcome",
+    "symbol_hash": "4c6cb6f5",
+    "created_at": "2026-08-07T11:41:24.887689+00:00",
+    "created_epoch": 1786102884,
+    "updated_at": "2026-08-07T11:41:24.887701+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "feature card icon rendering"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": []
     }
   },
   {
@@ -1846,49 +1777,6 @@
     }
   },
   {
-    "id": "mem:1786105513015",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "established",
-      "token",
-      "spine",
-      "neutral",
-      "accent",
-      "ramps",
-      "motion",
-      "primitives",
-      "dark",
-      "remap"
-    ],
-    "files": [
-      "resources/css/app.css"
-    ],
-    "file_path": "resources/css/app.css",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:25:13.015334+00:00",
-    "created_epoch": 1786105513,
-    "updated_at": "2026-08-09T10:36:35.750762+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "app.blade.php font link Google Fonts IBM Plex Sans"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "app.blade.php font link Google Fonts IBM Plex Sans"
-      ],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1786105513021",
     "kind": "edit_observation",
     "content": "Edited during active session",
@@ -1932,37 +1820,45 @@
     }
   },
   {
-    "id": "mem:1786106341594",
+    "id": "mem:1786105513015",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
-      "fixed",
-      "both",
-      "finalize",
-      "critical",
-      "findings",
-      "focus",
-      "visible",
-      "forgot"
+      "established",
+      "token",
+      "spine",
+      "neutral",
+      "accent",
+      "ramps",
+      "motion",
+      "primitives",
+      "dark",
+      "remap"
     ],
     "files": [
-      "resources/js/Layouts/AuthSplitLayout.tsx"
+      "resources/css/app.css"
     ],
-    "file_path": "resources/js/Layouts/AuthSplitLayout.tsx",
+    "file_path": "resources/css/app.css",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:39:01.594365+00:00",
-    "created_epoch": 1786106341,
-    "updated_at": "2026-08-07T12:39:01.594386+00:00",
+    "created_at": "2026-08-07T12:25:13.015334+00:00",
+    "created_epoch": 1786105513,
+    "updated_at": "2026-08-09T10:36:35.750762+00:00",
     "stale": false,
     "stale_reason": "",
-    "observed_queries": [],
+    "observed_queries": [
+      "app.blade.php font link Google Fonts IBM Plex Sans"
+    ],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
-        "fallback_rg"
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
       ],
-      "recent_queries": [],
+      "recent_queries": [
+        "app.blade.php font link Google Fonts IBM Plex Sans"
+      ],
       "edited": true
     }
   },
@@ -2003,28 +1899,28 @@
     }
   },
   {
-    "id": "mem:1786106686525",
+    "id": "mem:1786106341594",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
-      "polish",
-      "pass",
-      "auth",
-      "surface",
-      "visual",
-      "not",
-      "color",
-      "only"
+      "fixed",
+      "both",
+      "finalize",
+      "critical",
+      "findings",
+      "focus",
+      "visible",
+      "forgot"
     ],
     "files": [
-      "resources/js/Components/Checkbox.tsx"
+      "resources/js/Layouts/AuthSplitLayout.tsx"
     ],
-    "file_path": "resources/js/Components/Checkbox.tsx",
+    "file_path": "resources/js/Layouts/AuthSplitLayout.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:44:46.525009+00:00",
-    "created_epoch": 1786106686,
-    "updated_at": "2026-08-07T12:44:46.525016+00:00",
+    "created_at": "2026-08-07T12:39:01.594365+00:00",
+    "created_epoch": 1786106341,
+    "updated_at": "2026-08-07T12:39:01.594386+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2038,7 +1934,7 @@
     }
   },
   {
-    "id": "mem:1786106686515",
+    "id": "mem:1786106686519",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2052,14 +1948,14 @@
       "only"
     ],
     "files": [
-      "resources/js/Pages/Auth/Register.tsx"
+      "resources/js/Components/PrimaryButton.tsx"
     ],
-    "file_path": "resources/js/Pages/Auth/Register.tsx",
+    "file_path": "resources/js/Components/PrimaryButton.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:44:46.515083+00:00",
+    "created_at": "2026-08-07T12:44:46.519954+00:00",
     "created_epoch": 1786106686,
-    "updated_at": "2026-08-07T12:44:46.515093+00:00",
+    "updated_at": "2026-08-07T12:44:46.519959+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2110,7 +2006,7 @@
     }
   },
   {
-    "id": "mem:1786106686519",
+    "id": "mem:1786106686515",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2124,14 +2020,14 @@
       "only"
     ],
     "files": [
-      "resources/js/Components/PrimaryButton.tsx"
+      "resources/js/Pages/Auth/Register.tsx"
     ],
-    "file_path": "resources/js/Components/PrimaryButton.tsx",
+    "file_path": "resources/js/Pages/Auth/Register.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:44:46.519954+00:00",
+    "created_at": "2026-08-07T12:44:46.515083+00:00",
     "created_epoch": 1786106686,
-    "updated_at": "2026-08-07T12:44:46.519959+00:00",
+    "updated_at": "2026-08-07T12:44:46.515093+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2145,28 +2041,28 @@
     }
   },
   {
-    "id": "mem:1786107132805",
+    "id": "mem:1786106686525",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
-      "migrated",
-      "utility",
+      "polish",
+      "pass",
       "auth",
-      "pages",
-      "from",
-      "raw",
-      "hex",
-      "guestlayout"
+      "surface",
+      "visual",
+      "not",
+      "color",
+      "only"
     ],
     "files": [
-      "resources/js/Pages/Auth/VerifyEmail.tsx"
+      "resources/js/Components/Checkbox.tsx"
     ],
-    "file_path": "resources/js/Pages/Auth/VerifyEmail.tsx",
+    "file_path": "resources/js/Components/Checkbox.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.805299+00:00",
-    "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.805307+00:00",
+    "created_at": "2026-08-07T12:44:46.525009+00:00",
+    "created_epoch": 1786106686,
+    "updated_at": "2026-08-07T12:44:46.525016+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2180,7 +2076,7 @@
     }
   },
   {
-    "id": "mem:1786107132795",
+    "id": "mem:1786107132809",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2194,14 +2090,14 @@
       "guestlayout"
     ],
     "files": [
-      "resources/js/Pages/Auth/ConfirmPassword.tsx"
+      "resources/js/Pages/Auth/TwoFactorChallenge.tsx"
     ],
-    "file_path": "resources/js/Pages/Auth/ConfirmPassword.tsx",
+    "file_path": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.795865+00:00",
+    "created_at": "2026-08-07T12:52:12.809550+00:00",
     "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.795874+00:00",
+    "updated_at": "2026-08-07T12:52:12.809558+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2215,7 +2111,7 @@
     }
   },
   {
-    "id": "mem:1786107132782",
+    "id": "mem:1786107132800",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2229,14 +2125,49 @@
       "guestlayout"
     ],
     "files": [
-      "resources/js/Layouts/AuthCenteredLayout.tsx"
+      "resources/js/Pages/Auth/ResetPassword.tsx"
     ],
-    "file_path": "resources/js/Layouts/AuthCenteredLayout.tsx",
+    "file_path": "resources/js/Pages/Auth/ResetPassword.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.782721+00:00",
+    "created_at": "2026-08-07T12:52:12.800939+00:00",
     "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.782733+00:00",
+    "updated_at": "2026-08-07T12:52:12.800946+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786107132789",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "migrated",
+      "utility",
+      "auth",
+      "pages",
+      "from",
+      "raw",
+      "hex",
+      "guestlayout"
+    ],
+    "files": [
+      "resources/js/Pages/Auth/ForgotPassword.tsx"
+    ],
+    "file_path": "resources/js/Pages/Auth/ForgotPassword.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T12:52:12.789439+00:00",
+    "created_epoch": 1786107132,
+    "updated_at": "2026-08-07T12:52:12.789452+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2289,7 +2220,7 @@
     }
   },
   {
-    "id": "mem:1786107132789",
+    "id": "mem:1786107132782",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2303,14 +2234,14 @@
       "guestlayout"
     ],
     "files": [
-      "resources/js/Pages/Auth/ForgotPassword.tsx"
+      "resources/js/Layouts/AuthCenteredLayout.tsx"
     ],
-    "file_path": "resources/js/Pages/Auth/ForgotPassword.tsx",
+    "file_path": "resources/js/Layouts/AuthCenteredLayout.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.789439+00:00",
+    "created_at": "2026-08-07T12:52:12.782721+00:00",
     "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.789452+00:00",
+    "updated_at": "2026-08-07T12:52:12.782733+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2324,7 +2255,7 @@
     }
   },
   {
-    "id": "mem:1786107132800",
+    "id": "mem:1786107132795",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2338,14 +2269,14 @@
       "guestlayout"
     ],
     "files": [
-      "resources/js/Pages/Auth/ResetPassword.tsx"
+      "resources/js/Pages/Auth/ConfirmPassword.tsx"
     ],
-    "file_path": "resources/js/Pages/Auth/ResetPassword.tsx",
+    "file_path": "resources/js/Pages/Auth/ConfirmPassword.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.800939+00:00",
+    "created_at": "2026-08-07T12:52:12.795865+00:00",
     "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.800946+00:00",
+    "updated_at": "2026-08-07T12:52:12.795874+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2359,7 +2290,7 @@
     }
   },
   {
-    "id": "mem:1786107132809",
+    "id": "mem:1786107132805",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2373,14 +2304,14 @@
       "guestlayout"
     ],
     "files": [
-      "resources/js/Pages/Auth/TwoFactorChallenge.tsx"
+      "resources/js/Pages/Auth/VerifyEmail.tsx"
     ],
-    "file_path": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
+    "file_path": "resources/js/Pages/Auth/VerifyEmail.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.809550+00:00",
+    "created_at": "2026-08-07T12:52:12.805299+00:00",
     "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.809558+00:00",
+    "updated_at": "2026-08-07T12:52:12.805307+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -2485,6 +2416,39 @@
     }
   },
   {
+    "id": "mem:1786130755630",
+    "kind": "interaction_pattern",
+    "content": "Repeatedly visited during recent work",
+    "tags": [
+      "offline",
+      "error",
+      "banner",
+      "retrysave",
+      "errormessage"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash",
+    "symbol_hash": "ae54e7f0",
+    "created_at": "2026-08-07T19:25:55.630237+00:00",
+    "created_epoch": 1786130755,
+    "updated_at": "2026-08-10T14:04:46.740174+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "offline error banner retrySave errorMessage",
+      "show notes checkpoints toggle collapse showSideTools",
+      "sidebar preview panel width grid flex layout classes"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": []
+    }
+  },
+  {
     "id": "mem:1786130755624",
     "kind": "query_association",
     "content": "Queried during: offline error banner retrySave errorMessage",
@@ -2516,82 +2480,7 @@
     }
   },
   {
-    "id": "mem:1786130755630",
-    "kind": "interaction_pattern",
-    "content": "Repeatedly visited during recent work",
-    "tags": [
-      "offline",
-      "error",
-      "banner",
-      "retrysave",
-      "errormessage"
-    ],
-    "files": [
-      "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash"
-    ],
-    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
-    "symbol_id": "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash",
-    "symbol_hash": "ae54e7f0",
-    "created_at": "2026-08-07T19:25:55.630237+00:00",
-    "created_epoch": 1786130755,
-    "updated_at": "2026-08-07T19:25:55.630244+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "offline error banner retrySave errorMessage",
-      "show notes checkpoints toggle collapse showSideTools"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": []
-    }
-  },
-  {
-    "id": "mem:1786131475920",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "edited",
-      "during",
-      "active",
-      "session",
-      "destructive",
-      "delete",
-      "remove",
-      "actions",
-      "require",
-      "window"
-    ],
-    "files": [
-      "resources/js/Components/workstation/inspector-fields.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-fields.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T19:37:55.920690+00:00",
-    "created_epoch": 1786131475,
-    "updated_at": "2026-08-10T07:49:08.036599+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786131475893",
+    "id": "mem:1786131475915",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2607,33 +2496,21 @@
       "all"
     ],
     "files": [
-      "resources/js/Pages/Resumes/Workstation.tsx"
+      "resources/js/Components/workstation/export-checklist-modal.tsx"
     ],
-    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "file_path": "resources/js/Components/workstation/export-checklist-modal.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T19:37:55.893167+00:00",
+    "created_at": "2026-08-07T19:37:55.915578+00:00",
     "created_epoch": 1786131475,
-    "updated_at": "2026-08-10T07:53:36.738613+00:00",
+    "updated_at": "2026-08-09T06:53:59.952583+00:00",
     "stale": false,
     "stale_reason": "",
-    "observed_queries": [
-      "Workstation Review preview Kanban JobCard drag shell section-panel",
-      "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar",
-      "WorkstationHeader workstation format toolbar AuthenticatedLayout"
-    ],
+    "observed_queries": [],
     "evidence": {
       "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "Workstation Review preview Kanban JobCard drag shell section-panel",
-        "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar",
-        "WorkstationHeader workstation format toolbar AuthenticatedLayout"
-      ],
+      "recent_action_kinds": [],
+      "recent_queries": [],
       "edited": true
     }
   },
@@ -2692,7 +2569,7 @@
     }
   },
   {
-    "id": "mem:1786131475915",
+    "id": "mem:1786131475893",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -2708,26 +2585,81 @@
       "all"
     ],
     "files": [
-      "resources/js/Components/workstation/export-checklist-modal.tsx"
+      "resources/js/Pages/Resumes/Workstation.tsx"
     ],
-    "file_path": "resources/js/Components/workstation/export-checklist-modal.tsx",
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T19:37:55.915578+00:00",
+    "created_at": "2026-08-07T19:37:55.893167+00:00",
     "created_epoch": 1786131475,
-    "updated_at": "2026-08-09T06:53:59.952583+00:00",
+    "updated_at": "2026-08-10T07:53:36.738613+00:00",
     "stale": false,
     "stale_reason": "",
-    "observed_queries": [],
+    "observed_queries": [
+      "Workstation Review preview Kanban JobCard drag shell section-panel",
+      "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar",
+      "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+    ],
     "evidence": {
       "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "Workstation Review preview Kanban JobCard drag shell section-panel",
+        "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar",
+        "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+      ],
       "edited": true
     }
   },
   {
-    "id": "mem:1786142814872",
+    "id": "mem:1786131475920",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session",
+      "destructive",
+      "delete",
+      "remove",
+      "actions",
+      "require",
+      "window"
+    ],
+    "files": [
+      "resources/js/Components/workstation/inspector-fields.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/inspector-fields.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T19:37:55.920690+00:00",
+    "created_epoch": 1786131475,
+    "updated_at": "2026-08-10T07:49:08.036599+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786142814866",
     "kind": "edit_observation",
     "content": "Edited after query: shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
     "tags": [
@@ -2741,14 +2673,14 @@
       "tokens"
     ],
     "files": [
-      "resources/js/Components/ResponsiveNavLink.tsx"
+      "resources/js/Components/NavLink.tsx"
     ],
-    "file_path": "resources/js/Components/ResponsiveNavLink.tsx",
+    "file_path": "resources/js/Components/NavLink.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:46:54.872090+00:00",
+    "created_at": "2026-08-07T22:46:54.866804+00:00",
     "created_epoch": 1786142814,
-    "updated_at": "2026-08-07T22:46:54.872096+00:00",
+    "updated_at": "2026-08-07T22:46:54.866818+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -2767,7 +2699,7 @@
     }
   },
   {
-    "id": "mem:1786142814843",
+    "id": "mem:1786142814837",
     "kind": "edit_observation",
     "content": "Edited after query: shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
     "tags": [
@@ -2783,32 +2715,167 @@
       "spine"
     ],
     "files": [
-      "resources/js/Components/Dropdown.tsx"
+      "resources/js/Components/Modal.tsx"
     ],
-    "file_path": "resources/js/Components/Dropdown.tsx",
+    "file_path": "resources/js/Components/Modal.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:46:54.843196+00:00",
+    "created_at": "2026-08-07T22:46:54.837840+00:00",
     "created_epoch": 1786142814,
-    "updated_at": "2026-08-10T08:12:53.400583+00:00",
+    "updated_at": "2026-08-10T07:31:03.853092+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
-      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
-      "logout does not work authentication fortify session sign out",
-      "frontend design system tokens brief landing welcome authenticated layout product UI"
+      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
     ],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786142814828",
+    "kind": "edit_observation",
+    "content": "Edited after query: shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
+    "tags": [
+      "shared",
+      "button",
+      "a11y",
+      "focus",
+      "visible",
+      "rings",
+      "semantic",
+      "tokens",
+      "swapped",
+      "hardcoded"
+    ],
+    "files": [
+      "resources/js/Components/DangerButton.tsx"
+    ],
+    "file_path": "resources/js/Components/DangerButton.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:46:54.828767+00:00",
+    "created_epoch": 1786142814,
+    "updated_at": "2026-08-09T07:04:48.288755+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "read",
         "continue_retrieve",
         "retrieve",
+        "register_edit",
         "fallback_rg"
       ],
       "recent_queries": [
+        "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786142814820",
+    "kind": "decision",
+    "content": "Shared button a11y: focus-visible rings, semantic tokens, Modal transition-all removed",
+    "tags": [
+      "shared",
+      "button",
+      "a11y",
+      "focus",
+      "visible",
+      "rings",
+      "semantic",
+      "tokens"
+    ],
+    "files": [
+      "resources/js/Components/SecondaryButton.tsx",
+      "resources/js/Components/DangerButton.tsx",
+      "resources/js/Components/ui/button.tsx",
+      "resources/js/Components/Modal.tsx",
+      "resources/js/Components/Dropdown.tsx",
+      "resources/js/Components/NavLink.tsx",
+      "resources/js/Components/ResponsiveNavLink.tsx"
+    ],
+    "file_path": "resources/js/Components/SecondaryButton.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:46:54.820143+00:00",
+    "created_epoch": 1786142814,
+    "updated_at": "2026-08-07T22:46:54.820149+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786142814824",
+    "kind": "edit_observation",
+    "content": "Edited after query: shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
+    "tags": [
+      "shared",
+      "button",
+      "a11y",
+      "focus",
+      "visible",
+      "rings",
+      "semantic",
+      "tokens",
+      "batch",
+      "swap"
+    ],
+    "files": [
+      "resources/js/Components/SecondaryButton.tsx"
+    ],
+    "file_path": "resources/js/Components/SecondaryButton.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:46:54.824007+00:00",
+    "created_epoch": 1786142814,
+    "updated_at": "2026-08-07T22:58:10.038166+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
+      "surface-overlay surface-card modal-without-dialog elevated surfaces",
+      "target-role-bar modal dialog popover autocomplete combobox"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "read",
+        "continue_retrieve",
+        "retrieve",
+        "register_edit"
+      ],
+      "recent_queries": [
         "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
-        "logout does not work authentication fortify session sign out",
-        "frontend design system tokens brief landing welcome authenticated layout product UI"
+        "surface-overlay surface-card modal-without-dialog elevated surfaces",
+        "target-role-bar modal dialog popover autocomplete combobox"
       ],
       "edited": true
     }
@@ -2862,146 +2929,7 @@
     }
   },
   {
-    "id": "mem:1786142814824",
-    "kind": "edit_observation",
-    "content": "Edited after query: shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
-    "tags": [
-      "shared",
-      "button",
-      "a11y",
-      "focus",
-      "visible",
-      "rings",
-      "semantic",
-      "tokens",
-      "batch",
-      "swap"
-    ],
-    "files": [
-      "resources/js/Components/SecondaryButton.tsx"
-    ],
-    "file_path": "resources/js/Components/SecondaryButton.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:46:54.824007+00:00",
-    "created_epoch": 1786142814,
-    "updated_at": "2026-08-07T22:58:10.038166+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
-      "surface-overlay surface-card modal-without-dialog elevated surfaces",
-      "target-role-bar modal dialog popover autocomplete combobox"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "read",
-        "continue_retrieve",
-        "retrieve",
-        "register_edit"
-      ],
-      "recent_queries": [
-        "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
-        "surface-overlay surface-card modal-without-dialog elevated surfaces",
-        "target-role-bar modal dialog popover autocomplete combobox"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786142814820",
-    "kind": "decision",
-    "content": "Shared button a11y: focus-visible rings, semantic tokens, Modal transition-all removed",
-    "tags": [
-      "shared",
-      "button",
-      "a11y",
-      "focus",
-      "visible",
-      "rings",
-      "semantic",
-      "tokens"
-    ],
-    "files": [
-      "resources/js/Components/SecondaryButton.tsx",
-      "resources/js/Components/DangerButton.tsx",
-      "resources/js/Components/ui/button.tsx",
-      "resources/js/Components/Modal.tsx",
-      "resources/js/Components/Dropdown.tsx",
-      "resources/js/Components/NavLink.tsx",
-      "resources/js/Components/ResponsiveNavLink.tsx"
-    ],
-    "file_path": "resources/js/Components/SecondaryButton.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:46:54.820143+00:00",
-    "created_epoch": 1786142814,
-    "updated_at": "2026-08-07T22:46:54.820149+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
-    ],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786142814828",
-    "kind": "edit_observation",
-    "content": "Edited after query: shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
-    "tags": [
-      "shared",
-      "button",
-      "a11y",
-      "focus",
-      "visible",
-      "rings",
-      "semantic",
-      "tokens",
-      "swapped",
-      "hardcoded"
-    ],
-    "files": [
-      "resources/js/Components/DangerButton.tsx"
-    ],
-    "file_path": "resources/js/Components/DangerButton.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:46:54.828767+00:00",
-    "created_epoch": 1786142814,
-    "updated_at": "2026-08-09T07:04:48.288755+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "read",
-        "continue_retrieve",
-        "retrieve",
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [
-        "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786142814837",
+    "id": "mem:1786142814843",
     "kind": "edit_observation",
     "content": "Edited after query: shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
     "tags": [
@@ -3017,34 +2945,38 @@
       "spine"
     ],
     "files": [
-      "resources/js/Components/Modal.tsx"
+      "resources/js/Components/Dropdown.tsx"
     ],
-    "file_path": "resources/js/Components/Modal.tsx",
+    "file_path": "resources/js/Components/Dropdown.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:46:54.837840+00:00",
+    "created_at": "2026-08-07T22:46:54.843196+00:00",
     "created_epoch": 1786142814,
-    "updated_at": "2026-08-10T07:31:03.853092+00:00",
+    "updated_at": "2026-08-10T08:12:53.400583+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
-      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
+      "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
+      "logout does not work authentication fortify session sign out",
+      "frontend design system tokens brief landing welcome authenticated layout product UI"
     ],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
-        "read",
         "continue_retrieve",
-        "retrieve"
+        "retrieve",
+        "fallback_rg"
       ],
       "recent_queries": [
-        "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
+        "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
+        "logout does not work authentication fortify session sign out",
+        "frontend design system tokens brief landing welcome authenticated layout product UI"
       ],
       "edited": true
     }
   },
   {
-    "id": "mem:1786142814866",
+    "id": "mem:1786142814872",
     "kind": "edit_observation",
     "content": "Edited after query: shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible",
     "tags": [
@@ -3058,14 +2990,14 @@
       "tokens"
     ],
     "files": [
-      "resources/js/Components/NavLink.tsx"
+      "resources/js/Components/ResponsiveNavLink.tsx"
     ],
-    "file_path": "resources/js/Components/NavLink.tsx",
+    "file_path": "resources/js/Components/ResponsiveNavLink.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:46:54.866804+00:00",
+    "created_at": "2026-08-07T22:46:54.872090+00:00",
     "created_epoch": 1786142814,
-    "updated_at": "2026-08-07T22:46:54.866818+00:00",
+    "updated_at": "2026-08-07T22:46:54.872096+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -3081,93 +3013,6 @@
         "shared button components PrimaryButton SecondaryButton DangerButton focus ring outline accessibility a11y focus-visible"
       ],
       "edited": true
-    }
-  },
-  {
-    "id": "mem:1786142973960",
-    "kind": "edit_observation",
-    "content": "Edited after query: workstation header format toolbar button focus outline focus-visible a11y",
-    "tags": [
-      "workstation",
-      "header",
-      "toolbar",
-      "menuitems",
-      "toggles",
-      "get",
-      "focus",
-      "visible",
-      "desk",
-      "paper"
-    ],
-    "files": [
-      "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:49:33.960773+00:00",
-    "created_epoch": 1786142973,
-    "updated_at": "2026-08-10T07:53:36.744724+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "workstation header format toolbar button focus outline focus-visible a11y",
-      "WorkstationHeader workstation format toolbar AuthenticatedLayout"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "workstation header format toolbar button focus outline focus-visible a11y",
-        "WorkstationHeader workstation format toolbar AuthenticatedLayout"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786142973953",
-    "kind": "decision",
-    "content": "Workstation header/toolbar MenuItems and toggles get focus-visible rings",
-    "tags": [
-      "workstation",
-      "header",
-      "toolbar",
-      "menuitems",
-      "toggles",
-      "get",
-      "focus",
-      "visible"
-    ],
-    "files": [
-      "resources/js/Components/workstation/workstation-header.tsx",
-      "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-      "resources/js/Components/workstation/target-role-bar.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/workstation-header.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:49:33.953852+00:00",
-    "created_epoch": 1786142973,
-    "updated_at": "2026-08-07T22:49:33.953856+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "workstation header format toolbar button focus outline focus-visible a11y"
-    ],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "workstation header format toolbar button focus outline focus-visible a11y"
-      ]
     }
   },
   {
@@ -3218,7 +3063,94 @@
     }
   },
   {
-    "id": "mem:1786143311271",
+    "id": "mem:1786142973953",
+    "kind": "decision",
+    "content": "Workstation header/toolbar MenuItems and toggles get focus-visible rings",
+    "tags": [
+      "workstation",
+      "header",
+      "toolbar",
+      "menuitems",
+      "toggles",
+      "get",
+      "focus",
+      "visible"
+    ],
+    "files": [
+      "resources/js/Components/workstation/workstation-header.tsx",
+      "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+      "resources/js/Components/workstation/target-role-bar.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/workstation-header.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:49:33.953852+00:00",
+    "created_epoch": 1786142973,
+    "updated_at": "2026-08-07T22:49:33.953856+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "workstation header format toolbar button focus outline focus-visible a11y"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "workstation header format toolbar button focus outline focus-visible a11y"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786142973960",
+    "kind": "edit_observation",
+    "content": "Edited after query: workstation header format toolbar button focus outline focus-visible a11y",
+    "tags": [
+      "workstation",
+      "header",
+      "toolbar",
+      "menuitems",
+      "toggles",
+      "get",
+      "focus",
+      "visible",
+      "desk",
+      "paper"
+    ],
+    "files": [
+      "resources/js/Components/workstation/workstation-format-toolbar.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:49:33.960773+00:00",
+    "created_epoch": 1786142973,
+    "updated_at": "2026-08-10T07:53:36.744724+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "workstation header format toolbar button focus outline focus-visible a11y",
+      "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "workstation header format toolbar button focus outline focus-visible a11y",
+        "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786143311262",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -3230,18 +3162,131 @@
       "window",
       "confirm",
       "via",
-      "token",
-      "migration"
+      "workstation",
+      "desk"
     ],
     "files": [
-      "resources/js/Pages/Settings/StarterProfile.tsx"
+      "resources/js/Components/workstation/snapshots-panel.tsx"
     ],
-    "file_path": "resources/js/Pages/Settings/StarterProfile.tsx",
+    "file_path": "resources/js/Components/workstation/snapshots-panel.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:55:11.271297+00:00",
+    "created_at": "2026-08-07T22:55:11.262180+00:00",
     "created_epoch": 1786143311,
-    "updated_at": "2026-08-09T07:04:55.489329+00:00",
+    "updated_at": "2026-08-09T07:39:25.583025+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786143311256",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "destructive",
+      "delete",
+      "remove",
+      "actions",
+      "require",
+      "window",
+      "confirm",
+      "via",
+      "swapped",
+      "hardcoded"
+    ],
+    "files": [
+      "resources/js/Components/SkillNarrativeEditor.tsx"
+    ],
+    "file_path": "resources/js/Components/SkillNarrativeEditor.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:55:11.256296+00:00",
+    "created_epoch": 1786143311,
+    "updated_at": "2026-08-09T07:04:48.302473+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786143311250",
+    "kind": "decision",
+    "content": "Destructive delete/remove actions require window.confirm via onConfirm pattern",
+    "tags": [
+      "destructive",
+      "delete",
+      "remove",
+      "actions",
+      "require",
+      "window",
+      "confirm",
+      "via"
+    ],
+    "files": [
+      "resources/js/Components/BulletEditor.tsx",
+      "resources/js/Components/SkillNarrativeEditor.tsx",
+      "resources/js/Components/workstation/inspector-fields.tsx",
+      "resources/js/Components/workstation/snapshots-panel.tsx",
+      "resources/js/Pages/Dashboard.tsx",
+      "resources/js/Pages/Admin/Backups/Index.tsx",
+      "resources/js/Pages/Settings/StarterProfile.tsx"
+    ],
+    "file_path": "resources/js/Components/BulletEditor.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:55:11.250315+00:00",
+    "created_epoch": 1786143311,
+    "updated_at": "2026-08-07T22:55:11.250318+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786143311253",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "destructive",
+      "delete",
+      "remove",
+      "actions",
+      "require",
+      "window",
+      "confirm",
+      "via",
+      "swapped",
+      "hardcoded"
+    ],
+    "files": [
+      "resources/js/Components/BulletEditor.tsx"
+    ],
+    "file_path": "resources/js/Components/BulletEditor.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:55:11.253247+00:00",
+    "created_epoch": 1786143311,
+    "updated_at": "2026-08-09T07:04:48.314406+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -3304,7 +3349,7 @@
     }
   },
   {
-    "id": "mem:1786143311253",
+    "id": "mem:1786143311271",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -3316,94 +3361,18 @@
       "window",
       "confirm",
       "via",
-      "swapped",
-      "hardcoded"
+      "token",
+      "migration"
     ],
     "files": [
-      "resources/js/Components/BulletEditor.tsx"
-    ],
-    "file_path": "resources/js/Components/BulletEditor.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:55:11.253247+00:00",
-    "created_epoch": 1786143311,
-    "updated_at": "2026-08-09T07:04:48.314406+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786143311250",
-    "kind": "decision",
-    "content": "Destructive delete/remove actions require window.confirm via onConfirm pattern",
-    "tags": [
-      "destructive",
-      "delete",
-      "remove",
-      "actions",
-      "require",
-      "window",
-      "confirm",
-      "via"
-    ],
-    "files": [
-      "resources/js/Components/BulletEditor.tsx",
-      "resources/js/Components/SkillNarrativeEditor.tsx",
-      "resources/js/Components/workstation/inspector-fields.tsx",
-      "resources/js/Components/workstation/snapshots-panel.tsx",
-      "resources/js/Pages/Dashboard.tsx",
-      "resources/js/Pages/Admin/Backups/Index.tsx",
       "resources/js/Pages/Settings/StarterProfile.tsx"
     ],
-    "file_path": "resources/js/Components/BulletEditor.tsx",
+    "file_path": "resources/js/Pages/Settings/StarterProfile.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:55:11.250315+00:00",
+    "created_at": "2026-08-07T22:55:11.271297+00:00",
     "created_epoch": 1786143311,
-    "updated_at": "2026-08-07T22:55:11.250318+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1786143311256",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "destructive",
-      "delete",
-      "remove",
-      "actions",
-      "require",
-      "window",
-      "confirm",
-      "via",
-      "swapped",
-      "hardcoded"
-    ],
-    "files": [
-      "resources/js/Components/SkillNarrativeEditor.tsx"
-    ],
-    "file_path": "resources/js/Components/SkillNarrativeEditor.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:55:11.256296+00:00",
-    "created_epoch": 1786143311,
-    "updated_at": "2026-08-09T07:04:48.302473+00:00",
+    "updated_at": "2026-08-09T07:04:55.489329+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -3411,43 +3380,6 @@
       "source": "graph_register_edit",
       "recent_action_kinds": [
         "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786143311262",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "destructive",
-      "delete",
-      "remove",
-      "actions",
-      "require",
-      "window",
-      "confirm",
-      "via",
-      "workstation",
-      "desk"
-    ],
-    "files": [
-      "resources/js/Components/workstation/snapshots-panel.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/snapshots-panel.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:55:11.262180+00:00",
-    "created_epoch": 1786143311,
-    "updated_at": "2026-08-09T07:39:25.583025+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
         "fallback_rg"
       ],
       "recent_queries": [],
@@ -3495,53 +3427,7 @@
     }
   },
   {
-    "id": "mem:1786143490047",
-    "kind": "edit_observation",
-    "content": "Edited after query: surface-overlay surface-card modal-without-dialog elevated surfaces",
-    "tags": [
-      "batch",
-      "swap",
-      "non",
-      "modal",
-      "surface",
-      "overlay",
-      "card",
-      "migrated",
-      "remaining",
-      "raw"
-    ],
-    "files": [
-      "resources/js/Components/ui/card.tsx"
-    ],
-    "file_path": "resources/js/Components/ui/card.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:58:10.047283+00:00",
-    "created_epoch": 1786143490,
-    "updated_at": "2026-08-09T07:39:25.591389+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "surface-overlay surface-card modal-without-dialog elevated surfaces",
-      "target-role-bar modal dialog popover autocomplete combobox"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "continue_retrieve",
-        "retrieve",
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [
-        "surface-overlay surface-card modal-without-dialog elevated surfaces",
-        "target-role-bar modal dialog popover autocomplete combobox"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786143490041",
+    "id": "mem:1786143490044",
     "kind": "edit_observation",
     "content": "Edited after query: surface-overlay surface-card modal-without-dialog elevated surfaces",
     "tags": [
@@ -3554,14 +3440,14 @@
       "card"
     ],
     "files": [
-      "resources/js/Components/TextInput.tsx"
+      "resources/js/Components/ui/input.tsx"
     ],
-    "file_path": "resources/js/Components/TextInput.tsx",
+    "file_path": "resources/js/Components/ui/input.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:58:10.041120+00:00",
+    "created_at": "2026-08-07T22:58:10.044254+00:00",
     "created_epoch": 1786143490,
-    "updated_at": "2026-08-07T22:58:10.041122+00:00",
+    "updated_at": "2026-08-07T22:58:10.044259+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -3578,56 +3464,6 @@
       "recent_queries": [
         "surface-overlay surface-card modal-without-dialog elevated surfaces",
         "target-role-bar modal dialog popover autocomplete combobox"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786143490035",
-    "kind": "edit_observation",
-    "content": "Edited after query: surface-overlay surface-card modal-without-dialog elevated surfaces",
-    "tags": [
-      "batch",
-      "swap",
-      "non",
-      "modal",
-      "surface",
-      "overlay",
-      "card",
-      "pair",
-      "remaining",
-      "outline"
-    ],
-    "files": [
-      "resources/js/Layouts/AuthenticatedLayout.tsx"
-    ],
-    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T22:58:10.035191+00:00",
-    "created_epoch": 1786143490,
-    "updated_at": "2026-08-10T08:12:53.397533+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "surface-overlay surface-card modal-without-dialog elevated surfaces",
-      "target-role-bar modal dialog popover autocomplete combobox",
-      "frontend design system tokens brief landing welcome authenticated layout product UI",
-      "Workstation Review preview Kanban JobCard drag shell section-panel"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "continue_retrieve",
-        "retrieve",
-        "register_edit",
-        "read"
-      ],
-      "recent_queries": [
-        "surface-overlay surface-card modal-without-dialog elevated surfaces",
-        "target-role-bar modal dialog popover autocomplete combobox",
-        "frontend design system tokens brief landing welcome authenticated layout product UI",
-        "Workstation Review preview Kanban JobCard drag shell section-panel"
       ],
       "edited": true
     }
@@ -3682,7 +3518,57 @@
     }
   },
   {
-    "id": "mem:1786143490044",
+    "id": "mem:1786143490035",
+    "kind": "edit_observation",
+    "content": "Edited after query: surface-overlay surface-card modal-without-dialog elevated surfaces",
+    "tags": [
+      "batch",
+      "swap",
+      "non",
+      "modal",
+      "surface",
+      "overlay",
+      "card",
+      "pair",
+      "remaining",
+      "outline"
+    ],
+    "files": [
+      "resources/js/Layouts/AuthenticatedLayout.tsx"
+    ],
+    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T22:58:10.035191+00:00",
+    "created_epoch": 1786143490,
+    "updated_at": "2026-08-10T08:12:53.397533+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "surface-overlay surface-card modal-without-dialog elevated surfaces",
+      "target-role-bar modal dialog popover autocomplete combobox",
+      "frontend design system tokens brief landing welcome authenticated layout product UI",
+      "Workstation Review preview Kanban JobCard drag shell section-panel"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve",
+        "register_edit",
+        "read"
+      ],
+      "recent_queries": [
+        "surface-overlay surface-card modal-without-dialog elevated surfaces",
+        "target-role-bar modal dialog popover autocomplete combobox",
+        "frontend design system tokens brief landing welcome authenticated layout product UI",
+        "Workstation Review preview Kanban JobCard drag shell section-panel"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786143490041",
     "kind": "edit_observation",
     "content": "Edited after query: surface-overlay surface-card modal-without-dialog elevated surfaces",
     "tags": [
@@ -3695,14 +3581,14 @@
       "card"
     ],
     "files": [
-      "resources/js/Components/ui/input.tsx"
+      "resources/js/Components/TextInput.tsx"
     ],
-    "file_path": "resources/js/Components/ui/input.tsx",
+    "file_path": "resources/js/Components/TextInput.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:58:10.044254+00:00",
+    "created_at": "2026-08-07T22:58:10.041120+00:00",
     "created_epoch": 1786143490,
-    "updated_at": "2026-08-07T22:58:10.044259+00:00",
+    "updated_at": "2026-08-07T22:58:10.041122+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -3724,45 +3610,49 @@
     }
   },
   {
-    "id": "mem:1786143567079",
-    "kind": "decision",
-    "content": "Admin restore uses shared Headless UI Modal; table overflow-x-auto",
+    "id": "mem:1786143490047",
+    "kind": "edit_observation",
+    "content": "Edited after query: surface-overlay surface-card modal-without-dialog elevated surfaces",
     "tags": [
-      "admin",
-      "restore",
-      "uses",
-      "shared",
-      "headless",
+      "batch",
+      "swap",
+      "non",
       "modal",
-      "table",
-      "overflow"
+      "surface",
+      "overlay",
+      "card",
+      "migrated",
+      "remaining",
+      "raw"
     ],
     "files": [
-      "resources/js/Pages/Admin/Backups/Index.tsx"
+      "resources/js/Components/ui/card.tsx"
     ],
-    "file_path": "resources/js/Pages/Admin/Backups/Index.tsx",
+    "file_path": "resources/js/Components/ui/card.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T22:59:27.079489+00:00",
-    "created_epoch": 1786143567,
-    "updated_at": "2026-08-07T22:59:27.079494+00:00",
+    "created_at": "2026-08-07T22:58:10.047283+00:00",
+    "created_epoch": 1786143490,
+    "updated_at": "2026-08-09T07:39:25.591389+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
-      "Admin Backups Index restore modal dialog",
-      "surface-overlay surface-card modal-without-dialog elevated surfaces"
+      "surface-overlay surface-card modal-without-dialog elevated surfaces",
+      "target-role-bar modal dialog popover autocomplete combobox"
     ],
     "evidence": {
-      "window_sec": 120,
+      "source": "graph_register_edit",
       "recent_action_kinds": [
         "continue_retrieve",
         "retrieve",
-        "register_edit"
+        "register_edit",
+        "fallback_rg"
       ],
       "recent_queries": [
-        "Admin Backups Index restore modal dialog",
-        "surface-overlay surface-card modal-without-dialog elevated surfaces"
-      ]
+        "surface-overlay surface-card modal-without-dialog elevated surfaces",
+        "target-role-bar modal dialog popover autocomplete combobox"
+      ],
+      "edited": true
     }
   },
   {
@@ -3813,44 +3703,49 @@
     }
   },
   {
-    "id": "mem:1786143802780",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
+    "id": "mem:1786143567079",
+    "kind": "decision",
+    "content": "Admin restore uses shared Headless UI Modal; table overflow-x-auto",
     "tags": [
-      "pair",
-      "remaining",
-      "outline",
-      "none",
-      "focus",
-      "visible",
-      "rings",
-      "across",
-      "width",
-      "animation"
+      "admin",
+      "restore",
+      "uses",
+      "shared",
+      "headless",
+      "modal",
+      "table",
+      "overflow"
     ],
     "files": [
-      "resources/js/Pages/Resumes/Compare.tsx"
+      "resources/js/Pages/Admin/Backups/Index.tsx"
     ],
-    "file_path": "resources/js/Pages/Resumes/Compare.tsx",
+    "file_path": "resources/js/Pages/Admin/Backups/Index.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:03:22.780793+00:00",
-    "created_epoch": 1786143802,
-    "updated_at": "2026-08-09T07:04:14.214096+00:00",
+    "created_at": "2026-08-07T22:59:27.079489+00:00",
+    "created_epoch": 1786143567,
+    "updated_at": "2026-08-07T22:59:27.079494+00:00",
     "stale": false,
     "stale_reason": "",
-    "observed_queries": [],
+    "observed_queries": [
+      "Admin Backups Index restore modal dialog",
+      "surface-overlay surface-card modal-without-dialog elevated surfaces"
+    ],
     "evidence": {
-      "source": "graph_register_edit",
+      "window_sec": 120,
       "recent_action_kinds": [
-        "fallback_rg"
+        "continue_retrieve",
+        "retrieve",
+        "register_edit"
       ],
-      "recent_queries": [],
-      "edited": true
+      "recent_queries": [
+        "Admin Backups Index restore modal dialog",
+        "surface-overlay surface-card modal-without-dialog elevated surfaces"
+      ]
     }
   },
   {
-    "id": "mem:1786143802775",
+    "id": "mem:1786143802778",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -3866,14 +3761,14 @@
       "migration"
     ],
     "files": [
-      "resources/js/Pages/Onboarding/Wizard.tsx"
+      "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx"
     ],
-    "file_path": "resources/js/Pages/Onboarding/Wizard.tsx",
+    "file_path": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:03:22.775487+00:00",
+    "created_at": "2026-08-07T23:03:22.778104+00:00",
     "created_epoch": 1786143802,
-    "updated_at": "2026-08-09T07:04:55.496129+00:00",
+    "updated_at": "2026-08-09T07:04:55.543228+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -3881,6 +3776,122 @@
       "source": "graph_register_edit",
       "recent_action_kinds": [
         "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786143802755",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "pair",
+      "remaining",
+      "outline",
+      "none",
+      "focus",
+      "visible",
+      "rings",
+      "across",
+      "swapped",
+      "hardcoded"
+    ],
+    "files": [
+      "resources/js/Components/SkillGroupEditor.tsx"
+    ],
+    "file_path": "resources/js/Components/SkillGroupEditor.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T23:03:22.755315+00:00",
+    "created_epoch": 1786143802,
+    "updated_at": "2026-08-09T07:04:48.297082+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786143802751",
+    "kind": "decision",
+    "content": "Pair remaining outline-none with focus-visible rings across app",
+    "tags": [
+      "pair",
+      "remaining",
+      "outline",
+      "none",
+      "focus",
+      "visible",
+      "rings",
+      "across"
+    ],
+    "files": [
+      "resources/js/Components/SkillGroupEditor.tsx",
+      "resources/js/Components/TagInput.tsx",
+      "resources/js/Components/workstation/inspector-sections.tsx",
+      "resources/js/Components/workstation/skill-picker-modal.tsx",
+      "resources/js/Layouts/AuthenticatedLayout.tsx",
+      "resources/js/Pages/Admin/Users/Index.tsx",
+      "resources/js/Pages/Dashboard.tsx",
+      "resources/js/Pages/Onboarding/Wizard.tsx",
+      "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+      "resources/js/Pages/Resumes/Compare.tsx"
+    ],
+    "file_path": "resources/js/Components/SkillGroupEditor.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T23:03:22.751890+00:00",
+    "created_epoch": 1786143802,
+    "updated_at": "2026-08-07T23:03:22.751893+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786143802764",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "pair",
+      "remaining",
+      "outline",
+      "none",
+      "focus",
+      "visible",
+      "rings",
+      "across",
+      "edited",
+      "during"
+    ],
+    "files": [
+      "resources/js/Components/workstation/skill-picker-modal.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/skill-picker-modal.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T23:03:22.764436+00:00",
+    "created_epoch": 1786143802,
+    "updated_at": "2026-08-08T05:21:14.693421+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
         "fallback_rg"
       ],
       "recent_queries": [],
@@ -3930,123 +3941,7 @@
     }
   },
   {
-    "id": "mem:1786143802764",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "pair",
-      "remaining",
-      "outline",
-      "none",
-      "focus",
-      "visible",
-      "rings",
-      "across",
-      "edited",
-      "during"
-    ],
-    "files": [
-      "resources/js/Components/workstation/skill-picker-modal.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/skill-picker-modal.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T23:03:22.764436+00:00",
-    "created_epoch": 1786143802,
-    "updated_at": "2026-08-08T05:21:14.693421+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786143802751",
-    "kind": "decision",
-    "content": "Pair remaining outline-none with focus-visible rings across app",
-    "tags": [
-      "pair",
-      "remaining",
-      "outline",
-      "none",
-      "focus",
-      "visible",
-      "rings",
-      "across"
-    ],
-    "files": [
-      "resources/js/Components/SkillGroupEditor.tsx",
-      "resources/js/Components/TagInput.tsx",
-      "resources/js/Components/workstation/inspector-sections.tsx",
-      "resources/js/Components/workstation/skill-picker-modal.tsx",
-      "resources/js/Layouts/AuthenticatedLayout.tsx",
-      "resources/js/Pages/Admin/Users/Index.tsx",
-      "resources/js/Pages/Dashboard.tsx",
-      "resources/js/Pages/Onboarding/Wizard.tsx",
-      "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
-      "resources/js/Pages/Resumes/Compare.tsx"
-    ],
-    "file_path": "resources/js/Components/SkillGroupEditor.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T23:03:22.751890+00:00",
-    "created_epoch": 1786143802,
-    "updated_at": "2026-08-07T23:03:22.751893+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1786143802755",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "pair",
-      "remaining",
-      "outline",
-      "none",
-      "focus",
-      "visible",
-      "rings",
-      "across",
-      "swapped",
-      "hardcoded"
-    ],
-    "files": [
-      "resources/js/Components/SkillGroupEditor.tsx"
-    ],
-    "file_path": "resources/js/Components/SkillGroupEditor.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T23:03:22.755315+00:00",
-    "created_epoch": 1786143802,
-    "updated_at": "2026-08-09T07:04:48.297082+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786143802778",
+    "id": "mem:1786143802775",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4062,14 +3957,14 @@
       "migration"
     ],
     "files": [
-      "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx"
+      "resources/js/Pages/Onboarding/Wizard.tsx"
     ],
-    "file_path": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.tsx",
+    "file_path": "resources/js/Pages/Onboarding/Wizard.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:03:22.778104+00:00",
+    "created_at": "2026-08-07T23:03:22.775487+00:00",
     "created_epoch": 1786143802,
-    "updated_at": "2026-08-09T07:04:55.543228+00:00",
+    "updated_at": "2026-08-09T07:04:55.496129+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -4084,7 +3979,44 @@
     }
   },
   {
-    "id": "mem:1786144029568",
+    "id": "mem:1786143802780",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "pair",
+      "remaining",
+      "outline",
+      "none",
+      "focus",
+      "visible",
+      "rings",
+      "across",
+      "width",
+      "animation"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Compare.tsx"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Compare.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T23:03:22.780793+00:00",
+    "created_epoch": 1786143802,
+    "updated_at": "2026-08-09T07:04:14.214096+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786144029576",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4096,33 +4028,76 @@
       "all",
       "detector",
       "majors",
-      "swept",
-      "hardcoded"
+      "replaced",
+      "legacy"
     ],
     "files": [
-      "resources/js/Pages/Jobs/Imports.tsx"
+      "resources/js/Pages/Resumes/PublicShare.tsx"
     ],
-    "file_path": "resources/js/Pages/Jobs/Imports.tsx",
+    "file_path": "resources/js/Pages/Resumes/PublicShare.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.568850+00:00",
+    "created_at": "2026-08-07T23:07:09.576793+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T07:04:33.139645+00:00",
+    "updated_at": "2026-08-10T07:44:01.422510+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
+        "fallback_rg"
       ],
       "recent_queries": [],
       "edited": true
     }
   },
   {
-    "id": "mem:1786144029563",
+    "id": "mem:1786144029571",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "width",
+      "animation",
+      "via",
+      "scalex",
+      "clear",
+      "all",
+      "detector",
+      "majors",
+      "token",
+      "spine"
+    ],
+    "files": [
+      "resources/js/Pages/Jobs/Kanban.tsx"
+    ],
+    "file_path": "resources/js/Pages/Jobs/Kanban.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T23:07:09.571438+00:00",
+    "created_epoch": 1786144029,
+    "updated_at": "2026-08-10T08:12:53.406548+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "Workstation Review preview Kanban JobCard drag shell section-panel"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "register_edit",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "Workstation Review preview Kanban JobCard drag shell section-panel"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786144029566",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4138,14 +4113,14 @@
       "content"
     ],
     "files": [
-      "resources/js/Pages/Admin/Dashboard.tsx"
+      "resources/js/Pages/Admin/Users/Show.tsx"
     ],
-    "file_path": "resources/js/Pages/Admin/Dashboard.tsx",
+    "file_path": "resources/js/Pages/Admin/Users/Show.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.563259+00:00",
+    "created_at": "2026-08-07T23:07:09.566035+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-08T02:59:37.501834+00:00",
+    "updated_at": "2026-08-08T02:59:37.513446+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -4164,7 +4139,7 @@
     }
   },
   {
-    "id": "mem:1786144029557",
+    "id": "mem:1786144029560",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4176,24 +4151,68 @@
       "all",
       "detector",
       "majors",
-      "migrated",
-      "remaining"
+      "admin",
+      "account"
     ],
     "files": [
-      "resources/js/Components/workstation/template-picker-modal.tsx"
+      "resources/js/Layouts/AdminLayout.tsx"
     ],
-    "file_path": "resources/js/Components/workstation/template-picker-modal.tsx",
+    "file_path": "resources/js/Layouts/AdminLayout.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.557950+00:00",
+    "created_at": "2026-08-07T23:07:09.560636+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T07:39:25.565582+00:00",
+    "updated_at": "2026-08-08T02:52:24.512637+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "AdminLayout account menu logout admin chrome"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve",
+        "register_edit"
+      ],
+      "recent_queries": [
+        "AdminLayout account menu logout admin chrome"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786144029544",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "width",
+      "animation",
+      "via",
+      "scalex",
+      "clear",
+      "all",
+      "detector",
+      "majors",
+      "swapped",
+      "hardcoded"
+    ],
+    "files": [
+      "resources/js/Components/QRCodeDisplay.tsx"
+    ],
+    "file_path": "resources/js/Components/QRCodeDisplay.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T23:07:09.544144+00:00",
+    "created_epoch": 1786144029,
+    "updated_at": "2026-08-09T07:04:48.317678+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
+        "register_edit",
         "fallback_rg"
       ],
       "recent_queries": [],
@@ -4201,7 +4220,7 @@
     }
   },
   {
-    "id": "mem:1786144029552",
+    "id": "mem:1786144029533",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4217,14 +4236,14 @@
       "rail"
     ],
     "files": [
-      "resources/js/Components/resume/score-coach.tsx"
+      "resources/js/Components/workstation/jd-match-panel.tsx"
     ],
-    "file_path": "resources/js/Components/resume/score-coach.tsx",
+    "file_path": "resources/js/Components/workstation/jd-match-panel.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.552558+00:00",
+    "created_at": "2026-08-07T23:07:09.533215+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T03:34:28.245943+00:00",
+    "updated_at": "2026-08-09T06:53:59.972404+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -4236,8 +4255,7 @@
       "recent_action_kinds": [
         "read",
         "continue_retrieve",
-        "retrieve",
-        "fallback_rg"
+        "retrieve"
       ],
       "recent_queries": [
         "ScoreChecklist KeywordChips component score-coach.tsx styling wrapper border card",
@@ -4247,7 +4265,7 @@
     }
   },
   {
-    "id": "mem:1786144029547",
+    "id": "mem:1786144029527",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4259,26 +4277,24 @@
       "all",
       "detector",
       "majors",
-      "migrated",
-      "remaining"
+      "workstation",
+      "desk"
     ],
     "files": [
-      "resources/js/Components/dashboard/new-resume-modal.tsx"
+      "resources/js/Components/workstation/optimize-panel.tsx"
     ],
-    "file_path": "resources/js/Components/dashboard/new-resume-modal.tsx",
+    "file_path": "resources/js/Components/workstation/optimize-panel.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.547230+00:00",
+    "created_at": "2026-08-07T23:07:09.527836+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T07:39:25.587350+00:00",
+    "updated_at": "2026-08-09T02:57:32.825723+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
     "evidence": {
       "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
+      "recent_action_kinds": [],
       "recent_queries": [],
       "edited": true
     }
@@ -4338,7 +4354,7 @@
     }
   },
   {
-    "id": "mem:1786144029527",
+    "id": "mem:1786144029547",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4350,30 +4366,32 @@
       "all",
       "detector",
       "majors",
-      "workstation",
-      "desk"
+      "migrated",
+      "remaining"
     ],
     "files": [
-      "resources/js/Components/workstation/optimize-panel.tsx"
+      "resources/js/Components/dashboard/new-resume-modal.tsx"
     ],
-    "file_path": "resources/js/Components/workstation/optimize-panel.tsx",
+    "file_path": "resources/js/Components/dashboard/new-resume-modal.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.527836+00:00",
+    "created_at": "2026-08-07T23:07:09.547230+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T02:57:32.825723+00:00",
+    "updated_at": "2026-08-09T07:39:25.587350+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
     "evidence": {
       "source": "graph_register_edit",
-      "recent_action_kinds": [],
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
       "recent_queries": [],
       "edited": true
     }
   },
   {
-    "id": "mem:1786144029533",
+    "id": "mem:1786144029552",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4389,14 +4407,14 @@
       "rail"
     ],
     "files": [
-      "resources/js/Components/workstation/jd-match-panel.tsx"
+      "resources/js/Components/resume/score-coach.tsx"
     ],
-    "file_path": "resources/js/Components/workstation/jd-match-panel.tsx",
+    "file_path": "resources/js/Components/resume/score-coach.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.533215+00:00",
+    "created_at": "2026-08-07T23:07:09.552558+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T06:53:59.972404+00:00",
+    "updated_at": "2026-08-09T03:34:28.245943+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -4408,7 +4426,8 @@
       "recent_action_kinds": [
         "read",
         "continue_retrieve",
-        "retrieve"
+        "retrieve",
+        "fallback_rg"
       ],
       "recent_queries": [
         "ScoreChecklist KeywordChips component score-coach.tsx styling wrapper border card",
@@ -4418,7 +4437,7 @@
     }
   },
   {
-    "id": "mem:1786144029544",
+    "id": "mem:1786144029557",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4430,25 +4449,24 @@
       "all",
       "detector",
       "majors",
-      "swapped",
-      "hardcoded"
+      "migrated",
+      "remaining"
     ],
     "files": [
-      "resources/js/Components/QRCodeDisplay.tsx"
+      "resources/js/Components/workstation/template-picker-modal.tsx"
     ],
-    "file_path": "resources/js/Components/QRCodeDisplay.tsx",
+    "file_path": "resources/js/Components/workstation/template-picker-modal.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.544144+00:00",
+    "created_at": "2026-08-07T23:07:09.557950+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T07:04:48.317678+00:00",
+    "updated_at": "2026-08-09T07:39:25.565582+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
-        "register_edit",
         "fallback_rg"
       ],
       "recent_queries": [],
@@ -4456,50 +4474,7 @@
     }
   },
   {
-    "id": "mem:1786144029560",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "width",
-      "animation",
-      "via",
-      "scalex",
-      "clear",
-      "all",
-      "detector",
-      "majors",
-      "admin",
-      "account"
-    ],
-    "files": [
-      "resources/js/Layouts/AdminLayout.tsx"
-    ],
-    "file_path": "resources/js/Layouts/AdminLayout.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.560636+00:00",
-    "created_epoch": 1786144029,
-    "updated_at": "2026-08-08T02:52:24.512637+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "AdminLayout account menu logout admin chrome"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "continue_retrieve",
-        "retrieve",
-        "register_edit"
-      ],
-      "recent_queries": [
-        "AdminLayout account menu logout admin chrome"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786144029566",
+    "id": "mem:1786144029563",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4515,14 +4490,14 @@
       "content"
     ],
     "files": [
-      "resources/js/Pages/Admin/Users/Show.tsx"
+      "resources/js/Pages/Admin/Dashboard.tsx"
     ],
-    "file_path": "resources/js/Pages/Admin/Users/Show.tsx",
+    "file_path": "resources/js/Pages/Admin/Dashboard.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.566035+00:00",
+    "created_at": "2026-08-07T23:07:09.563259+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-08T02:59:37.513446+00:00",
+    "updated_at": "2026-08-08T02:59:37.501834+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -4541,7 +4516,7 @@
     }
   },
   {
-    "id": "mem:1786144029571",
+    "id": "mem:1786144029568",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -4553,105 +4528,27 @@
       "all",
       "detector",
       "majors",
-      "token",
-      "spine"
+      "swept",
+      "hardcoded"
     ],
     "files": [
-      "resources/js/Pages/Jobs/Kanban.tsx"
+      "resources/js/Pages/Jobs/Imports.tsx"
     ],
-    "file_path": "resources/js/Pages/Jobs/Kanban.tsx",
+    "file_path": "resources/js/Pages/Jobs/Imports.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.571438+00:00",
+    "created_at": "2026-08-07T23:07:09.568850+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-10T08:12:53.406548+00:00",
+    "updated_at": "2026-08-09T07:04:33.139645+00:00",
     "stale": false,
     "stale_reason": "",
-    "observed_queries": [
-      "Workstation Review preview Kanban JobCard drag shell section-panel"
-    ],
+    "observed_queries": [],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
         "fallback_rg",
-        "register_edit",
-        "continue_retrieve",
-        "retrieve"
+        "register_edit"
       ],
-      "recent_queries": [
-        "Workstation Review preview Kanban JobCard drag shell section-panel"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786144029576",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "width",
-      "animation",
-      "via",
-      "scalex",
-      "clear",
-      "all",
-      "detector",
-      "majors",
-      "replaced",
-      "legacy"
-    ],
-    "files": [
-      "resources/js/Pages/Resumes/PublicShare.tsx"
-    ],
-    "file_path": "resources/js/Pages/Resumes/PublicShare.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T23:07:09.576793+00:00",
-    "created_epoch": 1786144029,
-    "updated_at": "2026-08-10T07:44:01.422510+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786144380901",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "dark",
-      "remap",
-      "status",
-      "success",
-      "warning",
-      "error",
-      "info",
-      "semantic",
-      "token",
-      "spine"
-    ],
-    "files": [
-      ".ui-craft/decisions.md"
-    ],
-    "file_path": ".ui-craft/decisions.md",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T23:13:00.901871+00:00",
-    "created_epoch": 1786144380,
-    "updated_at": "2026-08-07T23:17:00.523643+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
       "recent_queries": [],
       "edited": true
     }
@@ -4681,6 +4578,41 @@
     "created_at": "2026-08-07T23:13:00.898732+00:00",
     "created_epoch": 1786144380,
     "updated_at": "2026-08-07T23:17:00.520784+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786144380901",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "dark",
+      "remap",
+      "status",
+      "success",
+      "warning",
+      "error",
+      "info",
+      "semantic",
+      "token",
+      "spine"
+    ],
+    "files": [
+      ".ui-craft/decisions.md"
+    ],
+    "file_path": ".ui-craft/decisions.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-07T23:13:00.901871+00:00",
+    "created_epoch": 1786144380,
+    "updated_at": "2026-08-07T23:17:00.523643+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -5036,35 +4968,6 @@
     }
   },
   {
-    "id": "mem:1786172209891",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "edited",
-      "during",
-      "active",
-      "session"
-    ],
-    "files": [
-      ".impeccable/design.json"
-    ],
-    "file_path": ".impeccable/design.json",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-08T06:56:49.891878+00:00",
-    "created_epoch": 1786172209,
-    "updated_at": "2026-08-08T06:56:49.891890+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1786172209882",
     "kind": "edit_observation",
     "content": "Edited during active session",
@@ -5089,6 +4992,35 @@
     "created_at": "2026-08-08T06:56:49.882787+00:00",
     "created_epoch": 1786172209,
     "updated_at": "2026-08-09T10:36:35.772579+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786172209891",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session"
+    ],
+    "files": [
+      ".impeccable/design.json"
+    ],
+    "file_path": ".impeccable/design.json",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-08T06:56:49.891878+00:00",
+    "created_epoch": 1786172209,
+    "updated_at": "2026-08-08T06:56:49.891890+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -5174,6 +5106,47 @@
     }
   },
   {
+    "id": "mem:1786206338707",
+    "kind": "decision",
+    "content": "Deleted orphaned SuggestionList component; score/coaching panel already above sections, Improvements block already removed in working tree",
+    "tags": [
+      "deleted",
+      "orphaned",
+      "suggestionlist",
+      "component",
+      "score",
+      "coaching",
+      "panel",
+      "already"
+    ],
+    "files": [
+      "resources/js/Components/resume/suggestion-list.tsx"
+    ],
+    "file_path": "resources/js/Components/resume/suggestion-list.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-08T16:25:38.707434+00:00",
+    "created_epoch": 1786206338,
+    "updated_at": "2026-08-08T16:25:38.707445+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "OptimizePanel component improvements list job description ATS"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg",
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "OptimizePanel component improvements list job description ATS"
+      ]
+    }
+  },
+  {
     "id": "mem:1786206338715",
     "kind": "edit_observation",
     "content": "Edited after query: OptimizePanel component improvements list job description ATS",
@@ -5216,47 +5189,6 @@
     }
   },
   {
-    "id": "mem:1786206338707",
-    "kind": "decision",
-    "content": "Deleted orphaned SuggestionList component; score/coaching panel already above sections, Improvements block already removed in working tree",
-    "tags": [
-      "deleted",
-      "orphaned",
-      "suggestionlist",
-      "component",
-      "score",
-      "coaching",
-      "panel",
-      "already"
-    ],
-    "files": [
-      "resources/js/Components/resume/suggestion-list.tsx"
-    ],
-    "file_path": "resources/js/Components/resume/suggestion-list.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-08T16:25:38.707434+00:00",
-    "created_epoch": 1786206338,
-    "updated_at": "2026-08-08T16:25:38.707445+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "OptimizePanel component improvements list job description ATS"
-    ],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg",
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "OptimizePanel component improvements list job description ATS"
-      ]
-    }
-  },
-  {
     "id": "mem:1786233982514",
     "kind": "interaction_pattern",
     "content": "Frequently read with: resources/js/Components/workstation/inspector-sections.tsx::ContactFields, resources/js/Components/workstation/section-panel.tsx, resources/js/Components/workstation/jd-match-panel.tsx",
@@ -5280,6 +5212,33 @@
         "resources/js/Components/workstation/inspector-sections.tsx::ContactFields",
         "resources/js/Components/workstation/section-panel.tsx",
         "resources/js/Components/workstation/jd-match-panel.tsx"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786234000134",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: resources/js/Components/resume/score-gauge.tsx, resources/js/Components/resume/score-coach.tsx, resources/js/Pages/Resumes/Workstation.tsx",
+    "tags": [],
+    "files": [
+      "resources/js/Components/workstation/section-panel.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/section-panel.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T00:06:40.134793+00:00",
+    "created_epoch": 1786234000,
+    "updated_at": "2026-08-09T00:06:40.134800+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": [
+        "resources/js/Components/resume/score-gauge.tsx",
+        "resources/js/Components/resume/score-coach.tsx",
+        "resources/js/Pages/Resumes/Workstation.tsx"
       ]
     }
   },
@@ -5320,33 +5279,6 @@
         "resources/js/Components/workstation/inspector-sections.tsx::ContactFields",
         "resources/js/Components/workstation/section-panel.tsx",
         "resources/js/Layouts/AuthenticatedLayout.tsx"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786234000134",
-    "kind": "interaction_pattern",
-    "content": "Frequently read with: resources/js/Components/resume/score-gauge.tsx, resources/js/Components/resume/score-coach.tsx, resources/js/Pages/Resumes/Workstation.tsx",
-    "tags": [],
-    "files": [
-      "resources/js/Components/workstation/section-panel.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/section-panel.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T00:06:40.134793+00:00",
-    "created_epoch": 1786234000,
-    "updated_at": "2026-08-09T00:06:40.134800+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": [
-        "resources/js/Components/resume/score-gauge.tsx",
-        "resources/js/Components/resume/score-coach.tsx",
-        "resources/js/Pages/Resumes/Workstation.tsx"
       ]
     }
   },
@@ -5481,40 +5413,6 @@
     }
   },
   {
-    "id": "mem:1786234995263",
-    "kind": "interaction_pattern",
-    "content": "Repeatedly visited during recent work",
-    "tags": [
-      "nav",
-      "dashboard",
-      "resumes",
-      "profile",
-      "user",
-      "avatar",
-      "dropdown",
-      "topbar"
-    ],
-    "files": [
-      "resources/js/Layouts/AuthenticatedLayout.tsx"
-    ],
-    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T00:23:15.263675+00:00",
-    "created_epoch": 1786234995,
-    "updated_at": "2026-08-09T00:23:15.263678+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "nav Dashboard Resumes Profile user avatar dropdown topbar"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": []
-    }
-  },
-  {
     "id": "mem:1786234995259",
     "kind": "query_association",
     "content": "Queried during: nav Dashboard Resumes Profile user avatar dropdown topbar",
@@ -5546,6 +5444,40 @@
       "source": "graph_read",
       "anchor_mode": "file",
       "session_epoch": 1786217122
+    }
+  },
+  {
+    "id": "mem:1786234995263",
+    "kind": "interaction_pattern",
+    "content": "Repeatedly visited during recent work",
+    "tags": [
+      "nav",
+      "dashboard",
+      "resumes",
+      "profile",
+      "user",
+      "avatar",
+      "dropdown",
+      "topbar"
+    ],
+    "files": [
+      "resources/js/Layouts/AuthenticatedLayout.tsx"
+    ],
+    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T00:23:15.263675+00:00",
+    "created_epoch": 1786234995,
+    "updated_at": "2026-08-09T00:23:15.263678+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "nav Dashboard Resumes Profile user avatar dropdown topbar"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": []
     }
   },
   {
@@ -5583,6 +5515,41 @@
     }
   },
   {
+    "id": "mem:1786235152561",
+    "kind": "decision",
+    "content": "Replaced hardcoded hex/gray colors with semantic design tokens in gauge and checklist",
+    "tags": [
+      "replaced",
+      "hardcoded",
+      "hex",
+      "gray",
+      "colors",
+      "semantic",
+      "design",
+      "tokens"
+    ],
+    "files": [
+      "resources/js/Components/resume/score-gauge.tsx",
+      "resources/js/Components/resume/score-coach.tsx"
+    ],
+    "file_path": "resources/js/Components/resume/score-gauge.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T00:25:52.561695+00:00",
+    "created_epoch": 1786235152,
+    "updated_at": "2026-08-09T00:25:52.561705+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
     "id": "mem:1786235152570",
     "kind": "edit_observation",
     "content": "Edited during active session",
@@ -5617,41 +5584,6 @@
       ],
       "recent_queries": [],
       "edited": true
-    }
-  },
-  {
-    "id": "mem:1786235152561",
-    "kind": "decision",
-    "content": "Replaced hardcoded hex/gray colors with semantic design tokens in gauge and checklist",
-    "tags": [
-      "replaced",
-      "hardcoded",
-      "hex",
-      "gray",
-      "colors",
-      "semantic",
-      "design",
-      "tokens"
-    ],
-    "files": [
-      "resources/js/Components/resume/score-gauge.tsx",
-      "resources/js/Components/resume/score-coach.tsx"
-    ],
-    "file_path": "resources/js/Components/resume/score-gauge.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T00:25:52.561695+00:00",
-    "created_epoch": 1786235152,
-    "updated_at": "2026-08-09T00:25:52.561705+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": []
     }
   },
   {
@@ -5825,44 +5757,6 @@
     }
   },
   {
-    "id": "mem:1786244252804",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "full",
-      "color",
-      "scheme",
-      "reset",
-      "removed",
-      "custom",
-      "semantic",
-      "token",
-      "edited",
-      "during"
-    ],
-    "files": [
-      "resources/js/Components/workstation/background-color-picker.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/background-color-picker.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T02:57:32.804123+00:00",
-    "created_epoch": 1786244252,
-    "updated_at": "2026-08-09T06:45:43.848904+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "grep_all",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1786244252765",
     "kind": "decision",
     "content": "Full color-scheme reset: removed custom semantic token spine from app.css/tailwind.config.js, rewrote 60+ files to raw Tailwind default classes (gray/indigo/red/green/amber neutrals)",
@@ -5900,6 +5794,44 @@
       "window_sec": 120,
       "recent_action_kinds": [],
       "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786244252804",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "full",
+      "color",
+      "scheme",
+      "reset",
+      "removed",
+      "custom",
+      "semantic",
+      "token",
+      "edited",
+      "during"
+    ],
+    "files": [
+      "resources/js/Components/workstation/background-color-picker.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/background-color-picker.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T02:57:32.804123+00:00",
+    "created_epoch": 1786244252,
+    "updated_at": "2026-08-09T06:45:43.848904+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "grep_all",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
     }
   },
   {
@@ -5941,38 +5873,6 @@
     }
   },
   {
-    "id": "mem:1786257943857",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "edited",
-      "during",
-      "active",
-      "session"
-    ],
-    "files": [
-      ".agents/skills/resumegen-editor-design/SKILL.md"
-    ],
-    "file_path": ".agents/skills/resumegen-editor-design/SKILL.md",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T06:45:43.857755+00:00",
-    "created_epoch": 1786257943,
-    "updated_at": "2026-08-09T06:45:43.857758+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "grep_all",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1786257943853",
     "kind": "edit_observation",
     "content": "Edited during active session",
@@ -5991,6 +5891,38 @@
     "created_at": "2026-08-09T06:45:43.853705+00:00",
     "created_epoch": 1786257943,
     "updated_at": "2026-08-09T06:45:43.853709+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "grep_all",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786257943857",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session"
+    ],
+    "files": [
+      ".agents/skills/resumegen-editor-design/SKILL.md"
+    ],
+    "file_path": ".agents/skills/resumegen-editor-design/SKILL.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T06:45:43.857755+00:00",
+    "created_epoch": 1786257943,
+    "updated_at": "2026-08-09T06:45:43.857758+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6077,7 +6009,7 @@
     }
   },
   {
-    "id": "mem:1786259088326",
+    "id": "mem:1786259088305",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -6091,50 +6023,14 @@
       "tokens"
     ],
     "files": [
-      "resources/js/Components/error-boundary.tsx"
+      "resources/js/Components/InputError.tsx"
     ],
-    "file_path": "resources/js/Components/error-boundary.tsx",
+    "file_path": "resources/js/Components/InputError.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-09T07:04:48.326143+00:00",
+    "created_at": "2026-08-09T07:04:48.305865+00:00",
     "created_epoch": 1786259088,
-    "updated_at": "2026-08-09T07:04:48.326146+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786259088310",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "swapped",
-      "hardcoded",
-      "tailwind",
-      "palette",
-      "classes",
-      "semantic",
-      "design",
-      "tokens"
-    ],
-    "files": [
-      "resources/js/Components/InputLabel.tsx"
-    ],
-    "file_path": "resources/js/Components/InputLabel.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T07:04:48.310573+00:00",
-    "created_epoch": 1786259088,
-    "updated_at": "2026-08-09T07:04:48.310595+00:00",
+    "updated_at": "2026-08-09T07:04:48.305868+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6193,7 +6089,7 @@
     }
   },
   {
-    "id": "mem:1786259088305",
+    "id": "mem:1786259088310",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -6207,14 +6103,14 @@
       "tokens"
     ],
     "files": [
-      "resources/js/Components/InputError.tsx"
+      "resources/js/Components/InputLabel.tsx"
     ],
-    "file_path": "resources/js/Components/InputError.tsx",
+    "file_path": "resources/js/Components/InputLabel.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-09T07:04:48.305865+00:00",
+    "created_at": "2026-08-09T07:04:48.310573+00:00",
     "created_epoch": 1786259088,
-    "updated_at": "2026-08-09T07:04:48.305868+00:00",
+    "updated_at": "2026-08-09T07:04:48.310595+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6229,7 +6125,43 @@
     }
   },
   {
-    "id": "mem:1786259095511",
+    "id": "mem:1786259088326",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "swapped",
+      "hardcoded",
+      "tailwind",
+      "palette",
+      "classes",
+      "semantic",
+      "design",
+      "tokens"
+    ],
+    "files": [
+      "resources/js/Components/error-boundary.tsx"
+    ],
+    "file_path": "resources/js/Components/error-boundary.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T07:04:48.326143+00:00",
+    "created_epoch": 1786259088,
+    "updated_at": "2026-08-09T07:04:48.326146+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786259095540",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -6240,19 +6172,89 @@
       "hardcoded",
       "gray",
       "red",
-      "green",
-      "wave",
-      "soft"
+      "green"
     ],
     "files": [
-      "resources/js/Layouts/GuestLayout.tsx"
+      "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx"
     ],
-    "file_path": "resources/js/Layouts/GuestLayout.tsx",
+    "file_path": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-09T07:04:55.511542+00:00",
+    "created_at": "2026-08-09T07:04:55.540030+00:00",
     "created_epoch": 1786259095,
-    "updated_at": "2026-08-10T07:41:11.684332+00:00",
+    "updated_at": "2026-08-09T07:04:55.540035+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786259095515",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "token",
+      "migration",
+      "sweep",
+      "replaced",
+      "hardcoded",
+      "gray",
+      "red",
+      "green"
+    ],
+    "files": [
+      "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx"
+    ],
+    "file_path": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T07:04:55.515639+00:00",
+    "created_epoch": 1786259095,
+    "updated_at": "2026-08-09T07:04:55.515641+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786259095507",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "token",
+      "migration",
+      "sweep",
+      "replaced",
+      "hardcoded",
+      "gray",
+      "red",
+      "green"
+    ],
+    "files": [
+      "resources/js/Layouts/PublicLayout.tsx"
+    ],
+    "file_path": "resources/js/Layouts/PublicLayout.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T07:04:55.507005+00:00",
+    "created_epoch": 1786259095,
+    "updated_at": "2026-08-09T07:04:55.507009+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6312,7 +6314,7 @@
     }
   },
   {
-    "id": "mem:1786259095507",
+    "id": "mem:1786259095511",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -6323,17 +6325,19 @@
       "hardcoded",
       "gray",
       "red",
-      "green"
+      "green",
+      "wave",
+      "soft"
     ],
     "files": [
-      "resources/js/Layouts/PublicLayout.tsx"
+      "resources/js/Layouts/GuestLayout.tsx"
     ],
-    "file_path": "resources/js/Layouts/PublicLayout.tsx",
+    "file_path": "resources/js/Layouts/GuestLayout.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-09T07:04:55.507005+00:00",
+    "created_at": "2026-08-09T07:04:55.511542+00:00",
     "created_epoch": 1786259095,
-    "updated_at": "2026-08-09T07:04:55.507009+00:00",
+    "updated_at": "2026-08-10T07:41:11.684332+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6348,79 +6352,7 @@
     }
   },
   {
-    "id": "mem:1786259095515",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "token",
-      "migration",
-      "sweep",
-      "replaced",
-      "hardcoded",
-      "gray",
-      "red",
-      "green"
-    ],
-    "files": [
-      "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx"
-    ],
-    "file_path": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T07:04:55.515639+00:00",
-    "created_epoch": 1786259095,
-    "updated_at": "2026-08-09T07:04:55.515641+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786259095540",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "token",
-      "migration",
-      "sweep",
-      "replaced",
-      "hardcoded",
-      "gray",
-      "red",
-      "green"
-    ],
-    "files": [
-      "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx"
-    ],
-    "file_path": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T07:04:55.540030+00:00",
-    "created_epoch": 1786259095,
-    "updated_at": "2026-08-09T07:04:55.540035+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786261165602",
+    "id": "mem:1786261165599",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -6434,49 +6366,14 @@
       "orange"
     ],
     "files": [
-      "resources/js/Components/ui/textarea.tsx"
+      "resources/js/Components/ui/badge.tsx"
     ],
-    "file_path": "resources/js/Components/ui/textarea.tsx",
+    "file_path": "resources/js/Components/ui/badge.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-09T07:39:25.602709+00:00",
+    "created_at": "2026-08-09T07:39:25.599029+00:00",
     "created_epoch": 1786261165,
-    "updated_at": "2026-08-09T07:39:25.602711+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786261165595",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "migrated",
-      "remaining",
-      "raw",
-      "tailwind",
-      "palette",
-      "classes",
-      "cream",
-      "orange"
-    ],
-    "files": [
-      "resources/js/Components/ui/checkbox.tsx"
-    ],
-    "file_path": "resources/js/Components/ui/checkbox.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T07:39:25.595185+00:00",
-    "created_epoch": 1786261165,
-    "updated_at": "2026-08-09T07:39:25.595187+00:00",
+    "updated_at": "2026-08-09T07:39:25.599033+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6532,7 +6429,7 @@
     }
   },
   {
-    "id": "mem:1786261165599",
+    "id": "mem:1786261165595",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -6546,14 +6443,49 @@
       "orange"
     ],
     "files": [
-      "resources/js/Components/ui/badge.tsx"
+      "resources/js/Components/ui/checkbox.tsx"
     ],
-    "file_path": "resources/js/Components/ui/badge.tsx",
+    "file_path": "resources/js/Components/ui/checkbox.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-09T07:39:25.599029+00:00",
+    "created_at": "2026-08-09T07:39:25.595185+00:00",
     "created_epoch": 1786261165,
-    "updated_at": "2026-08-09T07:39:25.599033+00:00",
+    "updated_at": "2026-08-09T07:39:25.595187+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786261165602",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "migrated",
+      "remaining",
+      "raw",
+      "tailwind",
+      "palette",
+      "classes",
+      "cream",
+      "orange"
+    ],
+    "files": [
+      "resources/js/Components/ui/textarea.tsx"
+    ],
+    "file_path": "resources/js/Components/ui/textarea.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-09T07:39:25.602709+00:00",
+    "created_epoch": 1786261165,
+    "updated_at": "2026-08-09T07:39:25.602711+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6690,7 +6622,7 @@
     }
   },
   {
-    "id": "mem:1786347063856",
+    "id": "mem:1786347063871",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -6704,14 +6636,113 @@
       "single"
     ],
     "files": [
-      "app/Http/Controllers/DashboardController.php"
+      "tests/Feature/DashboardShareInfoTest.php"
     ],
-    "file_path": "app/Http/Controllers/DashboardController.php",
+    "file_path": "tests/Feature/DashboardShareInfoTest.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-10T07:31:03.856243+00:00",
+    "created_at": "2026-08-10T07:31:03.871284+00:00",
     "created_epoch": 1786347063,
-    "updated_at": "2026-08-10T07:31:03.856246+00:00",
+    "updated_at": "2026-08-10T07:31:03.871290+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786347063865",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "score",
+      "band",
+      "helper",
+      "lean",
+      "dashboard",
+      "share",
+      "modal",
+      "single"
+    ],
+    "files": [
+      "resources/js/types/resume.ts"
+    ],
+    "file_path": "resources/js/types/resume.ts",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-10T07:31:03.865588+00:00",
+    "created_epoch": 1786347063,
+    "updated_at": "2026-08-10T07:31:03.865590+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786347063859",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "score",
+      "band",
+      "helper",
+      "lean",
+      "dashboard",
+      "share",
+      "modal",
+      "single"
+    ],
+    "files": [
+      "app/Http/Controllers/ResumeShareLinkController.php"
+    ],
+    "file_path": "app/Http/Controllers/ResumeShareLinkController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-10T07:31:03.859565+00:00",
+    "created_epoch": 1786347063,
+    "updated_at": "2026-08-10T07:31:03.859570+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786347063847",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "score",
+      "band",
+      "helper",
+      "lean",
+      "dashboard",
+      "share",
+      "modal",
+      "single"
+    ],
+    "files": [
+      "resources/js/lib/score-band.ts"
+    ],
+    "file_path": "resources/js/lib/score-band.ts",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-10T07:31:03.847227+00:00",
+    "created_epoch": 1786347063,
+    "updated_at": "2026-08-10T07:31:03.847232+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6763,7 +6794,7 @@
     }
   },
   {
-    "id": "mem:1786347063847",
+    "id": "mem:1786347063856",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -6777,14 +6808,14 @@
       "single"
     ],
     "files": [
-      "resources/js/lib/score-band.ts"
+      "app/Http/Controllers/DashboardController.php"
     ],
-    "file_path": "resources/js/lib/score-band.ts",
+    "file_path": "app/Http/Controllers/DashboardController.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-10T07:31:03.847227+00:00",
+    "created_at": "2026-08-10T07:31:03.856243+00:00",
     "created_epoch": 1786347063,
-    "updated_at": "2026-08-10T07:31:03.847232+00:00",
+    "updated_at": "2026-08-10T07:31:03.856246+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6796,94 +6827,28 @@
     }
   },
   {
-    "id": "mem:1786347063859",
+    "id": "mem:1786347671673",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
-      "score",
-      "band",
-      "helper",
-      "lean",
-      "dashboard",
-      "share",
-      "modal",
-      "single"
+      "wave",
+      "soft",
+      "skill",
+      "floating",
+      "nav",
+      "island",
+      "shell",
+      "bezels"
     ],
     "files": [
-      "app/Http/Controllers/ResumeShareLinkController.php"
+      "resources/js/Components/ui/shell.tsx"
     ],
-    "file_path": "app/Http/Controllers/ResumeShareLinkController.php",
+    "file_path": "resources/js/Components/ui/shell.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-10T07:31:03.859565+00:00",
-    "created_epoch": 1786347063,
-    "updated_at": "2026-08-10T07:31:03.859570+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786347063865",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "score",
-      "band",
-      "helper",
-      "lean",
-      "dashboard",
-      "share",
-      "modal",
-      "single"
-    ],
-    "files": [
-      "resources/js/types/resume.ts"
-    ],
-    "file_path": "resources/js/types/resume.ts",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-10T07:31:03.865588+00:00",
-    "created_epoch": 1786347063,
-    "updated_at": "2026-08-10T07:31:03.865590+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786347063871",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "score",
-      "band",
-      "helper",
-      "lean",
-      "dashboard",
-      "share",
-      "modal",
-      "single"
-    ],
-    "files": [
-      "tests/Feature/DashboardShareInfoTest.php"
-    ],
-    "file_path": "tests/Feature/DashboardShareInfoTest.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-10T07:31:03.871284+00:00",
-    "created_epoch": 1786347063,
-    "updated_at": "2026-08-10T07:31:03.871290+00:00",
+    "created_at": "2026-08-10T07:41:11.673663+00:00",
+    "created_epoch": 1786347671,
+    "updated_at": "2026-08-10T07:41:11.673667+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -6929,39 +6894,6 @@
       "window_sec": 120,
       "recent_action_kinds": [],
       "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1786347671673",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "wave",
-      "soft",
-      "skill",
-      "floating",
-      "nav",
-      "island",
-      "shell",
-      "bezels"
-    ],
-    "files": [
-      "resources/js/Components/ui/shell.tsx"
-    ],
-    "file_path": "resources/js/Components/ui/shell.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-10T07:41:11.673663+00:00",
-    "created_epoch": 1786347671,
-    "updated_at": "2026-08-10T07:41:11.673667+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
     }
   },
   {
@@ -7123,7 +7055,7 @@
     }
   },
   {
-    "id": "mem:1786349170852",
+    "id": "mem:1786349170856",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -7136,14 +7068,14 @@
       "links"
     ],
     "files": [
-      "resources/js/Pages/Legal/Privacy.tsx"
+      "resources/js/Pages/Legal/Terms.tsx"
     ],
-    "file_path": "resources/js/Pages/Legal/Privacy.tsx",
+    "file_path": "resources/js/Pages/Legal/Terms.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-10T08:06:10.852964+00:00",
+    "created_at": "2026-08-10T08:06:10.856241+00:00",
     "created_epoch": 1786349170,
-    "updated_at": "2026-08-10T08:06:10.852968+00:00",
+    "updated_at": "2026-08-10T08:06:10.856244+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -7155,7 +7087,7 @@
     }
   },
   {
-    "id": "mem:1786349170840",
+    "id": "mem:1786349170849",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -7168,14 +7100,46 @@
       "links"
     ],
     "files": [
-      "resources/js/Components/BrandMark.tsx"
+      "resources/views/errors/layout.blade.php"
     ],
-    "file_path": "resources/js/Components/BrandMark.tsx",
+    "file_path": "resources/views/errors/layout.blade.php",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-10T08:06:10.840240+00:00",
+    "created_at": "2026-08-10T08:06:10.849964+00:00",
     "created_epoch": 1786349170,
-    "updated_at": "2026-08-10T08:06:10.840250+00:00",
+    "updated_at": "2026-08-10T08:06:10.849966+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786349170843",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "legal",
+      "pages",
+      "branded",
+      "errors",
+      "brandmark",
+      "skip",
+      "links"
+    ],
+    "files": [
+      "app/Http/Controllers/LegalController.php"
+    ],
+    "file_path": "app/Http/Controllers/LegalController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-10T08:06:10.843895+00:00",
+    "created_epoch": 1786349170,
+    "updated_at": "2026-08-10T08:06:10.843901+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -7223,7 +7187,7 @@
     }
   },
   {
-    "id": "mem:1786349170843",
+    "id": "mem:1786349170840",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -7236,14 +7200,14 @@
       "links"
     ],
     "files": [
-      "app/Http/Controllers/LegalController.php"
+      "resources/js/Components/BrandMark.tsx"
     ],
-    "file_path": "app/Http/Controllers/LegalController.php",
+    "file_path": "resources/js/Components/BrandMark.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-10T08:06:10.843895+00:00",
+    "created_at": "2026-08-10T08:06:10.840240+00:00",
     "created_epoch": 1786349170,
-    "updated_at": "2026-08-10T08:06:10.843901+00:00",
+    "updated_at": "2026-08-10T08:06:10.840250+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -7255,7 +7219,7 @@
     }
   },
   {
-    "id": "mem:1786349170849",
+    "id": "mem:1786349170852",
     "kind": "edit_observation",
     "content": "Edited during active session",
     "tags": [
@@ -7268,46 +7232,14 @@
       "links"
     ],
     "files": [
-      "resources/views/errors/layout.blade.php"
+      "resources/js/Pages/Legal/Privacy.tsx"
     ],
-    "file_path": "resources/views/errors/layout.blade.php",
+    "file_path": "resources/js/Pages/Legal/Privacy.tsx",
     "symbol_id": "",
     "symbol_hash": "",
-    "created_at": "2026-08-10T08:06:10.849964+00:00",
+    "created_at": "2026-08-10T08:06:10.852964+00:00",
     "created_epoch": 1786349170,
-    "updated_at": "2026-08-10T08:06:10.849966+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786349170856",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "legal",
-      "pages",
-      "branded",
-      "errors",
-      "brandmark",
-      "skip",
-      "links"
-    ],
-    "files": [
-      "resources/js/Pages/Legal/Terms.tsx"
-    ],
-    "file_path": "resources/js/Pages/Legal/Terms.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-10T08:06:10.856241+00:00",
-    "created_epoch": 1786349170,
-    "updated_at": "2026-08-10T08:06:10.856244+00:00",
+    "updated_at": "2026-08-10T08:06:10.852968+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -7384,6 +7316,63 @@
       "window_sec": 120,
       "recent_action_kinds": [],
       "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786370683742",
+    "kind": "query_association",
+    "content": "Queried during: sidebar preview panel width grid flex layout classes",
+    "tags": [
+      "sidebar",
+      "preview",
+      "panel",
+      "width",
+      "grid",
+      "flex",
+      "layout",
+      "classes"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash",
+    "symbol_hash": "ae54e7f0",
+    "created_at": "2026-08-10T14:04:43.742778+00:00",
+    "created_epoch": 1786370683,
+    "updated_at": "2026-08-10T14:04:43.742785+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "sidebar preview panel width grid flex layout classes"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "symbol",
+      "session_epoch": 1786370235
+    }
+  },
+  {
+    "id": "mem:1786370825028",
+    "kind": "interaction_pattern",
+    "content": "Repeatedly visited during recent work",
+    "tags": [],
+    "files": [
+      "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader"
+    ],
+    "file_path": "resources/js/Components/workstation/workstation-header.tsx",
+    "symbol_id": "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader",
+    "symbol_hash": "d836785f",
+    "created_at": "2026-08-10T14:07:05.027998+00:00",
+    "created_epoch": 1786370825,
+    "updated_at": "2026-08-10T14:07:05.028004+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": []
     }
   }
 ]

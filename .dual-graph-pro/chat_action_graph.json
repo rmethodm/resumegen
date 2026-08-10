@@ -2203,150 +2203,45 @@
     {
       "id": "resources/js/types/resume.ts::StarterProfileSkill",
       "type": "file"
+    },
+    {
+      "id": "query:workstation editor page sidebar preview panel width mismatch",
+      "type": "query",
+      "meta": {
+        "text": "Workstation editor page sidebar and preview panel width mismatch layout"
+      }
+    },
+    {
+      "id": "query:sidebar preview panel width grid flex layout classes",
+      "type": "query",
+      "meta": {
+        "text": "sidebar preview panel width grid flex layout classes"
+      }
+    },
+    {
+      "id": "query:sectionpanel component sidebar width workstation",
+      "type": "query",
+      "meta": {
+        "text": "SectionPanel component sidebar width workstation"
+      }
+    },
+    {
+      "id": "resources/js/Components/workstation/notes-panel.tsx::WorkstationNote",
+      "type": "file"
+    },
+    {
+      "id": "query:authenticatedlayout top nav bar container width max",
+      "type": "query",
+      "meta": {
+        "text": "AuthenticatedLayout top nav bar container width max-w"
+      }
+    },
+    {
+      "id": "resources/js/lib/resume-plain-text.ts::resumeToPlainText",
+      "type": "file"
     }
   ],
   "edges": [
-    {
-      "from": "query:workstation design tokens colors spacing typography components audit",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx",
-      "rel": "retrieved",
-      "ts": 1786166188
-    },
-    {
-      "from": "query:(empty)",
-      "to": "tailwind.config.js",
-      "rel": "read",
-      "ts": 1786166190,
-      "meta": {
-        "mode": "head"
-      }
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader",
-      "rel": "read",
-      "ts": 1786166190,
-      "meta": {
-        "mode": "head"
-      }
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx::WorkstationFormatToolbar",
-      "rel": "read",
-      "ts": 1786166191,
-      "meta": {
-        "mode": "head"
-      }
-    },
-    {
-      "from": "query:semantic token css variables definitions text tertiary secondary",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx",
-      "rel": "retrieved",
-      "ts": 1786166253
-    },
-    {
-      "from": "query:semantic token css variables definitions text tertiary secondary",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786166253
-    },
-    {
-      "from": "query:semantic token css variables definitions text tertiary secondary",
-      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786166253
-    },
-    {
-      "from": "query:semantic token css variables definitions text tertiary secondary",
-      "to": "ds-entry.tsx",
-      "rel": "retrieved",
-      "ts": 1786166253
-    },
-    {
-      "from": "query:semantic token css variables definitions text tertiary secondary",
-      "to": "extension/background/service-worker.js::getFocusContext",
-      "rel": "retrieved",
-      "ts": 1786166253
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/css/app.css",
-      "rel": "read",
-      "ts": 1786166257,
-      "meta": {
-        "mode": "head"
-      }
-    },
-    {
-      "from": "action:edit:1786166474",
-      "to": "resources/js/Components/workstation/inspector-sections.tsx",
-      "rel": "edited",
-      "ts": 1786166474
-    },
-    {
-      "from": "action:edit:1786166474",
-      "to": "resources/js/Components/workstation/skill-picker-modal.tsx",
-      "rel": "edited",
-      "ts": 1786166474
-    },
-    {
-      "from": "query:(empty)",
-      "to": ".ui-craft/brief.md",
-      "rel": "read",
-      "ts": 1786166968,
-      "meta": {
-        "mode": "full"
-      }
-    },
-    {
-      "from": "query:workstation editor full page layout inspector notes optimize",
-      "to": "resources/js/Components/workstation/target-role-bar.tsx",
-      "rel": "retrieved",
-      "ts": 1786166968
-    },
-    {
-      "from": "query:workstation editor full page layout inspector notes optimize",
-      "to": "resources/js/Components/workstation/notes-panel.tsx",
-      "rel": "retrieved",
-      "ts": 1786166968
-    },
-    {
-      "from": "query:workstation editor full page layout inspector notes optimize",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx",
-      "rel": "retrieved",
-      "ts": 1786166968
-    },
-    {
-      "from": "query:workstation editor full page layout inspector notes optimize",
-      "to": "resources/js/Components/workstation/optimize-panel.tsx",
-      "rel": "retrieved",
-      "ts": 1786166968
-    },
-    {
-      "from": "query:workstation editor full page layout inspector notes optimize",
-      "to": "resources/js/Components/workstation/section-panel.tsx",
-      "rel": "retrieved",
-      "ts": 1786166968
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-      "rel": "read",
-      "ts": 1786166971,
-      "meta": {
-        "mode": "symbol_excerpt"
-      }
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Components/workstation/target-role-bar.tsx::TargetRoleBar",
-      "rel": "read",
-      "ts": 1786166972,
-      "meta": {
-        "mode": "symbol_excerpt"
-      }
-    },
     {
       "from": "query:(empty)",
       "to": "resources/js/Components/resume/score-dial.tsx",
@@ -5412,6 +5307,141 @@
       "to": ".design-sync/previews/InputLabel.tsx::Required",
       "rel": "retrieved",
       "ts": 1786370295
+    },
+    {
+      "from": "query:workstation editor page sidebar preview panel width mismatch",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1786370681
+    },
+    {
+      "from": "query:workstation editor page sidebar preview panel width mismatch",
+      "to": "resources/js/Pages/Settings/StarterProfile.tsx",
+      "rel": "retrieved",
+      "ts": 1786370681
+    },
+    {
+      "from": "query:workstation editor page sidebar preview panel width mismatch",
+      "to": "resources/js/Pages/Jobs/Imports.tsx",
+      "rel": "retrieved",
+      "ts": 1786370681
+    },
+    {
+      "from": "query:workstation editor page sidebar preview panel width mismatch",
+      "to": "resources/js/Pages/Resumes/Compare.tsx::CompareSidebar",
+      "rel": "retrieved",
+      "ts": 1786370681
+    },
+    {
+      "from": "query:workstation editor page sidebar preview panel width mismatch",
+      "to": "resources/js/Pages/Admin/Backups/Index.tsx",
+      "rel": "retrieved",
+      "ts": 1786370681
+    },
+    {
+      "from": "query:sidebar preview panel width grid flex layout classes",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash",
+      "rel": "read",
+      "ts": 1786370683,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash",
+      "rel": "read",
+      "ts": 1786370686,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:sectionpanel component sidebar width workstation",
+      "to": "resources/js/Components/workstation/workstation-header.tsx",
+      "rel": "retrieved",
+      "ts": 1786370703
+    },
+    {
+      "from": "query:sectionpanel component sidebar width workstation",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1786370703
+    },
+    {
+      "from": "query:sectionpanel component sidebar width workstation",
+      "to": "resources/js/Components/workstation/section-panel.tsx",
+      "rel": "retrieved",
+      "ts": 1786370703
+    },
+    {
+      "from": "query:sectionpanel component sidebar width workstation",
+      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+      "rel": "retrieved",
+      "ts": 1786370703
+    },
+    {
+      "from": "query:sectionpanel component sidebar width workstation",
+      "to": "resources/js/Components/workstation/notes-panel.tsx::WorkstationNote",
+      "rel": "retrieved",
+      "ts": 1786370703
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Components/workstation/section-panel.tsx::SectionPanel",
+      "rel": "read",
+      "ts": 1786370705,
+      "meta": {
+        "mode": "head"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader",
+      "rel": "read",
+      "ts": 1786370820,
+      "meta": {
+        "mode": "head"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader",
+      "rel": "read",
+      "ts": 1786370825,
+      "meta": {
+        "mode": "anchor_excerpt"
+      }
+    },
+    {
+      "from": "query:authenticatedlayout top nav bar container width max",
+      "to": "resources/js/Layouts/AuthenticatedLayout.tsx::NavItem",
+      "rel": "retrieved",
+      "ts": 1786371129
+    },
+    {
+      "from": "query:authenticatedlayout top nav bar container width max",
+      "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+      "rel": "retrieved",
+      "ts": 1786371129
+    },
+    {
+      "from": "query:authenticatedlayout top nav bar container width max",
+      "to": "resources/js/Pages/Resumes/Compare.tsx::CompareSidebar",
+      "rel": "retrieved",
+      "ts": 1786371129
+    },
+    {
+      "from": "query:authenticatedlayout top nav bar container width max",
+      "to": "resources/js/Layouts/AdminLayout.tsx::AdminNavItem",
+      "rel": "retrieved",
+      "ts": 1786371129
+    },
+    {
+      "from": "query:authenticatedlayout top nav bar container width max",
+      "to": "resources/js/lib/resume-plain-text.ts::resumeToPlainText",
+      "rel": "retrieved",
+      "ts": 1786371129
     }
   ],
   "files": {
@@ -5933,8 +5963,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-10T07:53:36.733906+00:00",
       "first_read_turn": 10,
-      "last_edited": 1786317561.128572,
-      "edit_count": 10,
+      "last_edited": 1786371237.5842519,
+      "edit_count": 12,
       "edited_count": 5
     },
     "resources/js/Components/workstation/inspector-sections.tsx": {
@@ -6166,11 +6196,11 @@
     },
     "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash": {
       "query_terms": [],
-      "cached_content": "function focusAndFlash(element: HTMLElement): void {\n    element.focus();\n    element.classList.add('ring-2', 'ring-border-focus', 'ring-offset-1');\n    window.setTimeout(() => {\n        element.classList.remove('ring-2', 'ring-border-focus', 'ring-offset-1');\n    }, 1500);\n}",
-      "cached_chars": 276,
-      "cached_tokens_est": 69,
+      "cached_content": "function focusAndFlash(element: HTMLElement): void {\n    element.focus();\n    element.classList.add('ring-2', 'ring-brand', 'ring-offset-1');\n    window.setTimeout(() => {\n        element.classList.remove('ring-2', 'ring-brand', 'ring-offset-1');\n    }, 1500);\n}",
+      "cached_chars": 262,
+      "cached_tokens_est": 65,
       "last_action": "read",
-      "last_ts": 1786185348,
+      "last_ts": 1786370686,
       "first_read_turn": 2
     },
     "app/Http/Requests/StoreJobApplicationRequest.php": {
@@ -6271,11 +6301,11 @@
     },
     "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader": {
       "query_terms": [],
-      "cached_content": "export function WorkstationHeader({\n    resumeId,\n    title,\n    onTitleChange,\n    saveStatus,\n    showSaved,\n    contactErrors,\n    onFixContact,\n    activeTab,\n    onTabChange,\n    template,\n    onTemplateChange,\n    previewName,\n    previewHeadline,\n    pageEstimateDraft,\n    share,\n    canUndo,",
-      "cached_chars": 6000,
-      "cached_tokens_est": 1500,
+      "cached_content": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';\nimport {\n    ArrowDownTrayIcon,\n    ArrowPathIcon,\n    CheckIcon,\n    ChevronDownIcon,\n    DocumentDuplicateIcon,\n    EllipsisVerticalIcon,\n    ExclamationTriangleIcon,\n    ShareIcon,\n} from '@heroicons/react/24/outline';\nimp",
+      "cached_chars": 3787,
+      "cached_tokens_est": 946,
       "last_action": "read",
-      "last_ts": 1786166190,
+      "last_ts": 1786370825,
       "first_read_turn": 3
     },
     "resources/js/Components/workstation/workstation-header.tsx": {
@@ -6380,8 +6410,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-10T07:53:36.733920+00:00",
       "edited_count": 6,
-      "last_edited": 1786258215.626496,
-      "edit_count": 13
+      "last_edited": 1786371122.837106,
+      "edit_count": 17
     },
     "resources/js/Components/workstation/target-role-bar.tsx": {
       "query_terms": [],
@@ -6657,11 +6687,11 @@
     },
     "resources/js/Components/workstation/section-panel.tsx::SectionPanel": {
       "query_terms": [],
-      "cached_content": "\nexport function SectionPanel({\n    resume,\n    analysis,\n    selected,\n    onSelect,\n    onAddSection,\n    onAddKeyword,\n    onJumpChecklist,\n    onOpenOptimize,\n    className,\n}: {\n    resumeId: number;\n    resume: ResumeDraft;\n    analysis: ResumeAnalysis;\n    selected: ResumeSectionKey;\n    onSe",
-      "cached_chars": 8812,
-      "cached_tokens_est": 2203,
+      "cached_content": "export function SectionPanel({\n    resume,\n    analysis,\n    selected,\n    onSelect,\n    onAddSection,\n    onApplySuggestion,\n    onSelectSuggestion,\n    onAddKeyword,\n    onJumpChecklist,\n    onOpenOptimize,\n    className,\n}: {\n    resumeId: number;\n    resume: ResumeDraft;\n    analysis: ResumeAnal",
+      "cached_chars": 6000,
+      "cached_tokens_est": 1500,
       "last_action": "read",
-      "last_ts": 1786234080,
+      "last_ts": 1786370705,
       "first_read_turn": 2
     },
     "DESIGN.md": {
@@ -6937,509 +6967,6 @@
     }
   },
   "actions": [
-    {
-      "type": "edit_auto",
-      "ts": 1786261063.141672,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261064.2585301,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261070.817282,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261072.448169,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261074.630722,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261075.676268,
-      "files": [
-        "resources/js/Components/workstation/inspector-fields.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261079.1795368,
-      "files": [
-        "resources/js/Components/workstation/snapshots-panel.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261083.9475,
-      "files": [
-        "resources/js/Components/dashboard/new-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261087.6971982,
-      "files": [
-        "resources/js/Components/dashboard/new-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261089.886042,
-      "files": [
-        "resources/js/Components/dashboard/new-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786261092.607722,
-      "files": [
-        "resources/js/Components/dashboard/new-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786261135,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "text-gray-9|bg-gray-|border-gray-|text-red-|bg-red-|text-indigo-|ring-indigo-",
-        "hit_count": 100,
-        "hit_files": [
-          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-90-**Dark mode color classes** \u2014 add `dark",
-          "./docs/superpowers/specs/2026-06-07-batch-6-engagement-insights-design.md",
-          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md",
-          "./DESIGN.md.BAK"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786261165,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786263712,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "Workstation.tsx resume editor page layout, SectionPanel, inspector, resume-preview components"
-      }
-    },
-    {
-      "ts": 1786263712,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "Workstation.tsx resume editor page layout, SectionPanel, inspector, resume-preview components"
-      }
-    },
-    {
-      "ts": 1786263714,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-        "query": "",
-        "mode": "symbol_excerpt",
-        "response_chars": 3696
-      }
-    },
-    {
-      "ts": 1786263718,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-        "query": "return JSX layout header nav grid className border padding font",
-        "mode": "symbol_excerpt",
-        "response_chars": 3696
-      }
-    },
-    {
-      "ts": 1786263745,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "tailwind design tokens CSS theme colors canvas cream coral font families spacing radius DESIGN.md"
-      }
-    },
-    {
-      "ts": 1786263745,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "tailwind design tokens CSS theme colors canvas cream coral font families spacing radius DESIGN.md"
-      }
-    },
-    {
-      "ts": 1786263753,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "DESIGN.md",
-        "hit_count": 10,
-        "hit_files": [
-          "./resources/css/app.css"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Components/resume",
-          "resources/js/Pages/Resumes"
-        ]
-      }
-    },
-    {
-      "ts": 1786263760,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "Copernicus|StyreneB",
-        "hit_count": 10,
-        "hit_files": [
-          "./DESIGN.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Components/resume",
-          "resources/js/Pages/Resumes"
-        ]
-      }
-    },
-    {
-      "ts": 1786263809,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "Workstation.tsx JSX render structure spacing shadow border accent color classes"
-      }
-    },
-    {
-      "ts": 1786263809,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "Workstation.tsx JSX render structure spacing shadow border accent color classes"
-      }
-    },
-    {
-      "ts": 1786263811,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-        "query": "",
-        "mode": "symbol_excerpt",
-        "response_chars": 3696
-      }
-    },
-    {
-      "ts": 1786263815,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-        "query": "return JSX className border shadow rounded gap p-",
-        "mode": "symbol_excerpt",
-        "response_chars": 3696
-      }
-    },
-    {
-      "ts": 1786263907,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "export function|export default",
-        "hit_count": 1,
-        "hit_files": [
-          "resources/js/Pages/Resumes/Compare.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Resumes",
-          "resources/js/Components/workstation",
-          "resources/js/Pages"
-        ]
-      }
-    },
-    {
-      "ts": 1786263924,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "accent-100",
-        "hit_count": 20,
-        "hit_files": [
-          "resources/js/Components/workstation/inspector-sections.tsx-383-                                    ",
-          "resources/js/Components/workstation/inspector-sections.tsx",
-          "resources/js/Pages/Resumes/Compare.tsx-177-                                'rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled",
-          "resources/js/Components/workstation/skill-picker-modal.tsx",
-          "resources/js/Pages/Resumes/Compare.tsx-225-                'h-7 rounded-full border-0 px-3 text-[12px] font-semibold outline-none focus-visible",
-          "resources/js/Pages/Resumes/Compare.tsx-180-                                    ",
-          "resources/js/Components/workstation/skill-picker-modal.tsx-127-                                        ",
-          "resources/js/Pages/Resumes/Compare.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Resumes",
-          "resources/js/Components/workstation",
-          "resources/js/Pages"
-        ]
-      }
-    },
-    {
-      "ts": 1786263987,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "background color picker workstation component"
-      }
-    },
-    {
-      "ts": 1786263987,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "background color picker workstation component"
-      }
-    },
-    {
-      "ts": 1786263989,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Components/workstation/background-color-picker.tsx::BackgroundColorPicker",
-        "query": "",
-        "mode": "symbol_excerpt",
-        "response_chars": 1388
-      }
-    },
-    {
-      "ts": 1786263996,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Components/workstation/background-color-picker.tsx::BackgroundColorPicker",
-        "query": "",
-        "mode": "anchor_fallback_head",
-        "response_chars": 1388
-      }
-    },
-    {
-      "ts": 1786264030,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "bg-black/|z-modal-backdrop",
-        "hit_count": 4,
-        "hit_files": [
-          "resources/js/Components/workstation/skill-picker-modal.tsx",
-          "resources/js/Components/workstation/share-resume-modal.tsx",
-          "resources/js/Components/workstation/template-picker-modal.tsx",
-          "resources/js/Components/workstation/export-checklist-modal.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
-    {
-      "ts": 1786264076,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "animate-pulse|animate-bounce|duration-[3-9]00|ease-elastic|spring",
-        "hit_count": 20,
-        "hit_files": [
-          "./app/Data/AtsKeywords.php",
-          "./docs/superpowers/specs/2026-06-06-hero-carousel-design.md-75-- Slides container",
-          "./public/dictionaries/en_US.dic",
-          "./docs/superpowers/specs/2026-06-06-hero-carousel-design.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786264114.640278,
-      "files": [
-        "resources/js/Components/workstation/notes-panel.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786264122.217723,
-      "files": [
-        "resources/js/Components/workstation/optimize-panel.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786264128.089165,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786264133.134562,
-      "files": [
-        "resources/js/Components/workstation/template-picker-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786264137.32989,
-      "files": [
-        "resources/js/Components/workstation/template-picker-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786264143.4861782,
-      "files": [
-        "resources/js/Components/workstation/skill-picker-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786264146.5476758,
-      "files": [
-        "resources/js/Components/workstation/skill-picker-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786264152,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "text-on-accent|warning-border|warning-bg|error-text",
-        "hit_count": 15,
-        "hit_files": [
-          "resources/js/Components/workstation/share-resume-modal.tsx",
-          "resources/js/Components/workstation/inspector-sections.tsx",
-          "resources/js/Components/workstation/skill-picker-modal.tsx-159-                                                      ",
-          "resources/js/Components/workstation/skill-picker-modal.tsx",
-          "resources/js/Components/workstation/optimize-panel.tsx",
-          "resources/js/Components/workstation/jd-match-panel.tsx",
-          "resources/js/Components/workstation/export-checklist-modal.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
-    {
-      "ts": 1786264587,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": ".ui-craft/brief.md",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1714
-      }
-    },
-    {
-      "ts": 1786264589,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": ".ui-craft/tokens.md",
-        "query": "",
-        "mode": "full",
-        "response_chars": 5446
-      }
-    },
-    {
-      "ts": 1786264602,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/css/app.css",
-        "query": "accent gray surface text border radius shadow",
-        "mode": "query_excerpt",
-        "response_chars": 6000
-      }
-    },
-    {
-      "ts": 1786264608,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "fontFamily|IBM Plex|Inter",
-        "hit_count": 4,
-        "hit_files": [
-          "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
-    {
-      "ts": 1786264613,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "theme.extend|fontFamily: \\{|sans:",
-        "hit_count": 5,
-        "hit_files": [
-          "./docs/superpowers/plans/2026-05-28-templates-visual-polish.md",
-          "./tailwind.config.js",
-          "./resources/views/mcp/authorize.blade.php",
-          "./docs/mockups/workstation-header-option-d.html"
-        ],
-        "searched_dirs": [
-          "resources/js/Components/workstation",
-          "ds-bundle/components/workstation/SkillPickerModal"
-        ]
-      }
-    },
     {
       "ts": 1786270736,
       "kind": "retrieve",
@@ -9189,6 +8716,157 @@
         "kind": "continue_retrieve",
         "query": "new skill files added: export-surface-parity, applying-design-tokens-only, applying-options-across-surfaces, applying-ui-conventions, following-existing-conventions, verifying-ui-behavior"
       }
+    },
+    {
+      "ts": 1786370681,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Workstation editor page sidebar and preview panel width mismatch layout"
+      }
+    },
+    {
+      "ts": 1786370681,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Workstation editor page sidebar and preview panel width mismatch layout"
+      }
+    },
+    {
+      "ts": 1786370683,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash",
+        "query": "sidebar preview panel width grid flex layout classes",
+        "mode": "symbol_excerpt",
+        "response_chars": 262
+      }
+    },
+    {
+      "ts": 1786370686,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 262
+      }
+    },
+    {
+      "ts": 1786370703,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "SectionPanel component sidebar width workstation"
+      }
+    },
+    {
+      "ts": 1786370703,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "SectionPanel component sidebar width workstation"
+      }
+    },
+    {
+      "ts": 1786370705,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Components/workstation/section-panel.tsx::SectionPanel",
+        "query": "",
+        "mode": "head",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1786370820,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader",
+        "query": "",
+        "mode": "head",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1786370825,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader",
+        "query": "",
+        "mode": "anchor_excerpt",
+        "response_chars": 3787
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786370888.509302,
+      "files": [
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786370898.002719,
+      "files": [
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786371120.118591,
+      "files": [
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786371122.837104,
+      "files": [
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786371129,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "AuthenticatedLayout top nav bar container width max-w"
+      }
+    },
+    {
+      "ts": 1786371129,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "AuthenticatedLayout top nav bar container width max-w"
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786371227.404578,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786371237.5842502,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
     }
   ],
   "decisions": [

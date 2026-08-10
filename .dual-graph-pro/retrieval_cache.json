@@ -197,6 +197,594 @@
           ]
         }
       }
+    },
+    "workstation editor page sidebar preview panel width mismatch|tf=5|te=12": {
+      "created_epoch": 1786370681,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx",
+        "resources/js/Pages/Settings/StarterProfile.tsx",
+        "resources/js/Pages/Jobs/Imports.tsx",
+        "resources/js/Pages/Resumes/Compare.tsx::CompareSidebar",
+        "resources/js/Pages/Admin/Backups/Index.tsx"
+      ],
+      "mtimes_ns": {
+        "resources/js/Pages/Resumes/Workstation.tsx": 1786348399583843452,
+        "resources/js/Pages/Settings/StarterProfile.tsx": 1786306681526637147,
+        "resources/js/Pages/Jobs/Imports.tsx": 1786347051032521265,
+        "resources/js/Pages/Resumes/Compare.tsx::CompareSidebar": 1786316038978164834,
+        "resources/js/Pages/Admin/Backups/Index.tsx": 1786317627299381506
+      },
+      "result": {
+        "ok": true,
+        "query": "Workstation editor page sidebar and preview panel width mismatch layout",
+        "graph_files": [
+          {
+            "id": "resources/js/Pages/Resumes/Workstation.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Resumes/Workstation.tsx",
+            "ext": ".tsx",
+            "size": 34223,
+            "keywords": [
+              "workstation"
+            ],
+            "summary": "import { Head, router, usePage } from '@inertiajs/react';. Contains 5 functions/classes: focusAndFlash, Workstation, requestDownload, confirmDownload, ....",
+            "file_hash": "5cd76ae9",
+            "_score": 31,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Pages/Settings/StarterProfile.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Settings/StarterProfile.tsx",
+            "ext": ".tsx",
+            "size": 25411,
+            "keywords": [
+              "starterprofilepage",
+              "starter",
+              "profile",
+              "page"
+            ],
+            "summary": "import { Form, Head, Link } from '@inertiajs/react';. Contains 1 function: StarterProfilePage.",
+            "file_hash": "c3200d92",
+            "_score": 25,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Pages/Jobs/Imports.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Jobs/Imports.tsx",
+            "ext": ".tsx",
+            "size": 19608,
+            "keywords": [
+              "post",
+              "jobs-imports",
+              "jobimportspage",
+              "job",
+              "imports",
+              "page"
+            ],
+            "summary": "import { Head, Link, router, useHttp } from '@inertiajs/react';. Contains 2 functions/classes: resultKey, JobImportsPage.",
+            "file_hash": "64e39bc3",
+            "_score": 24,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Pages/Resumes/Compare.tsx::CompareSidebar",
+            "kind": "symbol",
+            "path": "resources/js/Pages/Resumes/Compare.tsx",
+            "ext": ".tsx",
+            "size": 61,
+            "keywords": [
+              "comparesidebar",
+              "compare",
+              "sidebar"
+            ],
+            "symbol_type": "utility",
+            "name": "CompareSidebar",
+            "line_start": 138,
+            "line_end": 198,
+            "body_hash": "f1765c08",
+            "confidence": "medium",
+            "exported": false,
+            "_score": 24,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Pages/Admin/Backups/Index.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Admin/Backups/Index.tsx",
+            "ext": ".tsx",
+            "size": 11249,
+            "keywords": [
+              "index"
+            ],
+            "summary": "import AdminLayout from '@/Layouts/AdminLayout';. Contains 5 functions/classes: formatBytes, formatWhen, Index, createBackup, ....",
+            "file_hash": "bfbd19f4",
+            "_score": 22,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/resume/resume-preview",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/notes-panel",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/section-panel",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Layouts/AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
+            "to": "@/Layouts/AdminLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
+            "to": "AdminLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Jobs/Imports.tsx",
+            "to": "@/Layouts/AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Jobs/Imports.tsx",
+            "to": "AuthenticatedLayout",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/ui/card",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Workstation.tsx",
+            "to": "@/Components/workstation/export-checklist-modal",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    },
+    "sectionpanel component sidebar width workstation|tf=5|te=12": {
+      "created_epoch": 1786370703,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx",
+        "resources/js/Pages/Resumes/Workstation.tsx",
+        "resources/js/Components/workstation/section-panel.tsx",
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+        "resources/js/Components/workstation/notes-panel.tsx::WorkstationNote"
+      ],
+      "mtimes_ns": {
+        "resources/js/Components/workstation/workstation-header.tsx": 1786349532241767364,
+        "resources/js/Pages/Resumes/Workstation.tsx": 1786348399583843452,
+        "resources/js/Components/workstation/section-panel.tsx": 1786349532241983199,
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx": 1786349532242241742,
+        "resources/js/Components/workstation/notes-panel.tsx::WorkstationNote": 1786316038896127411
+      },
+      "result": {
+        "ok": true,
+        "query": "SectionPanel component sidebar width workstation",
+        "graph_files": [
+          {
+            "id": "resources/js/Components/workstation/workstation-header.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/workstation-header.tsx",
+            "ext": ".tsx",
+            "size": 18342,
+            "keywords": [
+              "workstationtab",
+              "workstation",
+              "tab",
+              "headerversion",
+              "header",
+              "version",
+              "workstationheader"
+            ],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 1 function: WorkstationHeader.",
+            "file_hash": "c4866263",
+            "_score": 20,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Resumes/Workstation.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Resumes/Workstation.tsx",
+            "ext": ".tsx",
+            "size": 34223,
+            "keywords": [
+              "workstation"
+            ],
+            "summary": "import { Head, router, usePage } from '@inertiajs/react';. Contains 5 functions/classes: focusAndFlash, Workstation, requestDownload, confirmDownload, ....",
+            "file_hash": "5cd76ae9",
+            "_score": 20,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/section-panel.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/section-panel.tsx",
+            "ext": ".tsx",
+            "size": 11370,
+            "keywords": [
+              "sectionpanel",
+              "section",
+              "panel"
+            ],
+            "summary": "import { PlusIcon } from '@heroicons/react/24/outline';. Contains 3 functions/classes: sectionSummary, SectionPanel, jumpBand.",
+            "file_hash": "81a9083f",
+            "_score": 19,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "ext": ".tsx",
+            "size": 17129,
+            "keywords": [
+              "fontlabels",
+              "font",
+              "labels",
+              "preview_zoom_options",
+              "previewzoom",
+              "preview",
+              "zoom",
+              "workstationformattoolbar",
+              "workstation",
+              "format",
+              "toolbar"
+            ],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 3 functions/classes: ToolbarDivider, MenuCheck, WorkstationFormatToolbar.",
+            "file_hash": "509620cb",
+            "_score": 19,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/notes-panel.tsx::WorkstationNote",
+            "kind": "symbol",
+            "path": "resources/js/Components/workstation/notes-panel.tsx",
+            "ext": ".tsx",
+            "size": 9,
+            "keywords": [
+              "workstationnote",
+              "workstation",
+              "note"
+            ],
+            "symbol_type": "model",
+            "name": "WorkstationNote",
+            "line_start": 7,
+            "line_end": 15,
+            "body_hash": "beab435e",
+            "confidence": "high",
+            "exported": true,
+            "_score": 18,
+            "_role": "code",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "resources/js/Components/workstation/section-panel.tsx::SectionPanel",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "@/Components/resume/score-gauge",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "@/Components/resume/suggestion-list",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "@/Components/ui/card",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "@/Components/workstation/jd-match-panel",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "@/lib/utils",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "@heroicons/react/24/outline",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/section-panel.tsx",
+            "to": "type",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/lib/resume-page-estimate",
+            "rel": "imports"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": []
+        }
+      }
+    },
+    "authenticatedlayout top nav bar container width max|tf=5|te=12": {
+      "created_epoch": 1786371129,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx::NavItem",
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+        "resources/js/Pages/Resumes/Compare.tsx::CompareSidebar",
+        "resources/js/Layouts/AdminLayout.tsx::AdminNavItem",
+        "resources/js/lib/resume-plain-text.ts::resumeToPlainText"
+      ],
+      "mtimes_ns": {
+        "resources/js/Layouts/AuthenticatedLayout.tsx::NavItem": 1786349522195604454,
+        "resources/js/Components/workstation/workstation-format-toolbar.tsx": 1786371122814103350,
+        "resources/js/Pages/Resumes/Compare.tsx::CompareSidebar": 1786316038978164834,
+        "resources/js/Layouts/AdminLayout.tsx::AdminNavItem": 1786349136347392477,
+        "resources/js/lib/resume-plain-text.ts::resumeToPlainText": 1785831620124768930
+      },
+      "result": {
+        "ok": true,
+        "query": "AuthenticatedLayout top nav bar container width max-w",
+        "graph_files": [
+          {
+            "id": "resources/js/Layouts/AuthenticatedLayout.tsx::NavItem",
+            "kind": "symbol",
+            "path": "resources/js/Layouts/AuthenticatedLayout.tsx",
+            "ext": ".tsx",
+            "size": 1,
+            "keywords": [
+              "navitem",
+              "nav",
+              "item"
+            ],
+            "symbol_type": "model",
+            "name": "NavItem",
+            "line_start": 26,
+            "line_end": 26,
+            "body_hash": "eb2cc91f",
+            "confidence": "high",
+            "exported": false,
+            "_score": 18,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "kind": "file",
+            "path": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "ext": ".tsx",
+            "size": 17129,
+            "keywords": [
+              "fontlabels",
+              "font",
+              "labels",
+              "preview_zoom_options",
+              "previewzoom",
+              "preview",
+              "zoom",
+              "workstationformattoolbar",
+              "workstation",
+              "format",
+              "toolbar"
+            ],
+            "summary": "import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';. Contains 3 functions/classes: ToolbarDivider, MenuCheck, WorkstationFormatToolbar.",
+            "file_hash": "509620cb",
+            "_score": 16,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Pages/Resumes/Compare.tsx::CompareSidebar",
+            "kind": "symbol",
+            "path": "resources/js/Pages/Resumes/Compare.tsx",
+            "ext": ".tsx",
+            "size": 61,
+            "keywords": [
+              "comparesidebar",
+              "compare",
+              "sidebar"
+            ],
+            "symbol_type": "utility",
+            "name": "CompareSidebar",
+            "line_start": 138,
+            "line_end": 198,
+            "body_hash": "f1765c08",
+            "confidence": "medium",
+            "exported": false,
+            "_score": 16,
+            "_role": "ui_surface",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/Layouts/AdminLayout.tsx::AdminNavItem",
+            "kind": "symbol",
+            "path": "resources/js/Layouts/AdminLayout.tsx",
+            "ext": ".tsx",
+            "size": 1,
+            "keywords": [
+              "adminnavitem",
+              "admin",
+              "nav",
+              "item"
+            ],
+            "symbol_type": "model",
+            "name": "AdminNavItem",
+            "line_start": 4,
+            "line_end": 4,
+            "body_hash": "6afc8c27",
+            "confidence": "high",
+            "exported": false,
+            "_score": 15,
+            "_role": "code",
+            "_intent": "general"
+          },
+          {
+            "id": "resources/js/lib/resume-plain-text.ts::resumeToPlainText",
+            "kind": "symbol",
+            "path": "resources/js/lib/resume-plain-text.ts",
+            "ext": ".ts",
+            "size": 159,
+            "keywords": [
+              "resumetoplaintext",
+              "resume",
+              "plain",
+              "text"
+            ],
+            "symbol_type": "use_case",
+            "name": "resumeToPlainText",
+            "line_start": 6,
+            "line_end": 164,
+            "body_hash": "ebb3f8fc",
+            "confidence": "high",
+            "exported": true,
+            "_score": 15,
+            "_role": "code",
+            "_intent": "general"
+          }
+        ],
+        "graph_edges": [
+          {
+            "from": "resources/js/Layouts/AuthenticatedLayout.tsx",
+            "to": "resources/js/Layouts/AuthenticatedLayout.tsx::NavItem",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/Components/ui/button",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/lib/resume-page-estimate",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/lib/resume-templates",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@/lib/utils",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "@headlessui/react",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "type",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx::MenuCheck",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx::PreviewZoom",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx::ToolbarDivider",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+            "to": "resources/js/Components/workstation/workstation-format-toolbar.tsx::WorkstationFormatToolbar",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Layouts/AdminLayout.tsx",
+            "to": "resources/js/Layouts/AdminLayout.tsx::AdminNavItem",
+            "rel": "contains"
+          }
+        ],
+        "grep_hits": [],
+        "reuse_candidates": [
+          {
+            "file": "resources/js/Layouts/AuthenticatedLayout.tsx",
+            "overlap": 1,
+            "cached_chars": 12301,
+            "cached_tokens_est": 3075,
+            "last_action": "edited"
+          }
+        ],
+        "read_budget": {
+          "remaining_chars": 60000,
+          "reuse_gate_candidates": [
+            "resources/js/Layouts/AuthenticatedLayout.tsx"
+          ]
+        }
+      }
     }
   }
 }
