@@ -27,10 +27,10 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
 
-            <h1 className="mb-1 text-center text-xl font-bold text-[#0f0f1a]">
+            <h1 className="mb-1 text-center text-xl font-bold text-ink">
                 Create your account
             </h1>
-            <p className="mb-6 text-center text-sm text-[#71717a]">
+            <p className="mb-6 text-center text-sm text-ink-muted">
                 Start building a resume that gets noticed.
             </p>
 
@@ -122,7 +122,7 @@ export default function Register() {
                     Create account
                 </Button>
 
-                <p className="mt-4 text-center text-sm text-[#71717a]">
+                <p className="mt-4 text-center text-sm text-ink-muted">
                     Already have an account?{' '}
                     <Link href={route('login')} className="font-bold">
                         Log in

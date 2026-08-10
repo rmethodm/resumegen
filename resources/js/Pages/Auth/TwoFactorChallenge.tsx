@@ -26,7 +26,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
         <GuestLayout>
             <Head title="Two-Factor Authentication" />
 
-            <div className="mb-4 text-sm text-gray-600">
+            <div className="mb-4 text-sm text-ink-muted">
                 {mode === 'recovery'
                     ? 'Enter one of your emergency recovery codes.'
                     : mode === 'email'
@@ -80,7 +80,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                 {mode !== 'recovery' && (
                     <button
                         type="button"
-                        className="text-gray-600 underline hover:text-gray-900"
+                        className="text-ink-muted underline hover:text-ink"
                         onClick={() => setMode('recovery')}
                     >
                         Use a recovery code instead
@@ -89,7 +89,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                 {mode === 'recovery' && (
                     <button
                         type="button"
-                        className="text-gray-600 underline hover:text-gray-900"
+                        className="text-ink-muted underline hover:text-ink"
                         onClick={() => setMode('totp')}
                     >
                         Use authenticator app instead
@@ -99,7 +99,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                     <div>
                         <button
                             type="button"
-                            className="text-gray-600 underline hover:text-gray-900"
+                            className="text-ink-muted underline hover:text-ink"
                             onClick={sendEmail}
                         >
                             Send code to my email instead
@@ -113,7 +113,7 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                             e.preventDefault();
                             router.post(route('logout'));
                         }}
-                        className="text-gray-600 underline hover:text-gray-900"
+                        className="text-ink-muted underline hover:text-ink"
                     >
                         Sign out
                     </a>

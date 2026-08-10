@@ -16,7 +16,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { NewResumeModal } from '@/Components/dashboard/new-resume-modal';
 import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
-import { Card } from '@/Components/ui/card';
+import { Shell } from '@/Components/ui/shell';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { scoreDotClass } from '@/lib/score-band';
 import { cn } from '@/lib/utils';
@@ -216,13 +216,14 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
     }
 
     return (
-        <Card className="p-0">
+        <>
+        <Shell innerClassName="overflow-hidden">
             <div className="flex items-center gap-4 p-4">
                 <ScoreDial score={resume.score} size={48} />
                 <div className="min-w-0 flex-1">
                     <Link
                         href={route('resumes.workstation', resume.id)}
-                        className="truncate text-sm font-semibold text-gray-900 hover:text-brand"
+                        className="truncate text-sm font-semibold text-ink hover:text-brand"
                     >
                         {resume.title}
                     </Link>
@@ -414,6 +415,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                 </div>
             )}
 
+        </Shell>
             {shareModalReady && shareModalResumeId !== null && (
                 <ShareResumeModal
                     open
@@ -426,21 +428,49 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                     share={shareModalDetail}
                 />
             )}
-        </Card>
+        </>
     );
 }
 
 function ResumeCardSkeleton() {
     return (
-        <Card className="animate-pulse gap-0 p-0">
-            <div className="flex items-center gap-4 p-4">
-                <div className="size-12 shrink-0 rounded-full bg-gray-200" />
+        <Shell innerClassName="overflow-hidden">
+            <div className="flex animate-pulse items-center gap-4 p-4">
+                <div className="size-12 shrink-0 rounded-full bg-surface" />
                 <div className="min-w-0 flex-1">
-                    <div className="h-3.5 w-1/3 rounded bg-gray-200" />
-                    <div className="mt-2 h-3 w-1/2 rounded bg-gray-100" />
+                    <div className="h-3.5 w-1/3 rounded bg-surface" />
+                    <div className="mt-2 h-3 w-1/2 rounded bg-surface/80" />
                 </div>
+                <div className="hidden h-8 w-16 rounded-md bg-surface sm:block" />
+                <div className="hidden h-8 w-14 rounded-md bg-surface sm:block" />
             </div>
-        </Card>
+        </Shell>
+    );
+}
+
+function EmptyResumes({ onCreate }: { onCreate: () => void }) {
+    return (
+        <Shell innerClassName="px-6 py-12 text-center sm:px-10">
+            <span className="inline-flex items-center rounded-full bg-brand-subtle px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+                Get started
+            </span>
+            <h3 className="mt-4 text-lg font-bold tracking-tight text-ink">
+                Your first resume starts here
+            </h3>
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink-muted">
+                Create a blank resume from your starter profile, pick a role sample, or paste what you already have.
+            </p>
+            <Button
+                type="button"
+                onClick={onCreate}
+                className="group mt-6 rounded-full px-5"
+            >
+                New resume
+                <span className="flex size-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105 group-active:scale-95">
+                    <PlusIcon className="size-3.5" />
+                </span>
+            </Button>
+        </Shell>
     );
 }
 
@@ -474,43 +504,48 @@ export default function Dashboard({
         >
             <Head title="Dashboard" />
 
-            <div className="py-8">
+            <div className="py-6 sm:py-8">
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-                    <Card className="gap-6 p-6">
+                    <div className="flex flex-col gap-5">
                         {!hasStarterProfile && (
-                            <div className="flex flex-col gap-3 rounded-md border border-brand-subtle bg-brand-subtle/60 p-5 sm:flex-row sm:items-center sm:justify-between">
+                            <Shell innerClassName="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
-                                    <p className="text-sm font-bold">
+                                    <p className="text-sm font-bold text-ink">
                                         Set up your starter profile
                                     </p>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        Fill it in once and every new resume
-                                        starts pre-filled.
+                                    <p className="mt-1 text-sm text-ink-muted">
+                                        Fill it in once and every new resume starts pre-filled.
                                     </p>
                                 </div>
                                 <Link
                                     href={route('starter-profile.edit')}
-                                    className={cn(buttonClassName('outline'), 'shrink-0')}
+                                    className={cn(buttonClassName('outline'), 'shrink-0 rounded-full')}
                                 >
                                     Set up profile
                                 </Link>
-                            </div>
+                            </Shell>
                         )}
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-end justify-between gap-4">
                             <div>
-                                <p className="text-[10px] font-bold tracking-[0.06em] text-gray-500 uppercase">
+                                <p className="text-[10px] font-bold tracking-[0.12em] text-ink-faint uppercase">
                                     Your resumes
                                 </p>
                                 {averageScore !== null && (
-                                    <p className="mt-1 text-sm text-gray-500">
+                                    <p className="mt-1 text-sm text-ink-muted">
                                         Average score: {averageScore}/100
                                     </p>
                                 )}
                             </div>
-                            <Button onClick={() => setNewResumeOpen(true)}>
-                                <PlusIcon className="size-4" />
+                            <Button
+                                type="button"
+                                onClick={() => setNewResumeOpen(true)}
+                                className="group rounded-full"
+                            >
                                 New resume
+                                <span className="flex size-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105">
+                                    <PlusIcon className="size-3.5" />
+                                </span>
                             </Button>
                         </div>
 
@@ -525,9 +560,7 @@ export default function Dashboard({
                             }
                         >
                             {resumes && resumes.length === 0 ? (
-                                <p className="py-10 text-center text-sm text-gray-500">
-                                    You haven't created a resume yet.
-                                </p>
+                                <EmptyResumes onCreate={() => setNewResumeOpen(true)} />
                             ) : (
                                 <div className="flex flex-col gap-3">
                                     {resumes?.map((resume) => (
@@ -536,7 +569,7 @@ export default function Dashboard({
                                 </div>
                             )}
                         </Deferred>
-                    </Card>
+                    </div>
                 </div>
             </div>
 

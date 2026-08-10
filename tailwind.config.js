@@ -51,6 +51,19 @@ export default {
             },
             boxShadow: {
                 card: '0 1px 2px rgba(0,0,0,0.04)',
+                // Soft Structuralism ambient lift — low contrast, highly diffused.
+                ambient: '0 8px 30px rgba(23, 27, 31, 0.06), 0 1px 2px rgba(23, 27, 31, 0.04)',
+                shell: 'inset 0 1px 1px rgba(255, 255, 255, 0.65)',
+            },
+            transitionTimingFunction: {
+                soft: 'cubic-bezier(0.32, 0.72, 0, 1)',
+            },
+            transitionDuration: {
+                soft: '320ms',
+            },
+            borderRadius: {
+                shell: '1.25rem',
+                core: 'calc(1.25rem - 0.375rem)',
             },
         },
     },

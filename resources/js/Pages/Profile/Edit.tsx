@@ -126,8 +126,8 @@ export default function Edit({
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
 
                     <div className="mb-2">
-                        <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Profile</h1>
-                        <p className="mt-1 text-sm text-[#a0a0b0]">Manage your account settings</p>
+                        <h1 className="text-xl font-extrabold tracking-tight text-ink">Profile</h1>
+                        <p className="mt-1 text-sm text-ink-faint">Manage your account settings</p>
                     </div>
 
                     <Card className="p-6">
@@ -160,7 +160,7 @@ export default function Edit({
                         <section className="space-y-6">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">Starter Profile</h2>
-                                <p className="mt-1 text-sm text-gray-600">
+                                <p className="mt-1 text-sm text-ink-muted">
                                     Pre-fills the contact section and defaults on every new resume you create.
                                 </p>
                             </header>
