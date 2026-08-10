@@ -165,10 +165,10 @@ export function SectionPanel({
         >
             <Card className="gap-0 p-4">
                 <div className="text-center">
-                    <p className="mb-2 text-sm font-medium text-gray-500">
+                    <p className="mb-2 text-sm font-medium text-ink-muted">
                         Your resume score
                     </p>
-                    <p className="mb-2 text-[10px] text-gray-400">
+                    <p className="mb-2 text-[10px] text-ink-faint">
                         Updates as you edit
                     </p>
                     <ScoreGauge score={analysis.score} className="mx-auto" />
@@ -186,16 +186,16 @@ export function SectionPanel({
                                 title={`Fix ${band.label} — jump to next step`}
                                 className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-brand-subtle/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
                             >
-                                <div className="flex justify-between text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                                <div className="flex justify-between text-[10px] font-semibold tracking-wide text-ink-muted uppercase">
                                     <span>{band.label}</span>
                                     <span className="tabular-nums">
                                         {band.score}
-                                        <span className="font-normal text-gray-400">
+                                        <span className="font-normal text-ink-faint">
                                             /25
                                         </span>
                                     </span>
                                 </div>
-                                <div className="h-1.5 rounded-full bg-gray-100">
+                                <div className="h-1.5 rounded-full bg-surface">
                                     <div
                                         className="h-full rounded-full bg-brand transition-[width] duration-200"
                                         style={{
@@ -223,7 +223,7 @@ export function SectionPanel({
                     onOpenOptimize={onOpenOptimize}
                 />
 
-                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
                     Improvements
                 </p>
                 <SuggestionList
@@ -232,7 +232,7 @@ export function SectionPanel({
                     onSelect={onSelectSuggestion}
                 />
 
-                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
                     Resume sections
                 </p>
                 <ul className="space-y-1">
@@ -272,7 +272,7 @@ export function SectionPanel({
                     </Button>
                 ) : (
                     <div className="mt-2 flex flex-col gap-1">
-                        <p className="px-1 text-[10px] font-semibold tracking-wide text-gray-500 uppercase">
+                        <p className="px-1 text-[10px] font-semibold tracking-wide text-ink-muted uppercase">
                             Hidden sections
                         </p>
                         {addable.map((section) => (
@@ -280,7 +280,7 @@ export function SectionPanel({
                                 key={section}
                                 type="button"
                                 onClick={() => onAddSection(section)}
-                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-gray-300 bg-white px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:border-brand hover:bg-brand-subtle hover:text-brand"
+                                className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-surface-border bg-white px-2 py-1.5 text-left text-sm text-ink transition-colors hover:border-brand hover:bg-brand-subtle hover:text-brand"
                             >
                                 <PlusIcon className="size-3.5 shrink-0" />
                                 {sectionLabels[section]}

@@ -13,8 +13,15 @@ import {
     UserCircleIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { Link, usePage } from '@inertiajs/react';
-import { PropsWithChildren, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, router, usePage } from '@inertiajs/react';
+import {
+    PropsWithChildren,
+    ReactNode,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { cn } from '@/lib/utils';
 
 type NavItem = { label: string; href: string; active: boolean; icon: typeof HomeIcon };
@@ -40,21 +47,9 @@ export default function Authenticated({
     const { user } = usePage().props.auth;
     const { isDark, toggle } = useDarkMode();
     const [mobileOpen, setMobileOpen] = useState(false);
-    const searchRef = useRef<HTMLInputElement>(null);
+    const [commandOpen, setCommandOpen] = useState(false);
+    const commandRef = useRef<HTMLDivElement>(null);
     const initials = useMemo(() => userInitials(user.name), [user.name]);
-
-    useEffect(() => {
-        function onKeyDown(event: KeyboardEvent) {
-            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-                event.preventDefault();
-                searchRef.current?.focus();
-            }
-        }
-
-        document.addEventListener('keydown', onKeyDown);
-
-        return () => document.removeEventListener('keydown', onKeyDown);
-    }, []);
 
     const nav: NavItem[] = [
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
@@ -63,6 +58,48 @@ export default function Authenticated({
         { label: 'Applications', href: route('job-applications.index'), active: route().current('job-applications.*'), icon: ClipboardDocumentListIcon },
         { label: 'Profile', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
     ];
+
+    useEffect(() => {
+        function onKeyDown(event: KeyboardEvent) {
+            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+                event.preventDefault();
+                setCommandOpen((open) => !open);
+            }
+            if (event.key === 'Escape') {
+                setCommandOpen(false);
+            }
+        }
+
+        document.addEventListener('keydown', onKeyDown);
+
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, []);
+
+    useEffect(() => {
+        if (!commandOpen) {
+            return;
+        }
+
+        function onPointerDown(event: MouseEvent) {
+            if (commandRef.current && !commandRef.current.contains(event.target as Node)) {
+                setCommandOpen(false);
+            }
+        }
+
+        document.addEventListener('mousedown', onPointerDown);
+
+        return () => document.removeEventListener('mousedown', onPointerDown);
+    }, [commandOpen]);
+
+    function go(href: string) {
+        setCommandOpen(false);
+        setMobileOpen(false);
+        router.visit(href);
+    }
+
+    function logOut() {
+        router.post(route('logout'));
+    }
 
     return (
         <div className="min-h-[100dvh] bg-surface dark:bg-gray-900">
@@ -80,9 +117,10 @@ export default function Authenticated({
                     '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
                 )}
             >
+                {/* overflow-visible so user dropdown / command sheet are not clipped */}
                 <header
                     className={cn(
-                        'mx-auto max-w-6xl overflow-hidden rounded-2xl border border-surface-border/80',
+                        'relative mx-auto max-w-6xl rounded-2xl border border-surface-border/80',
                         'bg-white/90 shadow-ambient backdrop-blur-xl',
                         'transition-[box-shadow,background-color] duration-soft ease-soft',
                         'dark:border-gray-700/80 dark:bg-gray-800/90',
@@ -108,27 +146,58 @@ export default function Authenticated({
                             ))}
                         </nav>
 
-                        <div className="relative ml-1 min-w-0 flex-1 sm:ml-2 lg:ml-auto lg:max-w-sm">
-                            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
-                            <input
-                                ref={searchRef}
-                                type="search"
-                                role="searchbox"
-                                aria-label="Search (coming soon)"
-                                aria-disabled="true"
-                                readOnly
-                                title="Search is not wired yet — coming soon"
-                                placeholder="Search soon…"
+                        <div className="relative ml-1 min-w-0 flex-1 sm:ml-2 lg:ml-auto lg:max-w-sm" ref={commandRef}>
+                            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                            <button
+                                type="button"
+                                onClick={() => setCommandOpen((open) => !open)}
+                                aria-expanded={commandOpen}
+                                aria-haspopup="listbox"
+                                aria-label="Open navigation menu"
                                 className={cn(
-                                    'w-full cursor-default rounded-full border border-surface-border bg-surface py-2 pl-9 pr-3 text-sm text-ink sm:pr-14',
-                                    'placeholder:text-ink-faint transition-[border-color,background-color,box-shadow] duration-soft ease-soft',
-                                    'focus:border-brand/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/15',
-                                    'dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500',
+                                    'flex w-full items-center rounded-full border border-surface-border bg-surface py-2 pl-9 pr-3 text-left text-sm sm:pr-14',
+                                    'text-ink-faint transition-[border-color,background-color,box-shadow] duration-soft ease-soft',
+                                    'hover:border-brand/30 hover:bg-white',
+                                    'focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/25',
+                                    commandOpen && 'border-brand bg-white ring-2 ring-brand/25',
+                                    'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400',
                                 )}
-                            />
+                            >
+                                <span className="truncate">Go to…</span>
+                            </button>
                             <span className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded-md border border-surface-border bg-white px-1.5 py-0.5 text-[10px] font-semibold text-ink-faint sm:inline dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">
                                 ⌘K
                             </span>
+
+                            {commandOpen && (
+                                <div
+                                    role="listbox"
+                                    aria-label="Destinations"
+                                    className="absolute left-0 right-0 top-[calc(100%+0.35rem)] z-[70] overflow-hidden rounded-xl border border-surface-border bg-white py-1 shadow-ambient dark:border-gray-700 dark:bg-gray-800"
+                                >
+                                    <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
+                                        Navigate
+                                    </p>
+                                    {nav.map((item) => (
+                                        <button
+                                            key={item.label}
+                                            type="button"
+                                            role="option"
+                                            aria-selected={item.active}
+                                            onClick={() => go(item.href)}
+                                            className={cn(
+                                                'flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors duration-soft ease-soft',
+                                                item.active
+                                                    ? 'bg-brand-subtle font-semibold text-brand'
+                                                    : 'text-ink hover:bg-surface',
+                                            )}
+                                        >
+                                            <item.icon className="size-4 shrink-0 text-ink-faint" />
+                                            {item.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
@@ -156,9 +225,14 @@ export default function Authenticated({
                                     </button>
                                 </Dropdown.Trigger>
                                 <Dropdown.Content>
-                                    <Dropdown.Link href={route('logout')} method="post" as="button">
-                                        Log Out
-                                    </Dropdown.Link>
+                                    <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
+                                    <button
+                                        type="button"
+                                        onClick={logOut}
+                                        className="block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft hover:bg-surface focus:bg-surface focus:outline-none"
+                                    >
+                                        Log out
+                                    </button>
                                 </Dropdown.Content>
                             </Dropdown>
                             <button
@@ -192,6 +266,13 @@ export default function Authenticated({
                                     {item.label}
                                 </Link>
                             ))}
+                            <button
+                                type="button"
+                                onClick={logOut}
+                                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-ink-muted hover:bg-surface hover:text-ink"
+                            >
+                                Log out
+                            </button>
                         </nav>
                     )}
                 </header>

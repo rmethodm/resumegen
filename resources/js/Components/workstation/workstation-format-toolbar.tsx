@@ -147,7 +147,7 @@ export function WorkstationFormatToolbar({
             aria-label="Document formatting"
             className="flex flex-wrap items-center gap-1 border-t border-surface-border/80 bg-surface/40 px-2 py-1.5 sm:px-3"
         >
-            <span className="mr-1 hidden text-[10px] font-bold tracking-[0.08em] text-gray-500 uppercase sm:inline">
+            <span className="mr-1 hidden text-[10px] font-bold tracking-[0.08em] text-ink-muted uppercase sm:inline">
                 Format
             </span>
             <button
@@ -188,11 +188,11 @@ export function WorkstationFormatToolbar({
                 aria-label="Template"
                 title="Choose resume template"
             >
-                <span className="hidden text-gray-400 sm:inline">Template</span>
+                <span className="hidden text-ink-faint sm:inline">Template</span>
                 <span className="min-w-0 truncate">
                     {templateLabels[template] ?? template}
                 </span>
-                <ChevronDownIcon className="size-3.5 shrink-0 text-gray-400" />
+                <ChevronDownIcon className="size-3.5 shrink-0 text-ink-faint" />
             </button>
 
             <Menu as="div" className="relative">
@@ -203,18 +203,18 @@ export function WorkstationFormatToolbar({
                     <span className="max-w-[7.5rem] truncate">
                         {fontLabels[font] ?? font ?? 'Font'}
                     </span>
-                    <ChevronDownIcon className="size-3.5 text-gray-400" />
+                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 max-h-72 w-52 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-50 max-h-72 w-52 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                 >
                     {fontKeys.map((key) => (
                         <MenuItem key={key}>
                             <button
                                 type="button"
                                 onClick={() => onFontChange(key)}
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 <MenuCheck on={key === font} />
                                 <span className="min-w-0 flex-1">
@@ -225,7 +225,7 @@ export function WorkstationFormatToolbar({
                                         {fontLabels[key]}
                                     </span>
                                     {pdfFontNotes[key] ? (
-                                        <span className="block truncate text-[11px] text-gray-400">
+                                        <span className="block truncate text-[11px] text-ink-faint">
                                             {pdfFontNotes[key]}
                                         </span>
                                     ) : null}
@@ -243,22 +243,22 @@ export function WorkstationFormatToolbar({
                     title="Maps to resume density"
                 >
                     {sizeLabel}
-                    <ChevronDownIcon className="size-3.5 text-gray-400" />
+                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 w-40 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-50 w-40 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                 >
                     {densitySizeOptions.map((option) => (
                         <MenuItem key={option.density}>
                             <button
                                 type="button"
                                 onClick={() => onDensityChange(option.density)}
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 <MenuCheck on={option.density === density} />
                                 {option.label}
-                                <span className="ml-auto text-xs text-gray-400">
+                                <span className="ml-auto text-xs text-ink-faint">
                                     {densityStyleOptions.find(
                                         (style) => style.density === option.density,
                                     )?.label}
@@ -276,11 +276,11 @@ export function WorkstationFormatToolbar({
                     title="Resume density"
                 >
                     {styleLabel}
-                    <ChevronDownIcon className="size-3.5 text-gray-400" />
+                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 w-48 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-50 w-48 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                 >
                     {densityStyleOptions.map((option) => {
                         const optionPages = estimateResumePages(
@@ -293,25 +293,25 @@ export function WorkstationFormatToolbar({
                                 <button
                                     type="button"
                                     onClick={() => onDensityChange(option.density)}
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     <MenuCheck on={option.density === density} />
                                     {option.label}
-                                    <span className="ml-auto text-[11px] text-gray-400">
+                                    <span className="ml-auto text-[11px] text-ink-faint">
                                         ≈{optionPages}p
                                     </span>
                                 </button>
                             </MenuItem>
                         );
                     })}
-                    <div className="mt-1 border-t border-gray-100 px-2 py-1.5 text-[11px] leading-snug text-gray-500">
+                    <div className="mt-1 border-t border-surface-border/80 px-2 py-1.5 text-[11px] leading-snug text-ink-muted">
                         {pageEstimate.hint}
                     </div>
                 </MenuItems>
             </Menu>
 
             <span
-                className="hidden max-w-[11rem] truncate text-[11px] text-gray-400 sm:inline"
+                className="hidden max-w-[11rem] truncate text-[11px] text-ink-faint sm:inline"
                 title={pageEstimate.hint}
             >
                 ≈{pageEstimate.pages} page{pageEstimate.pages === 1 ? '' : 's'}
@@ -338,18 +338,18 @@ export function WorkstationFormatToolbar({
                     }
                 >
                     {zoomLabel}
-                    <ChevronDownIcon className="size-3.5 text-gray-400" />
+                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
                 </MenuButton>
                 <MenuItems
                     anchor="bottom end"
-                    className="z-50 w-36 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-50 w-36 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                 >
                     {PREVIEW_ZOOM_OPTIONS.map((level) => (
                         <MenuItem key={level}>
                             <button
                                 type="button"
                                 onClick={() => onZoomChange(level)}
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 <MenuCheck on={level === zoom} />
                                 {Math.round(level * 100)}%
@@ -379,17 +379,17 @@ export function WorkstationFormatToolbar({
                 >
                     <ListBulletIcon className="size-4" />
                     View
-                    <ChevronDownIcon className="size-3.5 text-gray-400" />
+                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
                 </MenuButton>
                 <MenuItems
                     anchor="bottom end"
-                    className="z-50 w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                 >
                     <MenuItem>
                         <button
                             type="button"
                             onClick={() => onZoomChange(1)}
-                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                         >
                             <MenuCheck on={zoom === 1} />
                             Fit width (100%)
@@ -399,7 +399,7 @@ export function WorkstationFormatToolbar({
                         <button
                             type="button"
                             onClick={() => onZoomChange(0.75)}
-                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                         >
                             <MenuCheck on={zoom === 0.75} />
                             Compact (75%)
@@ -409,7 +409,7 @@ export function WorkstationFormatToolbar({
                         <button
                             type="button"
                             onClick={() => onZoomChange(1.25)}
-                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                         >
                             <MenuCheck on={zoom === 1.25} />
                             Large (125%)
@@ -419,7 +419,7 @@ export function WorkstationFormatToolbar({
                         <button
                             type="button"
                             onClick={() => onZoomChange(1.5)}
-                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                         >
                             <MenuCheck on={zoom === 1.5} />
                             Extra large (150%)

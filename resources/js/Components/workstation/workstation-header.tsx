@@ -167,7 +167,7 @@ export function WorkstationHeader({
                     {saveStatus === 'saving' && (
                         <Badge
                             variant="outline"
-                            className="border-transparent bg-gray-100 text-gray-500"
+                            className="border-transparent bg-surface text-ink-muted"
                         >
                             <ArrowPathIcon className="size-3 animate-spin" />
                             Saving
@@ -193,7 +193,7 @@ export function WorkstationHeader({
                 <div
                     role="tablist"
                     aria-label="Workstation mode"
-                    className="inline-flex shrink-0 items-center rounded-lg border border-gray-200 bg-gray-100 p-0.5"
+                    className="inline-flex shrink-0 items-center rounded-lg border border-surface-border bg-surface p-0.5"
                 >
                     {TABS.map((tab) => (
                         <button
@@ -206,7 +206,7 @@ export function WorkstationHeader({
                                 'rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors',
                                 tab === activeTab
                                     ? 'bg-white font-semibold text-brand shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700',
+                                    : 'text-ink-muted hover:text-ink',
                             )}
                         >
                             {tab}
@@ -234,7 +234,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 w-44 rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                            className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                         >
                             <MenuItem>
                                 <button
@@ -250,7 +250,7 @@ export function WorkstationHeader({
                                                   '_blank',
                                               )
                                     }
-                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     Download PDF
                                 </button>
@@ -269,7 +269,7 @@ export function WorkstationHeader({
                                                   '_blank',
                                               )
                                     }
-                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     Download DOCX
                                 </button>
@@ -286,13 +286,13 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-lg focus:outline-none"
+                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
                         >
                             <MenuItem>
                                 <button
                                     type="button"
                                     onClick={() => setRenaming(true)}
-                                    className="w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100"
+                                    className="w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     Rename this version
                                 </button>
@@ -300,8 +300,8 @@ export function WorkstationHeader({
 
                             {versions.length > 0 && (
                                 <>
-                                    <div className="my-1 border-t border-gray-200" />
-                                    <div className="px-2 py-1 text-[10px] font-bold tracking-wide text-gray-400 uppercase">
+                                    <div className="my-1 border-t border-surface-border" />
+                                    <div className="px-2 py-1 text-[10px] font-bold tracking-wide text-ink-faint uppercase">
                                         Versions
                                     </div>
                                     {versions.map((version) => (
@@ -312,7 +312,7 @@ export function WorkstationHeader({
                                                     version.id,
                                                 )}
                                                 className={cn(
-                                                    'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100',
+                                                    'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface',
                                                     version.is_current &&
                                                         'font-semibold text-brand',
                                                 )}
@@ -320,7 +320,7 @@ export function WorkstationHeader({
                                                 <span className="truncate">
                                                     {version.title}
                                                 </span>
-                                                <span className="ml-2 shrink-0 tabular-nums text-xs text-gray-400">
+                                                <span className="ml-2 shrink-0 tabular-nums text-xs text-ink-faint">
                                                     {version.score}
                                                 </span>
                                             </a>
@@ -329,7 +329,7 @@ export function WorkstationHeader({
                                 </>
                             )}
 
-                            <div className="my-1 border-t border-gray-200" />
+                            <div className="my-1 border-t border-surface-border" />
                             <MenuItem>
                                 <button
                                     type="button"
@@ -342,7 +342,7 @@ export function WorkstationHeader({
                                             { onFinish: () => setDuplicating(false) },
                                         );
                                     }}
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-gray-100 disabled:opacity-50"
+                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface disabled:opacity-50"
                                 >
                                     {duplicating ? (
                                         <ArrowPathIcon className="size-4 animate-spin" />
@@ -369,7 +369,7 @@ export function WorkstationHeader({
                             'rounded-md px-2 py-1 text-xs font-medium',
                             reviewPreviewMode === 'react'
                                 ? 'bg-brand-subtle text-brand'
-                                : 'text-gray-500 hover:bg-gray-100',
+                                : 'text-ink-muted hover:bg-surface',
                         )}
                     >
                         Live
@@ -381,7 +381,7 @@ export function WorkstationHeader({
                             'rounded-md px-2 py-1 text-xs font-medium',
                             reviewPreviewMode === 'pdf'
                                 ? 'bg-brand-subtle text-brand'
-                                : 'text-gray-500 hover:bg-gray-100',
+                                : 'text-ink-muted hover:bg-surface',
                         )}
                     >
                         PDF
