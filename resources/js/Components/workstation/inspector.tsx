@@ -64,5 +64,5 @@ export function SectionFields({
         certificate: <CertificateFields resume={resume} onChange={onChange} />,
     };
 
-    return <div className="flex flex-col gap-6">{content[section]}</div>;
+    return <div className="flex flex-col gap-4">{content[section]}</div>;
 }

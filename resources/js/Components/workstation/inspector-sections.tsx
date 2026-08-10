@@ -72,12 +72,12 @@ export function ContactFields({
         <>
             {/* Target role lives in the sticky bar above the form stack.
                 Contact keeps company + JD notes only to avoid duplicate fields. */}
-            <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3.5">
+            <div className="flex flex-col gap-2.5 rounded-lg border border-surface-border bg-surface/60 p-3">
                 <div>
-                    <p className="text-[11px] font-bold tracking-[0.06em] text-gray-500 uppercase">
+                    <p className="text-[11px] font-semibold tracking-[0.06em] text-ink-faint uppercase">
                         Version labels
                     </p>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-gray-500">
+                    <p className="mt-0.5 text-[11px] leading-relaxed text-ink-muted">
                         Optional. Target role is edited above this form. Company
                         and notes are dashboard-only — not printed on the
                         resume.
@@ -108,7 +108,7 @@ export function ContactFields({
                             })
                         }
                     />
-                    <p className="text-[11px] text-gray-500">
+                    <p className="text-[11px] text-ink-faint">
                         {(resume.target_job_description ?? '').length} / 10000
                         characters
                     </p>
@@ -368,7 +368,7 @@ export function ExperienceFields({
                                 onChange({ ...resume, bullet_style: style })
                             }
                             className={cn(
-                                'flex flex-col justify-between gap-3 rounded-xl border p-2.5 text-left',
+                                'flex flex-col justify-between gap-2 rounded-lg border p-2.5 text-left transition-colors duration-soft ease-soft',
                                 resume.bullet_style === style
                                     ? 'border-brand bg-brand-subtle ring-1 ring-brand'
                                     : 'border-gray-200 hover:bg-gray-50',
@@ -811,7 +811,7 @@ export function SkillsFields({
                                 onChange({ ...resume, skills_layout: layout })
                             }
                             className={cn(
-                                'flex flex-col justify-between gap-3 rounded-xl border p-2.5 text-left',
+                                'flex flex-col justify-between gap-2 rounded-lg border p-2.5 text-left transition-colors duration-soft ease-soft',
                                 resume.skills_layout === layout
                                     ? 'border-brand bg-brand-subtle ring-1 ring-brand'
                                     : 'border-gray-200 hover:bg-gray-50',

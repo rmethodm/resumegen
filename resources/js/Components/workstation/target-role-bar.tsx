@@ -21,15 +21,15 @@ export function TargetRoleBar({
     return (
         <div
             className={cn(
-                'rounded-lg border-2 border-brand/30 bg-brand-subtle/60 px-3 py-2.5 sm:px-4',
+                'rounded-lg border border-surface-border border-l-[3px] border-l-brand bg-white px-3 py-2.5 sm:px-4',
                 className,
             )}
         >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-4">
                 <div className="min-w-0 flex-1">
                     <label
                         htmlFor="field-target-role-bar"
-                        className="mb-1 block text-[11px] font-bold tracking-[0.06em] text-brand uppercase"
+                        className="mb-1 block text-[11px] font-semibold tracking-[0.06em] text-ink-faint uppercase"
                     >
                         Target role
                     </label>
@@ -39,11 +39,11 @@ export function TargetRoleBar({
                         value={targetRole}
                         allowCreate={false}
                         placeholder="e.g. Senior Software Engineer"
-                        className="h-9 w-full rounded-md border border-gray-300 bg-white px-3 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                        className="h-9 w-full rounded-md border border-surface-border bg-white px-3 text-sm shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                         onChange={onChange}
                     />
                 </div>
-                <p className="shrink-0 pb-1 text-[11px] leading-snug text-gray-600 sm:max-w-[14rem]">
+                <p className="shrink-0 pb-1 text-[11px] leading-snug text-ink-muted sm:max-w-[15rem]">
                     {targetRole.trim() === ''
                         ? 'Sets the Keywords score band. Not printed on the resume.'
                         : recognized

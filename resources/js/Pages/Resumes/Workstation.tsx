@@ -464,7 +464,7 @@ export default function Workstation({
         return (
             <main
                 aria-label="Section form"
-                className="flex min-w-0 flex-col gap-4"
+                className="flex min-w-0 flex-col gap-3"
             >
                 {draft.section_order.map((sectionKey) => {
                     const collapsed = collapsedSections.includes(sectionKey);
@@ -479,7 +479,8 @@ export default function Workstation({
                             onDrop={() => handleDrop(sectionKey)}
                             onDragEnd={() => setDraggedSection(null)}
                             className={cn(
-                                'gap-0 overflow-hidden py-0',
+                                'gap-0 overflow-hidden border-surface-border py-0 shadow-none ring-1 ring-ink/5',
+                                'transition-opacity duration-soft ease-soft',
                                 draggedSection === sectionKey && 'opacity-50',
                             )}
                         >
@@ -496,15 +497,13 @@ export default function Workstation({
                                     toggleSectionCollapsed(sectionKey);
                                 }}
                                 className={cn(
-                                    'flex cursor-default select-none items-center gap-2 bg-white px-5 py-3',
-                                    collapsed
-                                        ? 'border-b-0'
-                                        : 'border-b border-gray-100',
+                                    'flex cursor-default select-none items-center gap-2 bg-surface/50 px-4 py-2.5',
+                                    !collapsed && 'border-b border-surface-border/80',
                                 )}
                             >
                                 <Bars3Icon
                                     className={cn(
-                                        'size-4 shrink-0 text-gray-500',
+                                        'size-4 shrink-0 text-ink-faint',
                                         isMobile ? 'hidden' : 'cursor-grab',
                                     )}
                                 />
@@ -515,36 +514,36 @@ export default function Workstation({
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="flex items-center gap-1 text-[11px] font-bold tracking-[0.15em] text-brand uppercase"
+                                    className="flex items-center gap-1 text-[11px] font-bold tracking-[0.12em] text-ink uppercase"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
-                                            'size-3 shrink-0 transition-transform',
+                                            'size-3 shrink-0 text-ink-faint transition-transform duration-soft ease-soft',
                                             collapsed && '-rotate-90',
                                         )}
                                     />
                                     {sectionLabels[sectionKey]}
                                 </button>
                                 {collapsed && (
-                                    <span className="text-[10px] font-medium tracking-normal text-gray-400 normal-case">
+                                    <span className="text-[10px] font-medium tracking-normal text-ink-faint normal-case">
                                         Collapsed
                                     </span>
                                 )}
-                                <div className="ml-auto flex items-center gap-1">
+                                <div className="ml-auto flex items-center gap-0.5">
                                     {isOptionalSection(sectionKey) && (
                                         <Button
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 px-2 text-xs text-gray-500 hover:text-danger"
+                                            className="h-8 px-2 text-xs text-ink-faint hover:text-danger"
                                             onClick={() =>
                                                 hideSection(sectionKey)
                                             }
                                         >
-                                            Hide section
+                                            Hide
                                         </Button>
                                     )}
-                                    <div className="flex items-center gap-1 md:hidden">
+                                    <div className="flex items-center gap-0.5 md:hidden">
                                         <Button
                                             type="button"
                                             variant="ghost"
@@ -590,7 +589,7 @@ export default function Workstation({
                             {!collapsed && (
                                 <div
                                     id={`section-${sectionKey}-content`}
-                                    className="p-6"
+                                    className="px-4 py-4 sm:px-5 sm:py-5"
                                 >
                                     <SectionFields
                                         resume={draft}
@@ -613,7 +612,7 @@ export default function Workstation({
         <AuthenticatedLayout>
             <Head title={draft.title} />
 
-            <div className="flex flex-col bg-gray-50">
+            <div className="flex flex-col bg-surface">
                 {(offline || saveStatus === 'error') && (
                     <div
                         className={cn(
@@ -663,7 +662,7 @@ export default function Workstation({
                     </div>
                 )}
 
-                <div className="flex flex-col gap-6 p-4 sm:p-6 lg:flex-row lg:items-start">
+                <div className="flex flex-col gap-5 p-4 sm:p-5 lg:flex-row lg:items-start lg:gap-5">
                     <SectionPanel
                         resumeId={id}
                         analysis={liveAnalysis}
@@ -678,7 +677,7 @@ export default function Workstation({
                         onOpenOptimize={() => setTab('Optimize')}
                     />
 
-                    <div className="flex min-w-0 flex-col gap-6 lg:flex-1">
+                    <div className="flex min-w-0 flex-col gap-4 lg:flex-1">
                         <WorkstationHeader
                             resumeId={id}
                             title={draft.title}
