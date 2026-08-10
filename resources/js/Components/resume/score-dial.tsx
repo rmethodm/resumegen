@@ -1,35 +1,13 @@
 import { cn } from '@/lib/utils';
-
-/** Ring fill by score band — matches dashboard version dots (green / amber / red). */
-function scoreRingColor(score: number | null): string {
-    if (score === null) {
-        return '#d1d5db'; // gray-300
-    }
-    if (score >= 70) {
-        return '#10b981'; // emerald-500
-    }
-    if (score >= 40) {
-        return '#fbbf24'; // amber-400
-    }
-    return '#ef4444'; // red-500
-}
-
-function scoreTextClass(score: number | null): string {
-    if (score === null) {
-        return 'text-gray-400';
-    }
-    if (score >= 70) {
-        return 'text-emerald-600';
-    }
-    if (score >= 40) {
-        return 'text-amber-600';
-    }
-    return 'text-red-600';
-}
+import {
+    scoreBand,
+    scoreBandRingHex,
+    scoreBandTextClass,
+} from '@/lib/score-band';
 
 /**
  * The match score as a ring. A conic-gradient does the whole arc — no SVG, no
- * chart library.
+ * chart library. Band colors come from score-band (same source as dashboard dots).
  */
 export function ScoreDial({
     score,
@@ -41,7 +19,8 @@ export function ScoreDial({
     className?: string;
 }) {
     const filled = score ?? 0;
-    const ring = scoreRingColor(score);
+    const band = scoreBand(score);
+    const ring = scoreBandRingHex[band];
 
     return (
         <div
@@ -65,7 +44,7 @@ export function ScoreDial({
                 style={{ width: size - 14, height: size - 14 }}
                 className={cn(
                     'flex items-center justify-center rounded-full bg-white text-[13px] font-extrabold',
-                    scoreTextClass(score),
+                    scoreBandTextClass[band],
                 )}
             >
                 {score ?? '—'}

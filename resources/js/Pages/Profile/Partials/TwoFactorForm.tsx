@@ -1,9 +1,9 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
+import { Button } from '@/Components/ui/button';
 
 interface Props {
     enabled: boolean;
@@ -64,9 +64,9 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
             {/* State 1: Disabled */}
             {!enabled && !pending && (
                 <form onSubmit={handleEnable} className="mt-6">
-                    <PrimaryButton disabled={enableForm.processing}>
+                    <Button disabled={enableForm.processing}>
                         Enable Two-Factor Authentication
-                    </PrimaryButton>
+                    </Button>
                 </form>
             )}
 
@@ -96,7 +96,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                             />
                             <InputError message={confirmForm.errors.code} className="mt-2" />
                         </div>
-                        <PrimaryButton disabled={confirmForm.processing}>Confirm</PrimaryButton>
+                        <Button disabled={confirmForm.processing}>Confirm</Button>
                     </form>
                 </div>
             )}

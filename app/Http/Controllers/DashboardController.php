@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Support\ResumeAnalysis;
-use App\Support\ResumeDocument;
 use App\Support\RoleSamples;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,11 +15,10 @@ class DashboardController extends Controller
     public function __invoke(Request $request): Response
     {
         return Inertia::render('Dashboard', [
-            // Deferred: this eager-loads 6 relations per resume and scores
-            // every version server-side, so it scales with the user's resume
-            // count. hasStarterProfile/roleSamples are cheap and load
-            // immediately; average_score is derived client-side from the
-            // deferred resumes instead of being computed (and shipped) twice.
+            // Deferred: scores every version server-side and scales with the
+            // user's resume count. Payload is intentionally lean — badge-level
+            // share only, no full document preview (unused on this page). Full
+            // share modal data is loaded on demand via resumes.share.show.
             'resumes' => Inertia::defer(fn () => $this->resumesForDashboard($request)),
             'hasStarterProfile' => $request->user()->starterProfile()->exists(),
             'roleSamples' => RoleSamples::catalogue(),
@@ -32,17 +30,14 @@ class DashboardController extends Controller
      */
     private function resumesForDashboard(Request $request): array
     {
+        // Score only needs experiences + skills (plus scalars on the resume row).
+        // projects / education / certificates are not scored and are not rendered here.
         return $request->user()->resumes()
             ->with([
                 'experiences',
                 'skills',
-                'projects',
-                'education',
-                'certificates',
                 'group',
-                'shareLink' => fn ($query) => $query
-                    ->withCount('views')
-                    ->with(['views' => fn ($views) => $views->latest('id')->limit(50)]),
+                'shareLink' => fn ($query) => $query->withCount('views'),
             ])
             ->latest('updated_at')
             ->get()
@@ -60,11 +55,7 @@ class DashboardController extends Controller
                     'updated_at' => $representative->updated_at?->diffForHumans(),
                     'score' => ResumeAnalysis::score($representative),
                     'version_count' => $versions->count(),
-                    // Full Share modal payload so the dashboard can open the same modal.
-                    'share' => $this->shareSummary($representative->shareLink),
-                    // The whole document, for the dashboard card's live preview —
-                    // relations are already eager-loaded above, so this is free.
-                    'preview' => ResumeDocument::toArray($representative),
+                    'share' => $this->shareBadge($representative->shareLink),
                     'versions' => $versions
                         ->map(fn (Resume $version): array => [
                             'id' => $version->id,
@@ -72,7 +63,7 @@ class DashboardController extends Controller
                             'target_company' => $version->target_company,
                             'score' => ResumeAnalysis::score($version),
                             'is_base' => $version->id === $baseId,
-                            'share' => $this->shareSummary($version->shareLink),
+                            'share' => $this->shareBadge($version->shareLink),
                         ])
                         ->values()
                         ->all(),
@@ -83,22 +74,20 @@ class DashboardController extends Controller
     }
 
     /**
-     * Same shape as the workstation Share modal, plus is_expired for the badge.
+     * Badge fields for list/status UI only — no password, no view rows.
+     * ShareResumeModal loads the full payload via resumes.share.show.
      *
      * @return array{
      *     id: int,
      *     url: string,
-     *     allow_download: bool,
-     *     require_email: bool,
      *     require_password: bool,
-     *     password: string|null,
+     *     require_email: bool,
      *     expires_at: string|null,
-     *     views: list<array{email: string, viewed_at: string}>,
      *     view_count: int,
      *     is_expired: bool
      * }|null
      */
-    private function shareSummary(?ResumeShareLink $link): ?array
+    private function shareBadge(?ResumeShareLink $link): ?array
     {
         if ($link === null) {
             return null;
@@ -107,18 +96,10 @@ class DashboardController extends Controller
         return [
             'id' => $link->id,
             'url' => route('share.show', $link->token),
-            'allow_download' => $link->allow_download,
-            'require_email' => $link->require_email,
             'require_password' => $link->require_password,
-            'password' => $link->password,
+            'require_email' => $link->require_email,
             'expires_at' => $link->expires_at?->toDateString(),
-            'views' => $link->views
-                ->map(fn ($view): array => [
-                    'email' => $view->email,
-                    'viewed_at' => $view->created_at?->toIso8601String() ?? '',
-                ])
-                ->all(),
-            'view_count' => (int) ($link->views_count ?? $link->views->count()),
+            'view_count' => (int) ($link->views_count ?? 0),
             'is_expired' => $link->isExpired(),
         ];
     }

@@ -1,11 +1,11 @@
-import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import { Button } from '@/Components/ui/button';
+import { Checkbox } from '@/Components/ui/checkbox';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -118,9 +118,9 @@ export default function Register() {
                     </span>
                 </label>
 
-                <PrimaryButton className="mt-4 w-full justify-center" disabled={processing}>
+                <Button className="mt-4 w-full justify-center" disabled={processing}>
                     Create account
-                </PrimaryButton>
+                </Button>
 
                 <p className="mt-4 text-center text-sm text-[#71717a]">
                     Already have an account?{' '}

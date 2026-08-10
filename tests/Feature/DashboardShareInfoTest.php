@@ -12,7 +12,7 @@ class DashboardShareInfoTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_dashboard_includes_share_info_for_all_resumes(): void
+    public function test_dashboard_includes_lean_share_badges_without_preview(): void
     {
         $user = User::factory()->create();
         $shared = Resume::factory()->for($user)->create(['title' => 'Shared Resume']);
@@ -48,19 +48,21 @@ class DashboardShareInfoTest extends TestCase
                         $share = $sharedRow['share'] ?? null;
                         $versionShare = collect($sharedRow['versions'])->firstWhere('id', $shared->id)['share'] ?? null;
 
+                        // Lean badge: view_count yes, no views array, no password, no preview.
                         return $share !== null
                             && $share['id'] === $link->id
                             && $share['url'] === route('share.show', $link->token)
                             && $share['view_count'] === 2
-                            && count($share['views']) === 2
+                            && ! array_key_exists('views', $share)
+                            && ! array_key_exists('password', $share)
+                            && ! array_key_exists('preview', $sharedRow)
                             && $share['require_password'] === true
                             && $share['require_email'] === true
-                            && $share['allow_download'] === false
                             && $share['is_expired'] === false
                             && $share['expires_at'] === $link->expires_at?->toDateString()
-                            && array_key_exists('password', $share)
                             && $versionShare !== null
                             && $versionShare['view_count'] === 2
+                            && ! array_key_exists('password', $versionShare)
                             && $unsharedRow['share'] === null
                             && collect($unsharedRow['versions'])->every(fn (array $v): bool => $v['share'] === null);
                     })));
@@ -81,5 +83,51 @@ class DashboardShareInfoTest extends TestCase
                 ->component('Dashboard')
                 ->loadDeferredProps(fn ($reload) => $reload
                     ->where('resumes.0.share.is_expired', true)));
+    }
+
+    public function test_share_show_returns_full_modal_payload_for_owner(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create([
+            'require_password' => true,
+            'password' => 'secret12',
+            'require_email' => true,
+        ]);
+        $link->views()->create(['email' => 'recruiter@example.com']);
+
+        $this->actingAs($user)
+            ->getJson(route('resumes.share.show', $resume))
+            ->assertOk()
+            ->assertJsonPath('share.id', $link->id)
+            ->assertJsonPath('share.url', route('share.show', $link->token))
+            ->assertJsonPath('share.password', 'secret12')
+            ->assertJsonPath('share.view_count', 1)
+            ->assertJsonCount(1, 'share.views')
+            ->assertJsonPath('share.views.0.email', 'recruiter@example.com')
+            ->assertJsonPath('share.is_expired', false);
+    }
+
+    public function test_share_show_returns_null_when_no_link(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->getJson(route('resumes.share.show', $resume))
+            ->assertOk()
+            ->assertJsonPath('share', null);
+    }
+
+    public function test_share_show_is_forbidden_for_non_owner(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $resume = Resume::factory()->for($owner)->create();
+        ResumeShareLink::factory()->for($resume)->create();
+
+        $this->actingAs($other)
+            ->getJson(route('resumes.share.show', $resume))
+            ->assertNotFound();
     }
 }

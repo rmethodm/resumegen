@@ -106,6 +106,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
             ->name('resumes.ai.summary');
     });
 
+    Route::get('/resumes/{resume}/share', [ResumeShareLinkController::class, 'show'])->name('resumes.share.show');
     Route::post('/resumes/{resume}/share', [ResumeShareLinkController::class, 'store'])->name('resumes.share.store');
     Route::patch('/resume-share-links/{resumeShareLink}', [ResumeShareLinkController::class, 'update'])->name('resume-share-links.update');
     Route::delete('/resume-share-links/{resumeShareLink}', [ResumeShareLinkController::class, 'destroy'])->name('resume-share-links.destroy');

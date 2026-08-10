@@ -11,28 +11,23 @@ import {
     TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Deferred, Head, Link, router } from '@inertiajs/react';
-import { useState, type MouseEvent } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { NewResumeModal } from '@/Components/dashboard/new-resume-modal';
 import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
+import { scoreDotClass } from '@/lib/score-band';
 import { cn } from '@/lib/utils';
-import type { DashboardShareInfo, ResumeSummary } from '@/types';
-
-function scoreDotColor(score: number): string {
-    if (score >= 70) return 'bg-success';
-    if (score >= 40) return 'bg-amber-400';
-    return 'bg-danger';
-}
+import type { DashboardShareBadge, ResumeShareLink, ResumeSummary } from '@/types';
 
 function ShareStatus({
     share,
     compact = false,
     onOpenShare,
 }: {
-    share: DashboardShareInfo | null;
+    share: DashboardShareBadge | null;
     compact?: boolean;
     onOpenShare: () => void;
 }) {
@@ -67,7 +62,7 @@ function ShareStatus({
         return (
             <span
                 className={cn(
-                    'inline-flex items-center gap-1 font-medium text-amber-700',
+                    'inline-flex items-center gap-1 font-medium text-warning-text',
                     compact ? 'text-[10px]' : 'text-[11px]',
                 )}
             >
@@ -75,7 +70,7 @@ function ShareStatus({
                 <button
                     type="button"
                     onClick={onOpenShare}
-                    className="font-medium text-amber-700 underline-offset-2 hover:underline"
+                    className="font-medium text-warning-text underline-offset-2 hover:underline"
                 >
                     Link expired
                 </button>
@@ -136,16 +131,55 @@ function ShareStatus({
 
 function ResumeCard({ resume }: { resume: ResumeSummary }) {
     const [expanded, setExpanded] = useState(false);
-    // Store only the resume id so the modal re-reads share from props after
-    // Inertia reloads the dashboard (toggles, password rotate, cancel share).
+    // Badge props stay lean; full modal payload is fetched when the id is set.
+    // Re-fetch when `resume` updates after Inertia `back()` from modal actions.
     const [shareModalResumeId, setShareModalResumeId] = useState<number | null>(null);
-    const shareModalShare: DashboardShareInfo | null =
-        shareModalResumeId === null
-            ? null
-            : shareModalResumeId === resume.id
-              ? resume.share
-              : (resume.versions.find((version) => version.id === shareModalResumeId)?.share ??
-                null);
+    const [shareModalDetail, setShareModalDetail] = useState<ResumeShareLink | null>(null);
+    const [shareModalReady, setShareModalReady] = useState(false);
+
+    useEffect(() => {
+        if (shareModalResumeId === null) {
+            setShareModalDetail(null);
+            setShareModalReady(false);
+
+            return;
+        }
+
+        let cancelled = false;
+        setShareModalReady(false);
+
+        fetch(route('resumes.share.show', shareModalResumeId), {
+            headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin',
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to load share');
+                }
+
+                return response.json() as Promise<{ share: ResumeShareLink | null }>;
+            })
+            .then((data) => {
+                if (!cancelled) {
+                    setShareModalDetail(data.share);
+                    setShareModalReady(true);
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setShareModalDetail(null);
+                    setShareModalReady(true);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [shareModalResumeId, resume]);
+
     const hasVersions = resume.versions.length > 1;
     const alreadyShared = resume.share !== null;
 
@@ -333,7 +367,7 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                                         aria-hidden="true"
                                         className={cn(
                                             'size-1.5 shrink-0 rounded-full',
-                                            scoreDotColor(version.score),
+                                            scoreDotClass(version.score),
                                         )}
                                     />
                                     <div className="min-w-0 flex-1">
@@ -380,16 +414,18 @@ function ResumeCard({ resume }: { resume: ResumeSummary }) {
                 </div>
             )}
 
-            <ShareResumeModal
-                open={shareModalResumeId !== null}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShareModalResumeId(null);
-                    }
-                }}
-                resumeId={shareModalResumeId ?? resume.id}
-                share={shareModalShare}
-            />
+            {shareModalReady && shareModalResumeId !== null && (
+                <ShareResumeModal
+                    open
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            setShareModalResumeId(null);
+                        }
+                    }}
+                    resumeId={shareModalResumeId}
+                    share={shareModalDetail}
+                />
+            )}
         </Card>
     );
 }
@@ -423,6 +459,10 @@ export default function Dashboard({
     }[];
 }) {
     const [newResumeOpen, setNewResumeOpen] = useState(false);
+    const averageScore =
+        resumes && resumes.length > 0
+            ? Math.round(resumes.reduce((sum, row) => sum + row.score, 0) / resumes.length)
+            : null;
 
     return (
         <AuthenticatedLayout
@@ -462,14 +502,9 @@ export default function Dashboard({
                                 <p className="text-[10px] font-bold tracking-[0.06em] text-gray-500 uppercase">
                                     Your resumes
                                 </p>
-                                {resumes && resumes.length > 0 && (
+                                {averageScore !== null && (
                                     <p className="mt-1 text-sm text-gray-500">
-                                        Average score:{' '}
-                                        {Math.round(
-                                            resumes.reduce((sum, r) => sum + r.score, 0) /
-                                                resumes.length,
-                                        )}
-                                        /100
+                                        Average score: {averageScore}/100
                                     </p>
                                 )}
                             </div>

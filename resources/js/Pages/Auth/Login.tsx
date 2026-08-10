@@ -1,11 +1,11 @@
-import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import { Button } from '@/Components/ui/button';
+import { Checkbox } from '@/Components/ui/checkbox';
 
 export default function Login({
     status,
@@ -114,9 +114,9 @@ export default function Login({
                     )}
                 </div>
 
-                <PrimaryButton className="mt-6 w-full justify-center" disabled={processing}>
+                <Button className="mt-6 w-full justify-center" disabled={processing}>
                     Log in
-                </PrimaryButton>
+                </Button>
 
                 <p className="mt-4 text-center text-sm text-[#71717a]">
                     No account yet?{' '}
