@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** Resumegen Apply extension — fill MVP + ATS heuristics shipped (user: works well). Job Imports (Adzuna/USAJOBS search + save) also shipped same day.
-- **Last updated:** 2026-08-06
-- **Next action:** User-directed. Optional: one-click connect; multi-step Workday QA; job-radar (scroll match) if productized. Job Imports: resume matching/gap analysis/tailoring/cover letters remain frontend stubs only, per CLAUDE.md.
+- **Active:** User-directed. UI redesign ladder P0–P2 shipped (legal, Welcome, shell, logout fix). Remaining UI items parked in `docs/plans/ui-redesign-remaining.md`.
+- **Last updated:** 2026-08-10
+- **Next action:** User-directed. UI: P3 in `docs/plans/ui-redesign-remaining.md` when resuming redesign. Extension: optional one-click connect / multi-step Workday QA. Job Imports matching/tailoring remain stubs only (CLAUDE.md).
 
 ---
 

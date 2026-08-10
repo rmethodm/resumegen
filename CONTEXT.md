@@ -1,14 +1,13 @@
 # Context
 
 ## Current Task
-ui-craft design pass finished — whole-app detector clean; token spine extended.
+Redesign ladder P0–P2 shipped; remaining work saved for later.
 
 ## Key Decisions
-- Shared buttons/focus: `focus-visible` rings + semantic tokens; destructive deletes use `window.confirm` + `onConfirm`
-- `surface-card` for static elevated UI; `surface-overlay` for real modals only
-- Status colors dark-remapped; radii/z/shadow tokens + gray/accent ramps; legacy `brand`/`ink` frozen
+- Free forever / no paywall; Workstation stays dense (no marketing glass in editor)
+- Nav island must stay `overflow-visible` or user dropdown/logout breaks
+- Brand monogram: `/r-monogram.svg` + `BrandMark`; marketing display: `font-display` (Source Serif 4)
 
 ## Next Steps
-- Rebuild assets if needed (`npm run build` / HMR)
-- Optional: commit/push this design batch
-- Optional later: component-layer tokens, reduced-motion contract, per-surface finalize
+- See `docs/plans/ui-redesign-remaining.md` (P3 tabular-nums + placeholders; optional dark mode / real search / hero screenshot)
+- Rebuild assets after UI pulls: `npm run build` or `npm run dev`
