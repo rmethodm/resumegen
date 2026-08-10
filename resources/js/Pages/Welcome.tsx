@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
+import { BrandMark } from '@/Components/BrandMark';
 import { buttonClassName } from '@/Components/ui/button';
 import { Shell } from '@/Components/ui/shell';
 import { cn } from '@/lib/utils';
@@ -94,6 +95,12 @@ export default function Welcome({ auth }: PageProps) {
         <>
             <Head title="Resumegen — Build a resume that gets you hired" />
             <div className="min-h-[100dvh] scroll-smooth bg-surface font-sans text-ink">
+                <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink focus:shadow-ambient"
+                >
+                    Skip to content
+                </a>
                 {/* Floating nav island */}
                 <div
                     className={cn(
@@ -107,12 +114,7 @@ export default function Welcome({ auth }: PageProps) {
                             'bg-white/90 px-4 shadow-ambient backdrop-blur-xl',
                         )}
                     >
-                        <div className="flex items-center gap-2.5">
-                            <div className="h-7 w-7 rounded-lg bg-brand shadow-shell" aria-hidden />
-                            <span className="text-[15px] font-extrabold tracking-tight text-ink">
-                                Resumegen
-                            </span>
-                        </div>
+                        <BrandMark href="/" size="md" />
                         <div className="ml-auto hidden items-center gap-6 md:flex">
                             <a
                                 href="#features"
@@ -162,6 +164,7 @@ export default function Welcome({ auth }: PageProps) {
                 </div>
 
                 {/* Editorial split hero */}
+                <main id="main-content" tabIndex={-1}>
                 <section className="relative overflow-hidden px-4 pb-16 pt-10 sm:px-6 sm:pt-14 lg:pt-16">
                     <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
                         <div className="h-[280px] w-[520px] rounded-full bg-brand/10 blur-3xl" />
@@ -499,17 +502,21 @@ export default function Welcome({ auth }: PageProps) {
 
                 <footer className="border-t border-surface-border/80 px-4 py-6 sm:px-6">
                     <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 sm:flex-row">
-                        <span className="text-sm font-bold text-ink">Resumegen</span>
+                        <BrandMark href="/" size="sm" />
                         <span className="text-xs text-ink-faint">
                             © {new Date().getFullYear()} Resumegen. All rights reserved.
                         </span>
                         <div className="flex gap-5 text-xs text-ink-muted">
-                            <span>Privacy</span>
-                            <span>Terms</span>
-                            <span>Contact</span>
+                            <Link href={route('legal.privacy')} className="hover:text-ink hover:underline">
+                                Privacy
+                            </Link>
+                            <Link href={route('legal.terms')} className="hover:text-ink hover:underline">
+                                Terms
+                            </Link>
                         </div>
                     </div>
                 </footer>
+                </main>
             </div>
         </>
     );

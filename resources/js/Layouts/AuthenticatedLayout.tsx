@@ -1,3 +1,4 @@
+import { BrandMark } from '@/Components/BrandMark';
 import Dropdown from '@/Components/Dropdown';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import {
@@ -65,6 +66,12 @@ export default function Authenticated({
 
     return (
         <div className="min-h-[100dvh] bg-surface dark:bg-gray-900">
+            <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink focus:shadow-ambient"
+            >
+                Skip to content
+            </a>
             <div
                 className={cn(
                     'sticky top-0 z-30 px-3 pb-2 pt-3 sm:px-4 sm:pt-4',
@@ -82,12 +89,7 @@ export default function Authenticated({
                     )}
                 >
                     <div className="flex h-14 items-center gap-2 px-3 sm:gap-3 sm:px-4">
-                        <Link href={route('dashboard')} className="flex shrink-0 items-center gap-2.5">
-                            <div className="h-[30px] w-[30px] flex-shrink-0 rounded-lg bg-brand shadow-shell" />
-                            <span className="text-[15px] font-extrabold tracking-tight text-ink dark:text-white">
-                                Resumegen
-                            </span>
-                        </Link>
+                        <BrandMark href={route('dashboard')} size="md" />
 
                         <nav className="hidden items-center gap-0.5 lg:flex">
                             {nav.map((item) => (
@@ -195,7 +197,9 @@ export default function Authenticated({
                 </header>
             </div>
 
-            <main className="min-w-0 flex-1">{children}</main>
+            <main id="main-content" className="min-w-0 flex-1" tabIndex={-1}>
+                {children}
+            </main>
         </div>
     );
 }

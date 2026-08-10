@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExtensionTokenController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobImportsController;
+use App\Http\Controllers\LegalController;
 use App\Http\Controllers\MobileTokenController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
@@ -24,6 +25,9 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', WelcomeController::class);
+
+Route::get('/privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
+Route::get('/terms', [LegalController::class, 'terms'])->name('legal.terms');
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified', 'two_factor_challenge'])

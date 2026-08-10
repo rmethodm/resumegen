@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode } from 'react';
+import { BrandMark } from '@/Components/BrandMark';
 
 type AdminNavItem = { label: string; href: string; active: boolean };
 
@@ -35,8 +36,10 @@ export default function AdminLayout({
             <header className="border-b border-gray-200 bg-gray-900 text-white">
                 <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4">
                     <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-md bg-gradient-to-br from-brand to-brand-accent" />
-                        <span className="text-sm font-bold tracking-tight">Resumegen Admin</span>
+                        <BrandMark size="sm" showWordmark={false} />
+                        <span className="text-sm font-bold tracking-tight text-white">
+                            Resumegen Admin
+                        </span>
                     </div>
 
                     <nav className="flex items-center gap-1">
