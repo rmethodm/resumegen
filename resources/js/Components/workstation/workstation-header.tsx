@@ -14,7 +14,6 @@ import { useState } from 'react';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { buttonClassName } from '@/Components/ui/button';
-import { Card } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { TemplatePickerModal } from '@/Components/workstation/template-picker-modal';
@@ -121,7 +120,12 @@ export function WorkstationHeader({
     const [pickingTemplate, setPickingTemplate] = useState(false);
 
     return (
-        <Card className="gap-0 py-0">
+        <div
+            className={cn(
+                'overflow-hidden rounded-2xl border border-surface-border/80',
+                'bg-white/90 shadow-ambient backdrop-blur-xl',
+            )}
+        >
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5 sm:px-4">
                 {/* Left: title · status */}
                 <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -354,8 +358,8 @@ export function WorkstationHeader({
             </div>
 
             {activeTab === 'Review' && onReviewPreviewModeChange && (
-                <div className="flex items-center gap-2 border-t border-gray-100 px-3 py-1.5 sm:px-4">
-                    <span className="text-[10px] font-bold tracking-wide text-gray-400 uppercase">
+                <div className="flex items-center gap-2 border-t border-surface-border/80 px-3 py-1.5 sm:px-4">
+                    <span className="text-[10px] font-bold tracking-wide text-ink-faint uppercase">
                         Preview
                     </span>
                     <button
@@ -417,6 +421,6 @@ export function WorkstationHeader({
                 resumeId={resumeId}
                 share={share}
             />
-        </Card>
+        </div>
     );
 }

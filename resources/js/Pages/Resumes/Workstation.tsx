@@ -662,22 +662,15 @@ export default function Workstation({
                     </div>
                 )}
 
-                <div className="flex flex-col gap-5 p-4 sm:p-5 lg:flex-row lg:items-start lg:gap-5">
-                    <SectionPanel
-                        resumeId={id}
-                        analysis={liveAnalysis}
-                        resume={draft}
-                        selected={section}
-                        onSelect={scrollToSection}
-                        onAddSection={addSection}
-                        onApplySuggestion={applySuggestion}
-                        onSelectSuggestion={selectSuggestion}
-                        onAddKeyword={addKeyword}
-                        onJumpChecklist={jumpChecklist}
-                        onOpenOptimize={() => setTab('Optimize')}
-                    />
-
-                    <div className="flex min-w-0 flex-col gap-4 lg:flex-1">
+                {/* Resume chrome — same width / gutters as the main top nav island */}
+                <div
+                    className={cn(
+                        'px-3 pb-2 sm:px-4',
+                        '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
+                        '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
+                    )}
+                >
+                    <div className="mx-auto max-w-6xl">
                         <WorkstationHeader
                             resumeId={id}
                             title={draft.title}
@@ -720,7 +713,31 @@ export default function Workstation({
                             reviewPreviewMode={reviewPreviewMode}
                             onReviewPreviewModeChange={setReviewPreviewMode}
                         />
+                    </div>
+                </div>
 
+                <div
+                    className={cn(
+                        'mx-auto flex w-full max-w-6xl flex-col gap-5 px-3 pb-5 sm:px-4 lg:flex-row lg:items-start lg:gap-5',
+                        '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
+                        '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
+                    )}
+                >
+                    <SectionPanel
+                        resumeId={id}
+                        analysis={liveAnalysis}
+                        resume={draft}
+                        selected={section}
+                        onSelect={scrollToSection}
+                        onAddSection={addSection}
+                        onApplySuggestion={applySuggestion}
+                        onSelectSuggestion={selectSuggestion}
+                        onAddKeyword={addKeyword}
+                        onJumpChecklist={jumpChecklist}
+                        onOpenOptimize={() => setTab('Optimize')}
+                    />
+
+                    <div className="flex min-w-0 flex-col gap-4 lg:flex-1">
                         {tab === 'Edit' && (
                             <TargetRoleBar
                                 targetRole={draft.target_role}
