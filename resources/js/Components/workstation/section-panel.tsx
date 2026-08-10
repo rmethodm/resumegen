@@ -252,14 +252,14 @@ export function SectionPanel({
                                 onClick={() => onSelect(section)}
                                 aria-current={selected === section}
                                 className={cn(
-                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-colors',
+                                    'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-[color,background-color,box-shadow] duration-soft ease-soft',
                                     selected === section
-                                        ? 'border-brand bg-brand-subtle font-medium text-brand'
-                                        : 'border-transparent text-gray-900 hover:bg-gray-100',
+                                        ? 'border-brand bg-brand-subtle font-medium text-brand shadow-shell'
+                                        : 'border-transparent text-ink hover:bg-surface',
                                 )}
                             >
                                 <span>{sectionLabels[section]}</span>
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-ink-faint">
                                     {sectionSummary(resume, section)}
                                 </span>
                             </button>

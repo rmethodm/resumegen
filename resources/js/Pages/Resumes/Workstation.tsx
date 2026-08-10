@@ -732,30 +732,33 @@ export default function Workstation({
                         )}
 
                         {tab === 'Review' && (
-                            <Card className="gap-0 overflow-hidden py-0">
+                            <div className="overflow-hidden rounded-xl bg-surface ring-1 ring-ink/5">
                                 {reviewPreviewMode === 'pdf' ? (
                                     <iframe
                                         title="PDF preview"
                                         src={route('resumes.preview', id)}
-                                        className="h-[80dvh] w-full bg-gray-100"
+                                        className="h-[80dvh] w-full bg-surface"
                                     />
                                 ) : (
-                                    <div className="overflow-x-auto p-4">
+                                    <div className="flex justify-center overflow-x-auto p-4 sm:p-6 lg:p-8">
                                         <div
-                                            className="origin-top-left transition-transform motion-reduce:transition-none"
+                                            className="origin-top-left transition-transform duration-soft ease-soft motion-reduce:transition-none"
                                             style={{
                                                 transform: `scale(${previewZoom})`,
                                                 width: `${100 / previewZoom}%`,
                                             }}
                                         >
-                                            <ResumePreview
-                                                resume={draft}
-                                                className="w-full"
-                                            />
+                                            {/* Paper stage — soft ambient lift so the page reads as a document */}
+                                            <div className="rounded-md bg-white shadow-ambient ring-1 ring-ink/5">
+                                                <ResumePreview
+                                                    resume={draft}
+                                                    className="w-full"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 )}
-                            </Card>
+                            </div>
                         )}
 
                         {tab === 'Optimize' && (
