@@ -64,7 +64,7 @@ export default function ExtensionTokensForm({
         <section className={className}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">Resumegen Apply</h2>
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-ink-muted">
                     Connect the browser extension to fill job applications from your resumes.
                     Nothing is submitted for you. Paste the token into the extension settings once.
                 </p>

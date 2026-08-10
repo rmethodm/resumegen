@@ -56,7 +56,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
         <section className={className}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">Two-Factor Authentication</h2>
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-ink-muted">
                     Add extra security to your account using a time-based one-time password.
                 </p>
             </header>
@@ -73,7 +73,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
             {/* State 2: Pending confirmation */}
             {pending && qrCodeSvg && (
                 <div className="mt-6 space-y-4">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-ink-muted">
                         Scan this QR code with your authenticator app, then enter the 6-digit code below to confirm.
                     </p>
                     <div
@@ -108,7 +108,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                         <span className="inline-flex items-center rounded-full bg-success-subtle px-3 py-0.5 text-sm font-medium text-success-text">
                             Enabled
                         </span>
-                        <span className="text-sm text-gray-600">Two-factor authentication is active.</span>
+                        <span className="text-sm text-ink-muted">Two-factor authentication is active.</span>
                     </div>
 
                     {recoveryCodes && recoveryCodes.length > 0 && (
@@ -134,7 +134,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                         <form onSubmit={handleRegen}>
                             <button
                                 type="submit"
-                                className="text-sm text-gray-600 underline hover:text-gray-900"
+                                className="text-sm text-ink-muted underline hover:text-gray-900"
                                 disabled={regenForm.processing}
                             >
                                 Regenerate recovery codes

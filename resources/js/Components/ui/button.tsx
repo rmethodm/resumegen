@@ -22,7 +22,7 @@ const sizeClassNames: Record<Size, string> = {
 
 export function buttonClassName(variant: Variant = 'default', size: Size = 'default', className?: string) {
     return cn(
-        'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
+        'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-semibold transition-[color,background-color,border-color,transform,opacity] duration-soft ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 motion-reduce:transition-colors motion-reduce:active:scale-100 [&_svg]:size-4 [&_svg]:shrink-0',
         variantClassNames[variant],
         sizeClassNames[size],
         className,

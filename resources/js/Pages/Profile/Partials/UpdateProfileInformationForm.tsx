@@ -32,11 +32,11 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-sm font-bold text-[#0f0f1a]">
+                <h2 className="text-sm font-bold text-ink">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-sm text-[#a0a0b0]">
+                <p className="mt-1 text-sm text-ink-faint">
                     Update your account's profile information and email address.
                 </p>
             </header>
@@ -82,7 +82,7 @@ export default function UpdateProfileInformation({
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
+                                className="rounded-md text-sm text-ink-muted underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
                             >
                                 Click here to re-send the verification email.
                             </Link>
@@ -107,7 +107,7 @@ export default function UpdateProfileInformation({
                         leave="motion-safe:transition motion-safe:ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-[#71717a]">
+                        <p className="text-sm text-ink-muted">
                             Saved.
                         </p>
                     </Transition>

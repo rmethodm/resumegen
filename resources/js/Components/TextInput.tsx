@@ -14,7 +14,10 @@ export default forwardRef(function TextInput(
         <input
             {...props}
             type={type}
-            className={'rounded-lg border-[#eeeef5] shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5] ' + className}
+            className={
+                'rounded-lg border-surface-border shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand ' +
+                className
+            }
             ref={localRef}
         />
     );
