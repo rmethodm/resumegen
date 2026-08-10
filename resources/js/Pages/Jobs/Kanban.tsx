@@ -5,8 +5,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
-import { JobApplication, JobStatus } from '@/types';
 import { Button } from '@/Components/ui/button';
+import { Shell } from '@/Components/ui/shell';
+import { cn } from '@/lib/utils';
+import type { JobApplication, JobStatus } from '@/types';
 
 type ResumeOption = { id: number; title: string };
 
@@ -19,12 +21,15 @@ const COLUMNS: { status: JobStatus; label: string }[] = [
 ];
 
 const STATUS_CHIP: Record<JobStatus, string> = {
-    saved: 'bg-gray-100 text-gray-500',
-    applied: 'bg-blue-100 text-blue-700',
+    saved: 'bg-surface text-ink-muted',
+    applied: 'bg-brand-subtle text-brand',
     interviewing: 'bg-brand-subtle text-brand-accent',
     offer: 'bg-success-subtle text-success-text',
-    rejected: 'bg-gray-100 text-gray-400',
+    rejected: 'bg-surface text-ink-faint',
 };
+
+const selectClassName =
+    'mt-1 block w-full rounded-lg border-surface-border text-sm shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand';
 
 type FormState = {
     id: number | null;
@@ -54,16 +59,31 @@ function JobCard({ job, resumeTitle }: { job: JobApplication; resumeTitle: strin
             ref={setNodeRef}
             {...listeners}
             {...attributes}
-            style={transform ? { transform: `translate(${transform.x}px, ${transform.y}px)`, zIndex: 10 } : undefined}
-            className={`cursor-grab rounded-lg border border-gray-100 bg-white p-3 shadow-sm hover:border-gray-200 ${
-                isDragging ? 'opacity-50' : ''
-            }`}
+            style={
+                transform
+                    ? {
+                          transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+                          zIndex: 20,
+                      }
+                    : undefined
+            }
+            className={cn(
+                'cursor-grab rounded-lg border border-surface-border/80 bg-white p-3 shadow-card',
+                'transition-[box-shadow,opacity,transform] duration-soft ease-soft',
+                'hover:border-surface-border hover:shadow-ambient',
+                'active:cursor-grabbing motion-reduce:transition-none',
+                isDragging && 'scale-[1.03] opacity-95 shadow-ambient ring-1 ring-brand/20',
+            )}
         >
             <div className="text-sm font-bold text-ink">{job.role}</div>
-            <div className="text-xs font-medium text-gray-500">{job.company}</div>
-            {resumeTitle && <div className="mt-1.5 text-[11px] font-medium text-gray-500">Using: {resumeTitle}</div>}
+            <div className="text-xs font-medium text-ink-muted">{job.company}</div>
+            {resumeTitle && (
+                <div className="mt-1.5 text-[11px] font-medium text-ink-faint">Using: {resumeTitle}</div>
+            )}
             {job.follow_up_at && (
-                <div className="mt-1.5 text-[11px] font-semibold text-brand-accent">Next step: {job.follow_up_at}</div>
+                <div className="mt-1.5 text-[11px] font-semibold text-brand">
+                    Next step: {job.follow_up_at}
+                </div>
             )}
         </div>
     );
@@ -83,22 +103,41 @@ function Column({
     const { setNodeRef, isOver } = useDroppable({ id: status });
 
     return (
-        <div
-            ref={setNodeRef}
-            className={`flex w-64 flex-none flex-col gap-2 rounded-lg p-2 ${isOver ? 'bg-brand-subtle/40' : ''}`}
+        <Shell
+            className={cn(
+                'w-72 flex-none transition-[box-shadow] duration-soft ease-soft',
+                isOver && 'ring-2 ring-brand/25 shadow-ambient',
+            )}
+            innerClassName={cn(
+                'flex min-h-[12rem] flex-col gap-2 p-2.5 transition-colors duration-soft ease-soft',
+                isOver && 'bg-brand-subtle/30',
+            )}
         >
-            <div className="flex items-center gap-2 px-1">
-                <span className="text-xs font-bold text-ink">{label}</span>
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${STATUS_CHIP[status]}`}>{jobs.length}</span>
+            <div ref={setNodeRef} className="flex min-h-[10rem] flex-1 flex-col gap-2">
+                <div className="flex items-center gap-2 px-1 pb-1">
+                    <span className="text-xs font-bold text-ink">{label}</span>
+                    <span
+                        className={cn(
+                            'rounded-full px-2 py-0.5 text-[10px] font-bold',
+                            STATUS_CHIP[status],
+                        )}
+                    >
+                        {jobs.length}
+                    </span>
+                </div>
+                {jobs.length === 0 ? (
+                    <p className="px-1 py-6 text-center text-[11px] text-ink-faint">Drop here</p>
+                ) : (
+                    jobs.map((job) => (
+                        <JobCard
+                            key={job.id}
+                            job={job}
+                            resumeTitle={job.resume_id ? (resumesById.get(job.resume_id) ?? null) : null}
+                        />
+                    ))
+                )}
             </div>
-            {jobs.map((job) => (
-                <JobCard
-                    key={job.id}
-                    job={job}
-                    resumeTitle={job.resume_id ? (resumesById.get(job.resume_id) ?? null) : null}
-                />
-            ))}
-        </div>
+        </Shell>
     );
 }
 
@@ -129,7 +168,9 @@ export default function JobApplicationKanban({
 
     const submitForm = (e: FormEvent) => {
         e.preventDefault();
-        if (!form) return;
+        if (!form) {
+            return;
+        }
 
         const payload = {
             company: form.company,
@@ -147,15 +188,25 @@ export default function JobApplicationKanban({
         };
 
         if (form.id) {
-            router.patch(route('job-applications.update', form.id), payload, { preserveScroll: true, onFinish });
+            router.patch(route('job-applications.update', form.id), payload, {
+                preserveScroll: true,
+                onFinish,
+            });
         } else {
-            router.post(route('job-applications.store'), payload, { preserveScroll: true, onFinish });
+            router.post(route('job-applications.store'), payload, {
+                preserveScroll: true,
+                onFinish,
+            });
         }
     };
 
     const deleteApplication = () => {
-        if (!form?.id) return;
-        if (!confirm('Delete this application?')) return;
+        if (!form?.id) {
+            return;
+        }
+        if (!confirm('Delete this application?')) {
+            return;
+        }
 
         setProcessing(true);
         router.delete(route('job-applications.destroy', form.id), {
@@ -171,7 +222,9 @@ export default function JobApplicationKanban({
         const { active, over, delta } = event;
 
         const job = applications.find((j) => j.id === active.id);
-        if (!job) return;
+        if (!job) {
+            return;
+        }
 
         // dnd-kit's pointer sensor swallows the browser's click event on drag
         // handles, so a tap with no real movement is treated as "open" instead.
@@ -180,27 +233,45 @@ export default function JobApplicationKanban({
             return;
         }
 
-        if (!over) return;
+        if (!over) {
+            return;
+        }
         const newStatus = over.id as JobStatus;
-        if (job.status === newStatus) return;
+        if (job.status === newStatus) {
+            return;
+        }
 
-        router.patch(route('job-applications.update', job.id), { status: newStatus }, { preserveScroll: true });
+        router.patch(
+            route('job-applications.update', job.id),
+            { status: newStatus },
+            { preserveScroll: true },
+        );
     };
 
     return (
-        <AuthenticatedLayout header={<h2 className="text-xl font-semibold text-gray-800">Applications</h2>}>
+        <AuthenticatedLayout header={<h2 className="text-xl font-semibold text-ink">Applications</h2>}>
             <Head title="Job Applications" />
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <div className="mb-4 flex items-center justify-between">
-                    <div className="text-xs font-semibold text-gray-500">{applications.length} tracked</div>
-                    <Button type="button" onClick={openCreate}>
-                        + New application
+                <div className="mb-5 flex items-end justify-between gap-4">
+                    <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+                            Pipeline
+                        </p>
+                        <p className="mt-1 text-sm text-ink-muted">
+                            {applications.length} application{applications.length === 1 ? '' : 's'} tracked
+                        </p>
+                    </div>
+                    <Button type="button" onClick={openCreate} className="group rounded-full">
+                        New application
+                        <span className="flex size-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105">
+                            +
+                        </span>
                     </Button>
                 </div>
 
                 <DndContext onDragEnd={onDragEnd}>
-                    <div className="flex gap-4 overflow-x-auto pb-4">
+                    <div className="flex gap-3 overflow-x-auto pb-4">
                         {COLUMNS.map((column) => (
                             <Column
                                 key={column.status}
@@ -214,12 +285,10 @@ export default function JobApplicationKanban({
                 </DndContext>
             </div>
 
-            <Modal show={form !== null} onClose={closeForm}>
+            <Modal show={form !== null} onClose={closeForm} maxWidth="lg" title={form?.id ? 'Edit application' : 'New application'}>
                 {form && (
                     <form onSubmit={submitForm} className="p-6">
-                        <h2 className="text-lg font-bold text-ink">{form.id ? 'Edit application' : 'New application'}</h2>
-
-                        <div className="mt-4 space-y-4">
+                        <div className="space-y-4">
                             <div>
                                 <InputLabel value="Company" />
                                 <TextInput
@@ -254,7 +323,7 @@ export default function JobApplicationKanban({
                                     <select
                                         value={form.resume_id}
                                         onChange={(e) => setForm({ ...form, resume_id: e.target.value })}
-                                        className="mt-1 block w-full rounded-lg border-[#eeeef5] text-sm shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                        className={selectClassName}
                                     >
                                         <option value="">None</option>
                                         {resumes.map((resume) => (
@@ -268,8 +337,10 @@ export default function JobApplicationKanban({
                                     <InputLabel value="Status" />
                                     <select
                                         value={form.status}
-                                        onChange={(e) => setForm({ ...form, status: e.target.value as JobStatus })}
-                                        className="mt-1 block w-full rounded-lg border-[#eeeef5] text-sm shadow-sm focus:border-[#4f46e5] focus:ring-[#4f46e5]"
+                                        onChange={(e) =>
+                                            setForm({ ...form, status: e.target.value as JobStatus })
+                                        }
+                                        className={selectClassName}
                                     >
                                         {COLUMNS.map((column) => (
                                             <option key={column.status} value={column.status}>
@@ -292,7 +363,12 @@ export default function JobApplicationKanban({
 
                         <div className="mt-6 flex items-center justify-between">
                             {form.id ? (
-                                <Button variant="outline" type="button" onClick={deleteApplication} disabled={processing}>
+                                <Button
+                                    variant="outline"
+                                    type="button"
+                                    onClick={deleteApplication}
+                                    disabled={processing}
+                                >
                                     Delete
                                 </Button>
                             ) : (

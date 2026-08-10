@@ -110,14 +110,17 @@ export default function Authenticated({
                             <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                             <input
                                 ref={searchRef}
-                                type="text"
+                                type="search"
                                 role="searchbox"
-                                aria-label="Search"
-                                placeholder="Search..."
+                                aria-label="Search (coming soon)"
+                                aria-disabled="true"
+                                readOnly
+                                title="Search is not wired yet — coming soon"
+                                placeholder="Search soon…"
                                 className={cn(
-                                    'w-full rounded-full border border-surface-border bg-surface py-2 pl-9 pr-3 text-sm text-ink sm:pr-14',
+                                    'w-full cursor-default rounded-full border border-surface-border bg-surface py-2 pl-9 pr-3 text-sm text-ink sm:pr-14',
                                     'placeholder:text-ink-faint transition-[border-color,background-color,box-shadow] duration-soft ease-soft',
-                                    'focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/25',
+                                    'focus:border-brand/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/15',
                                     'dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500',
                                 )}
                             />
