@@ -2239,48 +2239,16 @@
     {
       "id": "resources/js/lib/resume-plain-text.ts::resumeToPlainText",
       "type": "file"
+    },
+    {
+      "id": "query:card component rounded corners border radius resume score",
+      "type": "query",
+      "meta": {
+        "text": "Card component ui rounded corners border radius resume score box"
+      }
     }
   ],
   "edges": [
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Components/resume/score-dial.tsx",
-      "rel": "read",
-      "ts": 1786166976,
-      "meta": {
-        "mode": "symbol_excerpt"
-      }
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Components/workstation/section-panel.tsx",
-      "rel": "read",
-      "ts": 1786166976,
-      "meta": {
-        "mode": "head"
-      }
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/js/Components/workstation/optimize-panel.tsx",
-      "rel": "read",
-      "ts": 1786166976,
-      "meta": {
-        "mode": "symbol_excerpt"
-      }
-    },
-    {
-      "from": "action:edit:1786167180",
-      "to": "resources/js/Components/resume/score-dial.tsx",
-      "rel": "edited",
-      "ts": 1786167180
-    },
-    {
-      "from": "action:edit:1786167180",
-      "to": "resources/js/Components/workstation/optimize-panel.tsx",
-      "rel": "edited",
-      "ts": 1786167180
-    },
     {
       "from": "query:tailwind config theme colors radius fontfamily",
       "to": "tailwind.config.js",
@@ -5442,6 +5410,36 @@
       "to": "resources/js/lib/resume-plain-text.ts::resumeToPlainText",
       "rel": "retrieved",
       "ts": 1786371129
+    },
+    {
+      "from": "query:card component rounded corners border radius resume score",
+      "to": "resources/js/Pages/Dashboard.tsx::ResumeCard",
+      "rel": "retrieved",
+      "ts": 1786371537
+    },
+    {
+      "from": "query:card component rounded corners border radius resume score",
+      "to": "resources/js/Components/workstation/share-resume-modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786371537
+    },
+    {
+      "from": "query:card component rounded corners border radius resume score",
+      "to": "resources/js/Components/dashboard/new-resume-modal.tsx",
+      "rel": "retrieved",
+      "ts": 1786371537
+    },
+    {
+      "from": "query:card component rounded corners border radius resume score",
+      "to": "resources/js/Pages/Resumes/Compare.tsx",
+      "rel": "retrieved",
+      "ts": 1786371537
+    },
+    {
+      "from": "query:card component rounded corners border radius resume score",
+      "to": "ds-bundle/components/general/UiCheckbox/UiCheckbox.d.ts::UiCheckboxProps",
+      "rel": "retrieved",
+      "ts": 1786371537
     }
   ],
   "files": {
@@ -5877,8 +5875,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-10T08:12:53.393297+00:00",
       "first_read_turn": 15,
-      "last_edited": 1786317428.50542,
-      "edit_count": 3,
+      "last_edited": 1786371636.7615712,
+      "edit_count": 4,
       "edited_count": 4
     },
     "CLAUDE.md": {
@@ -5963,8 +5961,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-10T07:53:36.733906+00:00",
       "first_read_turn": 10,
-      "last_edited": 1786371237.5842519,
-      "edit_count": 12,
+      "last_edited": 1786371628.814518,
+      "edit_count": 14,
       "edited_count": 5
     },
     "resources/js/Components/workstation/inspector-sections.tsx": {
@@ -6316,8 +6314,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-10T07:53:36.733914+00:00",
       "first_read_turn": 9,
-      "last_edited": 1786317331.043149,
-      "edit_count": 14,
+      "last_edited": 1786371632.294326,
+      "edit_count": 15,
       "edited_count": 5
     },
     "resources/js/Components/workstation/export-checklist-modal.tsx": {
@@ -6967,96 +6965,6 @@
     }
   },
   "actions": [
-    {
-      "ts": 1786270736,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "badge.tsx button.tsx raw tailwind color drift indigo red gray"
-      }
-    },
-    {
-      "ts": 1786270736,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "badge.tsx button.tsx raw tailwind color drift indigo red gray"
-      }
-    },
-    {
-      "ts": 1786270741,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "bg-indigo-600|bg-red-600|bg-gray-100",
-        "hit_count": 30,
-        "hit_files": [
-          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-93-- Main content",
-          "./resources/views/vendor/pagination/tailwind.blade.php",
-          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-90-**Dark mode color classes** \u2014 add `dark",
-          "./DESIGN.md",
-          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md",
-          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md-92-- Nav"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages",
-          "resources/js/Pages/Profile/Partials"
-        ]
-      }
-    },
-    {
-      "ts": 1786270964,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "IBM Plex Sans font import app.css tailwind config font family google fonts link"
-      }
-    },
-    {
-      "ts": 1786270964,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "IBM Plex Sans font import app.css tailwind config font family google fonts link"
-      }
-    },
-    {
-      "ts": 1786270970,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "IBM Plex|fonts.bunny|fonts.googleapis|font-family",
-        "hit_count": 6,
-        "hit_files": [
-          "resources/js/Components/resume/resume-preview.tsx",
-          "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Jobs",
-          "resources/js/Components/resume",
-          "resources/js"
-        ]
-      }
-    },
-    {
-      "ts": 1786271015,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/views/app.blade.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1901
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786271144.2272372,
-      "files": [
-        "resources/css/app.css"
-      ],
-      "source": "graph_sync_hook"
-    },
     {
       "type": "edit_auto",
       "ts": 1786271154.483656,
@@ -8865,6 +8773,94 @@
       "ts": 1786371237.5842502,
       "files": [
         "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786371537,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Card component ui rounded corners border radius resume score box"
+      }
+    },
+    {
+      "ts": 1786371537,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Card component ui rounded corners border radius resume score box"
+      }
+    },
+    {
+      "ts": 1786371565,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "borderRadius|--radius",
+        "hit_count": 1,
+        "hit_files": [
+          "resources/js/Components/workstation/template-picker-modal.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages",
+          "resources/js/Components/workstation",
+          "resources/js/Components/dashboard",
+          "resources/js/Pages/Resumes",
+          "ds-bundle/components/general/UiCheckbox"
+        ]
+      }
+    },
+    {
+      "ts": 1786371572,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "rounded-(2xl|xl|md|lg|full)",
+        "hit_count": 60,
+        "hit_files": [
+          "resources/js/Pages/Resumes/Compare.tsx",
+          "resources/js/Components/dashboard/new-resume-modal.tsx",
+          "resources/js/Pages/Onboarding/Wizard.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages",
+          "resources/js/Components/workstation",
+          "resources/js/Components/dashboard",
+          "resources/js/Pages/Resumes",
+          "ds-bundle/components/general/UiCheckbox"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786371623.760542,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786371628.814514,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786371632.2943249,
+      "files": [
+        "resources/js/Components/workstation/workstation-header.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786371636.76157,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
       ],
       "source": "graph_sync_hook"
     }

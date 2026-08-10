@@ -120,7 +120,7 @@ export default function Authenticated({
                 {/* overflow-visible so user dropdown / command sheet are not clipped */}
                 <header
                     className={cn(
-                        'relative mx-auto max-w-6xl rounded-2xl border border-surface-border/80',
+                        'relative mx-auto max-w-6xl rounded-lg border border-surface-border/80',
                         'bg-white/90 shadow-ambient backdrop-blur-xl',
                         'transition-[box-shadow,background-color] duration-soft ease-soft',
                         'dark:border-gray-700/80 dark:bg-gray-800/90',
