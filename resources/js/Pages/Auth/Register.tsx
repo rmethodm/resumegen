@@ -111,10 +111,27 @@ export default function Register() {
                     />
                 </div>
 
-                <label className="mt-4 flex items-start gap-2 text-xs text-gray-600">
+                <label className="mt-4 flex items-start gap-2 text-xs text-ink-muted">
                     <Checkbox className="mt-0.5" required />
                     <span>
-                        I agree to the Terms of Service and Privacy Policy
+                        I agree to the{' '}
+                        <Link
+                            href={route('legal.terms')}
+                            className="font-semibold text-brand hover:underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Terms of Service
+                        </Link>{' '}
+                        and{' '}
+                        <Link
+                            href={route('legal.privacy')}
+                            className="font-semibold text-brand hover:underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Privacy Policy
+                        </Link>
                     </span>
                 </label>
 

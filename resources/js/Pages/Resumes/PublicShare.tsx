@@ -1,5 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import type { FormEventHandler } from 'react';
+import { BrandMark } from '@/Components/BrandMark';
 import { ResumePreview } from '@/Components/resume/resume-preview';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -53,7 +54,7 @@ export default function PublicShare({
                     )}
                 >
                     <div className="flex min-w-0 items-center gap-3">
-                        <BrandMark />
+                        <BrandMark href="/" size="sm" />
                         <span className="truncate text-sm font-medium text-ink-muted">
                             Shared by {resume.full_name}
                         </span>
@@ -120,7 +121,7 @@ function AccessGate({
 
             <div className="flex flex-1 flex-col items-center justify-center px-4 py-10">
                 <div className="mb-6">
-                    <BrandMark size="md" />
+                    <BrandMark href="/" size="md" />
                 </div>
 
                 <Shell className="w-full max-w-sm" innerClassName="p-6">
@@ -193,19 +194,6 @@ function AccessGate({
     );
 }
 
-/** Same mark language as the app chrome — quiet, not a billboard. */
-function BrandMark({ size = 'sm' }: { size?: 'sm' | 'md' }) {
-    const box = size === 'md' ? 'h-8 w-8' : 'h-[22px] w-[22px]';
-    const type = size === 'md' ? 'text-[15px]' : 'text-[13px]';
-
-    return (
-        <div className="flex items-center gap-2">
-            <div className={`${box} flex-shrink-0 rounded-md bg-brand shadow-shell`} aria-hidden />
-            <span className={`${type} font-extrabold tracking-tight text-ink`}>Resumegen</span>
-        </div>
-    );
-}
-
 function BrandFooter() {
     return (
         <footer className="px-4 py-4 text-center">
@@ -216,6 +204,10 @@ function BrandFooter() {
                     className="font-medium text-ink-muted underline-offset-2 transition-colors duration-soft ease-soft hover:text-ink hover:underline"
                 >
                     Resumegen
+                </a>
+                {' · '}
+                <a href={route('legal.privacy')} className="hover:text-ink hover:underline">
+                    Privacy
                 </a>
             </p>
         </footer>
