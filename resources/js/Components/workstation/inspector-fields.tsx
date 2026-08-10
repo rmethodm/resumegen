@@ -295,7 +295,7 @@ export function MonthYearField({
 }
 
 export function Pair({ children }: { children: ReactNode }) {
-    return <div className="grid grid-cols-2 gap-3">{children}</div>;
+    return <div className="grid grid-cols-2 gap-2.5">{children}</div>;
 }
 
 /** Drag affordance for one entry in a reorderable list — see `useEntryReorder`. */
@@ -347,7 +347,8 @@ export function EntryCard({
         <div
             onDragOver={dragHandle?.onDragOver}
             className={cn(
-                'flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-3.5',
+                'flex flex-col gap-2.5 rounded-lg border border-surface-border bg-white p-3',
+                'transition-opacity duration-soft ease-soft',
                 dragHandle?.dragging && 'opacity-50',
             )}
         >
@@ -358,13 +359,13 @@ export function EntryCard({
                             draggable
                             onDragStart={dragHandle.onDragStart}
                             onDragEnd={dragHandle.onDragEnd}
-                            className="cursor-grab p-0.5 text-gray-500 active:cursor-grabbing"
+                            className="cursor-grab p-0.5 text-ink-faint active:cursor-grabbing"
                             aria-label={`Reorder ${title}`}
                         >
                             <Bars3Icon className="size-3.5" />
                         </span>
                     )}
-                    <p className="text-[11px] font-bold tracking-[0.06em] text-gray-500 uppercase">
+                    <p className="text-[11px] font-semibold tracking-[0.06em] text-ink-faint uppercase">
                         {title}
                     </p>
                 </div>
@@ -373,7 +374,7 @@ export function EntryCard({
                     size="icon"
                     aria-label={`Remove ${title}`}
                     onClick={onRemove}
-                    className="size-7 text-gray-500 hover:text-danger"
+                    className="size-7 text-ink-faint hover:text-danger"
                 >
                     <TrashIcon className="size-3.5" />
                 </Button>
@@ -402,12 +403,12 @@ export function AddButton({
                 size="sm"
                 onClick={onClick}
                 disabled={disabled}
-                className="self-start"
+                className="self-start border-dashed border-surface-border text-ink-muted hover:border-brand hover:text-brand"
             >
-                <PlusIcon className="size-4" /> {label}
+                <PlusIcon className="size-3.5" /> {label}
             </Button>
             {disabled && disabledReason && (
-                <p className="text-[11px] text-gray-500">{disabledReason}</p>
+                <p className="text-[11px] text-ink-faint">{disabledReason}</p>
             )}
         </div>
     );
