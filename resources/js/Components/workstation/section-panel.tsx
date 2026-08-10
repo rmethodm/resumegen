@@ -1,5 +1,4 @@
-import { Link } from '@inertiajs/react';
-import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import { useMemo } from 'react';
 import {
     KeywordChips,
@@ -7,7 +6,7 @@ import {
 } from '@/Components/resume/score-coach';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
 import { SuggestionList } from '@/Components/resume/suggestion-list';
-import { Button, buttonClassName } from '@/Components/ui/button';
+import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { JdMatchPanel } from '@/Components/workstation/jd-match-panel';
 import {
@@ -164,14 +163,6 @@ export function SectionPanel({
                 className,
             )}
         >
-            <Link
-                href={route('dashboard')}
-                className={buttonClassName('ghost', 'sm', '-mb-2 w-fit')}
-            >
-                <ArrowLeftIcon className="size-4" />
-                Back to dashboard
-            </Link>
-
             <Card className="gap-0 p-4">
                 <div className="text-center">
                     <p className="mb-2 text-sm font-medium text-gray-500">
