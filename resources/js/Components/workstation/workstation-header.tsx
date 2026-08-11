@@ -193,7 +193,7 @@ export function WorkstationHeader({
                 <div
                     role="tablist"
                     aria-label="Workstation mode"
-                    className="inline-flex shrink-0 items-center rounded-lg border border-surface-border bg-surface p-0.5"
+                    className="inline-flex basis-full shrink-0 items-center justify-center rounded-lg border border-surface-border bg-surface p-0.5 sm:basis-auto sm:justify-start"
                 >
                     {TABS.map((tab) => (
                         <button
@@ -234,7 +234,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
+                            className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                         >
                             <MenuItem>
                                 <button
@@ -286,7 +286,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
+                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                         >
                             <MenuItem>
                                 <button

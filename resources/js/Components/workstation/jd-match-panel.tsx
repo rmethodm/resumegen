@@ -18,11 +18,11 @@ export function JdMatchPanel({
 
     if (jd.trim() === '') {
         return (
-            <div className="mt-4 border-t border-gray-100 pt-4">
-                <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <div className="mt-4 border-t border-surface-border pt-4">
+                <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
                     Job match
                 </p>
-                <p className="px-1 text-[11px] leading-relaxed text-gray-500">
+                <p className="px-1 text-[11px] leading-relaxed text-ink-muted">
                     Paste a job description on the Optimize tab to see keyword
                     overlap (no AI).
                 </p>
@@ -40,22 +40,22 @@ export function JdMatchPanel({
     }
 
     return (
-        <div className="mt-4 border-t border-gray-100 pt-4">
+        <div className="mt-4 border-t border-surface-border pt-4">
             <div className="mb-2 flex items-baseline justify-between px-1">
-                <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
                     Job match
                 </p>
                 <p className="text-sm font-bold tabular-nums text-brand">
                     {overlap.score}%
                 </p>
             </div>
-            <p className="mb-2 px-1 text-[10px] text-gray-500">
+            <p className="mb-2 px-1 text-[10px] text-ink-muted">
                 {overlap.matched.length} of {overlap.total} JD terms found in
                 your resume (deterministic tokens).
             </p>
             {overlap.missing.length > 0 && (
                 <>
-                    <p className="mb-1 px-1 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+                    <p className="mb-1 px-1 text-[10px] font-semibold tracking-wide text-ink-faint uppercase">
                         Missing from resume
                     </p>
                     <div className="flex flex-wrap gap-1 px-0.5">
@@ -81,14 +81,14 @@ export function JdMatchPanel({
                             ),
                         )}
                     </div>
-                    <p className="mt-1 px-1 text-[10px] text-gray-400">
+                    <p className="mt-1 px-1 text-[10px] text-ink-faint">
                         Only add skills you actually have.
                     </p>
                 </>
             )}
             {overlap.matched.length > 0 && (
                 <>
-                    <p className="mt-2 mb-1 px-1 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+                    <p className="mt-2 mb-1 px-1 text-[10px] font-semibold tracking-wide text-ink-faint uppercase">
                         Present
                     </p>
                     <div className="flex flex-wrap gap-1 px-0.5">

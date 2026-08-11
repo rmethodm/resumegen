@@ -120,7 +120,15 @@ export function SnapshotsPanel({
                             </Button>
                             <button
                                 type="button"
-                                onClick={() => remove(snapshot.id)}
+                                onClick={() => {
+                                    if (
+                                        window.confirm(
+                                            `Delete checkpoint "${snapshot.label || 'Untitled checkpoint'}"? This can't be undone.`,
+                                        )
+                                    ) {
+                                        remove(snapshot.id);
+                                    }
+                                }}
                                 className="text-[11px] text-gray-400 hover:text-danger"
                             >
                                 Delete

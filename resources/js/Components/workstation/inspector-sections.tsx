@@ -834,7 +834,11 @@ export function SkillsFields({
                     ))}
                 </div>
             </div>
-            <div id="field-skills" tabIndex={-1} className="flex flex-col gap-1.5 outline-none">
+            <div
+                id="field-skills"
+                tabIndex={-1}
+                className="flex flex-col gap-1.5 rounded-md outline-none focus:ring-2 focus:ring-brand/50 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2"
+            >
                 <div className="flex items-center justify-between">
                     <Label className="text-xs">Skills</Label>
                     <button

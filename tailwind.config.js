@@ -20,6 +20,35 @@ export default {
                 display: ['"Source Serif 4"', 'Georgia', 'Times New Roman', 'serif'],
             },
             colors: {
+                // ── Primitive neutral ramp (warm-tinted, not pure gray) ──
+                // Named for value, not role — surface/ink below pin to these.
+                neutral: {
+                    50: '#f7f7f8',
+                    100: '#eeeef0',
+                    200: '#dcdde0',
+                    300: '#c2c4c9',
+                    400: '#9a9da3',
+                    500: '#75787f',
+                    600: '#585b62',
+                    700: '#43454b',
+                    800: '#2b2d31',
+                    900: '#1c1d20',
+                    950: '#101113',
+                },
+                // ── Primitive accent ramp — same hue as brand.DEFAULT (#5952d2) ──
+                accent: {
+                    50: '#f0efff',
+                    100: '#e1e5ff', // == brand.subtle
+                    200: '#c3c3fb',
+                    300: '#a29ff2',
+                    400: '#8079e6',
+                    500: '#5952d2', // == brand.DEFAULT
+                    600: '#4842b0',
+                    700: '#3c3695', // == brand.accent / brand.light
+                    800: '#2c2870',
+                    900: '#1f1c50',
+                    950: '#131134',
+                },
                 brand: {
                     DEFAULT: '#5952d2',
                     accent: '#3c3695',
@@ -31,11 +60,22 @@ export default {
                 surface: {
                     DEFAULT: '#f2f6f9',
                     border: '#d2d8dd',
+                    // Dark-mode remap. Not an inversion: canvas sits near-black
+                    // with the same warm tint as light, never pure #000
+                    // (tokens.md canvas rule); raised adds luminance rather
+                    // than just darkening.
+                    dark: '#16171a',
+                    'dark-raised': '#1e1f23',
+                    'dark-border': '#2f3136',
                 },
                 ink: {
                     DEFAULT: '#171b1f',
                     muted: '#50565a',
                     faint: '#6d7277',
+                    // Warmer than pure white — avoids OLED halation (tokens.md text rule).
+                    dark: '#f2f1ee',
+                    'dark-muted': '#a8a6a1',
+                    'dark-faint': '#7d7b77',
                 },
                 success: {
                     DEFAULT: '#059669',
@@ -52,6 +92,19 @@ export default {
                     subtle: '#fee2e2',
                     text: '#991b1b',
                 },
+            },
+            // ── Semantic z-index — replaces raw z-10/20/30/50/[60]/[70]
+            // scattered across AuthenticatedLayout, Modal, Dropdown, and
+            // every workstation menu with no designed stacking order.
+            zIndex: {
+                base: '0',
+                raised: '1',
+                dropdown: '20',
+                sticky: '30',
+                'modal-backdrop': '40',
+                modal: '50',
+                toast: '60',
+                tooltip: '70',
             },
             boxShadow: {
                 card: '0 1px 2px rgba(0,0,0,0.04)',
