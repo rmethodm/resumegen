@@ -39,7 +39,7 @@ export function TargetRoleBar({
                         value={targetRole}
                         allowCreate={false}
                         placeholder="e.g. Senior Software Engineer"
-                        className="h-9 w-full rounded-md border border-surface-border bg-white px-3 text-sm shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                        className="h-9 w-full rounded-md border border-surface-border bg-white px-3 text-sm shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft focus-visible:border-brand focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand"
                         onChange={onChange}
                     />
                 </div>

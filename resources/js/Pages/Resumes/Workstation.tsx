@@ -639,9 +639,13 @@ export default function Workstation({
                         onAddKeyword={addKeyword}
                         onJumpChecklist={jumpChecklist}
                         onOpenOptimize={() => setTab('Optimize')}
+                        className="order-2 lg:order-none"
                     />
 
-                    <div className="flex min-w-0 flex-col gap-4 lg:flex-1">
+                    {/* On mobile the score/checklist rail is guidance, not the
+                        task — the editable form leads the stack; lg:order-none
+                        restores side-by-side source order. */}
+                    <div className="order-1 flex min-w-0 flex-col gap-4 lg:order-none lg:flex-1">
                         {tab === 'Edit' && (
                             <TargetRoleBar
                                 targetRole={draft.target_role}

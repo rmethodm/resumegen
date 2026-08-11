@@ -191,9 +191,9 @@ export function SectionPanel({
                                 </div>
                                 <div className="h-1.5 rounded-full bg-surface">
                                     <div
-                                        className="h-full rounded-full bg-brand transition-[width] duration-200"
+                                        className="h-full w-full origin-left rounded-full bg-brand transition-transform duration-200 motion-reduce:transition-none"
                                         style={{
-                                            width: `${(band.score / 25) * 100}%`,
+                                            transform: `scaleX(${band.score / 25})`,
                                         }}
                                     />
                                 </div>

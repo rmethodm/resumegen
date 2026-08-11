@@ -24,12 +24,12 @@ export function ScoreChecklist({
     }
 
     return (
-        <div className="mt-4 border-t border-gray-100 pt-4">
+        <div className="mt-4 border-t border-surface-border pt-4">
             <div className="mb-2 flex items-baseline justify-between px-1">
-                <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
                     Raise your score
                 </p>
-                <p className="text-[10px] tabular-nums text-gray-400">
+                <p className="text-[10px] tabular-nums text-ink-faint">
                     {doneCount}/{items.length}
                 </p>
             </div>
@@ -43,8 +43,8 @@ export function ScoreChecklist({
                             className={cn(
                                 'flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-[11px] leading-snug transition-colors',
                                 item.done
-                                    ? 'cursor-default text-gray-400'
-                                    : 'text-gray-800 hover:bg-brand-subtle hover:text-brand',
+                                    ? 'cursor-default text-ink-faint'
+                                    : 'text-ink hover:bg-brand-subtle hover:text-brand',
                             )}
                         >
                             <span
@@ -52,7 +52,7 @@ export function ScoreChecklist({
                                     'mt-0.5 flex size-3.5 shrink-0 items-center justify-center rounded-full border',
                                     item.done
                                         ? 'border-success bg-success text-white'
-                                        : 'border-gray-300 bg-white',
+                                        : 'border-surface-border bg-white',
                                 )}
                                 aria-hidden
                             >
@@ -68,7 +68,7 @@ export function ScoreChecklist({
                                 >
                                     {item.label}
                                 </span>
-                                <span className="mt-0.5 block text-[10px] font-medium tracking-wide text-gray-400 uppercase">
+                                <span className="mt-0.5 block text-[10px] font-medium tracking-wide text-ink-faint uppercase">
                                     {item.band}
                                 </span>
                             </span>
@@ -94,11 +94,11 @@ export function KeywordChips({
 }) {
     if (!hasRoleFamily) {
         return (
-            <div className="mt-4 border-t border-gray-100 pt-4">
-                <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <div className="mt-4 border-t border-surface-border pt-4">
+                <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
                     Role keywords
                 </p>
-                <p className="px-1 text-[11px] leading-relaxed text-gray-500">
+                <p className="px-1 text-[11px] leading-relaxed text-ink-muted">
                     Set a target role that includes a family we score — design,
                     engineer, data, product, or market — to unlock keyword
                     chips.
@@ -112,11 +112,11 @@ export function KeywordChips({
     }
 
     return (
-        <div className="mt-4 border-t border-gray-100 pt-4">
-            <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+        <div className="mt-4 border-t border-surface-border pt-4">
+            <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
                 Role keywords
             </p>
-            <p className="mb-2 px-1 text-[10px] leading-snug text-gray-500">
+            <p className="mb-2 px-1 text-[10px] leading-snug text-ink-muted">
                 Click a missing term to add it as a skill. Only add skills you
                 actually have.
             </p>
