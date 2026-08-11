@@ -118,10 +118,6 @@ export default {
             transitionDuration: {
                 soft: '320ms',
             },
-            borderRadius: {
-                shell: '1.25rem',
-                core: 'calc(1.25rem - 0.375rem)',
-            },
         },
     },
 
