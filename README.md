@@ -17,7 +17,7 @@ Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps use
 - Public resume sharing through `/r/{token}` with PDF/DOCX downloads and an optional email/password gate.
 - Dashboard analytics, strength scoring, and job-role/title/skill autocomplete.
 - **Resumegen Apply** (Chrome/Edge MV3): side panel fills job forms from your resume via Sanctum (`/api/extension/*`; tokens on Profile). See `extension/README.md`.
-- **Job Imports** (`/jobs-imports`): live Adzuna/USAJOBS search, saved per user to `imported_jobs`; resume matching, gap analysis, tailoring, and cover letters are still frontend stubs, not implemented.
+- **Job Imports** (`/jobs-imports`): live Adzuna/USAJOBS search, saved per user to `imported_jobs`; AI resume match/tailoring is real (`ResumeAiController::matchJob`, gated by `AI_ENABLED`). Gap analysis and cover letters are still frontend stubs, not implemented.
 
 Cover letters, resignation letters, proofreading, portfolio pages, A/B resume variants, and salary hints have all been removed — see `CLAUDE.md`'s "Removed Features" section for dates and detail.
 
