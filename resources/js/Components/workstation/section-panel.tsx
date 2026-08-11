@@ -5,7 +5,6 @@ import {
     ScoreChecklist,
 } from '@/Components/resume/score-coach';
 import { ScoreGauge } from '@/Components/resume/score-gauge';
-import { SuggestionList } from '@/Components/resume/suggestion-list';
 import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { JdMatchPanel } from '@/Components/workstation/jd-match-panel';
@@ -26,7 +25,6 @@ import type {
     ResumeAnalysis,
     ResumeDraft,
     ResumeSectionKey,
-    ResumeSuggestion,
 } from '@/types';
 
 /** Scalar sections read as done/half-done/untouched; list sections read as a
@@ -110,8 +108,6 @@ export function SectionPanel({
     selected,
     onSelect,
     onAddSection,
-    onApplySuggestion,
-    onSelectSuggestion,
     onAddKeyword,
     onJumpChecklist,
     onOpenOptimize,
@@ -123,8 +119,6 @@ export function SectionPanel({
     selected: ResumeSectionKey;
     onSelect: (section: ResumeSectionKey) => void;
     onAddSection: (section: ResumeSectionKey) => void;
-    onApplySuggestion: (suggestion: ResumeSuggestion) => void;
-    onSelectSuggestion: (suggestion: ResumeSuggestion) => void;
     onAddKeyword: (keyword: string) => void;
     onJumpChecklist: (item: ScoreChecklistItem) => void;
     /** Jump to Optimize tab (JD match). */
@@ -221,15 +215,6 @@ export function SectionPanel({
                     draft={resume}
                     onAddKeyword={onAddKeyword}
                     onOpenOptimize={onOpenOptimize}
-                />
-
-                <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                    Improvements
-                </p>
-                <SuggestionList
-                    suggestions={analysis.suggestions}
-                    onApply={onApplySuggestion}
-                    onSelect={onSelectSuggestion}
                 />
 
                 <p className="mt-4 mb-2 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
