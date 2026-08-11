@@ -124,6 +124,64 @@ class ResumeAiController extends Controller
         ]);
     }
 
+    public function matchJob(Request $request, Resume $resume): JsonResponse
+    {
+        abort_unless($resume->user_id === $request->user()->id, 404);
+
+        if (! $this->assistant->enabled()) {
+            return response()->json([
+                'message' => 'AI assistant is not available right now.',
+            ], 503);
+        }
+
+        $data = $request->validate([
+            'job_description' => ['required', 'string', 'max:10000'],
+            'target_role' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $user = $request->user();
+        if (! $this->limiter->allow($user, 'job_match')) {
+            return response()->json([
+                'message' => 'Monthly free match limit reached ('.(int) config('ai.quotas.job_match').').',
+                'remaining' => 0,
+            ], 429);
+        }
+
+        $resume->loadMissing(['experiences', 'skills']);
+        $parts = [
+            'Headline: '.($resume->headline ?? ''),
+            'Summary: '.($resume->summary ?? ''),
+            'Skills: '.$resume->skills->pluck('name')->implode(', '),
+        ];
+        foreach ($resume->experiences as $experience) {
+            $parts[] = trim(($experience->title ?? '').' @ '.($experience->company ?? ''));
+            foreach ($experience->bullets ?? [] as $bullet) {
+                if (is_string($bullet) && trim($bullet) !== '') {
+                    $parts[] = '- '.$bullet;
+                }
+            }
+        }
+
+        try {
+            $match = $this->assistant->matchJob(
+                $data['job_description'],
+                (string) ($data['target_role'] ?? $resume->target_role ?? ''),
+                implode("\n", $parts),
+            );
+        } catch (RuntimeException $e) {
+            Log::error('AI job match failed', ['exception' => $e]);
+
+            return response()->json(['message' => 'AI job matching is temporarily unavailable. Please try again later.'], 502);
+        }
+
+        $this->limiter->hit($user, 'job_match');
+
+        return response()->json([
+            ...$match,
+            'remaining' => $this->limiter->remaining($user, 'job_match'),
+        ]);
+    }
+
     public function status(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -138,6 +196,10 @@ class ResumeAiController extends Controller
                 'summary' => [
                     'cap' => $this->limiter->cap('summary'),
                     'remaining' => $this->limiter->remaining($user, 'summary'),
+                ],
+                'job_match' => [
+                    'cap' => $this->limiter->cap('job_match'),
+                    'remaining' => $this->limiter->remaining($user, 'job_match'),
                 ],
             ],
         ]);

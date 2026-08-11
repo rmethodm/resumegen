@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Optional AI features (bullet rewrite, summary).
+ * Optional AI features (bullet rewrite, summary, job match).
  * Disabled unless AI_ENABLED=true and OPENAI_API_KEY is set.
  * See docs/ai-reintroduction-map.md and docs/ai-provider-comparison-2026-08.md.
  */
@@ -21,5 +21,6 @@ return [
     'quotas' => [
         'bullet_rewrite' => (int) env('AI_QUOTA_BULLET_REWRITE', 5),
         'summary' => (int) env('AI_QUOTA_SUMMARY', 2),
+        'job_match' => (int) env('AI_QUOTA_JOB_MATCH', 5),
     ],
 ];

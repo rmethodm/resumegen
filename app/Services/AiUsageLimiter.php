@@ -40,6 +40,7 @@ final class AiUsageLimiter
         return match ($action) {
             'bullet_rewrite' => (int) config('ai.quotas.bullet_rewrite', 5),
             'summary' => (int) config('ai.quotas.summary', 2),
+            'job_match' => (int) config('ai.quotas.job_match', 5),
             default => 0,
         };
     }

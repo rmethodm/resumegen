@@ -15,9 +15,9 @@ use Throwable;
 
 /**
  * Job Imports: search Adzuna/USAJOBS and save results a user chooses to
- * keep. Resume matching, gap analysis, tailoring, and cover letters are
- * NOT part of this — those stay UI stubs on the frontend (see
- * CLAUDE.md "Removed Features" before adding any of them for real).
+ * keep. AI job matching lives on ResumeAiController::matchJob, called from
+ * this page with a chosen resume. Gap analysis and cover letters are NOT
+ * part of this — those stay UI stubs on the frontend.
  */
 class JobImportsController extends Controller
 {
@@ -26,10 +26,12 @@ class JobImportsController extends Controller
     public function index(Request $request): Response
     {
         $jobs = $request->user()->importedJobs()->latest('posted_at')->get();
+        $resumes = $request->user()->resumes()->orderBy('title')->get(['id', 'title']);
 
         return Inertia::render('Jobs/Imports', [
             'jobs' => $jobs->map(fn (ImportedJob $job) => $this->present($job))->all(),
             'sourcesAvailable' => $this->search->availableSources(),
+            'resumes' => $resumes->map(fn ($resume) => ['id' => $resume->id, 'title' => $resume->title])->all(),
         ]);
     }
 

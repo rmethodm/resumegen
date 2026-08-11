@@ -87,6 +87,37 @@ PROMPT;
         return trim($this->complete($system, $user, 350));
     }
 
+    /**
+     * @return array{score: int, summary: string, missing_skills: list<string>}
+     */
+    public function matchJob(
+        string $jobDescription,
+        string $targetRole,
+        string $resumeContext,
+    ): array {
+        $jobDescription = trim($jobDescription);
+        if ($jobDescription === '') {
+            throw new RuntimeException('Job description is required.');
+        }
+
+        $system = <<<'PROMPT'
+You compare a resume against a job description. Rules:
+- Judge fit from the resume content only; never invent skills or experience it doesn't contain.
+- score is 0-100: how well the resume already matches the job description.
+- summary is 1-2 sentences on the overall fit.
+- missing_skills lists up to 8 concrete skills/keywords the job description asks for that the resume doesn't show.
+- Return JSON only: {"score":0,"summary":"...","missing_skills":["...","..."]}
+PROMPT;
+
+        $user = 'Target role: '.($targetRole !== '' ? $targetRole : '(none)')."\n\n"
+            ."Job description:\n".mb_substr($jobDescription, 0, 4000)."\n\n"
+            .'Resume:'."\n".mb_substr($resumeContext, 0, 3000);
+
+        $content = $this->complete($system, $user, 400);
+
+        return $this->extractMatch($content);
+    }
+
     private function complete(string $system, string $user, int $maxTokens): string
     {
         if (! $this->enabled()) {
@@ -157,5 +188,34 @@ PROMPT;
         }
 
         return $out;
+    }
+
+    /**
+     * @return array{score: int, summary: string, missing_skills: list<string>}
+     */
+    private function extractMatch(string $content): array
+    {
+        $json = $content;
+        if (preg_match('/\{.*\}/s', $content, $m) === 1) {
+            $json = $m[0];
+        }
+
+        $decoded = json_decode($json, true);
+        if (! is_array($decoded)) {
+            throw new RuntimeException('AI provider returned an unparseable match result.');
+        }
+
+        $missing = [];
+        foreach ((array) ($decoded['missing_skills'] ?? []) as $skill) {
+            if (is_string($skill) && trim($skill) !== '') {
+                $missing[] = trim($skill);
+            }
+        }
+
+        return [
+            'score' => max(0, min(100, (int) ($decoded['score'] ?? 0))),
+            'summary' => trim((string) ($decoded['summary'] ?? '')),
+            'missing_skills' => array_slice($missing, 0, 8),
+        ];
     }
 }
