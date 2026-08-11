@@ -6,6 +6,7 @@ export type AiStatus = {
     quotas: {
         bullet_rewrite: { cap: number; remaining: number };
         summary: { cap: number; remaining: number };
+        job_match: { cap: number; remaining: number };
     };
 };
 
@@ -15,6 +16,16 @@ type RewriteResult =
 
 type SummaryResult =
     | { ok: true; summary: string; remaining: number }
+    | { ok: false; message: string };
+
+type MatchResult =
+    | {
+          ok: true;
+          score: number;
+          summary: string;
+          missing_skills: string[];
+          remaining: number;
+      }
     | { ok: false; message: string };
 
 /**
@@ -35,6 +46,7 @@ export function useResumeAi(resumeId: number) {
                 quotas: {
                     bullet_rewrite: { cap: 0, remaining: 0 },
                     summary: { cap: 0, remaining: 0 },
+                    job_match: { cap: 0, remaining: 0 },
                 },
             });
         }
@@ -145,11 +157,56 @@ export function useResumeAi(resumeId: number) {
         [resumeId],
     );
 
+    const matchJob = useCallback(
+        async (payload: {
+            job_description: string;
+            target_role?: string;
+        }): Promise<MatchResult> => {
+            setBusy(true);
+            try {
+                const { data } = await axios.post<{
+                    score: number;
+                    summary: string;
+                    missing_skills: string[];
+                    remaining: number;
+                }>(route('resumes.ai.match-job', resumeId), payload);
+                setStatus((current) =>
+                    current
+                        ? {
+                              ...current,
+                              quotas: {
+                                  ...current.quotas,
+                                  job_match: {
+                                      ...current.quotas.job_match,
+                                      remaining: data.remaining,
+                                  },
+                              },
+                          }
+                        : current,
+                );
+
+                return { ok: true, ...data };
+            } catch (error) {
+                return {
+                    ok: false,
+                    message: extractMessage(
+                        error,
+                        'Could not match this job.',
+                    ),
+                };
+            } finally {
+                setBusy(false);
+            }
+        },
+        [resumeId],
+    );
+
     return {
         status,
         busy,
         rewriteBullet,
         generateSummary,
+        matchJob,
         refreshStatus,
     };
 }

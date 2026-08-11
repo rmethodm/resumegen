@@ -72,9 +72,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');
     Route::post('/settings/starter-profile/skip', [StarterProfileController::class, 'skip'])->name('starter-profile.skip');
 
-    // Job Imports: real search (Adzuna/USAJOBS) + persistence. Matching, gap
-    // analysis, tailoring, and cover letters stay frontend stubs — see
-    // JobImportsController's docblock before adding any of them for real.
+    // Job Imports: real search (Adzuna/USAJOBS) + persistence. AI job match
+    // (score + missing skills, via ResumeAiController::matchJob) is real too.
+    // Gap analysis and cover letters are still frontend stubs.
     Route::get('/jobs-imports', [JobImportsController::class, 'index'])->name('jobs-imports.index');
     Route::post('/jobs-imports/search', [JobImportsController::class, 'search'])
         ->middleware('throttle:20,1')
@@ -108,6 +108,8 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
             ->name('resumes.ai.rewrite-bullet');
         Route::post('/resumes/{resume}/ai/summary', [ResumeAiController::class, 'generateSummary'])
             ->name('resumes.ai.summary');
+        Route::post('/resumes/{resume}/ai/match-job', [ResumeAiController::class, 'matchJob'])
+            ->name('resumes.ai.match-job');
     });
 
     Route::get('/resumes/{resume}/share', [ResumeShareLinkController::class, 'show'])->name('resumes.share.show');

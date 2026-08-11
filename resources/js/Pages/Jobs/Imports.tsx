@@ -2,13 +2,15 @@ import { Head, Link, router, useHttp } from '@inertiajs/react';
 import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button } from '@/Components/ui/button';
+import { useResumeAi } from '@/hooks/use-resume-ai';
 
-// ponytail: resume matching, gap analysis, tailoring, and cover letters are
-// all removed features (see CLAUDE.md "Removed Features") — those actions
-// stay toast stubs below. Only search (Adzuna/USAJOBS) + persistence are real.
+// ponytail: gap analysis and cover letters are still toast stubs below.
+// Search (Adzuna/USAJOBS) + persistence, and AI job match, are real.
 
 type Source = 'adzuna' | 'usajobs';
 type Status = 'New' | 'Saved' | 'Tailoring' | 'Applied' | 'Archived';
+
+type ResumeOption = { id: number; title: string };
 
 type ImportedJob = {
     id: number;
@@ -55,12 +57,22 @@ function resultKey(job: SearchResult): string {
 export default function JobImportsPage({
     jobs,
     sourcesAvailable,
+    resumes,
 }: {
     jobs: ImportedJob[];
     sourcesAvailable: Source[];
+    resumes: ResumeOption[];
 }) {
     const [filter, setFilter] = useState<'all' | Source>('all');
     const [openJobId, setOpenJobId] = useState<number | null>(jobs[0]?.id ?? null);
+    const [resumeId, setResumeId] = useState<number | null>(resumes[0]?.id ?? null);
+    const [matchResult, setMatchResult] = useState<{
+        jobId: number;
+        score: number;
+        summary: string;
+        missing_skills: string[];
+    } | null>(null);
+    const ai = useResumeAi(resumeId ?? 0);
     const [toast, setToast] = useState<string | null>(null);
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -77,6 +89,34 @@ export default function JobImportsPage({
         setTimeout(() => setToast(null), 2200);
     };
     const stub = (message: string) => () => showToast(`Preview only — ${message} is not implemented.`);
+
+    const runMatch = async (job: ImportedJob) => {
+        if (!resumeId) {
+            showToast('Add a resume first to match against jobs.');
+            return;
+        }
+        if (!job.description) {
+            showToast('This job has no description to match against.');
+            return;
+        }
+
+        const result = await ai.matchJob({
+            job_description: job.description,
+            target_role: job.title,
+        });
+
+        if (!result.ok) {
+            showToast(result.message);
+            return;
+        }
+
+        setMatchResult({
+            jobId: job.id,
+            score: result.score,
+            summary: result.summary,
+            missing_skills: result.missing_skills,
+        });
+    };
 
     const runSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -147,8 +187,9 @@ export default function JobImportsPage({
                 )}
 
                 <div className="mt-4 rounded-lg border border-warning/30 bg-warning-subtle px-4 py-3 text-sm text-amber-800">
-                    <strong>Search and import are real.</strong> Resume matching, gap analysis, tailoring,
-                    and cover-letter drafting below are still stubs.
+                    <strong>Search, import, and AI job match are real.</strong> Gap analysis and
+                    cover-letter drafting below are still stubs.
+                    {ai.status && !ai.status.enabled && ' AI is currently disabled.'}
                 </div>
 
                 <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -335,13 +376,65 @@ export default function JobImportsPage({
                                         </select>
                                     </div>
 
+                                    {resumes.length > 0 && (
+                                        <div>
+                                            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                                Match against resume
+                                            </label>
+                                            <select
+                                                value={resumeId ?? ''}
+                                                onChange={(e) => setResumeId(Number(e.target.value))}
+                                                className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-semibold"
+                                            >
+                                                {resumes.map((resume) => (
+                                                    <option key={resume.id} value={resume.id}>
+                                                        {resume.title}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
                                     <Button
                                         type="button"
                                         className="w-full justify-center"
-                                        onClick={stub('resume tailoring')}
+                                        onClick={() => runMatch(selectedJob)}
+                                        disabled={ai.busy || !ai.status?.enabled || resumes.length === 0}
                                     >
-                                        Tailor resume to this job
+                                        {ai.busy ? 'Matching…' : 'Tailor resume to this job'}
                                     </Button>
+
+                                    {matchResult && matchResult.jobId === selectedJob.id && (
+                                        <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                                            <div className="flex items-baseline justify-between">
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                                    Match score
+                                                </span>
+                                                <span className="text-sm font-bold text-brand-accent">
+                                                    {matchResult.score}%
+                                                </span>
+                                            </div>
+                                            <p className="mt-1 text-xs leading-relaxed text-ink">{matchResult.summary}</p>
+                                            {matchResult.missing_skills.length > 0 && (
+                                                <>
+                                                    <div className="mt-2 mb-1 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                                        Missing skills
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {matchResult.missing_skills.map((skill) => (
+                                                            <span
+                                                                key={skill}
+                                                                className="rounded-full border border-warning/40 bg-warning-subtle px-2 py-0.5 text-[10px] font-medium text-warning-text"
+                                                            >
+                                                                {skill}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+
                                     <Button
                                         type="button"
                                         variant="outline"
