@@ -70,7 +70,7 @@ class TwoFactorChallengeController extends Controller
 
         // Email OTP path
         $cachedOtp = Cache::get('2fa_email_otp_'.$user->id);
-        if ($cachedOtp && $code === $cachedOtp) {
+        if ($cachedOtp && hash_equals((string) $cachedOtp, (string) $code)) {
             Cache::forget('2fa_email_otp_'.$user->id);
             $request->session()->forget('two_factor_auth_pending');
 
@@ -79,11 +79,14 @@ class TwoFactorChallengeController extends Controller
 
         // TOTP path
         $google2fa = new Google2FA;
-        $valid = $google2fa->verifyKey($user->two_factor_secret, $code);
+        $lastTimestampKey = '2fa_totp_last_ts_'.$user->id;
+        $valid = $google2fa->verifyKeyNewer($user->two_factor_secret, $code, Cache::get($lastTimestampKey));
 
-        if (! $valid) {
+        if ($valid === false) {
             throw ValidationException::withMessages(['code' => 'The provided code was invalid.']);
         }
+
+        Cache::put($lastTimestampKey, $valid, now()->addMinutes(2));
 
         $request->session()->forget('two_factor_auth_pending');
 

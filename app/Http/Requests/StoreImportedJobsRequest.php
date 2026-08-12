@@ -28,7 +28,7 @@ class StoreImportedJobsRequest extends FormRequest
             'jobs.*.title' => ['required', 'string', 'max:255'],
             'jobs.*.company' => ['nullable', 'string', 'max:255'],
             'jobs.*.location' => ['nullable', 'string', 'max:255'],
-            'jobs.*.url' => ['nullable', 'string', 'max:2048'],
+            'jobs.*.url' => ['nullable', 'string', 'max:2048', 'url:http,https'],
             'jobs.*.salary' => ['nullable', 'string', 'max:100'],
             'jobs.*.description' => ['nullable', 'string'],
             'jobs.*.posted_at' => ['nullable', 'string', 'max:50'],
