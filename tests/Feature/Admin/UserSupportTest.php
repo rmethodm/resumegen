@@ -44,4 +44,14 @@ class UserSupportTest extends TestCase
                 ->has('user.tokens_count')
                 ->has('user.resumes_count'));
     }
+
+    public function test_admin_with_pending_two_factor_challenge_cannot_access_admin_routes(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)
+            ->withSession(['two_factor_auth_pending' => true])
+            ->get($this->adminUrl('/users'))
+            ->assertRedirect(route('two-factor.challenge'));
+    }
 }

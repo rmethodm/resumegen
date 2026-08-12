@@ -1,4 +1,4 @@
-import { DEFAULT_APP_BASE, normalizeAppBase } from '../shared/app-base.js';
+import { DEFAULT_APP_BASE, normalizeAppBase, isInsecureRemoteUrl } from '../shared/app-base.js';
 
 const tokenInput = document.getElementById('token');
 const appBaseInput = document.getElementById('appBase');
@@ -23,7 +23,11 @@ saveBtn.addEventListener('click', () => {
     const token = tokenInput.value.trim();
     const appBase = normalizeAppBase(appBaseInput.value);
     chrome.storage.sync.set({ token, appBase }, () => {
-        showStatus('Settings saved.', 'success');
+        if (isInsecureRemoteUrl(appBase)) {
+            showStatus('Saved — warning: this URL is plain HTTP, your token will be sent unencrypted.', 'error');
+        } else {
+            showStatus('Settings saved.', 'success');
+        }
     });
 });
 

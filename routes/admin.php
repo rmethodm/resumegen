@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 | Admins log in on this host; session cookies are host-only by default.
 */
 
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+Route::middleware(['auth', 'verified', 'two_factor_challenge', 'admin'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');

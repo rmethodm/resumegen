@@ -103,6 +103,23 @@ class JobImportsTest extends TestCase
         $this->assertSame(1, $user->importedJobs()->count());
     }
 
+    public function test_store_rejects_non_http_job_url(): void
+    {
+        $user = User::factory()->create();
+        $payload = [
+            'jobs' => [[
+                'source' => 'adzuna',
+                'external_id' => 'a1',
+                'title' => 'Product Designer',
+                'url' => 'javascript:alert(1)',
+            ]],
+        ];
+
+        $this->actingAs($user)
+            ->post(route('jobs-imports.store'), $payload)
+            ->assertSessionHasErrors('jobs.0.url');
+    }
+
     public function test_update_status_rejects_jobs_owned_by_another_user(): void
     {
         $owner = User::factory()->create();

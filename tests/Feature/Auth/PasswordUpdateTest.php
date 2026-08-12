@@ -31,6 +31,24 @@ class PasswordUpdateTest extends TestCase
         $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
     }
 
+    public function test_password_cannot_be_updated_while_two_factor_challenge_is_pending(): void
+    {
+        $user = User::factory()->create();
+
+        $this
+            ->actingAs($user)
+            ->withSession(['two_factor_auth_pending' => true])
+            ->from('/profile')
+            ->put('/password', [
+                'current_password' => 'password',
+                'password' => 'new-password',
+                'password_confirmation' => 'new-password',
+            ])
+            ->assertRedirect(route('two-factor.challenge'));
+
+        $this->assertFalse(Hash::check('new-password', $user->refresh()->password));
+    }
+
     public function test_correct_password_must_be_provided_to_update_password(): void
     {
         $user = User::factory()->create();
