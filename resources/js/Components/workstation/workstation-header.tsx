@@ -20,6 +20,7 @@ import { TemplatePickerModal } from '@/Components/workstation/template-picker-mo
 import {
     type PreviewZoom,
     WorkstationFormatToolbar,
+    type WorkstationTab,
 } from '@/Components/workstation/workstation-format-toolbar';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
 import { cn } from '@/lib/utils';
@@ -32,8 +33,7 @@ import type {
     SaveStatus,
 } from '@/types';
 
-const TABS = ['Edit', 'Review', 'Optimize'] as const;
-export type WorkstationTab = (typeof TABS)[number];
+export type { WorkstationTab } from '@/Components/workstation/workstation-format-toolbar';
 
 export type HeaderVersion = {
     id: number;
@@ -189,31 +189,6 @@ export function WorkstationHeader({
                     )}
                 </div>
 
-                {/* Center: segmented Edit | Review */}
-                <div
-                    role="tablist"
-                    aria-label="Workstation mode"
-                    className="inline-flex basis-full shrink-0 items-center justify-center rounded-lg border border-surface-border bg-surface p-0.5 sm:basis-auto sm:justify-start"
-                >
-                    {TABS.map((tab) => (
-                        <button
-                            key={tab}
-                            type="button"
-                            role="tab"
-                            aria-selected={tab === activeTab}
-                            onClick={() => onTabChange(tab)}
-                            className={cn(
-                                'rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors',
-                                tab === activeTab
-                                    ? 'bg-white font-semibold text-brand shadow-sm'
-                                    : 'text-ink-muted hover:text-ink',
-                            )}
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-
                 {/* Right: share · download · more (version/template demoted) */}
                 <div className="flex flex-1 flex-wrap items-center justify-end gap-2">
                     <Button
@@ -357,38 +332,6 @@ export function WorkstationHeader({
                 </div>
             </div>
 
-            {activeTab === 'Review' && onReviewPreviewModeChange && (
-                <div className="flex items-center gap-2 border-t border-surface-border/80 px-3 py-1.5 sm:px-4">
-                    <span className="text-[10px] font-bold tracking-wide text-ink-faint uppercase">
-                        Preview
-                    </span>
-                    <button
-                        type="button"
-                        onClick={() => onReviewPreviewModeChange('react')}
-                        className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium',
-                            reviewPreviewMode === 'react'
-                                ? 'bg-brand-subtle text-brand'
-                                : 'text-ink-muted hover:bg-surface',
-                        )}
-                    >
-                        Live
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => onReviewPreviewModeChange('pdf')}
-                        className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium',
-                            reviewPreviewMode === 'pdf'
-                                ? 'bg-brand-subtle text-brand'
-                                : 'text-ink-muted hover:bg-surface',
-                        )}
-                    >
-                        PDF
-                    </button>
-                </div>
-            )}
-
             <WorkstationFormatToolbar
                 canUndo={canUndo}
                 canRedo={canRedo}
@@ -404,6 +347,10 @@ export function WorkstationHeader({
                 zoom={zoom}
                 onZoomChange={onZoomChange}
                 reviewActive={activeTab === 'Review'}
+                activeTab={activeTab}
+                onTabChange={onTabChange}
+                reviewPreviewMode={reviewPreviewMode}
+                onReviewPreviewModeChange={onReviewPreviewModeChange}
             />
 
             <TemplatePickerModal
