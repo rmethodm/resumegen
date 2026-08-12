@@ -17,6 +17,9 @@ import type {
     ResumeTemplateKey,
 } from '@/types';
 
+export const WORKSTATION_TABS = ['Edit', 'Review', 'Optimize'] as const;
+export type WorkstationTab = (typeof WORKSTATION_TABS)[number];
+
 /** Display names for the document fonts ResumeDocument accepts. */
 export const fontLabels: Record<ResumeFont, string> = {
     inter: 'Inter',
@@ -103,6 +106,10 @@ export function WorkstationFormatToolbar({
     zoom,
     onZoomChange,
     reviewActive,
+    activeTab,
+    onTabChange,
+    reviewPreviewMode = 'react',
+    onReviewPreviewModeChange,
 }: {
     canUndo: boolean;
     canRedo: boolean;
@@ -129,6 +136,10 @@ export function WorkstationFormatToolbar({
     onZoomChange: (zoom: PreviewZoom) => void;
     /** Zoom/View only affect the Review preview; dim when on Edit. */
     reviewActive: boolean;
+    activeTab: WorkstationTab;
+    onTabChange: (tab: WorkstationTab) => void;
+    reviewPreviewMode?: 'react' | 'pdf';
+    onReviewPreviewModeChange?: (mode: 'react' | 'pdf') => void;
 }) {
     const sizeLabel =
         densitySizeOptions.find((option) => option.density === density)?.label ?? '12';
@@ -147,6 +158,32 @@ export function WorkstationFormatToolbar({
             aria-label="Document formatting"
             className="flex flex-wrap items-center gap-1 border-t border-surface-border/80 bg-surface/40 px-2 py-1.5 sm:px-3"
         >
+            <div
+                role="tablist"
+                aria-label="Workstation mode"
+                className="inline-flex items-center rounded-lg border border-surface-border bg-surface p-0.5"
+            >
+                {WORKSTATION_TABS.map((tab) => (
+                    <button
+                        key={tab}
+                        type="button"
+                        role="tab"
+                        aria-selected={tab === activeTab}
+                        onClick={() => onTabChange(tab)}
+                        className={cn(
+                            'rounded-md px-3 py-1 text-sm font-medium transition-colors',
+                            tab === activeTab
+                                ? 'bg-white font-semibold text-brand shadow-sm'
+                                : 'text-ink-muted hover:text-ink',
+                        )}
+                    >
+                        {tab}
+                    </button>
+                ))}
+            </div>
+
+            <ToolbarDivider />
+
             <span className="mr-1 hidden text-[10px] font-bold tracking-[0.08em] text-ink-muted uppercase sm:inline">
                 Format
             </span>
@@ -318,6 +355,47 @@ export function WorkstationFormatToolbar({
             </span>
 
             <ToolbarDivider />
+
+            {onReviewPreviewModeChange && (
+                <div
+                    className={cn(
+                        'inline-flex items-center gap-0.5',
+                        !reviewActive && 'pointer-events-none opacity-40',
+                    )}
+                    title={
+                        reviewActive
+                            ? 'Preview mode'
+                            : 'Switch to Review to change preview mode'
+                    }
+                >
+                    <button
+                        type="button"
+                        disabled={!reviewActive}
+                        onClick={() => onReviewPreviewModeChange('react')}
+                        className={cn(
+                            'rounded-md px-2 py-1 text-xs font-medium',
+                            reviewPreviewMode === 'react'
+                                ? 'bg-brand-subtle text-brand'
+                                : 'text-ink-muted hover:bg-surface',
+                        )}
+                    >
+                        Live
+                    </button>
+                    <button
+                        type="button"
+                        disabled={!reviewActive}
+                        onClick={() => onReviewPreviewModeChange('pdf')}
+                        className={cn(
+                            'rounded-md px-2 py-1 text-xs font-medium',
+                            reviewPreviewMode === 'pdf'
+                                ? 'bg-brand-subtle text-brand'
+                                : 'text-ink-muted hover:bg-surface',
+                        )}
+                    >
+                        PDF
+                    </button>
+                </div>
+            )}
 
             <Menu as="div" className="relative">
                 <MenuButton
