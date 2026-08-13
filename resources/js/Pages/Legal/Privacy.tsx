@@ -20,7 +20,7 @@ export default function Privacy() {
                     Privacy Policy
                 </h1>
                 <p className="mt-2 text-sm text-ink-muted">
-                    Last updated: August 10, 2026
+                    Last updated: August 13, 2026
                 </p>
 
                 <div className="prose-legal mt-8 space-y-6 text-sm leading-relaxed text-ink">
@@ -90,6 +90,20 @@ export default function Privacy() {
                             (hosting, email delivery, optional AI provider when enabled) may process
                             data solely to provide that function. Public share links expose only what
                             you choose to publish via that link.
+                        </p>
+                    </section>
+
+                    <section className="space-y-2">
+                        <h2 className="text-base font-bold text-ink">Browser extension</h2>
+                        <p className="text-ink-muted">
+                            The Resumegen Apply browser extension fills job application forms from
+                            your resumes. It stores a connection token (which you generate and can
+                            revoke from Profile settings) in your browser's local sync storage — this
+                            token is sent only to the Resumegen API to fetch your resume data, never
+                            to the job site you're filling. The extension reads and writes form
+                            fields only on pages where you actively open it; it does not run in the
+                            background, track your browsing, or send page content to Resumegen. Data
+                            filled into a form is submitted only when you choose to submit it.
                         </p>
                     </section>
 
