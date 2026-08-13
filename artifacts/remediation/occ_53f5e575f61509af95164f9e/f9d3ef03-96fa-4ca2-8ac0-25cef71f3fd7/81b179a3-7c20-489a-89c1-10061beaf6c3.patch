@@ -1,0 +1,44 @@
+diff --git a/routes/auth.php b/routes/auth.php
+index 8c9e0fa8..2391dde1 100644
+--- a/routes/auth.php
++++ b/routes/auth.php
+@@ -10,7 +10,9 @@
+     // /reset-password); with both present, the last-registered route wins the name
+     // lookup, which silently pointed route('password.update') at /reset-password
+     // instead of this route.
+-    Route::put('password', [PasswordController::class, 'update'])->name('password.change');
++    Route::put('password', [PasswordController::class, 'update'])
++        ->middleware('two_factor_challenge')
++        ->name('password.change');
+ 
+     Route::get('two-factor-challenge', [TwoFactorChallengeController::class, 'create'])
+         ->name('two-factor.challenge');
+diff --git a/tests/Feature/Auth/PasswordUpdateTest.php b/tests/Feature/Auth/PasswordUpdateTest.php
+index bbf079d2..683ce548 100644
+--- a/tests/Feature/Auth/PasswordUpdateTest.php
++++ b/tests/Feature/Auth/PasswordUpdateTest.php
+@@ -31,6 +31,24 @@ public function test_password_can_be_updated(): void
+         $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
+     }
+ 
++    public function test_password_cannot_be_updated_while_two_factor_challenge_is_pending(): void
++    {
++        $user = User::factory()->create();
++
++        $this
++            ->actingAs($user)
++            ->withSession(['two_factor_auth_pending' => true])
++            ->from('/profile')
++            ->put('/password', [
++                'current_password' => 'password',
++                'password' => 'new-password',
++                'password_confirmation' => 'new-password',
++            ])
++            ->assertRedirect(route('two-factor.challenge'));
++
++        $this->assertFalse(Hash::check('new-password', $user->refresh()->password));
++    }
++
+     public function test_correct_password_must_be_provided_to_update_password(): void
+     {
+         $user = User::factory()->create();

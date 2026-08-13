@@ -1,2116 +1,5 @@
 [
   {
-    "id": "mem:1785887529576",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "l11",
-      "playwright",
-      "baseurl",
-      "now",
-      "overridable",
-      "via",
-      "playwright_base_url",
-      "env"
-    ],
-    "files": [
-      "package.json"
-    ],
-    "file_path": "package.json",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:52:09.576341+00:00",
-    "created_epoch": 1785887529,
-    "updated_at": "2026-08-04T23:52:09.576352+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785887529561",
-    "kind": "decision",
-    "content": "L11: playwright baseURL now overridable via PLAYWRIGHT_BASE_URL env var; removed stray promptguide.md and duplicate root r-monogram.svg (public/ copy is the real one, already referenced by app.blade.php); moved @types/qrcode to devDependencies",
-    "tags": [
-      "l11",
-      "playwright",
-      "baseurl",
-      "now",
-      "overridable",
-      "via",
-      "playwright_base_url",
-      "env"
-    ],
-    "files": [
-      "playwright.config.ts",
-      "package.json",
-      "package-lock.json"
-    ],
-    "file_path": "playwright.config.ts",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:52:09.561494+00:00",
-    "created_epoch": 1785887529,
-    "updated_at": "2026-08-04T23:52:09.561500+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1785887529569",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "l11",
-      "playwright",
-      "baseurl",
-      "now",
-      "overridable",
-      "via",
-      "playwright_base_url",
-      "env"
-    ],
-    "files": [
-      "playwright.config.ts"
-    ],
-    "file_path": "playwright.config.ts",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:52:09.569606+00:00",
-    "created_epoch": 1785887529,
-    "updated_at": "2026-08-04T23:52:09.569620+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785887529582",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "l11",
-      "playwright",
-      "baseurl",
-      "now",
-      "overridable",
-      "via",
-      "playwright_base_url",
-      "env"
-    ],
-    "files": [
-      "package-lock.json"
-    ],
-    "file_path": "package-lock.json",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:52:09.582315+00:00",
-    "created_epoch": 1785887529,
-    "updated_at": "2026-08-04T23:52:09.582321+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785887607921",
-    "kind": "decision",
-    "content": "L12: corrected two stale CLAUDE.md claims - resume-preview.tsx is wired into Workstation's Review tab and PublicShare, and the /messages page (ResumeThread) was dropped 2026-08-02, not kept",
-    "tags": [
-      "l12",
-      "corrected",
-      "two",
-      "stale",
-      "claude",
-      "claims",
-      "resume",
-      "preview"
-    ],
-    "files": [
-      "CLAUDE.md"
-    ],
-    "file_path": "CLAUDE.md",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-04T23:53:27.921650+00:00",
-    "created_epoch": 1785887607,
-    "updated_at": "2026-08-04T23:53:27.921655+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1785888470392",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side",
-      "edited",
-      "during"
-    ],
-    "files": [
-      "resources/js/Components/workstation/workstation-header.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/workstation-header.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.392761+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-10T07:53:36.741704+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "workstation header format toolbar button focus outline focus-visible a11y",
-      "WorkstationHeader workstation format toolbar AuthenticatedLayout"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "workstation header format toolbar button focus outline focus-visible a11y",
-        "WorkstationHeader workstation format toolbar AuthenticatedLayout"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785888470385",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side",
-      "pair",
-      "remaining"
-    ],
-    "files": [
-      "resources/js/Components/TagInput.tsx"
-    ],
-    "file_path": "resources/js/Components/TagInput.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.385017+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-09T07:04:48.293196+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785888470376",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side",
-      "pair",
-      "remaining"
-    ],
-    "files": [
-      "resources/js/Components/workstation/inspector-sections.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.376903+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-10T07:49:08.039360+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785888470365",
-    "kind": "decision",
-    "content": "M9 finish: mirrored every UpdateResumeRequest validation cap client-side - maxLength on all scalar text inputs/textareas, per-array count caps (20 for experiences/projects/education/certificates, 60 total skills) with disabled Add buttons + limit-reached messaging, and 12-bullet/highlight cap enforced centrally in BulletsField's commit()",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side"
-    ],
-    "files": [
-      "resources/js/Components/workstation/inspector-fields.tsx",
-      "resources/js/Components/workstation/inspector-sections.tsx",
-      "resources/js/Components/AutocompleteInput.tsx",
-      "resources/js/Components/TagInput.tsx",
-      "resources/js/Components/SkillGroupEditor.tsx",
-      "resources/js/Components/workstation/workstation-header.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-fields.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.365343+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-05T00:07:50.365355+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1785888470381",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "finish",
-      "mirrored",
-      "every",
-      "updateresumerequest",
-      "validation",
-      "cap",
-      "client",
-      "side",
-      "width",
-      "animation"
-    ],
-    "files": [
-      "resources/js/Components/AutocompleteInput.tsx"
-    ],
-    "file_path": "resources/js/Components/AutocompleteInput.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T00:07:50.381231+00:00",
-    "created_epoch": 1785888470,
-    "updated_at": "2026-08-09T07:04:48.322924+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924753995",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint"
-    ],
-    "files": [
-      "app/Support/ResumeFillProfile.php"
-    ],
-    "file_path": "app/Support/ResumeFillProfile.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:33.995113+00:00",
-    "created_epoch": 1785924753,
-    "updated_at": "2026-08-05T10:12:33.995119+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924753991",
-    "kind": "decision",
-    "content": "Apply extension backend: fill-profile API, token mint UI, tests",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint"
-    ],
-    "files": [
-      "app/Support/ResumeFillProfile.php",
-      "app/Http/Controllers/Api/ExtensionController.php",
-      "app/Http/Controllers/ExtensionTokenController.php",
-      "routes/api.php",
-      "routes/web.php",
-      "app/Http/Controllers/ProfileController.php",
-      "resources/js/Pages/Profile/Edit.tsx",
-      "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "tests/Feature/Api/ExtensionApiTest.php",
-      "tests/Feature/ExtensionTokenTest.php"
-    ],
-    "file_path": "app/Support/ResumeFillProfile.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:33.991411+00:00",
-    "created_epoch": 1785924753,
-    "updated_at": "2026-08-05T10:12:33.991413+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1785924753997",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint"
-    ],
-    "files": [
-      "app/Http/Controllers/Api/ExtensionController.php"
-    ],
-    "file_path": "app/Http/Controllers/Api/ExtensionController.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:33.997946+00:00",
-    "created_epoch": 1785924753,
-    "updated_at": "2026-08-05T10:12:33.997949+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754028",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint"
-    ],
-    "files": [
-      "tests/Feature/Api/ExtensionApiTest.php"
-    ],
-    "file_path": "tests/Feature/Api/ExtensionApiTest.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.028885+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-05T10:12:34.028891+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754023",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint",
-      "added",
-      "mobile"
-    ],
-    "files": [
-      "resources/js/Pages/Profile/Edit.tsx"
-    ],
-    "file_path": "resources/js/Pages/Profile/Edit.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.023212+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-09T07:04:55.502050+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754017",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint",
-      "added",
-      "mobile"
-    ],
-    "files": [
-      "routes/web.php"
-    ],
-    "file_path": "routes/web.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.017672+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-10T07:31:03.868258+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754011",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint"
-    ],
-    "files": [
-      "app/Http/Controllers/ExtensionTokenController.php"
-    ],
-    "file_path": "app/Http/Controllers/ExtensionTokenController.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.011623+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-05T10:12:34.011633+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754014",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint",
-      "added",
-      "mobile"
-    ],
-    "files": [
-      "routes/api.php"
-    ],
-    "file_path": "routes/api.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.014893+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-06T20:13:36.992569+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754026",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint",
-      "migration",
-      "sweep"
-    ],
-    "files": [
-      "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
-    ],
-    "file_path": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.026153+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-09T07:04:55.519470+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785924754031",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "apply",
-      "extension",
-      "backend",
-      "fill",
-      "profile",
-      "api",
-      "token",
-      "mint"
-    ],
-    "files": [
-      "tests/Feature/ExtensionTokenTest.php"
-    ],
-    "file_path": "tests/Feature/ExtensionTokenTest.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T10:12:34.031636+00:00",
-    "created_epoch": 1785924754,
-    "updated_at": "2026-08-05T10:12:34.031639+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1785968496829",
-    "kind": "interaction_pattern",
-    "content": "Frequently read with: tailwind.config.js, routes/web.php, resources/js/Layouts/AuthenticatedLayout.tsx",
-    "tags": [],
-    "files": [
-      "resources/js/Pages/Settings/StarterProfile.tsx"
-    ],
-    "file_path": "resources/js/Pages/Settings/StarterProfile.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-05T22:21:36.829667+00:00",
-    "created_epoch": 1785968496,
-    "updated_at": "2026-08-05T22:21:36.829677+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": [
-        "tailwind.config.js",
-        "routes/web.php",
-        "resources/js/Layouts/AuthenticatedLayout.tsx"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786012469967",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "doc",
-      "audit",
-      "added",
-      "undocumented",
-      "job",
-      "imports",
-      "feature",
-      "fixed"
-    ],
-    "files": [
-      "docs/plans/scan-errors-upgrades-2026-06-11.md"
-    ],
-    "file_path": "docs/plans/scan-errors-upgrades-2026-06-11.md",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.967953+00:00",
-    "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.967955+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786012469955",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "doc",
-      "audit",
-      "added",
-      "undocumented",
-      "job",
-      "imports",
-      "feature",
-      "fixed"
-    ],
-    "files": [
-      "README.md"
-    ],
-    "file_path": "README.md",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.955089+00:00",
-    "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.955094+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786012469941",
-    "kind": "decision",
-    "content": "Doc audit: added undocumented Job Imports feature, fixed stale route count/line numbers, removed dead Imagick/thumbnail deploy step, flagged historical proposal docs",
-    "tags": [
-      "doc",
-      "audit",
-      "added",
-      "undocumented",
-      "job",
-      "imports",
-      "feature",
-      "fixed"
-    ],
-    "files": [
-      "CLAUDE.md",
-      "README.md",
-      "PLAN.md",
-      "CONTEXT.md",
-      "docs/DEPLOYMENT.md",
-      "docs/plans/scan-errors-upgrades-2026-06-11.md",
-      "docs/research/2026-06-23-resume-import-industry-research.md"
-    ],
-    "file_path": "CLAUDE.md",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.941128+00:00",
-    "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.941135+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1786012469958",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "doc",
-      "audit",
-      "added",
-      "undocumented",
-      "job",
-      "imports",
-      "feature",
-      "fixed"
-    ],
-    "files": [
-      "PLAN.md"
-    ],
-    "file_path": "PLAN.md",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.958479+00:00",
-    "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.958481+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786012469970",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "doc",
-      "audit",
-      "added",
-      "undocumented",
-      "job",
-      "imports",
-      "feature",
-      "fixed"
-    ],
-    "files": [
-      "docs/research/2026-06-23-resume-import-industry-research.md"
-    ],
-    "file_path": "docs/research/2026-06-23-resume-import-industry-research.md",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T10:34:29.970800+00:00",
-    "created_epoch": 1786012469,
-    "updated_at": "2026-08-06T10:34:29.970801+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786012799672",
-    "kind": "interaction_pattern",
-    "content": "Frequently read with: extension/background/service-worker.js",
-    "tags": [],
-    "files": [
-      "extension/manifest.json"
-    ],
-    "file_path": "extension/manifest.json",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T10:39:59.672971+00:00",
-    "created_epoch": 1786012799,
-    "updated_at": "2026-08-06T10:39:59.672975+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": [
-        "extension/background/service-worker.js"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786012819930",
-    "kind": "stale_marker",
-    "content": "Marked stale because symbol removed",
-    "tags": [],
-    "files": [
-      "resources/js/Components/resume/score-dial.tsx::ScoreDial",
-      "resources/js/Pages/Dashboard.tsx"
-    ],
-    "file_path": "resources/js/Components/resume/score-dial.tsx",
-    "symbol_id": "resources/js/Components/resume/score-dial.tsx::ScoreDial",
-    "symbol_hash": "74f5612e",
-    "created_at": "2026-08-06T10:40:19.911635+00:00",
-    "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911639+00:00",
-    "stale": true,
-    "stale_reason": "symbol removed",
-    "observed_queries": [
-      "dashboard score circles colored resume strength score",
-      "score gauge circle"
-    ],
-    "evidence": {
-      "source_kind": "decision"
-    }
-  },
-  {
-    "id": "mem:1786012819926",
-    "kind": "stale_marker",
-    "content": "Marked stale because symbol removed",
-    "tags": [],
-    "files": [
-      "resources/js/Pages/Dashboard.tsx::ResumeCard"
-    ],
-    "file_path": "resources/js/Pages/Dashboard.tsx",
-    "symbol_id": "resources/js/Pages/Dashboard.tsx::ResumeCard",
-    "symbol_hash": "c794c67a",
-    "created_at": "2026-08-06T10:40:19.911630+00:00",
-    "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911631+00:00",
-    "stale": true,
-    "stale_reason": "symbol removed",
-    "observed_queries": [
-      "score gauge circle"
-    ],
-    "evidence": {
-      "source_kind": "query_association"
-    }
-  },
-  {
-    "id": "mem:1786012819913",
-    "kind": "stale_marker",
-    "content": "Marked stale because symbol removed",
-    "tags": [],
-    "files": [
-      "resources/js/Components/workstation/inspector-sections.tsx::ExperienceFields"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
-    "symbol_id": "resources/js/Components/workstation/inspector-sections.tsx::ExperienceFields",
-    "symbol_hash": "e201b086",
-    "created_at": "2026-08-06T10:40:19.911606+00:00",
-    "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911609+00:00",
-    "stale": true,
-    "stale_reason": "symbol removed",
-    "observed_queries": [],
-    "evidence": {
-      "source_kind": "edit_observation"
-    }
-  },
-  {
-    "id": "mem:1786012819915",
-    "kind": "stale_marker",
-    "content": "Marked stale because symbol removed",
-    "tags": [],
-    "files": [
-      "resources/js/Pages/Resumes/Workstation.tsx::Workstation"
-    ],
-    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
-    "symbol_id": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-    "symbol_hash": "ca7c4175",
-    "created_at": "2026-08-06T10:40:19.911615+00:00",
-    "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911629+00:00",
-    "stale": true,
-    "stale_reason": "symbol removed",
-    "observed_queries": [
-      "preview live panel",
-      "Live Preview preview panel reviewPreviewMode previewZoom",
-      "LIVE PREVIEW panel resume workstation remove preview"
-    ],
-    "evidence": {
-      "source_kind": "decision"
-    }
-  },
-  {
-    "id": "mem:1786012819928",
-    "kind": "stale_marker",
-    "content": "Marked stale because symbol removed",
-    "tags": [],
-    "files": [
-      "resources/js/Components/resume/score-gauge.tsx::scoreLabel"
-    ],
-    "file_path": "resources/js/Components/resume/score-gauge.tsx",
-    "symbol_id": "resources/js/Components/resume/score-gauge.tsx::scoreLabel",
-    "symbol_hash": "37d37eaf",
-    "created_at": "2026-08-06T10:40:19.911633+00:00",
-    "created_epoch": 1786012819,
-    "updated_at": "2026-08-06T10:40:19.911634+00:00",
-    "stale": true,
-    "stale_reason": "symbol removed",
-    "observed_queries": [
-      "color score circle"
-    ],
-    "evidence": {
-      "source_kind": "query_association"
-    }
-  },
-  {
-    "id": "mem:1786012838111",
-    "kind": "interaction_pattern",
-    "content": "Repeatedly visited during recent work",
-    "tags": [],
-    "files": [
-      "background/service-worker.js::ensureContentScript"
-    ],
-    "file_path": "background/service-worker.js",
-    "symbol_id": "background/service-worker.js::ensureContentScript",
-    "symbol_hash": "ddbbd84b",
-    "created_at": "2026-08-06T10:40:38.111514+00:00",
-    "created_epoch": 1786012838,
-    "updated_at": "2026-08-06T10:40:42.951791+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 3,
-      "co_visited": []
-    }
-  },
-  {
-    "id": "mem:1786047004566",
-    "kind": "query_association",
-    "content": "Queried during: extension-tokens",
-    "tags": [
-      "extension",
-      "tokens"
-    ],
-    "files": [
-      "routes/web.php"
-    ],
-    "file_path": "routes/web.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T20:10:04.566697+00:00",
-    "created_epoch": 1786047004,
-    "updated_at": "2026-08-06T20:10:04.566704+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "extension-tokens"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "anchor_mode": "file",
-      "session_epoch": 1786046289
-    }
-  },
-  {
-    "id": "mem:1786047216989",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "added",
-      "mobile",
-      "sanctum",
-      "token",
-      "issuance",
-      "full",
-      "resume",
-      "crud"
-    ],
-    "files": [
-      "app/Http/Controllers/Api/ResumeController.php"
-    ],
-    "file_path": "app/Http/Controllers/Api/ResumeController.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T20:13:36.989781+00:00",
-    "created_epoch": 1786047216,
-    "updated_at": "2026-08-06T20:13:36.989789+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786047216983",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "added",
-      "mobile",
-      "sanctum",
-      "token",
-      "issuance",
-      "full",
-      "resume",
-      "crud"
-    ],
-    "files": [
-      "app/Support/MobileApiToken.php"
-    ],
-    "file_path": "app/Support/MobileApiToken.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T20:13:36.983210+00:00",
-    "created_epoch": 1786047216,
-    "updated_at": "2026-08-06T20:13:36.983213+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786047216979",
-    "kind": "decision",
-    "content": "Added mobile Sanctum token issuance + full resume CRUD API for iPhone app",
-    "tags": [
-      "added",
-      "mobile",
-      "sanctum",
-      "token",
-      "issuance",
-      "full",
-      "resume",
-      "crud"
-    ],
-    "files": [
-      "app/Support/MobileApiToken.php",
-      "app/Http/Controllers/MobileTokenController.php",
-      "app/Http/Controllers/Api/ResumeController.php",
-      "routes/api.php",
-      "routes/web.php",
-      "app/Http/Controllers/ProfileController.php",
-      "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "resources/js/Pages/Profile/Edit.tsx"
-    ],
-    "file_path": "app/Support/MobileApiToken.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T20:13:36.979609+00:00",
-    "created_epoch": 1786047216,
-    "updated_at": "2026-08-06T20:13:36.979612+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1786047216986",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "added",
-      "mobile",
-      "sanctum",
-      "token",
-      "issuance",
-      "full",
-      "resume",
-      "crud"
-    ],
-    "files": [
-      "app/Http/Controllers/MobileTokenController.php"
-    ],
-    "file_path": "app/Http/Controllers/MobileTokenController.php",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T20:13:36.986727+00:00",
-    "created_epoch": 1786047216,
-    "updated_at": "2026-08-06T20:13:36.986733+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786047217000",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "added",
-      "mobile",
-      "sanctum",
-      "token",
-      "issuance",
-      "full",
-      "resume",
-      "crud",
-      "migration",
-      "sweep"
-    ],
-    "files": [
-      "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx"
-    ],
-    "file_path": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-06T20:13:37.000866+00:00",
-    "created_epoch": 1786047217,
-    "updated_at": "2026-08-09T07:04:55.523170+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "register_edit",
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786100392215",
-    "kind": "decision",
-    "content": "Initialize collapsedSections from draft.section_order so all sections start minimized",
-    "tags": [
-      "initialize",
-      "collapsedsections",
-      "from",
-      "draft",
-      "section_order",
-      "all",
-      "sections",
-      "start"
-    ],
-    "files": [
-      "resources/js/Pages/Resumes/Workstation.tsx::Workstation"
-    ],
-    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
-    "symbol_id": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-    "symbol_hash": "ca7c4175",
-    "created_at": "2026-08-07T10:59:52.215285+00:00",
-    "created_epoch": 1786100392,
-    "updated_at": "2026-08-07T10:59:52.215296+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "resume workstation section collapse expand minimized state SectionPanel inspector sections"
-    ],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "read",
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "resume workstation section collapse expand minimized state SectionPanel inspector sections"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786100587589",
-    "kind": "interaction_pattern",
-    "content": "Frequently read with: resources/js/Pages/Resumes/Workstation.tsx::Workstation, resources/js/Components/workstation/section-panel.tsx::sectionSummary",
-    "tags": [],
-    "files": [
-      "resources/js/Components/workstation/inspector-sections.tsx"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T11:03:07.589585+00:00",
-    "created_epoch": 1786100587,
-    "updated_at": "2026-08-07T11:03:07.589592+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": [
-        "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-        "resources/js/Components/workstation/section-panel.tsx::sectionSummary"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786100608300",
-    "kind": "interaction_pattern",
-    "content": "Frequently read with: resources/js/Components/workstation/inspector-sections.tsx, resources/js/Pages/Resumes/Workstation.tsx::Workstation, resources/js/Components/workstation/section-panel.tsx::sectionSummary",
-    "tags": [],
-    "files": [
-      "resources/js/lib/contact-validation.ts"
-    ],
-    "file_path": "resources/js/lib/contact-validation.ts",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T11:03:28.300467+00:00",
-    "created_epoch": 1786100608,
-    "updated_at": "2026-08-07T11:03:28.300471+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": [
-        "resources/js/Components/workstation/inspector-sections.tsx",
-        "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
-        "resources/js/Components/workstation/section-panel.tsx::sectionSummary"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786100674516",
-    "kind": "edit_observation",
-    "content": "Edited after query: resume preview pdf export linkedin website contact link render template",
-    "tags": [
-      "added",
-      "formaturl",
-      "prepend",
-      "https",
-      "linkedin",
-      "website",
-      "blur"
-    ],
-    "files": [
-      "resources/js/Components/workstation/inspector-fields.tsx::Field"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-fields.tsx",
-    "symbol_id": "resources/js/Components/workstation/inspector-fields.tsx::Field",
-    "symbol_hash": "5a448cc4",
-    "created_at": "2026-08-07T11:04:34.516464+00:00",
-    "created_epoch": 1786100674,
-    "updated_at": "2026-08-07T11:04:34.516474+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "resume preview pdf export linkedin website contact link render template",
-      "linkedin website url contact field resume format normalize"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "resume preview pdf export linkedin website contact link render template",
-        "linkedin website url contact field resume format normalize"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786100674501",
-    "kind": "decision",
-    "content": "Added formatUrl() to prepend https:// to LinkedIn/Website on blur",
-    "tags": [
-      "added",
-      "formaturl",
-      "prepend",
-      "https",
-      "linkedin",
-      "website",
-      "blur"
-    ],
-    "files": [
-      "resources/js/lib/contact-validation.ts",
-      "resources/js/Components/workstation/inspector-fields.tsx::Field",
-      "resources/js/Components/workstation/inspector-sections.tsx::ContactFields"
-    ],
-    "file_path": "resources/js/lib/contact-validation.ts",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T11:04:34.502016+00:00",
-    "created_epoch": 1786100674,
-    "updated_at": "2026-08-07T11:04:34.502021+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "resume preview pdf export linkedin website contact link render template",
-      "linkedin website url contact field resume format normalize"
-    ],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg",
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "resume preview pdf export linkedin website contact link render template",
-        "linkedin website url contact field resume format normalize"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786100674511",
-    "kind": "edit_observation",
-    "content": "Edited after query: resume preview pdf export linkedin website contact link render template",
-    "tags": [
-      "added",
-      "formaturl",
-      "prepend",
-      "https",
-      "linkedin",
-      "website",
-      "blur"
-    ],
-    "files": [
-      "resources/js/lib/contact-validation.ts"
-    ],
-    "file_path": "resources/js/lib/contact-validation.ts",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T11:04:34.511833+00:00",
-    "created_epoch": 1786100674,
-    "updated_at": "2026-08-07T11:04:34.511841+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "resume preview pdf export linkedin website contact link render template",
-      "linkedin website url contact field resume format normalize"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "resume preview pdf export linkedin website contact link render template",
-        "linkedin website url contact field resume format normalize"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786100674520",
-    "kind": "edit_observation",
-    "content": "Edited after query: resume preview pdf export linkedin website contact link render template",
-    "tags": [
-      "added",
-      "formaturl",
-      "prepend",
-      "https",
-      "linkedin",
-      "website",
-      "blur"
-    ],
-    "files": [
-      "resources/js/Components/workstation/inspector-sections.tsx::ContactFields"
-    ],
-    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
-    "symbol_id": "resources/js/Components/workstation/inspector-sections.tsx::ContactFields",
-    "symbol_hash": "76a00fa4",
-    "created_at": "2026-08-07T11:04:34.520038+00:00",
-    "created_epoch": 1786100674,
-    "updated_at": "2026-08-07T11:04:34.520041+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "resume preview pdf export linkedin website contact link render template",
-      "linkedin website url contact field resume format normalize"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve",
-        "read"
-      ],
-      "recent_queries": [
-        "resume preview pdf export linkedin website contact link render template",
-        "linkedin website url contact field resume format normalize"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786101179731",
-    "kind": "decision",
-    "content": "Removed Job Imports and Applications nav links (routes/pages left intact)",
-    "tags": [
-      "removed",
-      "job",
-      "imports",
-      "applications",
-      "nav",
-      "links",
-      "routes",
-      "pages"
-    ],
-    "files": [
-      "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated"
-    ],
-    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
-    "symbol_id": "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated",
-    "symbol_hash": "0ae3c886",
-    "created_at": "2026-08-07T11:12:59.731229+00:00",
-    "created_epoch": 1786101179,
-    "updated_at": "2026-08-07T11:12:59.731235+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "AuthenticatedLayout navigation links list nav items command palette",
-      "navigation nav links Job Imports Job Applications menu items sidebar"
-    ],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg",
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "AuthenticatedLayout navigation links list nav items command palette",
-        "navigation nav links Job Imports Job Applications menu items sidebar"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786101179737",
-    "kind": "edit_observation",
-    "content": "Edited after query: AuthenticatedLayout navigation links list nav items command palette",
-    "tags": [
-      "removed",
-      "job",
-      "imports",
-      "applications",
-      "nav",
-      "links",
-      "routes",
-      "pages"
-    ],
-    "files": [
-      "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated"
-    ],
-    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
-    "symbol_id": "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated",
-    "symbol_hash": "0ae3c886",
-    "created_at": "2026-08-07T11:12:59.737205+00:00",
-    "created_epoch": 1786101179,
-    "updated_at": "2026-08-07T11:12:59.737210+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "AuthenticatedLayout navigation links list nav items command palette",
-      "navigation nav links Job Imports Job Applications menu items sidebar"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "AuthenticatedLayout navigation links list nav items command palette",
-        "navigation nav links Job Imports Job Applications menu items sidebar"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786102884884",
-    "kind": "query_association",
-    "content": "Queried during: feature card icon rendering",
-    "tags": [
-      "feature",
-      "card",
-      "icon",
-      "rendering"
-    ],
-    "files": [
-      "resources/js/Pages/Welcome.tsx::Welcome"
-    ],
-    "file_path": "resources/js/Pages/Welcome.tsx",
-    "symbol_id": "resources/js/Pages/Welcome.tsx::Welcome",
-    "symbol_hash": "4c6cb6f5",
-    "created_at": "2026-08-07T11:41:24.884244+00:00",
-    "created_epoch": 1786102884,
-    "updated_at": "2026-08-07T11:41:24.884252+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "feature card icon rendering"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "anchor_mode": "symbol",
-      "session_epoch": 1786102264
-    }
-  },
-  {
-    "id": "mem:1786102884887",
-    "kind": "interaction_pattern",
-    "content": "Repeatedly visited during recent work",
-    "tags": [
-      "feature",
-      "card",
-      "icon",
-      "rendering"
-    ],
-    "files": [
-      "resources/js/Pages/Welcome.tsx::Welcome"
-    ],
-    "file_path": "resources/js/Pages/Welcome.tsx",
-    "symbol_id": "resources/js/Pages/Welcome.tsx::Welcome",
-    "symbol_hash": "4c6cb6f5",
-    "created_at": "2026-08-07T11:41:24.887689+00:00",
-    "created_epoch": 1786102884,
-    "updated_at": "2026-08-07T11:41:24.887701+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "feature card icon rendering"
-    ],
-    "evidence": {
-      "source": "graph_read",
-      "read_count": 2,
-      "co_visited": []
-    }
-  },
-  {
-    "id": "mem:1786102969601",
-    "kind": "edit_observation",
-    "content": "Edited after query: feature card icon rendering",
-    "tags": [
-      "replaced",
-      "unicode",
-      "emoji",
-      "feature",
-      "icons",
-      "heroicons",
-      "match",
-      "project",
-      "marked",
-      "decorative"
-    ],
-    "files": [
-      "resources/js/Pages/Welcome.tsx"
-    ],
-    "file_path": "resources/js/Pages/Welcome.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T11:42:49.601543+00:00",
-    "created_epoch": 1786102969,
-    "updated_at": "2026-08-10T08:09:03.651656+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "feature card icon rendering",
-      "landing page welcome page feature cards icons Go to app CTA",
-      "surface-overlay surface-card modal-without-dialog elevated surfaces",
-      "target-role-bar modal dialog popover autocomplete combobox"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "read",
-        "continue_retrieve",
-        "retrieve",
-        "register_edit"
-      ],
-      "recent_queries": [
-        "feature card icon rendering",
-        "landing page welcome page feature cards icons Go to app CTA",
-        "surface-overlay surface-card modal-without-dialog elevated surfaces",
-        "target-role-bar modal dialog popover autocomplete combobox"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786105513021",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "established",
-      "token",
-      "spine",
-      "neutral",
-      "accent",
-      "ramps",
-      "motion",
-      "primitives",
-      "fixed",
-      "both"
-    ],
-    "files": [
-      "tailwind.config.js"
-    ],
-    "file_path": "tailwind.config.js",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:25:13.021630+00:00",
-    "created_epoch": 1786105513,
-    "updated_at": "2026-08-10T08:09:03.654882+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "app.blade.php font link Google Fonts IBM Plex Sans"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "app.blade.php font link Google Fonts IBM Plex Sans"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786105513015",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "established",
-      "token",
-      "spine",
-      "neutral",
-      "accent",
-      "ramps",
-      "motion",
-      "primitives",
-      "dark",
-      "remap"
-    ],
-    "files": [
-      "resources/css/app.css"
-    ],
-    "file_path": "resources/css/app.css",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:25:13.015334+00:00",
-    "created_epoch": 1786105513,
-    "updated_at": "2026-08-09T10:36:35.750762+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "app.blade.php font link Google Fonts IBM Plex Sans"
-    ],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "app.blade.php font link Google Fonts IBM Plex Sans"
-      ],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786106341579",
-    "kind": "decision",
-    "content": "Fixed both finalize Critical findings: focus-visible on Forgot-password link, renamed overlay-sounding class to surface-card to clear modal-pattern detector false positive",
-    "tags": [
-      "fixed",
-      "both",
-      "finalize",
-      "critical",
-      "findings",
-      "focus",
-      "visible",
-      "forgot"
-    ],
-    "files": [
-      "resources/js/Pages/Auth/Login.tsx",
-      "resources/js/Layouts/AuthSplitLayout.tsx",
-      "tailwind.config.js"
-    ],
-    "file_path": "resources/js/Pages/Auth/Login.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:39:01.579654+00:00",
-    "created_epoch": 1786106341,
-    "updated_at": "2026-08-07T12:39:01.579660+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1786106341594",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "fixed",
-      "both",
-      "finalize",
-      "critical",
-      "findings",
-      "focus",
-      "visible",
-      "forgot"
-    ],
-    "files": [
-      "resources/js/Layouts/AuthSplitLayout.tsx"
-    ],
-    "file_path": "resources/js/Layouts/AuthSplitLayout.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:39:01.594365+00:00",
-    "created_epoch": 1786106341,
-    "updated_at": "2026-08-07T12:39:01.594386+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786106686519",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "polish",
-      "pass",
-      "auth",
-      "surface",
-      "visual",
-      "not",
-      "color",
-      "only"
-    ],
-    "files": [
-      "resources/js/Components/PrimaryButton.tsx"
-    ],
-    "file_path": "resources/js/Components/PrimaryButton.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:44:46.519954+00:00",
-    "created_epoch": 1786106686,
-    "updated_at": "2026-08-07T12:44:46.519959+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786106686499",
-    "kind": "decision",
-    "content": "Polish pass on auth surface: visual (not color-only) confirmation feedback, active/pressed states on buttons and toggles, on-brand checkbox color via token spine",
-    "tags": [
-      "polish",
-      "pass",
-      "auth",
-      "surface",
-      "visual",
-      "not",
-      "color",
-      "only"
-    ],
-    "files": [
-      "resources/js/Pages/Auth/Login.tsx",
-      "resources/js/Pages/Auth/Register.tsx",
-      "resources/js/Components/PrimaryButton.tsx",
-      "resources/js/Components/Checkbox.tsx"
-    ],
-    "file_path": "resources/js/Pages/Auth/Login.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:44:46.499407+00:00",
-    "created_epoch": 1786106686,
-    "updated_at": "2026-08-07T12:44:46.499417+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1786106686515",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "polish",
-      "pass",
-      "auth",
-      "surface",
-      "visual",
-      "not",
-      "color",
-      "only"
-    ],
-    "files": [
-      "resources/js/Pages/Auth/Register.tsx"
-    ],
-    "file_path": "resources/js/Pages/Auth/Register.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:44:46.515083+00:00",
-    "created_epoch": 1786106686,
-    "updated_at": "2026-08-07T12:44:46.515093+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786106686525",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "polish",
-      "pass",
-      "auth",
-      "surface",
-      "visual",
-      "not",
-      "color",
-      "only"
-    ],
-    "files": [
-      "resources/js/Components/Checkbox.tsx"
-    ],
-    "file_path": "resources/js/Components/Checkbox.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:44:46.525009+00:00",
-    "created_epoch": 1786106686,
-    "updated_at": "2026-08-07T12:44:46.525016+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786107132809",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "migrated",
-      "utility",
-      "auth",
-      "pages",
-      "from",
-      "raw",
-      "hex",
-      "guestlayout"
-    ],
-    "files": [
-      "resources/js/Pages/Auth/TwoFactorChallenge.tsx"
-    ],
-    "file_path": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.809550+00:00",
-    "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.809558+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1786107132800",
     "kind": "edit_observation",
     "content": "Edited during active session",
@@ -2290,41 +179,6 @@
     }
   },
   {
-    "id": "mem:1786107132805",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "migrated",
-      "utility",
-      "auth",
-      "pages",
-      "from",
-      "raw",
-      "hex",
-      "guestlayout"
-    ],
-    "files": [
-      "resources/js/Pages/Auth/VerifyEmail.tsx"
-    ],
-    "file_path": "resources/js/Pages/Auth/VerifyEmail.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.805299+00:00",
-    "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.805307+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1786127302312",
     "kind": "query_association",
     "content": "Queried during: checklist missing present useMemo",
@@ -2434,13 +288,14 @@
     "symbol_hash": "ae54e7f0",
     "created_at": "2026-08-07T19:25:55.630237+00:00",
     "created_epoch": 1786130755,
-    "updated_at": "2026-08-10T14:04:46.740174+00:00",
+    "updated_at": "2026-08-10T22:30:35.801330+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
       "offline error banner retrySave errorMessage",
       "show notes checkpoints toggle collapse showSideTools",
-      "sidebar preview panel width grid flex layout classes"
+      "sidebar preview panel width grid flex layout classes",
+      "layout grid columns score card resume form width"
     ],
     "evidence": {
       "source": "graph_read",
@@ -2538,7 +393,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T19:37:55.904124+00:00",
     "created_epoch": 1786131475,
-    "updated_at": "2026-08-10T07:46:13.843750+00:00",
+    "updated_at": "2026-08-11T13:42:02.940314+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -2546,7 +401,8 @@
       "target-role-bar modal dialog popover autocomplete combobox",
       "ScoreChecklist KeywordChips component score-coach.tsx styling wrapper border card",
       "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation",
-      "Workstation Review preview Kanban JobCard drag shell section-panel"
+      "Workstation Review preview Kanban JobCard drag shell section-panel",
+      "improvement section suggestions panel in resume builder workstation UI"
     ],
     "evidence": {
       "source": "graph_register_edit",
@@ -2563,7 +419,8 @@
         "target-role-bar modal dialog popover autocomplete combobox",
         "ScoreChecklist KeywordChips component score-coach.tsx styling wrapper border card",
         "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation",
-        "Workstation Review preview Kanban JobCard drag shell section-panel"
+        "Workstation Review preview Kanban JobCard drag shell section-panel",
+        "improvement section suggestions panel in resume builder workstation UI"
       ],
       "edited": true
     }
@@ -2592,13 +449,16 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T19:37:55.893167+00:00",
     "created_epoch": 1786131475,
-    "updated_at": "2026-08-10T07:53:36.738613+00:00",
+    "updated_at": "2026-08-11T13:17:03.302850+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
       "Workstation Review preview Kanban JobCard drag shell section-panel",
       "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar",
-      "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+      "WorkstationHeader workstation format toolbar AuthenticatedLayout",
+      "improvement section suggestions panel in resume builder workstation UI",
+      "resume form section heading title Contact Summary Experience Skills border accent style component",
+      "job import search service, AI match ranking, application tracking kanban"
     ],
     "evidence": {
       "source": "graph_register_edit",
@@ -2610,7 +470,10 @@
       "recent_queries": [
         "Workstation Review preview Kanban JobCard drag shell section-panel",
         "Workstation Edit tab renderFormSections SectionFields inspector sections TargetRoleBar",
-        "WorkstationHeader workstation format toolbar AuthenticatedLayout"
+        "WorkstationHeader workstation format toolbar AuthenticatedLayout",
+        "improvement section suggestions panel in resume builder workstation UI",
+        "resume form section heading title Contact Summary Experience Skills border accent style component",
+        "job import search service, AI match ranking, application tracking kanban"
       ],
       "edited": true
     }
@@ -3039,7 +902,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T22:49:33.963887+00:00",
     "created_epoch": 1786142973,
-    "updated_at": "2026-08-10T07:49:08.033414+00:00",
+    "updated_at": "2026-08-11T13:42:02.986456+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -3128,7 +991,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T22:49:33.960773+00:00",
     "created_epoch": 1786142973,
-    "updated_at": "2026-08-10T07:53:36.744724+00:00",
+    "updated_at": "2026-08-11T13:42:03.000258+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -3173,7 +1036,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T22:55:11.262180+00:00",
     "created_epoch": 1786143311,
-    "updated_at": "2026-08-09T07:39:25.583025+00:00",
+    "updated_at": "2026-08-11T13:42:02.952583+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -3541,7 +1404,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T22:58:10.035191+00:00",
     "created_epoch": 1786143490,
-    "updated_at": "2026-08-10T08:12:53.397533+00:00",
+    "updated_at": "2026-08-11T14:48:48.775217+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
@@ -3556,7 +1419,8 @@
         "continue_retrieve",
         "retrieve",
         "register_edit",
-        "read"
+        "read",
+        "fallback_rg"
       ],
       "recent_queries": [
         "surface-overlay surface-card modal-without-dialog elevated surfaces",
@@ -3885,7 +1749,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T23:03:22.764436+00:00",
     "created_epoch": 1786143802,
-    "updated_at": "2026-08-08T05:21:14.693421+00:00",
+    "updated_at": "2026-08-11T13:42:02.964449+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -4039,7 +1903,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T23:07:09.576793+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-10T07:44:01.422510+00:00",
+    "updated_at": "2026-08-11T14:45:55.480806+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -4243,23 +2107,26 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T23:07:09.533215+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T06:53:59.972404+00:00",
+    "updated_at": "2026-08-11T13:17:03.325015+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
       "ScoreChecklist KeywordChips component score-coach.tsx styling wrapper border card",
-      "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation"
+      "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation",
+      "job import search service, AI match ranking, application tracking kanban"
     ],
     "evidence": {
       "source": "graph_register_edit",
       "recent_action_kinds": [
         "read",
         "continue_retrieve",
-        "retrieve"
+        "retrieve",
+        "fallback_rg"
       ],
       "recent_queries": [
         "ScoreChecklist KeywordChips component score-coach.tsx styling wrapper border card",
-        "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation"
+        "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation",
+        "job import search service, AI match ranking, application tracking kanban"
       ],
       "edited": true
     }
@@ -4414,12 +2281,13 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T23:07:09.552558+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T03:34:28.245943+00:00",
+    "updated_at": "2026-08-11T13:17:03.319167+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [
       "ScoreChecklist KeywordChips component score-coach.tsx styling wrapper border card",
-      "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation"
+      "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation",
+      "job import search service, AI match ranking, application tracking kanban"
     ],
     "evidence": {
       "source": "graph_register_edit",
@@ -4431,7 +2299,8 @@
       ],
       "recent_queries": [
         "ScoreChecklist KeywordChips component score-coach.tsx styling wrapper border card",
-        "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation"
+        "score coach rail details Score & coaching collapsed panel back to dashboard section-panel workstation",
+        "job import search service, AI match ranking, application tracking kanban"
       ],
       "edited": true
     }
@@ -4539,7 +2408,7 @@
     "symbol_hash": "",
     "created_at": "2026-08-07T23:07:09.568850+00:00",
     "created_epoch": 1786144029,
-    "updated_at": "2026-08-09T07:04:33.139645+00:00",
+    "updated_at": "2026-08-12T13:21:22.819846+00:00",
     "stale": false,
     "stale_reason": "",
     "observed_queries": [],
@@ -4547,7 +2416,8 @@
       "source": "graph_register_edit",
       "recent_action_kinds": [
         "fallback_rg",
-        "register_edit"
+        "register_edit",
+        "grep_all"
       ],
       "recent_queries": [],
       "edited": true
@@ -4693,47 +2563,6 @@
       ],
       "recent_queries": [
         "logout does not work authentication fortify session sign out"
-      ]
-    }
-  },
-  {
-    "id": "mem:1786157450710",
-    "kind": "decision",
-    "content": "Account menu nameplate design: identity strip, profile links, log out",
-    "tags": [
-      "account",
-      "menu",
-      "nameplate",
-      "design",
-      "identity",
-      "strip",
-      "profile",
-      "links"
-    ],
-    "files": [
-      "resources/js/Layouts/AuthenticatedLayout.tsx",
-      "resources/js/Components/Dropdown.tsx"
-    ],
-    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-08T02:50:50.710498+00:00",
-    "created_epoch": 1786157450,
-    "updated_at": "2026-08-08T02:50:50.710501+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [
-      "frontend design system tokens brief landing welcome authenticated layout product UI"
-    ],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "read",
-        "continue_retrieve",
-        "retrieve"
-      ],
-      "recent_queries": [
-        "frontend design system tokens brief landing welcome authenticated layout product UI"
       ]
     }
   },
@@ -5972,43 +3801,6 @@
     }
   },
   {
-    "id": "mem:1786259073130",
-    "kind": "decision",
-    "content": "Swept hardcoded Tailwind palette classes to semantic design tokens in Job Imports, Kanban, and Dashboard pages",
-    "tags": [
-      "swept",
-      "hardcoded",
-      "tailwind",
-      "palette",
-      "classes",
-      "semantic",
-      "design",
-      "tokens"
-    ],
-    "files": [
-      "resources/js/Pages/Jobs/Imports.tsx",
-      "resources/js/Pages/Jobs/Kanban.tsx",
-      "resources/js/Pages/Dashboard.tsx"
-    ],
-    "file_path": "resources/js/Pages/Jobs/Imports.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-09T07:04:33.130470+00:00",
-    "created_epoch": 1786259073,
-    "updated_at": "2026-08-09T07:04:33.130476+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "window_sec": 120,
-      "recent_action_kinds": [
-        "fallback_rg",
-        "register_edit"
-      ],
-      "recent_queries": []
-    }
-  },
-  {
     "id": "mem:1786259088305",
     "kind": "edit_observation",
     "content": "Edited during active session",
@@ -6838,7 +4630,9 @@
       "nav",
       "island",
       "shell",
-      "bezels"
+      "bezels",
+      "reduced",
+      "component"
     ],
     "files": [
       "resources/js/Components/ui/shell.tsx"
@@ -6848,14 +4642,26 @@
     "symbol_hash": "",
     "created_at": "2026-08-10T07:41:11.673663+00:00",
     "created_epoch": 1786347671,
-    "updated_at": "2026-08-10T07:41:11.673667+00:00",
+    "updated_at": "2026-08-11T14:08:15.476544+00:00",
     "stale": false,
     "stale_reason": "",
-    "observed_queries": [],
+    "observed_queries": [
+      "Shell component wrapper rounded border card resources/js/Components/ui",
+      "Dashboard page resume list card component border radius",
+      "top nav bar header AuthenticatedLayout border radius styling"
+    ],
     "evidence": {
       "source": "graph_register_edit",
-      "recent_action_kinds": [],
-      "recent_queries": [],
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "Shell component wrapper rounded border card resources/js/Components/ui",
+        "Dashboard page resume list card component border radius",
+        "top nav bar header AuthenticatedLayout border radius styling"
+      ],
       "edited": true
     }
   },
@@ -7373,6 +5179,2236 @@
       "source": "graph_read",
       "read_count": 2,
       "co_visited": []
+    }
+  },
+  {
+    "id": "mem:1786401031298",
+    "kind": "query_association",
+    "content": "Queried during: layout grid columns score card resume form width",
+    "tags": [
+      "layout",
+      "grid",
+      "columns",
+      "score",
+      "card",
+      "resume",
+      "form",
+      "width"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "resources/js/Pages/Resumes/Workstation.tsx::focusAndFlash",
+    "symbol_hash": "ae54e7f0",
+    "created_at": "2026-08-10T22:30:31.298223+00:00",
+    "created_epoch": 1786401031,
+    "updated_at": "2026-08-10T22:30:31.298231+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "layout grid columns score card resume form width"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "symbol",
+      "session_epoch": 1786399861
+    }
+  },
+  {
+    "id": "mem:1786453465524",
+    "kind": "query_association",
+    "content": "Queried during: layout grid columns sidebar order responsive",
+    "tags": [
+      "layout",
+      "grid",
+      "columns",
+      "sidebar",
+      "order",
+      "responsive"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:04:25.524207+00:00",
+    "created_epoch": 1786453465,
+    "updated_at": "2026-08-11T13:04:25.524215+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "layout grid columns sidebar order responsive"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786452998
+    }
+  },
+  {
+    "id": "mem:1786454057527",
+    "kind": "query_association",
+    "content": "Queried during: shareLink relation",
+    "tags": [
+      "sharelink",
+      "relation"
+    ],
+    "files": [
+      "app/Models/Resume.php"
+    ],
+    "file_path": "app/Models/Resume.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:14:17.527566+00:00",
+    "created_epoch": 1786454057,
+    "updated_at": "2026-08-11T13:14:17.527600+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "shareLink relation"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786453571
+    }
+  },
+  {
+    "id": "mem:1786454076169",
+    "kind": "query_association",
+    "content": "Queried during: shares page share links builder",
+    "tags": [
+      "shares",
+      "page",
+      "share",
+      "links",
+      "builder"
+    ],
+    "files": [
+      "CLAUDE.md"
+    ],
+    "file_path": "CLAUDE.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:14:36.169344+00:00",
+    "created_epoch": 1786454076,
+    "updated_at": "2026-08-11T13:14:36.169352+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "shares page share links builder"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786453571
+    }
+  },
+  {
+    "id": "mem:1786454373618",
+    "kind": "query_association",
+    "content": "Queried during: resume-ai jobs-imports job-applications routes",
+    "tags": [
+      "resume",
+      "jobs",
+      "imports",
+      "job",
+      "applications",
+      "routes"
+    ],
+    "files": [
+      "routes/web.php"
+    ],
+    "file_path": "routes/web.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:19:33.618668+00:00",
+    "created_epoch": 1786454373,
+    "updated_at": "2026-08-11T13:19:33.618703+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "resume-ai jobs-imports job-applications routes"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786453571
+    }
+  },
+  {
+    "id": "mem:1786454719535",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "wire",
+      "job",
+      "match",
+      "tailoring",
+      "openairesumeassistant",
+      "matchjob",
+      "resumeaicontroller",
+      "job_match"
+    ],
+    "files": [
+      "resources/js/hooks/use-resume-ai.ts"
+    ],
+    "file_path": "resources/js/hooks/use-resume-ai.ts",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:25:19.535505+00:00",
+    "created_epoch": 1786454719,
+    "updated_at": "2026-08-11T13:25:19.535511+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "grep_all"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786454719517",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "wire",
+      "job",
+      "match",
+      "tailoring",
+      "openairesumeassistant",
+      "matchjob",
+      "resumeaicontroller",
+      "job_match"
+    ],
+    "files": [
+      "app/Services/OpenAiResumeAssistant.php"
+    ],
+    "file_path": "app/Services/OpenAiResumeAssistant.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:25:19.517398+00:00",
+    "created_epoch": 1786454719,
+    "updated_at": "2026-08-11T13:25:19.517412+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "grep_all"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786454719503",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "wire",
+      "job",
+      "match",
+      "tailoring",
+      "openairesumeassistant",
+      "matchjob",
+      "resumeaicontroller",
+      "job_match"
+    ],
+    "files": [
+      "config/ai.php"
+    ],
+    "file_path": "config/ai.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:25:19.503604+00:00",
+    "created_epoch": 1786454719,
+    "updated_at": "2026-08-11T13:25:19.503617+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "grep_all"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786454719494",
+    "kind": "decision",
+    "content": "Wire AI job match/tailoring: OpenAiResumeAssistant::matchJob, ResumeAiController::matchJob, job_match quota, Imports.tsx resume selector + match result panel",
+    "tags": [
+      "wire",
+      "job",
+      "match",
+      "tailoring",
+      "openairesumeassistant",
+      "matchjob",
+      "resumeaicontroller",
+      "job_match"
+    ],
+    "files": [
+      "config/ai.php",
+      "app/Services/AiUsageLimiter.php",
+      "app/Services/OpenAiResumeAssistant.php",
+      "app/Http/Controllers/ResumeAiController.php",
+      "routes/web.php",
+      "app/Http/Controllers/JobImportsController.php",
+      "resources/js/hooks/use-resume-ai.ts",
+      "resources/js/Pages/Jobs/Imports.tsx"
+    ],
+    "file_path": "config/ai.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:25:19.494741+00:00",
+    "created_epoch": 1786454719,
+    "updated_at": "2026-08-11T13:25:19.494747+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "grep_all"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786454719511",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "wire",
+      "job",
+      "match",
+      "tailoring",
+      "openairesumeassistant",
+      "matchjob",
+      "resumeaicontroller",
+      "job_match"
+    ],
+    "files": [
+      "app/Services/AiUsageLimiter.php"
+    ],
+    "file_path": "app/Services/AiUsageLimiter.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:25:19.511707+00:00",
+    "created_epoch": 1786454719,
+    "updated_at": "2026-08-11T13:25:19.511716+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "grep_all"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786454719522",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "wire",
+      "job",
+      "match",
+      "tailoring",
+      "openairesumeassistant",
+      "matchjob",
+      "resumeaicontroller",
+      "job_match"
+    ],
+    "files": [
+      "app/Http/Controllers/ResumeAiController.php"
+    ],
+    "file_path": "app/Http/Controllers/ResumeAiController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:25:19.522588+00:00",
+    "created_epoch": 1786454719,
+    "updated_at": "2026-08-11T13:25:19.522595+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "grep_all"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786454719531",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "wire",
+      "job",
+      "match",
+      "tailoring",
+      "openairesumeassistant",
+      "matchjob",
+      "resumeaicontroller",
+      "job_match"
+    ],
+    "files": [
+      "app/Http/Controllers/JobImportsController.php"
+    ],
+    "file_path": "app/Http/Controllers/JobImportsController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:25:19.531242+00:00",
+    "created_epoch": 1786454719,
+    "updated_at": "2026-08-11T13:25:19.531244+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "grep_all"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786454760481",
+    "kind": "edit_observation",
+    "content": "Edited after query: ResumeAiController feature test rewriteBullet generateSummary quota",
+    "tags": [
+      "add",
+      "matchjob",
+      "quota",
+      "tests",
+      "document",
+      "ai_quota_job_match",
+      "env",
+      "var"
+    ],
+    "files": [
+      ".env.example"
+    ],
+    "file_path": ".env.example",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:26:00.481916+00:00",
+    "created_epoch": 1786454760,
+    "updated_at": "2026-08-11T13:26:00.481920+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "ResumeAiController feature test rewriteBullet generateSummary quota"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve",
+        "fallback_rg",
+        "register_edit"
+      ],
+      "recent_queries": [
+        "ResumeAiController feature test rewriteBullet generateSummary quota"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786454760474",
+    "kind": "decision",
+    "content": "Add matchJob quota tests, document AI_QUOTA_JOB_MATCH env var",
+    "tags": [
+      "add",
+      "matchjob",
+      "quota",
+      "tests",
+      "document",
+      "ai_quota_job_match",
+      "env",
+      "var"
+    ],
+    "files": [
+      "tests/Feature/ResumeAiControllerTest.php",
+      ".env.example"
+    ],
+    "file_path": "tests/Feature/ResumeAiControllerTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:26:00.474928+00:00",
+    "created_epoch": 1786454760,
+    "updated_at": "2026-08-11T13:26:00.474931+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "ResumeAiController feature test rewriteBullet generateSummary quota"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "read",
+        "continue_retrieve",
+        "retrieve",
+        "fallback_rg",
+        "register_edit"
+      ],
+      "recent_queries": [
+        "ResumeAiController feature test rewriteBullet generateSummary quota"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786454760478",
+    "kind": "edit_observation",
+    "content": "Edited after query: ResumeAiController feature test rewriteBullet generateSummary quota",
+    "tags": [
+      "add",
+      "matchjob",
+      "quota",
+      "tests",
+      "document",
+      "ai_quota_job_match",
+      "env",
+      "var"
+    ],
+    "files": [
+      "tests/Feature/ResumeAiControllerTest.php"
+    ],
+    "file_path": "tests/Feature/ResumeAiControllerTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:26:00.478820+00:00",
+    "created_epoch": 1786454760,
+    "updated_at": "2026-08-11T13:26:00.478826+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "ResumeAiController feature test rewriteBullet generateSummary quota"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "read",
+        "continue_retrieve",
+        "retrieve",
+        "fallback_rg",
+        "register_edit"
+      ],
+      "recent_queries": [
+        "ResumeAiController feature test rewriteBullet generateSummary quota"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786454883607",
+    "kind": "query_association",
+    "content": "Queried during: AI_ENABLED OPENAI_API_KEY",
+    "tags": [
+      "ai_enabled",
+      "openai_api_key"
+    ],
+    "files": [
+      ".env"
+    ],
+    "file_path": ".env",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:28:03.607489+00:00",
+    "created_epoch": 1786454883,
+    "updated_at": "2026-08-11T13:28:03.607496+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "AI_ENABLED OPENAI_API_KEY"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786453571
+    }
+  },
+  {
+    "id": "mem:1786455722974",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session"
+    ],
+    "files": [
+      "resources/js/Components/workstation/inspector-sections.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/inspector-sections.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:42:02.974235+00:00",
+    "created_epoch": 1786455722,
+    "updated_at": "2026-08-11T13:42:02.974245+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786455723007",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session"
+    ],
+    "files": [
+      "resources/js/Components/workstation/workstation-header.tsx"
+    ],
+    "file_path": "resources/js/Components/workstation/workstation-header.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:42:03.007644+00:00",
+    "created_epoch": 1786455723,
+    "updated_at": "2026-08-11T13:42:03.007649+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786456008799",
+    "kind": "query_association",
+    "content": "Queried during: main return JSX layout grid SectionPanel ResumePreview two column",
+    "tags": [
+      "main",
+      "return",
+      "jsx",
+      "layout",
+      "grid",
+      "sectionpanel",
+      "resumepreview",
+      "two"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:46:48.799318+00:00",
+    "created_epoch": 1786456008,
+    "updated_at": "2026-08-11T13:46:48.799329+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "main return JSX layout grid SectionPanel ResumePreview two column"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786453571
+    }
+  },
+  {
+    "id": "mem:1786456355319",
+    "kind": "query_association",
+    "content": "Queried during: workflow_dispatch deploy job name",
+    "tags": [
+      "workflow_dispatch",
+      "deploy",
+      "job",
+      "name"
+    ],
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "file_path": ".github/workflows/ci.yml",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:52:35.319845+00:00",
+    "created_epoch": 1786456355,
+    "updated_at": "2026-08-11T13:52:35.319855+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "workflow_dispatch deploy job name"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786453571
+    }
+  },
+  {
+    "id": "mem:1786456542908",
+    "kind": "query_association",
+    "content": "Queried during: queue worker systemd service scheduler cron",
+    "tags": [
+      "queue",
+      "worker",
+      "systemd",
+      "service",
+      "scheduler",
+      "cron"
+    ],
+    "files": [
+      "docs/DEPLOYMENT.md"
+    ],
+    "file_path": "docs/DEPLOYMENT.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T13:55:42.908657+00:00",
+    "created_epoch": 1786456542,
+    "updated_at": "2026-08-11T13:55:42.908670+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "queue worker systemd service scheduler cron"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786453571
+    }
+  },
+  {
+    "id": "mem:1786457119285",
+    "kind": "decision",
+    "content": "Reduced Shell component corner radius (20px\u219214px) and outer frame padding (6px\u21924px) to fix overly curved/thick borders on Dashboard resume list cards",
+    "tags": [
+      "reduced",
+      "shell",
+      "component",
+      "corner",
+      "radius",
+      "20px",
+      "14px",
+      "outer"
+    ],
+    "files": [
+      "tailwind.config.js",
+      "resources/js/Components/ui/shell.tsx"
+    ],
+    "file_path": "tailwind.config.js",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T14:05:19.285551+00:00",
+    "created_epoch": 1786457119,
+    "updated_at": "2026-08-11T14:05:19.285554+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "Shell component wrapper rounded border card resources/js/Components/ui",
+      "Dashboard page resume list card component border radius"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "Shell component wrapper rounded border card resources/js/Components/ui",
+        "Dashboard page resume list card component border radius"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786457295469",
+    "kind": "decision",
+    "content": "Replaced Shell's double-bezel frame with a single rounded-lg + border-surface-border/80 layer matching the top nav bar; removed now-unused rounded-shell/rounded-core tokens",
+    "tags": [
+      "replaced",
+      "shell",
+      "double",
+      "bezel",
+      "frame",
+      "single",
+      "rounded",
+      "border"
+    ],
+    "files": [
+      "resources/js/Components/ui/shell.tsx",
+      "tailwind.config.js"
+    ],
+    "file_path": "resources/js/Components/ui/shell.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T14:08:15.469563+00:00",
+    "created_epoch": 1786457295,
+    "updated_at": "2026-08-11T14:08:15.469569+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "top nav bar header AuthenticatedLayout border radius styling"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "top nav bar header AuthenticatedLayout border radius styling"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786459555470",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "code",
+      "review",
+      "fixes",
+      "shell",
+      "inner",
+      "radius",
+      "calc",
+      "5rem"
+    ],
+    "files": [
+      "resources/js/Pages/Jobs/Kanban.tsx::Column"
+    ],
+    "file_path": "resources/js/Pages/Jobs/Kanban.tsx",
+    "symbol_id": "resources/js/Pages/Jobs/Kanban.tsx::Column",
+    "symbol_hash": "3fe89852",
+    "created_at": "2026-08-11T14:45:55.470375+00:00",
+    "created_epoch": 1786459555,
+    "updated_at": "2026-08-11T14:45:55.470394+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786459555451",
+    "kind": "decision",
+    "content": "Code-review fixes: Shell inner radius calc(0.5rem-1px) to kill corner slivers; Kanban drag-over uses shadow-lg (shadow-ambient was a no-op after Shell baked it in); removed redundant shadow-ambient at Welcome/PublicShare Shell call sites",
+    "tags": [
+      "code",
+      "review",
+      "fixes",
+      "shell",
+      "inner",
+      "radius",
+      "calc",
+      "5rem"
+    ],
+    "files": [
+      "resources/js/Components/ui/shell.tsx::Shell",
+      "resources/js/Pages/Jobs/Kanban.tsx::Column",
+      "resources/js/Pages/Welcome.tsx",
+      "resources/js/Pages/Resumes/PublicShare.tsx"
+    ],
+    "file_path": "resources/js/Components/ui/shell.tsx",
+    "symbol_id": "resources/js/Components/ui/shell.tsx::Shell",
+    "symbol_hash": "908d5daa",
+    "created_at": "2026-08-11T14:45:55.451956+00:00",
+    "created_epoch": 1786459555,
+    "updated_at": "2026-08-11T14:45:55.451962+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786459555462",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "code",
+      "review",
+      "fixes",
+      "shell",
+      "inner",
+      "radius",
+      "calc",
+      "5rem"
+    ],
+    "files": [
+      "resources/js/Components/ui/shell.tsx::Shell"
+    ],
+    "file_path": "resources/js/Components/ui/shell.tsx",
+    "symbol_id": "resources/js/Components/ui/shell.tsx::Shell",
+    "symbol_hash": "908d5daa",
+    "created_at": "2026-08-11T14:45:55.462934+00:00",
+    "created_epoch": 1786459555,
+    "updated_at": "2026-08-11T14:45:55.462946+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786459728766",
+    "kind": "decision",
+    "content": "Removed Applications (kanban) nav link + unused ClipboardDocumentListIcon import; routes/feature left intact for later",
+    "tags": [
+      "removed",
+      "applications",
+      "kanban",
+      "nav",
+      "link",
+      "unused",
+      "clipboarddocumentlisticon",
+      "import"
+    ],
+    "files": [
+      "resources/js/Layouts/AuthenticatedLayout.tsx"
+    ],
+    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T14:48:48.766118+00:00",
+    "created_epoch": 1786459728,
+    "updated_at": "2026-08-11T14:48:48.766126+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786459941996",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "share",
+      "modal",
+      "dashboard",
+      "longer",
+      "unmounts",
+      "every",
+      "toggle",
+      "refetch",
+      "lifted",
+      "state"
+    ],
+    "files": [
+      "resources/js/Pages/Dashboard.tsx::ResumeCard"
+    ],
+    "file_path": "resources/js/Pages/Dashboard.tsx",
+    "symbol_id": "resources/js/Pages/Dashboard.tsx::ResumeCard",
+    "symbol_hash": "8143ca6b",
+    "created_at": "2026-08-11T14:52:21.996118+00:00",
+    "created_epoch": 1786459941,
+    "updated_at": "2026-08-11T14:57:04.297055+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786459941988",
+    "kind": "decision",
+    "content": "Share modal on Dashboard no longer unmounts on every toggle: refetch effect keeps shareModalReady true and preserves detail on fetch errors",
+    "tags": [
+      "share",
+      "modal",
+      "dashboard",
+      "longer",
+      "unmounts",
+      "every",
+      "toggle",
+      "refetch"
+    ],
+    "files": [
+      "resources/js/Pages/Dashboard.tsx::ResumeCard"
+    ],
+    "file_path": "resources/js/Pages/Dashboard.tsx",
+    "symbol_id": "resources/js/Pages/Dashboard.tsx::ResumeCard",
+    "symbol_hash": "8143ca6b",
+    "created_at": "2026-08-11T14:52:21.988219+00:00",
+    "created_epoch": 1786459941,
+    "updated_at": "2026-08-11T14:52:21.988225+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786460033768",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "all",
+      "share",
+      "modal",
+      "inertia",
+      "patches",
+      "post",
+      "now",
+      "pass"
+    ],
+    "files": [
+      "resources/js/Components/workstation/share-resume-modal.tsx::ShareResumeModal"
+    ],
+    "file_path": "resources/js/Components/workstation/share-resume-modal.tsx",
+    "symbol_id": "resources/js/Components/workstation/share-resume-modal.tsx::ShareResumeModal",
+    "symbol_hash": "3700516d",
+    "created_at": "2026-08-11T14:53:53.768445+00:00",
+    "created_epoch": 1786460033,
+    "updated_at": "2026-08-11T14:53:53.768467+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786460033759",
+    "kind": "decision",
+    "content": "All share-modal Inertia patches/post now pass preserveState:true so Dashboard component state (open modal) survives prop reloads",
+    "tags": [
+      "all",
+      "share",
+      "modal",
+      "inertia",
+      "patches",
+      "post",
+      "now",
+      "pass"
+    ],
+    "files": [
+      "resources/js/Components/workstation/share-resume-modal.tsx::ShareResumeModal"
+    ],
+    "file_path": "resources/js/Components/workstation/share-resume-modal.tsx",
+    "symbol_id": "resources/js/Components/workstation/share-resume-modal.tsx::ShareResumeModal",
+    "symbol_hash": "3700516d",
+    "created_at": "2026-08-11T14:53:53.759764+00:00",
+    "created_epoch": 1786460033,
+    "updated_at": "2026-08-11T14:53:53.759770+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "register_edit"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786460224294",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "lifted",
+      "share",
+      "modal",
+      "state",
+      "from",
+      "resumecard",
+      "inside",
+      "deferred"
+    ],
+    "files": [
+      "resources/js/Pages/Dashboard.tsx::Dashboard"
+    ],
+    "file_path": "resources/js/Pages/Dashboard.tsx",
+    "symbol_id": "resources/js/Pages/Dashboard.tsx::Dashboard",
+    "symbol_hash": "48d2e6bd",
+    "created_at": "2026-08-11T14:57:04.294052+00:00",
+    "created_epoch": 1786460224,
+    "updated_at": "2026-08-11T14:57:04.294058+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786460224287",
+    "kind": "decision",
+    "content": "Lifted share-modal state from ResumeCard (inside Deferred, remounts on every prop reload) to Dashboard page level; cards get onOpenShare(resumeId) callback",
+    "tags": [
+      "lifted",
+      "share",
+      "modal",
+      "state",
+      "from",
+      "resumecard",
+      "inside",
+      "deferred"
+    ],
+    "files": [
+      "resources/js/Pages/Dashboard.tsx::Dashboard",
+      "resources/js/Pages/Dashboard.tsx::ResumeCard"
+    ],
+    "file_path": "resources/js/Pages/Dashboard.tsx",
+    "symbol_id": "resources/js/Pages/Dashboard.tsx::Dashboard",
+    "symbol_hash": "48d2e6bd",
+    "created_at": "2026-08-11T14:57:04.287625+00:00",
+    "created_epoch": 1786460224,
+    "updated_at": "2026-08-11T14:57:04.287630+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786465052168",
+    "kind": "interaction_pattern",
+    "content": "Frequently read with: routes/api.php",
+    "tags": [],
+    "files": [
+      "routes/web.php"
+    ],
+    "file_path": "routes/web.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-11T16:17:32.168359+00:00",
+    "created_epoch": 1786465052,
+    "updated_at": "2026-08-11T16:17:32.168370+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_read",
+      "read_count": 2,
+      "co_visited": [
+        "routes/api.php"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786532435808",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session"
+    ],
+    "files": [
+      "resources/js/Components/workstation/workstation-format-toolbar.tsx::WorkstationFormatToolbar"
+    ],
+    "file_path": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
+    "symbol_id": "resources/js/Components/workstation/workstation-format-toolbar.tsx::WorkstationFormatToolbar",
+    "symbol_hash": "3e272ec0",
+    "created_at": "2026-08-12T11:00:35.808437+00:00",
+    "created_epoch": 1786532435,
+    "updated_at": "2026-08-12T11:11:20.502567+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "read"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786532435797",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "edited",
+      "during",
+      "active",
+      "session"
+    ],
+    "files": [
+      "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader"
+    ],
+    "file_path": "resources/js/Components/workstation/workstation-header.tsx",
+    "symbol_id": "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader",
+    "symbol_hash": "07ab464d",
+    "created_at": "2026-08-12T11:00:35.797112+00:00",
+    "created_epoch": 1786532435,
+    "updated_at": "2026-08-12T11:11:20.495421+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786539733619",
+    "kind": "query_association",
+    "content": "Queried during: content container max-width",
+    "tags": [
+      "content",
+      "container",
+      "max",
+      "width"
+    ],
+    "files": [
+      "resources/js/Components/ui/shell.tsx"
+    ],
+    "file_path": "resources/js/Components/ui/shell.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T13:02:13.619072+00:00",
+    "created_epoch": 1786539733,
+    "updated_at": "2026-08-12T13:02:13.619080+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "content container max-width"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786534332
+    }
+  },
+  {
+    "id": "mem:1786539733275",
+    "kind": "query_association",
+    "content": "Queried during: navbar max-width container",
+    "tags": [
+      "navbar",
+      "max",
+      "width",
+      "container"
+    ],
+    "files": [
+      "resources/js/Layouts/AuthenticatedLayout.tsx"
+    ],
+    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T13:02:13.275309+00:00",
+    "created_epoch": 1786539733,
+    "updated_at": "2026-08-12T13:02:13.275319+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "navbar max-width container"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786534332
+    }
+  },
+  {
+    "id": "mem:1786539773093",
+    "kind": "query_association",
+    "content": "Queried during: outer container wrapper AuthenticatedLayout return div className px",
+    "tags": [
+      "outer",
+      "container",
+      "wrapper",
+      "authenticatedlayout",
+      "return",
+      "div",
+      "classname"
+    ],
+    "files": [
+      "resources/js/Pages/Resumes/Workstation.tsx"
+    ],
+    "file_path": "resources/js/Pages/Resumes/Workstation.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T13:02:53.093867+00:00",
+    "created_epoch": 1786539773,
+    "updated_at": "2026-08-12T13:02:53.093881+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "outer container wrapper AuthenticatedLayout return div className px"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786534332
+    }
+  },
+  {
+    "id": "mem:1786540625802",
+    "kind": "decision",
+    "content": "Navbar max-w-6xl -> max-w-[1440px] to match Workstation content container",
+    "tags": [
+      "navbar",
+      "max",
+      "6xl",
+      "1440px",
+      "match",
+      "workstation",
+      "content",
+      "container"
+    ],
+    "files": [
+      "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated"
+    ],
+    "file_path": "resources/js/Layouts/AuthenticatedLayout.tsx",
+    "symbol_id": "resources/js/Layouts/AuthenticatedLayout.tsx::Authenticated",
+    "symbol_hash": "474e0719",
+    "created_at": "2026-08-12T13:17:05.802502+00:00",
+    "created_epoch": 1786540625,
+    "updated_at": "2026-08-12T13:17:05.802509+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786540815898",
+    "kind": "decision",
+    "content": "Job Imports container max-w-7xl -> max-w-[1440px] to match navbar",
+    "tags": [
+      "job",
+      "imports",
+      "container",
+      "max",
+      "7xl",
+      "1440px",
+      "match",
+      "navbar"
+    ],
+    "files": [
+      "resources/js/Pages/Jobs/Imports.tsx"
+    ],
+    "file_path": "resources/js/Pages/Jobs/Imports.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T13:20:15.898092+00:00",
+    "created_epoch": 1786540815,
+    "updated_at": "2026-08-12T13:20:15.898098+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786540835751",
+    "kind": "decision",
+    "content": "Imports gutters px-4/sm:px-6/lg:px-8 -> px-3 sm:px-4 to match navbar island",
+    "tags": [
+      "imports",
+      "gutters",
+      "match",
+      "navbar",
+      "island"
+    ],
+    "files": [
+      "resources/js/Pages/Jobs/Imports.tsx"
+    ],
+    "file_path": "resources/js/Pages/Jobs/Imports.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T13:20:35.751320+00:00",
+    "created_epoch": 1786540835,
+    "updated_at": "2026-08-12T13:20:35.751335+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "register_edit"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786540882811",
+    "kind": "decision",
+    "content": "Split Imports container into outer gutter div + inner max-w-[1440px] to match navbar edges",
+    "tags": [
+      "split",
+      "imports",
+      "container",
+      "into",
+      "outer",
+      "gutter",
+      "div",
+      "inner"
+    ],
+    "files": [
+      "resources/js/Pages/Jobs/Imports.tsx"
+    ],
+    "file_path": "resources/js/Pages/Jobs/Imports.tsx",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T13:21:22.811506+00:00",
+    "created_epoch": 1786540882,
+    "updated_at": "2026-08-12T13:21:22.811517+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg",
+        "register_edit"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786551333774",
+    "kind": "query_association",
+    "content": "Queried during: two factor password",
+    "tags": [
+      "two",
+      "factor",
+      "password"
+    ],
+    "files": [
+      "routes/web.php"
+    ],
+    "file_path": "routes/web.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:15:33.774256+00:00",
+    "created_epoch": 1786551333,
+    "updated_at": "2026-08-12T16:15:33.774270+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "two factor password"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "file",
+      "session_epoch": 1786551287
+    }
+  },
+  {
+    "id": "mem:1786551393123",
+    "kind": "edit_observation",
+    "content": "Edited after query: two-factor challenge pending session can change account password security fix password update route middleware",
+    "tags": [
+      "gate",
+      "put",
+      "password",
+      "behind",
+      "two_factor_challenge",
+      "middleware",
+      "add",
+      "pending"
+    ],
+    "files": [
+      "routes/auth.php"
+    ],
+    "file_path": "routes/auth.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:16:33.123689+00:00",
+    "created_epoch": 1786551393,
+    "updated_at": "2026-08-12T16:16:33.123708+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "two-factor challenge pending session can change account password security fix password update route middleware"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "two-factor challenge pending session can change account password security fix password update route middleware"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786551393114",
+    "kind": "decision",
+    "content": "Gate PUT /password behind two_factor_challenge middleware; add pending-session regression test",
+    "tags": [
+      "gate",
+      "put",
+      "password",
+      "behind",
+      "two_factor_challenge",
+      "middleware",
+      "add",
+      "pending"
+    ],
+    "files": [
+      "routes/auth.php",
+      "tests/Feature/Auth/PasswordUpdateTest.php"
+    ],
+    "file_path": "routes/auth.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:16:33.114348+00:00",
+    "created_epoch": 1786551393,
+    "updated_at": "2026-08-12T16:16:33.114362+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "two-factor challenge pending session can change account password security fix password update route middleware"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg",
+        "read",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "two-factor challenge pending session can change account password security fix password update route middleware"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786551393130",
+    "kind": "edit_observation",
+    "content": "Edited after query: two-factor challenge pending session can change account password security fix password update route middleware",
+    "tags": [
+      "gate",
+      "put",
+      "password",
+      "behind",
+      "two_factor_challenge",
+      "middleware",
+      "add",
+      "pending"
+    ],
+    "files": [
+      "tests/Feature/Auth/PasswordUpdateTest.php"
+    ],
+    "file_path": "tests/Feature/Auth/PasswordUpdateTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:16:33.130175+00:00",
+    "created_epoch": 1786551393,
+    "updated_at": "2026-08-12T16:16:33.130181+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "two-factor challenge pending session can change account password security fix password update route middleware"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "two-factor challenge pending session can change account password security fix password update route middleware"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786552151220",
+    "kind": "decision",
+    "content": "Security scan report: H1 admin 2FA bypass, L1-L4 hardening",
+    "tags": [
+      "security",
+      "scan",
+      "report",
+      "admin",
+      "2fa",
+      "bypass",
+      "hardening"
+    ],
+    "files": [
+      "securityscan.md"
+    ],
+    "file_path": "securityscan.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:29:11.220908+00:00",
+    "created_epoch": 1786552151,
+    "updated_at": "2026-08-12T16:29:11.220912+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786552151224",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "security",
+      "scan",
+      "report",
+      "admin",
+      "2fa",
+      "bypass",
+      "hardening",
+      "mark",
+      "fixed",
+      "test"
+    ],
+    "files": [
+      "securityscan.md"
+    ],
+    "file_path": "securityscan.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:29:11.224742+00:00",
+    "created_epoch": 1786552151,
+    "updated_at": "2026-08-12T16:59:42.544002+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "admin user index feature test middleware two factor"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "admin user index feature test middleware two factor"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553633923",
+    "kind": "edit_observation",
+    "content": "Edited after query: routes/admin.php middleware group two_factor_challenge admin",
+    "tags": [
+      "admin",
+      "2fa",
+      "bypass",
+      "job",
+      "url",
+      "scheme",
+      "otp",
+      "constant"
+    ],
+    "files": [
+      "app/Http/Requests/StoreImportedJobsRequest.php"
+    ],
+    "file_path": "app/Http/Requests/StoreImportedJobsRequest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:53:53.923149+00:00",
+    "created_epoch": 1786553633,
+    "updated_at": "2026-08-12T16:53:53.923158+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "routes/admin.php middleware group two_factor_challenge admin"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "routes/admin.php middleware group two_factor_challenge admin"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553633906",
+    "kind": "decision",
+    "content": "Fix H1 (admin 2FA bypass), L1 (job url scheme), L2/L3 (OTP constant-time compare, TOTP replay window)",
+    "tags": [
+      "admin",
+      "2fa",
+      "bypass",
+      "job",
+      "url",
+      "scheme",
+      "otp",
+      "constant"
+    ],
+    "files": [
+      "routes/admin.php",
+      "app/Http/Requests/StoreImportedJobsRequest.php",
+      "app/Http/Controllers/Auth/TwoFactorChallengeController.php"
+    ],
+    "file_path": "routes/admin.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:53:53.906257+00:00",
+    "created_epoch": 1786553633,
+    "updated_at": "2026-08-12T16:53:53.906263+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "routes/admin.php middleware group two_factor_challenge admin"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "routes/admin.php middleware group two_factor_challenge admin"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786553633914",
+    "kind": "edit_observation",
+    "content": "Edited after query: routes/admin.php middleware group two_factor_challenge admin",
+    "tags": [
+      "admin",
+      "2fa",
+      "bypass",
+      "job",
+      "url",
+      "scheme",
+      "otp",
+      "constant"
+    ],
+    "files": [
+      "routes/admin.php"
+    ],
+    "file_path": "routes/admin.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:53:53.914482+00:00",
+    "created_epoch": 1786553633,
+    "updated_at": "2026-08-12T16:53:53.914495+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "routes/admin.php middleware group two_factor_challenge admin"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "routes/admin.php middleware group two_factor_challenge admin"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553633982",
+    "kind": "edit_observation",
+    "content": "Edited after query: routes/admin.php middleware group two_factor_challenge admin",
+    "tags": [
+      "admin",
+      "2fa",
+      "bypass",
+      "job",
+      "url",
+      "scheme",
+      "otp",
+      "constant"
+    ],
+    "files": [
+      "app/Http/Controllers/Auth/TwoFactorChallengeController.php"
+    ],
+    "file_path": "app/Http/Controllers/Auth/TwoFactorChallengeController.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:53:53.982487+00:00",
+    "created_epoch": 1786553633,
+    "updated_at": "2026-08-12T16:53:53.982496+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "routes/admin.php middleware group two_factor_challenge admin"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "routes/admin.php middleware group two_factor_challenge admin"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553697256",
+    "kind": "edit_observation",
+    "content": "Edited after query: admin user index feature test middleware two factor",
+    "tags": [
+      "add",
+      "regression",
+      "tests",
+      "admin",
+      "2fa",
+      "gate",
+      "job",
+      "url"
+    ],
+    "files": [
+      "tests/Feature/JobImportsTest.php"
+    ],
+    "file_path": "tests/Feature/JobImportsTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:54:57.256701+00:00",
+    "created_epoch": 1786553697,
+    "updated_at": "2026-08-12T16:54:57.256706+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "admin user index feature test middleware two factor",
+      "routes/admin.php middleware group two_factor_challenge admin"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve",
+        "register_edit"
+      ],
+      "recent_queries": [
+        "admin user index feature test middleware two factor",
+        "routes/admin.php middleware group two_factor_challenge admin"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553697247",
+    "kind": "decision",
+    "content": "Add regression tests for H1 (admin 2FA gate) and L1 (job url scheme validation)",
+    "tags": [
+      "add",
+      "regression",
+      "tests",
+      "admin",
+      "2fa",
+      "gate",
+      "job",
+      "url"
+    ],
+    "files": [
+      "tests/Feature/Admin/UserSupportTest.php",
+      "tests/Feature/JobImportsTest.php"
+    ],
+    "file_path": "tests/Feature/Admin/UserSupportTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:54:57.247889+00:00",
+    "created_epoch": 1786553697,
+    "updated_at": "2026-08-12T16:54:57.247895+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "admin user index feature test middleware two factor",
+      "routes/admin.php middleware group two_factor_challenge admin"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve",
+        "register_edit"
+      ],
+      "recent_queries": [
+        "admin user index feature test middleware two factor",
+        "routes/admin.php middleware group two_factor_challenge admin"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786553697253",
+    "kind": "edit_observation",
+    "content": "Edited after query: admin user index feature test middleware two factor",
+    "tags": [
+      "add",
+      "regression",
+      "tests",
+      "admin",
+      "2fa",
+      "gate",
+      "job",
+      "url"
+    ],
+    "files": [
+      "tests/Feature/Admin/UserSupportTest.php"
+    ],
+    "file_path": "tests/Feature/Admin/UserSupportTest.php",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:54:57.253149+00:00",
+    "created_epoch": 1786553697,
+    "updated_at": "2026-08-12T16:54:57.253158+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "admin user index feature test middleware two factor",
+      "routes/admin.php middleware group two_factor_challenge admin"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve",
+        "register_edit"
+      ],
+      "recent_queries": [
+        "admin user index feature test middleware two factor",
+        "routes/admin.php middleware group two_factor_challenge admin"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553735486",
+    "kind": "decision",
+    "content": "Mark H1, L1, L2, L3 fixed with test references; L4 stays informational",
+    "tags": [
+      "mark",
+      "fixed",
+      "test",
+      "references",
+      "stays",
+      "informational"
+    ],
+    "files": [
+      "securityscan.md"
+    ],
+    "file_path": "securityscan.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:55:35.486245+00:00",
+    "created_epoch": 1786553735,
+    "updated_at": "2026-08-12T16:55:35.486248+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "admin user index feature test middleware two factor"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg",
+        "continue_retrieve",
+        "retrieve"
+      ],
+      "recent_queries": [
+        "admin user index feature test middleware two factor"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786553935120",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "warn",
+      "user",
+      "when",
+      "saved",
+      "appbase",
+      "plaintext",
+      "http",
+      "non",
+      "extract",
+      "isinsecureremoteurl"
+    ],
+    "files": [
+      "extension/options/options.js"
+    ],
+    "file_path": "extension/options/options.js",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:58:55.120822+00:00",
+    "created_epoch": 1786553935,
+    "updated_at": "2026-08-12T16:59:26.227372+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "fallback_rg",
+        "register_edit"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553935113",
+    "kind": "decision",
+    "content": "L4: warn user when saved appBase is plaintext HTTP to a non-localhost host",
+    "tags": [
+      "warn",
+      "user",
+      "when",
+      "saved",
+      "appbase",
+      "plaintext",
+      "http",
+      "non"
+    ],
+    "files": [
+      "extension/options/options.js"
+    ],
+    "file_path": "extension/options/options.js",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:58:55.113207+00:00",
+    "created_epoch": 1786553935,
+    "updated_at": "2026-08-12T16:58:55.113215+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786553966231",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "extract",
+      "isinsecureremoteurl",
+      "shared",
+      "app",
+      "base",
+      "warn",
+      "plaintext",
+      "http"
+    ],
+    "files": [
+      "extension/test/app-base.test.mjs"
+    ],
+    "file_path": "extension/test/app-base.test.mjs",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:59:26.231607+00:00",
+    "created_epoch": 1786553966,
+    "updated_at": "2026-08-12T16:59:26.231612+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553966222",
+    "kind": "edit_observation",
+    "content": "Edited during active session",
+    "tags": [
+      "extract",
+      "isinsecureremoteurl",
+      "shared",
+      "app",
+      "base",
+      "warn",
+      "plaintext",
+      "http"
+    ],
+    "files": [
+      "extension/shared/app-base.js"
+    ],
+    "file_path": "extension/shared/app-base.js",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:59:26.222918+00:00",
+    "created_epoch": 1786553966,
+    "updated_at": "2026-08-12T16:59:26.222925+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": [],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786553966217",
+    "kind": "decision",
+    "content": "L4: extract isInsecureRemoteUrl to shared app-base.js, warn on plaintext-HTTP remote appBase, add node test",
+    "tags": [
+      "extract",
+      "isinsecureremoteurl",
+      "shared",
+      "app",
+      "base",
+      "warn",
+      "plaintext",
+      "http"
+    ],
+    "files": [
+      "extension/shared/app-base.js",
+      "extension/options/options.js",
+      "extension/test/app-base.test.mjs"
+    ],
+    "file_path": "extension/shared/app-base.js",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:59:26.217920+00:00",
+    "created_epoch": 1786553966,
+    "updated_at": "2026-08-12T16:59:26.217926+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786553982538",
+    "kind": "decision",
+    "content": "Mark L4 addressed with warning + test",
+    "tags": [
+      "mark",
+      "addressed",
+      "warning",
+      "test"
+    ],
+    "files": [
+      "securityscan.md"
+    ],
+    "file_path": "securityscan.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-12T16:59:42.538913+00:00",
+    "created_epoch": 1786553982,
+    "updated_at": "2026-08-12T16:59:42.538915+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "register_edit",
+        "fallback_rg"
+      ],
+      "recent_queries": []
     }
   }
 ]

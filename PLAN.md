@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** User-directed. UI redesign ladder P0–P2 shipped (legal, Welcome, shell, logout fix). Remaining UI items parked in `docs/plans/ui-redesign-remaining.md`.
+- **Active:** User-directed. UI redesign ladder P0–P2 shipped; application desk, editor frame, and landing hero pass completed 2026-08-11. Remaining UI items parked in `docs/plans/ui-redesign-remaining.md`.
 - **Last updated:** 2026-08-11
-- **Next action:** User-directed. UI: P3 in `docs/plans/ui-redesign-remaining.md` when resuming redesign. Extension: optional one-click connect / multi-step Workday QA. Job Imports gap analysis/cover letters remain stubs (AI match/tailoring shipped 2026-08-11).
+- **Next action:** User-directed. Review the rendered authenticated application desk and workstation at the next browser-enabled pass. Extension: optional one-click connect / multi-step Workday QA. Job Imports gap analysis/cover letters remain stubs (AI match/tailoring shipped 2026-08-11).
 
 ---
 

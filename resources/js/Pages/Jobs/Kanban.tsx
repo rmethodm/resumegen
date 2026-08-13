@@ -1,5 +1,9 @@
 import { DndContext, DragEndEvent, useDraggable, useDroppable } from '@dnd-kit/core';
 import { Head, router } from '@inertiajs/react';
+import {
+    BriefcaseIcon,
+    PlusIcon,
+} from '@heroicons/react/24/outline';
 import { FormEvent, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TextInput from '@/Components/TextInput';
@@ -106,7 +110,7 @@ function Column({
         <Shell
             className={cn(
                 'w-72 flex-none transition-[box-shadow] duration-soft ease-soft',
-                isOver && 'ring-2 ring-brand/25 shadow-ambient',
+                isOver && 'ring-2 ring-brand/25 shadow-lg',
             )}
             innerClassName={cn(
                 'flex min-h-[12rem] flex-col gap-2 p-2.5 transition-colors duration-soft ease-soft',
@@ -248,33 +252,72 @@ export default function JobApplicationKanban({
         );
     };
 
+    const activeApplications = applications.filter((job) => job.status !== 'rejected');
+    const interviewing = applications.filter((job) => job.status === 'interviewing');
+    const offers = applications.filter((job) => job.status === 'offer');
+    const followUps = applications
+        .filter((job) => job.follow_up_at)
+        .sort((a, b) => (a.follow_up_at ?? '').localeCompare(b.follow_up_at ?? ''))
+        .slice(0, 3);
+
     return (
-        <AuthenticatedLayout header={<h2 className="text-xl font-semibold text-ink">Applications</h2>}>
+        <AuthenticatedLayout>
             <Head title="Job Applications" />
 
-            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-6 lg:px-8">
+                <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                        <p className="text-sm font-medium text-brand">Application desk</p>
+                        <h1 className="mt-1 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+                            Keep the next move visible.
+                        </h1>
+                        <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-muted">
+                            Track each role from saved to offer, then open the resume that matches the opportunity.
+                        </p>
+                    </div>
+                    <Button type="button" onClick={openCreate} className="rounded-md">
+                        <PlusIcon className="size-4" />
+                        New application
+                    </Button>
+                </div>
+
+                <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="rounded-lg border border-brand/20 bg-brand-subtle/50 p-4 shadow-card">
+                        <p className="text-xs font-medium text-brand">Active pipeline</p>
+                        <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-ink">{activeApplications.length}</p>
+                        <p className="mt-1 text-xs text-ink-muted">of {applications.length} tracked roles</p>
+                    </div>
+                    <div className="rounded-lg border border-surface-border bg-white p-4 shadow-card">
+                        <p className="text-xs font-medium text-ink-muted">Interviews</p>
+                        <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-ink">{interviewing.length}</p>
+                        <p className="mt-1 text-xs text-ink-faint">needs preparation</p>
+                    </div>
+                    <div className="rounded-lg border border-surface-border bg-white p-4 shadow-card">
+                        <p className="text-xs font-medium text-ink-muted">Offers</p>
+                        <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-ink">{offers.length}</p>
+                        <p className="mt-1 text-xs text-ink-faint">in the pipeline</p>
+                    </div>
+                    <div className="rounded-lg border border-surface-border bg-white p-4 shadow-card">
+                        <p className="text-xs font-medium text-ink-muted">Next follow-up</p>
+                        <p className="mt-2 truncate text-2xl font-bold tracking-tight text-ink">{followUps[0]?.follow_up_at ?? 'None'}</p>
+                        <p className="mt-1 text-xs text-ink-faint">set a date on an application</p>
+                    </div>
+                </div>
+
                 <div className="mb-5 flex items-end justify-between gap-4">
                     <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
-                            Pipeline
-                        </p>
-                        <p className="mt-1 text-sm text-ink-muted">
-                            {applications.length} application{applications.length === 1 ? '' : 's'} tracked
-                        </p>
+                        <h2 className="text-base font-bold text-ink">Your pipeline</h2>
+                        <p className="mt-1 text-xs text-ink-muted">Drag a role to update its status.</p>
                     </div>
                     <Button type="button" onClick={openCreate} className="group rounded-full">
                         New application
-                        <span className="flex size-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105">
-                            +
-                        </span>
+                        <PlusIcon className="size-4" />
                     </Button>
                 </div>
 
                 {applications.length === 0 ? (
                     <Shell innerClassName="px-6 py-14 text-center sm:px-10">
-                        <span className="inline-flex items-center rounded-full bg-brand-subtle px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
-                            Pipeline
-                        </span>
+                        <BriefcaseIcon className="mx-auto size-8 text-brand" />
                         <h3 className="mt-4 text-lg font-bold tracking-tight text-ink">
                             No applications yet
                         </h3>

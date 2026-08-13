@@ -55,7 +55,7 @@ export function ShareResumeModal({
             router.post(
                 route('resumes.share.store', resumeId),
                 {},
-                { preserveScroll: true, onError },
+                { preserveScroll: true, preserveState: true, onError },
             );
         }
     }, [open, share, resumeId]);
@@ -89,7 +89,7 @@ export function ShareResumeModal({
         router.patch(
             route('resume-share-links.update', share.id),
             { [field]: !share[field] },
-            { preserveScroll: true, onError },
+            { preserveScroll: true, preserveState: true, onError },
         );
     }
 
@@ -101,7 +101,7 @@ export function ShareResumeModal({
         router.patch(
             route('resume-share-links.update', share.id),
             { password: passwordDraft },
-            { preserveScroll: true, onError },
+            { preserveScroll: true, preserveState: true, onError },
         );
     }
 
@@ -118,6 +118,7 @@ export function ShareResumeModal({
             { password: next, require_password: true },
             {
                 preserveScroll: true,
+                preserveState: true,
                 onError,
                 onFinish: () => setRotating(false),
             },
@@ -133,7 +134,7 @@ export function ShareResumeModal({
             router.patch(
                 route('resume-share-links.update', share.id),
                 { expires_at: null },
-                { preserveScroll: true, onError },
+                { preserveScroll: true, preserveState: true, onError },
             );
             return;
         }
@@ -144,7 +145,7 @@ export function ShareResumeModal({
         router.patch(
             route('resume-share-links.update', share.id),
             { expires_at: toDateString(in30Days) },
-            { preserveScroll: true, onError },
+            { preserveScroll: true, preserveState: true, onError },
         );
     }
 
@@ -174,7 +175,7 @@ export function ShareResumeModal({
         router.patch(
             route('resume-share-links.update', share.id),
             { expires_at: toDateString(new Date(year, month - 1, day)) },
-            { preserveScroll: true, onError },
+            { preserveScroll: true, preserveState: true, onError },
         );
     }
 

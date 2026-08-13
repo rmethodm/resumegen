@@ -85,7 +85,7 @@ export default function Welcome({ auth }: PageProps) {
                     <nav
                         className={cn(
                             'mx-auto flex h-14 max-w-6xl items-center gap-4 rounded-2xl border border-surface-border/80',
-                            'bg-white/90 px-4 shadow-ambient backdrop-blur-xl',
+                            'bg-white px-4 shadow-ambient',
                         )}
                     >
                         <BrandMark href="/" size="md" />
@@ -134,17 +134,13 @@ export default function Welcome({ auth }: PageProps) {
                 <main id="main-content" tabIndex={-1}>
                     {/* Editorial split hero */}
                     <section className="relative overflow-hidden px-4 pb-16 pt-10 sm:px-6 sm:pt-14 lg:pt-16">
-                        <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
-                            <div className="h-[280px] w-[520px] rounded-full bg-brand/8 blur-3xl" />
-                        </div>
-
                         <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-12 lg:gap-10">
                             <div className="text-left lg:col-span-5">
                                 <span className="inline-flex items-center gap-2 rounded-full bg-brand-subtle px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
                                     Free forever
                                 </span>
                                 <h1 className="font-display mt-5 max-w-xl text-4xl font-semibold leading-[1.12] tracking-tight text-ink text-balance sm:text-5xl lg:text-[3.25rem]">
-                                    Land more interviews with a resume you control
+                                    Build a resume you are proud to send
                                 </h1>
                                 <p className="mt-5 max-w-md text-base leading-relaxed text-ink-muted sm:text-lg">
                                     Build, export, and share a polished resume — no credit card, no plan
@@ -171,14 +167,12 @@ export default function Welcome({ auth }: PageProps) {
 
                             {/* Product stage — real template export art inside workstation chrome */}
                             <div className="lg:col-span-7 lg:justify-self-end">
-                                <Shell className="w-full max-w-2xl shadow-ambient" innerClassName="overflow-hidden">
+                                <Shell className="w-full max-w-2xl" innerClassName="overflow-hidden">
                                     {/* Mini app chrome matching product islands */}
                                     <div className="flex items-center gap-3 border-b border-surface-border/80 bg-white px-3 py-2.5 sm:px-4">
                                         <BrandMark size="sm" showWordmark={false} />
                                         <div className="hidden min-w-0 flex-1 sm:block">
-                                            <div className="h-7 max-w-xs rounded-full border border-surface-border bg-surface px-3 text-[11px] leading-7 text-ink-faint">
-                                                Search soon…
-                                            </div>
+                                            <div className="text-[11px] font-semibold text-ink">My resume</div>
                                         </div>
                                         <div className="ml-auto flex items-center gap-1.5">
                                             <span className="rounded-md bg-brand-subtle px-2.5 py-1 text-[11px] font-semibold text-brand">
@@ -195,11 +189,11 @@ export default function Welcome({ auth }: PageProps) {
                                     <div className="flex min-h-[16rem] bg-surface sm:min-h-[20rem]">
                                         {/* Section rail */}
                                         <div className="hidden w-36 shrink-0 border-r border-surface-border/80 bg-white/90 p-3 sm:block">
-                                            <div className="mb-3 flex flex-col items-center rounded-lg border border-surface-border/80 bg-surface/50 p-2">
-                                                <div className="flex size-12 items-center justify-center rounded-full border-[3px] border-brand/30 text-[11px] font-bold tabular-nums text-ink">
-                                                    72
+                                                <div className="mb-3 flex flex-col items-center rounded-lg border border-surface-border/80 bg-surface/50 p-2">
+                                                <div className="flex size-12 items-center justify-center rounded-full border border-brand/30 text-[10px] font-semibold text-brand">
+                                                    Edit
                                                 </div>
-                                                <p className="mt-1 text-[9px] font-medium text-ink-faint">Score</p>
+                                                <p className="mt-1 text-[9px] font-medium text-ink-faint">Your draft</p>
                                             </div>
                                             {['Contact', 'Summary', 'Experience', 'Skills'].map(
                                                 (label, i) => (
@@ -289,7 +283,7 @@ export default function Welcome({ auth }: PageProps) {
 
                             <ol className="relative mt-12 max-w-3xl">
                                 <div
-                                    className="absolute bottom-6 left-[1.15rem] top-6 w-px bg-gradient-to-b from-brand/50 via-surface-border to-transparent sm:left-[1.35rem]"
+                                    className="absolute bottom-6 left-[1.15rem] top-6 w-px bg-surface-border sm:left-[1.35rem]"
                                     aria-hidden
                                 />
                                 {STEPS.map((step, index) => (

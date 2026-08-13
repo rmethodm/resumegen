@@ -7,6 +7,11 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 ## Design decisions (locked)
 
+### 2026-08-11 application surfaces
+- Application tracking remains on `/job-applications`; the redesign adds an operator summary above the existing Kanban board without changing its Inertia CRUD or drag/drop routes.
+- The workstation keeps Edit, Review, and Optimize as the core workflow; the pass widens the frame and adds breathing room without moving guidance ahead of editing.
+- The public landing page uses the real template preview already in `public/images/templates/` and avoids invented score/search UI in the product preview.
+
 ### Resumegen Apply = extension, not iframe (locked)
 - What: Job-form assist is a Chrome/Edge MV3 extension calling Resumegen’s Sanctum API; never drive third-party apply pages via iframe.
 - Why: Cross-origin iframes cannot fill forms; many career sites block framing entirely.

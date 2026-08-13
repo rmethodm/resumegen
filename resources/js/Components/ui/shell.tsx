@@ -19,7 +19,9 @@ export function Shell({
             )}
             {...props}
         >
-            <div className={cn('rounded-lg', innerClassName)}>{children}</div>
+            {/* Inner radius = outer radius minus the 1px border, so opaque/clipped
+                children don't show a sliver of the outer background at the corners. */}
+            <div className={cn('rounded-[calc(0.5rem-1px)]', innerClassName)}>{children}</div>
         </div>
     );
 }
