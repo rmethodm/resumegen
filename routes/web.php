@@ -4,12 +4,13 @@ use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ExtensionTokenController;
-use App\Http\Controllers\JobApplicationController;
-use App\Http\Controllers\JobImportsController;
-use App\Http\Controllers\LegalController;
-use App\Http\Controllers\MobileTokenController;
+use App\Http\Controllers\CareerHubController;
+use App\Http\Controllers\CoverLetterController;
+use App\Http\Controllers\HeatmapController;
+use App\Http\Controllers\InterviewCoachController;
+use App\Http\Controllers\JobSearchController;
+use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeShareController;
@@ -138,6 +139,70 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         ->name('two-factor.disable');
     Route::post('/user/two-factor-recovery-codes', [TwoFactorRecoveryCodesController::class, 'store'])
         ->name('two-factor.recovery-codes');
+
+    Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
+    Route::post('/builder', [ResumeBuilderController::class, 'store'])->name('builder.store');
+    Route::get('/builder/create', [ResumeBuilderController::class, 'create'])->name('builder.create');
+    Route::post('/import/pdf/confirm', [ResumeImportController::class, 'confirm'])->name('import.pdf.confirm');
+    Route::get('/builder/{resume}', [ResumeBuilderController::class, 'edit'])->name('builder.edit');
+    Route::put('/builder/{resume}', [ResumeBuilderController::class, 'update'])->name('builder.update');
+    Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
+    Route::get('/builder/{resume}/pdf', [ResumeBuilderController::class, 'downloadPdf'])->name('builder.pdf');
+    Route::get('/builder/{resume}/docx', [ResumeBuilderController::class, 'downloadDocx'])->name('builder.docx');
+    Route::get('/builder/{resume}/preview', [ResumeBuilderController::class, 'previewPdf'])->name('builder.preview');
+    Route::get('/builder/{resume}/html-preview', [ResumeBuilderController::class, 'htmlPreview'])->name('builder.html-preview');
+    Route::get('/builder/{resume}/thumbnail', [ResumeBuilderController::class, 'thumbnail'])->name('builder.thumbnail');
+    Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
+    Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
+    Route::post('/builder/{resume}/create-variant', [ResumeBuilderController::class, 'createVariant'])->name('builder.create-variant');
+    Route::get('/builder/{resume}/heatmap', [HeatmapController::class, 'show'])->name('builder.heatmap');
+    Route::get('/builder/{resume}/strength-score', [StrengthScoreController::class, 'show'])
+        ->middleware('throttle:10,1')
+        ->name('builder.strength-score');
+    Route::get('/builder/{resume}/share-url', [ResumeBuilderController::class, 'shareUrl'])->name('builder.share-url');
+    Route::post('/builder/{resume}/photo', [ResumePhotoController::class, 'store'])->name('builder.photo.store');
+    Route::delete('/builder/{resume}/photo', [ResumePhotoController::class, 'destroy'])->name('builder.photo.destroy');
+    Route::post('/builder/{resume}/tags', [ResumeTagController::class, 'store'])->name('builder.tags.store');
+    Route::delete('/builder/{resume}/tags/{tag}', [ResumeTagController::class, 'destroy'])->name('builder.tags.destroy');
+
+    Route::get('/search', SearchController::class)->name('search')->middleware('throttle:30,1');
+
+    Route::middleware(['ai_enabled', 'throttle:20,1'])->group(function () {
+        Route::post('/builder/{resume}/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])->name('builder.ai.rewrite-bullet');
+        Route::post('/builder/{resume}/ai/critique-bullet', [AiSuggestionController::class, 'critiqueBullet'])->name('builder.ai.critique-bullet');
+        Route::post('/builder/{resume}/ai/summary', [AiSuggestionController::class, 'summary'])->name('builder.ai.summary');
+        Route::post('/builder/{resume}/ai/ats-keywords', [AiSuggestionController::class, 'atsKeywords'])->name('builder.ai.ats-keywords');
+        Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
+        Route::post('/cover-letters/{letter}/ai/draft', [AiSuggestionController::class, 'coverLetterDraft'])->name('cover-letters.ai.draft');
+        Route::post('/import/pdf/extract', [ResumeImportController::class, 'extract'])->name('import.pdf.extract');
+        Route::post('/jobs/rank', [JobSearchController::class, 'rank'])->name('jobs.rank');
+        Route::post('/jobs/import-url', [JobSearchController::class, 'importUrl'])->name('jobs.import-url');
+    });
+
+    Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
+    Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
+    Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
+    Route::get('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'show'])->name('builder.thread');
+    Route::post('/builder/{resume}/threads/{thread}/reply', [ResumeThreadController::class, 'reply'])->name('builder.thread.reply');
+    Route::patch('/builder/{resume}/threads/{thread}/read', [ResumeThreadController::class, 'read'])->name('builder.thread.read');
+    Route::delete('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'destroy'])->name('builder.thread.destroy');
+
+    Route::get('/cover-letters', [CoverLetterController::class, 'index'])->name('cover-letters.index');
+    Route::post('/cover-letters', [CoverLetterController::class, 'store'])->name('cover-letters.store');
+    Route::get('/cover-letters/{letter}', [CoverLetterController::class, 'edit'])->name('cover-letters.edit');
+    Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
+    Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
+
+    Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
+
+    Route::get('/jobs', [JobSearchController::class, 'index'])->name('jobs.index');
+    Route::post('/jobs/search', [JobSearchController::class, 'search'])->name('jobs.search')->middleware('throttle:30,1');
+    Route::post('/jobs/saved', [JobSearchController::class, 'store'])->name('jobs.saved.store');
+    Route::patch('/jobs/saved/{jobSearch}', [JobSearchController::class, 'update'])->name('jobs.saved.update');
+    Route::delete('/jobs/saved/{jobSearch}', [JobSearchController::class, 'destroy'])->name('jobs.saved.destroy');
+
+    Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
+    Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');
 
     // Autocomplete lookup
     Route::middleware('throttle:60,1')->group(function () {
