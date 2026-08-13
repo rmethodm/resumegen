@@ -8636,8 +8636,8 @@
       "edit_count": 4
     },
     "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php": {
-      "last_edited": 1786623058.132203,
-      "edit_count": 5
+      "last_edited": 1786623223.8415732,
+      "edit_count": 8
     },
     "database/migrations/2026_07_20_095528_recreate_job_pairing_tables_if_missing.php": {
       "last_edited": 1786622922.5334709,
@@ -8646,41 +8646,13 @@
     "database/migrations/2026_08_02_215299_drop_job_searches_resume_fk_before_resumes_rebuild.php": {
       "last_edited": 1786622954.571594,
       "edit_count": 2
+    },
+    "database/migrations/2026_08_04_142057_add_admin_and_disabled_to_users_table.php": {
+      "last_edited": 1786623249.5571048,
+      "edit_count": 1
     }
   },
   "actions": [
-    {
-      "type": "edit_auto",
-      "ts": 1786533694.792682,
-      "files": [
-        "CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786533896.707885,
-      "files": [
-        "/Users/rmethod/.claude/CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786533916.361421,
-      "files": [
-        "CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786539726,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "top navbar width max-width container AuthenticatedLayout shell content container"
-      }
-    },
     {
       "ts": 1786539726,
       "kind": "continue_retrieve",
@@ -11007,6 +10979,38 @@
       "ts": 1786623058.132201,
       "files": [
         "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786623199.7154958,
+      "files": [
+        "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786623207.269591,
+      "files": [
+        "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786623223.841571,
+      "files": [
+        "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786623249.5571032,
+      "files": [
+        "database/migrations/2026_08_04_142057_add_admin_and_disabled_to_users_table.php"
       ],
       "source": "graph_sync_hook"
     }
