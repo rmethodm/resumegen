@@ -97,6 +97,10 @@ composer run test
 php artisan test tests/Feature/Auth/AuthenticationTest.php
 php artisan test --filter=test_name
 
+# Browser tests (Dusk) — needs its own server running first, in a second terminal
+php artisan serve --env=dusk.local --port=8001 --no-reload
+php artisan dusk
+
 # PHP code formatter (required before finalizing changes)
 ./vendor/bin/pint
 
@@ -184,6 +188,48 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 - **Resume translation and career map** — the two most expensive AI features per unit of value. Deleted outright (routes, prompts, controllers, tests), not flagged off.
 - **All billing** (see above). Here the create-migrations were kept and a drop migration (`2026_07_14_120000_drop_billing_tables_and_columns`) removes the tables and columns, so both fresh and existing databases converge.
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
+- **Job applications tracker** (removed in `93c1c14`). `application_contacts` and `interview_notes` are dropped by migration. **`job_applications` is deliberately still live** — `AnalyticsController` queries it via `DB::table()` for the dashboard's `active_applications` count. Do not drop that table without rewriting that query first.
+
+## Browser tests (Dusk) — two non-obvious requirements
+
+Added 2026-07-20. `tests/Browser/` is the only layer that executes React; the feature suite asserts the props Laravel *sends* and stays green even if a page throws on mount.
+
+**1. Dusk needs its own server, not Herd.** Herd serves `resumegen.test` using `.env`, which points at the **dev** database. Dusk's test process reads `.env.dusk.local` (database `resumegen_dusk`), so factories and the browser would look at two different databases and every test would fail on a missing user. `.env.dusk.local` therefore sets `APP_URL=http://127.0.0.1:8001`, and `php artisan serve --env=dusk.local --port=8001` must be running before `php artisan dusk`.
+
+**2. Use `DatabaseTruncation`, never `DatabaseMigrations`.** The latter rolls back on teardown, and this project's migrations are forward-only (next section) — it dies in the first `down()` that drops an already-dropped constraint. Truncation never rolls back. The consequence: **after adding a migration, run `php artisan migrate --env=dusk.local`**, or Dusk truncates a schema that lacks the new column.
+
+`.env.dusk.local` is a copy of `.env` and holds real credentials — `.gitignore` covers it via `.env.*`. Do not narrow that pattern.
+
+Assert on controls (`assertMissing('input[name="…"]')`), not strings (`assertDontSee('…')`) — a "don't see" assertion passes on any error page and proves nothing.
+
+## Migrations are forward-only — rollback is not supported
+
+**Do not run `migrate:rollback`, `migrate:reset`, or `migrate:refresh`. Use `migrate:fresh --seed` to rebuild.**
+
+The `drop_*` cleanup migrations (`drop_resume_strength_snapshots_table`, `drop_job_application_id_from_resumes_table`, `drop_referral_fields_from_users_table`, `drop_interview_notes_table`, `drop_agency_org_tables`, `drop_application_contacts_table`) all have an empty `down()` — deliberately, so rolling back never resurrects a removed feature's schema. The consequence is that a rollback removes a column and never restores it, so the older migration that created it then dies trying to drop a constraint that is already gone. It cascades: fix one and the next fails identically, roughly seven deep.
+
+A rollback that fails partway leaves the database in a wrecked half-state — schema torn down to the failure point while the `migrations` table still claims those migrations ran. That state looks exactly like a corrupted or partially-restored dump, and has twice been misdiagnosed as one. If migration counts and actual schema disagree, suspect an interrupted rollback first and just run `migrate:fresh --seed`.
+
+Making rollback work would mean editing seven already-shipped migrations to no benefit. Forward-only is the decision, not an oversight.
+
+**This is enforced, not just documented.** `.claude/hooks/block-migrate-rollback.sh` is a `PreToolUse` hook (wired in `.claude/settings.json`) that blocks any `artisan migrate:rollback|reset|refresh` and points at `migrate:fresh --seed`. Prose here did not prevent the two misdiagnoses above, so the rule got teeth. The regex requires an `artisan` prefix, so grepping for or documenting the term still works.
+
+**When deleting a model, grep for its class name across `database/`.** Migrations, factories, and seeders hold references the IDE and the test suite never exercise, so they stay green and only fail later at `migrate` or `migrate:fresh --seed` time. This has bitten three times: `JobApplication` (a migration `down()`, two factories) and `AiModelRate` (a seeder for a table dropped by `2026_06_10_113108_drop_dead_ai_tables`). Prefer the column name over the model — `dropConstrainedForeignId('foo_id')`, not `dropForeignIdFor(Foo::class)` — so migrations never depend on app classes that can be deleted out from under them.
+
+## Project skills are hook-enforced, not prose-enforced
+
+`.claude/skills/` holds five repo-specific skills. Two of them are wired to a `PreToolUse` hook — `.claude/hooks/nudge-project-skills.sh`, matched on `Edit|Write` in `.claude/settings.json`:
+
+- editing `resources/js/**/*.tsx|jsx` → activate `inertia-react-development`
+- editing `app/**/*.php` → activate `laravel-best-practices`
+
+**Why a hook and not a sentence.** A transcript audit on 2026-07-19 counted 83 `Skill` invocations across 122 sessions: `superpowers:*` process skills accounted for ~69%, and **all five project skills had fired exactly zero times** since being added on 2026-07-07 — despite good `description:` frontmatter and despite the Boost block below explicitly saying "IMPORTANT: Activate `inertia-react-development`". Passive description-matching loses against a crowded skill listing and four SessionStart hooks. Same lesson as `block-migrate-rollback.sh` one section up: prose that has already failed once does not get a second chance, it gets teeth.
+
+The hook **nudges, it does not block** — it emits `additionalContext` with `permissionDecision: "defer"`, so the edit is neither blocked nor auto-approved and the normal permission flow is untouched. It fires **once per skill per session** (a `/tmp` marker keyed on `session_id`); re-injecting the same sentence on all 40 edits of a page is how injected context gets tuned out.
+
+`debug-using-debugbar`, `server-deployment`, and `tailwindcss-development` are deliberately *not* hooked — they key off intent ("this page is slow", "deploy this"), not off a file path, so there is no reliable `Edit`/`Write` trigger for them. They remain description-matched only.
+
+Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-guidelines>` block — Boost regenerates that block, so edits there are overwritten. The hook is what actually carries the rule.
 
 ## Key Design Decisions
 
