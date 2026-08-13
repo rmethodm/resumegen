@@ -13,16 +13,19 @@ use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PublicResumeShareController;
-use App\Http\Controllers\ResumeAiController;
-use App\Http\Controllers\ResumeCompareController;
-use App\Http\Controllers\ResumeController;
-use App\Http\Controllers\ResumeGroupController;
-use App\Http\Controllers\ResumeNoteController;
-use App\Http\Controllers\ResumeShareLinkController;
-use App\Http\Controllers\ResumeSnapshotController;
-use App\Http\Controllers\Settings\StarterProfileController;
-use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\PublicResumeController;
+use App\Http\Controllers\PublicThreadController;
+use App\Http\Controllers\ResumeBuilderController;
+use App\Http\Controllers\ResumeImportController;
+use App\Http\Controllers\ResumePhotoController;
+use App\Http\Controllers\ResumeTagController;
+use App\Http\Controllers\ResumeThreadController;
+use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SectionEventController;
+use App\Http\Controllers\ShareController;
+use App\Http\Controllers\ShareLinkController;
+use App\Http\Controllers\StrengthScoreController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', WelcomeController::class);
@@ -182,6 +185,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
+    Route::get('/shares', [ShareController::class, 'index'])->name('shares.index');
     Route::get('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'show'])->name('builder.thread');
     Route::post('/builder/{resume}/threads/{thread}/reply', [ResumeThreadController::class, 'reply'])->name('builder.thread.reply');
     Route::patch('/builder/{resume}/threads/{thread}/read', [ResumeThreadController::class, 'read'])->name('builder.thread.read');
@@ -226,8 +230,26 @@ if (app()->environment('local')) {
     Route::get('/dev/job-fixtures/{page}', function (string $page) {
         abort_unless(in_array($page, ['workday', 'greenhouse', 'lever', 'icims', 'custom'], true), 404);
 
-        return view("dev.job-fixtures.{$page}");
-    })->name('dev.job-fixtures.show');
-}
+// Public (unauthenticated) Career Hub routes
+Route::get('/career', [CareerHubController::class, 'index'])->name('career.index');
+Route::get('/career/{slug}', [CareerHubController::class, 'show'])->name('career.show');
+
+// Public (unauthenticated) share link routes
+Route::middleware('throttle:60,1')->group(function () {
+    Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
+    Route::post('/r/{token}/unlock', [PublicResumeController::class, 'unlock'])->name('public.resume.unlock');
+});
+Route::middleware('throttle:20,1')->group(function () {
+    Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
+    Route::get('/r/{token}/docx', [PublicResumeController::class, 'downloadDocx'])->name('public.docx');
+});
+Route::post('/r/{token}/threads', [PublicThreadController::class, 'store'])->middleware('throttle:5,1')->name('public.thread.store');
+Route::post('/r/{token}/threads/{thread}/messages', [PublicThreadController::class, 'addMessage'])->middleware('throttle:10,1')->name('public.thread.message');
+Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image')->middleware('throttle:30,1');
+Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'])
+    ->middleware('throttle:30,1')
+    ->name('public.section-events');
+
+Route::middleware('auth')->delete('/admin/impersonate', [AdminImpersonationController::class, 'destroy'])->name('admin.impersonate.destroy');
 
 require __DIR__.'/auth.php';

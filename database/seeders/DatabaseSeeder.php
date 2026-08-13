@@ -19,13 +19,14 @@ class DatabaseSeeder extends Seeder
         $this->call(JobRolesSeeder::class);
         $this->call(JobTitlesSeeder::class);
         $this->call(JobSkillsSeeder::class);
-        $this->call(LibrarySkillSeeder::class);
 
-        // Test fixture only — never let this account reach a real environment.
+        // Test fixtures only — never let sample resumes reach a real environment.
         if (! app()->environment('local')) {
             return;
         }
 
+        // Created up front so the fixture seeders below (each of which firstOrCreate's
+        // this same address) attach their resumes here and never reset the password.
         User::updateOrCreate(
             ['email' => 'rmethodm@outlook.com'],
             [
@@ -34,5 +35,9 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        $this->call(TestResumesSeeder::class);
+        $this->call(SampleSharesSeeder::class);
+        $this->call(TestAnalyticsDataSeeder::class);
     }
 }

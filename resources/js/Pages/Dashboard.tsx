@@ -35,12 +35,115 @@ function ShareStatus({
 }) {
     const [copied, setCopied] = useState(false);
 
-    if (!share) {
-        return (
-            <span
-                className={cn(
-                    'inline-flex items-center gap-1 text-ink-faint',
-                    compact ? 'text-[10px]' : 'text-[11px]',
+function editedAgo(iso: string): string {
+    const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days === 1) return 'yesterday';
+    if (days < 30) return `${days}d ago`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months}mo ago`;
+    return `${Math.floor(months / 12)}y ago`;
+}
+
+function strengthPillClass(strength: number): string {
+    if (strength <= 40) return 'bg-red-100 text-red-600';
+    if (strength <= 70) return 'bg-amber-100 text-amber-700';
+    return 'bg-emerald-100 text-emerald-700';
+}
+
+function CardMenu({ id, name }: { id: number; name: string }) {
+    const [open, setOpen] = useState(false);
+    const duplicate = () => { setOpen(false); router.post(route('builder.duplicate', id)); };
+    const destroy = () => {
+        setOpen(false);
+        if (confirm(`Delete "${name}"? This cannot be undone.`)) router.delete(route('builder.destroy', id));
+    };
+
+    // ponytail: revealed on hover, but always visible on touch (sm:) and while the menu is open
+    return (
+        <div className="relative shrink-0">
+            <button
+                onClick={() => setOpen(v => !v)}
+                aria-label="Resume actions"
+                className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[#71717a] transition hover:bg-[#eef2ff] focus-visible:opacity-100 group-hover:opacity-100 ${
+                    open ? 'opacity-100' : 'sm:opacity-0'
+                }`}
+            >
+                <EllipsisVerticalIcon className="h-[18px] w-[18px]" />
+            </button>
+            {open && (
+                <>
+                    <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+                    <div className="absolute right-0 top-8 z-50 w-40 rounded-lg border border-[#eeeef5] bg-white py-1 shadow-lg">
+                        <Link href={route('builder.edit', id)} className="block px-4 py-2 text-sm text-[#374151] transition hover:bg-[#fafafe]">
+                            Edit
+                        </Link>
+                        <button onClick={duplicate} className="block w-full px-4 py-2 text-left text-sm text-[#374151] transition hover:bg-[#fafafe]">
+                            Duplicate
+                        </button>
+                        <button onClick={destroy} className="block w-full px-4 py-2 text-left text-sm text-red-600 transition hover:bg-[#fafafe]">
+                            Delete
+                        </button>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+}
+
+function ResumeGridCard({ card }: { card: ResumeCard }) {
+    return (
+        <div className="group flex flex-col overflow-hidden rounded-xl border border-[#eeeef5] bg-white shadow-[0_1px_3px_rgba(79,70,229,0.05)] transition hover:-translate-y-1 hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)]">
+            {/* Decorative preview */}
+            <Link href={route('builder.edit', card.id)} className="block h-40 border-b border-[#eeeef5] bg-[#fafafe] p-5">
+                <div className="mx-auto max-w-[85%] space-y-2">
+                    <div className="h-2.5 w-2/3 rounded bg-[#dcdce8]" />
+                    <div className="space-y-1.5 pt-1.5">
+                        <div className="h-1.5 w-full rounded bg-[#ececf3]" />
+                        <div className="h-1.5 w-11/12 rounded bg-[#ececf3]" />
+                        <div className="h-1.5 w-3/4 rounded bg-[#ececf3]" />
+                    </div>
+                </div>
+            </Link>
+
+            <div className="flex flex-1 flex-col gap-2 p-4">
+                <div className="flex items-start justify-between gap-2">
+                    <Link href={route('builder.edit', card.id)} className="font-bold leading-snug text-[#0f0f1a] hover:text-[#4f46e5]">
+                        {card.name}
+                    </Link>
+                    <CardMenu id={card.id} name={card.name} />
+                </div>
+
+                <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-[#a0a0b0]">Edited {editedAgo(card.updated_at)}</span>
+                    {card.has_active_share_link ? (
+                        <span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${strengthPillClass(card.strength)}`} title="Resume strength score">
+                            {card.strength}%
+                        </span>
+                    ) : (
+                        <span className="rounded-md bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">Draft</span>
+                    )}
+                </div>
+
+                {(card.variant_count > 0 || card.active_applications > 0) && (
+                    <div className="space-y-1 text-xs text-[#6b7280]">
+                        {card.variant_count > 0 && (
+                            <p className="flex items-center gap-1.5">
+                                <span className="text-[#c4c4d0]">●</span>
+                                {card.variant_count} version{card.variant_count !== 1 ? 's' : ''}
+                            </p>
+                        )}
+                        {card.active_applications > 0 && (
+                            <p className="flex items-center gap-1.5">
+                                <span className="text-[#c4c4d0]">●</span>
+                                {card.active_applications} active application{card.active_applications !== 1 ? 's' : ''}
+                            </p>
+                        )}
+                    </div>
                 )}
             >
                 <ShareIcon className={compact ? 'size-3' : 'size-3.5'} />
