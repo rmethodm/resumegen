@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Data\AiPrompts;
+use App\Exceptions\ModerationException;
+use App\Models\Resume;
+use App\Services\AiService;
+use App\Services\JobPairingService;
+use App\Services\UserLimits;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Throwable;
+
+class InterviewCoachController extends Controller
+{
+    public function __construct(private AiService $ai, private JobPairingService $pairings) {}
+
+    public function coach(Request $request, Resume $resume): JsonResponse
+    {
+        $this->authorize('update', $resume);
+
+        $user = $request->user();
+
+        if ($user->ai_blocked) {
+            return response()->json([
+                'error' => 'AI features are disabled for this account.',
+            ], 402);
+        }
+
+        if (! UserLimits::canUseAi($user)) {
+            return response()->json([
+                'error' => UserLimits::aiLimitMessage($user),
+                'limit' => UserLimits::aiMonthlyLimit($user),
+                'used' => UserLimits::aiRequestsThisMonth($user),
+                'resets_at' => now()->startOfMonth()->addMonth()->format('M j'),
+            ], 402);
+        }
+
+        $validated = $request->validate([
+            'target_role' => ['required', 'string', 'max:100'],
+            'job_description' => ['nullable', 'string', 'max:3000'],
+        ]);
+
+        try {
+            $reply = $this->ai->chat(
+                AiPrompts::build('interview_coach', [
+                    'target_role' => $validated['target_role'],
+                    'job_description' => $validated['job_description'] ?? null,
+                    'name' => $resume->contact['full_name'] ?? null,
+                    'experience' => $resume->experience ?? [],
+                    'skills' => $resume->skills ?? [],
+                ]),
+                ['user' => $user, 'feature' => 'interview_coach'],
+            );
+        } catch (ModerationException) {
+            return response()->json(['error' => ModerationException::USER_MESSAGE], 422);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
+        }
+
+        $questions = json_decode($reply, true);
+
+        if (! is_array($questions)) {
+            return response()->json(['error' => 'AI is temporarily unavailable. Try again.'], 503);
+        }
+
+        // Coaching is per-job work, so it belongs to the same pairing the builder charges
+        // for. The role comes from the request; only the resume knows the employer.
+        $this->pairings->record($user, $resume->target_company, $validated['target_role']);
+
+        return response()->json([
+            'questions' => array_slice(array_values($questions), 0, 8),
+            'remaining' => UserLimits::aiRemaining($user),
+        ]);
+    }
+}

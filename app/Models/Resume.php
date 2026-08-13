@@ -48,27 +48,15 @@ class Resume extends Model
     ];
 
     protected $fillable = [
-        'group_id',
-        'title',
-        'target_role',
-        'target_company',
-        'target_job_description',
-        'full_name',
-        'headline',
-        'email',
-        'phone',
-        'location',
-        'linkedin',
-        'website',
-        'summary',
-        'template',
-        'font',
-        'density',
-        'skills_layout',
-        'bullet_style',
-        'section_order',
-        'import_state',
-        'import_error',
+        'user_id',
+        'name', 'search_text', 'pdf_filename', 'template',
+        'accent_color', 'font_family',
+        'contact', 'summary', 'target_job_description', 'target_company', 'target_title', 'experience', 'education', 'projects',
+        'skills', 'skills_layout', 'skills_groups', 'skill_narratives', 'certifications', 'font_sizes',
+        'section_order', 'custom_sections',
+        'ab_parent_id',
+        'is_snapshot',
+        'parent_resume_id',
     ];
 
     /**
