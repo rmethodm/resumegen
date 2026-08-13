@@ -1,188 +1,191 @@
 {
   "entries": {
-    "routes admin php middleware group two_factor_challenge|tf=5|te=12": {
-      "created_epoch": 1786553604,
+    "resumepolicy authorization ability resume ownership|tf=5|te=12": {
+      "created_epoch": 1786615980,
       "files": [
-        "resources/js/Pages/Admin/Users/Index.tsx::AdminUserRow",
-        "resources/js/Pages/Admin/Users/Show.tsx::AdminAction",
-        "resources/js/Pages/Admin/Backups/Index.tsx",
-        "ds-bundle/components/general/SkillGroupEditor/SkillGroupEditor.d.ts::SkillGroupEditorProps",
-        "resources/js/Components/SkillGroupEditor.tsx"
+        "resources/js/Pages/Resumes/Compare.tsx",
+        "resources/js/Pages/Jobs/Imports.tsx::ResumeOption",
+        "resources/js/Pages/Jobs/Index.tsx::ResumeOption",
+        "resources/js/Pages/Jobs/Kanban.tsx::ResumeOption",
+        "resources/js/Pages/Shares/Index.tsx::ResumeOption"
       ],
       "mtimes_ns": {
-        "resources/js/Pages/Admin/Users/Index.tsx::AdminUserRow": 1786316038933834721,
-        "resources/js/Pages/Admin/Users/Show.tsx::AdminAction": 1786316038936597642,
-        "resources/js/Pages/Admin/Backups/Index.tsx": 1786317627299381506,
-        "ds-bundle/components/general/SkillGroupEditor/SkillGroupEditor.d.ts::SkillGroupEditorProps": 1785780804225276082,
-        "resources/js/Components/SkillGroupEditor.tsx": 1786317318776877450
+        "resources/js/Pages/Resumes/Compare.tsx": 1786316038978164834,
+        "resources/js/Pages/Jobs/Imports.tsx::ResumeOption": 1786540877263930796,
+        "resources/js/Pages/Jobs/Index.tsx::ResumeOption": 1786614113724589370,
+        "resources/js/Pages/Jobs/Kanban.tsx::ResumeOption": 1786466683169869788,
+        "resources/js/Pages/Shares/Index.tsx::ResumeOption": 1786614134656365927
       },
       "result": {
         "ok": true,
-        "query": "routes/admin.php middleware group two_factor_challenge admin",
+        "query": "ResumePolicy authorization update ability resume ownership",
         "graph_files": [
           {
-            "id": "resources/js/Pages/Admin/Users/Index.tsx::AdminUserRow",
-            "kind": "symbol",
-            "path": "resources/js/Pages/Admin/Users/Index.tsx",
+            "id": "resources/js/Pages/Resumes/Compare.tsx",
+            "kind": "file",
+            "path": "resources/js/Pages/Resumes/Compare.tsx",
             "ext": ".tsx",
-            "size": 10,
+            "size": 14174,
             "keywords": [
-              "adminuserrow",
-              "admin",
-              "user",
-              "row"
+              "resumecompare",
+              "resume",
+              "compare"
+            ],
+            "summary": "import { Head, Link, router } from '@inertiajs/react';. Contains 5 functions/classes: ResumeCompare, swap, CompareSidebar, Legend, ....",
+            "file_hash": "f6f11d40",
+            "_score": 21,
+            "_role": "ui_surface",
+            "_intent": "edit"
+          },
+          {
+            "id": "resources/js/Pages/Jobs/Imports.tsx::ResumeOption",
+            "kind": "symbol",
+            "path": "resources/js/Pages/Jobs/Imports.tsx",
+            "ext": ".tsx",
+            "size": 1,
+            "keywords": [
+              "resumeoption",
+              "resume",
+              "option"
             ],
             "symbol_type": "model",
-            "name": "AdminUserRow",
-            "line_start": 5,
-            "line_end": 14,
-            "body_hash": "2fdd5cec",
+            "name": "ResumeOption",
+            "line_start": 12,
+            "line_end": 12,
+            "body_hash": "f64c5197",
             "confidence": "high",
             "exported": false,
-            "_score": 18,
+            "_score": 19,
             "_role": "ui_surface",
-            "_intent": "general"
+            "_intent": "edit"
           },
           {
-            "id": "resources/js/Pages/Admin/Users/Show.tsx::AdminAction",
+            "id": "resources/js/Pages/Jobs/Index.tsx::ResumeOption",
             "kind": "symbol",
-            "path": "resources/js/Pages/Admin/Users/Show.tsx",
+            "path": "resources/js/Pages/Jobs/Index.tsx",
             "ext": ".tsx",
-            "size": 6,
+            "size": 4,
             "keywords": [
-              "adminaction",
-              "admin",
-              "action"
+              "resumeoption",
+              "resume",
+              "option"
             ],
             "symbol_type": "model",
-            "name": "AdminAction",
-            "line_start": 19,
-            "line_end": 24,
-            "body_hash": "e8fcb86f",
+            "name": "ResumeOption",
+            "line_start": 37,
+            "line_end": 40,
+            "body_hash": "9d9bb77a",
             "confidence": "high",
             "exported": false,
-            "_score": 18,
+            "_score": 19,
             "_role": "ui_surface",
-            "_intent": "general"
+            "_intent": "edit"
           },
           {
-            "id": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "kind": "file",
-            "path": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "ext": ".tsx",
-            "size": 11249,
-            "keywords": [
-              "index"
-            ],
-            "summary": "import AdminLayout from '@/Layouts/AdminLayout';. Contains 5 functions/classes: formatBytes, formatWhen, Index, createBackup, ....",
-            "file_hash": "bfbd19f4",
-            "_score": 17,
-            "_role": "ui_surface",
-            "_intent": "general"
-          },
-          {
-            "id": "ds-bundle/components/general/SkillGroupEditor/SkillGroupEditor.d.ts::SkillGroupEditorProps",
+            "id": "resources/js/Pages/Jobs/Kanban.tsx::ResumeOption",
             "kind": "symbol",
-            "path": "ds-bundle/components/general/SkillGroupEditor/SkillGroupEditor.d.ts",
-            "ext": ".ts",
-            "size": 3,
+            "path": "resources/js/Pages/Jobs/Kanban.tsx",
+            "ext": ".tsx",
+            "size": 1,
             "keywords": [
-              "skillgroupeditorprops",
-              "skill",
-              "group",
-              "editor",
-              "props"
+              "resumeoption",
+              "resume",
+              "option"
             ],
             "symbol_type": "model",
-            "name": "SkillGroupEditorProps",
-            "line_start": 5,
-            "line_end": 7,
-            "body_hash": "4fb53371",
+            "name": "ResumeOption",
+            "line_start": 16,
+            "line_end": 16,
+            "body_hash": "f64c5197",
             "confidence": "high",
-            "exported": true,
-            "_score": 15,
-            "_role": "code",
-            "_intent": "general"
+            "exported": false,
+            "_score": 19,
+            "_role": "ui_surface",
+            "_intent": "edit"
           },
           {
-            "id": "resources/js/Components/SkillGroupEditor.tsx",
-            "kind": "file",
-            "path": "resources/js/Components/SkillGroupEditor.tsx",
+            "id": "resources/js/Pages/Shares/Index.tsx::ResumeOption",
+            "kind": "symbol",
+            "path": "resources/js/Pages/Shares/Index.tsx",
             "ext": ".tsx",
-            "size": 5138,
+            "size": 4,
             "keywords": [
-              "skillgroupeditor",
-              "skill",
-              "group",
-              "editor"
+              "resumeoption",
+              "resume",
+              "option"
             ],
-            "summary": "import { useId, useRef, useState } from 'react';. Contains 1 function: SkillGroupEditor.",
-            "file_hash": "7d663f44",
-            "_score": 15,
-            "_role": "code",
-            "_intent": "general"
+            "symbol_type": "model",
+            "name": "ResumeOption",
+            "line_start": 34,
+            "line_end": 37,
+            "body_hash": "9d9bb77a",
+            "confidence": "high",
+            "exported": false,
+            "_score": 19,
+            "_role": "ui_surface",
+            "_intent": "edit"
           }
         ],
         "graph_edges": [
           {
-            "from": "resources/js/Components/SkillGroupEditor.tsx",
-            "to": "@/Components/TagInput",
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
+            "to": "@/Components/ui/button",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Components/SkillGroupEditor.tsx",
-            "to": "@/types",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Components/SkillGroupEditor.tsx",
-            "to": "TagInput",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Components/SkillGroupEditor.tsx",
-            "to": "react",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Components/SkillGroupEditor.tsx",
-            "to": "type",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "@/Components/Modal",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
             "to": "@/Components/ui/card",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "@/Layouts/AdminLayout",
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
+            "to": "@/Layouts/AuthenticatedLayout",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
+            "to": "@/lib/resume-diff",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
+            "to": "@/lib/resume-sections",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
+            "to": "@/lib/utils",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
+            "to": "@heroicons/react/24/outline",
+            "rel": "imports"
+          },
+          {
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
             "to": "@inertiajs/react",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "AdminLayout",
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
+            "to": "AuthenticatedLayout",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "Modal",
+            "from": "resources/js/Pages/Resumes/Compare.tsx",
+            "to": "type",
             "rel": "imports"
           },
           {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "react",
-            "rel": "imports"
+            "from": "resources/js/Pages/Jobs/Imports.tsx",
+            "to": "resources/js/Pages/Jobs/Imports.tsx::ResumeOption",
+            "rel": "contains"
+          },
+          {
+            "from": "resources/js/Pages/Jobs/Index.tsx",
+            "to": "resources/js/Pages/Jobs/Index.tsx::ResumeOption",
+            "rel": "contains"
           }
         ],
         "grep_hits": [],
@@ -190,196 +193,6 @@
         "read_budget": {
           "remaining_chars": 60000,
           "reuse_gate_candidates": []
-        }
-      }
-    },
-    "admin user index feature test middleware two factor|tf=5|te=12": {
-      "created_epoch": 1786553653,
-      "files": [
-        "resources/js/Pages/Admin/Users/Index.tsx",
-        "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
-        "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx",
-        "resources/js/Pages/Admin/Backups/Index.tsx",
-        "resources/js/Pages/Admin/Users/Show.tsx::AdminUserDetail"
-      ],
-      "mtimes_ns": {
-        "resources/js/Pages/Admin/Users/Index.tsx": 1786316038933834721,
-        "resources/js/Pages/Auth/TwoFactorChallenge.tsx": 1786347635994943822,
-        "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx": 1786347635995386412,
-        "resources/js/Pages/Admin/Backups/Index.tsx": 1786317627299381506,
-        "resources/js/Pages/Admin/Users/Show.tsx::AdminUserDetail": 1786316038936597642
-      },
-      "result": {
-        "ok": true,
-        "query": "admin user index feature test middleware two factor",
-        "graph_files": [
-          {
-            "id": "resources/js/Pages/Admin/Users/Index.tsx",
-            "kind": "file",
-            "path": "resources/js/Pages/Admin/Users/Index.tsx",
-            "ext": ".tsx",
-            "size": 7484,
-            "keywords": [
-              "index"
-            ],
-            "summary": "import AdminLayout from '@/Layouts/AdminLayout';. Contains 2 functions/classes: Index, search.",
-            "file_hash": "9464fd48",
-            "_score": 26,
-            "_role": "ui_surface",
-            "_intent": "test"
-          },
-          {
-            "id": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
-            "kind": "file",
-            "path": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
-            "ext": ".tsx",
-            "size": 4660,
-            "keywords": [
-              "twofactorchallenge",
-              "two",
-              "factor",
-              "challenge"
-            ],
-            "summary": "import InputError from '@/Components/InputError';. Contains 1 function: TwoFactorChallenge.",
-            "file_hash": "7d100eac",
-            "_score": 26,
-            "_role": "ui_surface",
-            "_intent": "test"
-          },
-          {
-            "id": "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx",
-            "kind": "file",
-            "path": "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx",
-            "ext": ".tsx",
-            "size": 6783,
-            "keywords": [
-              "twofactorform",
-              "two",
-              "factor",
-              "form"
-            ],
-            "summary": "import InputError from '@/Components/InputError';. Contains 1 function: TwoFactorForm.",
-            "file_hash": "aab6ea1d",
-            "_score": 26,
-            "_role": "ui_surface",
-            "_intent": "test"
-          },
-          {
-            "id": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "kind": "file",
-            "path": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "ext": ".tsx",
-            "size": 11249,
-            "keywords": [
-              "index"
-            ],
-            "summary": "import AdminLayout from '@/Layouts/AdminLayout';. Contains 5 functions/classes: formatBytes, formatWhen, Index, createBackup, ....",
-            "file_hash": "bfbd19f4",
-            "_score": 24,
-            "_role": "ui_surface",
-            "_intent": "test"
-          },
-          {
-            "id": "resources/js/Pages/Admin/Users/Show.tsx::AdminUserDetail",
-            "kind": "symbol",
-            "path": "resources/js/Pages/Admin/Users/Show.tsx",
-            "ext": ".tsx",
-            "size": 14,
-            "keywords": [
-              "adminuserdetail",
-              "admin",
-              "user",
-              "detail"
-            ],
-            "symbol_type": "model",
-            "name": "AdminUserDetail",
-            "line_start": 4,
-            "line_end": 17,
-            "body_hash": "9991edf6",
-            "confidence": "high",
-            "exported": false,
-            "_score": 22,
-            "_role": "ui_surface",
-            "_intent": "test"
-          }
-        ],
-        "graph_edges": [
-          {
-            "from": "resources/js/Pages/Admin/Users/Index.tsx",
-            "to": "@/Components/ui/card",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Users/Index.tsx",
-            "to": "@/Layouts/AdminLayout",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Users/Index.tsx",
-            "to": "@inertiajs/react",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Users/Index.tsx",
-            "to": "AdminLayout",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Users/Index.tsx",
-            "to": "react",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Users/Index.tsx",
-            "to": "resources/js/Pages/Admin/Users/Index.tsx::AdminUserRow",
-            "rel": "contains"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Users/Index.tsx",
-            "to": "resources/js/Pages/Admin/Users/Index.tsx::Index",
-            "rel": "contains"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Users/Index.tsx",
-            "to": "resources/js/Pages/Admin/Users/Index.tsx::Paginator",
-            "rel": "contains"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "@/Components/Modal",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "@/Components/ui/card",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "@/Layouts/AdminLayout",
-            "rel": "imports"
-          },
-          {
-            "from": "resources/js/Pages/Admin/Backups/Index.tsx",
-            "to": "@inertiajs/react",
-            "rel": "imports"
-          }
-        ],
-        "grep_hits": [],
-        "reuse_candidates": [
-          {
-            "file": "routes/web.php",
-            "overlap": 2,
-            "cached_chars": 10966,
-            "cached_tokens_est": 2741,
-            "last_action": "read"
-          }
-        ],
-        "read_budget": {
-          "remaining_chars": 60000,
-          "reuse_gate_candidates": [
-            "routes/web.php"
-          ]
         }
       }
     }

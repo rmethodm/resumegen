@@ -41,8 +41,8 @@ class JobSearchController extends Controller
                 ->map(fn (JobSearch $search) => $this->presentSearch($search))
                 ->values(),
             'resumes' => Resume::where('user_id', $user->id)
-                ->orderBy('name')
-                ->get(['id', 'name']),
+                ->orderBy('title')
+                ->get(['id', 'title as name']),
             'sources' => $this->configuredSources(),
         ]);
     }

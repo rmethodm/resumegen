@@ -1,75 +1,5 @@
 [
   {
-    "id": "mem:1786107132800",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "migrated",
-      "utility",
-      "auth",
-      "pages",
-      "from",
-      "raw",
-      "hex",
-      "guestlayout"
-    ],
-    "files": [
-      "resources/js/Pages/Auth/ResetPassword.tsx"
-    ],
-    "file_path": "resources/js/Pages/Auth/ResetPassword.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.800939+00:00",
-    "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.800946+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786107132789",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "migrated",
-      "utility",
-      "auth",
-      "pages",
-      "from",
-      "raw",
-      "hex",
-      "guestlayout"
-    ],
-    "files": [
-      "resources/js/Pages/Auth/ForgotPassword.tsx"
-    ],
-    "file_path": "resources/js/Pages/Auth/ForgotPassword.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.789439+00:00",
-    "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.789452+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
     "id": "mem:1786107132774",
     "kind": "decision",
     "content": "Migrated 5 utility auth pages from raw-hex GuestLayout to new token-driven AuthCenteredLayout (recipe-auth.md centered-card composition); fixed focus-visible and off-token colors along the way; kept GuestLayout.tsx since Onboarding/Wizard.tsx still depends on it",
@@ -106,76 +36,6 @@
         "fallback_rg"
       ],
       "recent_queries": []
-    }
-  },
-  {
-    "id": "mem:1786107132782",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "migrated",
-      "utility",
-      "auth",
-      "pages",
-      "from",
-      "raw",
-      "hex",
-      "guestlayout"
-    ],
-    "files": [
-      "resources/js/Layouts/AuthCenteredLayout.tsx"
-    ],
-    "file_path": "resources/js/Layouts/AuthCenteredLayout.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.782721+00:00",
-    "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.782733+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
-    }
-  },
-  {
-    "id": "mem:1786107132795",
-    "kind": "edit_observation",
-    "content": "Edited during active session",
-    "tags": [
-      "migrated",
-      "utility",
-      "auth",
-      "pages",
-      "from",
-      "raw",
-      "hex",
-      "guestlayout"
-    ],
-    "files": [
-      "resources/js/Pages/Auth/ConfirmPassword.tsx"
-    ],
-    "file_path": "resources/js/Pages/Auth/ConfirmPassword.tsx",
-    "symbol_id": "",
-    "symbol_hash": "",
-    "created_at": "2026-08-07T12:52:12.795865+00:00",
-    "created_epoch": 1786107132,
-    "updated_at": "2026-08-07T12:52:12.795874+00:00",
-    "stale": false,
-    "stale_reason": "",
-    "observed_queries": [],
-    "evidence": {
-      "source": "graph_register_edit",
-      "recent_action_kinds": [
-        "fallback_rg"
-      ],
-      "recent_queries": [],
-      "edited": true
     }
   },
   {
@@ -7409,6 +7269,158 @@
         "fallback_rg"
       ],
       "recent_queries": []
+    }
+  },
+  {
+    "id": "mem:1786614725806",
+    "kind": "query_association",
+    "content": "Queried during: applied status confirmation",
+    "tags": [
+      "applied",
+      "status",
+      "confirmation"
+    ],
+    "files": [
+      "resources/js/Pages/Jobs/Kanban.tsx::JobApplicationKanban"
+    ],
+    "file_path": "resources/js/Pages/Jobs/Kanban.tsx",
+    "symbol_id": "resources/js/Pages/Jobs/Kanban.tsx::JobApplicationKanban",
+    "symbol_hash": "5b121bd8",
+    "created_at": "2026-08-13T09:52:05.806093+00:00",
+    "created_epoch": 1786614725,
+    "updated_at": "2026-08-13T09:52:05.806096+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "applied status confirmation"
+    ],
+    "evidence": {
+      "source": "graph_read",
+      "anchor_mode": "symbol",
+      "session_epoch": 1786614327
+    }
+  },
+  {
+    "id": "mem:1786614887620",
+    "kind": "edit_observation",
+    "content": "Edited after query: where to save plans docs markdown checkpoint auto apply",
+    "tags": [
+      "park",
+      "auto",
+      "apply",
+      "research",
+      "later",
+      "point",
+      "plan",
+      "handoff"
+    ],
+    "files": [
+      "PLAN.md"
+    ],
+    "file_path": "PLAN.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-13T09:54:47.620436+00:00",
+    "created_epoch": 1786614887,
+    "updated_at": "2026-08-13T09:54:47.620441+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "where to save plans docs markdown checkpoint auto apply"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve",
+        "fallback_rg"
+      ],
+      "recent_queries": [
+        "where to save plans docs markdown checkpoint auto apply"
+      ],
+      "edited": true
+    }
+  },
+  {
+    "id": "mem:1786614887611",
+    "kind": "decision",
+    "content": "Park auto-apply research for later; point PLAN at the handoff doc.",
+    "tags": [
+      "park",
+      "auto",
+      "apply",
+      "research",
+      "later",
+      "point",
+      "plan",
+      "handoff"
+    ],
+    "files": [
+      "docs/plans/auto-apply-research.md",
+      "PLAN.md"
+    ],
+    "file_path": "docs/plans/auto-apply-research.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-13T09:54:47.611222+00:00",
+    "created_epoch": 1786614887,
+    "updated_at": "2026-08-13T09:54:47.611225+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "where to save plans docs markdown checkpoint auto apply"
+    ],
+    "evidence": {
+      "window_sec": 120,
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve",
+        "fallback_rg"
+      ],
+      "recent_queries": [
+        "where to save plans docs markdown checkpoint auto apply"
+      ]
+    }
+  },
+  {
+    "id": "mem:1786614887616",
+    "kind": "edit_observation",
+    "content": "Edited after query: where to save plans docs markdown checkpoint auto apply",
+    "tags": [
+      "park",
+      "auto",
+      "apply",
+      "research",
+      "later",
+      "point",
+      "plan",
+      "handoff"
+    ],
+    "files": [
+      "docs/plans/auto-apply-research.md"
+    ],
+    "file_path": "docs/plans/auto-apply-research.md",
+    "symbol_id": "",
+    "symbol_hash": "",
+    "created_at": "2026-08-13T09:54:47.616321+00:00",
+    "created_epoch": 1786614887,
+    "updated_at": "2026-08-13T09:54:47.616327+00:00",
+    "stale": false,
+    "stale_reason": "",
+    "observed_queries": [
+      "where to save plans docs markdown checkpoint auto apply"
+    ],
+    "evidence": {
+      "source": "graph_register_edit",
+      "recent_action_kinds": [
+        "continue_retrieve",
+        "retrieve",
+        "fallback_rg"
+      ],
+      "recent_queries": [
+        "where to save plans docs markdown checkpoint auto apply"
+      ],
+      "edited": true
     }
   }
 ]

@@ -44,6 +44,52 @@ export interface FontSizes {
     entrySpacing: number;
 }
 
+export interface Contact {
+    full_name: string;
+    email: string;
+    phone: string;
+    location: string;
+    linkedin: string;
+    website: string;
+}
+
+export interface ExperienceEntry {
+    id: string;
+    company: string;
+    title: string;
+    start_date: string;
+    end_date: string;
+    current: boolean;
+    bullets: string;
+}
+
+export interface EducationEntry {
+    id: string;
+    school: string;
+    degree: string;
+    field: string;
+    grad_year: string;
+}
+
+export interface CertEntry {
+    id: string;
+    name: string;
+    issuer: string;
+    date: string;
+    expiration: string;
+    credential_id: string;
+}
+
+export interface ProjectEntry {
+    id: string;
+    name: string;
+    description: string;
+    url: string;
+    start_date: string;
+    end_date: string;
+    bullets: string;
+}
+
 export interface ResumeData {
     id: number;
     name: string;

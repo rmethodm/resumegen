@@ -3064,300 +3064,120 @@
       "meta": {
         "summary": "Mark L4 addressed with warning + test"
       }
-    }
-  ],
-  "edges": [
-    {
-      "from": "query:badge tsx button raw tailwind color drift indigo",
-      "to": "ds-entry.tsx",
-      "rel": "retrieved",
-      "ts": 1786270736
     },
     {
-      "from": "query:badge tsx button raw tailwind color drift indigo",
-      "to": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786270736
-    },
-    {
-      "from": "query:badge tsx button raw tailwind color drift indigo",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786270736
-    },
-    {
-      "from": "query:badge tsx button raw tailwind color drift indigo",
-      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786270736
-    },
-    {
-      "from": "query:ibm plex sans font import app css tailwind",
-      "to": "resources/js/Pages/Jobs/Imports.tsx",
-      "rel": "retrieved",
-      "ts": 1786270964
-    },
-    {
-      "from": "query:ibm plex sans font import app css tailwind",
-      "to": "resources/js/Components/resume/resume-preview.tsx",
-      "rel": "retrieved",
-      "ts": 1786270964
-    },
-    {
-      "from": "query:ibm plex sans font import app css tailwind",
-      "to": "tailwind.config.js",
-      "rel": "retrieved",
-      "ts": 1786270964
-    },
-    {
-      "from": "query:ibm plex sans font import app css tailwind",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx",
-      "rel": "retrieved",
-      "ts": 1786270964
-    },
-    {
-      "from": "query:ibm plex sans font import app css tailwind",
-      "to": "resources/js/app.tsx",
-      "rel": "retrieved",
-      "ts": 1786270964
-    },
-    {
-      "from": "query:(empty)",
-      "to": "resources/views/app.blade.php",
-      "rel": "read",
-      "ts": 1786271015,
+      "id": "query:files referencing aiservice airequest aiusagereport pricinggrowthreport jobpairingservice balancetransaction",
+      "type": "query",
       "meta": {
-        "mode": "full"
+        "text": "files referencing AiService AiRequest AiUsageReport in PricingGrowthReport JobPairingService BalanceTransaction"
       }
     },
     {
-      "from": "action:edit:1786271266",
-      "to": "resources/css/app.css",
-      "rel": "edited",
-      "ts": 1786271266
+      "id": "query:dev server scripts package json composer vite laravel",
+      "type": "query",
+      "meta": {
+        "text": "dev server scripts package.json composer.json vite laravel serve"
+      }
     },
     {
-      "from": "action:edit:1786271266",
-      "to": "tailwind.config.js",
-      "rel": "edited",
-      "ts": 1786271266
+      "id": "resources/js/hooks/use-mobile.tsx::getServerSnapshot",
+      "type": "file"
     },
     {
-      "from": "action:edit:1786271266",
-      "to": "resources/views/app.blade.php",
-      "rel": "edited",
-      "ts": 1786271266
+      "id": "query:role keywords sidebar section set target includes family",
+      "type": "query",
+      "meta": {
+        "text": "ROLE KEYWORDS sidebar section \"Set a target role that includes a family we score\""
+      }
     },
     {
-      "from": "action:edit:1786271266",
-      "to": "DESIGN.md",
-      "rel": "edited",
-      "ts": 1786271266
+      "id": "resources/js/lib/template-presets.ts",
+      "type": "file"
     },
     {
-      "from": "action:edit:1786271795",
-      "to": "resources/css/app.css",
-      "rel": "edited",
-      "ts": 1786271795
+      "id": "query:auto submit resume job sites apply extension easy",
+      "type": "query",
+      "meta": {
+        "text": "auto submit resume to job sites apply extension Easy Apply autofill"
+      }
     },
     {
-      "from": "action:edit:1786271795",
-      "to": "tailwind.config.js",
-      "rel": "edited",
-      "ts": 1786271795
+      "id": "resources/js/Pages/Jobs/Imports.tsx::ResumeOption",
+      "type": "file"
     },
     {
-      "from": "action:edit:1786271795",
-      "to": "resources/views/app.blade.php",
-      "rel": "edited",
-      "ts": 1786271795
+      "id": "resources/js/Pages/Jobs/Index.tsx::ResumeOption",
+      "type": "file"
     },
     {
-      "from": "action:edit:1786271795",
-      "to": "DESIGN.md",
-      "rel": "edited",
-      "ts": 1786271795
+      "id": "resources/js/Pages/ResumeBuilder/Edit.tsx",
+      "type": "file"
     },
     {
-      "from": "query:design system tokens typography spacing color components buttons",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786313780
+      "id": "resources/js/Pages/Shares/Index.tsx::ResumeOption",
+      "type": "file"
     },
     {
-      "from": "query:design system tokens typography spacing color components buttons",
-      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786313780
+      "id": "query:job application applied confirmation tracker extension submit success",
+      "type": "query",
+      "meta": {
+        "text": "job application applied confirmation tracker extension submit success receipt"
+      }
     },
     {
-      "from": "query:design system tokens typography spacing color components buttons",
-      "to": "resources/js/Pages/Jobs/Kanban.tsx",
-      "rel": "retrieved",
-      "ts": 1786313780
+      "id": "resources/js/Pages/Jobs/Index.tsx",
+      "type": "file"
     },
     {
-      "from": "query:design system tokens typography spacing color components buttons",
-      "to": "resources/js/Pages/Auth/ConfirmPassword.tsx",
-      "rel": "retrieved",
-      "ts": 1786313780
+      "id": "query:applied status confirmation",
+      "type": "query",
+      "meta": {
+        "text": "applied status confirmation"
+      }
     },
     {
-      "from": "query:design system tokens typography spacing color components buttons",
-      "to": "resources/js/Pages/Auth/ResetPassword.tsx",
-      "rel": "retrieved",
-      "ts": 1786313780
+      "id": "query:where save plans docs markdown checkpoint auto apply",
+      "type": "query",
+      "meta": {
+        "text": "where to save plans docs markdown checkpoint auto apply"
+      }
     },
     {
-      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
-      "to": "resources/js/Pages/Profile/Partials/DeleteUserForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786314574
+      "id": "resources/js/hooks/use-autosave.ts",
+      "type": "file"
     },
     {
-      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
-      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786314574
+      "id": "resources/js/Pages/Jobs/Index.tsx::SavedSearch",
+      "type": "file"
     },
     {
-      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
-      "to": "resources/js/Pages/Profile/Partials/MobileTokensForm.tsx",
-      "rel": "retrieved",
-      "ts": 1786314574
+      "id": "ds-bundle/components/general/AutocompleteInput/AutocompleteInput.d.ts::AutocompleteInputProps",
+      "type": "file"
     },
     {
-      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786314574
+      "id": "resources/js/types/resume.ts::SaveStatus",
+      "type": "file"
     },
     {
-      "from": "query:primarybutton secondarybutton dangerbutton checkbox button component usage across",
-      "to": "ds-entry.tsx",
-      "rel": "retrieved",
-      "ts": 1786314574
+      "id": "action:edit:1786614887",
+      "type": "action",
+      "meta": {
+        "summary": "Park auto-apply research for later; point PLAN at the handoff doc."
+      }
     },
     {
-      "from": "query:viewport height dvh svh usages across components modals",
-      "to": "resources/js/Pages/Auth/ConfirmPassword.tsx",
-      "rel": "retrieved",
-      "ts": 1786317361
+      "id": "docs/plans/auto-apply-research.md",
+      "type": "file"
     },
     {
-      "from": "query:viewport height dvh svh usages across components modals",
-      "to": "resources/js/Pages/Auth/Login.tsx",
-      "rel": "retrieved",
-      "ts": 1786317361
-    },
-    {
-      "from": "query:viewport height dvh svh usages across components modals",
-      "to": "resources/js/Pages/Auth/Register.tsx",
-      "rel": "retrieved",
-      "ts": 1786317361
-    },
-    {
-      "from": "query:viewport height dvh svh usages across components modals",
-      "to": "resources/js/Pages/Auth/ResetPassword.tsx",
-      "rel": "retrieved",
-      "ts": 1786317361
-    },
-    {
-      "from": "query:viewport height dvh svh usages across components modals",
-      "to": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
-      "rel": "retrieved",
-      "ts": 1786317361
-    },
-    {
-      "from": "query:dashboard tsx average_score resumes prop usage",
-      "to": "resources/js/Pages/Resumes/Compare.tsx::Props",
-      "rel": "retrieved",
-      "ts": 1786317752
-    },
-    {
-      "from": "query:dashboard tsx average_score resumes prop usage",
-      "to": "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx::Props",
-      "rel": "retrieved",
-      "ts": 1786317752
-    },
-    {
-      "from": "query:dashboard tsx average_score resumes prop usage",
-      "to": "resources/js/Pages/Admin/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786317752
-    },
-    {
-      "from": "query:dashboard tsx average_score resumes prop usage",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786317752
-    },
-    {
-      "from": "query:dashboard tsx average_score resumes prop usage",
-      "to": "resources/js/Components/AutocompleteInput.tsx::Props",
-      "rel": "retrieved",
-      "ts": 1786317752
-    },
-    {
-      "from": "query:dashboard tsx resumes prop usage after deferred load",
-      "to": "resources/js/Pages/Resumes/Compare.tsx::Props",
-      "rel": "retrieved",
-      "ts": 1786319344
-    },
-    {
-      "from": "query:dashboard tsx resumes prop usage after deferred load",
-      "to": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
-      "rel": "retrieved",
-      "ts": 1786319344
-    },
-    {
-      "from": "query:dashboard tsx resumes prop usage after deferred load",
-      "to": "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx::Props",
-      "rel": "retrieved",
-      "ts": 1786319344
-    },
-    {
-      "from": "query:dashboard tsx resumes prop usage after deferred load",
-      "to": "resources/js/Pages/Resumes/Workstation.tsx",
-      "rel": "retrieved",
-      "ts": 1786319344
-    },
-    {
-      "from": "query:dashboard tsx resumes prop usage after deferred load",
-      "to": "resources/js/Pages/Admin/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786319344
-    },
-    {
-      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
-      "to": "resources/js/Components/workstation/share-resume-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786346722
-    },
-    {
-      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
-      "to": "resources/js/Pages/Dashboard.tsx",
-      "rel": "retrieved",
-      "ts": 1786346722
-    },
-    {
-      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
-      "to": "resources/js/Pages/Resumes/PublicShare.tsx",
-      "rel": "retrieved",
-      "ts": 1786346722
-    },
-    {
-      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
-      "to": "ds-entry.tsx",
-      "rel": "retrieved",
-      "ts": 1786346722
-    },
-    {
-      "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
-      "to": "resources/js/Components/dashboard/new-resume-modal.tsx",
-      "rel": "retrieved",
-      "ts": 1786346722
-    },
+      "id": "query:resumepolicy authorization ability resume ownership",
+      "type": "query",
+      "meta": {
+        "text": "ResumePolicy authorization update ability resume ownership"
+      }
+    }
+  ],
+  "edges": [
     {
       "from": "query:score dial dashboard dots primarybutton secondarybutton dangerbutton checkbox",
       "to": ".design-sync/previews/Modal.tsx",
@@ -6351,6 +6171,306 @@
       "to": "securityscan.md",
       "rel": "edited",
       "ts": 1786553982
+    },
+    {
+      "from": "query:files referencing aiservice airequest aiusagereport pricinggrowthreport jobpairingservice balancetransaction",
+      "to": "resources/js/types/resume.ts::StarterProfileSkill",
+      "rel": "retrieved",
+      "ts": 1786613310
+    },
+    {
+      "from": "query:files referencing aiservice airequest aiusagereport pricinggrowthreport jobpairingservice balancetransaction",
+      "to": "resources/js/Pages/Admin/Backups/Index.tsx::BackupRow",
+      "rel": "retrieved",
+      "ts": 1786613310
+    },
+    {
+      "from": "query:files referencing aiservice airequest aiusagereport pricinggrowthreport jobpairingservice balancetransaction",
+      "to": "resources/js/Pages/Admin/Users/Index.tsx::AdminUserRow",
+      "rel": "retrieved",
+      "ts": 1786613310
+    },
+    {
+      "from": "query:files referencing aiservice airequest aiusagereport pricinggrowthreport jobpairingservice balancetransaction",
+      "to": "resources/js/Pages/Admin/Users/Show.tsx::AdminAction",
+      "rel": "retrieved",
+      "ts": 1786613310
+    },
+    {
+      "from": "query:files referencing aiservice airequest aiusagereport pricinggrowthreport jobpairingservice balancetransaction",
+      "to": "resources/js/Pages/Auth/TwoFactorChallenge.tsx::Mode",
+      "rel": "retrieved",
+      "ts": 1786613310
+    },
+    {
+      "from": "query:dev server scripts package json composer vite laravel",
+      "to": "resources/js/hooks/use-mobile.tsx::getServerSnapshot",
+      "rel": "retrieved",
+      "ts": 1786613427
+    },
+    {
+      "from": "query:dev server scripts package json composer vite laravel",
+      "to": "resources/js/Layouts/AdminLayout.tsx::AdminNavItem",
+      "rel": "retrieved",
+      "ts": 1786613427
+    },
+    {
+      "from": "query:dev server scripts package json composer vite laravel",
+      "to": "resources/js/Layouts/AuthenticatedLayout.tsx::NavItem",
+      "rel": "retrieved",
+      "ts": 1786613427
+    },
+    {
+      "from": "query:dev server scripts package json composer vite laravel",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx",
+      "rel": "retrieved",
+      "ts": 1786613427
+    },
+    {
+      "from": "query:dev server scripts package json composer vite laravel",
+      "to": "composer.json",
+      "rel": "retrieved",
+      "ts": 1786613427
+    },
+    {
+      "from": "query:role keywords sidebar section set target includes family",
+      "to": "resources/js/Components/workstation/target-role-bar.tsx",
+      "rel": "retrieved",
+      "ts": 1786613611
+    },
+    {
+      "from": "query:role keywords sidebar section set target includes family",
+      "to": "resources/js/Pages/Auth/ResetPassword.tsx",
+      "rel": "retrieved",
+      "ts": 1786613611
+    },
+    {
+      "from": "query:role keywords sidebar section set target includes family",
+      "to": "resources/js/Pages/Welcome.tsx",
+      "rel": "retrieved",
+      "ts": 1786613611
+    },
+    {
+      "from": "query:role keywords sidebar section set target includes family",
+      "to": "resources/js/lib/template-presets.ts",
+      "rel": "retrieved",
+      "ts": 1786613611
+    },
+    {
+      "from": "query:role keywords sidebar section set target includes family",
+      "to": "resources/js/lib/resume-analysis.ts::keywordScore",
+      "rel": "retrieved",
+      "ts": 1786613611
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Components/resume/score-coach.tsx",
+      "rel": "read",
+      "ts": 1786613629,
+      "meta": {
+        "mode": "anchor_excerpt"
+      }
+    },
+    {
+      "from": "query:auto submit resume job sites apply extension easy",
+      "to": "resources/js/Pages/Jobs/Imports.tsx::ResumeOption",
+      "rel": "retrieved",
+      "ts": 1786614495
+    },
+    {
+      "from": "query:auto submit resume job sites apply extension easy",
+      "to": "resources/js/Pages/Jobs/Index.tsx::ResumeOption",
+      "rel": "retrieved",
+      "ts": 1786614495
+    },
+    {
+      "from": "query:auto submit resume job sites apply extension easy",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx::ResumeOption",
+      "rel": "retrieved",
+      "ts": 1786614495
+    },
+    {
+      "from": "query:auto submit resume job sites apply extension easy",
+      "to": ".design-sync/previews/AutocompleteInput.tsx",
+      "rel": "retrieved",
+      "ts": 1786614495
+    },
+    {
+      "from": "query:auto submit resume job sites apply extension easy",
+      "to": "resources/js/Pages/Resumes/Compare.tsx",
+      "rel": "retrieved",
+      "ts": 1786614495
+    },
+    {
+      "from": "query:auto submit resume job sites apply extension easy",
+      "to": "resources/js/Pages/ResumeBuilder/Edit.tsx",
+      "rel": "retrieved",
+      "ts": 1786614495
+    },
+    {
+      "from": "query:auto submit resume job sites apply extension easy",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786614495
+    },
+    {
+      "from": "query:auto submit resume job sites apply extension easy",
+      "to": "resources/js/Pages/Shares/Index.tsx::ResumeOption",
+      "rel": "retrieved",
+      "ts": 1786614495
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Pages/Jobs/Imports.tsx::ResumeOption",
+      "rel": "read",
+      "ts": 1786614512,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:job application applied confirmation tracker extension submit success",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx",
+      "rel": "retrieved",
+      "ts": 1786614714
+    },
+    {
+      "from": "query:job application applied confirmation tracker extension submit success",
+      "to": "resources/js/Pages/Jobs/Imports.tsx",
+      "rel": "retrieved",
+      "ts": 1786614714
+    },
+    {
+      "from": "query:job application applied confirmation tracker extension submit success",
+      "to": "resources/js/types/index.d.ts::JobApplication",
+      "rel": "retrieved",
+      "ts": 1786614714
+    },
+    {
+      "from": "query:job application applied confirmation tracker extension submit success",
+      "to": "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx",
+      "rel": "retrieved",
+      "ts": 1786614714
+    },
+    {
+      "from": "query:job application applied confirmation tracker extension submit success",
+      "to": "resources/js/Pages/Jobs/Index.tsx",
+      "rel": "retrieved",
+      "ts": 1786614714
+    },
+    {
+      "from": "query:job application applied confirmation tracker extension submit success",
+      "to": "ds-bundle/components/general/ApplicationLogo/ApplicationLogo.d.ts::ApplicationLogoProps",
+      "rel": "retrieved",
+      "ts": 1786614714
+    },
+    {
+      "from": "query:job application applied confirmation tracker extension submit success",
+      "to": "ds-entry.tsx",
+      "rel": "retrieved",
+      "ts": 1786614714
+    },
+    {
+      "from": "query:job application applied confirmation tracker extension submit success",
+      "to": "extension/background/service-worker.js",
+      "rel": "retrieved",
+      "ts": 1786614714
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/types/index.d.ts::JobApplication",
+      "rel": "read",
+      "ts": 1786614725,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:applied status confirmation",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx::JobApplicationKanban",
+      "rel": "read",
+      "ts": 1786614725,
+      "meta": {
+        "mode": "query_excerpt"
+      }
+    },
+    {
+      "from": "query:where save plans docs markdown checkpoint auto apply",
+      "to": "resources/js/hooks/use-autosave.ts",
+      "rel": "retrieved",
+      "ts": 1786614822
+    },
+    {
+      "from": "query:where save plans docs markdown checkpoint auto apply",
+      "to": "resources/js/Pages/Jobs/Index.tsx::SavedSearch",
+      "rel": "retrieved",
+      "ts": 1786614822
+    },
+    {
+      "from": "query:where save plans docs markdown checkpoint auto apply",
+      "to": "ds-bundle/components/general/AutocompleteInput/AutocompleteInput.d.ts::AutocompleteInputProps",
+      "rel": "retrieved",
+      "ts": 1786614822
+    },
+    {
+      "from": "query:where save plans docs markdown checkpoint auto apply",
+      "to": "resources/js/Components/AutocompleteInput.tsx",
+      "rel": "retrieved",
+      "ts": 1786614822
+    },
+    {
+      "from": "query:where save plans docs markdown checkpoint auto apply",
+      "to": "resources/js/lib/template-presets.ts::applyTemplatePreset",
+      "rel": "retrieved",
+      "ts": 1786614822
+    },
+    {
+      "from": "query:where save plans docs markdown checkpoint auto apply",
+      "to": "resources/js/types/resume.ts::SaveStatus",
+      "rel": "retrieved",
+      "ts": 1786614822
+    },
+    {
+      "from": "action:edit:1786614887",
+      "to": "docs/plans/auto-apply-research.md",
+      "rel": "edited",
+      "ts": 1786614887
+    },
+    {
+      "from": "action:edit:1786614887",
+      "to": "PLAN.md",
+      "rel": "edited",
+      "ts": 1786614887
+    },
+    {
+      "from": "query:resumepolicy authorization ability resume ownership",
+      "to": "resources/js/Pages/Resumes/Compare.tsx",
+      "rel": "retrieved",
+      "ts": 1786615980
+    },
+    {
+      "from": "query:resumepolicy authorization ability resume ownership",
+      "to": "resources/js/Pages/Jobs/Imports.tsx::ResumeOption",
+      "rel": "retrieved",
+      "ts": 1786615980
+    },
+    {
+      "from": "query:resumepolicy authorization ability resume ownership",
+      "to": "resources/js/Pages/Jobs/Index.tsx::ResumeOption",
+      "rel": "retrieved",
+      "ts": 1786615980
+    },
+    {
+      "from": "query:resumepolicy authorization ability resume ownership",
+      "to": "resources/js/Pages/Jobs/Kanban.tsx::ResumeOption",
+      "rel": "retrieved",
+      "ts": 1786615980
+    },
+    {
+      "from": "query:resumepolicy authorization ability resume ownership",
+      "to": "resources/js/Pages/Shares/Index.tsx::ResumeOption",
+      "rel": "retrieved",
+      "ts": 1786615980
     }
   ],
   "files": {
@@ -6483,7 +6603,9 @@
       "cached_tokens_est": 2741,
       "last_action": "read",
       "last_ts": 1786551333,
-      "first_read_turn": 3
+      "first_read_turn": 3,
+      "last_edited": 1786615452.165484,
+      "edit_count": 13
     },
     "app/Http/Controllers/ExtensionTokenController.php": {
       "query_terms": [],
@@ -6560,7 +6682,9 @@
       "cached_tokens_est": 1555,
       "last_action": "read",
       "last_ts": 1786454057,
-      "first_read_turn": 3
+      "first_read_turn": 3,
+      "last_edited": 1786615136.418653,
+      "edit_count": 2
     },
     "app/Support/MobileApiToken.php": {
       "last_edited": 1786047101.2935958,
@@ -6753,8 +6877,8 @@
       "edit_count": 1
     },
     "app/Models/User.php": {
-      "last_edited": 1786051161.0497642,
-      "edit_count": 1
+      "last_edited": 1786615065.494894,
+      "edit_count": 3
     },
     "app/Models/JobApplication.php": {
       "last_edited": 1786051167.441972,
@@ -6774,8 +6898,8 @@
       "first_read_turn": 2
     },
     "resources/js/types/index.d.ts": {
-      "last_edited": 1786051217.607265,
-      "edit_count": 1
+      "last_edited": 1786614815.6735091,
+      "edit_count": 2
     },
     "resources/js/Pages/Jobs/Kanban.tsx": {
       "last_edited": 1786459497.5982049,
@@ -6797,8 +6921,8 @@
       "last_action": "read",
       "last_ts": 1786539733,
       "first_read_turn": 15,
-      "last_edited": 1786540619.2650309,
-      "edit_count": 1
+      "last_edited": 1786614989.149285,
+      "edit_count": 3
     },
     "CLAUDE.md": {
       "query_terms": [
@@ -6991,15 +7115,14 @@
     },
     "resources/js/Components/resume/score-coach.tsx": {
       "query_terms": [],
-      "cached_content": "export function ScoreChecklist({\n    items,\n    onJump,\n}: {\n    items: ScoreChecklistItem[];\n    onJump: (item: ScoreChecklistItem) => void;\n}) {\n    const remaining = items.filter((item) => !item.done).length;\n    const doneCount = items.length - remaining;\n\n    if (remaining === 0) {\n        retu",
-      "cached_chars": 3147,
-      "cached_tokens_est": 786,
-      "last_action": "edited",
-      "last_ts": "2026-08-11T13:17:03.300149+00:00",
+      "cached_content": "hidden\n                            >\n                                {item.done && (\n                                    <CheckIcon className=\"size-2.5 stroke-[3]\" />\n                                )}\n                            </span>\n                            <span className=\"min-w-0 flex-1\">\n",
+      "cached_chars": 3000,
+      "cached_tokens_est": 750,
+      "last_action": "read",
+      "last_ts": 1786613629,
       "first_read_turn": 10,
-      "last_edited": 1786454068.5179782,
-      "edit_count": 8,
-      "edited_count": 5
+      "last_edited": 1786613690.4380329,
+      "edit_count": 1
     },
     ".ui-craft/brief.md": {
       "query_terms": [],
@@ -7204,7 +7327,9 @@
       "cached_tokens_est": 451,
       "last_action": "read",
       "last_ts": 1786126970,
-      "first_read_turn": 4
+      "first_read_turn": 4,
+      "last_edited": 1786615760.3000782,
+      "edit_count": 1
     },
     "deploy.sh": {
       "query_terms": [],
@@ -7997,12 +8122,16 @@
       "first_read_turn": 1
     },
     "resources/js/Pages/Jobs/Kanban.tsx::JobApplicationKanban": {
-      "query_terms": [],
-      "cached_content": "export default function JobApplicationKanban({\n    applications,\n    resumes,\n}: {\n    applications: JobApplication[];\n    resumes: ResumeOption[];\n}) {\n    const [form, setForm] = useState<FormState | null>(null);\n    const [processing, setProcessing] = useState(false);\n\n    const resumesById = new",
-      "cached_chars": 11733,
-      "cached_tokens_est": 2933,
+      "query_terms": [
+        "applied",
+        "status",
+        "confirmation"
+      ],
+      "cached_content": "    const [processing, setProcessing] = useState(false);\n\n    const resumesById = new Map(resumes.map((r) => [r.id, r.title]));\n\n    const openCreate = () => setForm(emptyForm());\n    const openEdit = (job: JobApplication) =>\n        setForm({\n            id: job.id,\n            company: job.company",
+      "cached_chars": 6000,
+      "cached_tokens_est": 1500,
       "last_action": "read",
-      "last_ts": 1786454181,
+      "last_ts": 1786614725,
       "first_read_turn": 2
     },
     "resources/js/Pages/Jobs/Imports.tsx::JobImportsPage": {
@@ -8178,9 +8307,10 @@
       "cached_content": "# <Project> \u2014 Roadmap\n\nLive at **<url>** \u00b7 Repo: **<repo>**\n\n---\n\n## Status\n- **Active:** User-directed. UI redesign ladder P0\u2013P2 shipped; application desk, editor frame, and landing hero pass completed 2026-08-11. Remaining UI items parked in `docs/plans/ui-redesign-remaining.md`.\n- **Last updated:",
       "cached_chars": 3000,
       "cached_tokens_est": 750,
-      "last_action": "read",
-      "last_ts": 1786551596,
-      "first_read_turn": 1
+      "last_action": "edited",
+      "last_ts": "2026-08-13T09:54:47.609950+00:00",
+      "first_read_turn": 1,
+      "edited_count": 1
     },
     "resources/js/Pages/Dashboard.tsx::ResumeCard": {
       "query_terms": [],
@@ -8237,7 +8367,9 @@
       "cached_tokens_est": 493,
       "last_action": "read",
       "last_ts": 1786551637,
-      "first_read_turn": 3
+      "first_read_turn": 3,
+      "last_edited": 1786615924.091506,
+      "edit_count": 2
     },
     "config/inertia.php": {
       "query_terms": [],
@@ -8405,967 +8537,60 @@
       "last_action": "edited",
       "last_ts": "2026-08-12T16:59:26.216210+00:00",
       "edited_count": 1
+    },
+    ".claude/launch.json": {
+      "last_edited": 1786613466.28813,
+      "edit_count": 1
+    },
+    "app/Http/Controllers/SearchController.php": {
+      "last_edited": 1786614340.476907,
+      "edit_count": 1
+    },
+    "resources/js/Pages/Jobs/Imports.tsx::ResumeOption": {
+      "query_terms": [],
+      "cached_content": "type ResumeOption = { id: number; title: string };\n\ntype ImportedJob = {\n    id: number;\n    source: Source;\n    title: string;\n    company: string | null;\n    location: string | null;\n    url: string | null;\n    salary: string | null;\n    description: string | null;\n    posted_at: string | null;\n  ",
+      "cached_chars": 317,
+      "cached_tokens_est": 79,
+      "last_action": "read",
+      "last_ts": 1786614512,
+      "first_read_turn": 1
+    },
+    "resources/js/types/index.d.ts::JobApplication": {
+      "query_terms": [],
+      "cached_content": "export interface JobApplication {\n    id: number;\n    company: string;\n    role: string;\n    status: JobStatus;\n    resume_id: number | null;\n    job_url: string | null;\n    notes: string | null;\n    applied_at: string | null;\n    follow_up_at: string | null;\n    created_at: string | null;\n}",
+      "cached_chars": 292,
+      "cached_tokens_est": 73,
+      "last_action": "read",
+      "last_ts": 1786614725,
+      "first_read_turn": 2
+    },
+    "docs/plans/auto-apply-research.md": {
+      "last_action": "edited",
+      "last_ts": "2026-08-13T09:54:47.609922+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Pages/ResumeBuilder/Edit.tsx": {
+      "last_edited": 1786614975.619311,
+      "edit_count": 3
+    },
+    "app/Exceptions/ModerationException.php": {
+      "last_edited": 1786615599.018396,
+      "edit_count": 1
+    },
+    "database/migrations/2026_06_13_190000_add_ai_admin_columns.php": {
+      "last_edited": 1786615697.8152032,
+      "edit_count": 1
+    },
+    "app/Http/Controllers/JobSearchController.php": {
+      "last_edited": 1786615838.816896,
+      "edit_count": 1
+    },
+    "app/Http/Middleware/EnsureAiEnabled.php": {
+      "last_edited": 1786615914.409156,
+      "edit_count": 1
     }
   },
   "actions": [
-    {
-      "type": "edit_auto",
-      "ts": 1786457265.820085,
-      "files": [
-        "tailwind.config.js"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786457295,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786459128,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "Shell component usage rounded-shell rounded-core shadow-shell tailwind config"
-      }
-    },
-    {
-      "ts": 1786459128,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "Shell component usage rounded-shell rounded-core shadow-shell tailwind config"
-      }
-    },
-    {
-      "ts": 1786459134,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "rounded-shell|rounded-core|shadow-shell",
-        "hit_count": 5,
-        "hit_files": [
-          "./resources/js/Layouts/AuthenticatedLayout.tsx",
-          "./resources/js/Pages/Welcome.tsx",
-          "./resources/js/Components/workstation/section-panel.tsx-234-                                        ",
-          "./resources/js/Layouts/AuthenticatedLayout.tsx-141-                                            ",
-          "./resources/js/Components/workstation/section-panel.tsx"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "ts": 1786459136,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "Components/ui/shell",
-        "hit_count": 5,
-        "hit_files": [
-          "./resources/js/Pages/Welcome.tsx",
-          "./resources/js/Pages/Jobs/Kanban.tsx",
-          "./resources/js/Pages/Resumes/PublicShare.tsx",
-          "./resources/js/Pages/Dashboard.tsx",
-          "./resources/js/Layouts/GuestLayout.tsx"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "ts": 1786459141,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "tailwind.config.js",
-        "query": "",
-        "mode": "full",
-        "response_chars": 4728
-      }
-    },
-    {
-      "ts": 1786459164,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "innerClassName=",
-        "hit_count": 18,
-        "hit_files": [
-          "./resources/js/Pages/Dashboard.tsx-493-function EmptyResumes({ onCreate }",
-          "./resources/js/Pages/Welcome.tsx-173-                            <div className=\"lg",
-          "./resources/js/Pages/Welcome.tsx",
-          "./resources/js/Pages/Dashboard.tsx"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "ts": 1786459276,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "border-surface-border/80|dark:bg-gray-800/90",
-        "hit_count": 25,
-        "hit_files": [
-          "./resources/js/Pages/Legal/Privacy.tsx",
-          "./resources/js/Pages/Welcome.tsx",
-          "./resources/js/Pages/Legal/Terms.tsx"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459464.696086,
-      "files": [
-        "resources/js/Components/ui/shell.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459477.7895072,
-      "files": [
-        "resources/js/Pages/Jobs/Kanban.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786459490,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "shadow-shell|'shell':|ambient",
-        "hit_count": 15,
-        "hit_files": [
-          "./public/dictionaries/en_US.dic",
-          "./resources/js/Pages/Welcome.tsx",
-          "./resources/js/Pages/Welcome.tsx-59-        'focus-visible",
-          "./tailwind.config.js",
-          "./resources/js/Pages/Welcome.tsx-173-                            <div className=\"lg",
-          "./resources/js/Pages/Welcome.tsx-58-        'hover"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459497.598204,
-      "files": [
-        "resources/js/Pages/Jobs/Kanban.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459504.494563,
-      "files": [
-        "resources/js/Pages/Welcome.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786459531,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "shadow-ambient",
-        "hit_count": 21,
-        "hit_files": [
-          "./resources/js/Layouts/AuthenticatedLayout.tsx",
-          "./resources/js/Pages/Welcome.tsx",
-          "./resources/js/Pages/Jobs/Kanban.tsx",
-          "./resources/js/Pages/Welcome.tsx-59-        'focus-visible",
-          "./resources/js/Pages/Welcome.tsx-58-        'hover",
-          "./resources/js/Pages/Jobs/Kanban.tsx-74-                'active"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459544.662264,
-      "files": [
-        "resources/js/Pages/Resumes/PublicShare.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786459555,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786459711,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "jobs\\.kanban|Applications|kanban",
-        "hit_count": 20,
-        "hit_files": [
-          "./app/Data/AtsKeywords.php",
-          "./resources/js/Pages/Jobs/Kanban.tsx",
-          "./app/Http/Controllers/JobApplicationController.php",
-          "./resources/js/Pages/Jobs/Kanban.tsx-255-            <div className=\"mx-auto max-w-7xl px-4 py-6 sm",
-          "./tests/Feature/JobApplicationsTest.php",
-          "./docs/superpowers/specs/2026-06-07-batch-5-personalization-conversion-design.md"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459721.1795042,
-      "files": [
-        "resources/js/Layouts/AuthenticatedLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459722.224837,
-      "files": [
-        "resources/js/Layouts/AuthenticatedLayout.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786459728,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786459852,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "share-resume-modal|ShareResumeModal",
-        "hit_count": 7,
-        "hit_files": [
-          "./resources/js/Pages/Dashboard.tsx",
-          "./resources/js/Components/workstation/share-resume-modal.tsx",
-          "./app/Http/Controllers/DashboardController.php",
-          "./ds-entry.tsx",
-          "./resources/js/Components/workstation/workstation-header.tsx"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459927.677269,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786459934.8135219,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786459942,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460022.2756941,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460023.793036,
-      "files": [
-        "resources/js/Components/workstation/share-resume-modal.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786460033,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786460094,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "ResumeCard key|<ResumeCard|key=\\{",
-        "hit_count": 14,
-        "hit_files": [
-          "resources/js/Components/resume/score-coach.tsx",
-          "resources/js/Components/resume/suggestion-list.tsx",
-          "resources/js/Components/resume/resume-preview.tsx"
-        ],
-        "searched_dirs": [
-          "ds-bundle/components/resume/ScoreDial",
-          "ds-bundle/components/resume/ScoreGauge",
-          "resources/js/Components/resume"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460147.041014,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460151.859265,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460153.976035,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460155.407541,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460157.778878,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460170.263257,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460172.408581,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460174.774642,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460197.0381482,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460199.1561549,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460201.25283,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460202.453847,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786460208.342498,
-      "files": [
-        "resources/js/Pages/Dashboard.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786460224,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786464993,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "production readiness audit: security, env config, deploy, error handling"
-      }
-    },
-    {
-      "ts": 1786464993,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "production readiness audit: security, env config, deploy, error handling"
-      }
-    },
-    {
-      "ts": 1786465023,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "production readiness audit: route auth middleware, policies, mass assignment, env config, exception handling, deploy workflow, migrations"
-      }
-    },
-    {
-      "ts": 1786465023,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "production readiness audit: route auth middleware, policies, mass assignment, env config, exception handling, deploy workflow, migrations"
-      }
-    },
-    {
-      "ts": 1786465027,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "frontend production readiness console.log TODO vite config resources/js"
-      }
-    },
-    {
-      "ts": 1786465027,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "frontend production readiness console.log TODO vite config resources/js"
-      }
-    },
-    {
-      "ts": 1786465041,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "routes/web.php",
-        "query": "",
-        "mode": "head",
-        "response_chars": 6000
-      }
-    },
-    {
-      "ts": 1786465042,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "routes/api.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1405
-      }
-    },
-    {
-      "ts": 1786465047,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "console\\.(log|debug|info|trace)|debugger;",
-        "hit_count": 3,
-        "hit_files": [
-          "./resources/js/app.tsx",
-          "./resources/js/app.tsx-16-    const report = (metric",
-          "./CLAUDE.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465050,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "TODO|FIXME|HACK|XXX:",
-        "hit_count": 5,
-        "hit_files": [
-          "./TODO_code-reviewer.md",
-          "./docs/superpowers/plans/2026-06-14-launch-readiness-and-enhancements.md",
-          "./docs/superpowers/plans/2026-07-01-annual-billing.md",
-          "./WORKLOG.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465052,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "routes/web.php",
-        "query": "",
-        "mode": "anchor_excerpt",
-        "response_chars": 6000
-      }
-    },
-    {
-      "ts": 1786465054,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "package.json",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1342
-      }
-    },
-    {
-      "ts": 1786465055,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "vite.config.js",
-        "query": "",
-        "mode": "full",
-        "response_chars": 519
-      }
-    },
-    {
-      "ts": 1786465058,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "localhost|127\\.0\\.0\\.1|resumegen\\.test",
-        "hit_count": 60,
-        "hit_files": [
-          "./.env.example",
-          "./NOTES.md",
-          "./playwright.config.ts"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465059,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "Lorem ipsum|Coming soon|coming soon|Placeholder page|Not implemented|placeholder text",
-        "hit_count": 1,
-        "hit_files": [
-          "./docs/superpowers/specs/2026-07-05-resignation-letter-generator-design.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465062,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "authorize\\(|Gate::|->can\\(|cannot\\(|abort_unless|abort_if",
-        "hit_count": 49,
-        "hit_files": [
-          "app/Http/Controllers/MobileTokenController.php",
-          "app/Http/Controllers/Api/ExtensionController.php",
-          "app/Http/Controllers/PublicResumeShareController.php",
-          "app/Http/Controllers/ResumeGroupController.php",
-          "app/Http/Controllers/ResumeNoteController.php",
-          "app/Http/Controllers/ResumeShareLinkController.php",
-          "app/Http/Controllers/ResumeController.php",
-          "app/Http/Controllers/Admin/BackupController.php",
-          "app/Http/Controllers/JobImportsController.php",
-          "app/Http/Controllers/ResumeAiController.php",
-          "app/Http/Controllers/JobApplicationController.php",
-          "app/Http/Controllers/Api/ResumeController.php",
-          "app/Http/Controllers/ResumeCompareController.php",
-          "app/Http/Controllers/ResumeSnapshotController.php",
-          "app/Http/Controllers/ExtensionTokenController.php"
-        ]
-      }
-    },
-    {
-      "ts": 1786465064,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "\\$guarded|\\$fillable",
-        "hit_count": 17,
-        "hit_files": [
-          "app/Models/UserActivityDay.php",
-          "app/Models/JobTitle.php",
-          "app/Models/Education.php",
-          "app/Models/Certificate.php",
-          "app/Models/ResumeShareLink.php",
-          "app/Models/LibrarySkill.php",
-          "app/Models/Project.php",
-          "app/Models/Skill.php",
-          "app/Models/ResumeGroup.php",
-          "app/Models/JobSkill.php",
-          "app/Models/Experience.php",
-          "app/Models/Resume.php",
-          "app/Models/AdminActionLog.php",
-          "app/Models/ResumeNote.php",
-          "app/Models/ResumeSnapshot.php"
-        ]
-      }
-    },
-    {
-      "ts": 1786465065,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "tsconfig.json",
-        "query": "",
-        "mode": "full",
-        "response_chars": 592
-      }
-    },
-    {
-      "ts": 1786465067,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "console\\.(warn|error)",
-        "hit_count": 5,
-        "hit_files": [
-          "./resources/js/Components/error-boundary.tsx",
-          "./extension/content/fill.js",
-          "./extension/background/service-worker.js-8-        sendResponse({ ok",
-          "./extension/background/service-worker.js",
-          "./resources/js/Components/error-boundary.tsx-18-    componentDidCatch(error"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465070,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "(@ts-ignore|@ts-expect-error|eslint-disable|any as unknown)",
-        "hit_count": 12,
-        "hit_files": [
-          "./docs/superpowers/plans/2026-06-02-ui-redesign.md",
-          "./docs/superpowers/plans/2026-05-28-ux-onboarding.md",
-          "./resources/js/types/global.d.ts",
-          "./docs/superpowers/plans/2026-06-06-pre-launch-feature-moat.md",
-          "./docs/superpowers/plans/2026-07-07-mobile-app-phase1.md",
-          "./docs/superpowers/plans/2026-07-17-builder-preview-left-skills-panel.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465075,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": ".env.example",
-        "query": "",
-        "mode": "full",
-        "response_chars": 3079
-      }
-    },
-    {
-      "ts": 1786465076,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "bootstrap/app.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1973
-      }
-    },
-    {
-      "ts": 1786465076,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "dev/job-fixtures|'dev'|Route::.*dev",
-        "hit_count": 4,
-        "hit_files": [
-          "./extension/README.md",
-          "./routes/web.php"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465078,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "import\\.meta\\.env\\.(DEV|PROD|MODE)",
-        "hit_count": 2,
-        "hit_files": [
-          "./resources/js/app.tsx",
-          "./resources/js/app.tsx-16-    const report = (metric"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465079,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "runs-on:|deploy|ssh",
-        "hit_count": 30,
-        "hit_files": [
-          "./deploy.sh",
-          "./AGENTS.md",
-          "./CLAUDE.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465088,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "config/inertia.php",
-        "query": "",
-        "mode": "head",
-        "response_chars": 6000
-      }
-    },
-    {
-      "ts": 1786465090,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "npm (ci|install|run build)",
-        "hit_count": 30,
-        "hit_files": [
-          "./composer.json",
-          "./deploy.sh",
-          "./AGENTS.md",
-          "./CONTEXT.md",
-          "./README.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465090,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": ".github/workflows/ci.yml",
-        "query": "",
-        "mode": "full",
-        "response_chars": 2497
-      }
-    },
-    {
-      "ts": 1786465093,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "DB::statement|DB::raw|whereRaw|ILIKE|jsonb|sqlite_|IF NOT EXISTS",
-        "hit_count": 30,
-        "hit_files": [
-          "./database/migrations/2026_06_22_154436_drop_job_application_id_from_resumes_table.php",
-          "./database/migrations/2026_08_04_232937_convert_json_columns_to_jsonb.php-50-                'alter table %s alter column %s type json using %s",
-          "./database/migrations/2026_08_05_224818_create_imported_jobs_table.php",
-          "./database/migrations/2026_08_06_205740_create_scraped_jobs_table.php",
-          "./database/migrations/2026_08_04_144450_create_admin_action_logs_table.php",
-          "./database/migrations/2026_08_04_232937_convert_json_columns_to_jsonb.php"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465095,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "sk-[A-Za-z0-9_-]{16,}|re_[A-Za-z0-9]{16,}|AKIA[0-9A-Z]{16}|Bearer [A-Za-z0-9_\\-\\.]{20,}",
-        "hit_count": 2,
-        "hit_files": [
-          "./ad_local_b6a5501b37ab808f52d3e9580a36179.md-4-curl -s http",
-          "./ad_local_b6a5501b37ab808f52d3e9580a36179.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465102,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "INERTIA_SSR|ssr\\.tsx|bootstrap/ssr",
-        "hit_count": 8,
-        "hit_files": [
-          "./config/inertia.php"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465106,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "resources/js/Pages/.*\\.tsx",
-        "hit_count": 5,
-        "hit_files": [
-          "./tests/Feature/Auth/AuthRouteNamesTest.php",
-          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md",
-          "./WORKLOG.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465113,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/app.tsx",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1501
-      }
-    },
-    {
-      "ts": 1786465117,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "docs/DEPLOYMENT.md",
-        "query": "",
-        "mode": "head",
-        "response_chars": 6000
-      }
-    },
     {
       "ts": 1786465138,
       "kind": "fallback_rg",
@@ -10721,18 +9946,998 @@
       "payload": {
         "kind": "register_edit"
       }
+    },
+    {
+      "ts": 1786613309,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "files referencing AiService AiRequest AiUsageReport in PricingGrowthReport JobPairingService BalanceTransaction"
+      }
+    },
+    {
+      "ts": 1786613310,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "files referencing AiService AiRequest AiUsageReport in PricingGrowthReport JobPairingService BalanceTransaction"
+      }
+    },
+    {
+      "ts": 1786613315,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "AiService|AiRequest|AiUsageReport",
+        "hit_count": 60,
+        "hit_files": [
+          "./CLAUDE.md",
+          "./docs/superpowers/specs/2026-07-05-resignation-letter-generator-design.md-78-  6. Catch `ModerationException` \u2192 422 with `ModerationException",
+          "./docs/superpowers/specs/2026-06-14-freemium-conversion-tuning-design.md-51-- `UserLimits",
+          "./docs/superpowers/specs/2026-07-05-resignation-letter-generator-design.md",
+          "./docs/superpowers/specs/2026-06-14-freemium-conversion-tuning-design.md",
+          "./docs/superpowers/specs/2026-07-01-job-match-scorer-design.md"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786613427,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "dev server scripts package.json composer.json vite laravel serve"
+      }
+    },
+    {
+      "ts": 1786613427,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "dev server scripts package.json composer.json vite laravel serve"
+      }
+    },
+    {
+      "ts": 1786613441,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "\"scripts\"",
+        "hit_count": 3,
+        "hit_files": [
+          "./composer.json",
+          "./package.json",
+          "./docs/superpowers/plans/2026-07-07-mobile-app-phase1.md"
+        ],
+        "searched_dirs": [
+          "resources/js/hooks",
+          "resources/js/Layouts",
+          "resources/js/Pages/Jobs"
+        ]
+      }
+    },
+    {
+      "ts": 1786613460,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "server: {|port:|https",
+        "hit_count": 1,
+        "hit_files": [
+          "resources/js/Pages/Jobs/Kanban.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/hooks",
+          "resources/js/Layouts",
+          "resources/js/Pages/Jobs"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786613466.288129,
+      "files": [
+        ".claude/launch.json"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786613510,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "breeze",
+        "hit_count": 20,
+        "hit_files": [
+          "./CLAUDE.md",
+          "./docs/superpowers/specs/2026-08-02-foundation-swap-fortify-inertia-v3-design.md-35-- `composer.json`",
+          "./docs/superpowers/specs/2026-08-02-foundation-swap-fortify-inertia-v3-design.md",
+          "./config/fortify.php",
+          "./routes/auth.php",
+          "./CLAUDE.md-76-- **PDF",
+          "./public/dictionaries/en_US.dic",
+          "./composer.json",
+          "./routes/auth.php-7-Route"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786613528,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "ResumeBuilder/Edit|ResumeBuilder\\\\Edit",
+        "hit_count": 20,
+        "hit_files": [
+          "./CLAUDE.md",
+          "./docs/superpowers/specs/2026-07-19-builder-preview-left-palette-design.md",
+          "./docs/superpowers/specs/2026-05-28-quick-wins-design.md",
+          "./docs/superpowers/specs/2026-06-07-batch-7-growth-power-design.md",
+          "./WORKLOG.md",
+          "./docs/superpowers/specs/2026-06-14-freemium-conversion-tuning-design.md",
+          "./docs/superpowers/specs/2026-06-14-freemium-conversion-tuning-design.md-31-  - Add `UserLimits",
+          "./docs/superpowers/specs/2026-07-14-app-layout-four-and-command-palette-design.md",
+          "./docs/superpowers/specs/2026-06-14-freemium-conversion-tuning-design.md-32-  - In `atsKeywords()`, before calling `run()`"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786613611,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "ROLE KEYWORDS sidebar section \"Set a target role that includes a family we score\""
+      }
+    },
+    {
+      "ts": 1786613611,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "ROLE KEYWORDS sidebar section \"Set a target role that includes a family we score\""
+      }
+    },
+    {
+      "ts": 1786613627,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "ROLE KEYWORDS|Set a target role that includes a family",
+        "hit_count": 1,
+        "hit_files": [
+          "./resources/js/Components/resume/score-coach.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Components/workstation",
+          "resources/js/Pages/Auth",
+          "resources/js/Pages",
+          "resources/js/lib"
+        ]
+      }
+    },
+    {
+      "ts": 1786613629,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Components/resume/score-coach.tsx",
+        "query": "",
+        "mode": "anchor_excerpt",
+        "response_chars": 3000
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786613690.4380312,
+      "files": [
+        "resources/js/Components/resume/score-coach.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786613843,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "laravel-vite-plugin|defineConfig",
+        "hit_count": 10,
+        "hit_files": [
+          "./package-lock.json",
+          "./package.json",
+          "./resources/js/app.tsx",
+          "./playwright.config.ts",
+          "./vite.config.js"
+        ],
+        "searched_dirs": [
+          "resources/js/Components/workstation",
+          "resources/js/Pages/Auth",
+          "resources/js/Pages",
+          "resources/js/lib"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614193.893455,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786614259,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "class.*Impersonat",
+        "hit_count": 2,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-06-09-admin-enhancement.md"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614294.17375,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786614307,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "class SearchController",
+        "hit_count": 1,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-07-14-app-layout-four-and-command-palette.md"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614340.476907,
+      "files": [
+        "app/Http/Controllers/SearchController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786614385,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "class (CareerHubController|CoverLetterController|HeatmapController|MessagesController|OgImageController|PublicThreadController|ResumeTagController|ResumeThreadController|SalaryController|SectionEventController|StrengthScoreController)",
+        "hit_count": 12,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-05-28-productivity.md",
+          "./docs/superpowers/plans/2026-06-07-batch-11-master-resume-heatmaps-referral.md",
+          "./docs/superpowers/plans/2026-06-07-batch-3-editor-intelligence.md",
+          "./docs/superpowers/plans/2026-06-07-batch-1-productivity-engagement.md",
+          "./docs/superpowers/plans/2026-06-07-batch-4-growth-conversion.md",
+          "./docs/superpowers/plans/2026-06-07-batch-2-job-search-intelligence.md",
+          "./docs/superpowers/plans/2026-06-09-resume-conversation-threads.md",
+          "./docs/superpowers/plans/2026-06-07-batch-8-onboarding-career-hub.md"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786614495,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "auto submit resume to job sites apply extension Easy Apply autofill"
+      }
+    },
+    {
+      "ts": 1786614495,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "auto submit resume to job sites apply extension Easy Apply autofill"
+      }
+    },
+    {
+      "ts": 1786614512,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Pages/Jobs/Imports.tsx::ResumeOption",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 317
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614535.745944,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614540.4325,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614544.937462,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614550.114784,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614554.9011788,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614557.683726,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614561.637982,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614571.549545,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786614714,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "job application applied confirmation tracker extension submit success receipt"
+      }
+    },
+    {
+      "ts": 1786614714,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "job application applied confirmation tracker extension submit success receipt"
+      }
+    },
+    {
+      "ts": 1786614725,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/types/index.d.ts::JobApplication",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 292
+      }
+    },
+    {
+      "ts": 1786614725,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Pages/Jobs/Kanban.tsx::JobApplicationKanban",
+        "query": "applied status confirmation",
+        "mode": "query_excerpt",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1786614763,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "export (interface|type) (Contact|Experience|Education|Cert|Project)",
+        "hit_count": 10,
+        "hit_files": [
+          "./resources/js/hooks/use-valid-contact.ts",
+          "./docs/superpowers/plans/2026-07-07-mobile-app-phase2-editing.md",
+          "./docs/superpowers/plans/2026-05-26-resumegen-full-enhancement.md"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786614797,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "export (interface|type) (Contact|ExperienceEntry|EducationEntry|CertEntry|ProjectEntry)\\b",
+        "hit_count": 9,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-07-07-mobile-app-phase2-editing.md",
+          "./docs/superpowers/plans/2026-05-26-resumegen-full-enhancement.md"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614815.6735082,
+      "files": [
+        "resources/js/types/index.d.ts"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786614822,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "where to save plans docs markdown checkpoint auto apply"
+      }
+    },
+    {
+      "ts": 1786614822,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "where to save plans docs markdown checkpoint auto apply"
+      }
+    },
+    {
+      "ts": 1786614887,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1786614892,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "targetCompany|targetTitle",
+        "hit_count": 2,
+        "hit_files": [
+          "./resources/js/Pages/ResumeBuilder/Edit.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786614899,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "targetJobDescription.*useState|useState.*target_job_description",
+        "hit_count": 1,
+        "hit_files": [
+          "./resources/js/Pages/ResumeBuilder/Edit.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614905.439709,
+      "files": [
+        "resources/js/Pages/ResumeBuilder/Edit.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614927.567832,
+      "files": [
+        "resources/js/Pages/ResumeBuilder/Edit.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786614947,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "workspace\\.map|nav\\.map|\\{nav\\}|\\{workspace\\}",
+        "hit_count": 7,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-06-09-admin-enhancement.md-82-                <div className=\"mx-auto max-w-7xl px-4 sm",
+          "./resources/js/Layouts/AuthenticatedLayout.tsx",
+          "./docs/superpowers/plans/2026-06-09-admin-enhancement.md",
+          "./resources/js/Layouts/AuthenticatedLayout.tsx-243-                        <nav className=\"flex flex-col gap-0.5 border-t border-surface-border/80 px-2 py-2 dark",
+          "./resources/js/Layouts/AdminLayout.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614953.0161679,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614975.6193101,
+      "files": [
+        "resources/js/Pages/ResumeBuilder/Edit.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786614989.1492841,
+      "files": [
+        "resources/js/Layouts/AuthenticatedLayout.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786615009,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "create_ai_requests_table|Schema::create\\('ai_requests'",
+        "hit_count": 5,
+        "hit_files": [
+          "./docs/superpowers/plans/2026-06-12-ai-foundation.md"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786615045,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "function balanceTransactions",
+        "hit_count": 6,
+        "hit_files": [
+          "./app/Models/User.php",
+          "./app/Models/User.php-108-        return $this->hasMany(BalanceTransaction",
+          "./app/Models/JobPairing.php-73-        return $this->hasMany(BalanceTransaction",
+          "./app/Models/User.php-135-        return $this->hasMany(BalanceTransaction",
+          "./app/Models/JobPairing.php"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615053.147069,
+      "files": [
+        "app/Models/User.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615065.494893,
+      "files": [
+        "app/Models/User.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786615096,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "function shareLink|function sectionOrder",
+        "hit_count": 10,
+        "hit_files": [
+          "./app/Models/Resume.php",
+          "./app/Models/Resume.php-161-        return $this->hasOne(ResumeShareLink",
+          "./docs/superpowers/plans/2026-05-26-resumegen-full-enhancement.md",
+          "./app/Models/ResumeShareLinkView.php-28-        return $this->belongsTo(ResumeShareLink",
+          "./docs/superpowers/plans/2026-06-07-batch-4-growth-conversion.md",
+          "./app/Models/ResumeShareLinkView.php",
+          "./docs/superpowers/plans/2026-05-26-resumegen-full-enhancement.md-271-        return $this->belongsTo(ResumeShareLink",
+          "./docs/superpowers/plans/2026-06-07-batch-4-growth-conversion.md-1512-    return $this->hasMany(ResumeShareLink",
+          "./docs/superpowers/plans/2026-05-26-resumegen-full-enhancement.md-203-        return $this->hasMany(ResumeShareLink"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615101.024283,
+      "files": [
+        "app/Models/Resume.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786615106,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "sectionOrder",
+        "hit_count": 20,
+        "hit_files": [
+          "./resources/js/Pages/ResumeBuilder/Partials/PlainTextView.tsx-15-    skillNarratives",
+          "./resources/js/Pages/ResumeBuilder/Partials/PlainTextView.tsx-14-    skillGroups",
+          "./tests/Feature/AuthoringPowerTest.php-53-        $resume = Resume",
+          "./tests/Feature/AuthoringPowerTest.php"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786615116,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "section_order",
+        "hit_count": 2,
+        "hit_files": [
+          "resources/js/types/index.d.ts",
+          "resources/js/types/resume.ts"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615136.4186518,
+      "files": [
+        "app/Models/Resume.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786615336,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "route\\('share.show'|share.show",
+        "hit_count": 1,
+        "hit_files": [
+          "resources/js/types/resume.ts"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786615342,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "route\\(",
+        "hit_count": 10,
+        "hit_files": [
+          "resources/js/Pages/Auth/ForgotPassword.tsx",
+          "resources/js/Pages/Admin/Users/Show.tsx",
+          "resources/js/Pages/Admin/Backups/Index.tsx",
+          "resources/js/Pages/Admin/Users/Index.tsx",
+          "resources/js/Pages/Auth/VerifyEmail.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615400.262599,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615405.509873,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615452.165483,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615599.018394,
+      "files": [
+        "app/Exceptions/ModerationException.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615697.8152,
+      "files": [
+        "database/migrations/2026_06_13_190000_add_ai_admin_columns.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786615737,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "OPENAI",
+        "hit_count": 15,
+        "hit_files": [
+          "./CLAUDE.md",
+          "./.env.example",
+          "./README.md",
+          "./CLAUDE.md-152-**AI cost is recorded in micro-cents (1 cent = 1,000,000)** on `ai_requests.estimated_cost_micro_cents`. It used to be `estimated_cost_cents`, and `AiService",
+          "./CLAUDE.md-164-**Prompts"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615760.300075,
+      "files": [
+        "phpunit.xml"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786615817,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "function index\\(",
+        "hit_count": 2,
+        "hit_files": [
+          "resources/js/Pages/Admin/Backups/Index.tsx",
+          "resources/js/Pages/Admin/Users/Index.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786615831,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "Resume::where.*get\\(\\['id', 'name'\\]\\)|resume\\.name|\\$resume->name",
+        "hit_count": 20,
+        "hit_files": [
+          "./docs/superpowers/specs/2026-07-05-resume-translator-design.md-72-10. Return `{ resume_id",
+          "./resources/views/mail/new-question.blade.php",
+          "./resources/views/mail/new-question.blade.php-1-<x-mail",
+          "./docs/superpowers/specs/2026-06-07-batch-6-engagement-insights-design.md",
+          "./resources/views/resume-pdf.blade.php-150-    <p style=\"font-size",
+          "./resources/views/resume-pdf.blade.php",
+          "./docs/superpowers/specs/2026-07-05-resume-translator-design.md"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615838.816895,
+      "files": [
+        "app/Http/Controllers/JobSearchController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786615897,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "ai_enabled|EnsureAiEnabled",
+        "hit_count": 8,
+        "hit_files": [
+          "./CLAUDE.md",
+          "./routes/web.php-171-        Route",
+          "./WORKLOG.md",
+          "./routes/web.php-170-        Route",
+          "./routes/web.php-167-    Route",
+          "./routes/web.php",
+          "./CLAUDE.md-164-**Prompts"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615914.4091551,
+      "files": [
+        "app/Http/Middleware/EnsureAiEnabled.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615920.472378,
+      "files": [
+        "bootstrap/app.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786615924.0915048,
+      "files": [
+        "bootstrap/app.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786615952,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "function rank\\(",
+        "hit_count": 1,
+        "hit_files": [
+          "./app/Http/Controllers/JobSearchController.php"
+        ],
+        "searched_dirs": [
+          "resources/js/types",
+          "resources/js/Pages/Admin/Backups",
+          "resources/js/Pages/Admin/Users",
+          "resources/js/Pages/Auth"
+        ]
+      }
+    },
+    {
+      "ts": 1786615980,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "ResumePolicy authorization update ability resume ownership"
+      }
+    },
+    {
+      "ts": 1786615980,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "ResumePolicy authorization update ability resume ownership"
+      }
     }
   ],
   "decisions": [
-    {
-      "ts": 1786454760,
-      "summary": "Add matchJob quota tests, document AI_QUOTA_JOB_MATCH env var",
-      "files": [
-        "tests/Feature/ResumeAiControllerTest.php",
-        ".env.example"
-      ],
-      "scope": "global"
-    },
     {
       "ts": 1786457119,
       "summary": "Reduced Shell component corner radius (20px\u219214px) and outer frame padding (6px\u21924px) to fix overly curved/thick borders on Dashboard resume list cards",
@@ -10896,6 +11101,15 @@
         "securityscan.md"
       ],
       "scope": "file"
+    },
+    {
+      "ts": 1786614887,
+      "summary": "Park auto-apply research for later; point PLAN at the handoff doc.",
+      "files": [
+        "docs/plans/auto-apply-research.md",
+        "PLAN.md"
+      ],
+      "scope": "global"
     }
   ],
   "decisions_archive": "Added mobile Sanctum token issuance + full resume CRUD API for iPhone app; Initialize collapsedSections from draft.section_order so all sections start minimized; Added formatUrl() to prepend https:// to LinkedIn/Website on blur; Removed Job Imports and Applications nav links (routes/pages left intac"

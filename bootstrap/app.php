@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureAiEnabled;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserNotDisabled;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -46,6 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'two_factor_challenge' => RequiresTwoFactorChallenge::class,
             'admin' => EnsureUserIsAdmin::class,
             'user.not_disabled' => EnsureUserNotDisabled::class,
+            'ai_enabled' => EnsureAiEnabled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

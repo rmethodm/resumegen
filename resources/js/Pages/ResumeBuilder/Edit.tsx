@@ -4,6 +4,7 @@ import { type ResumeContent } from './Partials/PlainTextView';
 import JdMatcher from './Partials/JdMatcher';
 import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
+import SharePopover from './Partials/SharePopover';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     SwatchIcon,
@@ -211,7 +212,7 @@ function SkillTagInput({
     const [loading, setLoading] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
     const containerRef = useRef<HTMLDivElement>(null);
-    const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const listId = useRef(`skills-list-${Math.round(performance.now())}`).current;
 
     const addSkill = (raw: string) => {
@@ -432,6 +433,8 @@ export default function Edit({
     const [contact, setContact] = useState<Contact>(resume.contact ?? emptyContact());
     const [summary, setSummary] = useState(resume.summary ?? '');
     const [targetJobDescription, setTargetJobDescription] = useState(resume.target_job_description ?? '');
+    const [targetCompany, setTargetCompany] = useState(resume.target_company ?? '');
+    const [targetTitle, setTargetTitle] = useState(resume.target_title ?? '');
     const [experience, setExperience] = useState<ExperienceEntry[]>(resume.experience ?? []);
     const { aiEnabled } = usePage().props;
     const ai = useAiSuggestion(aiRemaining);
@@ -495,7 +498,7 @@ export default function Edit({
     const [activePdfFrame, setActivePdfFrame] = useState(0);
     const activePdfFrameRef = useRef(activePdfFrame); activePdfFrameRef.current = activePdfFrame;
     // Fallback timer: swap even if the iframe's onLoad never fires (PDF plugins can be flaky).
-    const pdfSwapTimer = useRef<ReturnType<typeof setTimeout>>();
+    const pdfSwapTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     // The preview column is hidden below `lg` (display:none), but its iframes stay
     // mounted — so without this guard, every save would trigger a server-side PDF
     // render the user can't see. previewStaleRef records a skipped refresh so that
@@ -1201,36 +1204,13 @@ export default function Edit({
                         </SectionDrawer>
                     )}
 
-                    {/* ── Right panel (Sections / Preview / Design / Optimize / Share) ── */}
+                    {/* ── Right palette: fixed 300px on large screens, full-width
+                         below `lg` since the preview is hidden there. ── */}
                     <aside
-                        className={`sticky top-0 max-h-screen self-start overflow-y-auto border-l border-[#cbd5e1] bg-white ${sidebarOpen ? 'w-full' : 'w-14 transition-all duration-200'}`}
-                        style={{ minHeight: 'calc(100vh - 3.5rem)', ...(sidebarOpen ? { width: panelWidth, maxWidth: '100%', flex: '0 0 auto' } : {}) }}
+                        className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-[#cbd5e1] bg-white lg:w-[300px]"
+                        style={{ minHeight: 'calc(100vh - 3.5rem)' }}
                     >
-                        <div className="flex items-center justify-between border-b border-[#eeeef5] px-4 py-3">
-                            {sidebarOpen && <span className="text-xs font-bold text-[#0f172a]">Panel</span>}
-                            <button type="button" onClick={() => setSidebarOpen(v => !v)} className="ml-auto rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]" title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}>
-                                {sidebarOpen ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
-                            </button>
-                        </div>
-                        {sidebarOpen && (
                         <div className="flex flex-col">
-                            {/* Tabs */}
-                            <div className="flex border-b border-[#eeeef5]">
-                                {RIGHT_TABS.map(t => {
-                                    const active = rightTab === t.key;
-                                    return (
-                                        <button
-                                            key={t.key}
-                                            type="button"
-                                            onClick={() => setRightTab(t.key)}
-                                            className={`flex-1 border-b-2 py-3 text-center text-xs font-bold transition-colors ${active ? 'border-[#4f46e5] text-[#4f46e5]' : 'border-transparent text-[#94a3b8] hover:text-[#475569]'}`}
-                                        >
-                                            {t.label}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
                             {/* Export */}
                             <div className="flex gap-2 border-b border-[#eeeef5] p-3">
                                 <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
@@ -1241,19 +1221,34 @@ export default function Edit({
                                 </a>
                             </div>
 
-                            {/* Tab content */}
-                            <div className="p-4">
+                            <div className="space-y-4 p-3">
                                 {recruiterNote && (
-                                    <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
                                         <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">Recruiter note</p>
                                         <p className="text-sm leading-relaxed text-amber-900">{recruiterNote}</p>
                                     </div>
                                 )}
 
-                                {rightTab === 'sections' && renderForm()}
+                                {/* Resume Name — always visible; doesn't belong to any one
+                                    section, so it doesn't get a drawer of its own. */}
+                                <div className="space-y-1.5 rounded-[10px] border border-[#eeeef5] bg-white p-3">
+                                    <FLabel>Resume Name</FLabel>
+                                    <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
+                                    <p className="text-[11px] text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
+                                </div>
 
-                                {rightTab === 'design' && (
-                                    <div className="flex flex-col">
+                                <div>
+                                    <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Sections</p>
+                                    <SectionPalette
+                                        entries={paletteEntries}
+                                        activeKey={drawerSection}
+                                        onSelect={(key, trigger) => { drawerTriggerRef.current = trigger; setDrawerSection(key); highlightSection(key); }}
+                                        onDragEnd={handleSectionDragEnd}
+                                        sensors={sensors}
+                                        sectionOrder={sectionOrder}
+                                    />
+                                </div>
+
                                 <PanelCard
                                     title="Template"
                                     icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
@@ -1262,7 +1257,7 @@ export default function Edit({
                                     onToggle={() => setTemplateOpen(v => !v)}
                                 >
                                     <div className="px-3 pb-3">
-                                        <div aria-label="Resume template" className="grid grid-cols-3 gap-2">
+                                        <div aria-label="Resume template" className="grid grid-cols-2 gap-2">
                                             {Object.keys(TEMPLATE_LABELS).map(t => {
                                                 const selected = template === t;
                                                 return (
@@ -1343,75 +1338,74 @@ export default function Edit({
                                         </div>
                                     </div>
                                 </PanelCard>
-                                    </div>
-                                )}
 
-                                {rightTab === 'optimize' && (
-                                    <div className="flex flex-col">
-                                        <PanelCard
-                                            title="Resume checklist"
-                                            pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
-                                            open={openSections.strength}
-                                            onToggle={() => toggleSection('strength')}
-                                        >
-                                            <div className="px-3 pb-3">
-                                                <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
-                                            </div>
-                                        </PanelCard>
-                                        <div className="rounded-[10px] border border-[#eeeef5] p-3">
-                                            {aiEnabled ? (
-                                                <AtsMatchPanel
-                                                    jobDescription={targetJobDescription}
-                                                    onJobDescriptionChange={setTargetJobDescription}
-                                                    onJobDescriptionBlur={save}
-                                                    keywordGaps={keywordGaps}
-                                                    aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
-                                                />
-                                            ) : (
-                                                <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
-                                            )}
+                                <PanelCard
+                                    title="Resume checklist"
+                                    pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
+                                    open={openSections.strength}
+                                    onToggle={() => toggleSection('strength')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
+                                    </div>
+                                </PanelCard>
+                                <div className="rounded-[10px] border border-[#eeeef5] p-3">
+                                    <div className="mb-3 grid grid-cols-2 gap-2">
+                                        <div>
+                                            <FLabel>Company</FLabel>
+                                            <FInput value={targetCompany} onChange={setTargetCompany} onBlur={save} placeholder="Acme Inc." name="target_company" />
+                                        </div>
+                                        <div>
+                                            <FLabel>Job title</FLabel>
+                                            <FInput value={targetTitle} onChange={setTargetTitle} onBlur={save} placeholder="Senior Product Manager" name="target_title" />
                                         </div>
                                     </div>
-                                )}
+                                    {aiEnabled ? (
+                                        <AtsMatchPanel
+                                            jobDescription={targetJobDescription}
+                                            onJobDescriptionChange={setTargetJobDescription}
+                                            onJobDescriptionBlur={save}
+                                            keywordGaps={keywordGaps}
+                                            aiButton={renderAiButton({ idle: targetJobDescription.trim() ? '✨ Find gaps vs. this job' : '✨ Find ATS keyword gaps', onRun: handleKeywordGaps })}
+                                        />
+                                    ) : (
+                                        <JdMatcher content={resumeContent} initialJd={targetJobDescription} />
+                                    )}
+                                </div>
 
-                                {rightTab === 'share' && (
-                                    <div className="flex flex-col">
-                                        <PanelCard
-                                            title="Share links"
-                                            pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
-                                            open={openSections.share}
-                                            onToggle={() => toggleSection('share')}
+                                <PanelCard
+                                    title="Share links"
+                                    pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
+                                    open={openSections.share}
+                                    onToggle={() => toggleSection('share')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        {/* ponytail: management lives on /shares — this is just the handoff. */}
+                                        <p className="mb-3 text-xs text-gray-500">
+                                            Share links are stable, so an edit here reaches anyone you already sent one to. Create and manage them on the Shares page.
+                                        </p>
+                                        <Link
+                                            href={route('shares.index')}
+                                            className="inline-flex rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
                                         >
-                                            <div className="px-3 pb-3">
-                                                {/* ponytail: management lives on /shares — this is just the handoff. */}
-                                                <p className="mb-3 text-xs text-gray-500">
-                                                    Share links are stable, so an edit here reaches anyone you already sent one to. Create and manage them on the Shares page.
-                                                </p>
-                                                <Link
-                                                    href={route('shares.index')}
-                                                    className="inline-flex rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
-                                                >
-                                                    Manage shares →
-                                                </Link>
-                                            </div>
-                                        </PanelCard>
-                                        <PanelCard
-                                            title="Messages"
-                                            pill={unreadCount > 0
-                                                ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
-                                                : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
-                                            open={openSections.messages}
-                                            onToggle={() => toggleSection('messages')}
-                                        >
-                                            <div className="px-3 pb-3">
-                                                <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
-                                            </div>
-                                        </PanelCard>
+                                            Manage shares →
+                                        </Link>
                                     </div>
-                                )}
+                                </PanelCard>
+                                <PanelCard
+                                    title="Messages"
+                                    pill={unreadCount > 0
+                                        ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
+                                        : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
+                                    open={openSections.messages}
+                                    onToggle={() => toggleSection('messages')}
+                                >
+                                    <div className="px-3 pb-3">
+                                        <ThreadsPanel threads={initialThreads} resumeId={resume.id} />
+                                    </div>
+                                </PanelCard>
                             </div>
                         </div>
-                        )}
                     </aside>
 
             </div>

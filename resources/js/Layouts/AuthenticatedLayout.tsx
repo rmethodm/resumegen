@@ -76,17 +76,10 @@ export default function Authenticated({
         return () => document.removeEventListener('keydown', onKeyDown);
     }, []);
 
-    const workspace: NavItem[] = [
-        { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
-        { label: 'Resumes', href: route('builder.index'), active: route().current('builder.*'), icon: DocumentTextIcon },
-        { label: 'Cover Letters', href: route('cover-letters.index'), active: route().current('cover-letters.*'), icon: EnvelopeIcon },
-        { label: 'Messages', href: route('messages.index'), active: route().current('messages.*'), icon: ChatBubbleLeftRightIcon },
-        { label: 'Shares', href: route('shares.index'), active: route().current('shares.*'), icon: ShareIcon },
-        // Not 'jobs.*' — that would also match the jobs.salary XHR endpoint.
-        { label: 'Jobs', href: route('jobs.index'), active: route().current('jobs.index'), icon: BriefcaseIcon },
-    ];
-    if (user.is_master_admin) {
-        workspace.push({ label: 'Admin', href: adminHref(), active: route().current('admin.*'), icon: ShieldCheckIcon });
+    function go(href: string) {
+        setCommandOpen(false);
+        setMobileOpen(false);
+        router.visit(href);
     }
 
     function logOut() {

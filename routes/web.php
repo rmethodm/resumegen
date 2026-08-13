@@ -1,30 +1,35 @@
 <?php
 
+use App\Http\Controllers\AiSuggestionController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
-use App\Http\Controllers\CareerHubController;
-use App\Http\Controllers\CoverLetterController;
-use App\Http\Controllers\HeatmapController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExtensionTokenController;
 use App\Http\Controllers\InterviewCoachController;
+use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\JobImportsController;
 use App\Http\Controllers\JobSearchController;
-use App\Http\Controllers\MessagesController;
-use App\Http\Controllers\OgImageController;
+use App\Http\Controllers\LegalController;
+use App\Http\Controllers\MobileTokenController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PublicResumeController;
-use App\Http\Controllers\PublicThreadController;
+use App\Http\Controllers\PublicResumeShareController;
+use App\Http\Controllers\ResumeAiController;
 use App\Http\Controllers\ResumeBuilderController;
+use App\Http\Controllers\ResumeCompareController;
+use App\Http\Controllers\ResumeController;
+use App\Http\Controllers\ResumeGroupController;
 use App\Http\Controllers\ResumeImportController;
-use App\Http\Controllers\ResumeTagController;
-use App\Http\Controllers\ResumeThreadController;
-use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\ResumeNoteController;
+use App\Http\Controllers\ResumeShareLinkController;
+use App\Http\Controllers\ResumeSnapshotController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\SectionEventController;
+use App\Http\Controllers\Settings\StarterProfileController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\ShareLinkController;
-use App\Http\Controllers\StrengthScoreController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', WelcomeController::class);
@@ -157,13 +162,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
     Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
     Route::post('/builder/{resume}/create-variant', [ResumeBuilderController::class, 'createVariant'])->name('builder.create-variant');
-    Route::get('/builder/{resume}/heatmap', [HeatmapController::class, 'show'])->name('builder.heatmap');
-    Route::get('/builder/{resume}/strength-score', [StrengthScoreController::class, 'show'])
-        ->middleware('throttle:10,1')
-        ->name('builder.strength-score');
     Route::get('/builder/{resume}/share-url', [ResumeBuilderController::class, 'shareUrl'])->name('builder.share-url');
-    Route::post('/builder/{resume}/tags', [ResumeTagController::class, 'store'])->name('builder.tags.store');
-    Route::delete('/builder/{resume}/tags/{tag}', [ResumeTagController::class, 'destroy'])->name('builder.tags.destroy');
 
     Route::get('/search', SearchController::class)->name('search')->middleware('throttle:30,1');
 
@@ -183,27 +182,11 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
     Route::get('/shares', [ShareController::class, 'index'])->name('shares.index');
-    Route::get('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'show'])->name('builder.thread');
-    Route::post('/builder/{resume}/threads/{thread}/reply', [ResumeThreadController::class, 'reply'])->name('builder.thread.reply');
-    Route::patch('/builder/{resume}/threads/{thread}/read', [ResumeThreadController::class, 'read'])->name('builder.thread.read');
-    Route::delete('/builder/{resume}/threads/{thread}', [ResumeThreadController::class, 'destroy'])->name('builder.thread.destroy');
-
-    Route::get('/cover-letters', [CoverLetterController::class, 'index'])->name('cover-letters.index');
-    Route::post('/cover-letters', [CoverLetterController::class, 'store'])->name('cover-letters.store');
-    Route::get('/cover-letters/{letter}', [CoverLetterController::class, 'edit'])->name('cover-letters.edit');
-    Route::put('/cover-letters/{letter}', [CoverLetterController::class, 'update'])->name('cover-letters.update');
-    Route::delete('/cover-letters/{letter}', [CoverLetterController::class, 'destroy'])->name('cover-letters.destroy');
-
-    Route::get('/jobs/salary', [SalaryController::class, 'hint'])->name('jobs.salary')->middleware('throttle:30,1');
-
     Route::get('/jobs', [JobSearchController::class, 'index'])->name('jobs.index');
     Route::post('/jobs/search', [JobSearchController::class, 'search'])->name('jobs.search')->middleware('throttle:30,1');
     Route::post('/jobs/saved', [JobSearchController::class, 'store'])->name('jobs.saved.store');
     Route::patch('/jobs/saved/{jobSearch}', [JobSearchController::class, 'update'])->name('jobs.saved.update');
     Route::delete('/jobs/saved/{jobSearch}', [JobSearchController::class, 'destroy'])->name('jobs.saved.destroy');
-
-    Route::get('/messages', [MessagesController::class, 'index'])->name('messages.index');
-    Route::patch('/messages/read-all', [MessagesController::class, 'markAllRead'])->name('messages.read-all');
 
     // Autocomplete lookup
     Route::middleware('throttle:60,1')->group(function () {
@@ -227,26 +210,8 @@ if (app()->environment('local')) {
     Route::get('/dev/job-fixtures/{page}', function (string $page) {
         abort_unless(in_array($page, ['workday', 'greenhouse', 'lever', 'icims', 'custom'], true), 404);
 
-// Public (unauthenticated) Career Hub routes
-Route::get('/career', [CareerHubController::class, 'index'])->name('career.index');
-Route::get('/career/{slug}', [CareerHubController::class, 'show'])->name('career.show');
-
-// Public (unauthenticated) share link routes
-Route::middleware('throttle:60,1')->group(function () {
-    Route::get('/r/{token}', [PublicResumeController::class, 'show'])->name('public.resume');
-    Route::post('/r/{token}/unlock', [PublicResumeController::class, 'unlock'])->name('public.resume.unlock');
-});
-Route::middleware('throttle:20,1')->group(function () {
-    Route::get('/r/{token}/pdf', [PublicResumeController::class, 'downloadPdf'])->name('public.pdf');
-    Route::get('/r/{token}/docx', [PublicResumeController::class, 'downloadDocx'])->name('public.docx');
-});
-Route::post('/r/{token}/threads', [PublicThreadController::class, 'store'])->middleware('throttle:5,1')->name('public.thread.store');
-Route::post('/r/{token}/threads/{thread}/messages', [PublicThreadController::class, 'addMessage'])->middleware('throttle:10,1')->name('public.thread.message');
-Route::get('/r/{token}/og-image', [OgImageController::class, 'show'])->name('public.og-image')->middleware('throttle:30,1');
-Route::post('/r/{token}/section-events', [SectionEventController::class, 'store'])
-    ->middleware('throttle:30,1')
-    ->name('public.section-events');
-
-Route::middleware('auth')->delete('/admin/impersonate', [AdminImpersonationController::class, 'destroy'])->name('admin.impersonate.destroy');
+        return view("dev.job-fixtures.{$page}");
+    })->name('dev.job-fixtures.show');
+}
 
 require __DIR__.'/auth.php';

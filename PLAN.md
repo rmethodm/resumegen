@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** User-directed. UI redesign ladder P0–P2 shipped; application desk, editor frame, and landing hero pass completed 2026-08-11. Remaining UI items parked in `docs/plans/ui-redesign-remaining.md`.
-- **Last updated:** 2026-08-11
-- **Next action:** User-directed. Review the rendered authenticated application desk and workstation at the next browser-enabled pass. Extension: optional one-click connect / multi-step Workday QA. Job Imports gap analysis/cover letters remain stubs (AI match/tailoring shipped 2026-08-11).
+- **Active:** User-directed. UI redesign ladder P0–P2 shipped; application desk, editor frame, and landing hero pass completed 2026-08-11. Remaining UI items parked in `docs/plans/ui-redesign-remaining.md`. Auto-apply research parked 2026-08-13 in `docs/plans/auto-apply-research.md` — user is thinking; do not implement.
+- **Last updated:** 2026-08-13
+- **Next action:** User-directed. If auto-apply is reopened, continue from Open questions in `docs/plans/auto-apply-research.md` (C destinations unanswered). Otherwise: browser-review the application desk/workstation; extension connect polish / Workday QA; Job Imports gap analysis/cover letters remain stubs.
 
 ---
 
@@ -44,6 +44,7 @@ Live at **<url>** · Repo: **<repo>**
 - AI open-ended answers / cover letters from extension — after basic fill works
 - Site-specific ATS maps — only with real usage data
 - Auto PDF attach — fragile host permissions
+- **Auto-apply (A assist / B approve / C autopilot + receipt)** — research only, parked. See `docs/plans/auto-apply-research.md`. Do not implement until the user reopens it and answers the open questions.
 - **Pricing economics sketch** — pack-vs-subscription conversion-band modeling, per `docs/pricing-recommendations-2026-08.md` next steps #2. Gated behind a product pick (Pro+quotas vs scan-led) and explicit approval before any billing code (CLAUDE.md). Not started.
 
 ---
