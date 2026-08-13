@@ -1,4 +1,5 @@
 *.bak
+ad_local_*.md
 *.log
 .DS_Store
 .env

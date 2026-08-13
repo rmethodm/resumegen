@@ -4,7 +4,6 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import {
     Bars3Icon,
     BriefcaseIcon,
-    ClipboardDocumentListIcon,
     DocumentTextIcon,
     HomeIcon,
     MagnifyingGlassIcon,
@@ -55,7 +54,6 @@ export default function Authenticated({
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
         { label: 'Resumes', href: route('resumes.index'), active: route().current('resumes.*'), icon: DocumentTextIcon },
         { label: 'Job Imports', href: route('jobs-imports.index'), active: route().current('jobs-imports.*'), icon: BriefcaseIcon },
-        { label: 'Applications', href: route('job-applications.index'), active: route().current('job-applications.*'), icon: ClipboardDocumentListIcon },
         { label: 'Profile', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
     ];
 
@@ -120,7 +118,7 @@ export default function Authenticated({
                 {/* overflow-visible so user dropdown / command sheet are not clipped */}
                 <header
                     className={cn(
-                        'relative mx-auto max-w-6xl rounded-lg border border-surface-border/80',
+                        'relative mx-auto max-w-[1440px] rounded-lg border border-surface-border/80',
                         'bg-white/90 shadow-ambient backdrop-blur-xl',
                         'transition-[box-shadow,background-color] duration-soft ease-soft',
                         'dark:border-gray-700/80 dark:bg-gray-800/90',

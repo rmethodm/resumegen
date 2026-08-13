@@ -178,7 +178,9 @@ export default function JobImportsPage({
         <AuthenticatedLayout header={<h2 className="text-xl font-semibold text-gray-800">Job Imports</h2>}>
             <Head title="Job Imports" />
 
-            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            {/* Same width/gutters as the top nav island: padding outside, 1440 container inside */}
+            <div className="px-3 py-6 sm:px-4">
+            <div className="mx-auto max-w-[1440px]">
                 {sourcesAvailable.length === 0 && (
                     <div className="rounded-lg border border-warning/30 bg-warning-subtle px-4 py-3 text-sm text-amber-800">
                         No search sources configured. Add <code>ADZUNA_APP_ID</code>/<code>ADZUNA_APP_KEY</code> or{' '}
@@ -452,6 +454,7 @@ export default function JobImportsPage({
                         </aside>
                     </div>
                 </div>
+            </div>
             </div>
 
             {toast && (

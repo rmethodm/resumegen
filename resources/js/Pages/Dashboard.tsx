@@ -134,60 +134,14 @@ function ShareStatus({
 function ResumeCard({
     resume,
     compact = false,
+    onOpenShare,
 }: {
     resume: ResumeSummary;
     /** Denser row for secondary list items after the first. */
     compact?: boolean;
+    onOpenShare: (resumeId: number) => void;
 }) {
     const [expanded, setExpanded] = useState(false);
-    // Badge props stay lean; full modal payload is fetched when the id is set.
-    // Re-fetch when `resume` updates after Inertia `back()` from modal actions.
-    const [shareModalResumeId, setShareModalResumeId] = useState<number | null>(null);
-    const [shareModalDetail, setShareModalDetail] = useState<ResumeShareLink | null>(null);
-    const [shareModalReady, setShareModalReady] = useState(false);
-
-    useEffect(() => {
-        if (shareModalResumeId === null) {
-            setShareModalDetail(null);
-            setShareModalReady(false);
-
-            return;
-        }
-
-        let cancelled = false;
-        setShareModalReady(false);
-
-        fetch(route('resumes.share.show', shareModalResumeId), {
-            headers: {
-                Accept: 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-            credentials: 'same-origin',
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to load share');
-                }
-
-                return response.json() as Promise<{ share: ResumeShareLink | null }>;
-            })
-            .then((data) => {
-                if (!cancelled) {
-                    setShareModalDetail(data.share);
-                    setShareModalReady(true);
-                }
-            })
-            .catch(() => {
-                if (!cancelled) {
-                    setShareModalDetail(null);
-                    setShareModalReady(true);
-                }
-            });
-
-        return () => {
-            cancelled = true;
-        };
-    }, [shareModalResumeId, resume]);
 
     const hasVersions = resume.versions.length > 1;
     const alreadyShared = resume.share !== null;
@@ -225,7 +179,6 @@ function ResumeCard({
     }
 
     return (
-        <>
         <Shell innerClassName="overflow-hidden">
             <div
                 className={cn(
@@ -266,7 +219,7 @@ function ResumeCard({
                         <div className="mt-1">
                             <ShareStatus
                                 share={resume.share}
-                                onOpenShare={() => setShareModalResumeId(resume.id)}
+                                onOpenShare={() => onOpenShare(resume.id)}
                             />
                         </div>
                     )}
@@ -275,7 +228,7 @@ function ResumeCard({
                             <ShareStatus
                                 share={resume.share}
                                 compact
-                                onOpenShare={() => setShareModalResumeId(resume.id)}
+                                onOpenShare={() => onOpenShare(resume.id)}
                             />
                         </div>
                     )}
@@ -328,7 +281,7 @@ function ResumeCard({
                             <button
                                 type="button"
                                 disabled={alreadyShared}
-                                onClick={() => setShareModalResumeId(resume.id)}
+                                onClick={() => onOpenShare(resume.id)}
                                 title={
                                     alreadyShared
                                         ? 'This resume already has a share link'
@@ -427,7 +380,7 @@ function ResumeCard({
                                                 share={version.share}
                                                 compact
                                                 onOpenShare={() =>
-                                                    setShareModalResumeId(version.id)
+                                                    onOpenShare(version.id)
                                                 }
                                             />
                                         </div>
@@ -458,19 +411,6 @@ function ResumeCard({
             )}
 
         </Shell>
-            {shareModalReady && shareModalResumeId !== null && (
-                <ShareResumeModal
-                    open
-                    onOpenChange={(open) => {
-                        if (!open) {
-                            setShareModalResumeId(null);
-                        }
-                    }}
-                    resumeId={shareModalResumeId}
-                    share={shareModalDetail}
-                />
-            )}
-        </>
     );
 }
 
@@ -531,6 +471,59 @@ export default function Dashboard({
     }[];
 }) {
     const [newResumeOpen, setNewResumeOpen] = useState(false);
+    // Share-modal state lives at page level, NOT inside ResumeCard: `resumes`
+    // is a deferred prop, so every Inertia reload (each toggle in the modal
+    // patches and reloads props) swaps the card list for skeletons and back,
+    // unmounting the cards. A modal inside a card would close on every change.
+    const [shareModalResumeId, setShareModalResumeId] = useState<number | null>(null);
+    const [shareModalDetail, setShareModalDetail] = useState<ResumeShareLink | null>(null);
+    const [shareModalReady, setShareModalReady] = useState(false);
+
+    useEffect(() => {
+        if (shareModalResumeId === null) {
+            setShareModalDetail(null);
+            setShareModalReady(false);
+
+            return;
+        }
+
+        // `shareModalReady` stays true across refetches — dropping it would
+        // unmount the open modal. Refetches update the detail in place.
+        let cancelled = false;
+
+        fetch(route('resumes.share.show', shareModalResumeId), {
+            headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin',
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to load share');
+                }
+
+                return response.json() as Promise<{ share: ResumeShareLink | null }>;
+            })
+            .then((data) => {
+                if (!cancelled) {
+                    setShareModalDetail(data.share);
+                    setShareModalReady(true);
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    // Keep any previously loaded detail — nulling it while the
+                    // modal is open would make it POST a brand-new share link.
+                    setShareModalReady(true);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [shareModalResumeId, resumes]);
+
     const averageScore =
         resumes && resumes.length > 0
             ? Math.round(resumes.reduce((sum, row) => sum + row.score, 0) / resumes.length)
@@ -643,6 +636,7 @@ export default function Dashboard({
                                             key={resume.id}
                                             resume={resume}
                                             compact={index > 0}
+                                            onOpenShare={() => setShareModalResumeId(resume.id)}
                                         />
                                     ))}
                                 </div>
@@ -657,6 +651,19 @@ export default function Dashboard({
                 onClose={() => setNewResumeOpen(false)}
                 roleSamples={roleSamples}
             />
+
+            {shareModalReady && shareModalResumeId !== null && (
+                <ShareResumeModal
+                    open
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            setShareModalResumeId(null);
+                        }
+                    }}
+                    resumeId={shareModalResumeId}
+                    share={shareModalDetail}
+                />
+            )}
         </AuthenticatedLayout>
     );
 }

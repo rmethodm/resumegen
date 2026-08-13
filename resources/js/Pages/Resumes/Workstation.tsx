@@ -517,7 +517,7 @@ export default function Workstation({
         <AuthenticatedLayout>
             <Head title={draft.title} />
 
-            <div className="flex flex-col bg-surface">
+            <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-[#f7f7f5]">
                 {(offline || saveStatus === 'error') && (
                     <div
                         className={cn(
@@ -570,12 +570,12 @@ export default function Workstation({
                 {/* Resume chrome — same width / gutters as the main top nav island */}
                 <div
                     className={cn(
-                        'px-3 pb-2 sm:px-4',
+                        'px-3 pb-3 sm:px-4',
                         '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
                         '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
-                    <div className="mx-auto max-w-6xl">
+                    <div className="mx-auto max-w-[1440px]">
                         <WorkstationHeader
                             resumeId={id}
                             title={draft.title}
@@ -623,12 +623,12 @@ export default function Workstation({
 
                 <div
                     className={cn(
-                        'px-3 pb-5 sm:px-4',
+                        'px-3 pb-6 sm:px-4',
                         '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
                         '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
-                <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 lg:flex-row lg:items-start lg:gap-5">
+                <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 lg:flex-row lg:items-start lg:gap-6">
                     <SectionPanel
                         resumeId={id}
                         analysis={liveAnalysis}
@@ -645,7 +645,7 @@ export default function Workstation({
                     {/* On mobile the score/checklist rail is guidance, not the
                         task — the editable form leads the stack; lg:order-none
                         restores side-by-side source order. */}
-                    <div className="order-1 flex min-w-0 flex-col gap-4 lg:order-none lg:flex-1">
+                    <div className="order-1 flex min-w-0 flex-col gap-5 lg:order-none lg:flex-1">
                         {tab === 'Edit' && (
                             <TargetRoleBar
                                 targetRole={draft.target_role}

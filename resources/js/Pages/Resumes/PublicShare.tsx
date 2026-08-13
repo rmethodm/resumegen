@@ -85,7 +85,7 @@ export default function PublicShare({
 
             <main className="flex flex-1 justify-center px-3 py-6 sm:px-6 sm:py-10">
                 <Shell
-                    className="w-full max-w-[8.5in] shadow-ambient"
+                    className="w-full max-w-[8.5in]"
                     innerClassName="overflow-hidden bg-white p-3 sm:p-5"
                 >
                     <div className="rounded-md bg-white shadow-card ring-1 ring-ink/5">
