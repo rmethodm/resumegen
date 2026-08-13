@@ -14,17 +14,15 @@ class ResumeShareLink extends Model
     /** @use HasFactory<ResumeShareLinkFactory> */
     use HasFactory;
 
-    /**
-     * `resume_id` and `token` are deliberately absent: the link's owner is
-     * the route-bound resume, set through the relation, and the token is
-     * generated on creation, never accepted from request input.
-     */
-    protected $fillable = [
-        'allow_download',
-        'require_email',
-        'require_password',
-        'password',
-        'expires_at',
+    protected $fillable = ['resume_id', 'token', 'label', 'is_active', 'expires_at', 'is_primary', 'password_hash', 'views_seen_at'];
+
+    protected $hidden = ['password_hash'];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'is_primary' => 'boolean',
+        'expires_at' => 'datetime',
+        'views_seen_at' => 'datetime',
     ];
 
     /**

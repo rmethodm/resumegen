@@ -1,25 +1,14 @@
 # Context
 
 ## Current Task
-Prepaid pricing instrumentation. `docs/prepaid-pricing-model.md` (14 sections) is still a
-**proposal** and no user pays anything — but §13 slices 1–3 are now **built and shipped** at
-`config/pricing.php` prices of 0, so pairings and a balance ledger are recorded for §12's numbers.
-The two open decisions remain blocked on usage data that does not exist yet.
+Consolidated sharing onto `/shares` (2026-07-19). Deleted `SharePopover` from the builder; its Share tab now shows an active-link count plus a link to the shares page. Added `SampleSharesSeeder` (4 resumes, 10 links covering primary/password/expired/disabled/read/unread) wired into `DatabaseSeeder` behind a local-env guard. Also raised builder section-card contrast. All pushed to `experiment/preview-left-skills-panel`.
 
 ## Key Decisions
-- Free forever / no paywall; Workstation stays dense (no marketing glass in editor)
-- Nav island must stay `overflow-visible` or user dropdown/logout breaks
-- Brand monogram: `/r-monogram.svg` + `BrandMark`; marketing display: `font-display` (Source Serif 4)
+- Share link management lives only on `/shares` — never in the builder. Sharing doesn't interleave with editing, and tokens are stable across edits. See CLAUDE.md.
+- Sample fixtures are a committed seeder, local-env only, idempotent (deletes `Sample — *` resumes before recreating) so real data is untouched.
+- Migrations are forward-only; `migrate:rollback`/`reset`/`refresh` are unsupported and leave the DB wrecked. Rebuild with `migrate:fresh --seed`. See CLAUDE.md.
 
 ## Next Steps
-1. **Let the instrumentation collect.** Slices 1–3 and the cost fix are done; §12's numbers 1–3 and
-   5 now need real traffic, which needs the branch shipped. Nothing more to build here — resist
-   adding billing code before the data exists (§12 stop rule).
-2. **Split this branch before it nears main** — 30+ commits bundling /shares, photo removal, job
-   search, builder rework, cleanup, and pricing docs. Builder rework (`ebfc933..5e2ea61`) still
-   unverified in a browser. Prod .env needs `AI_ENABLED=true`, `AI_CAREER_COACH_ENABLED=false`,
-   deploy secrets `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`.
-3. **Leave `PRICING_JOB_CENTS` at 0.** Turning it on is a paywall and needs explicit approval per
-   `CLAUDE.md`, plus §12's numbers 1–3.
-
-Also open: wire cover letters to the existing `AiPrompts::coverLetter()` (no route yet); decide whether to hard-scope or delete career coach chat; add GitHub secrets `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY` for the deploy pipeline; background-check vendor pick still with user.
+1. **Production .env** needs `AI_ENABLED=true` + `AI_CAREER_COACH_ENABLED=false` — until then prod AI stays dark.
+2. Decide whether `experiment/preview-left-skills-panel` merges to main or stays an experiment.
+3. Wire cover letters to the existing `AiPrompts::coverLetter()` (no route yet); add deploy secrets `SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`.
