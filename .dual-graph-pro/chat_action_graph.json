@@ -8650,17 +8650,13 @@
     "database/migrations/2026_08_04_142057_add_admin_and_disabled_to_users_table.php": {
       "last_edited": 1786623249.5571048,
       "edit_count": 1
+    },
+    "database/migrations/2026_08_04_144450_create_admin_action_logs_table.php": {
+      "last_edited": 1786623422.307061,
+      "edit_count": 1
     }
   },
   "actions": [
-    {
-      "ts": 1786539726,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "top navbar width max-width container AuthenticatedLayout shell content container"
-      }
-    },
     {
       "ts": 1786539733,
       "kind": "read",
@@ -11011,6 +11007,14 @@
       "ts": 1786623249.5571032,
       "files": [
         "database/migrations/2026_08_04_142057_add_admin_and_disabled_to_users_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786623422.3070579,
+      "files": [
+        "database/migrations/2026_08_04_144450_create_admin_action_logs_table.php"
       ],
       "source": "graph_sync_hook"
     }
