@@ -93,18 +93,7 @@ export function KeywordChips({
     onAdd: (keyword: string) => void;
 }) {
     if (!hasRoleFamily) {
-        return (
-            <div className="mt-4 border-t border-surface-border pt-4">
-                <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                    Role keywords
-                </p>
-                <p className="px-1 text-[11px] leading-relaxed text-ink-muted">
-                    Set a target role that includes a family we score — design,
-                    engineer, data, product, or market — to unlock keyword
-                    chips.
-                </p>
-            </div>
-        );
+        return null;
     }
 
     if (missing.length === 0 && present.length === 0) {
