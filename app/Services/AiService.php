@@ -6,17 +6,25 @@ use App\Exceptions\AiDisabledException;
 use App\Exceptions\ModerationException;
 use App\Models\AiRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use OpenAI\Contracts\ClientContract;
 use Throwable;
 
 class AiService
 {
+    private const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+
+    private const ANTHROPIC_VERSION = '2023-06-01';
+
     public function __construct(private ClientContract $client) {}
 
     /**
      * Send a single-prompt chat completion, log the request, and return the reply text.
      *
-     * @param  array{model?: string, user?: User|null, feature?: string|null, response_format?: array<string,string>, max_tokens?: int, messages?: array<array{role: string, content: string}>}  $options
+     * Both providers land here so there is one moderation pass, one ai_requests
+     * log, and one place the UserLimits gate has to guard.
+     *
+     * @param  array{provider?: string, model?: string, user?: User|null, feature?: string|null, response_format?: array<string,string>, max_tokens?: int, messages?: array<array{role: string, content: string}>}  $options
      */
     public function chat(string $prompt, array $options = []): string
     {
@@ -24,41 +32,91 @@ class AiService
             throw new AiDisabledException;
         }
 
-        $model = $options['model'] ?? config('ai.model');
+        $provider = $options['provider'] ?? config('ai.provider', 'openai');
+        $model = $options['model'] ?? ($provider === 'anthropic'
+            ? config('ai.anthropic_model')
+            : config('ai.model'));
         $user = $options['user'] ?? null;
         $feature = $options['feature'] ?? null;
         $maxTokens = $options['max_tokens'] ?? config('ai.max_completion_tokens', 1000);
+        $messages = $options['messages'] ?? [
+            ['role' => 'user', 'content' => $prompt],
+        ];
+        $wantsJson = ($options['response_format']['type'] ?? null) === 'json_object';
 
         $this->moderate($prompt, $user, $feature, $model);
 
         try {
-            $params = [
-                'model' => $model,
-                'messages' => $options['messages'] ?? [
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'user' => $this->userId($user),
-                'max_tokens' => $maxTokens,
-            ];
+            [$text, $promptTokens, $completionTokens] = $provider === 'anthropic'
+                ? $this->anthropicChat($messages, $model, $maxTokens, $wantsJson)
+                : $this->openAiChat($messages, $model, $maxTokens, $user, $options['response_format'] ?? null);
 
-            if (isset($options['response_format'])) {
-                $params['response_format'] = $options['response_format'];
-            }
+            $this->log($user, $feature, $model, $promptTokens, $completionTokens, $promptTokens + $completionTokens, 'success');
 
-            $response = $this->client->chat()->create($params);
-
-            $promptTokens = $response->usage->promptTokens;
-            $completionTokens = $response->usage->completionTokens;
-            $totalTokens = $response->usage->totalTokens;
-
-            $this->log($user, $feature, $model, $promptTokens, $completionTokens, $totalTokens, 'success');
-
-            return $response->choices[0]->message->content ?? '';
+            return $text;
         } catch (Throwable $e) {
             $this->log($user, $feature, $model, 0, 0, 0, 'error');
 
             throw $e;
         }
+    }
+
+    /**
+     * @param  array<array{role: string, content: string}>  $messages
+     * @param  array<string, string>|null  $responseFormat
+     * @return array{0: string, 1: int, 2: int}
+     */
+    private function openAiChat(array $messages, string $model, int $maxTokens, ?User $user, ?array $responseFormat): array
+    {
+        $params = [
+            'model' => $model,
+            'messages' => $messages,
+            'user' => $this->userId($user),
+            'max_tokens' => $maxTokens,
+        ];
+
+        if ($responseFormat) {
+            $params['response_format'] = $responseFormat;
+        }
+
+        $response = $this->client->chat()->create($params);
+
+        return [
+            $response->choices[0]->message->content ?? '',
+            $response->usage->promptTokens,
+            $response->usage->completionTokens,
+        ];
+    }
+
+    /**
+     * @param  array<array{role: string, content: string}>  $messages
+     * @return array{0: string, 1: int, 2: int}
+     */
+    private function anthropicChat(array $messages, string $model, int $maxTokens, bool $wantsJson): array
+    {
+        // ponytail: Anthropic has no response_format. Prefilling the assistant turn with
+        // an open brace forces JSON and is re-prepended below. Swap for tool-use if a
+        // caller ever needs a guaranteed schema rather than merely valid JSON.
+        if ($wantsJson) {
+            $messages[] = ['role' => 'assistant', 'content' => '{'];
+        }
+
+        $response = Http::withHeaders([
+            'x-api-key' => config('ai.anthropic_key'),
+            'anthropic-version' => self::ANTHROPIC_VERSION,
+        ])->timeout(60)->post(self::ANTHROPIC_URL, [
+            'model' => $model,
+            'messages' => $messages,
+            'max_tokens' => $maxTokens,
+        ])->throw()->json();
+
+        $text = $response['content'][0]['text'] ?? '';
+
+        return [
+            $wantsJson ? '{'.$text : $text,
+            $response['usage']['input_tokens'] ?? 0,
+            $response['usage']['output_tokens'] ?? 0,
+        ];
     }
 
     /**
