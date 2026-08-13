@@ -7,14 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-/**
- * @property list<string>|null $section_order
- */
 class Resume extends Model
 {
-    /** @use HasFactory<ResumeFactory> */
     use HasFactory;
 
     /**
@@ -59,48 +54,24 @@ class Resume extends Model
         'parent_resume_id',
     ];
 
-    /**
-     * The stored order, repaired so required sections always appear and a
-     * section added to the app later still shows for older rows. Optional
-     * sections the user hid stay hidden.
-     *
-     * @return list<string>
-     */
-    public function sectionOrder(): array
+    protected $casts = [
+        'contact' => 'array',
+        'experience' => 'array',
+        'education' => 'array',
+        'skills' => 'array',
+        'skills_groups' => 'array',
+        'skill_narratives' => 'array',
+        'certifications' => 'array',
+        'projects' => 'array',
+        'font_sizes' => 'array',
+        'section_order' => 'array',
+        'custom_sections' => 'array',
+        'is_snapshot' => 'boolean',
+    ];
+
+    public function scopeNonSnapshot(Builder $query): Builder
     {
-        $stored = array_values(array_intersect($this->section_order ?? [], self::SECTIONS));
-
-        if ($this->section_order === null || $stored === []) {
-            return self::SECTIONS;
-        }
-
-        $required = array_values(array_diff(self::SECTIONS, self::OPTIONAL_SECTIONS));
-        $order = $stored;
-
-        foreach ($required as $section) {
-            if (in_array($section, $order, true)) {
-                continue;
-            }
-
-            $defaultPos = array_search($section, self::SECTIONS, true);
-            $inserted = false;
-
-            foreach ($order as $index => $existing) {
-                $existingPos = array_search($existing, self::SECTIONS, true);
-
-                if ($existingPos !== false && $defaultPos !== false && $existingPos > $defaultPos) {
-                    array_splice($order, $index, 0, [$section]);
-                    $inserted = true;
-                    break;
-                }
-            }
-
-            if (! $inserted) {
-                $order[] = $section;
-            }
-        }
-
-        return array_values($order);
+        return $query->where('is_snapshot', false);
     }
 
     /**

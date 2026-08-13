@@ -17,7 +17,6 @@ use App\Http\Controllers\PublicResumeController;
 use App\Http\Controllers\PublicThreadController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeImportController;
-use App\Http\Controllers\ResumePhotoController;
 use App\Http\Controllers\ResumeTagController;
 use App\Http\Controllers\ResumeThreadController;
 use App\Http\Controllers\SalaryController;
@@ -163,8 +162,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         ->middleware('throttle:10,1')
         ->name('builder.strength-score');
     Route::get('/builder/{resume}/share-url', [ResumeBuilderController::class, 'shareUrl'])->name('builder.share-url');
-    Route::post('/builder/{resume}/photo', [ResumePhotoController::class, 'store'])->name('builder.photo.store');
-    Route::delete('/builder/{resume}/photo', [ResumePhotoController::class, 'destroy'])->name('builder.photo.destroy');
     Route::post('/builder/{resume}/tags', [ResumeTagController::class, 'store'])->name('builder.tags.store');
     Route::delete('/builder/{resume}/tags/{tag}', [ResumeTagController::class, 'destroy'])->name('builder.tags.destroy');
 
