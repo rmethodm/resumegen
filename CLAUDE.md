@@ -74,7 +74,7 @@ Default to surfacing uncertainty, not hiding it.
 - **Frontend:** React 18, TypeScript, Tailwind CSS v3, Vite 8
 - **Auth:** Laravel Breeze (session-based), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63).
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
-- **Media:** `spatie/laravel-medialibrary` — `Resume` implements `HasMedia` with a single-file `photo` collection.
+- **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia` and nothing in `app/` uses `spatie/laravel-medialibrary`, though the package is still in `composer.json`.
 - **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
@@ -137,11 +137,11 @@ The builder's Share tab holds only an active-link count and a link to `/shares`.
 
 **The app is free and unlimited.** Billing was removed on 2026-07-14: Cashier is uninstalled, there are no plan tiers, no Stripe, no payments, no `UpgradeModal`, no `featureGate`. Do not add a paywall, a tier check, or an upgrade CTA without asking first.
 
+**Laravel Boost's auto-generated context block lies about this.** It lists `laravel/cashier (CASHIER) - v16` among the installed packages. Cashier is in neither `composer.json` nor `vendor/` — verify against the filesystem, not that header. The matching `.claude/skills/cashier-stripe-development` skill and the two `mcp__plugin_stripe_stripe__*` permissions were deleted on 2026-07-19 for the same reason.
+
 `App\Services\UserLimits` survives, but it now meters **only AI** — every other limit (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
 
-**A replacement is proposed but not implemented.** `docs/prepaid-pricing-model.md` (2026-07-20) designs a prepaid dollar balance — $0.50 per **job** (not per resume×job — pairing on resume too would bill users for the A/B variants feature), $5 signup grant, no subscription. It is a **proposal**; its §12 gates implementation on usage data that does not exist yet. What `app/` implements is the *instrumentation*, not the billing: `JobPairing`, `BalanceTransaction`, `JobPairingService` and `config/pricing.php` record one pairing per user per job so §12 can be answered with real numbers, with `job_cents` and `signup_grant_cents` both **0**. Nobody is charged and nobody sees a price, and the sentence above still holds: do not add a paywall without asking — turning prices on is a config change, so it is one env var away and must not happen by accident. Read that doc before proposing any pricing change, and do not revive the subscription ladder in `docs/resume-builder-competitive-analysis.md` §3 — it was withdrawn.
-
-**Subscriptions were reconsidered on 2026-07-20 and rejected again, with reasons this time.** The arithmetic favours them (a $9/mo subscriber out-earns the average prepaid user's entire year in 0.62 months); the demand shape does not. Job hunting is episodic — someone tailors 8 resumes over five weeks and disappears for two years — so a subscription bills a relationship the product does not have. Consequences: month-3 retention in this category runs 20–30%, conversion collapses when a $9 gate sits in front of the first resume (prepaid's 25–41% payer rate comes from spending a grant already in hand), and what survives is largely forgot-to-cancel revenue. **Price is the better lever than model**: at 75c/job the sweep accrues +$1,196 vs +$447 at 50c, with no second billing implementation and no churn assumption. Reopen only if real retention data shows genuine multi-month engagement, or if predictable MRR becomes the goal for fundraising/exit reasons — that is a legitimate trade, just a different one.
+**A replacement is proposed but not implemented.** `docs/prepaid-pricing-model.md` (2026-07-20) designs a prepaid dollar balance — $0.50 per **job** (not per resume×job — pairing on resume too would bill users for the A/B variants feature), $5 signup grant, no subscription. It is a **proposal**; its §12 gates implementation on usage data that does not exist yet. Nothing in `app/` implements it, and the sentence above still holds: do not add a paywall without asking. Read that doc before proposing any pricing change, and do not revive the subscription ladder in `docs/resume-builder-competitive-analysis.md` §3 — it was withdrawn.
 
 Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
 
@@ -211,18 +211,6 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
 - **Job applications tracker** (removed in `93c1c14`). `application_contacts` and `interview_notes` are dropped by migration. **`job_applications` is deliberately still live** — `AnalyticsController` queries it via `DB::table()` for the dashboard's `active_applications` count. Do not drop that table without rewriting that query first.
 
-## Browser tests (Dusk) — two non-obvious requirements
-
-Added 2026-07-20. `tests/Browser/` is the only layer that executes React; the feature suite asserts the props Laravel *sends* and stays green even if a page throws on mount.
-
-**1. Dusk needs its own server, not Herd.** Herd serves `resumegen.test` using `.env`, which points at the **dev** database. Dusk's test process reads `.env.dusk.local` (database `resumegen_dusk`), so factories and the browser would look at two different databases and every test would fail on a missing user. `.env.dusk.local` therefore sets `APP_URL=http://127.0.0.1:8001`, and `php artisan serve --env=dusk.local --port=8001` must be running before `php artisan dusk`.
-
-**2. Use `DatabaseTruncation`, never `DatabaseMigrations`.** The latter rolls back on teardown, and this project's migrations are forward-only (next section) — it dies in the first `down()` that drops an already-dropped constraint. Truncation never rolls back. The consequence: **after adding a migration, run `php artisan migrate --env=dusk.local`**, or Dusk truncates a schema that lacks the new column.
-
-`.env.dusk.local` is a copy of `.env` and holds real credentials — `.gitignore` covers it via `.env.*`. Do not narrow that pattern.
-
-Assert on controls (`assertMissing('input[name="…"]')`), not strings (`assertDontSee('…')`) — a "don't see" assertion passes on any error page and proves nothing.
-
 ## Migrations are forward-only — rollback is not supported
 
 **Do not run `migrate:rollback`, `migrate:reset`, or `migrate:refresh`. Use `migrate:fresh --seed` to rebuild.**
@@ -266,7 +254,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 
 ---
 
-Last updated: 2026-07-19
+Last updated: 2026-07-20
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy

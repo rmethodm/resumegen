@@ -16,6 +16,13 @@ return [
     'provider' => env('AI_PROVIDER', 'openai'),
 
     /*
+     * Which vendor App\Services\AiService talks to: 'openai' or 'anthropic'.
+     * App-wide, not per-user. Moderation always runs through OpenAI's free
+     * moderations endpoint regardless, so OPENAI_API_KEY is required either way.
+     */
+    'provider' => env('AI_PROVIDER', 'openai'),
+
+    /*
      * Default chat model used by App\Services\AiService when no model is passed.
      */
     'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),

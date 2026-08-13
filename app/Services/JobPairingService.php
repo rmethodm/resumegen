@@ -36,24 +36,6 @@ class JobPairingService
     }
 
     /**
-     * Record whichever pairing an AI call belongs to, given what the caller knows.
-     *
-     * A key needs both halves, so anything missing a company or a title falls into
-     * __general__ rather than being dropped — non-job AI work has to stay visible in
-     * the §12 data, and a half-key would merge unrelated jobs.
-     *
-     * Call this only once the user has been served a result. A pairing is the billable
-     * unit, so recording one for a request that was rejected or failed becomes a charge
-     * for nothing the moment pricing.job_cents moves off zero.
-     */
-    public function record(User $user, ?string $company, ?string $title): JobPairing
-    {
-        return filled($company) && filled($title)
-            ? $this->resolveForJob($user, $company, $title)
-            : $this->resolveGeneral($user);
-    }
-
-    /**
      * Resolve the reserved pairing covering AI that targets no particular job.
      */
     public function resolveGeneral(User $user): JobPairing
