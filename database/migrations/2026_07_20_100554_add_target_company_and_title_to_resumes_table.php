@@ -19,8 +19,16 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasTable('resumes')) {
+            return;
+        }
+
         Schema::table('resumes', function (Blueprint $table): void {
-            $table->dropColumn(['target_company', 'target_title']);
+            foreach (['target_company', 'target_title'] as $column) {
+                if (Schema::hasColumn('resumes', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
         });
     }
 };
