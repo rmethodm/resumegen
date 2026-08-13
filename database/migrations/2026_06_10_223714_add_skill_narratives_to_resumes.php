@@ -18,6 +18,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasTable('resumes') || ! Schema::hasColumn('resumes', 'skill_narratives')) {
+            return;
+        }
+
         Schema::table('resumes', function (Blueprint $table): void {
             $table->dropColumn('skill_narratives');
         });

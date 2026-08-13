@@ -6848,7 +6848,9 @@
       "cached_tokens_est": 172,
       "last_action": "read",
       "last_ts": 1786050692,
-      "first_read_turn": 6
+      "first_read_turn": 6,
+      "last_edited": 1786619975.680489,
+      "edit_count": 1
     },
     "database/migrations/2026_06_22_160947_drop_interview_notes_table.php": {
       "query_terms": [],
@@ -8588,302 +8590,65 @@
     "app/Http/Middleware/EnsureAiEnabled.php": {
       "last_edited": 1786615914.409156,
       "edit_count": 1
+    },
+    "database/migrations/2026_07_20_100554_add_target_company_and_title_to_resumes_table.php": {
+      "last_edited": 1786619880.637811,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_222100_add_target_company_to_resumes_table.php": {
+      "last_edited": 1786619895.944837,
+      "edit_count": 1
+    },
+    "database/migrations/2026_05_27_231056_add_font_sizes_to_resumes_table.php": {
+      "last_edited": 1786619938.9995708,
+      "edit_count": 1
+    },
+    "database/migrations/2026_05_28_120000_add_accent_color_and_font_family_to_resumes_table.php": {
+      "last_edited": 1786619945.3025239,
+      "edit_count": 1
+    },
+    "database/migrations/2026_06_02_100000_add_ats_cache_to_resumes_table.php": {
+      "last_edited": 1786619953.1671722,
+      "edit_count": 1
+    },
+    "database/migrations/2026_06_05_214859_add_section_order_and_custom_sections_to_resumes_table.php": {
+      "last_edited": 1786619962.2983549,
+      "edit_count": 1
+    },
+    "database/migrations/2026_06_08_005650_add_master_resume_fields_to_resumes_table.php": {
+      "last_edited": 1786619969.944814,
+      "edit_count": 1
+    },
+    "database/migrations/2026_06_10_223714_add_skill_narratives_to_resumes.php": {
+      "last_edited": 1786619981.421824,
+      "edit_count": 1
+    },
+    "database/migrations/2026_06_13_161641_add_target_job_description_to_resumes_table.php": {
+      "last_edited": 1786619987.138502,
+      "edit_count": 1
+    },
+    "database/migrations/2026_07_09_233450_drop_master_resume_fields_from_resumes_table.php": {
+      "last_edited": 1786620000.365001,
+      "edit_count": 1
+    },
+    "database/migrations/2026_06_13_185959_recreate_ai_pricing_job_search_tables_if_missing.php": {
+      "last_edited": 1786622913.535722,
+      "edit_count": 4
+    },
+    "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php": {
+      "last_edited": 1786623058.132203,
+      "edit_count": 5
+    },
+    "database/migrations/2026_07_20_095528_recreate_job_pairing_tables_if_missing.php": {
+      "last_edited": 1786622922.5334709,
+      "edit_count": 1
+    },
+    "database/migrations/2026_08_02_215299_drop_job_searches_resume_fk_before_resumes_rebuild.php": {
+      "last_edited": 1786622954.571594,
+      "edit_count": 2
     }
   },
   "actions": [
-    {
-      "ts": 1786465138,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "unguard|shouldBeStrict|preventLazyLoading",
-        "hit_count": 2,
-        "hit_files": [
-          "./docs/superpowers/plans/2026-06-12-job-skills-autocomplete.md",
-          "./public/dictionaries/en_US.dic"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465146,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "config/cors.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1146
-      }
-    },
-    {
-      "ts": 1786465149,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "\"barryvdh/laravel-debugbar\"|\"laravel/tinker\"|\"laravel-boost\"",
-        "hit_count": 6,
-        "hit_files": [
-          "./composer.lock",
-          "./composer.json",
-          "./boost.json"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Auth",
-          "resources/js/Layouts",
-          "resources/js/Pages/Jobs"
-        ]
-      }
-    },
-    {
-      "ts": 1786465158,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "routes/admin.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 2381
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786465349.366438,
-      "files": [
-        ".gitignore"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786531373,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "competitor comparison pricing report market research Resumegen features free unlimited"
-      }
-    },
-    {
-      "ts": 1786531373,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "competitor comparison pricing report market research Resumegen features free unlimited"
-      }
-    },
-    {
-      "ts": 1786531723,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "job match score AI tailoring how score computed against resume keywords"
-      }
-    },
-    {
-      "ts": 1786531724,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "job match score AI tailoring how score computed against resume keywords"
-      }
-    },
-    {
-      "ts": 1786531730,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/lib/resume-analysis.ts::keywordScore",
-        "query": "",
-        "mode": "symbol_excerpt",
-        "response_chars": 231
-      }
-    },
-    {
-      "ts": 1786532183,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "Edit Review Optimize mode toggle placement Workstation header resume name"
-      }
-    },
-    {
-      "ts": 1786532183,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "Edit Review Optimize mode toggle placement Workstation header resume name"
-      }
-    },
-    {
-      "ts": 1786532186,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Components/workstation/workstation-header.tsx::WorkstationHeader",
-        "query": "",
-        "mode": "symbol_excerpt",
-        "response_chars": 17221
-      }
-    },
-    {
-      "ts": 1786532371,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Components/workstation/workstation-format-toolbar.tsx",
-        "query": "",
-        "mode": "symbol_excerpt",
-        "response_chars": 14739
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786532390.608787,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786532398.089661,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786532400.206336,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786532404.424993,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786532408.831157,
-      "files": [
-        "resources/js/Components/workstation/workstation-header.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786532416.5021582,
-      "files": [
-        "resources/js/Components/workstation/workstation-header.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786532420.6470559,
-      "files": [
-        "resources/js/Components/workstation/workstation-header.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786532422.1266692,
-      "files": [
-        "resources/js/Components/workstation/workstation-header.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786532435,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1786532782,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "npm scripts tauri dev package.json missing script"
-      }
-    },
-    {
-      "ts": 1786532782,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "npm scripts tauri dev package.json missing script"
-      }
-    },
-    {
-      "ts": 1786532785,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "package.json",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1342
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786533048.936747,
-      "files": [
-        "resources/js/Components/workstation/workstation-header.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786533050.897984,
-      "files": [
-        "resources/js/Components/workstation/workstation-header.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786533055.7108328,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786533057.524502,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1786533067.889075,
-      "files": [
-        "resources/js/Components/workstation/workstation-format-toolbar.tsx"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1786533080,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
     {
       "type": "edit_auto",
       "ts": 1786533694.792682,
@@ -10935,6 +10700,315 @@
         "kind": "continue_retrieve",
         "query": "ResumePolicy authorization update ability resume ownership"
       }
+    },
+    {
+      "ts": 1786619706,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "Filament\\\\Pages\\\\Page|extends Page|Filament\\\\",
+        "hit_count": 20,
+        "hit_files": [
+          "./app/Filament/Pages/AiUsersPage.php",
+          "./tests/Browser/Pages/HomePage.php",
+          "./app/Filament/Widgets/AdminStatsOverview.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Jobs",
+          "resources/js/Pages/Shares"
+        ]
+      }
+    },
+    {
+      "ts": 1786619736,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "ai-overview-page|ai-users-page|AiUsersPage::|AiOverviewPage",
+        "hit_count": 15,
+        "hit_files": [
+          "./app/Filament/Pages/AiUsersPage.php",
+          "./docs/superpowers/plans/2026-06-29-filament-admin-migration.md",
+          "./docs/superpowers/specs/2026-06-29-filament-admin-migration-design.md"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Jobs",
+          "resources/js/Pages/Shares"
+        ]
+      }
+    },
+    {
+      "ts": 1786619756,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "AiUsersPage|AdminStatsOverview|AiOverviewPage|filament-panels",
+        "hit_count": 20,
+        "hit_files": [
+          "./CLAUDE.md",
+          "./resources/views/filament/pages/ai-users-page.blade.php",
+          "./database/migrations/2026_07_20_104607_store_ai_cost_in_micro_cents.php",
+          "./docs/superpowers/specs/2026-06-29-filament-admin-migration-design.md",
+          "./CLAUDE.md-150-`App\\Services\\AiService"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Jobs",
+          "resources/js/Pages/Shares"
+        ]
+      }
+    },
+    {
+      "ts": 1786619787,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "AiUsersPage|AdminStatsOverview::class|Filament\\\\Pages\\\\Page|discoverPages",
+        "hit_count": 15,
+        "hit_files": [
+          "./CLAUDE.md",
+          "./docs/superpowers/plans/2026-06-29-filament-admin-migration.md-175-            ->discoverWidgets(in",
+          "./docs/superpowers/plans/2026-06-29-filament-admin-migration.md-172-            ->colors(['primary' => Color",
+          "./docs/superpowers/plans/2026-06-29-filament-admin-migration.md",
+          "./docs/superpowers/plans/2026-06-29-filament-admin-migration.md-173-            ->discoverResources(in",
+          "./CLAUDE.md-150-`App\\Services\\AiService"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Jobs",
+          "resources/js/Pages/Shares"
+        ]
+      }
+    },
+    {
+      "ts": 1786619855,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "dropColumn\\('target_company'|dropColumn\\(\\['target_company",
+        "hit_count": 4,
+        "hit_files": [
+          "./database/migrations/2026_07_20_100554_add_target_company_and_title_to_resumes_table.php-22-        Schema",
+          "./database/migrations/2026_07_20_100554_add_target_company_and_title_to_resumes_table.php",
+          "./database/migrations/2026_08_02_222100_add_target_company_to_resumes_table.php-18-        Schema",
+          "./database/migrations/2026_08_02_222100_add_target_company_to_resumes_table.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Jobs",
+          "resources/js/Pages/Shares"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619880.63781,
+      "files": [
+        "database/migrations/2026_07_20_100554_add_target_company_and_title_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619895.9448361,
+      "files": [
+        "database/migrations/2026_08_02_222100_add_target_company_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1786619907,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "Schema::table\\('resumes'",
+        "hit_count": 60,
+        "hit_files": [
+          "./database/migrations/2026_08_02_221900_add_missing_foreign_key_indexes.php-24-        Schema",
+          "./database/migrations/2026_08_02_222000_add_user_id_index_to_resumes_table.php",
+          "./database/migrations/2026_07_09_233450_drop_master_resume_fields_from_resumes_table.php",
+          "./database/migrations/2026_08_02_221900_add_missing_foreign_key_indexes.php-23-        Schema",
+          "./database/migrations/2026_08_02_221900_add_missing_foreign_key_indexes.php-35-        Schema",
+          "./database/migrations/2026_08_02_221900_add_missing_foreign_key_indexes.php",
+          "./database/migrations/2026_06_22_154436_drop_job_application_id_from_resumes_table.php",
+          "./database/migrations/2026_08_02_221900_add_missing_foreign_key_indexes.php-36-        Schema"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Jobs",
+          "resources/js/Pages/Shares"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619938.99957,
+      "files": [
+        "database/migrations/2026_05_27_231056_add_font_sizes_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619945.302523,
+      "files": [
+        "database/migrations/2026_05_28_120000_add_accent_color_and_font_family_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619953.167171,
+      "files": [
+        "database/migrations/2026_06_02_100000_add_ats_cache_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619962.298353,
+      "files": [
+        "database/migrations/2026_06_05_214859_add_section_order_and_custom_sections_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619969.944813,
+      "files": [
+        "database/migrations/2026_06_08_005650_add_master_resume_fields_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619975.680487,
+      "files": [
+        "database/migrations/2026_06_08_144306_add_job_application_id_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619981.421822,
+      "files": [
+        "database/migrations/2026_06_10_223714_add_skill_narratives_to_resumes.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786619987.1385002,
+      "files": [
+        "database/migrations/2026_06_13_161641_add_target_job_description_to_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786620000.365,
+      "files": [
+        "database/migrations/2026_07_09_233450_drop_master_resume_fields_from_resumes_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786620199.750784,
+      "files": [
+        "database/migrations/2026_06_13_185959_recreate_ai_pricing_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786620232.534385,
+      "files": [
+        "database/migrations/2026_06_13_185959_recreate_ai_pricing_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786620240.338974,
+      "files": [
+        "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786622900.236514,
+      "files": [
+        "database/migrations/2026_06_13_185959_recreate_ai_pricing_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786622913.535719,
+      "files": [
+        "database/migrations/2026_06_13_185959_recreate_ai_pricing_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786622922.53347,
+      "files": [
+        "database/migrations/2026_07_20_095528_recreate_job_pairing_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786622948.047946,
+      "files": [
+        "database/migrations/2026_08_02_215299_drop_job_searches_resume_fk_before_resumes_rebuild.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786622954.571593,
+      "files": [
+        "database/migrations/2026_08_02_215299_drop_job_searches_resume_fk_before_resumes_rebuild.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786622973.40183,
+      "files": [
+        "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786622979.908903,
+      "files": [
+        "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786623054.119029,
+      "files": [
+        "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1786623058.132201,
+      "files": [
+        "database/migrations/2026_08_02_220050_recreate_job_search_tables_if_missing.php"
+      ],
+      "source": "graph_sync_hook"
     }
   ],
   "decisions": [

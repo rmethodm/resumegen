@@ -19,6 +19,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasTable('resumes') || ! Schema::hasColumn('resumes', 'job_application_id')) {
+            return;
+        }
+
         Schema::table('resumes', function (Blueprint $table) {
             $table->dropConstrainedForeignId('job_application_id');
         });

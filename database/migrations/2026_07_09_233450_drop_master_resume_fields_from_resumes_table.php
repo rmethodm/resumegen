@@ -21,6 +21,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasTable('resumes') || Schema::hasColumn('resumes', 'master_resume_id')) {
+            return;
+        }
+
         Schema::table('resumes', function (Blueprint $table): void {
             $table->foreignId('master_resume_id')
                 ->nullable()

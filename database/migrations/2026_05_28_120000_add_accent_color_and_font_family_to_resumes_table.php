@@ -16,8 +16,16 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasTable('resumes')) {
+            return;
+        }
+
         Schema::table('resumes', function (Blueprint $table) {
-            $table->dropColumn(['accent_color', 'font_family']);
+            foreach (['accent_color', 'font_family'] as $column) {
+                if (Schema::hasColumn('resumes', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
         });
     }
 };
