@@ -27,24 +27,23 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
 class ResumeController extends Controller
 {
     /**
-     * Entry point for the builder: open the most recent resume, creating a
-     * starter one on first visit so the editor never opens on a blank page.
+     * Resume types catalogue — the Resumes nav destination. Lists every
+     * live template so the user can pick one and create a new resume.
      */
-    public function index(Request $request): RedirectResponse
+    public function index(): Response
     {
-        $user = $request->user();
+        $comingSoon = collect(glob(public_path('resumes/*')))
+            ->map(fn (string $path) => [
+                'name' => basename($path),
+                'url' => asset('resumes/'.basename($path)),
+            ])
+            ->sortBy('name')
+            ->values();
 
-        // First visit with nothing to open and no seed to copy from: send them
-        // to set up a starter profile instead of opening a blank editor. The
-        // intake page offers Skip, so this is a nudge, not a gate.
-        if ($user->resumes()->doesntExist() && $user->starterProfile()->doesntExist()) {
-            return to_route('starter-profile.edit');
-        }
-
-        $resume = $user->resumes()->latest()->first()
-            ?? $this->createStarterResume($request);
-
-        return to_route('resumes.workstation', $resume);
+        return Inertia::render('Resumes/Index', [
+            'templates' => ResumeDocument::TEMPLATES,
+            'comingSoon' => $comingSoon,
+        ]);
     }
 
     /**
@@ -390,22 +389,6 @@ class ResumeController extends Controller
             'linkedin' => $profile?->linkedin ?? '',
             'website' => $profile?->website ?? '',
         ];
-    }
-
-    private function createStarterResume(Request $request): Resume
-    {
-        $profile = $request->user()->starterProfile;
-
-        return DB::transaction(function () use ($request, $profile): Resume {
-            $resume = $request->user()->resumes()->create([
-                'title' => 'Untitled resume',
-                ...$this->starterProfileContactFields($request),
-            ]);
-
-            $this->seedExperiencesAndSkills($resume, $profile);
-
-            return $resume;
-        });
     }
 
     /**
