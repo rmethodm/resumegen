@@ -189,7 +189,7 @@ export default function AutocompleteInput({
                 onBlur={handleBlur}
             />
             {open && suggestions.length > 0 && (
-                <ul className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#e8e8f0] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+                <ul className="absolute z-50 top-full left-0 right-0 mt-1 max-h-52 overflow-y-auto rounded-lg border border-surface-border bg-white py-1 shadow-ambient">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}

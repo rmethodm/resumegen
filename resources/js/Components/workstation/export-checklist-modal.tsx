@@ -76,7 +76,7 @@ export function ExportChecklistModal({
                                         'cursor-pointer hover:opacity-90',
                                 )}
                             >
-                                <span className="mt-0.5 text-[10px] font-bold uppercase">
+                                <span className="mt-0.5 text-xs font-bold uppercase">
                                     {check.severity === 'error'
                                         ? 'Fix'
                                         : check.severity === 'warn'

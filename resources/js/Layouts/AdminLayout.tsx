@@ -25,9 +25,19 @@ export default function AdminLayout({
             active: route().current('admin.users.*') === true,
         },
         {
+            label: 'Visitors',
+            href: route('admin.visitors.index'),
+            active: route().current('admin.visitors.*') === true,
+        },
+        {
             label: 'Backups',
             href: route('admin.backups.index'),
             active: route().current('admin.backups.*') === true,
+        },
+        {
+            label: 'Database',
+            href: route('admin.database.index'),
+            active: route().current('admin.database.*') === true,
         },
     ];
 
@@ -42,16 +52,17 @@ export default function AdminLayout({
                         </span>
                     </div>
 
-                    <nav className="flex items-center gap-1">
+                    <nav className="flex items-center gap-1" aria-label="Admin">
                         {nav.map((item) => (
                             <Link
                                 key={item.label}
                                 href={item.href}
                                 className={
                                     'rounded-md px-3 py-1.5 text-sm font-medium transition ' +
+                                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 ' +
                                     (item.active
                                         ? 'bg-white/15 text-white'
-                                        : 'text-gray-300 hover:bg-white/10 hover:text-white')
+                                        : 'text-white/80 hover:bg-white/10 hover:text-white')
                                 }
                             >
                                 {item.label}
@@ -59,13 +70,13 @@ export default function AdminLayout({
                         ))}
                     </nav>
 
-                    <div className="ml-auto flex items-center gap-3 text-xs text-gray-300">
+                    <div className="ml-auto flex items-center gap-3 text-xs text-white/80">
                         <span className="hidden sm:inline">{auth.user.email}</span>
                         <Link
                             href={route('logout')}
                             method="post"
                             as="button"
-                            className="rounded-md border border-white/20 px-2.5 py-1 font-medium text-white hover:bg-white/10"
+                            className="min-h-9 rounded-md border border-white/20 px-2.5 py-1.5 font-medium text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                         >
                             Log out
                         </Link>
@@ -74,7 +85,7 @@ export default function AdminLayout({
             </header>
 
             <div className="mx-auto max-w-6xl px-4 py-6">
-                {header ? <div className="mb-4">{header}</div> : null}
+                {header ? <div className="mb-4 [&_h1]:text-xl [&_h1]:font-bold [&_h1]:text-gray-900">{header}</div> : null}
 
                 {flash?.success ? (
                     <div className="mb-4 rounded-lg border border-success/30 bg-success-subtle px-3 py-2 text-sm text-success-text">

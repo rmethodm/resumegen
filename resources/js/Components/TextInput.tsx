@@ -1,3 +1,4 @@
+import { cn, focusRingClass } from '@/lib/utils';
 import { forwardRef, InputHTMLAttributes, useEffect, useImperativeHandle, useRef } from 'react';
 
 export default forwardRef(function TextInput(
@@ -8,16 +9,23 @@ export default forwardRef(function TextInput(
 
     useImperativeHandle(ref, () => ({ focus: () => localRef.current?.focus() }));
 
-    useEffect(() => { if (isFocused) localRef.current?.focus(); }, [isFocused]);
+    useEffect(() => {
+        if (isFocused) {
+            localRef.current?.focus();
+        }
+    }, [isFocused]);
 
     return (
         <input
             {...props}
             type={type}
-            className={
-                'rounded-lg border-surface-border shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand ' +
-                className
-            }
+            className={cn(
+                'rounded-lg border-surface-border shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft',
+                'text-ink placeholder:text-ink-faint',
+                'focus:border-brand focus:ring-0',
+                focusRingClass,
+                className,
+            )}
             ref={localRef}
         />
     );

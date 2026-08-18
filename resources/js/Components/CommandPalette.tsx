@@ -9,10 +9,11 @@ type Flat = { label: string; sub: string; url: string };
 
 const NAV: Flat[] = [
     { label: 'Dashboard', sub: 'Go to', url: route('dashboard') },
-    { label: 'Resumes', sub: 'Go to', url: route('builder.index') },
-    { label: 'Cover Letters', sub: 'Go to', url: route('cover-letters.index') },
-    { label: 'Messages', sub: 'Go to', url: route('messages.index') },
-    { label: 'Jobs', sub: 'Go to', url: route('jobs.index') },
+    { label: 'Resumes', sub: 'Go to', url: route('resumes.index') },
+    { label: 'Shares', sub: 'Go to', url: route('shares.index') },
+    { label: 'Jobs', sub: 'Go to', url: route('jobs-imports.index') },
+    { label: 'Applications', sub: 'Go to', url: route('job-applications.index') },
+    { label: 'Profile', sub: 'Go to', url: route('profile.edit') },
 ];
 
 export default function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -93,11 +94,11 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={onKeyDown}
                     placeholder="Search resumes, cover letters, or jump to…"
-                    className="w-full border-0 border-b border-[#eeeef5] bg-transparent px-4 py-3 text-sm focus:ring-0 dark:border-gray-700 dark:text-white"
+                    className="w-full border-0 border-b border-[#eeeef5] bg-transparent px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:ring-0 focus-visible:ring-2 focus-visible:ring-brand/25 dark:border-gray-700 dark:text-white"
                 />
                 <ul className="max-h-80 overflow-y-auto py-2">
                     {flat.length === 0 && (
-                        <li className="px-4 py-6 text-center text-sm text-[#a0a0b0]">No matches</li>
+                        <li className="px-4 py-6 text-center text-sm text-ink-faint">No matches</li>
                     )}
                     {flat.map((item, i) => (
                         <li key={`${item.sub}-${item.url}`}>
@@ -111,7 +112,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
                                 }
                             >
                                 <span className="truncate text-[#0f0f1a] dark:text-white">{item.label}</span>
-                                <span className="ml-3 flex-shrink-0 text-[11px] uppercase tracking-wide text-[#a0a0b0]">{item.sub}</span>
+                                <span className="ml-3 flex-shrink-0 text-[11px] uppercase tracking-wide text-ink-faint">{item.sub}</span>
                             </button>
                         </li>
                     ))}

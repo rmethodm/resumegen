@@ -75,7 +75,6 @@ There is **no** special Claude Design importer in Resumegen — same workflow as
 - `docs/mockups/` — existing visual mockups (e.g. workstation header options)
 - `docs/ai-reintroduction-map.md` — AI placement (if Design mock includes AI UI)
 - `docs/ai-provider-comparison-2026-08.md` — provider pick when AI UI is real
-- `docs/pricing-recommendations-2026-08.md` — pricing/UX if Design implies paid tiers
 
 ---
 

@@ -89,9 +89,7 @@ class JobSearchController extends Controller
         ]);
 
         $resume = Resume::findOrFail($data['resume_id']);
-        // ResumePolicy::view() is a stub that always denies; 'update' is the
-        // ability that actually carries the ownership check.
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $user->id, 403);
 
         if (! UserLimits::canUseAi($user)) {
             return $this->limitReached($user);
@@ -167,7 +165,7 @@ class JobSearchController extends Controller
         ]);
 
         if (! empty($data['resume_id'])) {
-            $this->authorize('update', Resume::findOrFail($data['resume_id']));
+            abort_unless(Resume::findOrFail($data['resume_id'])->user_id === $request->user()->id, 403);
         }
 
         JobSearch::create($data + ['user_id' => $request->user()->id]);

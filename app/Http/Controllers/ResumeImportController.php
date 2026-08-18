@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Data\AiPrompts;
 use App\Models\Resume;
 use App\Services\AiService;
-use App\Services\JobPairingService;
 use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +14,7 @@ use Smalot\PdfParser\Parser;
 
 class ResumeImportController extends Controller
 {
-    public function __construct(private AiService $ai, private JobPairingService $pairings) {}
+    public function __construct(private AiService $ai) {}
 
     public function extract(Request $request): JsonResponse
     {
@@ -48,10 +47,6 @@ class ResumeImportController extends Controller
         if (! is_array($data)) {
             return response()->json(['error' => 'Could not parse that resume. Try a different PDF.'], 422);
         }
-
-        // An import targets no job — it lands in __general__ so the spend is visible in
-        // the §12 data without inventing a pairing the user never tailored for.
-        $this->pairings->resolveGeneral($user);
 
         return response()->json([
             'data' => $data,
@@ -91,7 +86,7 @@ class ResumeImportController extends Controller
 
         if ($validated['action'] === 'overwrite') {
             $resume = Resume::findOrFail($validated['resume_id']);
-            $this->authorize('update', $resume);
+            abort_unless($resume->user_id === $request->user()->id, 403);
             $resume->update($attributes);
         } else {
             $resume = $request->user()->resumes()->create([
@@ -101,6 +96,6 @@ class ResumeImportController extends Controller
             ]);
         }
 
-        return redirect()->route('builder.edit', $resume->id);
+        return redirect()->route('resumes.workstation', $resume);
     }
 }

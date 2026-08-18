@@ -40,7 +40,7 @@ function ShareStatus({
             <span
                 className={cn(
                     'inline-flex items-center gap-1 text-ink-faint',
-                    compact ? 'text-[10px]' : 'text-[11px]',
+                    compact ? 'text-xs' : 'text-xs',
                 )}
             >
                 <ShareIcon className={compact ? 'size-3' : 'size-3.5'} />
@@ -65,7 +65,7 @@ function ShareStatus({
             <span
                 className={cn(
                     'inline-flex items-center gap-1 font-medium text-warning-text',
-                    compact ? 'text-[10px]' : 'text-[11px]',
+                    compact ? 'text-xs' : 'text-xs',
                 )}
             >
                 <ShareIcon className={compact ? 'size-3' : 'size-3.5'} />
@@ -92,7 +92,7 @@ function ShareStatus({
         <span
             className={cn(
                 'inline-flex min-w-0 items-center gap-1.5 text-ink-muted',
-                compact ? 'text-[10px]' : 'text-[11px]',
+                compact ? 'text-xs' : 'text-xs',
             )}
         >
             <ShareIcon className={cn('shrink-0 text-brand', compact ? 'size-3' : 'size-3.5')} />
@@ -201,7 +201,7 @@ function ResumeCard({
                         {resume.share !== null && (
                             <span
                                 className={cn(
-                                    'rounded-full px-1.5 py-0.5 text-[10px] font-semibold',
+                                    'rounded-full px-1.5 py-0.5 text-xs font-semibold',
                                     resume.share.is_expired
                                         ? 'bg-warning-subtle text-warning-text'
                                         : 'bg-brand-subtle text-brand',
@@ -323,7 +323,7 @@ function ResumeCard({
                         )}
                         <div className="my-1 border-t border-surface-border" />
                         <div className="px-2 py-1.5">
-                            <p className="mb-1 text-[10px] font-semibold text-ink-muted uppercase">
+                            <p className="mb-1 text-xs font-semibold text-ink-muted uppercase">
                                 Rename
                             </p>
                             <input
@@ -385,7 +385,7 @@ function ResumeCard({
                                             />
                                         </div>
                                     </div>
-                                    <span className="text-[11px] text-ink-muted">
+                                    <span className="text-xs tabular-nums text-ink-muted">
                                         {version.score}/100
                                     </span>
                                     <Link
@@ -433,7 +433,7 @@ function ResumeCardSkeleton() {
 function EmptyResumes({ onCreate }: { onCreate: () => void }) {
     return (
         <Shell innerClassName="px-6 py-12 text-center sm:px-10">
-            <span className="inline-flex items-center rounded-full bg-brand-subtle px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+            <span className="inline-flex items-center rounded-full bg-brand-subtle px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-brand">
                 Get started
             </span>
             <h3 className="mt-4 text-lg font-bold tracking-tight text-ink">
@@ -530,13 +530,7 @@ export default function Dashboard({
             : null;
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold text-ink">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Dashboard" />
 
             <div className="py-6 sm:py-8">
@@ -547,16 +541,16 @@ export default function Dashboard({
                             <Shell className="md:col-span-3" innerClassName="flex items-center gap-4 p-5 sm:p-6">
                                 <ScoreDial score={averageScore} size={64} />
                                 <div className="min-w-0 flex-1">
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
-                                        Overview
+                                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-faint">
+                                        Dashboard
                                     </p>
-                                    <h2 className="mt-1 text-lg font-bold tracking-tight text-ink">
+                                    <h1 className="mt-1 text-lg font-bold tracking-tight text-ink">
                                         {resumes === undefined
                                             ? 'Loading your resumes…'
                                             : resumes.length === 0
                                               ? 'No resumes yet'
                                               : `${resumes.length} resume${resumes.length === 1 ? '' : 's'}`}
-                                    </h2>
+                                    </h1>
                                     <p className="mt-1 text-sm text-ink-muted">
                                         {averageScore !== null
                                             ? `Average strength score ${averageScore}/100`
@@ -568,7 +562,7 @@ export default function Dashboard({
                             </Shell>
 
                             <Shell className="md:col-span-2" innerClassName="flex flex-col gap-2 p-4 sm:p-5">
-                                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+                                <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-faint">
                                     Quick start
                                 </p>
                                 <Button
@@ -612,7 +606,7 @@ export default function Dashboard({
                         )}
 
                         <div className="flex items-end justify-between gap-4">
-                            <p className="text-[10px] font-bold tracking-[0.12em] text-ink-faint uppercase">
+                            <p className="text-xs font-bold tracking-[0.12em] text-ink-faint uppercase">
                                 Your resumes
                             </p>
                         </div>

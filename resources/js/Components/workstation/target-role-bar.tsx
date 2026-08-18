@@ -29,7 +29,7 @@ export function TargetRoleBar({
                 <div className="min-w-0 flex-1">
                     <label
                         htmlFor="field-target-role-bar"
-                        className="mb-1 block text-[11px] font-semibold tracking-[0.06em] text-ink-faint uppercase"
+                        className="mb-1 block text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase"
                     >
                         Target role
                     </label>
@@ -43,7 +43,7 @@ export function TargetRoleBar({
                         onChange={onChange}
                     />
                 </div>
-                <p className="shrink-0 pb-1 text-[11px] leading-snug text-ink-muted sm:max-w-[15rem]">
+                <p className="shrink-0 pb-1 text-xs leading-snug text-ink-muted sm:max-w-[15rem]">
                     {targetRole.trim() === ''
                         ? 'Sets the Keywords score band. Not printed on the resume.'
                         : recognized

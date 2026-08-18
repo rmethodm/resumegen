@@ -16,7 +16,6 @@ class AiRequest extends Model
 
     protected $fillable = [
         'user_id',
-        'job_pairing_id',
         'feature',
         'model',
         'prompt_tokens',
@@ -33,13 +32,5 @@ class AiRequest extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * @return BelongsTo<JobPairing, AiRequest>
-     */
-    public function jobPairing(): BelongsTo
-    {
-        return $this->belongsTo(JobPairing::class);
     }
 }

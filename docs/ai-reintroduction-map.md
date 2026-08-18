@@ -5,9 +5,8 @@
 > disabled by default via `AI_ENABLED`/`OPENAI_API_KEY` in `config/ai.php` — see CLAUDE.md's
 > "AI" section. Everything else on this map (import, JD keyword match/gap-fix, multi-section
 > tailor) is still unbuilt.
-> Complements `docs/pricing-recommendations-2026-08.md`.
 > Product rule: do **not** implement AI beyond the shipped Tier-1 slice without explicit
-> product approval (see CLAUDE.md).
+> product approval (see CLAUDE.md). The app is free — no paid tiers, no metering-for-payment.
 
 ---
 
@@ -143,30 +142,11 @@ Numbers are planning defaults — re-tune after COGS and usage data.
 
 Prefer **gap-fix pack** for Optimize so users aren’t punished for long experience sections.
 
-### Price hooks (when AI exists)
-
-Aligns with pricing doc Option B / C after AI is real:
-
-| Plan shape | List | Tier 1 entitlement idea |
-|---|---|---|
-| **Free** | $0 | Quotas in table above |
-| **Pro** | **$9/mo** or **$29 / 30-day pack** | Comfortable writing quotas (bullets + summary); limited scans |
-| **Search / Campaign** | **$19/mo** or **$49–59 / 90-day pack** | High/unlimited Tier 1 AI + unlimited or high scans |
-| **Scan-led alt** | **$19–29/mo** | Builder free; scans + gap-fix are the paid core (Jobscan path) |
-
-Until AI ships, do **not** invent AI quotas on the marketing site. Price on share power-tools only (see pricing doc Option A).
-
 ### Free experience goals
 
 - User finishes a real resume without paying.
 - Hits one “wow” AI moment (e.g. one strong bullet rewrite or one scan report).
 - Feels the ceiling during an active search (many bullets + several JDs), not on first open.
-
-### Paid experience goals
-
-- No rationing anxiety for a 2–4 month search.
-- Optimize tab is the habitual path: paste JD → scan → fix gaps → export free.
-- Pack option preferred for episodic users; sub for power users who return often.
 
 ---
 
@@ -175,9 +155,8 @@ Until AI ships, do **not** invent AI quotas on the marketing site. Price on shar
 | Risk | Mitigation |
 |---|---|
 | Hallucinated metrics / employers | Never auto-save; show diffs; optional “only rephrase, don’t invent numbers” mode |
-| COGS spikes | Hard free caps; pack/sub high caps; async for import only |
+| COGS spikes | Hard usage caps (monthly cap, like the existing `AI_MONTHLY_LIMIT`); async for import only |
 | Score trust erosion | Keep scorer deterministic; AI never mutates the score formula |
-| Dark-pattern reputation | No export gate; no fake “download blocked” after AI tease |
 | Scope creep | Ship Tier 1 only before interview coach / cover letters / chat |
 
 ---
@@ -191,16 +170,14 @@ When approved, natural insertion points (names for orientation only):
 | UI | `BulletEditor` actions; summary section; Optimize tab panel |
 | API | Small dedicated endpoints (not chat) — e.g. rewrite bullet, generate summary, scan JD |
 | Domain | Resume + job description context only; no admin/AI history product required for v1 |
-| Billing | Meter actions; free export untouched |
 | Tests | Quota edges, accept/reject does not auto-write without user confirm, scan without LLM stays free-path |
 
-Full implementation plan should use TDD and explicit approval before any provider keys, Cashier, or AI packages land.
+Full implementation plan should use TDD and explicit approval before any provider keys or AI packages land. The app is free — no billing/metering-for-payment work.
 
 ---
 
 ## Related docs
 
-- `docs/pricing-recommendations-2026-08.md` — price points; AI meters only after AI exists
 - `docs/ai-provider-comparison-2026-08.md` — Claude vs OpenAI vs Grok cost/quality pick (2026-08)
 - `docs/claude-design-import-notes-2026-08.md` — how to hand off Claude Design exports into this repo
 - `docs/resume-builder-competitive-analysis.md` — market anchors (historical)
@@ -210,7 +187,7 @@ Full implementation plan should use TDD and explicit approval before any provide
 
 ## Next steps (optional, not started)
 
-1. Product pick: **Pro+quotas** vs **scan-led** pricing once Tier 1 scope is fixed
+1. Product pick: which Tier 1 scope to ship (bullet rewrite vs scan-led) — no paid tier attached
 2. Spec one endpoint + one UI control for **bullet rewrite** only (vertical slice)
 3. Deterministic JD keyword matcher **before** any LLM on Optimize (cheaper, shippable alone)
 4. Provider default: see `docs/ai-provider-comparison-2026-08.md` (OpenAI mini/nano recommended)

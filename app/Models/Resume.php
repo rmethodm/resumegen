@@ -203,6 +203,16 @@ class Resume extends Model
     }
 
     /**
+     * All share links for this resume (Shares page can hold more than one).
+     *
+     * @return HasMany<ResumeShareLink, $this>
+     */
+    public function shareLinks(): HasMany
+    {
+        return $this->hasMany(ResumeShareLink::class);
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

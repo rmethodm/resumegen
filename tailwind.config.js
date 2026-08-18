@@ -35,31 +35,32 @@ export default {
                     900: '#1c1d20',
                     950: '#101113',
                 },
-                // ── Primitive accent ramp — same hue as brand.DEFAULT (#5952d2) ──
+                // ── Primitive accent ramp (static; live UI uses brand.* vars) ──
                 accent: {
                     50: '#f0efff',
-                    100: '#e1e5ff', // == brand.subtle
+                    100: '#e1e5ff',
                     200: '#c3c3fb',
                     300: '#a29ff2',
                     400: '#8079e6',
-                    500: '#5952d2', // == brand.DEFAULT
+                    500: '#5952d2',
                     600: '#4842b0',
-                    700: '#3c3695', // == brand.accent / brand.light
+                    700: '#3c3695',
                     800: '#2c2870',
                     900: '#1f1c50',
                     950: '#131134',
                 },
+                // Brand + surface canvas: CSS vars on :root / [data-brand-theme]
+                // so the workstation can preview navy / teal / copper accents.
                 brand: {
-                    DEFAULT: '#5952d2',
-                    accent: '#3c3695',
-                    light: '#3c3695',
-                    subtle: '#e1e5ff',
-                    // Slightly desaturated fill for large marketing CTAs.
-                    soft: '#5e58c4',
+                    DEFAULT: 'rgb(var(--brand-rgb) / <alpha-value>)',
+                    accent: 'rgb(var(--brand-accent-rgb) / <alpha-value>)',
+                    light: 'rgb(var(--brand-accent-rgb) / <alpha-value>)',
+                    subtle: 'rgb(var(--brand-subtle-rgb) / <alpha-value>)',
+                    soft: 'rgb(var(--brand-soft-rgb) / <alpha-value>)',
                 },
                 surface: {
-                    DEFAULT: '#f2f6f9',
-                    border: '#d2d8dd',
+                    DEFAULT: 'rgb(var(--surface-rgb) / <alpha-value>)',
+                    border: 'rgb(var(--surface-border-rgb) / <alpha-value>)',
                     // Dark-mode remap. Not an inversion: canvas sits near-black
                     // with the same warm tint as light, never pure #000
                     // (tokens.md canvas rule); raised adds luminance rather

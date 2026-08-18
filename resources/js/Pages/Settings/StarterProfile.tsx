@@ -57,16 +57,16 @@ export default function StarterProfilePage({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold text-gray-800">
+                <h1 className="text-xl font-semibold text-ink">
                     Starter profile
-                </h2>
+                </h1>
             }
         >
             <Head title="Starter profile" />
 
             <div className="py-8">
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-ink-muted">
                         Set this up once and every new resume starts pre-filled.
                         You can edit it anytime.
                     </p>
@@ -80,11 +80,11 @@ export default function StarterProfilePage({
                                 <p className="text-base font-bold tracking-tight">
                                     Build your career source of truth
                                 </p>
-                                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-gray-500">
+                                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ink-muted">
                                     Add the details you want reused when
                                     creating new resumes.
                                 </p>
-                                <div className="mt-4 grid gap-2 text-xs text-gray-500 sm:grid-cols-3">
+                                <div className="mt-4 grid gap-2 text-xs text-ink-muted sm:grid-cols-3">
                                     <span className="flex items-center gap-2">
                                         <CheckCircleIcon className="size-3.5 text-brand" />
                                         Pre-filled resumes

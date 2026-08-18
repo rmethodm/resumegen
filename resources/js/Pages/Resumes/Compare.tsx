@@ -59,7 +59,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                 />
 
                 <div className="flex min-w-0 flex-1 flex-col">
-                    <div className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3">
+                    <div className="flex items-center justify-between border-b border-surface-border bg-white px-6 py-3">
                         <div className="flex items-center gap-2">
                             <h1 className="text-[15px] font-bold">
                                 {group.title}
@@ -72,7 +72,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                                 onSwap={(id) => swap('left', id)}
                                 tone="neutral"
                             />
-                            <span className="text-[11px] text-gray-500">
+                            <span className="text-xs text-ink-muted">
                                 vs
                             </span>
                             <VersionChip
@@ -102,7 +102,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 border-b border-gray-200 bg-white px-6 py-2 text-[11px] text-gray-500">
+                    <div className="flex items-center gap-4 border-b border-surface-border bg-white px-6 py-2 text-xs text-ink-muted">
                         <Legend swatch="bg-success/30" label="Added" />
                         <Legend swatch="bg-danger/30" label="Removed" />
                         <Legend swatch="bg-yellow-200" label="Changed" />
@@ -148,12 +148,12 @@ function CompareSidebar({
     onSelect: (id: number) => void;
 }) {
     return (
-        <aside className="flex w-[200px] shrink-0 flex-col gap-5 border-r border-gray-200 bg-white p-4">
+        <aside className="flex w-[200px] shrink-0 flex-col gap-5 border-r border-surface-border bg-white p-4">
             <div>
-                <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-500 uppercase">
+                <p className="mb-2 text-xs font-bold tracking-wide text-ink-muted uppercase">
                     Sections
                 </p>
-                <div className="flex flex-col gap-0.5 text-xs font-semibold text-gray-900">
+                <div className="flex flex-col gap-0.5 text-xs font-semibold text-ink">
                     <span className="rounded-md px-2 py-1.5">
                         {sectionLabels.summary}
                     </span>
@@ -164,7 +164,7 @@ function CompareSidebar({
             </div>
 
             <div>
-                <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-500 uppercase">
+                <p className="mb-2 text-xs font-bold tracking-wide text-ink-muted uppercase">
                     Versions
                 </p>
                 <div className="flex flex-col gap-1.5">
@@ -178,7 +178,7 @@ function CompareSidebar({
                                 'rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
                                 version.id === right.id
                                     ? 'border-brand-subtle bg-brand-subtle text-brand'
-                                    : 'border-gray-200 bg-transparent text-gray-900 hover:bg-gray-50',
+                                    : 'border-surface-border bg-transparent text-ink hover:bg-surface',
                             )}
                         >
                             {version.title}
@@ -223,10 +223,10 @@ function VersionChip({
             value={value.id}
             onChange={(event) => onSwap(Number(event.target.value))}
             className={cn(
-                'h-7 rounded-full border-0 px-3 text-[12px] font-semibold outline-none',
+                'h-7 rounded-full border-0 px-3 text-xs font-semibold outline-none',
                 tone === 'brand'
                     ? 'bg-brand-subtle text-brand'
-                    : 'bg-gray-100 text-gray-500',
+                    : 'bg-surface text-ink-muted',
             )}
         >
             <option value={value.id}>{value.title}</option>
@@ -280,8 +280,8 @@ function CompareColumn({
         <div>
             <p
                 className={cn(
-                    'mb-2 text-[10px] font-bold uppercase tracking-wide',
-                    tone === 'brand' ? 'text-brand' : 'text-gray-500',
+                    'mb-2 text-xs font-bold uppercase tracking-wide',
+                    tone === 'brand' ? 'text-brand' : 'text-ink-muted',
                 )}
             >
                 {label}
@@ -291,18 +291,18 @@ function CompareColumn({
                 <div className="text-lg font-extrabold">
                     {side.document.full_name}
                 </div>
-                <div className="mb-3 text-[11px] text-gray-500">
+                <div className="mb-3 text-xs text-ink-muted">
                     {side.document.headline} · {side.document.email}
                 </div>
 
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wide">
+                <p className="mb-1 text-xs font-bold uppercase tracking-wide">
                     Summary
                 </p>
-                <p className="mb-4 text-[12px] leading-relaxed">
+                <p className="mb-4 text-xs leading-relaxed">
                     <SummaryDiff parts={summaryParts} />
                 </p>
 
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wide">
+                <p className="mb-1 text-xs font-bold uppercase tracking-wide">
                     Experience
                 </p>
                 <div className="space-y-3">
@@ -342,13 +342,13 @@ function CompareColumn({
                     })}
                 </div>
 
-                <div className="mt-4 grid grid-cols-4 gap-2 border-t border-gray-200 pt-3">
+                <div className="mt-4 grid grid-cols-4 gap-2 border-t border-surface-border pt-3">
                     {side.breakdown.map((band) => (
                         <div key={band.label} className="space-y-1">
-                            <p className="text-[10px] font-semibold text-gray-500 uppercase">
+                            <p className="text-xs font-semibold text-ink-muted uppercase">
                                 {band.label}
                             </p>
-                            <div className="h-1.5 rounded-full bg-gray-100">
+                            <div className="h-1.5 rounded-full bg-surface">
                                 <div
                                     className="h-full rounded-full bg-brand"
                                     style={{
@@ -356,7 +356,7 @@ function CompareColumn({
                                     }}
                                 />
                             </div>
-                            <p className="text-[11px] font-bold">
+                            <p className="text-xs font-bold">
                                 {band.score}/25
                             </p>
                         </div>

@@ -3,8 +3,8 @@
 > Advisory when written; **the shipped Tier-1 slice (2026-08-04) already adopted this doc's
 > own pick** — `config/ai.php` defaults `OPENAI_MODEL` to `gpt-4o-mini`. Re-check before
 > expanding beyond Tier 1 rather than re-litigating the provider choice below.
-> Complements `docs/ai-reintroduction-map.md` and `docs/pricing-recommendations-2026-08.md`.
-> Pricing snapshot: **2026-08** from official provider docs (rates change; re-check before implementation).
+> Complements `docs/ai-reintroduction-map.md`.
+> Vendor API cost snapshot: **2026-08** from official provider docs (rates change; re-check before implementation).
 
 ---
 
@@ -134,8 +134,7 @@ Operational rules:
 
 ## Related docs
 
-- `docs/ai-reintroduction-map.md` — where AI should live; Free vs Paid quotas
-- `docs/pricing-recommendations-2026-08.md` — list prices; meter AI after AI exists
+- `docs/ai-reintroduction-map.md` — where AI should live
 - CLAUDE.md — AI removed; reintroduce only with product decision
 
 ---

@@ -4,7 +4,6 @@ import { type ResumeContent } from './Partials/PlainTextView';
 import JdMatcher from './Partials/JdMatcher';
 import AtsMatchPanel from './Partials/AtsMatchPanel';
 import ThreadsPanel from './Partials/ThreadsPanel';
-import SharePopover from './Partials/SharePopover';
 import { useAiSuggestion } from '@/hooks/useAiSuggestion';
 import {
     SwatchIcon,
@@ -61,11 +60,11 @@ function DragDots({ className = '' }: { className?: string }) {
 
 function TipBox({ children }: { children: React.ReactNode }) {
     return (
-        <div className="flex gap-2.5 rounded-xl bg-[#dbeafe] p-3.5">
-            <svg className="h-4 w-4 shrink-0 text-[#2563eb] mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+        <div className="flex gap-2.5 rounded-xl bg-brand-subtle p-3.5">
+            <svg className="h-4 w-4 shrink-0 text-brand mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM6.343 5.343a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zM15.657 5.343a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM7 16v-1h6v1a2 2 0 11-4 0zM10 4a4 4 0 00-1.446 7.724L8 13h4l-.554-1.276A4 4 0 0010 4z" />
             </svg>
-            <div className="text-sm text-[#1e40af]">{children}</div>
+            <div className="text-sm text-brand-accent">{children}</div>
         </div>
     );
 }
@@ -81,12 +80,12 @@ function SkillsLayoutCard({
             onClick={onClick}
             className={`flex flex-col gap-2 rounded-xl border p-2.5 text-left transition-colors ${
                 selected
-                    ? 'border-[#2563eb] bg-[#dbeafe] ring-1 ring-[#2563eb]'
-                    : 'border-[#cbd5e1] bg-white hover:border-[#bfdbfe] hover:bg-[#f1f5f9]'
+                    ? 'border-brand bg-brand-subtle ring-1 ring-brand'
+                    : 'border-surface-border bg-white hover:border-brand/30 hover:bg-surface'
             }`}
         >
             <div className="flex h-11 w-full items-start">{children}</div>
-            <span className={`text-[10px] font-semibold uppercase tracking-wide ${selected ? 'text-[#2563eb]' : 'text-[#94a3b8]'}`}>
+            <span className={`text-xs font-semibold uppercase tracking-wide ${selected ? 'text-brand' : 'text-ink-faint'}`}>
                 {label}
             </span>
         </button>
@@ -94,7 +93,7 @@ function SkillsLayoutCard({
 }
 
 function PanelGroupLabel({ children }: { children: React.ReactNode }) {
-    return <p className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#4f46e5]">{children}</p>;
+    return <p className="mb-2.5 text-xs font-bold uppercase tracking-[0.08em] text-brand">{children}</p>;
 }
 
 function PanelCard({
@@ -103,12 +102,12 @@ function PanelCard({
     title: string; icon?: React.ReactNode; pill?: React.ReactNode; open: boolean; onToggle: () => void; children: React.ReactNode;
 }) {
     return (
-        <div className="mb-2.5 overflow-hidden rounded-[10px] border border-[#eeeef5] bg-white">
-            <button type="button" onClick={onToggle} className="flex w-full items-center gap-2 px-3 py-2.5 transition-colors hover:bg-[#fafafe]">
+        <div className="mb-2.5 overflow-hidden rounded-[10px] border border-surface-border bg-white">
+            <button type="button" onClick={onToggle} className="flex w-full items-center gap-2 px-3 py-2.5 transition-colors hover:bg-surface">
                 {icon}
-                <span className="flex-1 text-left text-[13px] font-semibold text-[#0f172a]">{title}</span>
+                <span className="flex-1 text-left text-sm font-semibold text-ink">{title}</span>
                 {pill}
-                <svg className={`h-3.5 w-3.5 shrink-0 text-[#94a3b8] transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className={`h-3.5 w-3.5 shrink-0 text-ink-faint transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
@@ -122,7 +121,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
         <button
             type="button"
             onClick={onClick}
-            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-[#bfdbfe] py-3 text-sm font-medium text-[#2563eb] transition-colors hover:border-[#2563eb] hover:bg-[#dbeafe]"
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-brand/30 py-3 text-sm font-medium text-brand transition-colors hover:border-brand hover:bg-brand-subtle"
         >
             <span className="text-lg leading-none">+</span> {label}
         </button>
@@ -130,7 +129,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
 }
 
 function FLabel({ children }: { children: React.ReactNode }) {
-    return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#94a3b8]">{children}</p>;
+    return <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-ink-faint">{children}</p>;
 }
 
 function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
@@ -144,7 +143,7 @@ function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
             onChange={e => onChange(e.target.value)}
             onBlur={onBlur}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
+            className="w-full rounded-lg border border-surface-border px-[6.6px] py-[4.4px] text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-brand/25 focus:outline-none"
         />
     );
 }
@@ -160,7 +159,7 @@ function FTextarea({ value, onChange, onBlur, placeholder, rows = 4 }: {
             placeholder={placeholder}
             rows={rows}
             spellCheck
-            className="w-full resize-y rounded-lg border border-[#cbd5e1] px-[6.6px] py-[4.4px] text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-[#3b82f6] focus:outline-none"
+            className="w-full resize-y rounded-lg border border-surface-border px-[6.6px] py-[4.4px] text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-brand/25 focus:outline-none"
         />
     );
 }
@@ -173,10 +172,10 @@ function EntryCard({
     label: string; onRemove: () => void; children: React.ReactNode;
 }) {
     return (
-        <div className="overflow-hidden rounded-xl border border-[#cbd5e1]">
-            <div className="flex items-center justify-between border-b border-[#cbd5e1] bg-[#f1f5f9] px-4 py-2.5">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">{label}</span>
-                <button type="button" onClick={onRemove} className="text-[#94a3b8] hover:text-red-500 transition-colors">
+        <div className="overflow-hidden rounded-xl border border-surface-border">
+            <div className="flex items-center justify-between border-b border-surface-border bg-surface px-4 py-2.5">
+                <span className="text-xs font-semibold uppercase tracking-wider text-ink-faint">{label}</span>
+                <button type="button" onClick={onRemove} className="text-ink-faint hover:text-danger transition-colors">
                     <TrashIcon className="h-4 w-4" />
                 </button>
             </div>
@@ -195,7 +194,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
     return (
         <>
             {text.slice(0, idx)}
-            <span className="font-semibold text-[#2563eb]">{text.slice(idx, idx + q.length)}</span>
+            <span className="font-semibold text-brand">{text.slice(idx, idx + q.length)}</span>
             {text.slice(idx + q.length)}
         </>
     );
@@ -284,15 +283,15 @@ function SkillTagInput({
 
     return (
         <div ref={containerRef} className="relative">
-            <div className="min-h-[44px] w-full rounded-lg border border-[#cbd5e1] px-3 py-2 focus-within:border-[#2563eb] focus-within:ring-1 focus-within:ring-[#2563eb]">
+            <div className="min-h-[44px] w-full rounded-lg border border-surface-border px-3 py-2 focus-within:border-brand focus-within:ring-1 focus-within:ring-brand">
                 <div className="flex flex-wrap gap-1.5">
                     {skills.map(s => (
-                        <span key={s} className="flex items-center gap-1 rounded-md bg-[#dbeafe] px-2 py-1 text-xs text-[#1e40af] border border-[#bfdbfe]">
+                        <span key={s} className="flex items-center gap-1 rounded-md bg-brand-subtle px-2 py-1 text-xs text-brand-accent border border-brand/30">
                             {s}
                             <button
                                 type="button"
                                 onClick={() => onChange(skills.filter(x => x !== s))}
-                                className="text-[#3b82f6] hover:text-red-500 leading-none"
+                                className="text-brand hover:text-danger leading-none"
                             >
                                 ×
                             </button>
@@ -334,11 +333,11 @@ function SkillTagInput({
                         }}
                         onBlur={() => { if (inputVal) { addSkill(inputVal); } }}
                         placeholder={skills.length === 0 ? placeholder : ''}
-                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:ring-0 focus:outline-none"
+                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-ink placeholder:text-ink-faint focus:ring-0 focus:outline-none"
                     />
                     {loading && (
                         <span className="self-center" aria-hidden="true">
-                            <svg className="h-3.5 w-3.5 animate-spin text-[#94a3b8]" viewBox="0 0 24 24" fill="none">
+                            <svg className="h-3.5 w-3.5 animate-spin text-ink-faint" viewBox="0 0 24 24" fill="none">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                             </svg>
@@ -347,7 +346,7 @@ function SkillTagInput({
                 </div>
             </div>
             {open && (suggestions.length > 0 || showEmpty) && (
-                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#cbd5e1] rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
+                <ul id={listId} role="listbox" className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-surface-border rounded-lg shadow-lg py-1 max-h-52 overflow-y-auto">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
@@ -356,14 +355,14 @@ function SkillTagInput({
                             aria-selected={i === activeIndex}
                             onMouseDown={() => addSkill(s.name)}
                             className={`px-3 py-2 text-sm cursor-pointer ${
-                                i === activeIndex ? 'bg-[#dbeafe] text-[#2563eb]' : 'text-[#1e293b] hover:bg-[#f1f5f9]'
+                                i === activeIndex ? 'bg-brand-subtle text-brand' : 'text-ink hover:bg-surface'
                             }`}
                         >
                             {highlightMatch(s.name, inputVal)}
                         </li>
                     ))}
                     {showEmpty && (
-                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-[#94a3b8]">
+                        <li role="option" aria-disabled="true" className="px-3 py-2 text-sm text-ink-faint">
                             No matches — press Enter to add “{inputVal.trim()}”
                         </li>
                     )}
@@ -638,8 +637,8 @@ export default function Edit({
                     <div className="flex flex-wrap items-center gap-x-[3px] gap-y-1 pt-0.5">
                         {[28, 22, 32, 18, 26].map((w, i) => (
                             <span key={i} className="flex items-center gap-[3px]">
-                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
-                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-[#94a3b8]" />}
+                                <span className="inline-block h-[6px] rounded-full bg-brand/30" style={{ width: w }} />
+                                {i < 4 && <span className="inline-block h-[3px] w-[3px] rounded-full bg-ink-faint" />}
                             </span>
                         ))}
                     </div>
@@ -649,8 +648,8 @@ export default function Edit({
                     <div className="flex flex-col gap-[5px] pt-0.5">
                         {[34, 26, 38, 22].map((w, i) => (
                             <div key={i} className="flex items-center gap-1">
-                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-[#0f172a]" />
-                                <span className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                <span className="inline-block h-[4px] w-[4px] shrink-0 rounded-full bg-ink" />
+                                <span className="inline-block h-[6px] rounded-full bg-brand/30" style={{ width: w }} />
                             </div>
                         ))}
                     </div>
@@ -660,10 +659,10 @@ export default function Edit({
                     <div className="flex flex-col gap-[6px] pt-0.5">
                         {[[20, [14, 12]], [16, [18, 10]], [22, [12, 14]]].map(([catW, items], i) => (
                             <div key={i} className="flex flex-wrap items-center gap-[3px]">
-                                <span className="inline-block h-[6px] rounded-full bg-[#0f172a]" style={{ width: catW as number }} />
-                                <span className="text-[7px] leading-none text-[#94a3b8]">:</span>
+                                <span className="inline-block h-[6px] rounded-full bg-ink" style={{ width: catW as number }} />
+                                <span className="text-[7px] leading-none text-ink-faint">:</span>
                                 {(items as number[]).map((w, j) => (
-                                    <span key={j} className="inline-block h-[6px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                    <span key={j} className="inline-block h-[6px] rounded-full bg-brand/30" style={{ width: w }} />
                                 ))}
                             </div>
                         ))}
@@ -674,9 +673,9 @@ export default function Edit({
                     <div className="flex gap-2.5 pt-0.5">
                         {[[22, [18, 24, 16]], [18, [22, 14, 20]]].map(([catW, rows], ci) => (
                             <div key={ci} className="flex flex-col gap-[4px]">
-                                <span className="inline-block h-[7px] rounded bg-[#0f172a]" style={{ width: catW as number }} />
+                                <span className="inline-block h-[7px] rounded bg-ink" style={{ width: catW as number }} />
                                 {(rows as number[]).map((w, ri) => (
-                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                    <span key={ri} className="inline-block h-[5px] rounded-full bg-brand/30" style={{ width: w }} />
                                 ))}
                             </div>
                         ))}
@@ -685,11 +684,11 @@ export default function Edit({
 
                 <SkillsLayoutCard label="Narrative" selected={skillsLayout === 'narrative'} onClick={() => { setSkillsLayout('narrative'); setTimeout(save, 0); }}>
                     <div className="flex flex-col gap-[5px] pt-0.5">
-                        <span className="inline-block h-[7px] w-[38px] rounded bg-[#0f172a]" />
+                        <span className="inline-block h-[7px] w-[38px] rounded bg-ink" />
                         {[32, 24, 34, 20].map((w, i) => (
                             <div key={i} className="flex items-center gap-1 pl-1">
-                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[#94a3b8]" />
-                                <span className="inline-block h-[5px] rounded-full bg-[#bfdbfe]" style={{ width: w }} />
+                                <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-ink-faint" />
+                                <span className="inline-block h-[5px] rounded-full bg-brand/30" style={{ width: w }} />
                             </div>
                         ))}
                     </div>
@@ -709,9 +708,9 @@ export default function Edit({
             {(skillsLayout === 'grouped-inline' || skillsLayout === 'grouped-vertical') && (
                 <>
                     {skillCategories.map(cat => (
-                        <div key={cat.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
-                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
-                                <DragDots className="text-[#94a3b8] shrink-0" />
+                        <div key={cat.id} className="overflow-hidden rounded-xl border border-surface-border bg-white">
+                            <div className="flex items-center gap-2 border-b border-surface-border bg-surface px-3 py-2.5">
+                                <DragDots className="text-ink-faint shrink-0" />
                                 <select
                                     value={cat.category_type}
                                     onChange={e => {
@@ -719,7 +718,7 @@ export default function Edit({
                                         setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_type: type, category_name: type || c.category_name } : c));
                                     }}
                                     onBlur={save}
-                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] px-2 py-1.5 text-sm text-[#1e293b] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-surface-border px-2 py-1.5 text-sm text-ink focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-none"
                                 >
                                     <option value="">Select category...</option>
                                     {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
@@ -730,9 +729,9 @@ export default function Edit({
                                     onChange={e => setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_name: e.target.value } : c))}
                                     onBlur={save}
                                     placeholder="Or type custom..."
-                                    className="flex-1 min-w-0 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-surface-border bg-white px-2 py-1.5 text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-none"
                                 />
-                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
+                                <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-ink-faint hover:text-danger transition-colors">
                                     <TrashIcon className="h-4 w-4" />
                                 </button>
                             </div>
@@ -754,17 +753,17 @@ export default function Edit({
             {skillsLayout === 'narrative' && (
                 <>
                     {skillNarratives.map(n => (
-                        <div key={n.id} className="overflow-hidden rounded-xl border border-[#cbd5e1] bg-white">
-                            <div className="flex items-center gap-2 border-b border-[#cbd5e1] bg-[#f1f5f9] px-3 py-2.5">
+                        <div key={n.id} className="overflow-hidden rounded-xl border border-surface-border bg-white">
+                            <div className="flex items-center gap-2 border-b border-surface-border bg-surface px-3 py-2.5">
                                 <input
                                     type="text"
                                     value={n.name}
                                     onChange={e => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, name: e.target.value } : x))}
                                     onBlur={save}
                                     placeholder="Skill area (e.g. Communication, Leadership)"
-                                    className="flex-1 rounded-lg border border-[#cbd5e1] bg-white px-2 py-1.5 text-sm font-medium text-[#1e293b] placeholder-[#94a3b8] focus:border-[#2563eb] focus:ring-1 focus:ring-[#3b82f6] focus:outline-none"
+                                    className="flex-1 rounded-lg border border-surface-border bg-white px-2 py-1.5 text-sm font-medium text-ink placeholder:text-ink-faint focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-none"
                                 />
-                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-[#94a3b8] hover:text-red-500 transition-colors">
+                                <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-ink-faint hover:text-danger transition-colors">
                                     <TrashIcon className="h-4 w-4" />
                                 </button>
                             </div>
@@ -852,7 +851,7 @@ export default function Edit({
                 type="button"
                 onClick={opts.onRun}
                 disabled={ai.loadingUrl !== null || opts.extraDisabled || exhausted}
-                className={`text-xs font-medium text-[#2563eb] hover:text-[#1d4ed8] disabled:opacity-40 disabled:cursor-not-allowed ${opts.className ?? ''}`}
+                className={`text-xs font-medium text-brand hover:text-brand-accent disabled:opacity-40 disabled:cursor-not-allowed ${opts.className ?? ''}`}
             >
                 {label}
             </button>
@@ -878,7 +877,7 @@ export default function Edit({
                         type="button"
                         onClick={() => runCoach(key, text)}
                         disabled={busy || exhausted || !text.trim()}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] px-3.5 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand to-brand-accent px-3.5 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         <SparkIcon /> Coach me
                     </button>
@@ -886,15 +885,15 @@ export default function Edit({
                         type="button"
                         onClick={onWrite}
                         disabled={busy || exhausted}
-                        className="text-xs font-semibold text-[#71717a] transition-colors hover:text-[#475569] disabled:cursor-not-allowed disabled:opacity-40"
+                        className="text-xs font-semibold text-ink-muted transition-colors hover:text-ink-muted disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         Write it for me{exhausted ? '' : ` · ${ai.remaining} left`}
                     </button>
                 </div>
                 {questions && (
-                    <div className="mt-3 rounded-lg border border-[#e0e7ff] bg-[#eef2ff] p-3">
-                        <p className="mb-1.5 text-[11px] font-semibold text-[#4338ca]">Answer in your own words — we'll rebuild it from your facts:</p>
-                        <ul className="mb-2 list-disc space-y-0.5 pl-4 text-xs text-[#4338ca]">
+                    <div className="mt-3 rounded-lg border border-brand/20 bg-brand-subtle p-3">
+                        <p className="mb-1.5 text-xs font-semibold text-brand-accent">Answer in your own words — we'll rebuild it from your facts:</p>
+                        <ul className="mb-2 list-disc space-y-0.5 pl-4 text-xs text-brand-accent">
                             {questions.map((q, i) => <li key={i}>{q}</li>)}
                         </ul>
                         <textarea
@@ -902,13 +901,13 @@ export default function Edit({
                             onChange={e => setCoachAnswers(prev => ({ ...prev, [key]: e.target.value }))}
                             rows={3}
                             placeholder="e.g. cut load time from 4s to 1.2s for 50k monthly users"
-                            className="w-full resize-y rounded-md border border-[#c7d2fe] px-2.5 py-2 text-xs text-[#1e293b] placeholder-[#94a3b8] focus:border-[#4f46e5] focus:outline-none focus:ring-1 focus:ring-[#4f46e5]"
+                            className="w-full resize-y rounded-md border border-brand/30 px-2.5 py-2 text-xs text-ink placeholder:text-ink-faint focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
                         />
                         <div className="mt-2 flex justify-end gap-2">
                             <button
                                 type="button"
                                 onClick={() => setCoachQuestions(prev => { const next = { ...prev }; delete next[key]; return next; })}
-                                className="text-xs text-[#94a3b8] hover:text-[#475569]"
+                                className="text-xs text-ink-faint hover:text-ink-muted"
                             >
                                 Cancel
                             </button>
@@ -916,7 +915,7 @@ export default function Edit({
                                 type="button"
                                 onClick={() => runRebuild(key, text, apply)}
                                 disabled={busy || !(coachAnswers[key]?.trim())}
-                                className="rounded-md bg-[#4f46e5] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-40"
+                                className="rounded-md bg-brand px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Rebuild
                             </button>
@@ -1008,7 +1007,7 @@ export default function Edit({
                         placeholder="Write a brief 2–4 sentence overview of your background and what you bring to a role."
                         rows={5}
                     />
-                    <p className="text-right text-xs text-[#94a3b8]">{Math.max(0, 1000 - summary.length)} characters remaining</p>
+                    <p className="text-right text-xs text-ink-faint">{Math.max(0, 1000 - summary.length)} characters remaining</p>
                     {renderBulletTools(
                         'summary',
                         summary,
@@ -1034,12 +1033,12 @@ export default function Edit({
                                 <div><FLabel>Start Date</FLabel><FInput value={exp.start_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, start_date: v } : e))} onBlur={save} placeholder="Jan 2022" /></div>
                                 <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
                             </div>
-                            <label className="flex items-center gap-2 text-sm text-[#475569] cursor-pointer">
-                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-[#bfdbfe] text-[#2563eb] focus:ring-[#3b82f6]" />
+                            <label className="flex items-center gap-2 text-sm text-ink-muted cursor-pointer">
+                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-brand/30 text-brand focus:ring-brand/25" />
                                 I currently work here
                             </label>
                             <div>
-                                <FLabel>Bullet Points <span className="text-[#94a3b8] font-normal">(one per line)</span></FLabel>
+                                <FLabel>Bullet Points <span className="text-ink-faint font-normal">(one per line)</span></FLabel>
                                 <FTextarea value={exp.bullets} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, bullets: v } : e))} onBlur={save} placeholder={"• Led migration to TypeScript, reducing runtime errors by 40%\n• Built CI/CD pipeline cutting deployment time from 2h to 15min"} rows={4} />
                             </div>
                             {renderBulletTools(
@@ -1065,14 +1064,14 @@ export default function Edit({
                     {projects.map((proj, i) => (
                         <EntryCard key={proj.id} label={proj.name || `Project ${i + 1}`} onRemove={() => { setProjects(prev => prev.filter(p => p.id !== proj.id)); setTimeout(save, 0); }}>
                             <div><FLabel>Project Name</FLabel><FInput value={proj.name} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, name: v } : p))} onBlur={save} placeholder="Personal Finance Dashboard" /></div>
-                            <div><FLabel>Description <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
-                            <div><FLabel>Project URL <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
+                            <div><FLabel>Description <span className="text-ink-faint font-normal">(optional)</span></FLabel><FTextarea value={proj.description} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, description: v } : p))} onBlur={save} placeholder="A brief description of what this project does and its impact." rows={3} /></div>
+                            <div><FLabel>Project URL <span className="text-ink-faint font-normal">(optional)</span></FLabel><FInput value={proj.url} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, url: v } : p))} onBlur={save} placeholder="https://github.com/you/project" /></div>
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <div><FLabel>Start Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
-                                <div><FLabel>End Date <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
+                                <div><FLabel>Start Date <span className="text-ink-faint font-normal">(optional)</span></FLabel><FInput value={proj.start_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, start_date: v } : p))} onBlur={save} placeholder="Jan 2024" /></div>
+                                <div><FLabel>End Date <span className="text-ink-faint font-normal">(optional)</span></FLabel><FInput value={proj.end_date} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, end_date: v } : p))} onBlur={save} placeholder="Mar 2024" /></div>
                             </div>
                             <div>
-                                <FLabel>Highlights <span className="text-[#94a3b8] font-normal">(one per line, optional)</span></FLabel>
+                                <FLabel>Highlights <span className="text-ink-faint font-normal">(one per line, optional)</span></FLabel>
                                 <FTextarea value={proj.bullets} onChange={v => setProjects(prev => prev.map(p => p.id === proj.id ? { ...p, bullets: v } : p))} onBlur={save} placeholder={"• Built with React, Node.js, and PostgreSQL\n• Handles 10k+ daily users"} rows={3} />
                             </div>
                         </EntryCard>
@@ -1122,12 +1121,12 @@ export default function Edit({
                     {certifications.map((cert, i) => (
                         <EntryCard key={cert.id} label={cert.name || `Certificate ${i + 1}`} onRemove={() => { setCertifications(prev => prev.filter(c => c.id !== cert.id)); setTimeout(save, 0); }}>
                             <div><FLabel>Certificate Name</FLabel><FInput value={cert.name} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, name: v } : c))} onBlur={save} placeholder="AWS Solutions Architect - Associate" /></div>
-                            <div><FLabel>Issuing Organization <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
+                            <div><FLabel>Issuing Organization <span className="text-ink-faint font-normal">(optional)</span></FLabel><FInput value={cert.issuer} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, issuer: v } : c))} onBlur={save} placeholder="Amazon Web Services" /></div>
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <div><FLabel>Date Obtained <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
-                                <div><FLabel>Expiration <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
+                                <div><FLabel>Date Obtained <span className="text-ink-faint font-normal">(optional)</span></FLabel><FInput value={cert.date} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, date: v } : c))} onBlur={save} placeholder="Jan 2024" /></div>
+                                <div><FLabel>Expiration <span className="text-ink-faint font-normal">(optional)</span></FLabel><FInput value={cert.expiration} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, expiration: v } : c))} onBlur={save} placeholder="Jan 2027 or No Expiration" /></div>
                             </div>
-                            <div><FLabel>Credential ID <span className="text-[#94a3b8] font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
+                            <div><FLabel>Credential ID <span className="text-ink-faint font-normal">(optional)</span></FLabel><FInput value={cert.credential_id} onChange={v => setCertifications(prev => prev.map(c => c.id === cert.id ? { ...c, credential_id: v } : c))} onBlur={save} placeholder="ABC123XYZ or verification URL" /></div>
                         </EntryCard>
                     ))}
                     <AddButton label="Add Certificate" onClick={() => setCertifications(prev => [...prev, emptyCert()])} />
@@ -1153,40 +1152,40 @@ export default function Edit({
     return (
         <AuthenticatedLayout>
             {/* Top bar */}
-            <div className="flex flex-wrap items-center gap-3 border-b border-[#cbd5e1] bg-white px-4 py-2">
-                <Link href={route('builder.index')} className="shrink-0 text-sm text-[#94a3b8] hover:text-[#475569]">← Resumes</Link>
-                <span className="shrink-0 text-[#cbd5e1]">/</span>
-                <h2 className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold text-[#0f172a]">{name}</h2>
+            <div className="flex flex-wrap items-center gap-3 border-b border-surface-border bg-white px-4 py-2">
+                <Link href={route('builder.index')} className="shrink-0 text-sm text-ink-faint hover:text-ink-muted">← Resumes</Link>
+                <span className="shrink-0 text-surface-border">/</span>
+                <h2 className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold text-ink">{name}</h2>
                 {liveScore !== null && (
                     <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                        liveScore <= 30 ? 'bg-[#fee2e2] text-[#b91c1c]'
-                            : liveScore <= 50 ? 'bg-[#fef3c7] text-[#a16207]'
-                                : 'bg-[#eef2ff] text-[#4f46e5]'
+                        liveScore <= 30 ? 'bg-danger-subtle text-danger-text'
+                            : liveScore <= 50 ? 'bg-warning-subtle text-warning-text'
+                                : 'bg-brand-subtle text-brand'
                     }`}>
                         {liveScore}%
                     </span>
                 )}
-                <span className="shrink-0 text-[11px] text-[#a0a0b0]">
+                <span className="shrink-0 text-xs text-ink-faint">
                     {saving ? 'Saving…' : savedAt ? `Saved ${savedAt}` : ''}
                 </span>
             </div>
 
             {/* Completion bar */}
             <div className="flex items-center border-b border-gray-100 bg-white px-4 py-2">
-                <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-[#e5e7eb]" style={{ height: 4 }}>
-                    <div className="h-full rounded-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] transition-all" style={{ width: `${completionScore}%` }} />
+                <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-surface-border" style={{ height: 4 }}>
+                    <div className="h-full rounded-full bg-gradient-to-r from-brand to-brand-accent transition-all" style={{ width: `${completionScore}%` }} />
                 </div>
             </div>
 
             <Head title={`Editing: ${name}`} />
 
-            <div className="relative flex flex-wrap items-start bg-[#f1f5f9]">
+            <div className="relative flex flex-wrap items-start bg-surface">
                     {/* ── Left column: the live preview. Hidden below `lg` so the
                          palette/drawer can take the full narrow-screen width. ── */}
-                    <div className="hidden min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-[#e2e3ee] px-8 py-6 lg:block">
+                    <div className="hidden min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-surface px-8 py-6 lg:block">
                         <div className="mb-2 flex items-center justify-between">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Live preview</span>
-                            <span className="text-[10px] text-[#a0a0b0]">{TEMPLATE_LABELS[template] ?? template} template</span>
+                            <span className="text-xs font-bold uppercase tracking-[0.05em] text-ink-faint">Live preview</span>
+                            <span className="text-xs text-ink-faint">{TEMPLATE_LABELS[template] ?? template} template</span>
                         </div>
                         <div className="relative h-[calc(100vh-9rem)] overflow-hidden rounded-md bg-white shadow-[0_8px_30px_rgba(79,70,229,0.12)]">
                             {renderPreviewFrames()}
@@ -1207,16 +1206,16 @@ export default function Edit({
                     {/* ── Right palette: fixed 300px on large screens, full-width
                          below `lg` since the preview is hidden there. ── */}
                     <aside
-                        className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-[#cbd5e1] bg-white lg:w-[300px]"
+                        className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-surface-border bg-white lg:w-[300px]"
                         style={{ minHeight: 'calc(100vh - 3.5rem)' }}
                     >
                         <div className="flex flex-col">
                             {/* Export */}
-                            <div className="flex gap-2 border-b border-[#eeeef5] p-3">
-                                <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0f172a] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]">
+                            <div className="flex gap-2 border-b border-surface-border p-3">
+                                <a href={route('builder.docx', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-ink py-2 text-xs font-semibold text-white transition-colors hover:bg-neutral-800">
                                     <ArrowDownTrayIcon className="h-3.5 w-3.5" /> DOCX
                                 </a>
-                                <a href={route('builder.pdf', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#cbd5e1] py-2 text-xs font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:bg-[#f8fafc] hover:text-[#4f46e5]">
+                                <a href={route('builder.pdf', resume.id)} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-surface-border py-2 text-xs font-semibold text-ink-muted transition-colors hover:border-brand/40 hover:bg-surface hover:text-brand">
                                     <ArrowDownTrayIcon className="h-3.5 w-3.5" /> PDF
                                 </a>
                             </div>
@@ -1231,14 +1230,14 @@ export default function Edit({
 
                                 {/* Resume Name — always visible; doesn't belong to any one
                                     section, so it doesn't get a drawer of its own. */}
-                                <div className="space-y-1.5 rounded-[10px] border border-[#eeeef5] bg-white p-3">
+                                <div className="space-y-1.5 rounded-[10px] border border-surface-border bg-white p-3">
                                     <FLabel>Resume Name</FLabel>
                                     <FInput value={name} onChange={setName} onBlur={save} placeholder="My Resume" />
-                                    <p className="text-[11px] text-[#94a3b8]">File: <span className="font-mono">{pdfFilename}</span></p>
+                                    <p className="text-xs text-ink-faint">File: <span className="font-mono">{pdfFilename}</span></p>
                                 </div>
 
                                 <div>
-                                    <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.05em] text-[#94a3b8]">Sections</p>
+                                    <p className="mb-2 text-xs font-bold uppercase tracking-[0.05em] text-ink-faint">Sections</p>
                                     <SectionPalette
                                         entries={paletteEntries}
                                         activeKey={drawerSection}
@@ -1251,8 +1250,8 @@ export default function Edit({
 
                                 <PanelCard
                                     title="Template"
-                                    icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-[#71717a]" />}
-                                    pill={<span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{TEMPLATE_LABELS[template] ?? template}</span>}
+                                    icon={<SwatchIcon className="h-[15px] w-[15px] shrink-0 text-ink-muted" />}
+                                    pill={<span className="shrink-0 rounded-full bg-brand-subtle px-2 py-0.5 text-xs font-semibold text-brand">{TEMPLATE_LABELS[template] ?? template}</span>}
                                     open={templateOpen}
                                     onToggle={() => setTemplateOpen(v => !v)}
                                 >
@@ -1267,20 +1266,20 @@ export default function Edit({
                                                         onClick={() => { setTemplate(t as ResumeTemplate); setTimeout(save, 0); }}
                                                         aria-pressed={selected}
                                                         title={TEMPLATE_LABELS[t] ?? t}
-                                                        className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-[#4f46e5] bg-[#eef2ff] ring-1 ring-[#4f46e5]' : 'border-[#eeeef5] hover:border-[#c7c7d9]'}`}
+                                                        className={`relative flex flex-col rounded-lg border p-1.5 text-left transition-colors ${selected ? 'border-brand bg-brand-subtle ring-1 ring-brand' : 'border-surface-border hover:border-surface-border'}`}
                                                     >
                                                         <img
                                                             src={`/images/templates/${t}.png`}
                                                             loading="lazy"
                                                             alt=""
-                                                            className="mb-1 h-28 w-full rounded border border-[#eeeef5] bg-white object-cover object-top"
+                                                            className="mb-1 h-28 w-full rounded border border-surface-border bg-white object-cover object-top"
                                                         />
-                                                        <span className={`truncate text-center text-[10px] font-semibold ${selected ? 'text-[#4f46e5]' : 'text-[#71717a]'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
+                                                        <span className={`truncate text-center text-xs font-semibold ${selected ? 'text-brand' : 'text-ink-muted'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
                                                     </button>
                                                 );
                                             })}
                                         </div>
-                                        {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-[10px] text-amber-600">⚠️ Not ATS-optimized</p>}
+                                        {NON_ATS_TEMPLATES.includes(template) && <p className="mt-1.5 text-xs text-warning-text">⚠️ Not ATS-optimized</p>}
                                     </div>
                                 </PanelCard>
 
@@ -1296,7 +1295,7 @@ export default function Edit({
                                                     key={f}
                                                     type="button"
                                                     onClick={() => { fontFamilyRef.current = f; setFontFamily(f); save(); }}
-                                                    className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-[#4f46e5] bg-[#eef2ff] text-[#4f46e5]' : 'border-[#cbd5e1] text-[#475569] hover:border-[#a5b4fc]'}`}
+                                                    className={`flex-1 rounded-md border py-1.5 text-xs font-semibold transition-colors ${fontFamily === f ? 'border-brand bg-brand-subtle text-brand' : 'border-surface-border text-ink-muted hover:border-brand/40'}`}
                                                 >
                                                     {f === 'sans' ? 'Sans' : f === 'serif' ? 'Serif' : 'Mono'}
                                                 </button>
@@ -1313,8 +1312,8 @@ export default function Edit({
                                             ] as { label: string; key: keyof FontSizes; min: number; max: number }[]).map(({ label, key, min, max }) => (
                                                 <div key={key}>
                                                     <div className="mb-1 flex justify-between">
-                                                        <span className="text-[11px] text-[#71717a]">{label}</span>
-                                                        <span className="text-[11px] font-semibold tabular-nums text-[#0f172a]">{fontSizes[key]}pt</span>
+                                                        <span className="text-xs text-ink-muted">{label}</span>
+                                                        <span className="text-xs font-semibold tabular-nums text-ink">{fontSizes[key]}pt</span>
                                                     </div>
                                                     <input
                                                         type="range"
@@ -1328,12 +1327,12 @@ export default function Edit({
                                                         onTouchEnd={save}
                                                         onKeyUp={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') save(); }}
                                                         className="w-full"
-                                                        style={{ accentColor: '#4f46e5' }}
+                                                        style={{ accentColor: '#5952d2' }}
                                                     />
                                                 </div>
                                             ))}
                                             <div className="flex justify-end">
-                                                <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-[10px] text-[#94a3b8] transition-colors hover:text-[#4f46e5]">Reset sizes</button>
+                                                <button type="button" onClick={() => { fontSizesRef.current = { ...DEFAULT_FONT_SIZES }; setFontSizes({ ...DEFAULT_FONT_SIZES }); save(); }} className="text-xs text-ink-faint transition-colors hover:text-brand">Reset sizes</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1341,7 +1340,7 @@ export default function Edit({
 
                                 <PanelCard
                                     title="Resume checklist"
-                                    pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-[#eef2ff] px-2 py-0.5 text-[11px] font-semibold text-[#4f46e5]">{liveScore}%</span> : undefined}
+                                    pill={liveScore !== null ? <span className="shrink-0 rounded-full bg-brand-subtle px-2 py-0.5 text-xs font-semibold text-brand">{liveScore}%</span> : undefined}
                                     open={openSections.strength}
                                     onToggle={() => toggleSection('strength')}
                                 >
@@ -1349,7 +1348,7 @@ export default function Edit({
                                         <StrengthScorePanel ref={strengthPanelRef} resumeId={resume.id} aiRemaining={aiEnabled ? ai.remaining : 0} onGenerateSummary={handleGenerateSummary} />
                                     </div>
                                 </PanelCard>
-                                <div className="rounded-[10px] border border-[#eeeef5] p-3">
+                                <div className="rounded-[10px] border border-surface-border p-3">
                                     <div className="mb-3 grid grid-cols-2 gap-2">
                                         <div>
                                             <FLabel>Company</FLabel>
@@ -1375,18 +1374,18 @@ export default function Edit({
 
                                 <PanelCard
                                     title="Share links"
-                                    pill={<span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialLinks.filter(l => l.is_active).length} active</span>}
+                                    pill={<span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-xs font-bold text-ink">{initialLinks.filter(l => l.is_active).length} active</span>}
                                     open={openSections.share}
                                     onToggle={() => toggleSection('share')}
                                 >
                                     <div className="px-3 pb-3">
                                         {/* ponytail: management lives on /shares — this is just the handoff. */}
-                                        <p className="mb-3 text-xs text-gray-500">
+                                        <p className="mb-3 text-xs text-ink-muted">
                                             Share links are stable, so an edit here reaches anyone you already sent one to. Create and manage them on the Shares page.
                                         </p>
                                         <Link
                                             href={route('shares.index')}
-                                            className="inline-flex rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500"
+                                            className="inline-flex rounded-md bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-subtle0"
                                         >
                                             Manage shares →
                                         </Link>
@@ -1395,8 +1394,8 @@ export default function Edit({
                                 <PanelCard
                                     title="Messages"
                                     pill={unreadCount > 0
-                                        ? <span className="shrink-0 rounded-full bg-[#4f46e5] px-2 py-0.5 text-[11px] font-bold text-white">{unreadCount} unread</span>
-                                        : <span className="shrink-0 rounded-full bg-[#f5f5fb] px-2 py-0.5 text-[11px] font-bold text-[#0f0f1a]">{initialThreads.length}</span>}
+                                        ? <span className="shrink-0 rounded-full bg-brand px-2 py-0.5 text-xs font-bold text-white">{unreadCount} unread</span>
+                                        : <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-xs font-bold text-ink">{initialThreads.length}</span>}
                                     open={openSections.messages}
                                     onToggle={() => toggleSection('messages')}
                                 >
@@ -1417,19 +1416,19 @@ export default function Edit({
                     <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
                         <div className="mb-6 flex justify-center gap-2">
                             {([0, 1] as const).map(i => (
-                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-[#0f172a]' : i < wizardStep ? 'bg-[#93c5fd]' : 'bg-[#cbd5e1]'}`} />
+                                <span key={i} className={`h-2 w-2 rounded-full ${i === wizardStep ? 'bg-ink' : i < wizardStep ? 'bg-brand/40' : 'bg-surface-border'}`} />
                             ))}
                         </div>
                         {wizardStep === 0 && (
                             <div className="space-y-4 text-center">
-                                <h2 className="text-2xl font-semibold text-gray-900">Let's build your resume</h2>
-                                <p className="text-sm text-gray-600">It takes just a few minutes. We'll start with your contact details.</p>
-                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-[#0f172a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Get started →</button>
+                                <h2 className="text-2xl font-semibold text-ink">Let's build your resume</h2>
+                                <p className="text-sm text-ink-muted">It takes just a few minutes. We'll start with your contact details.</p>
+                                <button type="button" onClick={() => setWizardStep(1)} className="mt-4 w-full rounded-lg bg-ink px-4 py-2.5 text-sm font-medium text-white hover:bg-neutral-800">Get started →</button>
                             </div>
                         )}
                         {wizardStep === 1 && (
                             <div className="space-y-4">
-                                <h2 className="text-xl font-semibold text-gray-900">Your contact details</h2>
+                                <h2 className="text-xl font-semibold text-ink">Your contact details</h2>
                                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     {(['full_name', 'email', 'phone', 'location'] as const).map(field => (
                                         <div key={field}>
@@ -1439,8 +1438,8 @@ export default function Edit({
                                     ))}
                                 </div>
                                 <div className="mt-4 flex items-center justify-between">
-                                    <button type="button" onClick={finishWizard} className="text-sm text-gray-500 hover:text-gray-700">Skip</button>
-                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-[#0f172a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1e293b]">Finish →</button>
+                                    <button type="button" onClick={finishWizard} className="text-sm text-ink-muted hover:text-ink">Skip</button>
+                                    <button type="button" onClick={finishWizard} className="rounded-lg bg-ink px-4 py-2.5 text-sm font-medium text-white hover:bg-neutral-800">Finish →</button>
                                 </div>
                             </div>
                         )}

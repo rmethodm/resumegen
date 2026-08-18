@@ -4,68 +4,95 @@ namespace App\Http\Controllers;
 
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
 
+/**
+ * Legacy share-link mutations used by Shares/Index. Ownership is checked
+ * inline (this app has no ResumePolicy). Only columns that exist on
+ * resume_share_links are written.
+ */
 class ShareLinkController extends Controller
 {
-    public function store(Request $request, Resume $resume)
+    public function store(Request $request, Resume $resume): RedirectResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
-        $validated = $request->validate([
+        $request->validate([
             'label' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $link = $resume->shareLinks()->create($validated);
+        // label is accepted for UI compatibility but not stored — the column
+        // was dropped with the shares schema rebuild. firstOrCreate because
+        // resume_share_links.resume_id carries a DB unique index.
+        $link = $resume->shareLinks()->firstOrCreate([]);
 
         return back()->with('newToken', $link->token);
     }
 
-    public function update(Request $request, Resume $resume, ResumeShareLink $link)
+    public function update(Request $request, Resume $resume, ResumeShareLink $link): RedirectResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
         abort_if($link->resume_id !== $resume->id, 403);
 
         $validated = $request->validate([
-            'label' => ['sometimes', 'nullable', 'string', 'max:100'],
-            'is_active' => ['sometimes', 'boolean'],
             'expires_at' => ['sometimes', 'nullable', 'date'],
             'resume_id' => ['sometimes', 'integer', 'exists:resumes,id'],
-            'is_primary' => ['sometimes', 'boolean'],
             'password' => ['sometimes', 'nullable', 'string', 'min:4', 'max:100'],
+            'require_password' => ['sometimes', 'boolean'],
+            'allow_download' => ['sometimes', 'boolean'],
+            'require_email' => ['sometimes', 'boolean'],
+            // Accepted no-ops for the Shares UI still posting them:
+            'label' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'is_active' => ['sometimes', 'boolean'],
+            'is_primary' => ['sometimes', 'boolean'],
             'seen' => ['sometimes', 'boolean'],
         ]);
 
-        // Reassigning the link to another resume — must also be the user's.
-        if (isset($validated['resume_id'])) {
-            $target = Resume::findOrFail($validated['resume_id']);
-            $this->authorize('update', $target);
+        if (isset($validated['resume_id']) && (int) $validated['resume_id'] !== $link->resume_id) {
+            $target = Resume::query()->findOrFail($validated['resume_id']);
+            abort_unless($target->user_id === $request->user()->id, 403);
+
+            if (ResumeShareLink::query()->where('resume_id', $target->id)->exists()) {
+                return back()->withErrors(['resume_id' => 'That resume already has a share link.']);
+            }
+
+            $link->resume_id = $target->id;
         }
 
-        // Only one primary link per user.
-        if (($validated['is_primary'] ?? false) === true) {
-            ResumeShareLink::whereHas('resume', fn ($q) => $q->where('user_id', $request->user()->id))
-                ->update(['is_primary' => false]);
+        if (array_key_exists('expires_at', $validated)) {
+            $link->expires_at = $validated['expires_at'];
+        }
+
+        if (array_key_exists('allow_download', $validated)) {
+            $link->allow_download = (bool) $validated['allow_download'];
+        }
+
+        if (array_key_exists('require_email', $validated)) {
+            $link->require_email = (bool) $validated['require_email'];
         }
 
         if (array_key_exists('password', $validated)) {
-            $validated['password_hash'] = $validated['password'] ? Hash::make($validated['password']) : null;
+            if ($validated['password']) {
+                $link->require_password = true;
+                $link->password = $validated['password'];
+            } else {
+                $link->require_password = false;
+                $link->password = null;
+            }
+        } elseif (array_key_exists('require_password', $validated) && ! $validated['require_password']) {
+            $link->require_password = false;
+            $link->password = null;
         }
 
-        if ($request->boolean('seen')) {
-            $validated['views_seen_at'] = now();
-        }
-
-        $link->update(Arr::except($validated, ['password', 'seen']));
+        $link->save();
 
         return back();
     }
 
-    public function destroy(Resume $resume, ResumeShareLink $link)
+    public function destroy(Request $request, Resume $resume, ResumeShareLink $link): RedirectResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
         abort_if($link->resume_id !== $resume->id, 403);
         $link->delete();
 

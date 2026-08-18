@@ -44,49 +44,82 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
             refresh: () => { void load(); },
         }));
 
-        const color = score === null ? 'text-gray-400' : score <= 40 ? 'text-red-600' : score <= 70 ? 'text-amber-600' : 'text-green-600';
-        const barColor = score === null ? 'bg-gray-200' : score <= 40 ? 'bg-red-400' : score <= 70 ? 'bg-amber-400' : 'bg-green-500';
+        const color =
+            score === null
+                ? 'text-ink-faint'
+                : score <= 40
+                  ? 'text-danger-text'
+                  : score <= 70
+                    ? 'text-warning-text'
+                    : 'text-success-text';
+        const barColor =
+            score === null
+                ? 'bg-surface-border'
+                : score <= 40
+                  ? 'bg-danger'
+                  : score <= 70
+                    ? 'bg-warning'
+                    : 'bg-success';
 
         return (
             <div>
                 <div className="space-y-3">
-                        {loading && <p className="text-xs text-gray-400">Analyzing…</p>}
+                        {loading && <p className="text-xs text-ink-faint">Analyzing…</p>}
 
                         {score !== null && (
                             <>
                                 {/* Score bar */}
                                 <div>
                                     <div className="mb-1 flex justify-between text-xs">
-                                        <span className={`font-bold ${color}`}>{score} / 100</span>
-                                        <button type="button" onClick={() => void load()} className="text-gray-400 hover:text-gray-600">↻ Refresh</button>
+                                        <span className={`font-bold tabular-nums ${color}`}>{score} / 100</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => void load()}
+                                            className="min-h-11 min-w-11 rounded-md text-ink-faint hover:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                                        >
+                                            ↻ Refresh
+                                        </button>
                                     </div>
-                                    <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                                    <div className="h-2 overflow-hidden rounded-full bg-surface">
                                         <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${score}%` }} />
                                     </div>
                                 </div>
 
                                 {/* Next-step nudge */}
                                 {score < 100 && tip && (
-                                    <div className="rounded-lg bg-[#dbeafe] px-3 py-2">
-                                        <p className="text-xs font-medium text-[#1e40af]">Next: {tip}</p>
+                                    <div className="rounded-lg bg-brand-subtle px-3 py-2">
+                                        <p className="text-xs font-medium text-brand-accent">Next: {tip}</p>
                                         {tipKey === 'summary' && aiRemaining > 0 && (
-                                            <button type="button" onClick={onGenerateSummary} className="mt-1 text-xs font-semibold text-[#2563eb] hover:text-[#1d4ed8]">✨ Generate it with AI →</button>
+                                            <button
+                                                type="button"
+                                                onClick={onGenerateSummary}
+                                                className="mt-1 text-xs font-semibold text-brand hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                                            >
+                                                ✨ Generate it with AI →
+                                            </button>
                                         )}
                                     </div>
                                 )}
 
-                                {/* Checklist */}
+                                {/* Checklist — status uses icon glyph + high-contrast text, not color alone */}
                                 <ul className="space-y-1">
                                     {checklist.map((item, i) => (
                                         <li key={i} className="flex items-center gap-2 text-xs">
-                                            <span className={item.passed ? 'text-green-500' : 'text-gray-300'}>
+                                            <span
+                                                className={
+                                                    item.passed
+                                                        ? 'inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-success-subtle text-success-text'
+                                                        : 'inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-surface text-ink-faint'
+                                                }
+                                                aria-hidden
+                                            >
                                                 {item.passed ? '✓' : '○'}
                                             </span>
-                                            <span className={item.passed ? 'text-gray-700' : 'text-gray-400'}>
+                                            <span className={item.passed ? 'text-ink' : 'text-ink-muted'}>
                                                 {item.label}
                                             </span>
                                             {!item.passed && (
-                                                <span className="ml-auto text-gray-300">+{item.pts}</span>
+                                                <span className="ml-auto text-ink-faint">+{item.pts}</span>
                                             )}
                                         </li>
                                     ))}

@@ -50,7 +50,9 @@ class DashboardController extends Controller
                 return [
                     'id' => $representative->id,
                     'group_id' => $representative->group_id,
-                    'title' => $representative->group->title,
+                    // Seeders / WithoutModelEvents can leave group_id null; fall
+                    // back to the resume title so the dashboard still renders.
+                    'title' => $representative->group?->title ?? $representative->title,
                     'target_role' => $representative->target_role,
                     'updated_at' => $representative->updated_at?->diffForHumans(),
                     'score' => ResumeAnalysis::score($representative),

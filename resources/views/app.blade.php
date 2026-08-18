@@ -8,6 +8,17 @@
             if (stored === 'dark' || (!stored && prefersDark)) {
                 document.documentElement.classList.add('dark');
             }
+            // Brand accent preview (violet | navy | teal | copper) — avoid flash.
+            try {
+                var brand = localStorage.getItem('resumegen.brand-theme');
+                if (brand === 'navy' || brand === 'teal' || brand === 'copper' || brand === 'violet') {
+                    document.documentElement.setAttribute('data-brand-theme', brand);
+                } else {
+                    document.documentElement.setAttribute('data-brand-theme', 'violet');
+                }
+            } catch (e) {
+                document.documentElement.setAttribute('data-brand-theme', 'violet');
+            }
         })();
         </script>
         <meta charset="utf-8">

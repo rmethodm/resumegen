@@ -20,6 +20,7 @@ import {
     AtsPlainTextBlock,
     OptimizePanel,
 } from '@/Components/workstation/optimize-panel';
+import { BrandThemeSwitcher } from '@/Components/workstation/brand-theme-switcher';
 import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
@@ -38,6 +39,7 @@ import { exportChecklist, type ExportCheck } from '@/lib/export-checklist';
 import { applyTemplatePreset } from '@/lib/template-presets';
 import { resumeToPlainText } from '@/lib/resume-plain-text';
 import {
+    allSections,
     insertSectionInOrder,
     isOptionalSection,
     sectionLabels,
@@ -96,10 +98,11 @@ export default function Workstation({
     );
     const [draggedSection, setDraggedSection] =
         useState<ResumeSectionKey | null>(null);
-    /** Double-click a section header to collapse/expand its form body. */
+    /** Double-click a section header to collapse/expand its form body.
+     *  Start fully collapsed so the page loads as a compact section list. */
     const [collapsedSections, setCollapsedSections] = useState<
         ResumeSectionKey[]
-    >([]);
+    >(() => [...allSections]);
     const [baseUpdatedAt, setBaseUpdatedAt] = useState<string | null>(
         initialUpdatedAt ?? null,
     );
@@ -419,7 +422,7 @@ export default function Workstation({
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="flex items-center gap-1 text-[11px] font-bold tracking-[0.12em] text-ink uppercase"
+                                    className="flex items-center gap-1 text-xs font-bold tracking-[0.12em] text-ink uppercase"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
@@ -430,7 +433,7 @@ export default function Workstation({
                                     {sectionLabels[sectionKey]}
                                 </button>
                                 {collapsed && (
-                                    <span className="text-[10px] font-medium tracking-normal text-ink-faint normal-case">
+                                    <span className="text-xs font-medium tracking-normal text-ink-faint normal-case">
                                         Collapsed
                                     </span>
                                 )}
@@ -448,7 +451,8 @@ export default function Workstation({
                                             Hide
                                         </Button>
                                     )}
-                                    <div className="flex items-center gap-0.5 md:hidden">
+                                    {/* Visible at all widths: the only keyboard-operable reorder path (drag is mouse-only). */}
+                                    <div className="flex items-center gap-0.5">
                                         <Button
                                             type="button"
                                             variant="ghost"
@@ -517,7 +521,7 @@ export default function Workstation({
         <AuthenticatedLayout>
             <Head title={draft.title} />
 
-            <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-[#f7f7f5]">
+            <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-surface">
                 {(offline || saveStatus === 'error') && (
                     <div
                         className={cn(
@@ -525,7 +529,7 @@ export default function Workstation({
                             conflict
                                 ? 'border-warning/30 bg-warning-subtle text-warning-text'
                                 : offline
-                                  ? 'border-gray-300 bg-gray-100 text-gray-800'
+                                  ? 'border-surface-border bg-surface text-ink'
                                   : 'border-danger/30 bg-danger-subtle text-danger-text',
                         )}
                     >
@@ -734,6 +738,9 @@ export default function Workstation({
                 onContinue={confirmDownload}
                 onJump={jumpExportCheck}
             />
+
+            {/* Dev-only comparison tool — never ships to users. */}
+            {import.meta.env.DEV && <BrandThemeSwitcher />}
         </AuthenticatedLayout>
     );
 }

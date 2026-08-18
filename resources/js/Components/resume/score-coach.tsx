@@ -29,7 +29,7 @@ export function ScoreChecklist({
                 <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
                     Raise your score
                 </p>
-                <p className="text-[10px] tabular-nums text-ink-faint">
+                <p className="text-xs tabular-nums text-ink-faint">
                     {doneCount}/{items.length}
                 </p>
             </div>
@@ -41,7 +41,7 @@ export function ScoreChecklist({
                             disabled={item.done}
                             onClick={() => onJump(item)}
                             className={cn(
-                                'flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-[11px] leading-snug transition-colors',
+                                'flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs leading-snug transition-colors',
                                 item.done
                                     ? 'cursor-default text-ink-faint'
                                     : 'text-ink hover:bg-brand-subtle hover:text-brand',
@@ -68,7 +68,7 @@ export function ScoreChecklist({
                                 >
                                     {item.label}
                                 </span>
-                                <span className="mt-0.5 block text-[10px] font-medium tracking-wide text-ink-faint uppercase">
+                                <span className="mt-0.5 block text-xs font-medium tracking-wide text-ink-faint uppercase">
                                     {item.band}
                                 </span>
                             </span>
@@ -105,7 +105,7 @@ export function KeywordChips({
             <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
                 Role keywords
             </p>
-            <p className="mb-2 px-1 text-[10px] leading-snug text-ink-muted">
+            <p className="mb-2 px-1 text-xs leading-snug text-ink-muted">
                 Click a missing term to add it as a skill. Only add skills you
                 actually have.
             </p>
@@ -117,7 +117,7 @@ export function KeywordChips({
                             type="button"
                             onClick={() => onAdd(keyword)}
                             title={`Add “${formatKeywordLabel(keyword)}” as a skill`}
-                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-brand/40 bg-brand-subtle/50 px-2 py-0.5 text-[11px] font-medium text-brand transition-colors hover:border-brand hover:bg-brand-subtle"
+                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-brand/40 bg-brand-subtle/50 px-2 py-0.5 text-xs font-medium text-brand transition-colors hover:border-brand hover:bg-brand-subtle"
                         >
                             <PlusIcon className="size-3" />
                             {formatKeywordLabel(keyword)}
@@ -130,7 +130,7 @@ export function KeywordChips({
                     {present.map((keyword) => (
                         <span
                             key={keyword}
-                            className="inline-flex items-center gap-1 rounded-full border border-success/30 bg-success-subtle px-2 py-0.5 text-[11px] font-medium text-success-text"
+                            className="inline-flex items-center gap-1 rounded-full border border-success/30 bg-success-subtle px-2 py-0.5 text-xs font-medium text-success-text"
                         >
                             <CheckIcon className="size-3" />
                             {formatKeywordLabel(keyword)}
@@ -139,7 +139,7 @@ export function KeywordChips({
                 </div>
             )}
             {missing.length === 0 && present.length > 0 && (
-                <p className="mt-2 px-1 text-[10px] text-success-text">
+                <p className="mt-2 px-1 text-xs text-success-text">
                     All role keywords are covered.
                 </p>
             )}

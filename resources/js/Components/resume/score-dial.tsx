@@ -43,7 +43,7 @@ export function ScoreDial({
             <div
                 style={{ width: size - 14, height: size - 14 }}
                 className={cn(
-                    'flex items-center justify-center rounded-full bg-white text-[13px] font-extrabold',
+                    'flex items-center justify-center rounded-full bg-white text-sm font-extrabold tabular-nums',
                     scoreBandTextClass[band],
                 )}
             >

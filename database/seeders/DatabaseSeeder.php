@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $this->call(TestResumesSeeder::class);
+        $this->call(ScifiCharacterResumeSeeder::class);
         $this->call(SampleSharesSeeder::class);
         $this->call(TestAnalyticsDataSeeder::class);
     }

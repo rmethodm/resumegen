@@ -67,10 +67,10 @@ export function SnapshotsPanel({
 
     return (
         <Card className="gap-0 p-4">
-            <h3 className="mb-1 text-xs font-bold tracking-wide text-gray-500 uppercase">
+            <h3 className="mb-1 text-xs font-bold tracking-wide text-ink-muted uppercase">
                 Checkpoints
             </h3>
-            <p className="mb-3 text-[11px] text-gray-500">
+            <p className="mb-3 text-xs text-ink-muted">
                 Manual snapshots of this version. Restore rewrites the live
                 document.
             </p>
@@ -94,7 +94,7 @@ export function SnapshotsPanel({
             </div>
 
             {snapshots.length === 0 ? (
-                <p className="text-[11px] text-gray-500">No checkpoints yet.</p>
+                <p className="text-xs text-ink-muted">No checkpoints yet.</p>
             ) : (
                 <ul className="space-y-2">
                     {snapshots.map((snapshot) => (
@@ -103,10 +103,10 @@ export function SnapshotsPanel({
                             className="flex items-center gap-2 rounded-md border border-gray-100 px-2 py-1.5"
                         >
                             <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium text-gray-900">
+                                <p className="truncate text-sm font-medium text-ink">
                                     {snapshot.label || 'Untitled checkpoint'}
                                 </p>
-                                <p className="text-[10px] text-gray-400">
+                                <p className="text-xs text-ink-faint">
                                     {snapshot.created_at_human}
                                 </p>
                             </div>
@@ -129,7 +129,7 @@ export function SnapshotsPanel({
                                         remove(snapshot.id);
                                     }
                                 }}
-                                className="text-[11px] text-gray-400 hover:text-danger"
+                                className="text-xs text-ink-faint hover:text-danger"
                             >
                                 Delete
                             </button>
