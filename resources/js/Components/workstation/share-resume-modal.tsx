@@ -235,7 +235,7 @@ export function ShareResumeModal({
                             </div>
                         )}
                         <div className="flex gap-2">
-                            <div className="flex-1 truncate rounded-md border border-gray-200 px-3 py-2 text-xs font-medium text-gray-500">
+                            <div className="flex-1 truncate rounded-md border border-surface-border px-3 py-2 text-xs font-medium text-ink-muted">
                                 {share?.url ?? 'Generating link…'}
                             </div>
                             <Button
@@ -274,7 +274,7 @@ export function ShareResumeModal({
                                 onChange={() => toggle('require_password')}
                             />
                             {share?.require_password && (
-                                <div className="flex flex-col gap-2 rounded-md border border-gray-100 bg-gray-50 p-2.5">
+                                <div className="flex flex-col gap-2 rounded-md border border-gray-100 bg-surface p-2.5">
                                     <div className="flex gap-2">
                                         <Input
                                             value={passwordDraft}
@@ -303,7 +303,7 @@ export function ShareResumeModal({
                                             Rotate
                                         </Button>
                                     </div>
-                                    <p className="text-[11px] leading-snug text-gray-500">
+                                    <p className="text-xs leading-snug text-ink-muted">
                                         Changing or rotating the password immediately signs out
                                         anyone who already unlocked with the old one. They must
                                         enter the new password.
@@ -328,7 +328,7 @@ export function ShareResumeModal({
                                         onChange={(e) =>
                                             updateExpiryPart('month', Number(e.target.value))
                                         }
-                                        className="h-9 flex-1 rounded-md border border-gray-300 bg-white px-2 text-xs"
+                                        className="h-9 flex-1 rounded-md border border-surface-border bg-white px-2 text-xs"
                                     >
                                         {MONTHS.map((label, index) => (
                                             <option key={label} value={index + 1}>
@@ -341,7 +341,7 @@ export function ShareResumeModal({
                                         onChange={(e) =>
                                             updateExpiryPart('day', Number(e.target.value))
                                         }
-                                        className="h-9 w-16 rounded-md border border-gray-300 bg-white px-2 text-xs"
+                                        className="h-9 w-16 rounded-md border border-surface-border bg-white px-2 text-xs"
                                     >
                                         {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                                             <option key={day} value={day}>
@@ -354,7 +354,7 @@ export function ShareResumeModal({
                                         onChange={(e) =>
                                             updateExpiryPart('year', Number(e.target.value))
                                         }
-                                        className="h-9 w-20 rounded-md border border-gray-300 bg-white px-2 text-xs"
+                                        className="h-9 w-20 rounded-md border border-surface-border bg-white px-2 text-xs"
                                     >
                                         {Array.from({ length: 6 }, (_, i) => thisYear + i).map(
                                             (year) => (
@@ -370,22 +370,22 @@ export function ShareResumeModal({
 
                         <div className="rounded-md border border-gray-100">
                             <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
-                                <span className="text-xs font-medium text-gray-900">
+                                <span className="text-xs font-medium text-ink">
                                     View history
                                 </span>
-                                <span className="text-[11px] text-gray-400">
+                                <span className="text-xs text-ink-faint">
                                     {viewCount === 0
                                         ? 'No views yet'
                                         : `${viewCount} view${viewCount === 1 ? '' : 's'}`}
                                 </span>
                             </div>
                             {!share?.require_email ? (
-                                <p className="px-3 py-2.5 text-[11px] leading-snug text-gray-500">
+                                <p className="px-3 py-2.5 text-xs leading-snug text-ink-muted">
                                     Turn on &quot;Require email to view&quot; to log who opens the
                                     link.
                                 </p>
                             ) : views.length === 0 ? (
-                                <p className="px-3 py-2.5 text-[11px] leading-snug text-gray-500">
+                                <p className="px-3 py-2.5 text-xs leading-snug text-ink-muted">
                                     No one has entered an email yet.
                                 </p>
                             ) : (
@@ -395,10 +395,10 @@ export function ShareResumeModal({
                                             key={`${view.email}-${view.viewed_at}`}
                                             className="flex items-start justify-between gap-2 px-3 py-2"
                                         >
-                                            <span className="min-w-0 truncate text-xs font-medium text-gray-800">
+                                            <span className="min-w-0 truncate text-xs font-medium text-ink">
                                                 {view.email}
                                             </span>
-                                            <span className="shrink-0 text-[11px] text-gray-400">
+                                            <span className="shrink-0 text-xs text-ink-faint">
                                                 {formatViewedAt(view.viewed_at)}
                                             </span>
                                         </li>
@@ -462,7 +462,7 @@ function ShareToggleRow({
 }) {
     return (
         <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-900">{label}</span>
+            <span className="text-xs font-medium text-ink">{label}</span>
             <Switch
                 checked={enabled}
                 onChange={onChange}

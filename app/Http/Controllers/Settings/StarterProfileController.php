@@ -53,11 +53,8 @@ class StarterProfileController extends Controller
 
     /**
      * Skip the intake: create the starter profile seeded with only the
-     * account name and email, then hand off to the builder. Writing the row
-     * clears the first-run redirect condition (resumes()->doesntExist() &&
-     * starterProfile()->doesntExist()) so the user is never sent back here.
-     * Name/email are carried so the seeded resume is not left nameless by the
-     * "a blank profile name copies the blank" rule in createStarterResume().
+     * account name and email, then hand off to the resume-types catalogue.
+     * Name/email are carried so later resume creates still seed contact fields.
      */
     public function skip(Request $request): RedirectResponse
     {

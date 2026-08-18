@@ -23,26 +23,26 @@ export default function ThreadsPanel({ threads, resumeId }: Props) {
                     <button
                         type="button"
                         onClick={() => router.patch(route('messages.read-all'), {}, { preserveScroll: true })}
-                        className="text-xs text-indigo-600 hover:text-indigo-800"
+                        className="text-xs text-brand hover:text-indigo-800"
                     >
                         Mark all read
                     </button>
                 </div>
             )}
             {threads.length === 0 && (
-                <p className="text-xs text-gray-400">No messages yet.</p>
+                <p className="text-xs text-ink-faint">No messages yet.</p>
             )}
             {threads.map(t => (
                 <Link
                     key={t.id}
                     href={route('builder.thread', [resumeId, t.id])}
-                    className={`rounded-md border p-3 text-xs flex flex-col gap-1 transition hover:bg-indigo-50/50 ${t.is_read ? 'border-gray-100 bg-white' : 'border-indigo-100 bg-indigo-50'}`}
+                    className={`rounded-md border p-3 text-xs flex flex-col gap-1 transition hover:bg-brand-subtle/50 ${t.is_read ? 'border-gray-100 bg-white' : 'border-indigo-100 bg-brand-subtle'}`}
                 >
                     <div className="flex items-center justify-between">
-                        <span className="font-semibold text-gray-700">{t.sender_name}</span>
-                        <span className="text-gray-400">{t.created_at}</span>
+                        <span className="font-semibold text-ink">{t.sender_name}</span>
+                        <span className="text-ink-faint">{t.created_at}</span>
                     </div>
-                    <span className="text-gray-400 text-[10px]">{t.sender_email}</span>
+                    <span className="text-ink-faint text-xs">{t.sender_email}</span>
                 </Link>
             ))}
         </div>

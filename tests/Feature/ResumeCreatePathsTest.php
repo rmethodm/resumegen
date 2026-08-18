@@ -71,4 +71,18 @@ TXT;
         $this->assertNotNull($resume);
         $response->assertRedirect(route('resumes.workstation', $resume));
     }
+
+    public function test_create_from_template_sets_template_and_opens_workstation(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('resumes.store'), [
+            'template' => 'modern',
+        ]);
+
+        $resume = $user->resumes()->latest('id')->first();
+        $this->assertNotNull($resume);
+        $this->assertSame('modern', $resume->template);
+        $response->assertRedirect(route('resumes.workstation', $resume));
+    }
 }

@@ -162,7 +162,7 @@ export function SectionPanel({
                     <p className="mb-2 text-sm font-medium text-ink-muted">
                         Your resume score
                     </p>
-                    <p className="mb-2 text-[10px] text-ink-faint">
+                    <p className="mb-2 text-xs text-ink-faint">
                         Updates as you edit
                     </p>
                     <ScoreGauge score={analysis.score} className="mx-auto" />
@@ -180,7 +180,7 @@ export function SectionPanel({
                                 title={`Fix ${band.label} — jump to next step`}
                                 className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-brand-subtle/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
                             >
-                                <div className="flex justify-between text-[10px] font-semibold tracking-wide text-ink-muted uppercase">
+                                <div className="flex justify-between text-xs font-semibold tracking-wide text-ink-muted uppercase">
                                     <span>{band.label}</span>
                                     <span className="tabular-nums">
                                         {band.score}
@@ -257,7 +257,7 @@ export function SectionPanel({
                     </Button>
                 ) : (
                     <div className="mt-2 flex flex-col gap-1">
-                        <p className="px-1 text-[10px] font-semibold tracking-wide text-ink-muted uppercase">
+                        <p className="px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
                             Hidden sections
                         </p>
                         {addable.map((section) => (

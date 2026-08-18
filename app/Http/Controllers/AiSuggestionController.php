@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Data\AiPrompts;
 use App\Exceptions\ModerationException;
-use App\Models\CoverLetter;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\AiService;
-use App\Services\JobPairingService;
 use App\Services\UserLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,16 +15,15 @@ use Throwable;
 
 class AiSuggestionController extends Controller
 {
-    public function __construct(private AiService $ai, private JobPairingService $pairings) {}
+    public function __construct(private AiService $ai) {}
 
     public function rewriteBullet(Request $request, Resume $resume): JsonResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
         $data = $request->validate(['text' => ['required', 'string', 'max:8000']]);
 
         return $this->run($request->user(), 'rewrite_bullet', ['text' => $data['text']],
-            fn (string $reply): array => ['suggestion' => trim($reply)],
-            null, $resume->target_company, $resume->target_title);
+            fn (string $reply): array => ['suggestion' => trim($reply)]);
     }
 
     /**
@@ -35,38 +32,37 @@ class AiSuggestionController extends Controller
      */
     public function critiqueBullet(Request $request, Resume $resume): JsonResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
         $data = $request->validate(['text' => ['required', 'string', 'max:8000']]);
 
         return $this->run($request->user(), 'critique_bullet', ['text' => $data['text']],
-            fn (string $reply): array => ['questions' => $this->splitQuestions($reply)],
-            null, $resume->target_company, $resume->target_title);
+            fn (string $reply): array => ['questions' => $this->splitQuestions($reply)]);
     }
 
     public function summary(Request $request, Resume $resume): JsonResponse
     {
-        $this->authorize('update', $resume);
-
-        if (empty($resume->experience) && empty($resume->skills)) {
-            abort(422, 'Add experience or skills before generating a summary.');
-        }
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         $input = [
-            'experience' => $resume->experience ?? [],
-            'skills' => $resume->skills ?? [],
+            'experience' => $this->experienceInput($resume),
+            'skills' => $resume->skills->pluck('name')->all(),
         ];
+
+        if ($input['experience'] === [] && $input['skills'] === []) {
+            abort(422, 'Add experience or skills before generating a summary.');
+        }
 
         $cacheKey = 'ai_summary_'.$resume->id.'_'.md5(json_encode($input));
 
         return $this->run($request->user(), 'generate_summary', $input,
             fn (string $reply): array => ['suggestion' => trim($reply)],
-            $cacheKey, $resume->target_company, $resume->target_title,
+            $cacheKey,
         );
     }
 
     public function atsKeywords(Request $request, Resume $resume): JsonResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         $data = $request->validate([
             'role' => ['nullable', 'string', 'max:200'],
@@ -78,59 +74,30 @@ class AiSuggestionController extends Controller
         $input = [
             'role' => $role,
             'job_description' => $jobDescription,
-            'experience' => $resume->experience ?? [],
-            'skills' => $resume->skills ?? [],
+            'experience' => $this->experienceInput($resume),
+            'skills' => $resume->skills->pluck('name')->all(),
         ];
 
         $cacheKey = 'ai_ats_'.$resume->id.'_'.md5(json_encode($input));
 
         return $this->run($request->user(), 'ats_keywords', $input,
             fn (string $reply): array => ['keywords' => $this->splitKeywords($reply)],
-            // Identity comes from the resume's target, never the per-request role field —
-            // that is free text and would mint a new pairing each time the wording changed.
-            $cacheKey, $resume->target_company, $resume->target_title,
+            $cacheKey,
         );
     }
 
     /**
-     * Draft a cover letter body from the letter's linked resume.
+     * Resume experience shaped for the prompt builders (relational rows, not columns).
      *
-     * The linked resume is required, not optional: the prompt forbids inventing employers or
-     * accomplishments, so with no resume there is nothing to ground the letter in.
+     * @return list<array{title: ?string, company: ?string, bullets: string}>
      */
-    public function coverLetterDraft(Request $request, CoverLetter $letter): JsonResponse
+    private function experienceInput(Resume $resume): array
     {
-        $this->authorize('update', $letter);
-
-        $data = $request->validate([
-            'role' => ['nullable', 'string', 'max:200'],
-            'company' => ['nullable', 'string', 'max:200'],
-            'job_description' => ['nullable', 'string', 'max:10000'],
-            'tone' => ['nullable', 'in:formal,friendly,confident'],
-        ]);
-
-        $resume = $letter->resume;
-
-        if ($resume === null) {
-            abort(422, 'Link a resume first — the letter is written from its experience and skills.');
-        }
-
-        $input = [
-            'tone' => $data['tone'] ?? 'formal',
-            'role' => ($data['role'] ?? null) ?: $request->user()->target_role,
-            'company' => ($data['company'] ?? null) ?: null,
-            'job_description' => ($data['job_description'] ?? null) ?: $resume->target_job_description,
-            'experience' => $resume->experience ?? [],
-            'skills' => $resume->skills ?? [],
-        ];
-
-        // A cover letter names its own company, so it can identify the job even when the
-        // linked resume has no target set. Falls back to the resume's target otherwise.
-        return $this->run($request->user(), 'cover_letter', $input,
-            fn (string $reply): array => ['body' => trim($reply)],
-            null,
-            ($data['company'] ?? null) ?: $resume->target_company,
-            ($data['role'] ?? null) ?: $resume->target_title);
+        return $resume->experiences->map(fn ($e) => [
+            'title' => $e->title,
+            'company' => $e->company,
+            'bullets' => implode("\n", $e->bullets ?? []),
+        ])->all();
     }
 
     /**
@@ -145,12 +112,8 @@ class AiSuggestionController extends Controller
         array $input,
         callable $shape,
         ?string $cacheKey = null,
-        ?string $company = null,
-        ?string $title = null,
     ): JsonResponse {
         if ($cacheKey && Cache::has($cacheKey)) {
-            $this->recordPairing($user, $company, $title);
-
             return response()->json(array_merge($shape(Cache::get($cacheKey)), [
                 'remaining' => UserLimits::aiRemaining($user),
             ]));
@@ -184,24 +147,9 @@ class AiSuggestionController extends Controller
             Cache::put($cacheKey, $reply, now()->addDay());
         }
 
-        $this->recordPairing($user, $company, $title);
-
         return response()->json(array_merge($shaped, [
             'remaining' => UserLimits::aiRemaining($user),
         ]));
-    }
-
-    /**
-     * Record which job this AI call was made against, once the user has been served.
-     *
-     * ponytail: the pairing is recorded but not yet stamped onto ai_requests. Attribution
-     * only powers the refund window and the abuse fuse, neither of which is live at $0,
-     * and threading it through AiService::log() would touch a file that diverges between
-     * branches. Add it when refunds ship.
-     */
-    private function recordPairing(User $user, ?string $company, ?string $title): void
-    {
-        $this->pairings->record($user, $company, $title);
     }
 
     /**

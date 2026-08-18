@@ -82,6 +82,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'profile' => 'array',
             'stale_nudge_sent_at' => 'datetime',
             'view_nudge_sent_at' => 'datetime',
+            'ai_blocked' => 'boolean',
+            'ai_usage_reset_at' => 'datetime',
         ];
     }
 
@@ -98,32 +100,5 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isDisabled(): bool
     {
         return $this->disabled_at !== null;
-    }
-
-    /**
-     * @return HasMany<BalanceTransaction, $this>
-     */
-    public function balanceTransactions(): HasMany
-    {
-        return $this->hasMany(BalanceTransaction::class);
-    }
-
-    /**
-     * @return HasMany<JobPairing, $this>
-     */
-    public function jobPairings(): HasMany
-    {
-        return $this->hasMany(JobPairing::class);
-    }
-
-    /**
-     * The ledger is the balance — there is deliberately no cached column to drift.
-     *
-     * ponytail: SUM over an indexed per-user ledger is fine at hundreds of rows.
-     * Cache it if it shows up in profiling, not before.
-     */
-    public function balanceCents(): int
-    {
-        return (int) $this->balanceTransactions()->sum('amount_cents');
     }
 }

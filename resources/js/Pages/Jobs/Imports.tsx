@@ -1,6 +1,7 @@
-import { Head, Link, router, useHttp } from '@inertiajs/react';
+import { Head, router, useHttp } from '@inertiajs/react';
 import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import Modal from '@/Components/Modal';
 import { Button } from '@/Components/ui/button';
 import { useResumeAi } from '@/hooks/use-resume-ai';
 
@@ -44,10 +45,10 @@ const SOURCE_META: Record<Source, { badge: string; label: string }> = {
 
 const STATUS_META: Record<Status, string> = {
     New: 'bg-success-subtle text-success-text',
-    Saved: 'bg-gray-100 text-gray-500',
+    Saved: 'bg-surface text-ink-muted',
     Tailoring: 'bg-brand-subtle text-brand-accent',
     Applied: 'bg-success-subtle text-success-text',
-    Archived: 'bg-gray-100 text-gray-400',
+    Archived: 'bg-surface text-ink-faint',
 };
 
 function resultKey(job: SearchResult): string {
@@ -74,7 +75,9 @@ export default function JobImportsPage({
     } | null>(null);
     const ai = useResumeAi(resumeId ?? 0);
     const [toast, setToast] = useState<string | null>(null);
-    const [searchOpen, setSearchOpen] = useState(false);
+    // Search / extension are parked until ship-ready — UI stays visible but disabled.
+    const [comingSoonOpen, setComingSoonOpen] = useState(true);
+    const [searchOpen] = useState(false);
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [selectedResults, setSelectedResults] = useState<Set<string>>(new Set());
     const [importing, setImporting] = useState(false);
@@ -88,7 +91,6 @@ export default function JobImportsPage({
         setToast(message);
         setTimeout(() => setToast(null), 2200);
     };
-    const stub = (message: string) => () => showToast(`Preview only — ${message} is not implemented.`);
 
     const runMatch = async (job: ImportedJob) => {
         if (!resumeId) {
@@ -175,63 +177,72 @@ export default function JobImportsPage({
     ];
 
     return (
-        <AuthenticatedLayout header={<h2 className="text-xl font-semibold text-gray-800">Job Imports</h2>}>
+        <AuthenticatedLayout>
             <Head title="Job Imports" />
 
             {/* Same width/gutters as the top nav island: padding outside, 1440 container inside */}
             <div className="px-3 py-6 sm:px-4">
             <div className="mx-auto max-w-[1440px]">
                 {sourcesAvailable.length === 0 && (
-                    <div className="rounded-lg border border-warning/30 bg-warning-subtle px-4 py-3 text-sm text-amber-800">
-                        No search sources configured. Add <code>ADZUNA_APP_ID</code>/<code>ADZUNA_APP_KEY</code> or{' '}
-                        <code>USAJOBS_KEY</code>/<code>USAJOBS_EMAIL</code> to your <code>.env</code> to enable search.
+                    <div className="rounded-lg border border-warning/30 bg-warning-subtle px-4 py-3 text-sm text-warning-text">
+                        Job search isn't configured on this server yet. Ask an admin to connect a job
+                        board source to enable search.
                     </div>
                 )}
 
-                <div className="mt-4 rounded-lg border border-warning/30 bg-warning-subtle px-4 py-3 text-sm text-amber-800">
-                    <strong>Search, import, and AI job match are real.</strong> Gap analysis and
-                    cover-letter drafting below are still stubs.
+                <div className="mt-4 rounded-lg border border-warning/30 bg-warning-subtle px-4 py-3 text-sm text-warning-text">
+                    <strong>Live:</strong> import list and AI job match.{' '}
+                    <strong>Coming soon:</strong> board search, browser extension, gap analysis, and
+                    cover-letter drafting.
                     {ai.status && !ai.status.enabled && ' AI is currently disabled.'}
                 </div>
 
-                <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                    <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-4">
-                        <h1 className="text-base font-bold text-ink">Imported jobs</h1>
-                        <span className="rounded-full bg-brand-subtle px-2.5 py-1 text-[11px] font-bold text-brand-accent">
-                            {jobs.length} jobs
-                        </span>
-                        <div className="ml-auto flex gap-2">
-                            <Button variant="outline" onClick={() => setSearchOpen((v) => !v)}>
-                                {searchOpen ? 'Close search' : 'Search jobs'}
+                <div className="mt-6 overflow-hidden rounded-lg border border-surface-border/80 bg-white shadow-ambient">
+                    <div className="flex flex-col gap-3 border-b border-surface-border px-4 py-4 sm:flex-row sm:items-center sm:gap-3 sm:px-6">
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-base font-bold text-ink">Job imports</h1>
+                            <span className="rounded-full bg-brand-subtle px-2.5 py-1 text-xs font-bold tabular-nums text-brand-accent">
+                                {jobs.length} jobs
+                            </span>
+                        </div>
+                        <div className="flex flex-wrap gap-2 sm:ml-auto">
+                            <Button type="button" variant="outline" disabled className="min-h-11 gap-2">
+                                Search jobs
+                                <span className="rounded-full bg-surface px-2 py-0.5 text-xs font-medium text-ink-faint">
+                                    Coming soon
+                                </span>
                             </Button>
-                            <Link href={route('profile.edit')}>
-                                <Button type="button">Get browser extension</Button>
-                            </Link>
+                            <Button type="button" variant="outline" disabled className="min-h-11 gap-2">
+                                Browser extension
+                                <span className="rounded-full bg-surface px-2 py-0.5 text-xs font-medium text-ink-faint">
+                                    Coming soon
+                                </span>
+                            </Button>
                         </div>
                     </div>
 
                     {searchOpen && (
-                        <div className="border-b border-gray-100 bg-gray-50 px-6 py-4">
+                        <div className="border-b border-surface-border bg-surface px-6 py-4">
                             <form onSubmit={runSearch} className="flex flex-wrap items-end gap-3">
                                 <div>
-                                    <label className="mb-1 block text-xs font-semibold text-gray-500">Keyword</label>
+                                    <label className="mb-1 block text-xs font-semibold text-ink-muted">Keyword</label>
                                     <input
                                         type="text"
                                         value={data.keyword}
                                         onChange={(e) => setData('keyword', e.target.value)}
                                         placeholder="e.g. Product Designer"
-                                        className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
+                                        className="rounded-lg border border-surface-border px-3 py-1.5 text-sm"
                                     />
                                     {errors.keyword && <div className="mt-1 text-xs text-danger">{errors.keyword}</div>}
                                 </div>
                                 <div>
-                                    <label className="mb-1 block text-xs font-semibold text-gray-500">Location</label>
+                                    <label className="mb-1 block text-xs font-semibold text-ink-muted">Location</label>
                                     <input
                                         type="text"
                                         value={data.location}
                                         onChange={(e) => setData('location', e.target.value)}
                                         placeholder="e.g. Remote"
-                                        className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
+                                        className="rounded-lg border border-surface-border px-3 py-1.5 text-sm"
                                     />
                                 </div>
                                 <Button type="submit" disabled={processing}>
@@ -245,7 +256,7 @@ export default function JobImportsPage({
                             </form>
 
                             {searchResults.length > 0 && (
-                                <div className="mt-4 max-h-64 overflow-y-auto rounded-lg border border-gray-200 bg-white">
+                                <div className="mt-4 max-h-64 overflow-y-auto rounded-lg border border-surface-border bg-white">
                                     {searchResults.map((job) => {
                                         const key = resultKey(job);
                                         const checked = selectedResults.has(key);
@@ -253,9 +264,9 @@ export default function JobImportsPage({
                                             <div
                                                 key={key}
                                                 onClick={() => toggleResult(job)}
-                                                className="flex cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 last:border-b-0 hover:bg-gray-50"
+                                                className="flex cursor-pointer items-center gap-3 border-b border-surface-border px-4 py-2.5 last:border-b-0 hover:bg-surface"
                                             >
-                                                <span className={checked ? 'text-brand' : 'text-gray-300'}>
+                                                <span className={checked ? 'text-brand' : 'text-ink-faint'}>
                                                     {checked ? '☑' : '☐'}
                                                 </span>
                                                 <span className={`w-fit rounded px-1.5 py-1 text-[9.5px] font-bold ${SOURCE_META[job.source].badge}`}>
@@ -263,12 +274,12 @@ export default function JobImportsPage({
                                                 </span>
                                                 <div className="min-w-0 flex-1">
                                                     <div className="truncate text-sm font-bold text-ink">{job.title}</div>
-                                                    <div className="truncate text-xs font-medium text-gray-500">
+                                                    <div className="truncate text-xs font-medium text-ink-muted">
                                                         {job.company ?? 'Unknown company'} · {job.location ?? 'Unknown location'}
                                                     </div>
                                                 </div>
                                                 {job.salary && (
-                                                    <span className="text-xs font-semibold text-gray-500">{job.salary}</span>
+                                                    <span className="text-xs font-semibold text-ink-muted">{job.salary}</span>
                                                 )}
                                             </div>
                                         );
@@ -276,21 +287,21 @@ export default function JobImportsPage({
                                 </div>
                             )}
                             {processing === false && searchResults.length === 0 && data.keyword !== '' && (
-                                <div className="mt-3 text-xs text-gray-400">
+                                <div className="mt-3 text-xs text-ink-faint">
                                     No results yet — try a search, or check that a source is configured above.
                                 </div>
                             )}
                         </div>
                     )}
 
-                    <div className="flex gap-2 border-b border-gray-100 px-6 pt-3">
+                    <div className="flex gap-2 border-b border-surface-border px-6 pt-3">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.key}
                                 type="button"
                                 onClick={() => setFilter(tab.key)}
                                 className={`border-b-2 pb-2.5 text-xs font-semibold ${
-                                    filter === tab.key ? 'border-brand text-brand-accent' : 'border-transparent text-gray-400'
+                                    filter === tab.key ? 'border-brand text-brand-accent' : 'border-transparent text-ink-faint'
                                 }`}
                             >
                                 {tab.label} ({tab.count})
@@ -299,9 +310,9 @@ export default function JobImportsPage({
                     </div>
 
                     <div className="flex min-h-0" style={{ height: 480 }}>
-                        <div className="flex min-w-0 flex-1 flex-col overflow-y-auto border-r border-gray-100">
+                        <div className="flex min-w-0 flex-1 flex-col overflow-y-auto border-r border-surface-border">
                             {filtered.length === 0 && (
-                                <div className="px-6 py-10 text-center text-xs font-medium text-gray-400">
+                                <div className="px-6 py-10 text-center text-xs font-medium text-ink-faint">
                                     No imported jobs from this source yet. Use "Search jobs" above to find some.
                                 </div>
                             )}
@@ -309,7 +320,7 @@ export default function JobImportsPage({
                                 <div
                                     key={job.id}
                                     onClick={() => setOpenJobId(job.id)}
-                                    className={`flex cursor-pointer items-center gap-3 border-b border-gray-100 px-5 py-3 hover:bg-gray-50 ${
+                                    className={`flex cursor-pointer items-center gap-3 border-b border-surface-border px-5 py-3 hover:bg-surface ${
                                         job.id === openJobId ? 'bg-brand-subtle/40' : ''
                                     }`}
                                 >
@@ -318,11 +329,11 @@ export default function JobImportsPage({
                                     </span>
                                     <div className="min-w-0 flex-1">
                                         <div className="truncate text-sm font-bold text-ink">{job.title}</div>
-                                        <div className="truncate text-xs font-medium text-gray-500">
+                                        <div className="truncate text-xs font-medium text-ink-muted">
                                             {job.company ?? 'Unknown company'} · {job.location ?? 'Unknown location'}
                                         </div>
                                     </div>
-                                    <span className={`w-fit rounded-full px-2.5 py-1 text-[11px] font-semibold ${STATUS_META[job.status]}`}>
+                                    <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_META[job.status]}`}>
                                         {job.status}
                                     </span>
                                 </div>
@@ -334,7 +345,7 @@ export default function JobImportsPage({
                                 <>
                                     <div>
                                         <div className="text-base font-bold text-ink">{selectedJob.title}</div>
-                                        <div className="mt-1 text-xs font-semibold text-gray-500">
+                                        <div className="mt-1 text-xs font-semibold text-ink-muted">
                                             {selectedJob.company ?? 'Unknown company'} · {selectedJob.location ?? 'Unknown location'}
                                         </div>
                                         {selectedJob.salary && (
@@ -346,7 +357,7 @@ export default function JobImportsPage({
 
                                     {selectedJob.description && (
                                         <div>
-                                            <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                            <div className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-faint">
                                                 Description
                                             </div>
                                             <p className="text-xs leading-relaxed text-ink">{selectedJob.description}</p>
@@ -368,7 +379,7 @@ export default function JobImportsPage({
                                         <select
                                             value={selectedJob.status}
                                             onChange={(e) => setStatus(selectedJob, e.target.value as Status)}
-                                            className="rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-semibold"
+                                            className="min-h-11 rounded-lg border border-surface-border px-2 py-1.5 text-xs font-semibold"
                                         >
                                             {(['New', 'Saved', 'Tailoring', 'Applied', 'Archived'] as Status[]).map((s) => (
                                                 <option key={s} value={s}>
@@ -380,13 +391,13 @@ export default function JobImportsPage({
 
                                     {resumes.length > 0 && (
                                         <div>
-                                            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                            <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-ink-faint">
                                                 Match against resume
                                             </label>
                                             <select
                                                 value={resumeId ?? ''}
                                                 onChange={(e) => setResumeId(Number(e.target.value))}
-                                                className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-semibold"
+                                                className="w-full rounded-lg border border-surface-border px-2 py-1.5 text-xs font-semibold"
                                             >
                                                 {resumes.map((resume) => (
                                                     <option key={resume.id} value={resume.id}>
@@ -399,7 +410,7 @@ export default function JobImportsPage({
 
                                     <Button
                                         type="button"
-                                        className="w-full justify-center"
+                                        className="min-h-11 w-full justify-center"
                                         onClick={() => runMatch(selectedJob)}
                                         disabled={ai.busy || !ai.status?.enabled || resumes.length === 0}
                                     >
@@ -407,26 +418,26 @@ export default function JobImportsPage({
                                     </Button>
 
                                     {matchResult && matchResult.jobId === selectedJob.id && (
-                                        <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                                        <div className="rounded-lg border border-surface-border bg-surface p-3">
                                             <div className="flex items-baseline justify-between">
-                                                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-ink-faint">
                                                     Match score
                                                 </span>
-                                                <span className="text-sm font-bold text-brand-accent">
+                                                <span className="text-sm font-bold tabular-nums text-brand-accent">
                                                     {matchResult.score}%
                                                 </span>
                                             </div>
                                             <p className="mt-1 text-xs leading-relaxed text-ink">{matchResult.summary}</p>
                                             {matchResult.missing_skills.length > 0 && (
                                                 <>
-                                                    <div className="mt-2 mb-1 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                                    <div className="mt-2 mb-1 text-xs font-bold uppercase tracking-wider text-ink-faint">
                                                         Missing skills
                                                     </div>
                                                     <div className="flex flex-wrap gap-1">
                                                         {matchResult.missing_skills.map((skill) => (
                                                             <span
                                                                 key={skill}
-                                                                className="rounded-full border border-warning/40 bg-warning-subtle px-2 py-0.5 text-[10px] font-medium text-warning-text"
+                                                                className="rounded-full border border-warning/40 bg-warning-subtle px-2 py-0.5 text-xs font-medium text-warning-text"
                                                             >
                                                                 {skill}
                                                             </span>
@@ -440,14 +451,18 @@ export default function JobImportsPage({
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-full justify-center"
-                                        onClick={stub('cover letter drafting')}
+                                        className="min-h-11 w-full justify-center gap-2"
+                                        disabled
+                                        title="Cover letter drafting is not implemented yet"
                                     >
                                         Draft cover letter
+                                        <span className="rounded-full bg-surface px-2 py-0.5 text-xs font-medium text-ink-faint">
+                                            Coming soon
+                                        </span>
                                     </Button>
                                 </>
                             ) : (
-                                <div className="flex flex-1 items-center justify-center px-6 text-center text-xs font-medium text-gray-400">
+                                <div className="flex flex-1 items-center justify-center px-6 text-center text-xs font-medium text-ink-faint">
                                     Select a job from the list to see its details.
                                 </div>
                             )}
@@ -462,6 +477,24 @@ export default function JobImportsPage({
                     {toast}
                 </div>
             )}
+
+            <Modal
+                show={comingSoonOpen}
+                onClose={() => setComingSoonOpen(false)}
+                maxWidth="sm"
+                title="Coming Soon."
+                footer={
+                    <div className="flex justify-end">
+                        <Button type="button" onClick={() => setComingSoonOpen(false)}>
+                            OK
+                        </Button>
+                    </div>
+                }
+            >
+                <p className="px-5 py-4 text-sm text-ink-muted">
+                    Job board search and the browser extension are not available yet.
+                </p>
+            </Modal>
         </AuthenticatedLayout>
     );
 }

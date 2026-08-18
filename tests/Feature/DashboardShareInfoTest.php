@@ -68,6 +68,29 @@ class DashboardShareInfoTest extends TestCase
                     })));
     }
 
+    public function test_dashboard_renders_resumes_without_a_group(): void
+    {
+        $user = User::factory()->create();
+
+        // Mimic seeders: WithoutModelEvents skips the creating hook that
+        // assigns a ResumeGroup, leaving group_id null.
+        $orphan = Resume::withoutEvents(fn () => Resume::factory()->for($user)->create([
+            'title' => 'Orphan Seed Resume',
+            'group_id' => null,
+        ]));
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Dashboard')
+                ->loadDeferredProps(fn ($reload) => $reload
+                    ->has('resumes', 1)
+                    ->where('resumes.0.id', $orphan->id)
+                    ->where('resumes.0.title', 'Orphan Seed Resume')
+                    ->where('resumes.0.group_id', null)));
+    }
+
     public function test_dashboard_marks_expired_share_links(): void
     {
         $user = User::factory()->create();

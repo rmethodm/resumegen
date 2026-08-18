@@ -197,7 +197,7 @@ function AccessGate({
 function BrandFooter() {
     return (
         <footer className="px-4 py-4 text-center">
-            <p className="text-[11px] text-ink-faint">
+            <p className="text-xs text-ink-faint">
                 Shared with{' '}
                 <a
                     href="/"

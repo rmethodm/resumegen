@@ -118,7 +118,7 @@ export function BulletStyleThumb({ style }: { style: ResumeBulletStyle }) {
                 <div className="flex flex-col gap-1.5">
                     {['70%', '55%'].map((w, index) => (
                         <span key={w} className="flex items-center gap-1.5">
-                            <span className="text-[9px] font-semibold text-gray-500">
+                            <span className="text-[9px] font-semibold text-ink-muted">
                                 {index + 1}.
                             </span>
                             <Bar w={w} />
@@ -192,7 +192,7 @@ export function Field({
                 <p
                     id={messageId}
                     role="alert"
-                    className="text-[11px] text-danger"
+                    className="text-xs text-danger"
                 >
                     {error}
                 </p>
@@ -224,7 +224,7 @@ function PartSelect({
             disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
             className={cn(
-                'h-9 rounded-md border border-gray-300 bg-white px-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-50',
+                'h-11 min-h-11 rounded-md border border-surface-border bg-white px-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-50',
                 className,
             )}
         >
@@ -286,7 +286,7 @@ export function MonthYearField({
                 />
             </div>
             {unparsed !== '' && (
-                <p className="text-[11px] text-gray-500">
+                <p className="text-xs text-ink-muted">
                     Currently “{unparsed}”. Picking a month or year replaces it.
                 </p>
             )}
@@ -304,6 +304,8 @@ type EntryDragHandle = {
     onDragStart: () => void;
     onDragEnd: () => void;
     onDragOver: (event: DragEvent<HTMLDivElement>) => void;
+    /** Keyboard alternative to drag — same Alt+↑/↓ contract as BulletsField. */
+    onKeyMove: (offset: -1 | 1) => void;
 };
 
 /**
@@ -327,6 +329,15 @@ export function useEntryReorder<T>(
                 onChange(reorder(list, dragging, index));
                 setDragging(index);
             }
+        },
+        onKeyMove: (offset) => {
+            const target = index + offset;
+
+            if (target < 0 || target >= list.length) {
+                return;
+            }
+
+            onChange(reorder(list, index, target));
         },
     });
 }
@@ -355,17 +366,31 @@ export function EntryCard({
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5">
                     {dragHandle && (
-                        <span
+                        <button
+                            type="button"
                             draggable
                             onDragStart={dragHandle.onDragStart}
                             onDragEnd={dragHandle.onDragEnd}
-                            className="cursor-grab p-0.5 text-ink-faint active:cursor-grabbing"
-                            aria-label={`Reorder ${title}`}
+                            onKeyDown={(event) => {
+                                // Alt+↑/↓ reorders without leaving the keyboard.
+                                if (
+                                    event.altKey &&
+                                    (event.key === 'ArrowUp' ||
+                                        event.key === 'ArrowDown')
+                                ) {
+                                    event.preventDefault();
+                                    dragHandle.onKeyMove(
+                                        event.key === 'ArrowUp' ? -1 : 1,
+                                    );
+                                }
+                            }}
+                            className="cursor-grab p-0.5 text-ink-faint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 active:cursor-grabbing"
+                            aria-label={`Reorder ${title} — drag, or Alt+Arrow keys`}
                         >
                             <Bars3Icon className="size-3.5" />
-                        </span>
+                        </button>
                     )}
-                    <p className="text-[11px] font-semibold tracking-[0.06em] text-ink-faint uppercase">
+                    <p className="text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase">
                         {title}
                     </p>
                 </div>
@@ -408,7 +433,7 @@ export function AddButton({
                 <PlusIcon className="size-3.5" /> {label}
             </Button>
             {disabled && disabledReason && (
-                <p className="text-[11px] text-ink-faint">{disabledReason}</p>
+                <p className="text-xs text-ink-faint">{disabledReason}</p>
             )}
         </div>
     );
@@ -572,14 +597,14 @@ export function BulletsField({
                 <Label className="text-xs">{label}</Label>
                 <button
                     type="button"
-                    className="text-[11px] font-semibold text-brand hover:text-brand-accent"
+                    className="text-xs font-semibold text-brand hover:text-brand-accent"
                     onClick={() => setBulkOpen((open) => !open)}
                 >
                     {bulkOpen ? 'Cancel paste' : 'Paste many'}
                 </button>
             </div>
             {bulkOpen && (
-                <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2.5">
+                <div className="flex flex-col gap-2 rounded-lg border border-surface-border bg-surface p-2.5">
                     <textarea
                         value={bulkText}
                         onChange={(event) => setBulkText(event.target.value)}
@@ -587,7 +612,7 @@ export function BulletsField({
                         placeholder={
                             'Paste bullets — one per line\n• Shipped feature X\n- Reduced costs by 20%'
                         }
-                        className="w-full resize-y rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30"
+                        className="w-full resize-y rounded-md border border-surface-border bg-white px-2.5 py-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30"
                     />
                     <Button
                         type="button"
@@ -617,7 +642,7 @@ export function BulletsField({
                         draggable
                         onDragStart={() => setDragging(index)}
                         onDragEnd={() => setDragging(null)}
-                        className="cursor-grab p-1 text-gray-500 active:cursor-grabbing"
+                        className="cursor-grab p-1 text-ink-muted active:cursor-grabbing"
                         aria-label="Reorder bullet"
                     >
                         <Bars3Icon className="size-3.5" />
@@ -691,7 +716,7 @@ export function BulletsField({
                                     ? `AI rewrite (${aiRemaining} left this month)`
                                     : 'AI rewrite'
                             }
-                            className="shrink-0 px-1 text-[10px] font-semibold text-brand hover:underline disabled:opacity-50"
+                            className="shrink-0 px-1 text-xs font-semibold text-brand hover:underline disabled:opacity-50"
                         >
                             AI
                         </button>
@@ -699,7 +724,7 @@ export function BulletsField({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="size-7 text-gray-500"
+                        className="size-7 text-ink-muted"
                         onClick={() => removeAt(index)}
                         aria-label="Remove bullet"
                     >
@@ -717,7 +742,7 @@ export function BulletsField({
                 + Add bullet
             </Button>
             {rows.length >= max && (
-                <p className="text-[11px] text-gray-500">
+                <p className="text-xs text-ink-muted">
                     Limit reached ({max}).
                 </p>
             )}

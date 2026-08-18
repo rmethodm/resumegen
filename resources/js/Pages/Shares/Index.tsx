@@ -1,9 +1,12 @@
 import Modal from '@/Components/Modal';
+import { Button } from '@/Components/ui/button';
+import { Shell } from '@/Components/ui/shell';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { cn, focusRingClass } from '@/lib/utils';
 import { PageProps } from '@/types';
 import { LinkIcon, LockClosedIcon, StarIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Visit {
@@ -39,17 +42,21 @@ interface ResumeOption {
 
 type Props = PageProps<{ links: ShareLinkRow[]; resumes: ResumeOption[] }>;
 
-const CARD_SHADOW = 'shadow-[0_1px_3px_rgba(79,70,229,0.05)]';
+const fieldClass = cn(
+    'mt-1 block w-full rounded-lg border-surface-border text-sm text-ink shadow-sm',
+    'placeholder:text-ink-faint focus:border-brand focus:ring-0',
+    focusRingClass,
+);
 
-function Pill({ children, tone }: { children: React.ReactNode; tone: 'green' | 'gray' | 'indigo' | 'amber' }) {
+function Pill({ children, tone }: { children: React.ReactNode; tone: 'green' | 'gray' | 'brand' | 'amber' }) {
     const tones = {
-        green: 'bg-emerald-50 text-emerald-700',
-        gray: 'bg-gray-100 text-gray-500',
-        indigo: 'bg-indigo-50 text-indigo-600',
-        amber: 'bg-amber-50 text-amber-700',
+        green: 'bg-success-subtle text-success-text',
+        gray: 'bg-surface text-ink-muted',
+        brand: 'bg-brand-subtle text-brand-accent',
+        amber: 'bg-warning-subtle text-warning-text',
     };
 
-    return <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${tones[tone]}`}>{children}</span>;
+    return <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>{children}</span>;
 }
 
 function Sparkline({ values }: { values: number[] }) {
@@ -60,7 +67,7 @@ function Sparkline({ values }: { values: number[] }) {
 
     return (
         <svg viewBox="0 0 100 28" preserveAspectRatio="none" className="h-7 w-full" aria-hidden="true">
-            <polyline points={points} fill="none" stroke="#6366f1" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+            <polyline points={points} fill="none" stroke="#5952d2" strokeWidth="2" vectorEffect="non-scaling-stroke" />
         </svg>
     );
 }
@@ -111,53 +118,56 @@ export default function SharesIndex() {
         <AuthenticatedLayout>
             <Head title="Shares" />
 
-            <div className="py-8">
+            <div className="py-6 sm:py-8">
                 <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-                    <div className="mb-6 flex items-center justify-between">
+                    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h1 className="text-xl font-extrabold tracking-tight text-[#0f0f1a]">Shares</h1>
-                            <p className="mt-1 text-sm text-[#a0a0b0]">
+                            <h1 className="text-xl font-extrabold tracking-tight text-ink">Shares</h1>
+                            <p className="mt-1 text-sm text-ink-muted">
                                 Every link you've shared, and who has looked at it
                             </p>
                         </div>
                         {resumes.length > 0 && (
-                            <button
-                                onClick={() => setCreating(true)}
-                                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-indigo-500"
-                            >
+                            <Button type="button" onClick={() => setCreating(true)} className="min-h-11 w-full sm:w-auto">
                                 + New share link
-                            </button>
+                            </Button>
                         )}
                     </div>
 
                     {links.length === 0 ? (
-                        <div
-                            className={`flex flex-col items-center justify-center rounded-xl border border-[#eeeef5] bg-white py-20 ${CARD_SHADOW}`}
-                        >
-                            <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-indigo-50 p-4">
-                                <LinkIcon className="h-8 w-8 text-indigo-500" />
+                        <Shell innerClassName="flex flex-col items-center justify-center px-6 py-16 text-center">
+                            <div className="mb-4 inline-flex items-center justify-center rounded-lg bg-brand-subtle p-4">
+                                <LinkIcon className="h-8 w-8 text-brand" />
                             </div>
-                            <p className="text-sm font-semibold text-[#0f0f1a]">No share links yet</p>
-                            <p className="mt-1 text-sm text-[#a0a0b0]">
+                            <p className="text-sm font-semibold text-ink">No share links yet</p>
+                            <p className="mt-1 max-w-sm text-sm text-ink-muted">
                                 Create a link to send a resume to an employer and track who opens it.
                             </p>
-                        </div>
+                            {resumes.length > 0 && (
+                                <Button type="button" className="mt-5 min-h-11" onClick={() => setCreating(true)}>
+                                    Create your first link
+                                </Button>
+                            )}
+                        </Shell>
                     ) : (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {links.map(link => (
-                                <div
+                            {links.map((link) => (
+                                <Shell
                                     key={link.id}
-                                    className={`group rounded-xl border bg-white p-4 transition hover:-translate-y-1 hover:shadow-[0_2px_8px_rgba(79,70,229,0.1)] ${CARD_SHADOW} ${
-                                        link.is_primary ? 'border-indigo-500' : 'border-[#eeeef5]'
-                                    }`}
+                                    className={cn(
+                                        'transition-[box-shadow,transform] duration-soft ease-soft motion-reduce:transition-none',
+                                        'hover:-translate-y-0.5 hover:shadow-ambient',
+                                        link.is_primary && 'ring-2 ring-brand/30',
+                                    )}
+                                    innerClassName="flex h-full flex-col p-4"
                                 >
                                     <div className="mb-1 flex items-start justify-between gap-2">
                                         <div className="flex min-w-0 items-center gap-1.5">
                                             {link.is_primary && (
-                                                <StarSolid className="h-3.5 w-3.5 shrink-0 text-indigo-500" title="Primary link" />
+                                                <StarSolid className="h-4 w-4 shrink-0 text-brand" title="Primary link" />
                                             )}
-                                            <p className="truncate text-[13px] font-semibold text-[#0f0f1a]">
-                                                {link.label || 'Untitled link'}
+                                            <p className="truncate text-sm font-semibold text-ink">
+                                                {link.label || link.resume_name || 'Untitled link'}
                                             </p>
                                         </div>
                                         <Pill tone={link.is_active ? 'green' : 'gray'}>
@@ -166,22 +176,31 @@ export default function SharesIndex() {
                                     </div>
 
                                     <button
+                                        type="button"
                                         onClick={() => copy(link)}
-                                        className="mb-2 block max-w-full truncate text-[11px] text-[#a0a0b0] hover:text-indigo-500"
+                                        className={cn(
+                                            'mb-2 block max-w-full truncate text-left text-xs text-ink-faint hover:text-brand',
+                                            focusRingClass,
+                                            'rounded-md',
+                                        )}
                                         title="Copy link"
                                     >
                                         {copiedId === link.id ? 'Copied!' : link.url}
                                     </button>
 
-                                    <div className="mb-2 flex items-center gap-1.5 text-[11px] text-[#71717a]">
-                                        <span>Resume:</span>
+                                    <div className="mb-2 flex flex-wrap items-center gap-1.5 text-xs text-ink-muted">
+                                        <span className="shrink-0">Resume:</span>
                                         <select
                                             value={link.resume_id}
-                                            onChange={e => patchLink(link, { resume_id: Number(e.target.value) })}
+                                            onChange={(e) => patchLink(link, { resume_id: Number(e.target.value) })}
                                             aria-label="Resume shared by this link"
-                                            className="max-w-[9rem] truncate rounded-md border-[#eeeef5] bg-[#fafafe] py-1 pl-2 pr-6 text-[11px] font-medium text-[#71717a] focus:border-indigo-400 focus:ring-indigo-400"
+                                            className={cn(
+                                                'min-h-11 max-w-full flex-1 truncate rounded-md border-surface-border bg-surface py-2 pl-2 pr-8 text-xs font-medium text-ink-muted',
+                                                'focus:border-brand focus:ring-0',
+                                                focusRingClass,
+                                            )}
                                         >
-                                            {resumes.map(r => (
+                                            {resumes.map((r) => (
                                                 <option key={r.id} value={r.id}>
                                                     {r.name}
                                                 </option>
@@ -191,61 +210,74 @@ export default function SharesIndex() {
 
                                     <Sparkline values={link.trend} />
 
-                                    <div className="mt-2 flex items-center justify-between text-[11px] text-[#71717a]">
+                                    <div className="mt-2 flex items-center justify-between gap-2 text-xs text-ink-muted">
                                         <button
+                                            type="button"
                                             onClick={() => openDetail(link)}
-                                            className="relative font-medium text-indigo-600 hover:underline"
+                                            className={cn(
+                                                'relative min-h-11 rounded-md px-1 font-medium text-brand hover:underline',
+                                                focusRingClass,
+                                            )}
                                         >
-                                            {link.views} views · {link.visitors} visitors
+                                            <span className="tabular-nums">
+                                                {link.views} views · {link.visitors} visitors
+                                            </span>
                                             {link.unread > 0 && (
-                                                <span className="absolute -right-3 -top-1.5 flex h-3.5 min-w-[0.875rem] items-center justify-center rounded-full bg-red-500 px-1 text-[8px] font-bold text-white">
+                                                <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1.5 text-xs font-bold tabular-nums text-white">
                                                     {link.unread}
                                                 </span>
                                             )}
                                         </button>
-                                        <span>Expires {link.expires_at ?? 'Never'}</span>
+                                        <span className="shrink-0">Expires {link.expires_at ?? 'Never'}</span>
                                     </div>
 
-                                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                                        {link.has_password && <Pill tone="indigo">Password</Pill>}
-                                        {link.questions > 0 && (
-                                            <Link
-                                                href={route('messages.index')}
-                                                className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 hover:bg-amber-100"
-                                            >
-                                                {link.questions} question{link.questions > 1 ? 's' : ''} →
-                                            </Link>
-                                        )}
+                                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                                        {link.has_password && <Pill tone="brand">Password</Pill>}
                                     </div>
 
-                                    {/* ponytail: fade only — hiding these would change card height and reflow the grid */}
-                                    <div className="mt-3 flex gap-2 border-t border-[#eeeef5] pt-3 transition-opacity focus-within:opacity-100 group-hover:opacity-100 sm:opacity-0">
+                                    <div className="mt-auto flex gap-2 border-t border-surface-border pt-3 sm:opacity-100">
                                         {!link.is_primary && (
                                             <button
+                                                type="button"
                                                 onClick={() => patchLink(link, { is_primary: true })}
-                                                className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-[#eeeef5] px-2 py-1.5 text-xs font-medium text-[#71717a] transition hover:bg-[#fafafe]"
+                                                className={cn(
+                                                    'flex min-h-11 flex-1 items-center justify-center gap-1 rounded-lg border border-surface-border px-2 text-xs font-medium text-ink-muted transition hover:bg-surface',
+                                                    focusRingClass,
+                                                )}
                                             >
-                                                <StarIcon className="h-3.5 w-3.5" />
+                                                <StarIcon className="h-4 w-4" />
                                                 Make primary
                                             </button>
                                         )}
                                         <button
+                                            type="button"
                                             onClick={() => openDetail(link)}
-                                            className="flex-1 rounded-lg border border-[#eeeef5] px-2 py-1.5 text-xs font-medium text-[#71717a] transition hover:bg-[#fafafe]"
+                                            className={cn(
+                                                'min-h-11 flex-1 rounded-lg border border-surface-border px-2 text-xs font-medium text-ink-muted transition hover:bg-surface',
+                                                focusRingClass,
+                                            )}
                                         >
                                             Details
                                         </button>
                                     </div>
-                                </div>
+                                </Shell>
                             ))}
 
                             {resumes.length > 0 && (
                                 <button
+                                    type="button"
                                     onClick={() => setCreating(true)}
-                                    className="flex min-h-[220px] flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-indigo-200 text-indigo-400 transition hover:border-indigo-400 hover:text-indigo-600"
+                                    className={cn(
+                                        'flex min-h-[12rem] flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-brand/30 text-brand transition hover:border-brand hover:bg-brand-subtle/40',
+                                        focusRingClass,
+                                    )}
                                 >
-                                    <span className="text-2xl">+</span>
-                                    <span className="text-xs font-medium">Create link for a specific employer</span>
+                                    <span className="text-2xl leading-none" aria-hidden>
+                                        +
+                                    </span>
+                                    <span className="px-4 text-center text-xs font-medium">
+                                        Create link for a specific employer
+                                    </span>
                                 </button>
                             )}
                         </div>
@@ -255,19 +287,19 @@ export default function SharesIndex() {
 
             <Modal show={creating} onClose={() => setCreating(false)} maxWidth="md">
                 <form onSubmit={submitCreate} className="p-6">
-                    <h2 className="text-lg font-semibold text-[#0f0f1a]">New share link</h2>
-                    <p className="mt-1 text-xs text-[#a0a0b0]">
-                        Give it a label so you remember who you sent it to.
+                    <h2 className="text-lg font-semibold text-ink">New share link</h2>
+                    <p className="mt-1 text-xs text-ink-muted">
+                        Optional label helps you remember who you sent it to (not stored yet).
                     </p>
 
-                    <label className="mt-4 block text-xs font-medium text-[#71717a]">
+                    <label className="mt-4 block text-xs font-medium text-ink-muted">
                         Resume
                         <select
                             value={createForm.data.resume_id}
-                            onChange={e => createForm.setData('resume_id', Number(e.target.value))}
-                            className="mt-1 block w-full rounded-lg border-[#eeeef5] text-sm focus:border-indigo-400 focus:ring-indigo-400"
+                            onChange={(e) => createForm.setData('resume_id', Number(e.target.value))}
+                            className={fieldClass}
                         >
-                            {resumes.map(r => (
+                            {resumes.map((r) => (
                                 <option key={r.id} value={r.id}>
                                     {r.name}
                                 </option>
@@ -275,32 +307,24 @@ export default function SharesIndex() {
                         </select>
                     </label>
 
-                    <label className="mt-3 block text-xs font-medium text-[#71717a]">
+                    <label className="mt-3 block text-xs font-medium text-ink-muted">
                         Label
                         <input
                             type="text"
                             value={createForm.data.label}
-                            onChange={e => createForm.setData('label', e.target.value)}
+                            onChange={(e) => createForm.setData('label', e.target.value)}
                             placeholder="For Acme Corp"
-                            className="mt-1 block w-full rounded-lg border-[#eeeef5] text-sm focus:border-indigo-400 focus:ring-indigo-400"
+                            className={fieldClass}
                         />
                     </label>
 
-                    <div className="mt-5 flex justify-end gap-2">
-                        <button
-                            type="button"
-                            onClick={() => setCreating(false)}
-                            className="rounded-lg border border-[#eeeef5] px-3 py-1.5 text-sm font-medium text-[#71717a] hover:bg-[#fafafe]"
-                        >
+                    <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                        <Button type="button" variant="outline" className="min-h-11" onClick={() => setCreating(false)}>
                             Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={createForm.processing}
-                            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
-                        >
+                        </Button>
+                        <Button type="submit" className="min-h-11" disabled={createForm.processing}>
                             Create link
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </Modal>
@@ -309,104 +333,122 @@ export default function SharesIndex() {
                 {detailFor && (
                     <div className="p-6">
                         <div className="mb-1 flex items-center gap-2">
-                            {detailFor.is_primary && <StarSolid className="h-4 w-4 text-indigo-500" />}
-                            <h2 className="text-lg font-semibold text-[#0f0f1a]">
-                                {detailFor.label || 'Untitled link'}
+                            {detailFor.is_primary && <StarSolid className="h-4 w-4 text-brand" />}
+                            <h2 className="text-lg font-semibold text-ink">
+                                {detailFor.label || detailFor.resume_name || 'Untitled link'}
                             </h2>
                         </div>
-                        <p className="mb-5 text-xs text-[#a0a0b0]">
+                        <p className="mb-5 break-all text-xs text-ink-muted">
                             {detailFor.url} · shares {detailFor.resume_name}
                         </p>
 
-                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[#a0a0b0]">
+                        <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-faint">
                             Visitor activity
                         </p>
                         {detailFor.visits.length === 0 ? (
-                            <p className="py-6 text-center text-sm text-[#a0a0b0]">No visits yet.</p>
+                            <p className="py-6 text-center text-sm text-ink-muted">No visits yet.</p>
                         ) : (
-                            <table className="w-full text-left text-[12px]">
-                                <thead>
-                                    <tr className="text-[10px] uppercase tracking-wide text-[#a0a0b0]">
-                                        <th className="pb-2 font-semibold">Visitor</th>
-                                        <th className="pb-2 font-semibold">Location</th>
-                                        <th className="pb-2 font-semibold">When</th>
-                                        <th className="pb-2 font-semibold">Source</th>
-                                        <th className="pb-2 font-semibold">Time on page</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {detailFor.visits.map(v => (
-                                        <tr key={v.id} className="border-t border-[#f5f5fb]">
-                                            <td className="py-2 text-[#71717a]">Anonymous visitor</td>
-                                            <td className="py-2 text-[#a0a0b0]">{v.location}</td>
-                                            <td className="py-2 text-[#a0a0b0]">{v.when}</td>
-                                            <td className="py-2 text-[#a0a0b0]">{v.source}</td>
-                                            <td className="py-2 text-[#a0a0b0]">{v.duration}</td>
-                                        </tr>
+                            <>
+                                {/* Mobile: stacked visit cards */}
+                                <ul className="space-y-2 md:hidden">
+                                    {detailFor.visits.map((v) => (
+                                        <li
+                                            key={v.id}
+                                            className="rounded-lg border border-surface-border bg-surface px-3 py-2 text-xs text-ink-muted"
+                                        >
+                                            <p className="font-medium text-ink">{v.location}</p>
+                                            <p className="mt-0.5">{v.when}</p>
+                                            <p>
+                                                {v.source} · {v.duration}
+                                            </p>
+                                        </li>
                                     ))}
-                                </tbody>
-                            </table>
+                                </ul>
+                                <div className="hidden overflow-x-auto md:block">
+                                    <table className="w-full text-left text-xs">
+                                        <thead>
+                                            <tr className="text-xs uppercase tracking-wide text-ink-faint">
+                                                <th className="pb-2 font-semibold">Visitor</th>
+                                                <th className="pb-2 font-semibold">Location</th>
+                                                <th className="pb-2 font-semibold">When</th>
+                                                <th className="pb-2 font-semibold">Source</th>
+                                                <th className="pb-2 font-semibold">Time on page</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {detailFor.visits.map((v) => (
+                                                <tr key={v.id} className="border-t border-surface-border">
+                                                    <td className="py-2 text-ink-muted">Visitor</td>
+                                                    <td className="py-2 text-ink-muted">{v.location}</td>
+                                                    <td className="py-2 text-ink-muted">{v.when}</td>
+                                                    <td className="py-2 text-ink-muted">{v.source}</td>
+                                                    <td className="py-2 text-ink-muted">{v.duration}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </>
                         )}
 
-                        {detailFor.questions > 0 && (
-                            <Link
-                                href={route('messages.index')}
-                                className="mt-4 inline-block text-xs font-medium text-indigo-600 hover:underline"
-                            >
-                                View {detailFor.questions} question{detailFor.questions > 1 ? 's' : ''} in Messages →
-                            </Link>
-                        )}
-
-                        <div className="mt-6 border-t border-[#eeeef5] pt-4">
-                            <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-[#a0a0b0]">
+                        <div className="mt-6 border-t border-surface-border pt-4">
+                            <p className="mb-3 text-xs font-bold uppercase tracking-wide text-ink-faint">
                                 Link settings
                             </p>
-                            <div className="flex flex-wrap items-end gap-4">
-                                <label className="text-xs font-medium text-[#71717a]">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
+                                <label className="text-xs font-medium text-ink-muted">
                                     Expires
                                     <input
                                         type="date"
                                         defaultValue={detailFor.expires_at ?? ''}
-                                        onBlur={e => patchLink(detailFor, { expires_at: e.target.value || null })}
-                                        className="mt-1 block rounded-lg border-[#eeeef5] text-xs focus:border-indigo-400 focus:ring-indigo-400"
+                                        onBlur={(e) =>
+                                            patchLink(detailFor, { expires_at: e.target.value || null })
+                                        }
+                                        className={cn(fieldClass, 'min-h-11')}
                                     />
                                 </label>
 
-                                <label className="text-xs font-medium text-[#71717a]">
+                                <label className="text-xs font-medium text-ink-muted">
                                     <span className="flex items-center gap-1">
-                                        <LockClosedIcon className="h-3 w-3" />
+                                        <LockClosedIcon className="h-3.5 w-3.5" />
                                         Password {detailFor.has_password && '(set)'}
                                     </span>
                                     <input
                                         type="password"
                                         value={password}
-                                        onChange={e => setPassword(e.target.value)}
+                                        onChange={(e) => setPassword(e.target.value)}
                                         placeholder="At least 4 characters"
-                                        className="mt-1 block rounded-lg border-[#eeeef5] text-xs focus:border-indigo-400 focus:ring-indigo-400"
+                                        className={cn(fieldClass, 'min-h-11')}
                                     />
                                 </label>
 
-                                <button
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="min-h-11"
                                     onClick={() => {
                                         patchLink(detailFor, { password });
                                         setDetailFor({ ...detailFor, has_password: password.length > 0 });
                                         setPassword('');
                                     }}
-                                    className="rounded-lg border border-[#eeeef5] px-3 py-1.5 text-xs font-medium text-[#71717a] hover:bg-[#fafafe]"
                                 >
-                                    {password ? 'Set password' : 'Remove password'}
-                                </button>
+                                    {password ? 'Set password' : 'Clear password'}
+                                </Button>
 
                                 {detailFor.is_active && (
-                                    <button
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="min-h-11 border-danger/30 text-danger hover:bg-danger-subtle sm:ml-auto"
                                         onClick={() => {
-                                            patchLink(detailFor, { is_active: false });
+                                            patchLink(detailFor, {
+                                                expires_at: new Date().toISOString().slice(0, 10),
+                                            });
                                             setDetailFor(null);
                                         }}
-                                        className="ml-auto rounded-lg px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50"
                                     >
-                                        Revoke link
-                                    </button>
+                                        Expire link
+                                    </Button>
                                 )}
                             </div>
                         </div>

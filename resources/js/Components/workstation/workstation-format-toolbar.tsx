@@ -184,7 +184,7 @@ export function WorkstationFormatToolbar({
 
             <ToolbarDivider />
 
-            <span className="mr-1 hidden text-[10px] font-bold tracking-[0.08em] text-ink-muted uppercase sm:inline">
+            <span className="mr-1 hidden text-xs font-bold tracking-[0.08em] text-ink-muted uppercase sm:inline">
                 Format
             </span>
             <button
@@ -262,7 +262,7 @@ export function WorkstationFormatToolbar({
                                         {fontLabels[key]}
                                     </span>
                                     {pdfFontNotes[key] ? (
-                                        <span className="block truncate text-[11px] text-ink-faint">
+                                        <span className="block truncate text-xs text-ink-faint">
                                             {pdfFontNotes[key]}
                                         </span>
                                     ) : null}
@@ -334,21 +334,21 @@ export function WorkstationFormatToolbar({
                                 >
                                     <MenuCheck on={option.density === density} />
                                     {option.label}
-                                    <span className="ml-auto text-[11px] text-ink-faint">
+                                    <span className="ml-auto text-xs text-ink-faint">
                                         ≈{optionPages}p
                                     </span>
                                 </button>
                             </MenuItem>
                         );
                     })}
-                    <div className="mt-1 border-t border-surface-border/80 px-2 py-1.5 text-[11px] leading-snug text-ink-muted">
+                    <div className="mt-1 border-t border-surface-border/80 px-2 py-1.5 text-xs leading-snug text-ink-muted">
                         {pageEstimate.hint}
                     </div>
                 </MenuItems>
             </Menu>
 
             <span
-                className="hidden max-w-[11rem] truncate text-[11px] text-ink-faint sm:inline"
+                className="hidden max-w-[11rem] truncate text-xs text-ink-faint sm:inline"
                 title={pageEstimate.hint}
             >
                 ≈{pageEstimate.pages} page{pageEstimate.pages === 1 ? '' : 's'}

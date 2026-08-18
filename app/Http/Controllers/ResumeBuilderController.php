@@ -3,95 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Data\ResumeRules;
-use App\Data\SkillCategories;
 use App\Models\Resume;
-use App\Models\ResumeShareEvent;
-use App\Models\ResumeShareLink;
 use App\Services\DocxGenerator;
-use App\Services\ResumeCompletionScorer;
 use App\Services\ResumeCopier;
-use App\Services\ResumeStrengthScorer;
 use App\Services\ResumeThumbnailGenerator;
 use App\Services\UserLimits;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Inertia\Inertia;
-use Inertia\Response;
 use PhpOffice\PhpWord\IOFactory;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ResumeBuilderController extends Controller
 {
-    public function index(Request $request): Response
+    /**
+     * Legacy list UI — user resumes live on Dashboard; templates on resumes.index.
+     * Keep the route so old bookmarks resolve.
+     */
+    public function index(Request $request): RedirectResponse
     {
-        $user = $request->user();
-        $resumeCollection = $user->resumes()
-            ->nonSnapshot()
-            ->with(['tags:id,resume_id,label,color'])
-            ->orderByDesc('updated_at')
-            ->get();
-
-        $viewCounts = ResumeShareEvent::query()
-            ->where('event', 'page_view')
-            ->whereIn('resume_id', $resumeCollection->pluck('id'))
-            ->selectRaw('resume_id, COUNT(*) as cnt')
-            ->groupBy('resume_id')
-            ->pluck('cnt', 'resume_id');
-
-        $activeShareResumeIds = ResumeShareLink::where('is_active', true)
-            ->whereIn('resume_id', $resumeCollection->pluck('id'))
-            ->pluck('resume_id')
-            ->flip();
-
-        $resumes = $resumeCollection->map(function (Resume $resume) use ($viewCounts, $activeShareResumeIds) {
-            $cacheKey = "strength:{$resume->id}:".$resume->updated_at->timestamp;
-            $strength = cache()->remember($cacheKey, now()->addMinutes(5), fn () => ResumeStrengthScorer::score($resume));
-
-            return [
-                'id' => $resume->id,
-                'name' => $resume->name,
-                'pdf_filename' => $resume->pdf_filename,
-                'updated_at' => $resume->updated_at,
-                'strength' => $strength['score'],
-                'strength_tip' => $strength['tip'],
-                'view_count' => (int) ($viewCounts[$resume->id] ?? 0),
-                'ab_parent_id' => $resume->ab_parent_id,
-                'tags' => $resume->tags->map(fn ($t) => [
-                    'id' => $t->id,
-                    'label' => $t->label,
-                    'color' => $t->color,
-                ])->values()->all(),
-                'has_active_share_link' => isset($activeShareResumeIds[$resume->id]),
-            ];
-        });
-
-        return Inertia::render('ResumeBuilder/Index', [
-            'resumes' => $resumes,
-            'resumeCount' => $resumes->count(),
-            'allowedTemplates' => UserLimits::allTemplates(),
-            'userPersona' => [
-                'target_role' => $user->target_role,
-                'industry' => $user->industry,
-                'years_experience' => $user->years_experience,
-            ],
-        ]);
+        return redirect()->route('dashboard');
     }
 
-    public function create(Request $request): Response
+    /**
+     * Legacy create form — resume creation is on the Dashboard / resumes.store.
+     */
+    public function create(Request $request): RedirectResponse
     {
-        $user = $request->user();
-        $resumes = $user->resumes()->nonSnapshot()->orderByDesc('updated_at')->get(['id', 'name']);
-
-        return Inertia::render('ResumeBuilder/Create', [
-            'resumes' => $resumes,
-            'resumeCount' => $resumes->count(),
-            'allowedTemplates' => UserLimits::allTemplates(),
-        ]);
+        return redirect()->route('dashboard');
     }
 
     public function store(Request $request)
@@ -122,48 +66,24 @@ class ResumeBuilderController extends Controller
             $resume->update(['contact' => $user->profile]);
         }
 
-        return redirect()->route('builder.edit', $resume->id);
+        return redirect()->route('resumes.workstation', $resume);
     }
 
-    public function edit(Request $request, Resume $resume): Response
+    /**
+     * Legacy editor — Workstation is the only editing surface.
+     * Keep the named route so old links and bookmarks still work.
+     */
+    public function edit(Request $request, Resume $resume): RedirectResponse
     {
-        $this->authorize('update', $resume);
+        // Match ResumeController ownership (no ResumePolicy in this app).
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
-        $resume->load(['shareLinks', 'threads']);
-
-        $threads = $resume->threads->map(fn ($t) => [
-            'id' => $t->id,
-            'sender_name' => $t->sender_name,
-            'sender_email' => $t->sender_email,
-            'is_read' => $t->is_read,
-            'created_at' => $t->created_at->toDateTimeString(),
-        ]);
-
-        $user = $request->user();
-        $isFirstResume = ! $user->has_completed_onboarding
-            && $user->resumes()->count() === 1;
-
-        return Inertia::render('ResumeBuilder/Edit', [
-            'resume' => $resume,
-            'shareLinks' => $resume->shareLinks,
-            'threads' => $threads,
-            'isFirstResume' => $isFirstResume,
-            'aiRemaining' => UserLimits::aiRemaining($user),
-            'allowedTemplates' => UserLimits::allTemplates(),
-            'completionScore' => ResumeCompletionScorer::score($resume),
-            'skillCategoryOptions' => SkillCategories::labels(),
-            'userPersona' => [
-                'target_role' => $user->target_role,
-                'industry' => $user->industry,
-                'years_experience' => $user->years_experience,
-            ],
-            'recruiterNote' => null,
-        ]);
+        return redirect()->route('resumes.workstation', $resume);
     }
 
     public function update(Request $request, Resume $resume)
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         $validated = $request->validate(ResumeRules::rules());
 
@@ -174,37 +94,34 @@ class ResumeBuilderController extends Controller
 
     public function shareUrl(Request $request, Resume $resume): JsonResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
-        $link = $resume->shareLinks()->where('is_active', true)->first();
-
-        if (! $link) {
-            $link = $resume->shareLinks()->create(['is_active' => true]);
-        }
+        $link = $resume->shareLinks()->latest('id')->first()
+            ?? $resume->shareLinks()->create([]);
 
         return response()->json([
-            'url' => route('public.resume', $link->token),
+            'url' => route('share.show', $link->token),
         ]);
     }
 
-    public function destroy(Request $request, Resume $resume)
+    public function destroy(Request $request, Resume $resume): RedirectResponse
     {
-        $this->authorize('delete', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
         $resume->delete();
 
-        return redirect()->route('builder.index');
+        return redirect()->route('dashboard');
     }
 
-    public function downloadPdf(Resume $resume)
+    public function downloadPdf(Request $request, Resume $resume)
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         return $this->buildPdf($resume)->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
     }
 
     public function downloadDocx(Request $request, Resume $resume): StreamedResponse|RedirectResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         $word = app(DocxGenerator::class)->generate($resume);
 
@@ -221,24 +138,24 @@ class ResumeBuilderController extends Controller
         ]);
     }
 
-    public function previewPdf(Resume $resume)
+    public function previewPdf(Request $request, Resume $resume)
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         return $this->buildPdf($resume)->stream('preview.pdf');
     }
 
-    public function htmlPreview(Resume $resume)
+    public function htmlPreview(Request $request, Resume $resume)
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         return response(view('resume-pdf', ['resume' => $resume])->render())
             ->header('Content-Type', 'text/html');
     }
 
-    public function thumbnail(Resume $resume, ResumeThumbnailGenerator $generator)
+    public function thumbnail(Request $request, Resume $resume, ResumeThumbnailGenerator $generator)
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         $path = storage_path("app/thumbnails/{$resume->id}.png");
         $isFresh = is_file($path) && filemtime($path) >= $resume->updated_at->getTimestamp();
@@ -266,7 +183,7 @@ class ResumeBuilderController extends Controller
         ]);
     }
 
-    private function placeholderThumbnail(Resume $resume): \Illuminate\Http\Response
+    private function placeholderThumbnail(Resume $resume): Response
     {
         [$r, $g, $b] = sscanf(ltrim($resume->accent_color ?: '#4f46e5', '#'), '%02x%02x%02x');
 
@@ -290,7 +207,7 @@ class ResumeBuilderController extends Controller
 
     public function beacon(Request $request, Resume $resume)
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         $data = json_decode($request->getContent(), true) ?? [];
 
@@ -303,24 +220,24 @@ class ResumeBuilderController extends Controller
 
     public function createVariant(Request $request, Resume $resume): RedirectResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         $variant = $resume->replicate();
         $variant->name = $resume->name.' (Variant)';
         $variant->ab_parent_id = $resume->id;
         $variant->save();
 
-        return redirect()->route('builder.edit', $variant->id);
+        return redirect()->route('resumes.workstation', $variant);
     }
 
-    public function duplicate(Resume $resume): RedirectResponse
+    public function duplicate(Request $request, Resume $resume): RedirectResponse
     {
-        $this->authorize('update', $resume);
+        abort_unless($resume->user_id === $request->user()->id, 403);
 
         $user = $resume->user;
 
         $copy = ResumeCopier::copy($resume, $user, 'Copy of '.$resume->name);
 
-        return redirect()->route('builder.edit', $copy->id);
+        return redirect()->route('resumes.workstation', $copy);
     }
 }

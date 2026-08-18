@@ -276,7 +276,7 @@ export function WorkstationHeader({
                             {versions.length > 0 && (
                                 <>
                                     <div className="my-1 border-t border-surface-border" />
-                                    <div className="px-2 py-1 text-[10px] font-bold tracking-wide text-ink-faint uppercase">
+                                    <div className="px-2 py-1 text-xs font-bold tracking-wide text-ink-faint uppercase">
                                         Versions
                                     </div>
                                     {versions.map((version) => (

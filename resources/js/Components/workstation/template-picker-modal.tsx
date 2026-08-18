@@ -65,7 +65,7 @@ export function TemplatePickerModal({
                                         'flex flex-col gap-1.5 rounded-lg border p-2 text-left transition-colors',
                                         selected
                                             ? 'border-brand ring-2 ring-brand/30'
-                                            : 'border-gray-200 hover:border-gray-300',
+                                            : 'border-surface-border hover:border-surface-border',
                                     )}
                                 >
                                     <div
@@ -122,14 +122,14 @@ export function TemplatePickerModal({
                                                         key={i}
                                                         className={
                                                             style.entryStyle === 'cards'
-                                                                ? 'rounded border border-gray-200 bg-gray-50 p-0.5'
+                                                                ? 'rounded border border-surface-border bg-surface p-0.5'
                                                                 : style.entryStyle === 'ruled'
-                                                                  ? 'border-b border-gray-200 pb-0.5'
+                                                                  ? 'border-b border-surface-border pb-0.5'
                                                                   : ''
                                                         }
                                                     >
                                                         <div className="h-0.5 w-[80%] rounded bg-gray-200" />
-                                                        <div className="mt-0.5 h-0.5 w-full rounded bg-gray-100" />
+                                                        <div className="mt-0.5 h-0.5 w-full rounded bg-surface" />
                                                     </div>
                                                 ))}
                                             </div>
@@ -140,7 +140,7 @@ export function TemplatePickerModal({
                                             </span>
                                         )}
                                     </div>
-                                    <span className="truncate text-[11px] font-medium text-gray-800">
+                                    <span className="truncate text-xs font-medium text-ink">
                                         {templateLabels[key]}
                                     </span>
                                 </button>

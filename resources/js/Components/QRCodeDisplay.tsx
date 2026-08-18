@@ -27,7 +27,7 @@ export default function QRCodeDisplay({ url, size = 128 }: { url: string; size?:
             <button
                 type="button"
                 onClick={download}
-                className="text-xs text-[#a0a0b0] hover:text-[#0f0f1a] underline"
+                className="text-xs text-ink-faint hover:text-[#0f0f1a] underline"
             >
                 Download QR Code
             </button>

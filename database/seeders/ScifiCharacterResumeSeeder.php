@@ -2,12 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Resume;
+use App\Models\ResumeGroup;
 use App\Models\User;
 use App\Support\ResumeDocument;
 use Illuminate\Database\Seeder;
 
 /**
- * One-shot local demo data: five generous sci-fi character resumes for a user.
+ * Local demo data: five sci-fi character resumes for the primary test account.
+ * Idempotent — re-running replaces resumes with the same titles.
  * Run: php artisan db:seed --class=ScifiCharacterResumeSeeder --no-interaction
  */
 class ScifiCharacterResumeSeeder extends Seeder
@@ -25,18 +28,36 @@ class ScifiCharacterResumeSeeder extends Seeder
         $created = [];
 
         foreach ($this->documents() as $document) {
+            $title = (string) $document['title'];
+
+            // Replace any previous seed of this character so re-runs stay clean.
+            Resume::query()
+                ->where('user_id', $user->id)
+                ->where('title', $title)
+                ->get()
+                ->each
+                ->delete();
+
+            // DatabaseSeeder uses WithoutModelEvents, so Resume::creating never
+            // assigns a group — do that work here.
+            $group = ResumeGroup::create([
+                'user_id' => $user->id,
+                'title' => $title !== '' ? $title : 'Untitled resume',
+            ]);
+
             $resume = $user->resumes()->create([
-                'title' => $document['title'],
+                'title' => $title,
+                'group_id' => $group->id,
             ]);
             ResumeDocument::save($resume, $document);
-            $created[] = "{$resume->id}: {$document['full_name']} — {$document['title']}";
+            $created[] = "{$resume->id}: {$document['full_name']} — {$title}";
         }
 
         foreach ($created as $line) {
             $this->command?->info($line);
         }
 
-        $this->command?->info('Created '.count($created).' resumes for '.$user->email);
+        $this->command?->info('Seeded '.count($created).' resumes for '.$user->email);
     }
 
     /**
@@ -66,10 +87,10 @@ class ScifiCharacterResumeSeeder extends Seeder
             'full_name' => 'Jean-Luc Picard',
             'headline' => 'Fleet Commander · Diplomatic Negotiator · Crisis Leadership',
             'email' => 'jl.picard@starfleet.example',
-            'phone' => '+1 (415) 555-1701',
+            'phone' => '(415) 555-1701',
             'location' => 'La Barre, France / San Francisco, CA',
-            'linkedin' => 'linkedin.com/in/jeanlucpicard',
-            'website' => 'starfleet.example/officers/picard',
+            'linkedin' => 'https://linkedin.com/in/jeanlucpicard',
+            'website' => 'https://starfleet.example/officers/picard',
             'summary' => 'Seasoned command officer and diplomatic leader with decades of multi-party negotiation, deep-space exploration, and high-stakes crisis response. Proven ability to align diverse stakeholders under pressure, uphold ethical standards without sacrificing mission outcomes, and mentor the next generation of officers. Known for calm decision-making under uncertainty, cross-cultural fluency, and translating strategic intent into disciplined execution across science, engineering, and security functions. Seeking senior leadership roles where exploration, governance, and principled command intersect.',
             'template' => 'classic',
             'font' => 'garamond',
@@ -249,10 +270,10 @@ class ScifiCharacterResumeSeeder extends Seeder
             'full_name' => 'Ellen Louise Ripley',
             'headline' => 'Crisis Operations Lead · Warrant Officer · Safety Systems Specialist',
             'email' => 'e.ripley@weyland.example',
-            'phone' => '+1 (312) 555-1979',
+            'phone' => '(312) 555-1979',
             'location' => 'Gateway Station / Chicago, IL',
-            'linkedin' => 'linkedin.com/in/ellenripley',
-            'website' => 'ops.example/ripley',
+            'linkedin' => 'https://linkedin.com/in/ellenripley',
+            'website' => 'https://ops.example/ripley',
             'summary' => 'Results-driven operations leader specializing in high-risk environments, containment protocols, and life-critical systems under extreme time pressure. Combines warrant-officer pragmatism with uncompromising safety standards—willing to challenge corporate risk appetite when lives are on the line. Experience spans cargo logistics, emergency ship systems, quarantine enforcement, and multi-team coordination in isolated facilities. Recognized for decisive action, clear communication under stress, and building trust with engineers, medics, and security personnel who must execute together when plans fail. Seeking senior roles in industrial safety, incident command, or mission-critical operations.',
             'template' => 'modern',
             'font' => 'ibm-plex-sans',
@@ -431,10 +452,10 @@ class ScifiCharacterResumeSeeder extends Seeder
             'full_name' => 'Paul Atreides',
             'headline' => 'Strategic Leader · Desert Operations · Alliance Builder',
             'email' => 'paul.atredies@arrakis.example',
-            'phone' => '+1 (505) 555-10191',
+            'phone' => '(505) 555-0191',
             'location' => 'Arrakeen, Arrakis / Caladan (heritage)',
-            'linkedin' => 'linkedin.com/in/paulatredies',
-            'website' => 'governance.example/atredies',
+            'linkedin' => 'https://linkedin.com/in/paulatredies',
+            'website' => 'https://governance.example/atredies',
             'summary' => 'Strategic operator with experience spanning hereditary governance, high-stakes resource economics, and coalition leadership in austere environments. Combines formal political training with field fluency among local populations—bridging palace-level planning and on-the-ground logistics. Demonstrated ability to read multi-year power dynamics, design sustainable resource strategies, and unite disparate factions around shared survival goals. Comfortable with incomplete information, rapid role expansion, and the moral weight of decisions that reshape institutions. Seeking executive strategy roles in resource-intensive industries, geopolitical risk, or complex multi-stakeholder programs.',
             'template' => 'classic',
             'font' => 'libre-baskerville',
@@ -606,10 +627,10 @@ class ScifiCharacterResumeSeeder extends Seeder
             'full_name' => 'Dana Katherine Scully, M.D.',
             'headline' => 'Medical Doctor · FBI Special Agent · Scientific Skeptic',
             'email' => 'dana.scully@fbi.example',
-            'phone' => '+1 (202) 555-1993',
+            'phone' => '(202) 555-1993',
             'location' => 'Washington, DC / Quantico, VA',
-            'linkedin' => 'linkedin.com/in/danascullymd',
-            'website' => 'medforensics.example/scully',
+            'linkedin' => 'https://linkedin.com/in/danascullymd',
+            'website' => 'https://medforensics.example/scully',
             'summary' => 'Board-trained physician and federal investigator specializing at the intersection of forensic pathology, anomalous case review, and evidence-based scientific method under institutional pressure. Known for rigorous differential diagnosis, careful documentation, and willingness to challenge both fringe claims and bureaucratic assumptions with data. Experience includes autopsy leadership, field medical response, laboratory collaboration, and teaching junior agents to separate signal from noise. Brings dual fluency in clinical medicine and investigative procedure—translating complex findings for courts, task forces, and non-technical leadership. Seeking senior roles in medical investigation, public-health forensics, or science-led special programs.',
             'template' => 'modern',
             'font' => 'source-serif-4',
@@ -793,10 +814,10 @@ class ScifiCharacterResumeSeeder extends Seeder
             'full_name' => 'Leia Organa',
             'headline' => 'Princess of Alderaan · Senator · Alliance Strategist',
             'email' => 'leia.organa@alliance.example',
-            'phone' => '+1 (202) 555-1977',
+            'phone' => '(202) 555-1977',
             'location' => 'Chandrila / Coruscant (former) / Mobile Command',
-            'linkedin' => 'linkedin.com/in/leiaorgana',
-            'website' => 'alliance.example/leaders/organa',
+            'linkedin' => 'https://linkedin.com/in/leiaorgana',
+            'website' => 'https://alliance.example/leaders/organa',
             'summary' => 'Public leader and alliance strategist with experience in legislative politics, resistance logistics, and multi-faction coalition management under existential threat. Combines diplomatic presence with operational grit—equally effective delivering Senate floor arguments and coordinating covert supply chains. Proven track record recruiting unlikely partners, protecting civilian interests during military campaigns, and rebuilding institutions after catastrophic loss. Known for moral clarity, sharp negotiation, and the ability to inspire teams without sacrificing hard-nosed prioritization. Seeking executive roles in public affairs, international partnerships, crisis communications, or mission-driven organizations requiring both vision and execution.',
             'template' => 'modern',
             'font' => 'inter',

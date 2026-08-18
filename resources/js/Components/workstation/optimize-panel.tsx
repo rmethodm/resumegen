@@ -30,10 +30,10 @@ export function OptimizePanel({
         <div className="flex flex-col gap-4">
             <Card className="gap-0 p-4">
                 <div className="mb-3">
-                    <h2 className="text-sm font-bold text-gray-900">
+                    <h2 className="text-sm font-bold text-ink">
                         Optimize for a job
                     </h2>
-                    <p className="text-[11px] text-gray-500">
+                    <p className="text-xs text-ink-muted">
                         Paste a job description. We score keyword overlap with
                         no AI — then you decide what to add.
                     </p>
@@ -55,32 +55,32 @@ export function OptimizePanel({
                             })
                         }
                     />
-                    <p className="text-[11px] text-gray-500">
-                        {jd.length} / 10000 characters
+                    <p className="text-xs text-ink-muted">
+                        <span className="tabular-nums">{jd.length} / 10000</span> characters
                     </p>
                 </div>
 
                 {jd.trim() !== '' && (
-                    <div className="mt-4 rounded-md border border-gray-100 bg-gray-50 p-3">
+                    <div className="mt-4 rounded-md border border-gray-100 bg-surface p-3">
                         <div className="mb-2 flex items-baseline justify-between">
-                            <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                            <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
                                 Match score
                             </p>
                             <p className="text-2xl font-extrabold tabular-nums text-brand">
                                 {overlap.score}
-                                <span className="text-sm font-semibold text-gray-400">
+                                <span className="text-sm font-semibold text-ink-faint">
                                     %
                                 </span>
                             </p>
                         </div>
-                        <p className="mb-3 text-[11px] text-gray-500">
+                        <p className="mb-3 text-xs text-ink-muted">
                             {overlap.matched.length} of {overlap.total} distinctive
                             JD terms appear in your resume.
                         </p>
 
                         {overlap.missing.length > 0 && (
                             <div className="mb-3">
-                                <p className="mb-1.5 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+                                <p className="mb-1.5 text-xs font-semibold tracking-wide text-ink-faint uppercase">
                                     Missing — click to add as skill
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
@@ -89,7 +89,7 @@ export function OptimizePanel({
                                             key={term}
                                             type="button"
                                             onClick={() => onAddKeyword(term)}
-                                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-white px-2.5 py-1 text-[11px] font-medium text-warning-text hover:border-warning hover:bg-warning-subtle"
+                                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-white px-2.5 py-1 text-xs font-medium text-warning-text hover:border-warning hover:bg-warning-subtle"
                                         >
                                             <PlusIcon className="size-3" />
                                             {formatKeywordLabel(term)}
@@ -101,14 +101,14 @@ export function OptimizePanel({
 
                         {overlap.matched.length > 0 && (
                             <div>
-                                <p className="mb-1.5 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+                                <p className="mb-1.5 text-xs font-semibold tracking-wide text-ink-faint uppercase">
                                     Present
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {overlap.matched.slice(0, 24).map((term) => (
                                         <span
                                             key={term}
-                                            className="rounded-full border border-success/30 bg-success-subtle px-2.5 py-1 text-[11px] font-medium text-success-text"
+                                            className="rounded-full border border-success/30 bg-success-subtle px-2.5 py-1 text-xs font-medium text-success-text"
                                         >
                                             {formatKeywordLabel(term)}
                                         </span>
@@ -119,7 +119,7 @@ export function OptimizePanel({
 
                         {overlap.missing.length === 0 &&
                             overlap.total > 0 && (
-                                <p className="text-[11px] font-medium text-success-text">
+                                <p className="text-xs font-medium text-success-text">
                                     All scanned JD terms are covered. Review
                                     bullets next for impact and weak openings.
                                 </p>
@@ -143,10 +143,10 @@ export function AtsPlainTextBlock({
         <Card className="gap-0 p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div>
-                    <h2 className="text-sm font-bold text-gray-900">
+                    <h2 className="text-sm font-bold text-ink">
                         ATS plain text
                     </h2>
-                    <p className="text-[11px] text-gray-500">
+                    <p className="text-xs text-ink-muted">
                         What a simple text parser would see — single column, no
                         layout chrome.
                     </p>
@@ -162,7 +162,7 @@ export function AtsPlainTextBlock({
                     Copy all
                 </Button>
             </div>
-            <pre className="max-h-[50dvh] overflow-auto rounded-md border border-gray-100 bg-gray-50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-gray-800">
+            <pre className="max-h-[50dvh] overflow-auto rounded-md border border-gray-100 bg-surface p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-ink">
                 {plainText}
             </pre>
         </Card>

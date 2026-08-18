@@ -70,11 +70,11 @@ Default to surfacing uncertainty, not hiding it.
 
 ## Stack
 
-- **Backend:** Laravel 13, PHP 8.4, PostgreSQL (`DB_CONNECTION=pgsql`; tests run on in-memory SQLite), Inertia.js v2
-- **Frontend:** React 18, TypeScript, Tailwind CSS v3, Vite 8
-- **Auth:** Laravel Breeze (session-based), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The `verified` middleware gates all main routes (`web.php` line 63).
-- **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Routes: `GET /builder/{resume}/pdf` (download), `GET /builder/{resume}/preview` (inline stream for iframe preview)
-- **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia` and nothing in `app/` uses `spatie/laravel-medialibrary`, though the package is still in `composer.json`.
+- **Backend:** Laravel 13, PHP 8.5, PostgreSQL (`DB_CONNECTION=pgsql`; tests run on in-memory SQLite), Inertia.js v3
+- **Frontend:** React 19, TypeScript, Tailwind CSS v3, Vite 8
+- **Auth:** Laravel Fortify (session-based; replaced Breeze in the 2026-08-02 foundation swap), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The main authenticated group in `web.php` runs `['auth', 'verified', 'two_factor_challenge']`.
+- **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Current routes: `GET /resumes/{resume}/export` (download), `GET /resumes/{resume}/preview` (inline stream). The legacy `builder/{resume}/pdf|preview` routes still resolve.
+- **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia`, and `spatie/laravel-medialibrary` is no longer in `composer.json` either.
 - **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
@@ -115,39 +115,41 @@ php artisan migrate:fresh --seed
 All routes return Inertia responses — no Blade views except the single root `resources/views/app.blade.php`. Laravel serializes props as JSON; Inertia hydrates the matching React page component at `resources/js/Pages/`.
 
 ### Resume data model
-Resume content is stored as JSON columns on a single `resumes` table (no separate section tables). Frontend owns JSON shape; backend validates as `nullable array`.
+Resume content lives in **separate related tables**, not JSON blobs: `Experience`, `Skill`, `Project`, `Education`, `Certificate` each `hasMany` off `Resume`, ordered by a `position` column. The `resumes` table itself holds discrete columns (title, target_role, target_company, target_job_description, full_name, headline, contact fields, summary, template, font, density, skills_layout, bullet_style, import_state/import_error). The only JSON column is `section_order` — an array of section-name strings (`Resume::SECTIONS`), repaired on read via `Resume::sectionOrder()` so required sections always show and newly-added sections appear for older rows.
 
-**Cascade delete:** Most dependents (share links, snapshots, threads, section/share events, tags) are removed by `cascadeOnDelete` FKs. `Resume::booted()`'s `deleting` observer covers only what FKs can't: it deletes A/B variants per-model (so nested variant trees recurse) and unlinks the resume's thumbnail. Because the `resumes.user_id` FK would cascade rows away without firing model events, `User::booted()` deletes its resumes per-model — otherwise account deletion would leak every thumbnail on disk.
+**Versioning:** every resume belongs to a `ResumeGroup` (`group_id`) — assigned in `Resume::booted()`'s `creating` hook when absent. This replaced an earlier parent/child A/B-variant tree design.
+
+**Cascade delete:** dependents (share links and their views, snapshots, notes) are removed by `cascadeOnDelete` FKs. `Resume` has no `deleting` observer — there is no thumbnail field on the model to clean up.
 
 ### Authorization
-`ResumePolicy` gates all resume mutations on `$user->id === $resume->user_id`. The base `Controller` uses `AuthorizesRequests` so `$this->authorize()` is available everywhere.
+There is no `ResumePolicy` (removed) — a live code comment in `ResumeBuilderController::edit` says so explicitly. Ownership is checked inline everywhere: `abort_unless($resume->user_id === $request->user()->id, 403)` (or 404 in the newer controllers) in `ResumeBuilderController`, `ResumeController`, `ResumeAiController`, `InterviewCoachController`, `ShareLinkController`, and the rest. The one real policy is `JobSearchPolicy`: `JobSearchController` calls `$this->authorize('update'|'delete', $jobSearch)` against it for saved searches.
 
 ### Frontend page structure
-The core feature is `ResumeBuilder/Edit.tsx` — a resizable split-panel editor + live preview iframe. Uses `onBlur` on every field to trigger `router.put` save (no debounce). The preview iframe loads `GET /builder/{resume}/preview` with a cache-busting `?t=<timestamp>` query param on each save.
+The core surface is `resources/js/Pages/Resumes/Workstation.tsx` (`resumes.workstation`, `ResumeController@workstation`) — the only editing surface. It saves via the `use-autosave` hook (`router.put` to `resumes.update`) and renders a **client-side** React preview (`Components/resume/resume-preview`); the server PDF stream at `GET /resumes/{resume}/preview` backs PDF preview/export. `builder.edit` is a legacy named route that redirects to the Workstation; `ResumeBuilder/Edit.tsx` still exists on disk but is referenced nowhere.
 
-### Share links live on `/shares`, not in the builder
-`Shares/Index.tsx` (`ShareController@index`) is the only place share links are created, labelled, expired, password-gated, or revoked. It is a top-level nav item and shows what the builder never could: views, unique visitors, unread badges, a 7-day trend, and per-visit rows.
+**Legacy builder endpoints that 500:** `builder.store` writes `name`/`pdf_filename` (not columns on the rebuilt `resumes` table), and `builder.docx`, `builder.thumbnail`, `builder.duplicate`, `builder.create-variant` import services that no longer exist (`DocxGenerator`, `ResumeThumbnailGenerator`, `ResumeCopier`). Working equivalents live on `ResumeController` (`resumes.download-docx`, `resumes.duplicate`). Don't document or wire UI to the broken ones.
 
-The builder's Share tab holds only an active-link count and a link to `/shares`. It used to embed a `SharePopover` with its own label/expiry/revoke controls — a cramped duplicate that could not show any of the analytics, and drifted from `/shares` as that page grew. Removed on 2026-07-19; don't reintroduce link management in the builder. Sharing does not interleave with editing (you share once you've stopped editing), and tokens are stable across edits, so a recruiter's existing link already serves the current version — there is nothing to re-copy after an edit.
+### Share links
+Two live flows: the Workstation's share panel (`ResumeShareLinkController`, `resumes/{resume}/share` + `resume-share-links.*`) and the `/shares` index (`ShareController@index`, `Shares/Index.tsx`), which lists every link with views, unique visitors, and a 7-day trend. Analytics come from `resume_share_link_views` — a row is written only when a visitor unlocks the email gate (`PublicResumeShareController::unlock`), so ungated views are not counted. The old `resume_share_events` system was dropped; `ShareController` now stubs `label: null`, `is_primary: false`, `unread: 0`, `questions: 0` for the UI. Public access is `GET /r/{token}` with optional email/password gate and gated PDF/DOCX downloads.
 
 ### Shared Inertia props
-`HandleInertiaRequests::share()` passes `auth.user`, `flash.{success,error}`, `aiEnabled` (mirrors `config('ai.enabled')` so the UI can hide AI affordances), and `impersonating`. There is no `featureGate` — see "Billing".
+`HandleInertiaRequests::share()` passes `auth.user` and `flash.{success,error}` only. There is no `aiEnabled` prop (the Workstation asks `GET /ai/status` instead), no `impersonating`, and no `featureGate` — see "Billing".
 
 ## Billing — there is none
 
-**The app is free and unlimited.** Billing was removed on 2026-07-14: Cashier is uninstalled, there are no plan tiers, no Stripe, no payments, no `UpgradeModal`, no `featureGate`. Do not add a paywall, a tier check, or an upgrade CTA without asking first.
+**The app is free and unlimited.** Billing was removed on 2026-07-14: Cashier is uninstalled, there are no plan tiers, no Stripe, no payments, no `UpgradeModal`, no `featureGate`. A later experiment (2026-07-20) built prepaid-pricing *instrumentation* at $0 (`JobPairing`, `BalanceTransaction`, `config/pricing.php`, `PricingUsageReport`/`PricingGrowthReport`) purely to collect usage data for a possible future prepaid model — it never charged anyone. That instrumentation, `docs/prepaid-pricing-model.md`, and every other pricing-strategy doc were removed outright on 2026-08-14: the product decision is the app stays free, so there is nothing left to instrument for. **Do not add a paywall, a tier check, a balance/credit system, or an upgrade CTA without asking first** — and don't resurrect the deleted `JobPairing`/`BalanceTransaction` pattern as a starting point if pricing is ever revisited; start fresh with a real product decision.
 
 **Laravel Boost's auto-generated context block lies about this.** It lists `laravel/cashier (CASHIER) - v16` among the installed packages. Cashier is in neither `composer.json` nor `vendor/` — verify against the filesystem, not that header. The matching `.claude/skills/cashier-stripe-development` skill and the two `mcp__plugin_stripe_stripe__*` permissions were deleted on 2026-07-19 for the same reason.
 
-`App\Services\UserLimits` survives, but it now meters **only AI** — every other limit (resumes, cover letters, custom sections, templates, DOCX, share-link views, PDF watermark) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
+`App\Services\UserLimits` survives with two jobs: the AI monthly cap (`canUseAi`/`aiRemaining`/`aiMonthlyLimit`/`aiLimitMessage`) and the template allowlist (`allTemplates()`, backed by `ResumeDocument::TEMPLATES`). Every other limit (resumes, cover letters, custom sections, DOCX, share-link views, PDF watermark) is gone and unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
 
-**A replacement is proposed but not implemented.** `docs/prepaid-pricing-model.md` (2026-07-20) designs a prepaid dollar balance — $0.50 per **job** (not per resume×job — pairing on resume too would bill users for the A/B variants feature), $5 signup grant, no subscription. It is a **proposal**; its §12 gates implementation on usage data that does not exist yet. Nothing in `app/` implements it, and the sentence above still holds: do not add a paywall without asking. Read that doc before proposing any pricing change, and do not revive the subscription ladder in `docs/resume-builder-competitive-analysis.md` §3 — it was withdrawn.
-
-Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), and forced 2FA (which was gated on the pro tier — 2FA is now opt-in only).
+Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), forced 2FA (which was gated on the pro tier — 2FA is now opt-in only), and — as of 2026-08-14 — `JobPairing`, `BalanceTransaction`, `config/pricing.php`, `JobPairingService`, `PricingUsageReport`/`PricingGrowthReport`, `GrowthSampleSeeder`, and every pricing-strategy doc (`docs/prepaid-pricing-model.md`, `docs/pricing-recommendations-2026-08.md`, `docs/competitive-pricing-one-pager-2026-08.md`, `docs/resume-builder-competitive-analysis.md`, `docs/competitive-research-resumegen-2026-08.md`).
 
 ## AI (OpenAI or Anthropic)
 
-`App\Services\AiService::chat(string $prompt, array $options)` — single entry point for all AI features. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`AI_ENABLED`, `OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
+**There are two AI stacks.** The legacy stack is `AiService`/`AiPrompts`, called by `AiSuggestionController` (builder bullet rewrite/critique, summary, ATS keywords), `InterviewCoachController`, `ResumeImportController::extract`, `JobSearchController::rank`/`importUrl`, and `RunJobAlertsCommand` — all its routes sit behind the `ai_enabled` middleware. The newer Tier-1 stack (shipped 2026-08-04, see `docs/ai-reintroduction-map.md`) is `ResumeAiController` + `OpenAiResumeAssistant` + `AiUsageLimiter`: `resumes/{resume}/ai/{rewrite-bullet,summary,match-job}` and `GET /ai/status`, gated in-controller (503 when `ai.enabled` is false) with per-feature soft monthly quotas from `config('ai.quotas')` (429 when exhausted). The Workstation and Job Imports UIs use the newer stack.
+
+`App\Services\AiService::chat(string $prompt, array $options)` — entry point for the legacy stack. Logs to `ai_requests` table (user_id, feature, model, tokens, cost, status). Pre-check moderation flags disallowed input (`ModerationException`). Config in `config/ai.php` (`AI_ENABLED`, `OPENAI_MODEL`, `AI_MONTHLY_LIMIT`, pricing). AI is the one metered thing in the app: a **flat monthly cap for every account** (`AI_MONTHLY_LIMIT`, default 150) — a cost control, not a plan gate, since OpenAI spend scales with usage. Per-user escape hatches: `users.ai_limit_override` raises/lowers one account's cap; `users.ai_blocked` kills it entirely.
 
 **AI cost is recorded in micro-cents (1 cent = 1,000,000)** on `ai_requests.estimated_cost_micro_cents`. It used to be `estimated_cost_cents`, and `AiService::estimateCostCents()` ended in `(int) round($cents)` — so anything under half a cent became 0, which is *every* `gpt-4o-mini` call (~0.05¢) including a 15k-token page import. Every OpenAI request ever logged recorded a cost of zero, and everything downstream read that zero: `ai:cost-alert` could not fire at any spend level, and `AiUsageReport` / `AdminStatsOverview` / `AiUsersPage` all reported $0.00. Fixed 2026-07-20 (migration `store_ai_cost_in_micro_cents`, forward-only).
 
@@ -157,19 +159,17 @@ Consequences to keep in mind:
 - **`AiUsageReport` reports costs in micro-cents** under the key `cost_micro_cents`, uniformly across `totals()`, `breakdown()`, and `dailySeries()`. Divide by 100,000,000 for dollars, at display only. The three methods previously returned three different key spellings and the overview blade read a fourth, so the cost tile and both breakdown tables silently rendered blank or $0.00 — don't reintroduce per-method key names.
 - `config('ai.pricing')` is still denominated in **cents per 1,000 tokens**, and `ai.daily_alert_threshold_cents` is still in cents. Only the stored column and the report keys changed units.
 
-**Master switch:** `AI_ENABLED` (default true). The `ai_enabled` middleware (`EnsureAiEnabled`, aliased in `bootstrap/app.php`) **404s** every AI route when it's false — 404 not 403, so a suspended feature looks absent rather than like a plan restriction. The `aiEnabled` Inertia prop hides the matching UI.
+**Master switch:** `AI_ENABLED` (**default false** — `config/ai.php` ships AI off until the env var and `OPENAI_API_KEY` are set). The `ai_enabled` middleware (`EnsureAiEnabled`, aliased in `bootstrap/app.php`) **404s** every legacy AI route when it's false — 404 not 403, so a suspended feature looks absent rather than like a plan restriction. The newer `ResumeAiController` routes are not behind that middleware; they return 503 from the controller instead, and the UI checks `GET /ai/status`.
 
 **Provider switch:** `AI_PROVIDER` (`openai` | `anthropic`, default `openai`) picks the vendor app-wide; a per-call `provider` option overrides it. Anthropic goes through the `Http` facade (no SDK), and its usage keys (`input_tokens`/`output_tokens`) are normalized so `ai_requests` logging, cost estimation, and the monthly cap work identically for both. **`OPENAI_API_KEY` is required either way** — moderation always runs through OpenAI's free moderations endpoint, whichever vendor answers the chat call. Anthropic has no `response_format`, so JSON mode is emulated by prefilling the assistant turn with `{`; if you switch to tool-use for guaranteed schemas, `AiProviderTest` is what tells you the mapping still holds.
 
-**Prompts:** `App\Data\AiPrompts::build(string $feature, array $input)` — one `match` over the feature key, throws on unknown. Keys: `rewrite_bullet`, `critique_bullet`, `generate_summary`, `ats_keywords`, `interview_coach`, `cover_letter`, `import_resume`, `rank_jobs`, `import_job_posting`.
+**Prompts (legacy stack):** `App\Data\AiPrompts::build(string $feature, array $input)` — one `match` over the feature key, throws on unknown. Keys: `rewrite_bullet`, `critique_bullet`, `generate_summary`, `ats_keywords`, `interview_coach`, `cover_letter`, `import_resume`, `rank_jobs`, `import_job_posting`. The `cover_letter` key is orphaned — the cover-letters feature (routes, controller, model) was removed on 2026-08-18 (`dd93ee34`); nothing calls it.
 
-**Routes** (all under `['ai_enabled', 'throttle:20,1']` in `web.php`): `builder/{resume}/ai/{rewrite-bullet,critique-bullet,summary,ats-keywords}`, `builder/{resume}/interview-coach`, `cover-letters/{letter}/ai/draft`.
+**Legacy routes** (all under `['ai_enabled', 'throttle:20,1']` in `web.php`): `builder/{resume}/ai/{rewrite-bullet,critique-bullet,summary,ats-keywords}`, `builder/{resume}/interview-coach`, `import/pdf/extract`, `jobs/rank`, `jobs/import-url`.
 
-**Cover letter draft** (`cover-letters.ai.draft`) requires the letter to have a linked resume — the prompt forbids inventing employers or accomplishments, so with no resume there is nothing to ground the letter in; it 422s rather than let the model make one up. Role/company come from the request, falling back to `users.target_role` and the resume's `target_job_description`.
+**Bullet coach:** the legacy builder endpoints offered two equal-weight actions — "Coach me" (`critique_bullet`) and "Write it for me" (`rewrite_bullet`). The live Workstation ships only the newer stack's rewrite/summary/match; the coach path currently has no UI. If bullet coaching returns, keep the 50/50 parity — do not demote the coach path to a secondary affordance without asking.
 
-**Bullet coach:** the bullet editor offers two equal-weight actions — "Coach me" (`critique_bullet`: the model asks what the weak bullet fails to say, the user answers in their own words, and the bullet is rebuilt from *their* facts) and "Write it for me" (`rewrite_bullet`). Deliberate 50/50 — do not demote either to a secondary affordance without asking.
-
-**Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `RegisteredUserController::store()` via `registration_ip` column on `users`.
+**Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `App\Actions\Fortify\CreateNewUser` via `registration_ip` column on `users`.
 
 ## Job Search (`/jobs`)
 
@@ -183,23 +183,23 @@ Consequences to keep in mind:
 
 **Alerts:** saved searches (`job_searches`) with `is_alerting` re-run daily at 07:00 via `jobs:run-alerts`. The unique index on `job_listings (job_search_id, source, external_id)` is what makes "new since last run" a database fact rather than a guess — **every fresh listing is marked `notified_at`, including ones held back below the score floor**, or they resurface as new every day forever. Requires both the scheduler and a queue worker in production (the digest mailable is `ShouldQueue`).
 
-**Note:** `/jobs/salary` (`SalaryController@hint`) predates this feature and occupies the `jobs.*` route namespace, so nav active-state uses `route().current('jobs.index')`, not `jobs.*`.
+**Adjacent surfaces:** `/jobs-imports` (`JobImportsController`) is a separate feature — live Adzuna/USAJOBS search persisted to `imported_jobs`, with AI job match via the newer stack (`ResumeAiController::matchJob`); gap analysis and cover letters there are frontend stubs. `/job-applications` (`JobApplicationController`) is a Kanban application tracker (Saved/Applied/Interviewing/Offer/Rejected). The old `/jobs/salary` `SalaryController` is gone.
 
 ## Admin Panel
 
-Filament v3 panel mounted via `app/Providers/Filament/AdminPanelProvider.php` on a separate subdomain (`config('app.admin_domain')`, `.env` `APP_ADMIN_DOMAIN`, default `admin.resumegen.app`) — not a `/admin` path prefix. Access gated by `User::canAccessPanel()` (implements `FilamentUser`), checking `is_master_admin`. Resources/pages/widgets live in `app/Filament/{Resources,Pages,Widgets}`. `is_master_admin` is non-editable; set directly in DB or via seeder.
+Hand-rolled Inertia admin (not Filament — the old Filament v3 panel, `AdminPanelProvider`, `is_master_admin`, and `AdminAuditLog`/`admin_audit_logs` were removed 2026-07-21). Routes in `routes/admin.php`, domain-scoped via `bootstrap/app.php` onto `config('app.admin_domain')` (`.env` `APP_ADMIN_DOMAIN`, default `admin.resumegen.test` locally) — not a `/admin` path prefix on the main app host. Middleware group: `['auth', 'verified', 'two_factor_challenge', 'admin']`, where `admin` is `EnsureUserIsAdmin` checking `User::isAdmin()` (`users.is_admin` boolean). `is_admin` is set directly in DB — no self-service UI to grant it. Pages live under `resources/js/Pages/Admin/`, wrapped in `AdminLayout` (nav array + flash banners).
 
-**Audit log:** `AdminAuditLog::record(string $action, ?Model $target, string $description, array $meta = [])` — **call this on every privileged admin write action.** Reads `auth()->id()` + `request()->ip()`, swallows exceptions. Append-only `admin_audit_logs` table.
+**Audit log:** `AdminActionLog::record(User $actor, ?User $target, string $action, ?array $meta = null)` — **call this on every privileged admin write action.** Append-only `admin_action_logs` table, no `$timestamps` (uses an explicit `created_at`).
+
+**Sections:** Dashboard (`admin.dashboard`), Users (search/verify/disable/revoke-tokens, `admin.users.*`), Visitors (`admin.visitors.index`, added 2026-08-13) — paginated log of every request to the main site (method, path, IP, user agent, referrer, linked user when authenticated), Backups (manual pg_dump create/list/download/delete/restore with a 10-file cap, `DatabaseBackupService` + `DatabaseDumpRunner`, `admin.backups.*`), and Database (`admin.database.*`, added 2026-08-13) — a Postgres admin panel: connection overview, per-table browse/inline-edit/delete/add-drop-column/add-drop-index/truncate (via `Schema::table()`, needs `doctrine/dbal`), a raw SQL runner gated by a typed-confirmation phrase for anything non-`SELECT`, and Postgres role/grant management. All destructive Database actions require the exact target name typed to confirm (checked server-side, not just in the UI) and log through `AdminActionLog`. The Database section's Postgres-only queries (`pg_stat_user_tables`, `pg_roles`, etc.) no-op behind an `engine_ok` flag when `DB_CONNECTION` isn't `pgsql` — tests run on SQLite (see Stack below), same pattern as Backups.
+
+**Visitor tracking:** `TrackSiteVisit` middleware, appended globally to the `web` middleware group in `bootstrap/app.php`, writes one row to append-only `site_visits` per request (`SiteVisit` model, `UPDATED_AT = null`). Best-effort — logs in `terminate()`, wrapped in try/catch, never blocks or fails the request. Skips the admin domain (`request()->getHost() === config('app.admin_domain')`) — this tracks main-site visitors, not admin staff. Captures method, path, IP, user agent, referrer, session id, and `user_id` when authenticated. No consent flow exists in the app; this is the "standard analytics" tier (no fingerprinting) — do not add canvas/WebGL fingerprinting, screen/font enumeration, or other high-entropy client-side signals without asking, since that tier needs a consent banner this app doesn't have.
 
 ## API Layer
 
 Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (intentionally empty) — only token-auth works, no session fallback.
 
 **Test base class:** All API tests extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). It calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum guard cache from masking token revocation.
-
-## System Events
-
-`system_events` (append-only) logs outbound mail (`MessageSent`) via an `AppServiceProvider::boot()` listener. Best-effort — exceptions swallowed. Pruned after 30 days. Surfaced on Ops dashboard. The `channel` column is a holdover from when webhooks were also logged here; `'mail'` is the only value written now.
 
 ## Removed Features (do not reintroduce without asking)
 
@@ -209,7 +209,9 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 - **Resume translation and career map** — the two most expensive AI features per unit of value. Deleted outright (routes, prompts, controllers, tests), not flagged off.
 - **All billing** (see above). Here the create-migrations were kept and a drop migration (`2026_07_14_120000_drop_billing_tables_and_columns`) removes the tables and columns, so both fresh and existing databases converge.
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
-- **Job applications tracker** (removed in `93c1c14`). `application_contacts` and `interview_notes` are dropped by migration. **`job_applications` is deliberately still live** — `AnalyticsController` queries it via `DB::table()` for the dashboard's `active_applications` count. Do not drop that table without rewriting that query first.
+- **Job applications tracker** (removed in `93c1c14`) — since **reintroduced** as the Kanban at `/job-applications` (`JobApplicationController` + `JobApplication` model). `application_contacts` and `interview_notes` stayed dropped and are deliberately out of scope. `AnalyticsController` still queries `job_applications` via `DB::table()` for the dashboard's `active_applications` count.
+- **Cover letters** — removed outright on 2026-08-18 (`dd93ee34`): routes, `CoverLetter` model/queries, and the `cover-letters.ai.draft` endpoint. The `cover_letter` key in `AiPrompts` is the only leftover. The "cover letters" on Job Imports are frontend stubs.
+- **System events** — the `system_events` mail-log table, its `MessageSent` listener, and the Ops dashboard surface are gone; `AppServiceProvider::boot()` now only configures Vite prefetch and the `share-unlock` rate limiter.
 
 ## Migrations are forward-only — rollback is not supported
 
@@ -227,7 +229,7 @@ Making rollback work would mean editing seven already-shipped migrations to no b
 
 ## Project skills are hook-enforced, not prose-enforced
 
-`.claude/skills/` holds five repo-specific skills. Two of them are wired to a `PreToolUse` hook — `.claude/hooks/nudge-project-skills.sh`, matched on `Edit|Write` in `.claude/settings.json`:
+`.claude/skills/` holds the repo-specific skills (dozens now; the original five have been joined by design/StyleSeed and workflow skills). Two of them are wired to a `PreToolUse` hook — `.claude/hooks/nudge-project-skills.sh`, matched on `Edit|Write` in `.claude/settings.json`:
 
 - editing `resources/js/**/*.tsx|jsx` → activate `inertia-react-development`
 - editing `app/**/*.php` → activate `laravel-best-practices`
@@ -242,19 +244,19 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 
 ## Key Design Decisions
 
-1. **Single `resumes` table with JSON columns** — frontend owns shape; backend validates as array.
-2. **No template React components** — server renders PDF; iframe preview loads it.
-3. **Beacon save on beforeunload** — catches unsaved changes. CSRF satisfied via `_token` field in the JSON body (Laravel reads it regardless of content-type).
-4. **Append-only analytics tables** — `ResumeShareEvent`, `resume_section_events`, `system_events`, `portfolio_messages`, `admin_audit_logs`. Simple, immutable.
-5. **FK cascade for dependents, observer for the rest** — `cascadeOnDelete` handles the simple children; the `deleting` observer only covers recursive A/B variants and thumbnail cleanup. `User` deletes its resumes per-model so that observer always runs.
+1. **Relational resume content, not JSON columns** — `Experience`/`Skill`/`Project`/`Education`/`Certificate` are separate tables `hasMany` off `Resume`; only `section_order` (an array of section names) is JSON.
+2. **Client-side live preview, server-side PDF** — the Workstation renders a React preview component; DomPDF renders the real document for preview/stream and export.
+3. **Autosave in the editor** — the Workstation's `use-autosave` hook `router.put`s changes; the old beacon-on-beforeunload save survives only on the legacy `builder.beacon` route.
+4. **Append-only analytics tables** — `resume_share_link_views`, `site_visits`, `admin_action_logs`. Simple, immutable.
+5. **FK cascade for dependents** — `cascadeOnDelete` handles children (share links and their views, snapshots, notes). `Resume` has no `deleting` observer; `User` has no `booted()` deleting its resumes per-model either — verify this is intentional (no thumbnail asset left to clean up) before assuming a gap here.
 6. **No monetization** — every feature is free and unlimited; AI is metered only to cap OpenAI spend.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 8. **Deterministic sourcing, model-only judgment** — job boards are fetched by code; the model scores fit and parses arbitrary pages, and never picks what to search for.
-9. **AI coaches as often as it ghostwrites** — the coach path (ask the user for the missing facts, then rebuild the bullet from their answer) is offered at equal weight to the write-it-for-me path, so the resume stays the candidate's own words.
+9. **AI coaches as often as it ghostwrites** — the coach path (ask the user for the missing facts, then rebuild the bullet from their answer) should sit at equal weight to the write-it-for-me path. Currently only the legacy endpoints implement the coach; the Workstation ships rewrite-only — restore parity if bullet coaching gets UI again.
 
 ---
 
-Last updated: 2026-07-20
+Last updated: 2026-08-18
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy

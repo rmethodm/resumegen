@@ -129,11 +129,11 @@ export default function PlainTextView(props: Props) {
             <button
                 type="button"
                 onClick={copy}
-                className="sticky left-full top-2 z-10 mr-2 rounded-md border border-[#cbd5e1] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#475569] transition-colors hover:border-[#a5b4fc] hover:text-[#4f46e5]"
+                className="sticky left-full top-2 z-10 mr-2 rounded-md border border-surface-border bg-white px-2.5 py-1 text-xs font-semibold text-ink-muted transition-colors hover:border-brand/40 hover:text-brand"
             >
                 {copied ? 'Copied' : 'Copy'}
             </button>
-            <pre className="whitespace-pre-wrap px-4 pb-4 font-mono text-[12px] leading-relaxed text-[#1e293b]">
+            <pre className="whitespace-pre-wrap px-4 pb-4 font-mono text-xs leading-relaxed text-ink">
                 {text || 'Nothing to show yet — fill in the resume form.'}
             </pre>
         </div>

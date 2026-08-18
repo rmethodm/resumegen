@@ -23,11 +23,11 @@ export default function AtsMatchPanel({
                 type="button"
                 onClick={() => setOpen(o => !o)}
                 aria-expanded={open}
-                className="flex w-full items-center justify-between text-xs font-semibold uppercase tracking-wide text-gray-500 hover:text-gray-700"
+                className="flex w-full items-center justify-between text-xs font-semibold uppercase tracking-wide text-ink-muted hover:text-ink"
             >
                 <span className="flex items-center gap-1.5">
                     ATS Match
-                    <span className="rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-semibold normal-case tracking-normal text-indigo-500">✨ AI</span>
+                    <span className="rounded bg-brand-subtle px-1.5 py-0.5 text-xs font-semibold normal-case tracking-normal text-brand">✨ AI</span>
                 </span>
                 <span>{open ? '−' : '+'}</span>
             </button>
@@ -40,7 +40,7 @@ export default function AtsMatchPanel({
                         onBlur={onJobDescriptionBlur}
                         placeholder="Paste a job description — AI will find keywords missing from your resume."
                         rows={4}
-                        className="w-full rounded-md border border-gray-200 px-2.5 py-2 text-xs text-gray-700 placeholder-gray-400 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-300"
+                        className="w-full rounded-md border border-surface-border px-2.5 py-2 text-xs text-ink placeholder:text-ink-faint focus:border-brand focus:outline-none focus:ring-1 focus:ring-indigo-300"
                     />
                     {aiButton}
                     {keywordGaps.length > 0 && (

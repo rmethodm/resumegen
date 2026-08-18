@@ -148,7 +148,7 @@ export default function Index({
                         ) : (
                             <span
                                 key={i}
-                                className="rounded border border-transparent px-2 py-1 text-xs text-gray-400"
+                                className="rounded border border-transparent px-2 py-1 text-xs text-ink-faint"
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
                         ),

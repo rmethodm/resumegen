@@ -82,10 +82,10 @@ function JobCard({ job, resumeTitle }: { job: JobApplication; resumeTitle: strin
             <div className="text-sm font-bold text-ink">{job.role}</div>
             <div className="text-xs font-medium text-ink-muted">{job.company}</div>
             {resumeTitle && (
-                <div className="mt-1.5 text-[11px] font-medium text-ink-faint">Using: {resumeTitle}</div>
+                <div className="mt-1.5 text-xs font-medium text-ink-faint">Using: {resumeTitle}</div>
             )}
             {job.follow_up_at && (
-                <div className="mt-1.5 text-[11px] font-semibold text-brand">
+                <div className="mt-1.5 text-xs font-semibold text-brand">
                     Next step: {job.follow_up_at}
                 </div>
             )}
@@ -122,7 +122,7 @@ function Column({
                     <span className="text-xs font-bold text-ink">{label}</span>
                     <span
                         className={cn(
-                            'rounded-full px-2 py-0.5 text-[10px] font-bold',
+                            'rounded-full px-2 py-0.5 text-xs font-bold',
                             STATUS_CHIP[status],
                         )}
                     >
@@ -130,7 +130,7 @@ function Column({
                     </span>
                 </div>
                 {jobs.length === 0 ? (
-                    <p className="px-1 py-6 text-center text-[11px] text-ink-faint">Drop here</p>
+                    <p className="px-1 py-6 text-center text-xs text-ink-faint">Drop here</p>
                 ) : (
                     jobs.map((job) => (
                         <JobCard

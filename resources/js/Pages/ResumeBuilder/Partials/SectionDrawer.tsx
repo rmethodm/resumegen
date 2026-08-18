@@ -94,15 +94,15 @@ export default function SectionDrawer({ title, onClose, restoreFocusTo, children
             aria-modal="true"
             aria-label={title}
             tabIndex={-1}
-            className="fixed inset-0 z-30 flex w-full flex-col bg-white focus:outline-none lg:absolute lg:inset-y-0 lg:left-auto lg:right-[300px] lg:z-20 lg:max-w-[640px] lg:border-l lg:border-[#cbd5e1] lg:shadow-[0_8px_30px_rgba(15,23,42,0.18)]"
+            className="fixed inset-0 z-30 flex w-full flex-col bg-white focus:outline-none lg:absolute lg:inset-y-0 lg:left-auto lg:right-[300px] lg:z-20 lg:max-w-[640px] lg:border-l lg:border-surface-border lg:shadow-[0_8px_30px_rgba(15,23,42,0.18)]"
         >
-            <div className="flex shrink-0 items-center justify-between border-b border-[#eeeef5] px-5 py-3">
-                <span className="text-sm font-semibold text-[#0f172a]">{title}</span>
+            <div className="flex shrink-0 items-center justify-between border-b border-surface-border px-5 py-3">
+                <span className="text-sm font-semibold text-ink">{title}</span>
                 <button
                     type="button"
                     onClick={onClose}
                     aria-label="Close section"
-                    className="rounded-md p-1.5 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#4f46e5]"
+                    className="rounded-md p-1.5 text-ink-faint transition-colors hover:bg-surface hover:text-brand"
                 >
                     <XMarkIcon className="h-4 w-4" />
                 </button>

@@ -33,7 +33,7 @@ class ResumeBuilderTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($user, $resume): void {
             $browser->loginAs($user)
-                ->visit(route('builder.edit', $resume, false))
+                ->visit(route('resumes.workstation', $resume, false))
                 ->waitFor('input[name="target_company"]', 10)
                 ->assertPresent('input[name="target_title"]');
 
@@ -61,7 +61,7 @@ class ResumeBuilderTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($user, $resume): void {
             $browser->loginAs($user)
-                ->visit(route('builder.edit', $resume, false))
+                ->visit(route('resumes.workstation', $resume, false))
                 ->waitFor('input[name="target_company"]', 10)
                 ->type('target_company', 'Acme, Inc.')
                 ->type('target_title', 'Senior Product Manager')
@@ -87,7 +87,7 @@ class ResumeBuilderTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($intruder, $resume): void {
             $browser->loginAs($intruder)
-                ->visit(route('builder.edit', $resume, false))
+                ->visit(route('resumes.workstation', $resume, false))
                 // assertMissing on the control itself, not assertDontSee on a string —
                 // a "don't see" assertion passes on any error page and proves nothing.
                 ->assertMissing('input[name="target_company"]');
