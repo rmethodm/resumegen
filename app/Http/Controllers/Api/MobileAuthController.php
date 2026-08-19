@@ -48,6 +48,18 @@ class MobileAuthController extends Controller
             [MobileApiToken::TOKEN_ABILITY]
         );
 
+        // Repeated logins (reinstalls, token loss) would grow the token table
+        // forever. Keep the newest 5 mobile tokens so a phone + iPad (and a
+        // spare) stay signed in, and quietly drop the rest.
+        $user->tokens()
+            ->where('name', MobileApiToken::TOKEN_NAME)
+            ->orderByDesc('id')
+            ->skip(5)
+            ->take(PHP_INT_MAX)
+            ->get()
+            ->each
+            ->delete();
+
         return response()->json(['token' => $token->plainTextToken], 201);
     }
 

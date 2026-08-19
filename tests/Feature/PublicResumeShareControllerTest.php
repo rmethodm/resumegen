@@ -286,6 +286,51 @@ class PublicResumeShareControllerTest extends TestCase
     }
 
     /**
+     * /shares showed 0 views for links without an email gate — ungated
+     * visits must be counted too, or the analytics page lies.
+     */
+    public function test_ungated_view_is_logged_once_per_session(): void
+    {
+        $link = ResumeShareLink::factory()->for(Resume::factory()->create())->create();
+
+        $this->get(route('share.show', $link->token))->assertOk();
+        $this->get(route('share.show', $link->token))->assertOk();
+
+        $this->assertSame(1, $link->views()->count());
+        $this->assertNull($link->views()->sole()->email);
+    }
+
+    public function test_gated_unlock_does_not_double_log_a_view(): void
+    {
+        $link = ResumeShareLink::factory()->for(Resume::factory()->create())->create([
+            'require_email' => true,
+        ]);
+
+        // Locked page: no view logged yet.
+        $this->get(route('share.show', $link->token));
+        $this->assertSame(0, $link->views()->count());
+
+        // Unlock logs the email row; the redirect back must not add an
+        // anonymous second row.
+        $this->post(route('share.unlock', $link->token), ['email' => 'priya@vantage.test']);
+        $this->get(route('share.show', $link->token))->assertOk();
+
+        $this->assertSame(1, $link->views()->count());
+        $this->assertSame('priya@vantage.test', $link->views()->sole()->email);
+    }
+
+    public function test_direct_pdf_download_logs_a_view(): void
+    {
+        $link = ResumeShareLink::factory()->for(Resume::factory()->create())->create([
+            'allow_download' => true,
+        ]);
+
+        $this->get(route('share.pdf', $link->token))->assertOk();
+
+        $this->assertSame(1, $link->views()->count());
+    }
+
+    /**
      * The password is a secret a recruiter may reuse elsewhere — it must be
      * one-way hashed, never recoverable from a DB dump (even with APP_KEY).
      */

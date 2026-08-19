@@ -83,6 +83,29 @@ class MobileAuthApiTest extends ApiTestCase
         $this->assertSame(0, $user->tokens()->count());
     }
 
+    /**
+     * Reinstalls and token loss mean repeated logins — without a cap the
+     * token table grows forever. Newest 5 stay so other devices survive.
+     */
+    public function test_repeated_logins_keep_only_the_newest_five_mobile_tokens(): void
+    {
+        $user = User::factory()->create(['password' => 'secret-pass']);
+
+        // Six existing mobile tokens (login throttle is 5/min, so seed
+        // directly — Profile-page tokens share the same name).
+        for ($i = 0; $i < 6; $i++) {
+            $user->createToken(MobileApiToken::TOKEN_NAME, [MobileApiToken::TOKEN_ABILITY]);
+        }
+
+        $latest = $this->postJson('/api/auth/token', [
+            'email' => $user->email,
+            'password' => 'secret-pass',
+        ])->assertCreated()->json('token');
+
+        $this->assertSame(5, $user->tokens()->count());
+        $this->withToken($latest)->getJson('/api/resumes')->assertOk();
+    }
+
     public function test_logout_revokes_only_the_calling_token(): void
     {
         $user = User::factory()->create();

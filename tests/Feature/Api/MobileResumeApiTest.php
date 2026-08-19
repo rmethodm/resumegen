@@ -165,6 +165,34 @@ class MobileResumeApiTest extends ApiTestCase
         $this->assertSame(1, $user->resumes()->count());
     }
 
+    /**
+     * Two offline retries can race past the existence check together; the
+     * loser of the unique index must still get the winner's resume back,
+     * not a 500 — that retry is the whole point of client_uuid.
+     */
+    public function test_store_client_uuid_race_returns_the_winner_not_a_500(): void
+    {
+        $user = User::factory()->create();
+        $uuid = '9d4e8f2a-1b3c-4d5e-8f9a-0b1c2d3e4f5a';
+
+        // Simulate the concurrent winner: insert the same (user, client_uuid)
+        // after the controller's existence check but before its create().
+        $winner = null;
+        Resume::creating(function () use (&$winner, $user, $uuid): void {
+            if ($winner === null) {
+                $winner = 'pending';
+                $winner = Resume::factory()->for($user)->create(['client_uuid' => $uuid]);
+            }
+        });
+
+        $this->withToken($this->tokenFor($user))
+            ->postJson('/api/resumes', ['client_uuid' => $uuid])
+            ->assertOk()
+            ->assertJsonPath('id', $winner->id);
+
+        $this->assertSame(1, $user->resumes()->count());
+    }
+
     public function test_update_with_stale_base_updated_at_returns_conflict(): void
     {
         $user = User::factory()->create();
