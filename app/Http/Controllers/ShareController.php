@@ -61,13 +61,10 @@ class ShareController extends Controller
             'label' => null,
             'url' => route('share.show', $link->token),
             'is_active' => ! $link->isExpired(),
-            'is_primary' => false,
             'has_password' => (bool) $link->require_password,
             'expires_at' => $link->expires_at?->toDateString(),
             'views' => $views->count(),
             'visitors' => $views->pluck('email')->filter()->unique()->count(),
-            'unread' => 0,
-            'questions' => 0,
             'trend' => $this->trend($views),
             'visits' => $views->take(self::VISITS_PER_LINK)->map(fn (ResumeShareLinkView $view) => [
                 'id' => $view->id,

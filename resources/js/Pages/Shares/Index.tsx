@@ -4,8 +4,7 @@ import { Shell } from '@/Components/ui/shell';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { cn, focusRingClass } from '@/lib/utils';
 import { PageProps } from '@/types';
-import { LinkIcon, LockClosedIcon, StarIcon } from '@heroicons/react/24/outline';
-import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
+import { LinkIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -24,13 +23,10 @@ interface ShareLinkRow {
     label: string | null;
     url: string;
     is_active: boolean;
-    is_primary: boolean;
     has_password: boolean;
     expires_at: string | null;
     views: number;
     visitors: number;
-    unread: number;
-    questions: number;
     trend: number[];
     visits: Visit[];
 }
@@ -98,9 +94,6 @@ export default function SharesIndex() {
     const openDetail = (link: ShareLinkRow) => {
         setDetailFor(link);
         setPassword('');
-        if (link.unread > 0) {
-            patchLink(link, { seen: true });
-        }
     };
 
     const submitCreate = (e: React.FormEvent) => {
@@ -157,15 +150,11 @@ export default function SharesIndex() {
                                     className={cn(
                                         'transition-[box-shadow,transform] duration-soft ease-soft motion-reduce:transition-none',
                                         'hover:-translate-y-0.5 hover:shadow-ambient',
-                                        link.is_primary && 'ring-2 ring-brand/30',
                                     )}
                                     innerClassName="flex h-full flex-col p-4"
                                 >
                                     <div className="mb-1 flex items-start justify-between gap-2">
                                         <div className="flex min-w-0 items-center gap-1.5">
-                                            {link.is_primary && (
-                                                <StarSolid className="h-4 w-4 shrink-0 text-brand" title="Primary link" />
-                                            )}
                                             <p className="truncate text-sm font-semibold text-ink">
                                                 {link.label || link.resume_name || 'Untitled link'}
                                             </p>
@@ -222,11 +211,6 @@ export default function SharesIndex() {
                                             <span className="tabular-nums">
                                                 {link.views} views · {link.visitors} visitors
                                             </span>
-                                            {link.unread > 0 && (
-                                                <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1.5 text-xs font-bold tabular-nums text-white">
-                                                    {link.unread}
-                                                </span>
-                                            )}
                                         </button>
                                         <span className="shrink-0">Expires {link.expires_at ?? 'Never'}</span>
                                     </div>
@@ -236,19 +220,6 @@ export default function SharesIndex() {
                                     </div>
 
                                     <div className="mt-auto flex gap-2 border-t border-surface-border pt-3 sm:opacity-100">
-                                        {!link.is_primary && (
-                                            <button
-                                                type="button"
-                                                onClick={() => patchLink(link, { is_primary: true })}
-                                                className={cn(
-                                                    'flex min-h-11 flex-1 items-center justify-center gap-1 rounded-lg border border-surface-border px-2 text-xs font-medium text-ink-muted transition hover:bg-surface',
-                                                    focusRingClass,
-                                                )}
-                                            >
-                                                <StarIcon className="h-4 w-4" />
-                                                Make primary
-                                            </button>
-                                        )}
                                         <button
                                             type="button"
                                             onClick={() => openDetail(link)}
@@ -333,7 +304,6 @@ export default function SharesIndex() {
                 {detailFor && (
                     <div className="p-6">
                         <div className="mb-1 flex items-center gap-2">
-                            {detailFor.is_primary && <StarSolid className="h-4 w-4 text-brand" />}
                             <h2 className="text-lg font-semibold text-ink">
                                 {detailFor.label || detailFor.resume_name || 'Untitled link'}
                             </h2>
