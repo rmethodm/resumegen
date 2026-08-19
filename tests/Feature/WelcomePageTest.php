@@ -10,6 +10,10 @@ class WelcomePageTest extends TestCase
 {
     use RefreshDatabase;
 
+    // Marketing copy free-forever / banned-phrase fence lives in
+    // resources/js/Components/marketing/marketing-content.test.ts (Vitest).
+    // Do not assertSee React tree strings here — Welcome is client-rendered.
+
     public function test_welcome_page_does_not_leak_framework_version(): void
     {
         $response = $this->get('/');
