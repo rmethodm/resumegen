@@ -45,8 +45,6 @@ class ShareLinkController extends Controller
             // Accepted no-ops for the Shares UI still posting them:
             'label' => ['sometimes', 'nullable', 'string', 'max:100'],
             'is_active' => ['sometimes', 'boolean'],
-            'is_primary' => ['sometimes', 'boolean'],
-            'seen' => ['sometimes', 'boolean'],
         ]);
 
         if (isset($validated['resume_id']) && (int) $validated['resume_id'] !== $link->resume_id) {

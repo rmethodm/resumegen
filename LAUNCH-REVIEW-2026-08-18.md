@@ -83,10 +83,10 @@ Warnings not fixed (below launch bar, listed for later): sub-44px touch targets 
 
 1. - [x] Delete legacy builder endpoints that 500 — done 2026-08-19 (routes + methods removed, live 404 verified)
 2. - [x] Share-view logging on public `show()`/`pdf()`/`docx()` — done 2026-08-19 (anonymous row once per session per link; email nullable via migration; modal lists email rows only)
-3. - [ ] Strip dead Shares affordances (Make primary, unread badge) or build the columns — ~20 min for strip
+3. - [x] Strip dead Shares affordances — done 2026-08-19 (Make primary button, unread badge, primary ring/stars removed from UI + server stubs; verified live in browser)
 4. - [x] Share-password hashing — done, see above
 5. - [x] Delete duplicate `'provider'` key in `config/ai.php` — done 2026-08-19
-6. - [ ] Refresh stale `.claude/skills/server-deployment/SKILL.md` against actual `deploy.sh`/`ci.yml` — ~10 min
+6. - [x] Refresh stale `.claude/skills/server-deployment/SKILL.md` — done 2026-08-19 (corrected: no rsync/SSH, self-hosted runner, server-side build, admin subdomain exists, real scheduled-command list, DB engine facts)
 7. - [ ] A11y warnings: sub-44px touch targets (share toggles, dashboard delete/actions), unnamed expiry selects, `aria-hidden` sparkline, skill-search label
 8. - [ ] Design warnings: orphaned `dark:` classes in `AuthenticatedLayout`, `#e5e7eb` in score-dial, `#5952d2` sparkline stroke, focus-ring literal drift (~43 sites)
 
