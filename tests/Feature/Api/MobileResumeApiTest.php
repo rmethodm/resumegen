@@ -147,4 +147,130 @@ class MobileResumeApiTest extends ApiTestCase
 
         $this->assertModelExists($base);
     }
+
+    public function test_store_with_client_uuid_is_idempotent(): void
+    {
+        $user = User::factory()->create();
+        $uuid = '3f2b8c1e-6a54-4b7d-9c0e-1a2b3c4d5e6f';
+
+        $first = $this->withToken($this->tokenFor($user))
+            ->postJson('/api/resumes', ['client_uuid' => $uuid])
+            ->assertCreated();
+
+        $this->withToken($this->tokenFor($user))
+            ->postJson('/api/resumes', ['client_uuid' => $uuid])
+            ->assertOk()
+            ->assertJsonPath('id', $first->json('id'));
+
+        $this->assertSame(1, $user->resumes()->count());
+    }
+
+    public function test_update_with_stale_base_updated_at_returns_conflict(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create(['title' => 'Server version']);
+
+        $this->withToken($this->tokenFor($user))
+            ->putJson("/api/resumes/{$resume->id}", [
+                'title' => 'Stale edit',
+                'base_updated_at' => $resume->updated_at->copy()->subMinutes(5)->toIso8601String(),
+            ])
+            ->assertStatus(409)
+            ->assertJsonPath('title', 'Server version');
+
+        $this->assertSame('Server version', $resume->fresh()->title);
+    }
+
+    public function test_update_with_current_base_updated_at_saves(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create(['title' => 'Before']);
+
+        $this->withToken($this->tokenFor($user))
+            ->putJson("/api/resumes/{$resume->id}", [
+                'title' => 'After',
+                'base_updated_at' => $resume->updated_at->toIso8601String(),
+            ])
+            ->assertOk()
+            ->assertJsonPath('title', 'After');
+    }
+
+    public function test_index_since_returns_changes_and_deletions(): void
+    {
+        $user = User::factory()->create();
+        $old = Resume::factory()->for($user)->create(['title' => 'Old']);
+        $victim = Resume::factory()->for($user)->create(['title' => 'Victim']);
+        $cutoff = now()->addMinute();
+
+        $this->travel(5)->minutes();
+
+        $changed = Resume::factory()->for($user)->create(['title' => 'New']);
+        $victimId = $victim->id;
+        $victim->delete();
+
+        $response = $this->withToken($this->tokenFor($user))
+            ->getJson('/api/resumes?since='.urlencode($cutoff->toIso8601String()))
+            ->assertOk();
+
+        $ids = array_column($response->json('resumes'), 'id');
+        $this->assertContains($changed->id, $ids);
+        $this->assertNotContains($old->id, $ids);
+        $this->assertContains($victimId, $response->json('deleted'));
+    }
+
+    /**
+     * A child-only edit (one bullet, no column change) must still bump
+     * updated_at — otherwise the ?since= incremental pull never surfaces it
+     * and other devices keep the old content forever.
+     */
+    public function test_child_only_edit_bumps_updated_at_and_appears_in_since_pull(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create(['title' => 'Same title']);
+        $before = $resume->updated_at;
+        $cutoff = now()->addMinute();
+
+        $this->travel(5)->minutes();
+
+        $this->withToken($this->tokenFor($user))
+            ->putJson("/api/resumes/{$resume->id}", [
+                'title' => 'Same title',
+                'experiences' => [
+                    ['title' => 'Engineer', 'company' => 'Acme', 'bullets' => ['Shipped the thing']],
+                ],
+            ])
+            ->assertOk();
+
+        $this->assertTrue($resume->fresh()->updated_at->gt($before));
+
+        $ids = array_column(
+            $this->withToken($this->tokenFor($user))
+                ->getJson('/api/resumes?since='.urlencode($cutoff->toIso8601String()))
+                ->json('resumes'),
+            'id'
+        );
+        $this->assertContains($resume->id, $ids);
+    }
+
+    public function test_pdf_streams_the_rendered_document(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create(['full_name' => 'Jane Doe']);
+
+        $this->withToken($this->tokenFor($user))
+            ->get("/api/resumes/{$resume->id}/pdf")
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+    }
+
+    public function test_pdf_hides_other_users_resumes(): void
+    {
+        $owner = User::factory()->create();
+        $intruder = User::factory()->create();
+        $resume = Resume::factory()->for($owner)->create();
+
+        $this->withToken($this->tokenFor($intruder))
+            ->get("/api/resumes/{$resume->id}/pdf")
+            ->assertNotFound();
+    }
 }

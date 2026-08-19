@@ -1,11 +1,11 @@
 # Resumegen
 
-Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create and share resumes. The app also includes a small Sanctum API used by the browser extension and a support admin panel.
+Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create and share resumes. The app also includes a Sanctum API used by the browser extension and the iPhone/iPad apps, and a support admin panel.
 
 ## Current Status
 
 - Laravel 13 app with React 19, Inertia v3, Tailwind CSS, Sanctum, DOMPDF, and PHPWord.
-- Mobile app work is paused. The previous Expo/mobile-only API surface was removed on 2026-07-08.
+- Mobile is active again (native iPhone/iPad apps in development, 2026-08). The server ships a mobile API: password login (`POST /api/auth/token`, Sanctum token with `mobile` ability), full resume CRUD with offline sync (`client_uuid` idempotent creates, `?since=` incremental pulls with a `resume_deletions` log, 409 conflict responses), PDF streaming, and share-link management. The 2026-07-08 removal covered the earlier Expo-era surface only.
 - **The app is free and unlimited.** There is no billing, no plan tier, and nothing is metered.
 - **AI is narrow and disabled by default.** A Tier-1 slice (bullet rewrite, summary generation, job match) shipped 2026-08-04 via `App\Services\OpenAiResumeAssistant` (`ResumeAiController`), gated by `AI_ENABLED`/`OPENAI_API_KEY` in `config/ai.php` (both unset by default). A legacy `AiService`/`AiPrompts` stack (builder bullet rewrite/critique, ATS keywords, interview coach, PDF import extract, job ranking/URL import) still exists behind the `ai_enabled` middleware, which 404s all of it while `AI_ENABLED` is false. See `CLAUDE.md`'s AI section.
 - **There is a support admin panel**, domain-scoped to `APP_ADMIN_DOMAIN` (`admin.resumegen.test` locally): user search/verify/disable/revoke-tokens, a visitor log of every main-site request (added 2026-08-13), Postgres backups (create/download/delete/restore), and a Postgres admin panel (table browse/edit/schema, raw SQL runner, roles/grants — added 2026-08-13). No resume edit, no impersonation, no billing. The old Filament admin, impersonation, the audit log, system-event logging, and the Career Hub remain removed (2026-07-21).
@@ -52,7 +52,7 @@ npm run build
 ## Important Paths
 
 - `routes/web.php` - main web routes
-- `routes/api.php` - Sanctum API for Resumegen Apply (`/api/extension/*`)
+- `routes/api.php` - Sanctum API: Resumegen Apply (`/api/extension/*`) and the mobile apps (`/api/auth/token`, `/api/resumes*`, share links)
 - `app/Support/ResumeFillProfile.php` - extension fill/insert payload
 - `extension/` - Resumegen Apply (side panel + ATS fill heuristics)
 - `app/Http/Controllers` - app controllers

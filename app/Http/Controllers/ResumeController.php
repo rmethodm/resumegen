@@ -361,7 +361,8 @@ class ResumeController extends Controller
                 'allow_download' => $shareLink->allow_download,
                 'require_email' => $shareLink->require_email,
                 'require_password' => $shareLink->require_password,
-                'password' => $shareLink->password,
+                // Hashed — the plaintext is only ever known client-side.
+                'has_password' => $shareLink->password !== null,
                 'expires_at' => $shareLink->expires_at?->toDateString(),
                 'views' => $shareLink->views
                     ->map(fn ($view): array => [

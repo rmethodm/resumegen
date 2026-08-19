@@ -60,9 +60,13 @@ export function ShareResumeModal({
         }
     }, [open, share, resumeId]);
 
+    // The server only stores a hash, so an existing password can never be
+    // shown back — the draft holds only what was typed/generated this session.
     useEffect(() => {
-        setPasswordDraft(share?.password ?? '');
-    }, [share?.password]);
+        if (!share?.require_password) {
+            setPasswordDraft('');
+        }
+    }, [share?.require_password]);
 
     function close() {
         setCopied(false);
@@ -86,6 +90,14 @@ export function ShareResumeModal({
             return;
         }
 
+        // Enabling password protection with none stored: generate one here —
+        // the server stores only a hash and can never show one, so the
+        // plaintext must originate client-side where the owner can read it.
+        if (field === 'require_password' && !share.require_password && !share.has_password) {
+            rotatePassword();
+            return;
+        }
+
         router.patch(
             route('resume-share-links.update', share.id),
             { [field]: !share[field] },
@@ -94,7 +106,8 @@ export function ShareResumeModal({
     }
 
     function savePassword() {
-        if (!share || passwordDraft === share.password) {
+        // Blank draft means "unchanged" — never clear a password on blur.
+        if (!share || passwordDraft === '') {
             return;
         }
 
@@ -279,7 +292,11 @@ export function ShareResumeModal({
                                         <Input
                                             value={passwordDraft}
                                             maxLength={8}
-                                            placeholder="Password"
+                                            placeholder={
+                                                share.has_password
+                                                    ? 'Set — type to replace'
+                                                    : 'Password'
+                                            }
                                             onChange={(e) =>
                                                 setPasswordDraft(e.target.value.slice(0, 8))
                                             }

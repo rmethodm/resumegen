@@ -10,6 +10,7 @@ use App\Support\ResumeExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -54,7 +55,7 @@ class PublicResumeShareController extends Controller
             'password' => $link->require_password ? ['required', 'string'] : null,
         ]));
 
-        if ($link->require_password && ! hash_equals((string) $link->password, (string) ($data['password'] ?? ''))) {
+        if ($link->require_password && ! Hash::check((string) ($data['password'] ?? ''), (string) $link->password)) {
             return back()->withErrors(['password' => 'That password is incorrect.']);
         }
 
@@ -115,10 +116,10 @@ class PublicResumeShareController extends Controller
     }
 
     /**
-     * Keyed off the current password so rotating it (or turning password
-     * protection on) invalidates every session that unlocked under the old
-     * one — otherwise editing the password in the modal wouldn't actually
-     * revoke access already granted.
+     * Keyed off the current password *hash* so rotating or changing the
+     * password invalidates every session that unlocked under the old one —
+     * bcrypt salts make every set produce a new hash, so the key always
+     * changes even if the same plaintext is re-entered.
      */
     private function unlockKey(ResumeShareLink $link): string
     {

@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class PublicResumeShareControllerTest extends TestCase
@@ -278,6 +280,46 @@ class PublicResumeShareControllerTest extends TestCase
             ->assertInertia(fn ($page) => $page->where('locked', false));
 
         $link->update(['password' => 'secret2']);
+
+        $this->get(route('share.show', $link->token))
+            ->assertInertia(fn ($page) => $page->where('locked', true));
+    }
+
+    /**
+     * The password is a secret a recruiter may reuse elsewhere — it must be
+     * one-way hashed, never recoverable from a DB dump (even with APP_KEY).
+     */
+    public function test_share_link_passwords_are_stored_hashed_not_recoverable(): void
+    {
+        $link = ResumeShareLink::factory()->for(Resume::factory()->create())->create([
+            'require_password' => true,
+            'password' => 'secret1',
+        ]);
+
+        $stored = (string) DB::table('resume_share_links')->where('id', $link->id)->value('password');
+
+        $this->assertNotSame('secret1', $stored);
+        $this->assertStringNotContainsString('secret1', $stored);
+        $this->assertTrue(Hash::check('secret1', $stored));
+    }
+
+    /**
+     * Re-entering the same plaintext still revokes old sessions: bcrypt salts
+     * make every set a new hash, and the unlock key is derived from the hash.
+     */
+    public function test_resetting_the_same_password_still_revokes_old_sessions(): void
+    {
+        $resume = Resume::factory()->create();
+        $link = ResumeShareLink::factory()->for($resume)->create([
+            'require_password' => true,
+            'password' => 'secret1',
+        ]);
+
+        $this->post(route('share.unlock', $link->token), ['password' => 'secret1']);
+        $this->get(route('share.show', $link->token))
+            ->assertInertia(fn ($page) => $page->where('locked', false));
+
+        $link->update(['password' => 'secret1']);
 
         $this->get(route('share.show', $link->token))
             ->assertInertia(fn ($page) => $page->where('locked', true));
