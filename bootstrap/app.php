@@ -5,6 +5,7 @@ use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserNotDisabled;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RequiresTwoFactorChallenge;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\TrackActivity;
 use App\Http\Middleware\TrackSiteVisit;
 use Illuminate\Foundation\Application;
@@ -38,6 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => url('/login'));
 
         $middleware->web(append: [
+            SecurityHeaders::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
             TrackActivity::class,
