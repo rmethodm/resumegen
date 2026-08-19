@@ -36,7 +36,10 @@ class ResumeShareLink extends Model
             'allow_download' => 'boolean',
             'require_email' => 'boolean',
             'require_password' => 'boolean',
-            'password' => 'encrypted',
+            // One-way: the plaintext is shown once (client-side generated or
+            // typed) and never recoverable. Each set produces a fresh bcrypt
+            // hash, which is what makes the session unlock key rotation-safe.
+            'password' => 'hashed',
             'expires_at' => 'datetime',
         ];
     }

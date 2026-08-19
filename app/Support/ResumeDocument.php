@@ -191,6 +191,13 @@ final class ResumeDocument
             // reachable from here. It is updated on its own endpoint instead.
             $resume->update($attributes);
 
+            // A child-only edit (e.g. one bullet) leaves the columns above
+            // unchanged, so update() no-ops and updated_at stays stale — the
+            // mobile API's ?since= pull would never see the change.
+            if (! $resume->wasChanged()) {
+                $resume->touch();
+            }
+
             $resume->experiences()->delete();
             $resume->projects()->delete();
             $resume->education()->delete();

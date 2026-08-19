@@ -70,18 +70,34 @@ Warnings not fixed (below launch bar, listed for later): sub-44px touch targets 
 1. **Legacy builder endpoints that 500**: `builder.store`, `builder.docx`, `builder.thumbnail`, `builder.duplicate`, `builder.create-variant` reference deleted services or dropped columns. Frontend never calls them. Delete routes+methods, or repair? (Documented in CLAUDE.md "Legacy builder endpoints that 500".)
 2. **Share-view logging gap**: `/shares` shows 0 views for links without the email gate — a view row is only written on email-gated unlock. Log views in `show()`/`pdf()`/`docx()`? (The share modal UI does disclose this.)
 3. **Dead Shares affordances**: "Make primary" button and unread badge can never work (server stubs `is_primary: false`, `unread: 0`). Remove UI or add columns.
-4. **Share-link passwords are recoverable** (`encrypted` cast + plaintext compare, not hashed). Pre-existing at HEAD; decide hash vs keep.
+4. ~~Share-link passwords are recoverable~~ **Resolved 2026-08-18**: passwords now one-way bcrypt (`hashed` cast), `Hash::check` on unlock, rotation-safe unlock key (bcrypt salt makes every set a new hash → new session key), plaintext generated client-side only, legacy encrypted values cleared by migration. Verified live end-to-end + 3 new intent tests.
 5. `config/ai.php` duplicate `'provider'` key (lines 16–23) — harmless, second wins; delete when convenient.
 6. `.claude/skills/server-deployment/SKILL.md` is stale (claims no admin panel, rsync deploys, wrong scheduled-command list) — refresh so future sessions aren't misled.
 
+## Status as of 2026-08-18 (end of session)
+
+- [x] Launch-review fixes committed as `27045163` on `main` (149 paths). **Not pushed.**
+- [x] Share-password hashing (open decision 4) implemented and verified live; **uncommitted** on top of `27045163`. Touched: `ResumeShareLink` model, `PublicResumeShareController`, `ResumeShareLinkController`, `ResumeController`, `share-resume-modal.tsx`, `types/resume.ts`, migration `2026_08_18_120000_clear_legacy_encrypted_share_link_passwords`, 3 test files. Suite: 440 passed; Pint/tsc/build clean.
+
+## Fix-or-postpone list (awaiting decision, numbered as discussed)
+
+1. - [ ] Delete legacy builder endpoints that 500 (`builder.store/docx/thumbnail/duplicate/create-variant`) — ~15 min
+2. - [ ] Share-view logging on public `show()`/`pdf()`/`docx()` so `/shares` counts ungated views — ~30 min
+3. - [ ] Strip dead Shares affordances (Make primary, unread badge) or build the columns — ~20 min for strip
+4. - [x] Share-password hashing — done, see above
+5. - [ ] Delete duplicate `'provider'` key in `config/ai.php` — 1 line
+6. - [ ] Refresh stale `.claude/skills/server-deployment/SKILL.md` against actual `deploy.sh`/`ci.yml` — ~10 min
+7. - [ ] A11y warnings: sub-44px touch targets (share toggles, dashboard delete/actions), unnamed expiry selects, `aria-hidden` sparkline, skill-search label
+8. - [ ] Design warnings: orphaned `dark:` classes in `AuthenticatedLayout`, `#e5e7eb` in score-dial, `#5952d2` sparkline stroke, focus-ring literal drift (~43 sites)
+
 ## Next steps (in order)
 
-1. **Commit the working tree** — 148 changed paths (session fixes + prior uncommitted work, mixed). Decide one commit vs split. Nothing is committed yet.
-2. Server checklist at deploy time: prod `.env` `AI_ENABLED` decision (+ `OPENAI_API_KEY` if on — required even with Anthropic, moderation runs through OpenAI); working mail (registration requires email verification — send a real test mail); `resumegen-queue` service + scheduler cron; `APP_ADMIN_DOMAIN` DNS/vhost.
-3. Resolve open decisions 1–4 above (any of them can ship post-launch; none block).
-4. Optional polish: phase-2 warning list (touch targets, sparkline a11y, dark-class cleanup).
+1. **Commit the hashing work** (uncommitted working tree on top of `27045163`).
+2. **Push** both commits when ready (user said "will push later").
+3. Decide fix-or-postpone for list items 1–3 and 5–8 above (none block launch).
+4. Server checklist at deploy time: prod `.env` `AI_ENABLED` decision (+ `OPENAI_API_KEY` if on — required even with Anthropic, moderation runs through OpenAI); working mail (registration requires email verification — send a real test mail); `resumegen-queue` service + scheduler cron; `APP_ADMIN_DOMAIN` DNS/vhost.
 
 ## Verified vs unverified
 
-- Verified this session: everything checkbox-ticked above (tests + live browser).
+- Verified this session: everything checkbox-ticked above (tests + live browser). Password hashing verified three ways: live browser flow (enable → gate → unlock), raw DB column holds a `$2y$…` bcrypt hash, and intent tests.
 - Not exercised: AI chat endpoints against real OpenAI (quota spend — code paths covered by tests with fakes), DOCX download click-through (same gate path as verified PDF), Dusk browser suite, production deploy itself.

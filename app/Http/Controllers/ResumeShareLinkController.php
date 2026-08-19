@@ -8,7 +8,6 @@ use App\Models\ResumeShareLink;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 /**
  * The Share modal's backing endpoints (Maya's side). Ownership 404s
@@ -51,12 +50,22 @@ class ResumeShareLinkController extends Controller
     {
         $data = $request->validated();
 
-        // Turning password protection on for the first time needs something
-        // to show in the modal's textbox — generate it rather than making
-        // the owner think of one.
-        if (($data['require_password'] ?? $resumeShareLink->require_password)
-            && blank($data['password'] ?? $resumeShareLink->password)) {
-            $data['password'] = Str::random(8);
+        // Passwords are hashed, so the server can never show one — the modal
+        // generates client-side and sends the plaintext along when enabling.
+        // Enabling with nothing stored and nothing sent would silently lock
+        // every visitor out behind a password nobody knows.
+        if (($data['require_password'] ?? false)
+            && blank($data['password'] ?? null)
+            && $resumeShareLink->password === null) {
+            return back()->withErrors(['password' => 'Provide a password to enable protection.']);
+        }
+
+        // Clearing the stored password while the gate stays on would leave a
+        // link nothing can unlock — the hash is gone, so no password matches.
+        if (array_key_exists('password', $data)
+            && $data['password'] === null
+            && ($data['require_password'] ?? $resumeShareLink->require_password)) {
+            return back()->withErrors(['password' => 'Disable password protection instead of clearing the password.']);
         }
 
         $resumeShareLink->update($data);
@@ -80,7 +89,7 @@ class ResumeShareLinkController extends Controller
      *     allow_download: bool,
      *     require_email: bool,
      *     require_password: bool,
-     *     password: string|null,
+     *     has_password: bool,
      *     expires_at: string|null,
      *     views: list<array{email: string, viewed_at: string}>,
      *     view_count: int,
@@ -95,7 +104,8 @@ class ResumeShareLinkController extends Controller
             'allow_download' => $link->allow_download,
             'require_email' => $link->require_email,
             'require_password' => $link->require_password,
-            'password' => $link->password,
+            // Hashed — the plaintext is only ever known client-side.
+            'has_password' => $link->password !== null,
             'expires_at' => $link->expires_at?->toDateString(),
             'views' => $link->views
                 ->map(fn ($view): array => [

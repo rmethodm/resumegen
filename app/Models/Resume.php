@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property list<string>|null $section_order
@@ -49,6 +50,7 @@ class Resume extends Model
 
     protected $fillable = [
         'group_id',
+        'client_uuid',
         'title',
         'target_role',
         'target_company',
@@ -239,6 +241,17 @@ class Resume extends Model
                         : 'Untitled resume',
                 ])->id;
             }
+        });
+
+        // Deletion log for the iPad app's incremental `since` pull — deletes
+        // are hard, so this is the only record another device can learn from.
+        // On the model event so web-side deletes are covered too.
+        static::deleting(function (Resume $resume): void {
+            DB::table('resume_deletions')->insert([
+                'user_id' => $resume->user_id,
+                'resume_id' => $resume->id,
+                'deleted_at' => now(),
+            ]);
         });
     }
 }

@@ -222,7 +222,8 @@ export interface ResumeShareLink {
     allow_download: boolean;
     require_email: boolean;
     require_password: boolean;
-    password: string | null;
+    /** Server stores only a hash — the plaintext is never sent back. */
+    has_password: boolean;
     expires_at: string | null;
     /** Recent require-email unlocks (newest first). */
     views: ResumeShareLinkView[];

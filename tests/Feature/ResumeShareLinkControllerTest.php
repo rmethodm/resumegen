@@ -6,6 +6,7 @@ use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class ResumeShareLinkControllerTest extends TestCase
@@ -61,7 +62,10 @@ class ResumeShareLinkControllerTest extends TestCase
             ])
             ->assertRedirect();
 
-        $this->assertSame('newpass2', $link->fresh()->password);
+        // Stored one-way hashed: the new plaintext verifies, the old doesn't.
+        $stored = (string) $link->fresh()->password;
+        $this->assertTrue(Hash::check('newpass2', $stored));
+        $this->assertFalse(Hash::check('oldpass1', $stored));
     }
 
     public function test_creating_a_share_link_twice_reuses_the_existing_one(): void
@@ -164,7 +168,12 @@ class ResumeShareLinkControllerTest extends TestCase
         $this->assertDatabaseHas('resume_share_links', ['id' => $link->id]);
     }
 
-    public function test_enabling_password_protection_generates_an_eight_character_password(): void
+    /**
+     * The server stores only a hash and can never display a password, so
+     * silently generating one here would lock every visitor out behind a
+     * password nobody has seen. The modal must send a client-generated one.
+     */
+    public function test_enabling_password_protection_without_a_password_is_rejected(): void
     {
         $user = User::factory()->create();
         $resume = Resume::factory()->for($user)->create();
@@ -172,13 +181,31 @@ class ResumeShareLinkControllerTest extends TestCase
 
         $this->actingAs($user)
             ->patch(route('resume-share-links.update', $link), ['require_password' => true])
+            ->assertSessionHasErrors('password');
+
+        $link->refresh();
+
+        $this->assertFalse($link->require_password);
+        $this->assertNull($link->password);
+    }
+
+    public function test_enabling_password_protection_with_a_password_stores_it(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create();
+
+        $this->actingAs($user)
+            ->patch(route('resume-share-links.update', $link), [
+                'require_password' => true,
+                'password' => 'fresh123',
+            ])
             ->assertRedirect();
 
         $link->refresh();
 
         $this->assertTrue($link->require_password);
-        $this->assertNotNull($link->password);
-        $this->assertLessThanOrEqual(8, strlen($link->password));
+        $this->assertTrue(Hash::check('fresh123', (string) $link->password));
     }
 
     public function test_owner_can_set_their_own_password(): void
@@ -191,7 +218,31 @@ class ResumeShareLinkControllerTest extends TestCase
             ->patch(route('resume-share-links.update', $link), ['password' => 'mypass1'])
             ->assertRedirect();
 
-        $this->assertEquals('mypass1', $link->refresh()->password);
+        $this->assertTrue(Hash::check('mypass1', (string) $link->refresh()->password));
+    }
+
+    /**
+     * Clearing the hash while the gate stays on would leave a link nothing
+     * can unlock — no password matches an empty hash. Turning the gate off
+     * is the supported way out.
+     */
+    public function test_password_cannot_be_cleared_while_protection_stays_on(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create([
+            'require_password' => true,
+            'password' => 'secret1',
+        ]);
+
+        $this->actingAs($user)
+            ->patch(route('resume-share-links.update', $link), ['password' => null])
+            ->assertSessionHasErrors('password');
+
+        $link->refresh();
+
+        $this->assertTrue($link->require_password);
+        $this->assertTrue(Hash::check('secret1', (string) $link->password));
     }
 
     public function test_password_cannot_exceed_eight_characters(): void

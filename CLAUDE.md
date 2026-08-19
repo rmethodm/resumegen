@@ -119,7 +119,7 @@ Resume content lives in **separate related tables**, not JSON blobs: `Experience
 
 **Versioning:** every resume belongs to a `ResumeGroup` (`group_id`) — assigned in `Resume::booted()`'s `creating` hook when absent. This replaced an earlier parent/child A/B-variant tree design.
 
-**Cascade delete:** dependents (share links and their views, snapshots, notes) are removed by `cascadeOnDelete` FKs. `Resume` has no `deleting` observer — there is no thumbnail field on the model to clean up.
+**Cascade delete:** dependents (share links and their views, snapshots, notes) are removed by `cascadeOnDelete` FKs. `Resume::booted()` has a `deleting` hook (added 2026-08-19) — not for asset cleanup (there is no thumbnail field) but to log the hard delete into `resume_deletions`, so the mobile API's incremental `?since=` pull can tell other devices about deletions.
 
 ### Authorization
 There is no `ResumePolicy` (removed) — a live code comment in `ResumeBuilderController::edit` says so explicitly. Ownership is checked inline everywhere: `abort_unless($resume->user_id === $request->user()->id, 403)` (or 404 in the newer controllers) in `ResumeBuilderController`, `ResumeController`, `ResumeAiController`, `InterviewCoachController`, `ShareLinkController`, and the rest. The one real policy is `JobSearchPolicy`: `JobSearchController` calls `$this->authorize('update'|'delete', $jobSearch)` against it for saved searches.
@@ -197,7 +197,10 @@ Hand-rolled Inertia admin (not Filament — the old Filament v3 panel, `AdminPan
 
 ## API Layer
 
-Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (intentionally empty) — only token-auth works, no session fallback.
+Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (intentionally empty) — only token-auth works, no session fallback. Two client surfaces, distinguished by token ability (checked in app code, not middleware):
+
+- **Extension** (`/api/extension/*`, ability `extension`): read-only fill-profile payloads for the Resumegen Apply browser extension. Tokens issued from the Profile page only.
+- **Mobile** (ability `mobile`, `App\Support\MobileApiToken`, guards in `App\Concerns\GuardsMobileTokens`): built 2026-08-18/19 for the iPhone/iPad apps. `POST /api/auth/token` is password login (throttle 5/min; refuses unverified, disabled, and 2FA-enabled accounts — 2FA users create tokens from the Profile page so password-only login can't bypass 2FA); `DELETE /api/auth/token` revokes the calling token. Full resume CRUD via the `ResumeDocument` shape, `GET /api/resumes/{id}/pdf` (DomPDF stream), and share-link management (`/api/resumes/{id}/share`, `/api/share-links/{id}`). Sync support (added 2026-08-19): `POST /api/resumes` accepts a `client_uuid` for idempotent offline creates (unique per user); `PUT` returns **409 with the current server document** on a stale `base_updated_at` (web returns an error banner instead); `GET /api/resumes?since=` returns only changed rows plus a `deleted` id list read from `resume_deletions`, populated by `Resume::booted()`'s `deleting` hook.
 
 **Test base class:** All API tests extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). It calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum guard cache from masking token revocation.
 
@@ -248,7 +251,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 2. **Client-side live preview, server-side PDF** — the Workstation renders a React preview component; DomPDF renders the real document for preview/stream and export.
 3. **Autosave in the editor** — the Workstation's `use-autosave` hook `router.put`s changes; the old beacon-on-beforeunload save survives only on the legacy `builder.beacon` route.
 4. **Append-only analytics tables** — `resume_share_link_views`, `site_visits`, `admin_action_logs`. Simple, immutable.
-5. **FK cascade for dependents** — `cascadeOnDelete` handles children (share links and their views, snapshots, notes). `Resume` has no `deleting` observer; `User` has no `booted()` deleting its resumes per-model either — verify this is intentional (no thumbnail asset left to clean up) before assuming a gap here.
+5. **FK cascade for dependents** — `cascadeOnDelete` handles children (share links and their views, snapshots, notes). `Resume::booted()`'s `deleting` hook exists only to log into `resume_deletions` for mobile sync — it cleans up no assets (there are none). `User` has no `booted()` deleting its resumes per-model — intentional, nothing to clean up.
 6. **No monetization** — every feature is free and unlimited; AI is metered only to cap OpenAI spend.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 8. **Deterministic sourcing, model-only judgment** — job boards are fetched by code; the model scores fit and parses arbitrary pages, and never picks what to search for.
@@ -256,7 +259,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 
 ---
 
-Last updated: 2026-08-18
+Last updated: 2026-08-19
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
