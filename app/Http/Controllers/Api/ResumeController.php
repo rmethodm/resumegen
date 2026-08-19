@@ -10,6 +10,7 @@ use App\Support\PdfFonts;
 use App\Support\ResumeDocument;
 use App\Support\ResumeExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -80,10 +81,25 @@ class ResumeController extends Controller
             }
         }
 
-        $resume = $user->resumes()->create([
-            'title' => 'Untitled resume',
-            'client_uuid' => $clientUuid,
-        ]);
+        try {
+            $resume = $user->resumes()->create([
+                'title' => 'Untitled resume',
+                'client_uuid' => $clientUuid,
+            ]);
+        } catch (UniqueConstraintViolationException $e) {
+            // Two concurrent retries with the same client_uuid: the other
+            // request won the unique index — return its resume, same as the
+            // sequential-retry path above.
+            $existing = $clientUuid === null
+                ? null
+                : $user->resumes()->where('client_uuid', $clientUuid)->first();
+
+            if ($existing === null) {
+                throw $e;
+            }
+
+            return response()->json($this->document($existing));
+        }
 
         return response()->json($this->document($resume), 201);
     }

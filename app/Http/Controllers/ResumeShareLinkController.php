@@ -107,7 +107,11 @@ class ResumeShareLinkController extends Controller
             // Hashed — the plaintext is only ever known client-side.
             'has_password' => $link->password !== null,
             'expires_at' => $link->expires_at?->toDateString(),
+            // Email-gate unlocks only; anonymous ungated views count toward
+            // view_count but have no identity to list.
             'views' => $link->views
+                ->whereNotNull('email')
+                ->values()
                 ->map(fn ($view): array => [
                     'email' => $view->email,
                     'viewed_at' => $view->created_at?->toIso8601String() ?? '',

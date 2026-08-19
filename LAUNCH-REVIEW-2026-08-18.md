@@ -81,11 +81,11 @@ Warnings not fixed (below launch bar, listed for later): sub-44px touch targets 
 
 ## Fix-or-postpone list (awaiting decision, numbered as discussed)
 
-1. - [ ] Delete legacy builder endpoints that 500 (`builder.store/docx/thumbnail/duplicate/create-variant`) — ~15 min
-2. - [ ] Share-view logging on public `show()`/`pdf()`/`docx()` so `/shares` counts ungated views — ~30 min
+1. - [x] Delete legacy builder endpoints that 500 — done 2026-08-19 (routes + methods removed, live 404 verified)
+2. - [x] Share-view logging on public `show()`/`pdf()`/`docx()` — done 2026-08-19 (anonymous row once per session per link; email nullable via migration; modal lists email rows only)
 3. - [ ] Strip dead Shares affordances (Make primary, unread badge) or build the columns — ~20 min for strip
 4. - [x] Share-password hashing — done, see above
-5. - [ ] Delete duplicate `'provider'` key in `config/ai.php` — 1 line
+5. - [x] Delete duplicate `'provider'` key in `config/ai.php` — done 2026-08-19
 6. - [ ] Refresh stale `.claude/skills/server-deployment/SKILL.md` against actual `deploy.sh`/`ci.yml` — ~10 min
 7. - [ ] A11y warnings: sub-44px touch targets (share toggles, dashboard delete/actions), unnamed expiry selects, `aria-hidden` sparkline, skill-search label
 8. - [ ] Design warnings: orphaned `dark:` classes in `AuthenticatedLayout`, `#e5e7eb` in score-dial, `#5952d2` sparkline stroke, focus-ring literal drift (~43 sites)

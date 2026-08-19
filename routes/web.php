@@ -148,20 +148,15 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         ->name('two-factor.recovery-codes');
 
     Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
-    Route::post('/builder', [ResumeBuilderController::class, 'store'])->name('builder.store');
     Route::get('/builder/create', [ResumeBuilderController::class, 'create'])->name('builder.create');
     Route::post('/import/pdf/confirm', [ResumeImportController::class, 'confirm'])->name('import.pdf.confirm');
     Route::get('/builder/{resume}', [ResumeBuilderController::class, 'edit'])->name('builder.edit');
     Route::put('/builder/{resume}', [ResumeBuilderController::class, 'update'])->name('builder.update');
     Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
     Route::get('/builder/{resume}/pdf', [ResumeBuilderController::class, 'downloadPdf'])->name('builder.pdf');
-    Route::get('/builder/{resume}/docx', [ResumeBuilderController::class, 'downloadDocx'])->name('builder.docx');
     Route::get('/builder/{resume}/preview', [ResumeBuilderController::class, 'previewPdf'])->name('builder.preview');
     Route::get('/builder/{resume}/html-preview', [ResumeBuilderController::class, 'htmlPreview'])->name('builder.html-preview');
-    Route::get('/builder/{resume}/thumbnail', [ResumeBuilderController::class, 'thumbnail'])->name('builder.thumbnail');
     Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
-    Route::post('/builder/{resume}/duplicate', [ResumeBuilderController::class, 'duplicate'])->name('builder.duplicate');
-    Route::post('/builder/{resume}/create-variant', [ResumeBuilderController::class, 'createVariant'])->name('builder.create-variant');
     Route::get('/builder/{resume}/share-url', [ResumeBuilderController::class, 'shareUrl'])->name('builder.share-url');
 
     Route::get('/search', SearchController::class)->name('search')->middleware('throttle:30,1');

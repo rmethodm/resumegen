@@ -34,6 +34,10 @@ class PublicResumeShareController extends Controller
 
         $locked = $this->gated($link) && ! $this->unlocked($request, $link);
 
+        if (! $locked) {
+            $this->logView($request, $link);
+        }
+
         return Inertia::render('Resumes/PublicShare', [
             'token' => $token,
             'locked' => $locked,
@@ -61,6 +65,9 @@ class PublicResumeShareController extends Controller
 
         if ($link->require_email) {
             $link->views()->create(['email' => $data['email']]);
+            // The unlock IS this session's view — show() must not add an
+            // anonymous row on the redirect back.
+            $request->session()->put($this->viewedKey($link), true);
         }
 
         $request->session()->put($this->unlockKey($link), true);
@@ -75,6 +82,8 @@ class PublicResumeShareController extends Controller
         abort_if($link->isExpired(), 404);
         abort_unless($link->allow_download, 403);
         abort_unless(! $this->gated($link) || $this->unlocked($request, $link), 403);
+
+        $this->logView($request, $link);
 
         $doc = ResumeDocument::toArray($link->resume);
         $filename = ResumeExport::filename($doc);
@@ -96,6 +105,8 @@ class PublicResumeShareController extends Controller
         abort_unless($link->allow_download, 403);
         abort_unless(! $this->gated($link) || $this->unlocked($request, $link), 403);
 
+        $this->logView($request, $link);
+
         $doc = ResumeDocument::toArray($link->resume);
         $filename = ResumeExport::filename($doc);
 
@@ -103,6 +114,25 @@ class PublicResumeShareController extends Controller
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Disposition' => "attachment; filename=\"{$filename}.docx\"",
         ]);
+    }
+
+    /**
+     * One anonymous view row per session per link, so /shares counts ungated
+     * visitors too (email-gated unlocks log their own row with the email).
+     */
+    private function logView(Request $request, ResumeShareLink $link): void
+    {
+        if ($request->session()->get($this->viewedKey($link), false)) {
+            return;
+        }
+
+        $link->views()->create(['email' => null]);
+        $request->session()->put($this->viewedKey($link), true);
+    }
+
+    private function viewedKey(ResumeShareLink $link): string
+    {
+        return "resume_share_viewed.{$link->token}";
     }
 
     private function gated(ResumeShareLink $link): bool
