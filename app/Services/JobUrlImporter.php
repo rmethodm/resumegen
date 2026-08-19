@@ -72,11 +72,17 @@ class JobUrlImporter
     private function fetch(string $url): string
     {
         for ($hop = 0; $hop <= self::MAX_REDIRECTS; $hop++) {
-            $this->assertPublicUrl($url);
+            $addresses = $this->assertPublicUrl($url);
 
             $response = Http::timeout(10)
                 ->withHeaders(['User-Agent' => 'Mozilla/5.0 (compatible; ResumegenBot/1.0)'])
-                ->withOptions(['allow_redirects' => false])
+                ->withOptions([
+                    'allow_redirects' => false,
+                    // Pin DNS to the addresses that passed the guard — a
+                    // rebinding DNS server could otherwise swap in a private
+                    // IP between the check and curl's own lookup.
+                    'curl' => [CURLOPT_RESOLVE => [$this->curlResolveEntry($url, $addresses)]],
+                ])
                 ->get($url);
 
             if (! $response->redirect()) {
@@ -102,9 +108,12 @@ class JobUrlImporter
     /**
      * The URL comes straight from a user, so it must not be usable to reach the
      * host's own network — cloud metadata endpoints and internal admin panels are
-     * the usual targets.
+     * the usual targets. Returns the validated addresses so the fetch can pin
+     * curl to exactly those.
+     *
+     * @return array<int, string>
      */
-    private function assertPublicUrl(string $url): void
+    private function assertPublicUrl(string $url): array
     {
         $host = parse_url($url, PHP_URL_HOST);
         $scheme = parse_url($url, PHP_URL_SCHEME);
@@ -124,6 +133,23 @@ class JobUrlImporter
                 throw new RuntimeException('That host is not reachable.');
             }
         }
+
+        return $addresses;
+    }
+
+    /**
+     * CURLOPT_RESOLVE entry ("host:port:ip1,ip2") pinning the validated
+     * addresses, so curl never does its own — possibly rebound — lookup.
+     *
+     * @param  array<int, string>  $addresses
+     */
+    private function curlResolveEntry(string $url, array $addresses): string
+    {
+        $host = trim((string) parse_url($url, PHP_URL_HOST), '[]');
+        $port = parse_url($url, PHP_URL_PORT)
+            ?: (parse_url($url, PHP_URL_SCHEME) === 'https' ? 443 : 80);
+
+        return "{$host}:{$port}:".implode(',', $addresses);
     }
 
     /**

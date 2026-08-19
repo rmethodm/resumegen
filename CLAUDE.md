@@ -214,7 +214,7 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
 - **Job applications tracker** (removed in `93c1c14`) — since **reintroduced** as the Kanban at `/job-applications` (`JobApplicationController` + `JobApplication` model). `application_contacts` and `interview_notes` stayed dropped and are deliberately out of scope. `AnalyticsController` still queries `job_applications` via `DB::table()` for the dashboard's `active_applications` count.
 - **Cover letters** — removed outright on 2026-08-18 (`dd93ee34`): routes, `CoverLetter` model/queries, and the `cover-letters.ai.draft` endpoint. The `cover_letter` key in `AiPrompts` is the only leftover. The "cover letters" on Job Imports are frontend stubs.
-- **System events** — the `system_events` mail-log table, its `MessageSent` listener, and the Ops dashboard surface are gone; `AppServiceProvider::boot()` now only configures Vite prefetch and the `share-unlock` rate limiter.
+- **System events** — the `system_events` mail-log table, its `MessageSent` listener, and the Ops dashboard surface are gone; `AppServiceProvider::boot()` now only configures production `URL::forceScheme('https')`, Vite prefetch, and the `share-unlock` rate limiter.
 
 ## Migrations are forward-only — rollback is not supported
 

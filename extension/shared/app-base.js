@@ -5,6 +5,11 @@ export function normalizeAppBase(value) {
     if (base.endsWith('/api')) {
         base = base.slice(0, -4);
     }
+    // The bearer token rides every request — never let it travel cleartext
+    // to a remote host. Loopback stays http for local dev servers.
+    if (isInsecureRemoteUrl(base)) {
+        base = base.replace(/^http:/, 'https:');
+    }
     return base || DEFAULT_APP_BASE;
 }
 

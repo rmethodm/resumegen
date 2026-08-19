@@ -121,6 +121,26 @@ class JobUrlImporterTest extends TestCase
     }
 
     /**
+     * DNS-rebinding defense: curl must connect to exactly the addresses that
+     * passed the guard, not re-resolve the host itself. The pin is a
+     * CURLOPT_RESOLVE entry built from the validated IPs.
+     */
+    public function test_the_fetch_pins_curl_to_the_validated_addresses(): void
+    {
+        $method = new \ReflectionMethod(JobUrlImporter::class, 'curlResolveEntry');
+        $importer = $this->app->make(JobUrlImporter::class);
+
+        $this->assertSame(
+            'example.com:443:93.184.216.34',
+            $method->invoke($importer, 'https://example.com/jobs/1', ['93.184.216.34']),
+        );
+        $this->assertSame(
+            'example.com:8080:93.184.216.34,2606:2800:220:1::1',
+            $method->invoke($importer, 'http://example.com:8080/', ['93.184.216.34', '2606:2800:220:1::1']),
+        );
+    }
+
+    /**
      * A redirect loop must terminate rather than hang the request.
      */
     public function test_a_redirect_loop_gives_up(): void
