@@ -317,3 +317,31 @@ Do not report a feature, fix, integration, or deploy as done based on configurat
 - **Integrations and deploys**: perform the real action (send an actual test email, run an actual deploy) rather than reporting that configuration is correct.
 
 If the live run does nothing where you expected it to work, that is the real bug report — find the actual root cause instead of defending the earlier "done" claim.
+
+<!-- grapelaravel:policy:start -->
+# GrapeLaravel Context Policy
+
+This project uses the GrapeLaravel MCP server for graph-based context
+retrieval. Always prefer it over native file exploration.
+
+## MANDATORY: Always follow this order
+
+1. Call `graph_continue` first — before any file exploration, grep, or code
+   reading. Describe your task as the query.
+2. If it returns `needs_scan=true`, tell the user to run the printed
+   `graph:scan` command.
+3. Read the `recommended_files` using `graph_read` — one call per file.
+   Entries support `file::symbol` notation for partial reads.
+4. Obey the confidence caps strictly:
+   - `confidence=high` -> Stop. Do NOT grep or explore further.
+   - `confidence=medium`/`low` -> at most `max_supplementary_greps`
+     `fallback_rg` call(s) and `max_supplementary_files` extra
+     `graph_read` call(s). Then stop.
+
+## Rules
+
+- Do NOT use rg, grep, cat, find, or shell exploration — `graph_continue`,
+  `graph_read`, and `fallback_rg` are the only permitted exploration tools.
+- After editing files, call `graph_register_edit` with the changed paths
+  (relative, `files` is always an array).
+<!-- grapelaravel:policy:end -->

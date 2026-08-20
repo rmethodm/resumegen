@@ -1,23 +1,34 @@
 {
-  "mcpServers": {
-    "laravel-boost": {
-      "command": "php",
-      "args": [
-        "artisan",
-        "boost:mcp"
-      ]
-    },
-    "graperoot-pro": {
-      "type": "stdio",
-      "command": "/Users/rmethod/.graperoot-pro/venv/bin/python3",
-      "args": [
-        "/Users/rmethod/.graperoot-pro/mcp_graph_server_v7.5.py",
-        "--stdio"
-      ],
-      "env": {
-        "DG_DATA_DIR": "/Users/rmethod/Herd/Resumegen/.dual-graph-pro",
-        "DUAL_GRAPH_PROJECT_ROOT": "/Users/rmethod/Herd/Resumegen"
-      }
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "php",
+            "args": [
+                "artisan",
+                "boost:mcp"
+            ]
+        },
+        "graperoot-pro": {
+            "type": "stdio",
+            "command": "/Users/rmethod/.graperoot-pro/venv/bin/python3",
+            "args": [
+                "/Users/rmethod/.graperoot-pro/mcp_graph_server_v7.5.py",
+                "--stdio"
+            ],
+            "env": {
+                "DG_DATA_DIR": "/Users/rmethod/Herd/Resumegen/.dual-graph-pro",
+                "DUAL_GRAPH_PROJECT_ROOT": "/Users/rmethod/Herd/Resumegen"
+            }
+        },
+        "grapelaravel": {
+            "command": "php",
+            "args": [
+                "/Users/rmethod/Herd/GraperootClone/artisan",
+                "mcp:start",
+                "grapelaravel"
+            ],
+            "env": {
+                "GRAPELARAVEL_PROJECT_ROOT": "/Users/rmethod/Herd/Resumegen"
+            }
+        }
     }
-  }
 }
