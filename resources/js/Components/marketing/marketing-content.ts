@@ -63,12 +63,12 @@ export const STEPS = [
     {
         n: '01',
         title: 'Start from a template',
-        desc: 'Pick a layout and fill sections in a live editor. Your starter profile can pre-fill the basics so you are not staring at a blank page.',
+        desc: 'Pick a layout and fill sections in a live editor. Your starter profile pre-fills the basics.',
     },
     {
         n: '02',
         title: 'Tighten the story',
-        desc: 'Reorder sections, polish bullets, and open Review to see the resume as a document before you send it anywhere.',
+        desc: 'Reorder sections, polish bullets, and preview the document before you send it anywhere.',
     },
     {
         n: '03',

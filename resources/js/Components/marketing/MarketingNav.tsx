@@ -6,8 +6,6 @@ import { cn } from '@/lib/utils';
 const NAV_LINKS = [
     { href: '#features', label: 'Features' },
     { href: '#how-it-works', label: 'How it works' },
-    { href: '#about', label: 'About' },
-    { href: '#faq', label: 'FAQ' },
 ] as const;
 
 export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
@@ -15,13 +13,13 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
         <div
             className={cn(
                 'sticky top-0 z-30 px-3 pt-3 sm:px-4 sm:pt-4',
-                '[padding-top:max(0.75rem,env(safe-area-inset-top))]',
+                'pt-[max(0.75rem,env(safe-area-inset-top))]',
             )}
         >
             <nav
                 className={cn(
                     'mx-auto flex h-14 max-w-6xl items-center gap-4 rounded-2xl border border-surface-border/80',
-                    'bg-white/90 px-4 shadow-ambient backdrop-blur',
+                    'bg-white/90 px-4 shadow-ambient backdrop-blur-sm',
                 )}
                 aria-label="Primary"
             >
