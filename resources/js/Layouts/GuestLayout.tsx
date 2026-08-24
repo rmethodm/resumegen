@@ -4,7 +4,7 @@ import { Shell } from '@/Components/ui/shell';
 
 export default function Guest({ children }: PropsWithChildren) {
     return (
-        <div className="flex min-h-[100dvh] flex-col items-center bg-surface px-4 pt-10 sm:justify-center sm:pt-0">
+        <div className="flex min-h-dvh flex-col items-center bg-surface px-4 pt-10 sm:justify-center sm:pt-0">
             <a
                 href="#main-content"
                 className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink focus:shadow-ambient"

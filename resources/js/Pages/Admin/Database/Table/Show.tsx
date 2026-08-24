@@ -194,7 +194,7 @@ export default function Show({
                                         defaultValue={filters[c] ?? ''}
                                         onBlur={(e) => applyFilter(c, e.target.value)}
                                         placeholder="filter…"
-                                        className="mt-1 w-full rounded border border-gray-200 px-1 py-0.5 text-[11px] font-normal normal-case"
+                                        className="mt-1 w-full rounded-sm border border-gray-200 px-1 py-0.5 text-[11px] font-normal normal-case"
                                     />
                                 </th>
                             ))}
@@ -255,7 +255,7 @@ export default function Show({
                                 key={i}
                                 href={link.url}
                                 className={
-                                    'rounded border px-2 py-1 text-xs ' +
+                                    'rounded-sm border px-2 py-1 text-xs ' +
                                     (link.active
                                         ? 'border-gray-900 bg-gray-900 text-white'
                                         : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50')
@@ -265,7 +265,7 @@ export default function Show({
                         ) : (
                             <span
                                 key={i}
-                                className="rounded border border-transparent px-2 py-1 text-xs text-ink-faint"
+                                className="rounded-sm border border-transparent px-2 py-1 text-xs text-ink-faint"
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
                         ),
@@ -288,7 +288,7 @@ export default function Show({
                                     onChange={(e) =>
                                         setEditValues((v) => ({ ...v, [c]: e.target.value }))
                                     }
-                                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs focus:border-brand focus:outline-hidden focus:ring-1 focus:ring-brand"
                                 />
                             </div>
                         ))}
@@ -321,7 +321,7 @@ export default function Show({
                             type="text"
                             required
                             pattern="[a-zA-Z_][a-zA-Z0-9_]*"
-                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm"
+                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs"
                         />
                     </div>
                     <div>
@@ -330,7 +330,7 @@ export default function Show({
                         </label>
                         <select
                             name="type"
-                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm"
+                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-xs"
                         >
                             {COLUMN_TYPES.map((t) => (
                                 <option key={t} value={t}>
@@ -369,7 +369,7 @@ export default function Show({
             >
                 <form onSubmit={submitDrop} className="space-y-3 p-5">
                     <p className="text-sm text-gray-600">
-                        Type <code className="rounded bg-gray-100 px-1 font-mono text-xs">{dropTarget?.name}</code>{' '}
+                        Type <code className="rounded-sm bg-gray-100 px-1 font-mono text-xs">{dropTarget?.name}</code>{' '}
                         exactly to confirm.
                     </p>
                     <input
@@ -377,7 +377,7 @@ export default function Show({
                         autoComplete="off"
                         value={confirmText}
                         onChange={(e) => setConfirmText(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs"
                         placeholder={dropTarget?.name}
                     />
                     <div className="flex justify-end gap-2 pt-1">
@@ -403,7 +403,7 @@ export default function Show({
                 <form onSubmit={submitTruncate} className="space-y-3 p-5">
                     <p className="text-sm text-gray-600">
                         This deletes <strong>all rows</strong> in{' '}
-                        <code className="rounded bg-gray-100 px-1 font-mono text-xs">{table}</code>. Type
+                        <code className="rounded-sm bg-gray-100 px-1 font-mono text-xs">{table}</code>. Type
                         the table name exactly to confirm.
                     </p>
                     <input
@@ -411,7 +411,7 @@ export default function Show({
                         autoComplete="off"
                         value={confirmText}
                         onChange={(e) => setConfirmText(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs"
                         placeholder={table}
                     />
                     <div className="flex justify-end gap-2 pt-1">

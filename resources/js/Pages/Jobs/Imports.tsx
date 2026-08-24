@@ -269,7 +269,7 @@ export default function JobImportsPage({
                                                 <span className={checked ? 'text-brand' : 'text-ink-faint'}>
                                                     {checked ? '☑' : '☐'}
                                                 </span>
-                                                <span className={`w-fit rounded px-1.5 py-1 text-[9.5px] font-bold ${SOURCE_META[job.source].badge}`}>
+                                                <span className={`w-fit rounded-sm px-1.5 py-1 text-[9.5px] font-bold ${SOURCE_META[job.source].badge}`}>
                                                     {SOURCE_META[job.source].label}
                                                 </span>
                                                 <div className="min-w-0 flex-1">
@@ -324,7 +324,7 @@ export default function JobImportsPage({
                                         job.id === openJobId ? 'bg-brand-subtle/40' : ''
                                     }`}
                                 >
-                                    <span className={`w-fit rounded px-1.5 py-1 text-[9.5px] font-bold ${SOURCE_META[job.source].badge}`}>
+                                    <span className={`w-fit rounded-sm px-1.5 py-1 text-[9.5px] font-bold ${SOURCE_META[job.source].badge}`}>
                                         {SOURCE_META[job.source].label}
                                     </span>
                                     <div className="min-w-0 flex-1">

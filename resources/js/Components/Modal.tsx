@@ -21,6 +21,7 @@ export default function Modal({
     title,
     description,
     footer,
+    overlayClassName = 'bg-gray-500/75',
 }: PropsWithChildren<{
     show: boolean;
     maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
@@ -29,6 +30,7 @@ export default function Modal({
     title?: ReactNode;
     description?: ReactNode;
     footer?: ReactNode;
+    overlayClassName?: string;
 }>) {
     const close = () => {
         if (closeable) {
@@ -66,7 +68,7 @@ export default function Modal({
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="absolute inset-0 bg-gray-500/75" />
+                    <div className={`absolute inset-0 ${overlayClassName}`} />
                 </TransitionChild>
 
                 <TransitionChild

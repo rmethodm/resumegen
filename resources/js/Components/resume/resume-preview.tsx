@@ -270,7 +270,7 @@ function EntryShell({
     if (style === 'cards') {
         return (
             <div
-                className="mt-2 rounded border px-2.5 py-2 first:mt-0"
+                className="mt-2 rounded-sm border px-2.5 py-2 first:mt-0"
                 style={{ borderColor: accent ?? '#e5e7eb', background: '#fafafa' }}
             >
                 {children}
@@ -626,7 +626,7 @@ export function ResumePreview({
             }
             className={cn(
                 'mx-auto w-full bg-white p-[9%] shadow-[0_16px_40px_rgba(15,23,42,0.12)]',
-                '[&>section]:mt-[var(--section-gap)]',
+                '[&>section]:mt-(--section-gap)',
                 className,
             )}
         >
@@ -634,7 +634,7 @@ export function ResumePreview({
                 data-section="contact"
                 className={cn(
                     'mb-3.5',
-                    t.header.bg ? 'rounded-sm px-3 py-2.5' : 'pb-2.5',
+                    t.header.bg ? 'rounded-xs px-3 py-2.5' : 'pb-2.5',
                     t.header.align === 'center' ? 'text-center' : 'text-left',
                 )}
                 style={{

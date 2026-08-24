@@ -33,7 +33,7 @@ const STATUS_CHIP: Record<JobStatus, string> = {
 };
 
 const selectClassName =
-    'mt-1 block w-full rounded-lg border-surface-border text-sm shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand';
+    'mt-1 block w-full rounded-lg border-surface-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand';
 
 type FormState = {
     id: number | null;
@@ -109,15 +109,15 @@ function Column({
     return (
         <Shell
             className={cn(
-                'w-72 flex-none transition-[box-shadow] duration-soft ease-soft',
+                'w-72 flex-none transition-shadow duration-soft ease-soft',
                 isOver && 'ring-2 ring-brand/25 shadow-lg',
             )}
             innerClassName={cn(
-                'flex min-h-[12rem] flex-col gap-2 p-2.5 transition-colors duration-soft ease-soft',
+                'flex min-h-48 flex-col gap-2 p-2.5 transition-colors duration-soft ease-soft',
                 isOver && 'bg-brand-subtle/30',
             )}
         >
-            <div ref={setNodeRef} className="flex min-h-[10rem] flex-1 flex-col gap-2">
+            <div ref={setNodeRef} className="flex min-h-40 flex-1 flex-col gap-2">
                 <div className="flex items-center gap-2 px-1 pb-1">
                     <span className="text-xs font-bold text-ink">{label}</span>
                     <span

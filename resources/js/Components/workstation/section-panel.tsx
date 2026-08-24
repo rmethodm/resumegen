@@ -178,7 +178,7 @@ export function SectionPanel({
                                 type="button"
                                 onClick={() => jumpBand(band.label)}
                                 title={`Fix ${band.label} — jump to next step`}
-                                className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-brand-subtle/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
+                                className="space-y-1 rounded-md p-1 text-left transition-colors hover:bg-brand-subtle/60 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
                             >
                                 <div className="flex justify-between text-xs font-semibold tracking-wide text-ink-muted uppercase">
                                     <span>{band.label}</span>

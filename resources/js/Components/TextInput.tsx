@@ -20,7 +20,7 @@ export default forwardRef(function TextInput(
             {...props}
             type={type}
             className={cn(
-                'rounded-lg border-surface-border shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft',
+                'rounded-lg border-surface-border shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft',
                 'text-ink placeholder:text-ink-faint',
                 'focus:border-brand focus:ring-0',
                 focusRingClass,

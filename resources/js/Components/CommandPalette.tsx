@@ -112,7 +112,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
                                 }
                             >
                                 <span className="truncate text-[#0f0f1a] dark:text-white">{item.label}</span>
-                                <span className="ml-3 flex-shrink-0 text-[11px] uppercase tracking-wide text-ink-faint">{item.sub}</span>
+                                <span className="ml-3 shrink-0 text-[11px] uppercase tracking-wide text-ink-faint">{item.sub}</span>
                             </button>
                         </li>
                     ))}

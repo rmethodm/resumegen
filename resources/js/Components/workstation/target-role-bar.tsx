@@ -39,11 +39,11 @@ export function TargetRoleBar({
                         value={targetRole}
                         allowCreate={false}
                         placeholder="e.g. Senior Software Engineer"
-                        className="h-9 w-full rounded-md border border-surface-border bg-white px-3 text-sm shadow-sm transition-[border-color,box-shadow] duration-soft ease-soft focus-visible:border-brand focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand"
+                        className="h-9 w-full rounded-md border border-surface-border bg-white px-3 text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus-visible:border-brand focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-brand"
                         onChange={onChange}
                     />
                 </div>
-                <p className="shrink-0 pb-1 text-xs leading-snug text-ink-muted sm:max-w-[15rem]">
+                <p className="shrink-0 pb-1 text-xs leading-snug text-ink-muted sm:max-w-60">
                     {targetRole.trim() === ''
                         ? 'Sets the Keywords score band. Not printed on the resume.'
                         : recognized

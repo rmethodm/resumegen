@@ -71,7 +71,7 @@ Default to surfacing uncertainty, not hiding it.
 ## Stack
 
 - **Backend:** Laravel 13, PHP 8.5, PostgreSQL (`DB_CONNECTION=pgsql`; tests run on in-memory SQLite), Inertia.js v3
-- **Frontend:** React 19, TypeScript, Tailwind CSS v3, Vite 8
+- **Frontend:** React 19, TypeScript, Tailwind CSS v4 (CSS-first config in `resources/css/app.css` `@theme`; no `tailwind.config.js` — upgraded 2026-08-20), Vite 8
 - **Auth:** Laravel Fortify (session-based; replaced Breeze in the 2026-08-02 foundation swap), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The main authenticated group in `web.php` runs `['auth', 'verified', 'two_factor_challenge']`.
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Current routes: `GET /resumes/{resume}/export` (download), `GET /resumes/{resume}/preview` (inline stream). The legacy `builder/{resume}/pdf|preview` routes still resolve.
 - **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia`, and `spatie/laravel-medialibrary` is no longer in `composer.json` either.
@@ -338,10 +338,19 @@ retrieval. Always prefer it over native file exploration.
      `fallback_rg` call(s) and `max_supplementary_files` extra
      `graph_read` call(s). Then stop.
 
+## Token-saving helpers (prefer before opening many files)
+
+- `graph_neighbors` — inbound/outbound edges for a file
+- `graph_impact` — 1-hop blast radius for changed files
+- `graph_action_summary` — recent reads/edits + stored notes
+- `graph_add_memory` / `graph_add_decision` — store short notes for later
+- `graph_dead_exports` / `graph_find_cycles` — capped audits only when asked
+
 ## Rules
 
-- Do NOT use rg, grep, cat, find, or shell exploration — `graph_continue`,
-  `graph_read`, and `fallback_rg` are the only permitted exploration tools.
+- Do NOT use rg, grep, cat, find, or shell exploration — prefer graph tools
+  (`graph_continue`, `graph_read`, `fallback_rg`, `graph_neighbors`,
+  `graph_impact`, `graph_action_summary`) over shell exploration.
 - After editing files, call `graph_register_edit` with the changed paths
   (relative, `files` is always an array).
 <!-- grapelaravel:policy:end -->

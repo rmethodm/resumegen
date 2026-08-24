@@ -62,7 +62,7 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                             onBlur={onBlur}
                             placeholder="Category (e.g. Frontend)"
                             maxLength={60}
-                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                            className="flex-1 rounded-sm border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
                         />
                         <button
                             type="button"
@@ -90,7 +90,7 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                             onChange={(e) => updateDraftCategory(draft.id, e.target.value)}
                             placeholder="Category (e.g. Frontend)"
                             maxLength={60}
-                            className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                            className="flex-1 rounded-sm border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
                         />
                         <button
                             type="button"

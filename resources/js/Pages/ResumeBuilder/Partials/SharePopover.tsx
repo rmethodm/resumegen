@@ -57,17 +57,17 @@ export default function SharePopover({ resumeId, shareLinks }: Props) {
                                             if (e.key === 'Enter') saveLabel(link.id);
                                             if (e.key === 'Escape') setEditingLinkId(null);
                                         }}
-                                        className="rounded border-surface-border text-xs py-0.5 px-1.5 w-32 focus:border-brand focus:ring-brand/25"
+                                        className="rounded-sm border-surface-border text-xs py-0.5 px-1.5 w-32 focus:border-brand focus:ring-brand/25"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => saveLabel(link.id)}
-                                        className="rounded bg-brand px-2 py-0.5 text-xs font-medium text-white hover:bg-indigo-700"
+                                        className="rounded-sm bg-brand px-2 py-0.5 text-xs font-medium text-white hover:bg-indigo-700"
                                     >Save</button>
                                     <button
                                         type="button"
                                         onClick={() => setEditingLinkId(null)}
-                                        className="rounded border border-surface-border bg-white px-2 py-0.5 text-xs text-ink-muted hover:bg-surface"
+                                        className="rounded-sm border border-surface-border bg-white px-2 py-0.5 text-xs text-ink-muted hover:bg-surface"
                                     >✕</button>
                                 </div>
                             ) : (
@@ -122,7 +122,7 @@ export default function SharePopover({ resumeId, shareLinks }: Props) {
                                 { label: link.label, is_active: link.is_active, expires_at: e.target.value || null } as any,
                                 { preserveScroll: true }
                             )}
-                            className="rounded border-surface-border text-xs py-0.5 px-1.5 text-ink-muted focus:border-brand focus:ring-brand/25"
+                            className="rounded-sm border-surface-border text-xs py-0.5 px-1.5 text-ink-muted focus:border-brand focus:ring-brand/25"
                         />
                         {link.expires_at && (
                             <span className="text-xs text-warning-text">
@@ -145,7 +145,7 @@ export default function SharePopover({ resumeId, shareLinks }: Props) {
                     value={linkForm.data.label}
                     onChange={e => linkForm.setData('label', e.target.value)}
                     placeholder="Label (optional, e.g. Sent to Google)"
-                    className="flex-1 rounded-md border-surface-border text-xs shadow-sm focus:border-brand focus:ring-brand/25"
+                    className="flex-1 rounded-md border-surface-border text-xs shadow-xs focus:border-brand focus:ring-brand/25"
                 />
                 <button
                     type="submit"

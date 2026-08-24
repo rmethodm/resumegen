@@ -75,7 +75,7 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                                         <button
                                             type="button"
                                             onClick={() => void load()}
-                                            className="min-h-11 min-w-11 rounded-md text-ink-faint hover:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                                            className="min-h-11 min-w-11 rounded-md text-ink-faint hover:text-ink-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
                                         >
                                             ↻ Refresh
                                         </button>
@@ -93,7 +93,7 @@ const StrengthScorePanel = forwardRef<StrengthPanelHandle, Props>(
                                             <button
                                                 type="button"
                                                 onClick={onGenerateSummary}
-                                                className="mt-1 text-xs font-semibold text-brand hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                                                className="mt-1 text-xs font-semibold text-brand hover:text-brand-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
                                             >
                                                 ✨ Generate it with AI →
                                             </button>

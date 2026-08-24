@@ -19,7 +19,7 @@ export function MarketingFaq() {
                 <div className="mt-10 divide-y divide-surface-border/80 rounded-2xl border border-surface-border/80 bg-white">
                     {FAQ_ITEMS.map((item) => (
                         <Disclosure key={item.question} as="div" className="p-1">
-                            <DisclosureButton className="flex w-full items-center justify-between gap-4 rounded-xl px-4 py-4 text-left text-sm font-semibold text-ink hover:bg-surface/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                            <DisclosureButton className="flex w-full items-center justify-between gap-4 rounded-xl px-4 py-4 text-left text-sm font-semibold text-ink hover:bg-surface/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand">
                                 <span>{item.question}</span>
                                 <span aria-hidden className="text-ink-faint">
                                     +

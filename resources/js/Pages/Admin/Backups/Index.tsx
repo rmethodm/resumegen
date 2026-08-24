@@ -193,7 +193,7 @@ export default function Index({
                 <div className="p-5">
                     <p className="text-sm text-gray-600">
                         This replaces the <strong>live</strong> database with{' '}
-                        <code className="rounded bg-gray-100 px-1 font-mono text-xs">
+                        <code className="rounded-sm bg-gray-100 px-1 font-mono text-xs">
                             {restoreTarget}
                         </code>
                         . Type the filename exactly to confirm.
@@ -215,7 +215,7 @@ export default function Index({
                                 onChange={(e) =>
                                     restoreForm.setData('confirmation', e.target.value)
                                 }
-                                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs focus:border-brand focus:outline-hidden focus:ring-1 focus:ring-brand"
                                 placeholder={restoreTarget ?? undefined}
                             />
                             {(restoreForm.errors.confirmation || errors?.confirmation) && (

@@ -88,7 +88,7 @@ export default function ResumesIndex({
                                         innerClassName="flex h-full flex-col p-3"
                                     >
                                         <div
-                                            className="relative aspect-[8.5/11] w-full overflow-hidden rounded-md border border-surface-border bg-white shadow-sm"
+                                            className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-surface-border bg-white shadow-xs"
                                             style={{
                                                 borderLeft: style.pageAccent
                                                     ? `3px solid ${style.pageAccent}`
@@ -135,7 +135,7 @@ export default function ResumesIndex({
                                             className="flex flex-col"
                                             innerClassName="flex h-full flex-col p-3"
                                         >
-                                            <div className="relative aspect-[8.5/11] w-full overflow-hidden rounded-md border border-surface-border bg-white shadow-sm">
+                                            <div className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-surface-border bg-white shadow-xs">
                                                 <img
                                                     src={format.url}
                                                     alt=""

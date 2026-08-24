@@ -94,7 +94,7 @@ export default function SectionDrawer({ title, onClose, restoreFocusTo, children
             aria-modal="true"
             aria-label={title}
             tabIndex={-1}
-            className="fixed inset-0 z-30 flex w-full flex-col bg-white focus:outline-none lg:absolute lg:inset-y-0 lg:left-auto lg:right-[300px] lg:z-20 lg:max-w-[640px] lg:border-l lg:border-surface-border lg:shadow-[0_8px_30px_rgba(15,23,42,0.18)]"
+            className="fixed inset-0 z-30 flex w-full flex-col bg-white focus:outline-hidden lg:absolute lg:inset-y-0 lg:left-auto lg:right-[300px] lg:z-20 lg:max-w-[640px] lg:border-l lg:border-surface-border lg:shadow-[0_8px_30px_rgba(15,23,42,0.18)]"
         >
             <div className="flex shrink-0 items-center justify-between border-b border-surface-border px-5 py-3">
                 <span className="text-sm font-semibold text-ink">{title}</span>
