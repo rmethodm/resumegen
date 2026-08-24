@@ -434,7 +434,7 @@ export default function JobsIndex() {
                                                             { preserveScroll: true },
                                                         )
                                                     }
-                                                    className={cn('rounded border-surface-border text-brand focus:ring-0', focusRingClass)}
+                                                    className={cn('rounded-sm border-surface-border text-brand focus:ring-0', focusRingClass)}
                                                 />
                                                 Daily email
                                             </label>
@@ -470,7 +470,7 @@ export default function JobsIndex() {
                             type="checkbox"
                             checked={saveForm.data.is_alerting}
                             onChange={(e) => saveForm.setData('is_alerting', e.target.checked)}
-                            className={cn('rounded border-surface-border text-brand focus:ring-0', focusRingClass)}
+                            className={cn('rounded-sm border-surface-border text-brand focus:ring-0', focusRingClass)}
                         />
                         Email me new matches daily
                     </label>

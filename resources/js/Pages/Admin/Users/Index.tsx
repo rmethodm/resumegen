@@ -53,7 +53,7 @@ export default function Index({
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="email, name, or id"
-                    className="w-full max-w-md rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                    className="w-full max-w-md rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus:ring-1 focus:ring-brand"
                 />
                 <button
                     type="submit"
@@ -97,21 +97,21 @@ export default function Index({
                                     <td className="px-3 py-2">
                                         <div className="flex flex-wrap gap-1">
                                             {user.is_admin ? (
-                                                <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[11px] font-semibold text-violet-800">
+                                                <span className="rounded-sm bg-violet-100 px-1.5 py-0.5 text-[11px] font-semibold text-violet-800">
                                                     admin
                                                 </span>
                                             ) : null}
                                             {user.disabled_at ? (
-                                                <span className="rounded bg-danger-subtle px-1.5 py-0.5 text-[11px] font-semibold text-danger-text">
+                                                <span className="rounded-sm bg-danger-subtle px-1.5 py-0.5 text-[11px] font-semibold text-danger-text">
                                                     disabled
                                                 </span>
                                             ) : (
-                                                <span className="rounded bg-success-subtle px-1.5 py-0.5 text-[11px] font-semibold text-success-text">
+                                                <span className="rounded-sm bg-success-subtle px-1.5 py-0.5 text-[11px] font-semibold text-success-text">
                                                     active
                                                 </span>
                                             )}
                                             {!user.email_verified_at ? (
-                                                <span className="rounded bg-warning-subtle px-1.5 py-0.5 text-[11px] font-semibold text-amber-800">
+                                                <span className="rounded-sm bg-warning-subtle px-1.5 py-0.5 text-[11px] font-semibold text-amber-800">
                                                     unverified
                                                 </span>
                                             ) : null}
@@ -138,7 +138,7 @@ export default function Index({
                                 key={i}
                                 href={link.url}
                                 className={
-                                    'rounded border px-2 py-1 text-xs ' +
+                                    'rounded-sm border px-2 py-1 text-xs ' +
                                     (link.active
                                         ? 'border-gray-900 bg-gray-900 text-white'
                                         : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50')
@@ -148,7 +148,7 @@ export default function Index({
                         ) : (
                             <span
                                 key={i}
-                                className="rounded border border-transparent px-2 py-1 text-xs text-ink-faint"
+                                className="rounded-sm border border-transparent px-2 py-1 text-xs text-ink-faint"
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
                         ),

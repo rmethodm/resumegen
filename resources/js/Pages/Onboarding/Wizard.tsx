@@ -98,7 +98,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 value={data.target_role ?? ''}
                                 onChange={value => setData('target_role', value)}
                                 placeholder="e.g. Software Engineer"
-                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                             />
                             {errors.target_role && (
                                 <p className="mt-1 text-xs text-danger">{errors.target_role}</p>
@@ -119,7 +119,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 onChange={(e) => setData('industry', e.target.value)}
                                 placeholder="e.g. Tech, Finance, Healthcare"
                                 maxLength={100}
-                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                             />
                         </div>
 
@@ -143,7 +143,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     )
                                 }
                                 placeholder="0"
-                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                             />
                             {errors.years_experience && (
                                 <p className="mt-1 text-xs text-danger">{errors.years_experience}</p>
@@ -160,7 +160,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             </button>
                             <button
                                 type="submit"
-                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2"
+                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-brand-accent focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2"
                             >
                                 Next →
                             </button>
@@ -184,7 +184,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.full_name}
                                     onChange={(e) => setData('full_name', e.target.value)}
                                     placeholder="Jane Smith"
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                                 />
                             </div>
                             <div>
@@ -200,7 +200,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
                                     placeholder="+1 555 000 0000"
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                                 />
                             </div>
                             <div>
@@ -216,7 +216,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.location}
                                     onChange={(e) => setData('location', e.target.value)}
                                     placeholder="New York, NY"
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                                 />
                             </div>
                             <div className="col-span-2">
@@ -232,7 +232,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.linkedin_url}
                                     onChange={(e) => setData('linkedin_url', e.target.value)}
                                     placeholder="https://linkedin.com/in/..."
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                                 />
                                 {errors.linkedin_url && (
                                     <p className="mt-1 text-xs text-danger">{errors.linkedin_url}</p>
@@ -251,7 +251,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     value={data.website}
                                     onChange={(e) => setData('website', e.target.value)}
                                     placeholder="https://yoursite.com"
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                                 />
                                 {errors.website && (
                                     <p className="mt-1 text-xs text-danger">{errors.website}</p>
@@ -278,7 +278,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             </div>
                             <button
                                 type="submit"
-                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2"
+                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-brand-accent focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2"
                             >
                                 Continue →
                             </button>
@@ -307,7 +307,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                             src={`/images/templates/${t}.png`}
                                             loading="lazy"
                                             alt=""
-                                            className="mb-1 h-24 w-full rounded border border-surface-border bg-white object-cover object-top"
+                                            className="mb-1 h-24 w-full rounded-sm border border-surface-border bg-white object-cover object-top"
                                         />
                                         <span className="truncate text-xs font-medium text-ink">
                                             {locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}
@@ -337,7 +337,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2 disabled:opacity-60"
+                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-brand-accent focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2 disabled:opacity-60"
                             >
                                 Finish →
                             </button>

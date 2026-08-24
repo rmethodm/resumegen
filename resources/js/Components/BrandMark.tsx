@@ -37,7 +37,7 @@ export function BrandMark({
                 alt=""
                 width={36}
                 height={36}
-                className={cn('flex-shrink-0', sizeClass[size])}
+                className={cn('shrink-0', sizeClass[size])}
                 decoding="async"
             />
             {showWordmark && (

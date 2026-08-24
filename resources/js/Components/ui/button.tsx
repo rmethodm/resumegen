@@ -5,10 +5,10 @@ type Variant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | '
 type Size = 'default' | 'sm' | 'lg' | 'icon';
 
 const variantClassNames: Record<Variant, string> = {
-    default: 'bg-brand text-white shadow-sm hover:bg-brand-accent',
-    destructive: 'bg-danger text-white shadow-sm hover:bg-danger/90',
-    outline: 'border border-surface-border bg-white text-ink shadow-sm hover:bg-surface',
-    secondary: 'bg-surface text-ink shadow-sm hover:bg-surface-border/50',
+    default: 'bg-brand text-white shadow-xs hover:bg-brand-accent',
+    destructive: 'bg-danger text-white shadow-xs hover:bg-danger/90',
+    outline: 'border border-surface-border bg-white text-ink shadow-xs hover:bg-surface',
+    secondary: 'bg-surface text-ink shadow-xs hover:bg-surface-border/50',
     ghost: 'text-ink-muted hover:bg-surface hover:text-ink',
     link: 'text-brand underline-offset-4 hover:underline',
 };
@@ -22,7 +22,7 @@ const sizeClassNames: Record<Size, string> = {
 
 export function buttonClassName(variant: Variant = 'default', size: Size = 'default', className?: string) {
     return cn(
-        'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-semibold transition-[color,background-color,border-color,transform,opacity] duration-soft ease-soft motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 motion-reduce:active:scale-100 [&_svg]:size-4 [&_svg]:shrink-0',
+        'inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-semibold transition-[color,background-color,border-color,transform,opacity] duration-soft ease-soft motion-reduce:transition-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 motion-reduce:active:scale-100 [&_svg]:size-4 [&_svg]:shrink-0',
         variantClassNames[variant],
         sizeClassNames[size],
         className,

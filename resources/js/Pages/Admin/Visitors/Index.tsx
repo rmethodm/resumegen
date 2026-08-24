@@ -86,7 +86,7 @@ export default function Index({
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="IP address or path"
-                    className="w-full max-w-md rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                    className="w-full max-w-md rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus:ring-1 focus:ring-brand"
                 />
                 <button
                     type="submit"
@@ -122,7 +122,7 @@ export default function Index({
                                         {visit.created_at ? new Date(visit.created_at).toLocaleString() : '—'}
                                     </td>
                                     <td className="px-3 py-2 font-mono text-xs text-gray-900">
-                                        <span className="mr-1 rounded bg-gray-100 px-1 py-0.5 text-xs font-semibold text-gray-600">
+                                        <span className="mr-1 rounded-sm bg-gray-100 px-1 py-0.5 text-xs font-semibold text-gray-600">
                                             {visit.method}
                                         </span>
                                         {visit.path}
@@ -161,7 +161,7 @@ export default function Index({
                             disabled={link.url === null}
                             onClick={() => link.url && router.visit(link.url, { preserveState: true })}
                             className={
-                                'rounded px-2.5 py-1 text-xs font-medium ' +
+                                'rounded-sm px-2.5 py-1 text-xs font-medium ' +
                                 (link.active
                                     ? 'bg-gray-900 text-white'
                                     : link.url === null

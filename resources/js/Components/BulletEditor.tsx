@@ -83,7 +83,7 @@ export default function BulletEditor({ bullets, onChange, onBlur }: Props) {
                         onKeyDown={e => handleKey(e, idx)}
                         onBlur={onBlur}
                         placeholder="Start with an action verb…"
-                        className="flex-1 resize-none overflow-hidden rounded border-gray-200 bg-gray-50 text-sm shadow-none focus:border-brand focus:bg-white focus:ring-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                        className="flex-1 resize-none overflow-hidden rounded-sm border-gray-200 bg-gray-50 text-sm shadow-none focus:border-brand focus:bg-white focus:ring-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
                     />
                     <button
                         type="button"

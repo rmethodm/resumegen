@@ -93,7 +93,7 @@ export default function Index({ history }: { history: HistoryEntry[] }) {
                         onChange={(e) => setSql(e.target.value)}
                         rows={8}
                         placeholder="select * from users limit 10"
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs focus:border-brand focus:outline-hidden focus:ring-1 focus:ring-brand"
                     />
 
                     {isMutating ? (
@@ -107,7 +107,7 @@ export default function Index({ history }: { history: HistoryEntry[] }) {
                                 value={confirm}
                                 onChange={(e) => setConfirm(e.target.value)}
                                 placeholder={target}
-                                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm"
+                                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs"
                             />
                         </div>
                     ) : null}

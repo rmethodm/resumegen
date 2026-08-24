@@ -77,7 +77,7 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                         Scan this QR code with your authenticator app, then enter the 6-digit code below to confirm.
                     </p>
                     <div
-                        className="inline-block rounded border border-gray-200 p-2"
+                        className="inline-block rounded-sm border border-gray-200 p-2"
                         dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
                     />
                     <form onSubmit={handleConfirm} className="space-y-4">
@@ -114,10 +114,10 @@ export default function TwoFactorForm({ enabled, pending, qrCodeSvg, recoveryCod
                     {recoveryCodes && recoveryCodes.length > 0 && (
                         <div className="space-y-2">
                             <p className="text-sm font-medium text-gray-700">Recovery Codes</p>
-                            <p className="rounded border border-warning/30 bg-warning-subtle p-2 text-sm text-amber-700">
+                            <p className="rounded-sm border border-warning/30 bg-warning-subtle p-2 text-sm text-amber-700">
                                 Save these somewhere safe — they won't be shown again.
                             </p>
-                            <pre className="rounded bg-gray-100 p-4 text-sm font-mono leading-relaxed">
+                            <pre className="rounded-sm bg-gray-100 p-4 text-sm font-mono leading-relaxed">
                                 {recoveryCodes.join('\n')}
                             </pre>
                             <button

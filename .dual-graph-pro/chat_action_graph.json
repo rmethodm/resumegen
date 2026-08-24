@@ -1395,22 +1395,30 @@
       "last_action": "edited",
       "last_ts": "2026-08-19T10:36:01.234698+00:00",
       "first_read_turn": 15,
-      "edited_count": 1
+      "edited_count": 1,
+      "last_edited": 1787594591.1512399,
+      "edit_count": 1
     },
     "resources/js/Components/marketing/MarketingFinalCta.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-19T10:36:01.234709+00:00",
-      "edited_count": 2
+      "edited_count": 2,
+      "last_edited": 1787594615.3954618,
+      "edit_count": 1
     },
     "resources/js/Pages/Welcome.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-19T10:36:01.234691+00:00",
-      "edited_count": 2
+      "edited_count": 2,
+      "last_edited": 1787594631.696509,
+      "edit_count": 1
     },
     "resources/js/Components/marketing/MarketingNav.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-19T10:36:01.234696+00:00",
-      "edited_count": 1
+      "edited_count": 1,
+      "last_edited": 1787594626.20114,
+      "edit_count": 1
     },
     "resources/js/Components/marketing/MarketingLogoStrip.tsx": {
       "last_action": "edited",
@@ -1425,7 +1433,9 @@
     "resources/js/Components/marketing/MarketingHowItWorks.tsx": {
       "last_action": "edited",
       "last_ts": "2026-08-19T10:36:01.234704+00:00",
-      "edited_count": 1
+      "edited_count": 1,
+      "last_edited": 1787594610.174067,
+      "edit_count": 1
     },
     "resources/js/Components/marketing/MarketingOrigin.tsx": {
       "last_action": "edited",
@@ -1445,7 +1455,9 @@
     "resources/js/Components/marketing/marketing-content.ts": {
       "last_action": "edited",
       "last_ts": "2026-08-19T10:36:01.234713+00:00",
-      "edited_count": 1
+      "edited_count": 1,
+      "last_edited": 1787594624.084076,
+      "edit_count": 2
     },
     "resources/js/Components/marketing/marketing-cta.ts": {
       "last_action": "edited",
@@ -1621,8 +1633,8 @@
       "edited_count": 1
     },
     "CLAUDE.md": {
-      "last_edited": 1787170797.895097,
-      "edit_count": 8,
+      "last_edited": 1787235462.736075,
+      "edit_count": 9,
       "last_action": "edited",
       "last_ts": "2026-08-19T20:02:31.180694+00:00",
       "edited_count": 3
@@ -1692,8 +1704,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-19T20:20:25.499054+00:00",
       "first_read_turn": 1,
-      "last_edited": 1787170510.667562,
-      "edit_count": 2,
+      "last_edited": 1787596525.067212,
+      "edit_count": 4,
       "edited_count": 1
     },
     "app/Support/ResumeDocument.php": {
@@ -1978,111 +1990,49 @@
     ".gitignore": {
       "last_edited": 1787235135.1582541,
       "edit_count": 1
+    },
+    "resources/js/Components/ui/button.tsx": {
+      "last_edited": 1787235348.4559019,
+      "edit_count": 1
+    },
+    "resources/js/Components/Modal.tsx": {
+      "last_edited": 1787583642.896974,
+      "edit_count": 3
+    },
+    "resources/js/Components/workstation/share-resume-modal.tsx": {
+      "last_edited": 1787583300.78547,
+      "edit_count": 1
+    },
+    "/private/tmp/claude-501/-Users-rmethod-Herd-Resumegen/8fdb122b-8c96-4d38-af94-9eea164d1f73/scratchpad/modal-fix.patch": {
+      "last_edited": 1787584258.939561,
+      "edit_count": 2
+    },
+    "resources/js/Components/marketing/MarketingTemplatePicker.tsx": {
+      "last_edited": 1787596201.4792802,
+      "edit_count": 5
+    },
+    "resources/js/Pages/Resumes/Workstation.tsx": {
+      "last_edited": 1787595752.408187,
+      "edit_count": 2
+    },
+    "database/migrations/2026_08_24_120000_add_is_read_only_to_users_table.php": {
+      "last_edited": 1787596513.848344,
+      "edit_count": 1
+    },
+    "app/Http/Middleware/EnsureUserCanWrite.php": {
+      "last_edited": 1787596518.808265,
+      "edit_count": 1
+    },
+    "app/Models/User.php": {
+      "last_edited": 1787596522.364409,
+      "edit_count": 2
+    },
+    "tests/Feature/ReadOnlyAccountTest.php": {
+      "last_edited": 1787596562.94319,
+      "edit_count": 2
     }
   },
   "actions": [
-    {
-      "ts": 1787135403,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "Welcome.tsx full file imports MarketingFinalCta closing CTA"
-      }
-    },
-    {
-      "ts": 1787135403,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "Welcome.tsx full file imports MarketingFinalCta closing CTA"
-      }
-    },
-    {
-      "ts": 1787135403,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Components/marketing/MarketingHero.tsx",
-        "query": "imports Link Shell marketingCta",
-        "mode": "query_excerpt",
-        "response_chars": 4000
-      }
-    },
-    {
-      "ts": 1787135421,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1787135761,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1787136204,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1787139545,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "existing API layer routes/api.php Sanctum token auth API controllers for mobile apps"
-      }
-    },
-    {
-      "ts": 1787139545,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "existing API layer routes/api.php Sanctum token auth API controllers for mobile apps"
-      }
-    },
-    {
-      "ts": 1787139552,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "Route::(get|post|put|patch|delete|middleware|apiResource)",
-        "hit_count": 40,
-        "hit_files": [
-          "./routes/api.php"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Auth"
-        ]
-      }
-    },
-    {
-      "ts": 1787139589,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Controllers/Api/ResumeController.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 3336
-      }
-    },
-    {
-      "ts": 1787139591,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "routes/api.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1405
-      }
-    },
     {
       "ts": 1787139600,
       "kind": "fallback_rg",
@@ -3760,6 +3710,246 @@
       "ts": 1787235135.158253,
       "files": [
         ".gitignore"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787235348.455901,
+      "files": [
+        "resources/js/Components/ui/button.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787235462.736075,
+      "files": [
+        "CLAUDE.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787583289.6800609,
+      "files": [
+        "resources/js/Components/Modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787583292.905279,
+      "files": [
+        "resources/js/Components/Modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787583300.7854688,
+      "files": [
+        "resources/js/Components/workstation/share-resume-modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787583642.8969731,
+      "files": [
+        "resources/js/Components/Modal.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787584243.602356,
+      "files": [
+        "/private/tmp/claude-501/-Users-rmethod-Herd-Resumegen/8fdb122b-8c96-4d38-af94-9eea164d1f73/scratchpad/modal-fix.patch"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787584258.93956,
+      "files": [
+        "/private/tmp/claude-501/-Users-rmethod-Herd-Resumegen/8fdb122b-8c96-4d38-af94-9eea164d1f73/scratchpad/modal-fix.patch"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787594591.151239,
+      "files": [
+        "resources/js/Components/marketing/MarketingHero.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787594605.868918,
+      "files": [
+        "resources/js/Components/marketing/MarketingTemplatePicker.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787594610.1740658,
+      "files": [
+        "resources/js/Components/marketing/MarketingHowItWorks.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787594615.395461,
+      "files": [
+        "resources/js/Components/marketing/MarketingFinalCta.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787594622.644366,
+      "files": [
+        "resources/js/Components/marketing/marketing-content.ts"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787594624.084075,
+      "files": [
+        "resources/js/Components/marketing/marketing-content.ts"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787594626.20114,
+      "files": [
+        "resources/js/Components/marketing/MarketingNav.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787594631.696508,
+      "files": [
+        "resources/js/Pages/Welcome.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787595751.602533,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787595752.4081862,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596191.971959,
+      "files": [
+        "resources/js/Components/marketing/MarketingTemplatePicker.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596194.106328,
+      "files": [
+        "resources/js/Components/marketing/MarketingTemplatePicker.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596199.442427,
+      "files": [
+        "resources/js/Components/marketing/MarketingTemplatePicker.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596201.4792771,
+      "files": [
+        "resources/js/Components/marketing/MarketingTemplatePicker.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596513.8483431,
+      "files": [
+        "database/migrations/2026_08_24_120000_add_is_read_only_to_users_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596518.808264,
+      "files": [
+        "app/Http/Middleware/EnsureUserCanWrite.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596520.236466,
+      "files": [
+        "app/Models/User.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596522.364406,
+      "files": [
+        "app/Models/User.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596523.781232,
+      "files": [
+        "bootstrap/app.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596525.067211,
+      "files": [
+        "bootstrap/app.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596541.958556,
+      "files": [
+        "tests/Feature/ReadOnlyAccountTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787596562.943189,
+      "files": [
+        "tests/Feature/ReadOnlyAccountTest.php"
       ],
       "source": "graph_sync_hook"
     }

@@ -224,7 +224,7 @@ function PartSelect({
             disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
             className={cn(
-                'h-11 min-h-11 rounded-md border border-surface-border bg-white px-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-50',
+                'h-11 min-h-11 rounded-md border border-surface-border bg-white px-2 text-sm shadow-xs outline-hidden focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-50',
                 className,
             )}
         >
@@ -384,7 +384,7 @@ export function EntryCard({
                                     );
                                 }
                             }}
-                            className="cursor-grab p-0.5 text-ink-faint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 active:cursor-grabbing"
+                            className="cursor-grab p-0.5 text-ink-faint focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/40 active:cursor-grabbing"
                             aria-label={`Reorder ${title} — drag, or Alt+Arrow keys`}
                         >
                             <Bars3Icon className="size-3.5" />
@@ -612,7 +612,7 @@ export function BulletsField({
                         placeholder={
                             'Paste bullets — one per line\n• Shipped feature X\n- Reduced costs by 20%'
                         }
-                        className="w-full resize-y rounded-md border border-surface-border bg-white px-2.5 py-2 text-sm shadow-sm outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30"
+                        className="w-full resize-y rounded-md border border-surface-border bg-white px-2.5 py-2 text-sm shadow-xs outline-hidden focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30"
                     />
                     <Button
                         type="button"

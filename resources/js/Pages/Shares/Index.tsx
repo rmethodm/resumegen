@@ -39,7 +39,7 @@ interface ResumeOption {
 type Props = PageProps<{ links: ShareLinkRow[]; resumes: ResumeOption[] }>;
 
 const fieldClass = cn(
-    'mt-1 block w-full rounded-lg border-surface-border text-sm text-ink shadow-sm',
+    'mt-1 block w-full rounded-lg border-surface-border text-sm text-ink shadow-xs',
     'placeholder:text-ink-faint focus:border-brand focus:ring-0',
     focusRingClass,
 );
@@ -239,7 +239,7 @@ export default function SharesIndex() {
                                     type="button"
                                     onClick={() => setCreating(true)}
                                     className={cn(
-                                        'flex min-h-[12rem] flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-brand/30 text-brand transition hover:border-brand hover:bg-brand-subtle/40',
+                                        'flex min-h-48 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-brand/30 text-brand transition hover:border-brand hover:bg-brand-subtle/40',
                                         focusRingClass,
                                     )}
                                 >

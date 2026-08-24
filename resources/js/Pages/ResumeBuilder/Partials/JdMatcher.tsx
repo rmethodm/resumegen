@@ -71,7 +71,7 @@ export default function JdMatcher({ content, initialJd }: Props) {
                 onChange={e => setJd(e.target.value)}
                 rows={6}
                 placeholder="Paste the full job posting here to see which of its keywords your resume already covers."
-                className="w-full resize-y rounded-lg border border-surface-border px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                className="w-full resize-y rounded-lg border border-surface-border px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
             />
 
             {hasJd && (

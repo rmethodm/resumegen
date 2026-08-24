@@ -201,7 +201,7 @@ function CompareSidebar({
 function Legend({ swatch, label }: { swatch: string; label: string }) {
     return (
         <span className="flex items-center gap-1.5">
-            <span className={cn('size-2.5 rounded-sm', swatch)} />
+            <span className={cn('size-2.5 rounded-xs', swatch)} />
             {label}
         </span>
     );
@@ -223,7 +223,7 @@ function VersionChip({
             value={value.id}
             onChange={(event) => onSwap(Number(event.target.value))}
             className={cn(
-                'h-7 rounded-full border-0 px-3 text-xs font-semibold outline-none',
+                'h-7 rounded-full border-0 px-3 text-xs font-semibold outline-hidden',
                 tone === 'brand'
                     ? 'bg-brand-subtle text-brand'
                     : 'bg-surface text-ink-muted',
@@ -327,7 +327,7 @@ function CompareColumn({
                                         <li
                                             key={bulletIndex}
                                             className={cn(
-                                                'rounded px-1 py-0.5',
+                                                'rounded-sm px-1 py-0.5',
                                                 part.added && 'bg-success/30',
                                                 part.removed &&
                                                     'bg-danger/30 line-through',

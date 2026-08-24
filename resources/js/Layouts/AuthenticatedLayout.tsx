@@ -104,7 +104,7 @@ export default function Authenticated({
     }
 
     return (
-        <div className="min-h-[100dvh] bg-surface dark:bg-gray-900">
+        <div className="min-h-dvh bg-surface dark:bg-gray-900">
             <a
                 href="#main-content"
                 className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink focus:shadow-ambient"
@@ -114,9 +114,9 @@ export default function Authenticated({
             <div
                 className={cn(
                     'sticky top-0 z-30 px-3 pb-2 pt-3 sm:px-4 sm:pt-4',
-                    '[padding-top:max(0.75rem,env(safe-area-inset-top))]',
-                    '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
-                    '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
+                    'pt-[max(0.75rem,env(safe-area-inset-top))]',
+                    'pl-[max(0.75rem,env(safe-area-inset-left))]',
+                    'pr-[max(0.75rem,env(safe-area-inset-right))]',
                 )}
             >
                 {/* overflow-visible so user dropdown / command sheet are not clipped */}
@@ -138,7 +138,7 @@ export default function Authenticated({
                                     href={item.href}
                                     className={cn(
                                         'rounded-lg px-3 py-1.5 text-sm font-medium transition-[color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
-                                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2',
+                                        'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2',
                                         item.active
                                             ? 'bg-brand-subtle text-brand shadow-shell dark:bg-gray-700 dark:text-white'
                                             : 'text-ink-muted hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
@@ -161,7 +161,7 @@ export default function Authenticated({
                                     'flex w-full items-center rounded-full border border-surface-border bg-surface py-2 pl-9 pr-3 text-left text-sm sm:pr-14',
                                     'text-ink-faint transition-[border-color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
                                     'hover:border-brand/30 hover:bg-white',
-                                    'focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/25',
+                                    'focus:border-brand focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-brand/25',
                                     commandOpen && 'border-brand bg-white ring-2 ring-brand/25',
                                     'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400',
                                 )}
@@ -176,7 +176,7 @@ export default function Authenticated({
                                 <div
                                     role="listbox"
                                     aria-label="Destinations"
-                                    className="absolute left-0 right-0 top-[calc(100%+0.35rem)] z-[70] overflow-hidden rounded-xl border border-surface-border bg-white py-1 shadow-ambient dark:border-gray-700 dark:bg-gray-800"
+                                    className="absolute left-0 right-0 top-[calc(100%+0.35rem)] z-tooltip overflow-hidden rounded-xl border border-surface-border bg-white py-1 shadow-ambient dark:border-gray-700 dark:bg-gray-800"
                                 >
                                     <p className="px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-ink-faint">
                                         Navigate
@@ -208,7 +208,7 @@ export default function Authenticated({
                                 <Dropdown.Trigger>
                                     <button
                                         type="button"
-                                        className="flex min-h-11 items-center gap-2 rounded-full py-1 pl-1 pr-1.5 text-sm font-medium text-ink-muted transition-[color,background-color] duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 sm:pr-2.5"
+                                        className="flex min-h-11 items-center gap-2 rounded-full py-1 pl-1 pr-1.5 text-sm font-medium text-ink-muted transition-[color,background-color] duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 sm:pr-2.5"
                                     >
                                         <span
                                             aria-hidden="true"
@@ -216,7 +216,7 @@ export default function Authenticated({
                                         >
                                             {initials}
                                         </span>
-                                        <span className="hidden max-w-[8rem] truncate sm:inline">{user.name}</span>
+                                        <span className="hidden max-w-32 truncate sm:inline">{user.name}</span>
                                     </button>
                                 </Dropdown.Trigger>
                                 <Dropdown.Content>
@@ -224,7 +224,7 @@ export default function Authenticated({
                                     <button
                                         type="button"
                                         onClick={logOut}
-                                        className="block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface focus:bg-surface focus:outline-none"
+                                        className="block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface focus:bg-surface focus:outline-hidden"
                                     >
                                         Log out
                                     </button>
@@ -257,7 +257,7 @@ export default function Authenticated({
                                             : 'text-ink-muted hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
                                     )}
                                 >
-                                    <item.icon className="h-5 w-5 flex-shrink-0" />
+                                    <item.icon className="h-5 w-5 shrink-0" />
                                     {item.label}
                                 </Link>
                             ))}
@@ -278,8 +278,8 @@ export default function Authenticated({
                     <div
                         className={cn(
                             'px-3 pb-1 pt-4 sm:px-4',
-                            '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
-                            '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
+                            'pl-[max(0.75rem,env(safe-area-inset-left))]',
+                            'pr-[max(0.75rem,env(safe-area-inset-right))]',
                         )}
                     >
                         <div className="mx-auto max-w-[1440px]">{header}</div>

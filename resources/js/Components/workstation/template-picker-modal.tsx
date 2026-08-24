@@ -69,7 +69,7 @@ export function TemplatePickerModal({
                                     )}
                                 >
                                     <div
-                                        className="relative aspect-[8.5/11] w-full overflow-hidden rounded border border-gray-100 bg-white shadow-sm"
+                                        className="relative aspect-8.5/11 w-full overflow-hidden rounded-sm border border-gray-100 bg-white shadow-xs"
                                         style={{
                                             borderLeft: style.pageAccent
                                                 ? `3px solid ${style.pageAccent}`
@@ -122,14 +122,14 @@ export function TemplatePickerModal({
                                                         key={i}
                                                         className={
                                                             style.entryStyle === 'cards'
-                                                                ? 'rounded border border-surface-border bg-surface p-0.5'
+                                                                ? 'rounded-sm border border-surface-border bg-surface p-0.5'
                                                                 : style.entryStyle === 'ruled'
                                                                   ? 'border-b border-surface-border pb-0.5'
                                                                   : ''
                                                         }
                                                     >
-                                                        <div className="h-0.5 w-[80%] rounded bg-gray-200" />
-                                                        <div className="mt-0.5 h-0.5 w-full rounded bg-surface" />
+                                                        <div className="h-0.5 w-[80%] rounded-sm bg-gray-200" />
+                                                        <div className="mt-0.5 h-0.5 w-full rounded-sm bg-surface" />
                                                     </div>
                                                 ))}
                                             </div>

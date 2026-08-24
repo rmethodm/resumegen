@@ -89,8 +89,8 @@ const Content = ({
 
     const alignmentClasses =
         align === 'left'
-            ? 'ltr:origin-top-left rtl:origin-top-right start-0'
-            : 'ltr:origin-top-right rtl:origin-top-left end-0';
+            ? 'ltr:origin-top-left rtl:origin-top-right inset-s-0'
+            : 'ltr:origin-top-right rtl:origin-top-left inset-e-0';
 
     return (
         <Transition
@@ -104,7 +104,7 @@ const Content = ({
         >
             <div
                 className={cn(
-                    'absolute z-[60] mt-2 rounded-md shadow-ambient',
+                    'absolute z-toast mt-2 rounded-md shadow-ambient',
                     alignmentClasses,
                     width === '48' && 'w-48',
                 )}
@@ -141,7 +141,7 @@ const DropdownLink = ({
             }}
             className={cn(
                 'block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft',
-                'hover:bg-surface focus:bg-surface focus:outline-none',
+                'hover:bg-surface focus:bg-surface focus:outline-hidden',
                 className,
             )}
         >

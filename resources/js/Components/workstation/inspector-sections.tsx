@@ -27,7 +27,7 @@ import type { ResumeDraft, ResumeSkill, SkillLibraryGroup } from '@/types';
 import type { SkillGroup } from '@/types';
 
 const autocompleteFieldClass =
-    'flex h-10 w-full min-w-0 rounded-md border border-surface-border bg-white px-3 py-1 text-sm shadow-sm outline-none transition-colors placeholder:text-ink-faint focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30';
+    'flex h-10 w-full min-w-0 rounded-md border border-surface-border bg-white px-3 py-1 text-sm shadow-xs outline-hidden transition-colors placeholder:text-ink-faint focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30';
 
 type RepeatedKey = 'experiences' | 'projects' | 'education' | 'certificates';
 
@@ -837,7 +837,7 @@ export function SkillsFields({
             <div
                 id="field-skills"
                 tabIndex={-1}
-                className="flex flex-col gap-1.5 rounded-md outline-none focus:ring-2 focus:ring-brand/50 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2"
+                className="flex flex-col gap-1.5 rounded-md outline-hidden focus:ring-2 focus:ring-brand/50 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2"
             >
                 <div className="flex items-center justify-between">
                     <Label className="text-xs">Skills</Label>

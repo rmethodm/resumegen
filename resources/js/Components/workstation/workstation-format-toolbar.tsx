@@ -173,7 +173,7 @@ export function WorkstationFormatToolbar({
                         className={cn(
                             'rounded-md px-3 py-1 text-sm font-medium transition-colors',
                             tab === activeTab
-                                ? 'bg-white font-semibold text-brand shadow-sm'
+                                ? 'bg-white font-semibold text-brand shadow-xs'
                                 : 'text-ink-muted hover:text-ink',
                         )}
                     >
@@ -221,7 +221,7 @@ export function WorkstationFormatToolbar({
             <button
                 type="button"
                 onClick={onTemplateClick}
-                className={buttonClassName('ghost', 'sm', 'h-8 max-w-[11rem] gap-1 px-2 font-medium')}
+                className={buttonClassName('ghost', 'sm', 'h-8 max-w-44 gap-1 px-2 font-medium')}
                 aria-label="Template"
                 title="Choose resume template"
             >
@@ -237,21 +237,21 @@ export function WorkstationFormatToolbar({
                     className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
                     aria-label="Font"
                 >
-                    <span className="max-w-[7.5rem] truncate">
+                    <span className="max-w-30 truncate">
                         {fontLabels[font] ?? font ?? 'Font'}
                     </span>
                     <ChevronDownIcon className="size-3.5 text-ink-faint" />
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 max-h-72 w-52 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                    className="z-50 max-h-72 w-52 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                 >
                     {fontKeys.map((key) => (
                         <MenuItem key={key}>
                             <button
                                 type="button"
                                 onClick={() => onFontChange(key)}
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 <MenuCheck on={key === font} />
                                 <span className="min-w-0 flex-1">
@@ -284,14 +284,14 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 w-40 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                    className="z-50 w-40 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                 >
                     {densitySizeOptions.map((option) => (
                         <MenuItem key={option.density}>
                             <button
                                 type="button"
                                 onClick={() => onDensityChange(option.density)}
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 <MenuCheck on={option.density === density} />
                                 {option.label}
@@ -317,7 +317,7 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom start"
-                    className="z-50 w-48 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                    className="z-50 w-48 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                 >
                     {densityStyleOptions.map((option) => {
                         const optionPages = estimateResumePages(
@@ -330,7 +330,7 @@ export function WorkstationFormatToolbar({
                                 <button
                                     type="button"
                                     onClick={() => onDensityChange(option.density)}
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     <MenuCheck on={option.density === density} />
                                     {option.label}
@@ -348,7 +348,7 @@ export function WorkstationFormatToolbar({
             </Menu>
 
             <span
-                className="hidden max-w-[11rem] truncate text-xs text-ink-faint sm:inline"
+                className="hidden max-w-44 truncate text-xs text-ink-faint sm:inline"
                 title={pageEstimate.hint}
             >
                 ≈{pageEstimate.pages} page{pageEstimate.pages === 1 ? '' : 's'}
@@ -420,14 +420,14 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom end"
-                    className="z-50 w-36 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                    className="z-50 w-36 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                 >
                     {PREVIEW_ZOOM_OPTIONS.map((level) => (
                         <MenuItem key={level}>
                             <button
                                 type="button"
                                 onClick={() => onZoomChange(level)}
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 <MenuCheck on={level === zoom} />
                                 {Math.round(level * 100)}%
@@ -461,13 +461,13 @@ export function WorkstationFormatToolbar({
                 </MenuButton>
                 <MenuItems
                     anchor="bottom end"
-                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                 >
                     <MenuItem>
                         <button
                             type="button"
                             onClick={() => onZoomChange(1)}
-                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                         >
                             <MenuCheck on={zoom === 1} />
                             Fit width (100%)
@@ -477,7 +477,7 @@ export function WorkstationFormatToolbar({
                         <button
                             type="button"
                             onClick={() => onZoomChange(0.75)}
-                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                         >
                             <MenuCheck on={zoom === 0.75} />
                             Compact (75%)
@@ -487,7 +487,7 @@ export function WorkstationFormatToolbar({
                         <button
                             type="button"
                             onClick={() => onZoomChange(1.25)}
-                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                         >
                             <MenuCheck on={zoom === 1.25} />
                             Large (125%)
@@ -497,7 +497,7 @@ export function WorkstationFormatToolbar({
                         <button
                             type="button"
                             onClick={() => onZoomChange(1.5)}
-                            className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                         >
                             <MenuCheck on={zoom === 1.5} />
                             Extra large (150%)

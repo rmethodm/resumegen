@@ -121,7 +121,7 @@ function ShareStatus({
             <button
                 type="button"
                 onClick={copyLink}
-                className="inline-flex shrink-0 items-center gap-0.5 rounded px-1 py-0.5 font-medium text-brand hover:bg-brand/5"
+                className="inline-flex shrink-0 items-center gap-0.5 rounded-sm px-1 py-0.5 font-medium text-brand hover:bg-brand/5"
                 title="Copy share link"
             >
                 <ClipboardDocumentIcon className={compact ? 'size-3' : 'size-3.5'} />
@@ -240,12 +240,12 @@ function ResumeCard({
                     </MenuButton>
                     <MenuItems
                         anchor="bottom end"
-                        className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
+                        className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden"
                     >
                         <MenuItem>
                             <a
                                 href={route('resumes.download', resume.id)}
-                                className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 Download PDF
                             </a>
@@ -253,7 +253,7 @@ function ResumeCard({
                         <MenuItem>
                             <a
                                 href={route('resumes.download-docx', resume.id)}
-                                className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 Download DOCX
                             </a>
@@ -275,7 +275,7 @@ function ResumeCard({
                     </MenuButton>
                     <MenuItems
                         anchor="bottom end"
-                        className="z-50 w-56 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none"
+                        className="z-50 w-56 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden"
                     >
                         <MenuItem>
                             <button
@@ -287,7 +287,7 @@ function ResumeCard({
                                         ? 'This resume already has a share link'
                                         : 'Create a share link'
                                 }
-                                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
+                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
                             >
                                 <ShareIcon className="size-4" />
                                 Share
@@ -302,7 +302,7 @@ function ResumeCard({
                                             route('resume-groups.compare', resume.group_id),
                                         )
                                     }
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     <ArrowsRightLeftIcon className="size-4" />
                                     Compare versions
@@ -314,7 +314,7 @@ function ResumeCard({
                                 <button
                                     type="button"
                                     onClick={deleteGroup}
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-danger data-focus:bg-danger-subtle"
+                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-danger data-focus:bg-danger-subtle"
                                 >
                                     <TrashIcon className="size-4" />
                                     Delete resume
@@ -336,7 +336,7 @@ function ResumeCard({
                                         event.currentTarget.blur();
                                     }
                                 }}
-                                className="w-full rounded border border-surface-border px-2 py-1 text-xs"
+                                className="w-full rounded-sm border border-surface-border px-2 py-1 text-xs"
                             />
                         </div>
                     </MenuItems>
@@ -420,8 +420,8 @@ function ResumeCardSkeleton() {
             <div className="flex animate-pulse items-center gap-4 p-4">
                 <div className="size-12 shrink-0 rounded-full bg-surface" />
                 <div className="min-w-0 flex-1">
-                    <div className="h-3.5 w-1/3 rounded bg-surface" />
-                    <div className="mt-2 h-3 w-1/2 rounded bg-surface/80" />
+                    <div className="h-3.5 w-1/3 rounded-sm bg-surface" />
+                    <div className="mt-2 h-3 w-1/2 rounded-sm bg-surface/80" />
                 </div>
                 <div className="hidden h-8 w-16 rounded-md bg-surface sm:block" />
                 <div className="hidden h-8 w-14 rounded-md bg-surface sm:block" />

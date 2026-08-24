@@ -3,7 +3,7 @@ import { BrandMark } from '@/Components/BrandMark';
 
 export default function Terms() {
     return (
-        <div className="min-h-[100dvh] bg-surface text-ink">
+        <div className="min-h-dvh bg-surface text-ink">
             <Head title="Terms of Service" />
 
             <header className="border-b border-surface-border/80 bg-white">

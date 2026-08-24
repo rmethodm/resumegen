@@ -1,36 +1,149 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans:
+    IBM Plex Sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-display: 'Source Serif 4', Georgia, Times New Roman, serif;
+
+  --color-neutral-50: #f7f7f8;
+  --color-neutral-100: #eeeef0;
+  --color-neutral-200: #dcdde0;
+  --color-neutral-300: #c2c4c9;
+  --color-neutral-400: #9a9da3;
+  --color-neutral-500: #75787f;
+  --color-neutral-600: #585b62;
+  --color-neutral-700: #43454b;
+  --color-neutral-800: #2b2d31;
+  --color-neutral-900: #1c1d20;
+  --color-neutral-950: #101113;
+
+  --color-accent-50: #f0efff;
+  --color-accent-100: #e1e5ff;
+  --color-accent-200: #c3c3fb;
+  --color-accent-300: #a29ff2;
+  --color-accent-400: #8079e6;
+  --color-accent-500: #5952d2;
+  --color-accent-600: #4842b0;
+  --color-accent-700: #3c3695;
+  --color-accent-800: #2c2870;
+  --color-accent-900: #1f1c50;
+  --color-accent-950: #131134;
+
+  --color-brand: rgb(var(--brand-rgb));
+  --color-brand-accent: rgb(var(--brand-accent-rgb));
+  --color-brand-light: rgb(var(--brand-accent-rgb));
+  --color-brand-subtle: rgb(var(--brand-subtle-rgb));
+  --color-brand-soft: rgb(var(--brand-soft-rgb));
+
+  --color-surface: rgb(var(--surface-rgb));
+  --color-surface-border: rgb(var(--surface-border-rgb));
+  --color-surface-dark: #16171a;
+  --color-surface-dark-raised: #1e1f23;
+  --color-surface-dark-border: #2f3136;
+
+  --color-ink: #171b1f;
+  --color-ink-muted: #50565a;
+  --color-ink-faint: #6d7277;
+  --color-ink-dark: #f2f1ee;
+  --color-ink-dark-muted: #a8a6a1;
+  --color-ink-dark-faint: #7d7b77;
+
+  --color-success: #059669;
+  --color-success-subtle: #d1fae5;
+  --color-success-text: #065f46;
+
+  --color-warning: #d97706;
+  --color-warning-subtle: #fef3c7;
+  --color-warning-text: #92400e;
+
+  --color-danger: #dc2626;
+  --color-danger-subtle: #fee2e2;
+  --color-danger-text: #991b1b;
+
+  --z-index-base: 0;
+  --z-index-raised: 1;
+  --z-index-dropdown: 20;
+  --z-index-sticky: 30;
+  --z-index-modal-backdrop: 40;
+  --z-index-modal: 50;
+  --z-index-toast: 60;
+  --z-index-tooltip: 70;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-ambient:
+    0 8px 30px rgba(23, 27, 31, 0.06), 0 1px 2px rgba(23, 27, 31, 0.04);
+  --shadow-shell: inset 0 1px 1px rgba(255, 255, 255, 0.65);
+
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --transition-duration-soft: 320ms;
+}
 
 /*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility focus-ring {
+  @apply focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2;
+}
+
+@utility tabular {
+  /* Align digits in scores, counts, and currency columns */
+  font-variant-numeric: tabular-nums;
+}
+
+@layer utilities {
+  /*
  * Brand accent tokens as RGB channels so Tailwind opacity modifiers
  * (bg-brand/25, ring-brand/30) keep working. Flip with html[data-brand-theme].
  * Default = current violet; navy / teal / copper are preview alternatives.
  */
-:root {
+  :root {
     --brand-rgb: 89 82 210; /* #5952d2 */
     --brand-accent-rgb: 60 54 149; /* #3c3695 */
     --brand-subtle-rgb: 225 229 255; /* #e1e5ff */
     --brand-soft-rgb: 94 88 196; /* #5e58c4 */
     --surface-rgb: 242 246 249; /* #f2f6f9 */
     --surface-border-rgb: 210 216 221; /* #d2d8dd */
-}
+  }
 
-html[data-brand-theme='navy'] {
+  html[data-brand-theme='navy'] {
     --brand-rgb: 30 58 95; /* #1e3a5f harbor navy */
     --brand-accent-rgb: 22 48 79; /* #16304f */
     --brand-subtle-rgb: 232 238 245; /* #e8eef5 */
     --brand-soft-rgb: 42 74 111; /* #2a4a6f */
-}
+  }
 
-html[data-brand-theme='teal'] {
+  html[data-brand-theme='teal'] {
     --brand-rgb: 15 118 110; /* #0f766e mineral teal */
     --brand-accent-rgb: 13 95 89; /* #0d5f59 */
     --brand-subtle-rgb: 230 245 243; /* #e6f5f3 */
     --brand-soft-rgb: 20 143 134; /* #148f86 */
-}
+  }
 
-html[data-brand-theme='copper'] {
+  html[data-brand-theme='copper'] {
     --brand-rgb: 180 83 9; /* #b45309 graphite + copper */
     --brand-accent-rgb: 154 52 18; /* #9a3412 */
     --brand-subtle-rgb: 254 243 231; /* #fef3e7 */
@@ -38,44 +151,35 @@ html[data-brand-theme='copper'] {
     /* Slightly warmer canvas so copper doesn't float on cool gray-blue */
     --surface-rgb: 247 246 244; /* #f7f6f4 */
     --surface-border-rgb: 226 222 216; /* #e2ded8 */
-}
+  }
 
-html {
+  html {
     scroll-behavior: smooth;
-}
+  }
 
-/*
+  /*
  * Motion policy (design-review Polish): UI motion stays short; reduced-motion
  * users get near-instant transitions and no scroll smoothing.
  */
-@media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion: reduce) {
     html {
-        scroll-behavior: auto;
+      scroll-behavior: auto;
     }
 
     *,
     *::before,
     *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
-}
+  }
 
-/*
+  /*
  * Shared keyboard focus ring. Prefer focus-visible so pointer users
  * are not flooded; pair with outline-none only when this class is used.
  */
-@layer components {
-    .focus-ring {
-        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2;
-    }
-
-    /* Align digits in scores, counts, and currency columns */
-    .tabular {
-        font-variant-numeric: tabular-nums;
-    }
 }
 
 @media print {

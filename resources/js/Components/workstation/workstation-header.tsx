@@ -209,7 +209,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                            className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                         >
                             <MenuItem>
                                 <button
@@ -225,7 +225,7 @@ export function WorkstationHeader({
                                                   '_blank',
                                               )
                                     }
-                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     Download PDF
                                 </button>
@@ -244,7 +244,7 @@ export function WorkstationHeader({
                                                   '_blank',
                                               )
                                     }
-                                    className="block w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     Download DOCX
                                 </button>
@@ -261,13 +261,13 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                         >
                             <MenuItem>
                                 <button
                                     type="button"
                                     onClick={() => setRenaming(true)}
-                                    className="w-full rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                                 >
                                     Rename this version
                                 </button>
@@ -287,7 +287,7 @@ export function WorkstationHeader({
                                                     version.id,
                                                 )}
                                                 className={cn(
-                                                    'flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface',
+                                                    'flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface',
                                                     version.is_current &&
                                                         'font-semibold text-brand',
                                                 )}
@@ -317,7 +317,7 @@ export function WorkstationHeader({
                                             { onFinish: () => setDuplicating(false) },
                                         );
                                     }}
-                                    className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm data-focus:bg-surface disabled:opacity-50"
+                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface disabled:opacity-50"
                                 >
                                     {duplicating ? (
                                         <ArrowPathIcon className="size-4 animate-spin" />

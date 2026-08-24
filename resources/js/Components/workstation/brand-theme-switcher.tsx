@@ -30,9 +30,9 @@ export function BrandThemeSwitcher() {
         <div
             className={cn(
                 'fixed bottom-4 right-4 z-sticky',
-                'rounded-lg border border-surface-border bg-white/95 p-2.5 shadow-ambient backdrop-blur-sm',
-                '[bottom:max(1rem,env(safe-area-inset-bottom))]',
-                '[right:max(1rem,env(safe-area-inset-right))]',
+                'rounded-lg border border-surface-border bg-white/95 p-2.5 shadow-ambient backdrop-blur-xs',
+                'bottom-[max(1rem,env(safe-area-inset-bottom))]',
+                'right-[max(1rem,env(safe-area-inset-right))]',
             )}
             role="group"
             aria-label="Preview brand accent"
@@ -54,9 +54,9 @@ export function BrandThemeSwitcher() {
                             onClick={() => pick(option.id)}
                             className={cn(
                                 'flex size-8 items-center justify-center rounded-full border-2 transition-transform duration-soft ease-soft',
-                                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2',
+                                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2',
                                 selected
-                                    ? 'scale-110 border-ink shadow-sm'
+                                    ? 'scale-110 border-ink shadow-xs'
                                     : 'border-white hover:scale-105',
                             )}
                             style={{ backgroundColor: option.swatch }}
@@ -64,7 +64,7 @@ export function BrandThemeSwitcher() {
                     );
                 })}
             </div>
-            <p className="mt-1.5 max-w-[9.5rem] text-[10px] leading-snug text-ink-muted">
+            <p className="mt-1.5 max-w-38 text-[10px] leading-snug text-ink-muted">
                 {brandThemes.find((t) => t.id === theme)?.label}
                 <span className="text-ink-faint">
                     {' '}

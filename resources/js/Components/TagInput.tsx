@@ -126,7 +126,7 @@ export default function TagInput({
     return (
         <div ref={containerRef} className="relative">
             <div
-                className="flex flex-wrap gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 shadow-sm focus-within:border-brand focus-within:ring-1 focus-within:ring-brand cursor-text"
+                className="flex flex-wrap gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 shadow-xs focus-within:border-brand focus-within:ring-1 focus-within:ring-brand cursor-text"
                 onClick={() => inputRef.current?.focus()}
             >
                 {tags.map((tag, i) => (
@@ -163,7 +163,7 @@ export default function TagInput({
                     }}
                     placeholder={tags.length ? '' : placeholder}
                     maxLength={60}
-                    className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-sm outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-brand/25"
+                    className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-sm outline-hidden focus:ring-0 focus-visible:ring-2 focus-visible:ring-brand/25"
                     autoComplete="off"
                 />
             </div>

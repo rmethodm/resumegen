@@ -3,7 +3,7 @@ import { BrandMark } from '@/Components/BrandMark';
 
 export default function Privacy() {
     return (
-        <div className="min-h-[100dvh] bg-surface text-ink">
+        <div className="min-h-dvh bg-surface text-ink">
             <Head title="Privacy Policy" />
 
             <header className="border-b border-surface-border/80 bg-white">

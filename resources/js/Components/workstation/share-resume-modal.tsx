@@ -222,6 +222,7 @@ export function ShareResumeModal({
             show={open}
             onClose={close}
             maxWidth="md"
+            overlayClassName="bg-gray-500/25"
             title="Share with a recruiter"
             description="They'll get a read-only, printable view."
             footer={

@@ -31,7 +31,7 @@ export default function LinkPassword({ token, label }: { token: string; label: s
                             value={form.data.password}
                             onChange={e => form.setData('password', e.target.value)}
                             placeholder="Password"
-                            className="block w-full rounded-lg border-surface-border text-sm shadow-sm focus:border-brand focus:ring-brand/25"
+                            className="block w-full rounded-lg border-surface-border text-sm shadow-xs focus:border-brand focus:ring-brand/25"
                         />
                         {form.errors.password && (
                             <p className="mt-2 text-xs text-danger">{form.errors.password}</p>

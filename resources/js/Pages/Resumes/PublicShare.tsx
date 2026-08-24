@@ -38,13 +38,13 @@ export default function PublicShare({
     }
 
     return (
-        <div className="flex min-h-[100dvh] flex-col bg-surface">
+        <div className="flex min-h-dvh flex-col bg-surface">
             <Head title={`${resume.full_name}'s resume`} />
 
             <div
                 className={cn(
                     'sticky top-0 z-20 px-3 pt-3 sm:px-4 sm:pt-4',
-                    '[padding-top:max(0.75rem,env(safe-area-inset-top))]',
+                    'pt-[max(0.75rem,env(safe-area-inset-top))]',
                 )}
             >
                 <header
@@ -116,7 +116,7 @@ function AccessGate({
     };
 
     return (
-        <div className="flex min-h-[100dvh] flex-col bg-surface">
+        <div className="flex min-h-dvh flex-col bg-surface">
             <Head title="Enter your details to view this resume" />
 
             <div className="flex flex-1 flex-col items-center justify-center px-4 py-10">

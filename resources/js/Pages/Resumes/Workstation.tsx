@@ -574,8 +574,8 @@ export default function Workstation({
                 <div
                     className={cn(
                         'px-3 pb-3 sm:px-4',
-                        '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
-                        '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
+                        'pl-[max(0.75rem,env(safe-area-inset-left))]',
+                        'pr-[max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
                     <div className="mx-auto max-w-[1440px]">
@@ -627,8 +627,8 @@ export default function Workstation({
                 <div
                     className={cn(
                         'px-3 pb-6 sm:px-4',
-                        '[padding-left:max(0.75rem,env(safe-area-inset-left))]',
-                        '[padding-right:max(0.75rem,env(safe-area-inset-right))]',
+                        'pl-[max(0.75rem,env(safe-area-inset-left))]',
+                        'pr-[max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
                 <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 lg:flex-row lg:items-start lg:gap-6">
@@ -642,13 +642,13 @@ export default function Workstation({
                         onAddKeyword={addKeyword}
                         onJumpChecklist={jumpChecklist}
                         onOpenOptimize={() => setTab('Optimize')}
-                        className="order-2 lg:order-none"
+                        className="order-2 lg:order-0"
                     />
 
                     {/* On mobile the score/checklist rail is guidance, not the
-                        task — the editable form leads the stack; lg:order-none
+                        task — the editable form leads the stack; lg:order-0
                         restores side-by-side source order. */}
-                    <div className="order-1 flex min-w-0 flex-col gap-5 lg:order-none lg:flex-1">
+                    <div className="order-1 flex min-w-0 flex-col gap-5 lg:order-0 lg:flex-1">
                         {tab === 'Edit' && (
                             <TargetRoleBar
                                 targetRole={draft.target_role}

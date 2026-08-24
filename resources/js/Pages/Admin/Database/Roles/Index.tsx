@@ -186,7 +186,7 @@ export default function Index({
                             onChange={(e) => createForm.setData('name', e.target.value)}
                             pattern="[a-zA-Z_][a-zA-Z0-9_]*"
                             required
-                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm"
+                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs"
                         />
                         {createForm.errors.name ? (
                             <p className="mt-1 text-xs text-danger">{createForm.errors.name}</p>
@@ -209,7 +209,7 @@ export default function Index({
                                 type="password"
                                 value={createForm.data.password}
                                 onChange={(e) => createForm.setData('password', e.target.value)}
-                                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm"
+                                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-xs"
                             />
                         </div>
                     ) : null}
@@ -248,7 +248,7 @@ export default function Index({
                             type="text"
                             required
                             pattern="[a-zA-Z_][a-zA-Z0-9_]*"
-                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm"
+                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs"
                         />
                     </div>
                     <div>
@@ -257,7 +257,7 @@ export default function Index({
                         </label>
                         <select
                             name="privilege"
-                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm"
+                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-xs"
                         >
                             {PRIVILEGES.map((p) => (
                                 <option key={p} value={p}>
@@ -275,7 +275,7 @@ export default function Index({
                             value={confirmText}
                             onChange={(e) => setConfirmText(e.target.value)}
                             placeholder={grantTarget?.role}
-                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm"
+                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs"
                         />
                     </div>
                     <div className="flex justify-end gap-2 pt-1">
@@ -300,7 +300,7 @@ export default function Index({
             <Modal show={dropTarget !== null} onClose={() => setDropTarget(null)} maxWidth="md" title="Drop role">
                 <form onSubmit={submitDrop} className="space-y-3 p-5">
                     <p className="text-sm text-gray-600">
-                        Type <code className="rounded bg-gray-100 px-1 font-mono text-xs">{dropTarget}</code>{' '}
+                        Type <code className="rounded-sm bg-gray-100 px-1 font-mono text-xs">{dropTarget}</code>{' '}
                         exactly to confirm.
                     </p>
                     <input
@@ -308,7 +308,7 @@ export default function Index({
                         autoComplete="off"
                         value={confirmText}
                         onChange={(e) => setConfirmText(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs"
                         placeholder={dropTarget ?? undefined}
                     />
                     <div className="flex justify-end gap-2 pt-1">

@@ -143,7 +143,7 @@ function FInput({ value, onChange, onBlur, placeholder, type = 'text', name }: {
             onChange={e => onChange(e.target.value)}
             onBlur={onBlur}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-surface-border px-[6.6px] py-[4.4px] text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-brand/25 focus:outline-none"
+            className="w-full rounded-lg border border-surface-border px-[6.6px] py-[4.4px] text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-brand/25 focus:outline-hidden"
         />
     );
 }
@@ -159,7 +159,7 @@ function FTextarea({ value, onChange, onBlur, placeholder, rows = 4 }: {
             placeholder={placeholder}
             rows={rows}
             spellCheck
-            className="w-full resize-y rounded-lg border border-surface-border px-[6.6px] py-[4.4px] text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-brand/25 focus:outline-none"
+            className="w-full resize-y rounded-lg border border-surface-border px-[6.6px] py-[4.4px] text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-brand/25 focus:outline-hidden"
         />
     );
 }
@@ -333,7 +333,7 @@ function SkillTagInput({
                         }}
                         onBlur={() => { if (inputVal) { addSkill(inputVal); } }}
                         placeholder={skills.length === 0 ? placeholder : ''}
-                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-ink placeholder:text-ink-faint focus:ring-0 focus:outline-none"
+                        className="min-w-[120px] flex-1 border-0 bg-transparent p-0 text-sm text-ink placeholder:text-ink-faint focus:ring-0 focus:outline-hidden"
                     />
                     {loading && (
                         <span className="self-center" aria-hidden="true">
@@ -673,7 +673,7 @@ export default function Edit({
                     <div className="flex gap-2.5 pt-0.5">
                         {[[22, [18, 24, 16]], [18, [22, 14, 20]]].map(([catW, rows], ci) => (
                             <div key={ci} className="flex flex-col gap-[4px]">
-                                <span className="inline-block h-[7px] rounded bg-ink" style={{ width: catW as number }} />
+                                <span className="inline-block h-[7px] rounded-sm bg-ink" style={{ width: catW as number }} />
                                 {(rows as number[]).map((w, ri) => (
                                     <span key={ri} className="inline-block h-[5px] rounded-full bg-brand/30" style={{ width: w }} />
                                 ))}
@@ -684,7 +684,7 @@ export default function Edit({
 
                 <SkillsLayoutCard label="Narrative" selected={skillsLayout === 'narrative'} onClick={() => { setSkillsLayout('narrative'); setTimeout(save, 0); }}>
                     <div className="flex flex-col gap-[5px] pt-0.5">
-                        <span className="inline-block h-[7px] w-[38px] rounded bg-ink" />
+                        <span className="inline-block h-[7px] w-[38px] rounded-sm bg-ink" />
                         {[32, 24, 34, 20].map((w, i) => (
                             <div key={i} className="flex items-center gap-1 pl-1">
                                 <span className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-ink-faint" />
@@ -718,7 +718,7 @@ export default function Edit({
                                         setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_type: type, category_name: type || c.category_name } : c));
                                     }}
                                     onBlur={save}
-                                    className="flex-1 min-w-0 rounded-lg border border-surface-border px-2 py-1.5 text-sm text-ink focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-surface-border px-2 py-1.5 text-sm text-ink focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-hidden"
                                 >
                                     <option value="">Select category...</option>
                                     {skillCategoryOptions.map(o => <option key={o} value={o}>{o}</option>)}
@@ -729,7 +729,7 @@ export default function Edit({
                                     onChange={e => setSkillCategories(prev => prev.map(c => c.id === cat.id ? { ...c, category_name: e.target.value } : c))}
                                     onBlur={save}
                                     placeholder="Or type custom..."
-                                    className="flex-1 min-w-0 rounded-lg border border-surface-border bg-white px-2 py-1.5 text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-none"
+                                    className="flex-1 min-w-0 rounded-lg border border-surface-border bg-white px-2 py-1.5 text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-hidden"
                                 />
                                 <button type="button" onClick={() => { setSkillCategories(prev => prev.filter(c => c.id !== cat.id)); setTimeout(save, 0); }} className="shrink-0 text-ink-faint hover:text-danger transition-colors">
                                     <TrashIcon className="h-4 w-4" />
@@ -761,7 +761,7 @@ export default function Edit({
                                     onChange={e => setSkillNarratives(prev => prev.map(x => x.id === n.id ? { ...x, name: e.target.value } : x))}
                                     onBlur={save}
                                     placeholder="Skill area (e.g. Communication, Leadership)"
-                                    className="flex-1 rounded-lg border border-surface-border bg-white px-2 py-1.5 text-sm font-medium text-ink placeholder:text-ink-faint focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-none"
+                                    className="flex-1 rounded-lg border border-surface-border bg-white px-2 py-1.5 text-sm font-medium text-ink placeholder:text-ink-faint focus:border-brand focus:ring-1 focus:ring-brand/25 focus:outline-hidden"
                                 />
                                 <button type="button" onClick={() => { setSkillNarratives(prev => prev.filter(x => x.id !== n.id)); setTimeout(save, 0); }} className="shrink-0 text-ink-faint hover:text-danger transition-colors">
                                     <TrashIcon className="h-4 w-4" />
@@ -877,7 +877,7 @@ export default function Edit({
                         type="button"
                         onClick={() => runCoach(key, text)}
                         disabled={busy || exhausted || !text.trim()}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand to-brand-accent px-3.5 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-linear-to-r from-brand to-brand-accent px-3.5 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         <SparkIcon /> Coach me
                     </button>
@@ -901,7 +901,7 @@ export default function Edit({
                             onChange={e => setCoachAnswers(prev => ({ ...prev, [key]: e.target.value }))}
                             rows={3}
                             placeholder="e.g. cut load time from 4s to 1.2s for 50k monthly users"
-                            className="w-full resize-y rounded-md border border-brand/30 px-2.5 py-2 text-xs text-ink placeholder:text-ink-faint focus:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/25"
+                            className="w-full resize-y rounded-md border border-brand/30 px-2.5 py-2 text-xs text-ink placeholder:text-ink-faint focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
                         />
                         <div className="mt-2 flex justify-end gap-2">
                             <button
@@ -1034,7 +1034,7 @@ export default function Edit({
                                 <div><FLabel>End Date</FLabel><FInput value={exp.end_date} onChange={v => setExperience(prev => prev.map(e => e.id === exp.id ? { ...e, end_date: v } : e))} onBlur={save} placeholder="Present" /></div>
                             </div>
                             <label className="flex items-center gap-2 text-sm text-ink-muted cursor-pointer">
-                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded border-brand/30 text-brand focus:ring-brand/25" />
+                                <input type="checkbox" checked={exp.current} onChange={e => { setExperience(prev => prev.map(x => x.id === exp.id ? { ...x, current: e.target.checked } : x)); save(); }} className="rounded-sm border-brand/30 text-brand focus:ring-brand/25" />
                                 I currently work here
                             </label>
                             <div>
@@ -1173,7 +1173,7 @@ export default function Edit({
             {/* Completion bar */}
             <div className="flex items-center border-b border-gray-100 bg-white px-4 py-2">
                 <div className="max-w-[220px] flex-1 overflow-hidden rounded-full bg-surface-border" style={{ height: 4 }}>
-                    <div className="h-full rounded-full bg-gradient-to-r from-brand to-brand-accent transition-all" style={{ width: `${completionScore}%` }} />
+                    <div className="h-full rounded-full bg-linear-to-r from-brand to-brand-accent transition-all" style={{ width: `${completionScore}%` }} />
                 </div>
             </div>
 
@@ -1184,7 +1184,7 @@ export default function Edit({
                          palette/drawer can take the full narrow-screen width. ── */}
                     <div className="hidden min-h-[calc(100vh-3.5rem)] min-w-[320px] flex-1 bg-surface px-8 py-6 lg:block">
                         <div className="mb-2 flex items-center justify-between">
-                            <span className="text-xs font-bold uppercase tracking-[0.05em] text-ink-faint">Live preview</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-ink-faint">Live preview</span>
                             <span className="text-xs text-ink-faint">{TEMPLATE_LABELS[template] ?? template} template</span>
                         </div>
                         <div className="relative h-[calc(100vh-9rem)] overflow-hidden rounded-md bg-white shadow-[0_8px_30px_rgba(79,70,229,0.12)]">
@@ -1237,7 +1237,7 @@ export default function Edit({
                                 </div>
 
                                 <div>
-                                    <p className="mb-2 text-xs font-bold uppercase tracking-[0.05em] text-ink-faint">Sections</p>
+                                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-faint">Sections</p>
                                     <SectionPalette
                                         entries={paletteEntries}
                                         activeKey={drawerSection}
@@ -1272,7 +1272,7 @@ export default function Edit({
                                                             src={`/images/templates/${t}.png`}
                                                             loading="lazy"
                                                             alt=""
-                                                            className="mb-1 h-28 w-full rounded border border-surface-border bg-white object-cover object-top"
+                                                            className="mb-1 h-28 w-full rounded-sm border border-surface-border bg-white object-cover object-top"
                                                         />
                                                         <span className={`truncate text-center text-xs font-semibold ${selected ? 'text-brand' : 'text-ink-muted'}`}>{TEMPLATE_LABELS[t] ?? t}</span>
                                                     </button>

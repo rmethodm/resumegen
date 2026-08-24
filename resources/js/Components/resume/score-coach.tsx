@@ -57,7 +57,7 @@ export function ScoreChecklist({
                                 aria-hidden
                             >
                                 {item.done && (
-                                    <CheckIcon className="size-2.5 stroke-[3]" />
+                                    <CheckIcon className="size-2.5 stroke-3" />
                                 )}
                             </span>
                             <span className="min-w-0 flex-1">
