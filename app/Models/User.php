@@ -75,6 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'has_completed_onboarding' => 'boolean',
             'is_admin' => 'boolean',
+            'is_read_only' => 'boolean',
             'disabled_at' => 'datetime',
             'two_factor_secret' => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted:array',
@@ -100,5 +101,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isDisabled(): bool
     {
         return $this->disabled_at !== null;
+    }
+
+    public function isReadOnly(): bool
+    {
+        return (bool) $this->is_read_only;
     }
 }
