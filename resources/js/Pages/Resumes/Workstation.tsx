@@ -20,7 +20,6 @@ import {
     AtsPlainTextBlock,
     OptimizePanel,
 } from '@/Components/workstation/optimize-panel';
-import { BrandThemeSwitcher } from '@/Components/workstation/brand-theme-switcher';
 import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
@@ -740,7 +739,6 @@ export default function Workstation({
             />
 
             {/* Dev-only comparison tool — never ships to users. */}
-            {import.meta.env.DEV && <BrandThemeSwitcher />}
         </AuthenticatedLayout>
     );
 }
