@@ -1,0 +1,61 @@
+{
+    "inter": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/inter_normal_8eeb31a322051f3acc1a3121387f9083",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/inter_bold_c9ee4ec46b6e993dc96ed069cfe8d4aa"
+    },
+    "roboto": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/roboto_normal_bb14b98c13033c1e53d2f8d74c7107e8",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/roboto_bold_77e36718e637c8c9974b76c4c4df9c99"
+    },
+    "open sans": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/open_sans_normal_b7b738afc43073104a0d5a7ce49faae0",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/open_sans_bold_e601454cf0fc57a14aabc04d8d07ddf3"
+    },
+    "eb garamond": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/eb_garamond_normal_cd912c6bf9a19a9ba3602887a1c13af8",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/eb_garamond_bold_0e5c2b2a3adfeabc5c972b8c0c3bc4e8"
+    },
+    "source serif 4": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/source_serif_4_normal_542c28fc30b3ac824ba1c6e9c8ca5ce2",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/source_serif_4_bold_13a6270edc717adb716e24aeb05bcf21"
+    },
+    "libre baskerville": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/libre_baskerville_normal_3f6b6d407952b9817beafef25fe835c3",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/libre_baskerville_bold_8bc357f270c2105f5e09744c5358042a"
+    },
+    "ss4": {
+        "normal": "ss4_normal_542c28fc30b3ac824ba1c6e9c8ca5ce2"
+    },
+    "lato": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/lato_normal_8e6a4b0773f13e2acc703f412b6c2367",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/lato_bold_f20d0a54df6ac46d091d8e12d1639279"
+    },
+    "montserrat": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/montserrat_normal_23b52ccd0906899d5a1a1d296da2da97",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/montserrat_bold_231301e1c5607c3cd16dd17df4044425"
+    },
+    "ibm plex sans": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/ibm_plex_sans_normal_4ba538f2952f44b28c7d23832e846a5a",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/ibm_plex_sans_bold_b0318eb79b1666ed890d836577de4f7c"
+    },
+    "work sans": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/work_sans_normal_747b6a976deba0a70e22e62f6d9e301e",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/work_sans_bold_dd3082a3920891e62652e605f57e94c0"
+    },
+    "ibm plex mono": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/ibm_plex_mono_normal_613e81654e1a1a2de3d37b9da713c130",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/ibm_plex_mono_bold_dcbb7af013b53a5e6c2afd10142cc2e9"
+    },
+    "figtree": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/figtree_normal_697feedabf34b2b0e8ff4d8d1f4961ea",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/figtree_bold_8740ce06ceb32cbe2dcdbb0ff7acd5c8"
+    },
+    "carlito": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/carlito_normal_d4bc7ccead3c348cdf127431b3a8dd4a",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/carlito_bold_519b5b5d488fe9c3daa61c5fb001eadd"
+    },
+    "caladea": {
+        "normal": "/Users/rmethod/Herd/Resumegen/storage/fonts/caladea_normal_babc426e2c8881c21a7d290f2f605119",
+        "bold": "/Users/rmethod/Herd/Resumegen/storage/fonts/caladea_bold_79eae1c164a1f600c0d946cf3ddd17df"
+    }
+}

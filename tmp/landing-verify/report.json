@@ -1,0 +1,117 @@
+{
+  "base": "https://resumegen.test/",
+  "checks": [
+    {
+      "name": "has Free forever",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "has Resumegen",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no $20",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no Pro plan",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no ResumeLM",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "section #features",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "section #how-it-works",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "section #about",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "section #faq",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "order features before how-it-works",
+      "pass": true,
+      "detail": "features,how-it-works,about,faq"
+    },
+    {
+      "name": "FAQ anchor brings section into view",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Features anchor works",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "FAQ has >=2 items",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "FAQ item 1 opens",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "FAQ item 2 clickable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "guest CTA to register",
+      "pass": true,
+      "detail": "href=https://resumegen.test/register"
+    },
+    {
+      "name": "skip link",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Privacy resolves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Terms resolves",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile Get started visible",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile FAQ clickable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile stacked hero text width",
+      "pass": true,
+      "detail": "w=358"
+    }
+  ],
+  "ok": false,
+  "error": "TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('button[type=\"submit\"]')\n"
+}
