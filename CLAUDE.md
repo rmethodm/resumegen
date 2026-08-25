@@ -224,6 +224,8 @@ The `drop_*` cleanup migrations (`drop_resume_strength_snapshots_table`, `drop_j
 
 A rollback that fails partway leaves the database in a wrecked half-state — schema torn down to the failure point while the `migrations` table still claims those migrations ran. That state looks exactly like a corrupted or partially-restored dump, and has twice been misdiagnosed as one. If migration counts and actual schema disagree, suspect an interrupted rollback first and just run `migrate:fresh --seed`.
 
+**In production the inverse happened (2026-08-25):** schema *ahead* of the log — `store_ai_cost_in_micro_cents` had fully applied but was never recorded, so every `migrate` died on "column already exists" and the 8 later migrations silently never ran (the migration log was stuck at 2026-07-20). `migrate:fresh` is not an option on prod; the fix was to verify the migration's work was actually complete (new column present, old one dropped), insert its row into `migrations` by hand, then run `migrate --force` for the genuinely-pending rest. Verify schema before trusting either the log or the error.
+
 Making rollback work would mean editing seven already-shipped migrations to no benefit. Forward-only is the decision, not an oversight.
 
 **This is enforced, not just documented.** `.claude/hooks/block-migrate-rollback.sh` is a `PreToolUse` hook (wired in `.claude/settings.json`) that blocks any `artisan migrate:rollback|reset|refresh` and points at `migrate:fresh --seed`. Prose here did not prevent the two misdiagnoses above, so the rule got teeth. The regex requires an `artisan` prefix, so grepping for or documenting the term still works.
@@ -257,9 +259,19 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 8. **Deterministic sourcing, model-only judgment** — job boards are fetched by code; the model scores fit and parses arbitrary pages, and never picks what to search for.
 9. **AI coaches as often as it ghostwrites** — the coach path (ask the user for the missing facts, then rebuild the bullet from their answer) should sit at equal weight to the write-it-for-me path. Currently only the legacy endpoints implement the coach; the Workstation ships rewrite-only — restore parity if bullet coaching gets UI again.
 
+## Production server (as of 2026-08-25)
+
+Hostinger VPS (`srv1861900`), Apache, PostgreSQL, self-hosted GitHub runner. App root `/var/www/resumegen.app`. Local SSH alias: `resumegen-prod` (root; key `id_ed25519_hostinger`, passphrase-protected — after a reboot the user must `ssh-add` it before agent auth works).
+
+- **Deploy**: manual `gh workflow run ci.yml` only. Full flow + failure table in `docs/DEPLOYMENT.md` (Part 11 added 2026-08-25).
+- **`scripts/server-repair.sh`** (added 2026-08-25): one-shot root fix for the recurring failure class — root-owned files and tracked-file drift from running composer/npm/artisan as root on the server. That single disease caused every deploy failure on 2026-08-25 (dirty `composer.lock`, undeletable `vendor/`, unwritable `storage/framework`, unclearable `public/build`). **Never run composer/npm/artisan as root on the server; use `sudo -u www-data`.**
+- **Queue worker**: `resumegen-queue.service` installed 2026-08-25 — it had been missing since launch (deploy.sh silently no-ops when absent), so queued mail had never sent. If digests stop again, check `systemctl is-active resumegen-queue` first.
+- **Admin panel**: live at `admin.resumegen.app` since 2026-08-25 (`APP_ADMIN_DOMAIN` in server `.env`, `ServerAlias` on both Apache vhosts, cert expanded). Sign in on that host — apex login doesn't carry over.
+- The Claude Code auto-mode classifier blocks most server-mutating SSH commands; hand those to the user as `! ssh resumegen-prod '…'` one-liners and verify read-only afterward.
+
 ---
 
-Last updated: 2026-08-19
+Last updated: 2026-08-25
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
