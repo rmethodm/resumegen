@@ -263,7 +263,7 @@ After=network.target
 [Service]
 User=www-data
 Restart=always
-ExecStart=/usr/bin/php /var/www/resumegen/artisan queue:work --sleep=3 --tries=3
+ExecStart=/usr/bin/php /var/www/resumegen.app/artisan queue:work --sleep=3 --tries=3
 
 [Install]
 WantedBy=multi-user.target
@@ -319,3 +319,40 @@ Composer/npm dependencies, builds the frontend, migrates, re-caches, and fixes
 `storage`/`bootstrap/cache` ownership. SSH in as root, `cd` to the project root, and run
 `./deploy.sh` directly any time you want to skip GitHub Actions entirely (e.g. CI is down,
 or you're deploying a branch that hasn't been pushed).
+
+---
+
+## Part 11 — Troubleshooting a failed deploy
+
+Every deploy failure seen so far (2026-08-25) traced to one disease: **something
+was run as root in the app tree** (`composer update`, `npm run build`, `artisan`),
+leaving root-owned files and dirty tracked files that `www-data` then can't
+touch. Symptoms map to it directly:
+
+| Symptom in the deploy log | Cause |
+|---|---|
+| `Your local changes ... would be overwritten by merge: composer.lock` | hand-run `composer update` on the server dirtied a tracked file |
+| `Failed to enter maintenance mode ... Permission denied` | root-owned `storage/framework` |
+| composer `Could not delete /var/www/resumegen.app/vendor/...` | root-owned files in `vendor/` |
+| vite `EACCES`/rimraf error clearing `public/build` | root-owned files in `public/build` |
+| queue restart silently skipped, digest mail never sends | `resumegen-queue.service` was never installed — `deploy.sh` no-ops when absent |
+
+Fix all of it in one shot, then re-run the deploy:
+
+```bash
+sudo /var/www/resumegen.app/scripts/server-repair.sh
+```
+
+The script chowns the whole tree to `www-data`, discards local edits to tracked
+files (the repo is the source of truth — never edit tracked files on the
+server), exits maintenance mode if a failed deploy left it stuck, and
+restarts/flags the queue worker.
+
+Two rules that make the script unnecessary:
+
+1. **Never run composer/npm/artisan as root on the server.** Use
+   `sudo -u www-data <cmd>` — or just deploy through `deploy.sh`, which already
+   runs them as `www-data`.
+2. A failed deploy leaves the site in maintenance mode **on purpose** — fix
+   forward and re-deploy; `artisan up` alone serves the old (possibly
+   half-migrated) code.
