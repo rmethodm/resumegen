@@ -48,3 +48,10 @@ ds-bundle/
 graphify-out/
 .grapelaravel/
 /tmp/
+
+# unforget (split posture: ledger private, docs/README.md index tracked)
+docs/UNFORGET.md
+docs/UNFORGET-archive-*.md
+.unforget-session.json
+.unforget.json
+docs/.unforget.json
