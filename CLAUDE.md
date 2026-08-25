@@ -354,3 +354,13 @@ retrieval. Always prefer it over native file exploration.
 - After editing files, call `graph_register_edit` with the changed paths
   (relative, `files` is always an array).
 <!-- grapelaravel:policy:end -->
+
+<!-- unforget:begin — maintained by the unforget skill; do not hand-edit inside these markers -->
+## Deferred Work Index
+
+**Ledger home:** `docs/UNFORGET.md`  (git posture: split — contents ignored, README/index tracked)
+
+- `UNFORGET.md` — UNFORGET (main).
+
+Read the ledgers when the user asks "what's deferred?" / "backlog?" / "prioritize," and before suggesting a release (check 🔴 THIS rows). Log new deferrals via the deferral gate — an item lives in exactly ONE ledger; siblings get a pointer row, not a copy.
+<!-- unforget:end -->
