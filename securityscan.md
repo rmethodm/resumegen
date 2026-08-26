@@ -31,9 +31,9 @@ One real access-control gap (H1).
     challenge, but nothing enforces completion on admin routes.
 - **Impact:** A 2FA-enabled admin is never challenged on the admin host. An
   attacker with only the admin password reaches the full admin panel:
-  `UserController` disable/enable/revoke-tokens and `BackupController`
-  **download / restore full DB backups** (`admin.backups.download`,
-  `admin.backups.restore`). 2FA is defeated exactly where a breach is total.
+  `UserController` disable/enable/revoke-tokens and the Database panel
+  (browse/edit live rows). App backups are Spatie CLI/schedule only
+  (no Admin download/restore UI). 2FA is defeated exactly where a breach is total.
 - **Fix:**
   ```php
   // routes/admin.php
@@ -104,8 +104,8 @@ One real access-control gap (H1).
 - **SSRF:** all outbound `Http::get` hosts hardcoded (Adzuna/USAJOBS/Greenhouse/
   Lever/OpenAI) or config-driven scrape sources (`config/job_scrape_sources`) —
   never request-controlled.
-- **File paths:** `DatabaseBackupService::assertValidFilename` = `basename` +
-  strict regex, doubled by route `->where(...)`; downloads from fixed private dir.
+- **File paths:** Spatie backups land under `storage/app/private/spatie-backups`
+  (non-public disk). No Admin download route for backup archives.
 - **XSS:** only one `dangerouslySetInnerHTML` (`TwoFactorForm.tsx:81`) rendering
   a server-generated QR SVG from the user's own secret; no `{!! !!}` in Blade;
   DOMPDF `enable_php=false`, `enable_remote=false`, `chroot=base_path`.

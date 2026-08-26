@@ -283,7 +283,7 @@ export function WorkstationHeader({
                                         <MenuItem key={version.id}>
                                             <a
                                                 href={route(
-                                                    'resumes.workstation',
+                                                    'resumes.builder',
                                                     version.id,
                                                 )}
                                                 className={cn(

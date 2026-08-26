@@ -17,8 +17,27 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasTable('ai_requests') || ! Schema::hasColumn('ai_requests', 'job_pairing_id')) {
+            return;
+        }
+
+        $hasJobPairingForeign = false;
+
+        foreach (Schema::getForeignKeys('ai_requests') as $foreignKey) {
+            if (in_array('job_pairing_id', $foreignKey['columns'], true)) {
+                $hasJobPairingForeign = true;
+                break;
+            }
+        }
+
+        if ($hasJobPairingForeign) {
+            Schema::table('ai_requests', function (Blueprint $table): void {
+                $table->dropForeign(['job_pairing_id']);
+            });
+        }
+
         Schema::table('ai_requests', function (Blueprint $table): void {
-            $table->dropConstrainedForeignId('job_pairing_id');
+            $table->dropColumn('job_pairing_id');
         });
     }
 };

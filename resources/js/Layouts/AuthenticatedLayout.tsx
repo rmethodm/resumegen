@@ -2,7 +2,6 @@ import { BrandMark } from '@/Components/BrandMark';
 import Dropdown from '@/Components/Dropdown';
 import {
     Bars3Icon,
-    BriefcaseIcon,
     ClipboardDocumentListIcon,
     DocumentTextIcon,
     HomeIcon,
@@ -62,12 +61,6 @@ export default function Authenticated({
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
         { label: 'Resumes', href: route('resumes.index'), active: route().current('resumes.*'), icon: DocumentTextIcon },
         { label: 'Shares', href: route('shares.index'), active: route().current('shares.*'), icon: ShareIcon },
-        {
-            label: 'Jobs',
-            href: route('jobs-imports.index'),
-            active: Boolean(route().current('jobs-imports.*') || route().current('jobs.*')),
-            icon: BriefcaseIcon,
-        },
         {
             label: 'Applications',
             href: route('job-applications.index'),

@@ -30,11 +30,6 @@ export default function AdminLayout({
             active: route().current('admin.visitors.*') === true,
         },
         {
-            label: 'Backups',
-            href: route('admin.backups.index'),
-            active: route().current('admin.backups.*') === true,
-        },
-        {
             label: 'Database',
             href: route('admin.database.index'),
             active: route().current('admin.database.*') === true,

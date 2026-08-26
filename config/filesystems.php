@@ -47,6 +47,16 @@ return [
             'report' => false,
         ],
 
+        /*
+         * Spatie laravel-backup destination. Not web-served.
+         */
+        'backups' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/spatie-backups'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

@@ -97,6 +97,15 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            /*
+             * Spatie db-dumper (laravel-backup). dump_binary_path is the
+             * directory containing pg_dump — not the binary filename.
+             * Local Herd example: /Users/Shared/Herd/services/postgresql/18/bin
+             */
+            'dump' => [
+                'dump_binary_path' => env('DB_DUMP_BINARY_PATH'),
+                'timeout' => (int) env('DB_DUMP_TIMEOUT', 60 * 5),
+            ],
         ],
 
         'sqlsrv' => [

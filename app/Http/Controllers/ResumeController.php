@@ -85,7 +85,7 @@ class ResumeController extends Controller
                 return $resume;
             });
 
-            return to_route('resumes.workstation', $resume->fresh());
+            return to_route('resumes.builder', $resume->fresh());
         }
 
         if ($plainText !== '') {
@@ -123,7 +123,7 @@ class ResumeController extends Controller
                 return $resume;
             });
 
-            return to_route('resumes.workstation', $resume->fresh());
+            return to_route('resumes.builder', $resume->fresh());
         }
 
         $resume = DB::transaction(function () use ($request, $validated): Resume {
@@ -139,13 +139,19 @@ class ResumeController extends Controller
             return $resume;
         });
 
-        return to_route('resumes.workstation', $resume);
+        return to_route('resumes.builder', $resume);
     }
 
     /** The section-rail + form workstation (design direction 3a), the only editor. */
     public function workstation(Request $request, Resume $resume): Response
     {
         return $this->render($request, $resume, 'Resumes/Workstation');
+    }
+
+    /** Clone of the workstation — the new editor surface (NewEditor branch). */
+    public function builder(Request $request, Resume $resume): Response
+    {
+        return $this->render($request, $resume, 'Resumes/Builder');
     }
 
     public function update(UpdateResumeRequest $request, Resume $resume): RedirectResponse
@@ -253,7 +259,7 @@ class ResumeController extends Controller
             return $copy;
         });
 
-        return to_route('resumes.workstation', $copy);
+        return to_route('resumes.builder', $copy);
     }
 
     /**

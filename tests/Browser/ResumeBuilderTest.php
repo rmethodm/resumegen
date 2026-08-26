@@ -47,9 +47,8 @@ class ResumeBuilderTest extends DuskTestCase
     }
 
     /**
-     * The builder saves on blur, not on submit. This is the round trip that makes
-     * job pairings possible at all — if the target never persists, every AI call
-     * falls into __general__ and the §12 numbers stay empty.
+     * The builder saves on blur, not on submit. Target company/title must persist
+     * so Optimize / JD keyword overlap has something to work with.
      */
     public function test_target_job_fields_persist_on_blur(): void
     {

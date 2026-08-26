@@ -102,9 +102,10 @@ export default function Workstation({
     const [collapsedSections, setCollapsedSections] = useState<
         ResumeSectionKey[]
     >(() => [...allSections]);
-    const [baseUpdatedAt, setBaseUpdatedAt] = useState<string | null>(
-        initialUpdatedAt ?? null,
-    );
+    // Concurrency token lives in a ref, not state: a token refresh after a
+    // successful save must NOT change the payload identity, or the autosave
+    // effect re-fires and saves in a loop forever.
+    const baseUpdatedAt = useRef<string | null>(initialUpdatedAt ?? null);
     const [exportOpen, setExportOpen] = useState(false);
     const [exportFormat, setExportFormat] = useState<'pdf' | 'docx'>('pdf');
     const [showSideTools, setShowSideTools] = useState(false);
@@ -124,9 +125,12 @@ export default function Workstation({
         () =>
             ({
                 ...contactPayload,
-                base_updated_at: baseUpdatedAt,
+                base_updated_at: baseUpdatedAt.current,
             }) as ResumeDraft & { base_updated_at: string | null },
-        [contactPayload, baseUpdatedAt],
+        // Deliberately not keyed on the token — any real edit recomputes
+        // contactPayload and picks up the current token then.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [contactPayload],
     );
     const {
         status: saveStatus,
@@ -139,14 +143,14 @@ export default function Workstation({
         const next = (page.props as { resume?: ResumePageDocument }).resume
             ?.updated_at;
         if (typeof next === 'string') {
-            setBaseUpdatedAt(next);
+            baseUpdatedAt.current = next;
         }
     });
 
     // Sync concurrency token when the server document reloads (restore, version).
     useEffect(() => {
         if (resume.updated_at) {
-            setBaseUpdatedAt(resume.updated_at);
+            baseUpdatedAt.current = resume.updated_at;
         }
     }, [resume.updated_at]);
 
