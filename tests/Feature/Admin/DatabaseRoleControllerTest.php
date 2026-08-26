@@ -33,7 +33,7 @@ class DatabaseRoleControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/database/roles'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
@@ -50,7 +50,7 @@ class DatabaseRoleControllerTest extends TestCase
         // attempt to run Postgres DDL against SQLite.
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->post($this->adminPath('/database/roles'), ['name' => 'readonly_role'])
             ->assertStatus(422);
     }

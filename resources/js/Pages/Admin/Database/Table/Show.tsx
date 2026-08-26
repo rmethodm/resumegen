@@ -1,7 +1,7 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import Modal from '@/Components/Modal';
 import { Card } from '@/Components/ui/card';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 type Paginator<T> = {
@@ -38,6 +38,10 @@ export default function Show({
     filters: Record<string, string>;
     rows: Paginator<Record<string, unknown>>;
 }) {
+    const { adminDestructiveTools } = usePage().props as {
+        adminDestructiveTools?: boolean | null;
+    };
+    const destructiveEnabled = adminDestructiveTools === true;
     const [editing, setEditing] = useState<Record<string, unknown> | null>(null);
     const [editValues, setEditValues] = useState<Record<string, string>>({});
     const [addingColumn, setAddingColumn] = useState(false);
@@ -151,29 +155,38 @@ export default function Show({
                         </Link>
                         <h1 className="mt-0.5 font-mono text-xl font-bold text-gray-900">{table}</h1>
                     </div>
-                    <div className="flex gap-2">
-                        <button
-                            type="button"
-                            onClick={() => setAddingColumn(true)}
-                            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                        >
-                            Add column
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setConfirmText('');
-                                setTruncating(true);
-                            }}
-                            className="rounded-lg border border-danger/30 bg-danger-subtle px-3 py-2 text-sm font-medium text-danger-text hover:bg-danger-subtle"
-                        >
-                            Truncate
-                        </button>
-                    </div>
+                    {destructiveEnabled ? (
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setAddingColumn(true)}
+                                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            >
+                                Add column
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setConfirmText('');
+                                    setTruncating(true);
+                                }}
+                                className="rounded-lg border border-danger/30 bg-danger-subtle px-3 py-2 text-sm font-medium text-danger-text hover:bg-danger-subtle"
+                            >
+                                Truncate
+                            </button>
+                        </div>
+                    ) : null}
                 </div>
             }
         >
             <Head title={`Admin · ${table}`} />
+
+            {!destructiveEnabled ? (
+                <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600">
+                    Browse and filter stay available. Row/schema edits are locked until{' '}
+                    <code className="font-mono text-xs">ADMIN_DESTRUCTIVE_TOOLS=true</code>.
+                </div>
+            ) : null}
 
             <Card className="gap-0 overflow-x-auto py-0">
                 <table className="min-w-full divide-y divide-gray-200 text-sm">
@@ -221,24 +234,28 @@ export default function Show({
                                         </td>
                                     ))}
                                     <td className="px-3 py-2">
-                                        <div className="flex justify-end gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => openEdit(row)}
-                                                disabled={!primary_key}
-                                                className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => deleteRow(row)}
-                                                disabled={!primary_key}
-                                                className="rounded-md border border-danger/30 bg-danger-subtle px-2 py-1 text-xs font-medium text-danger-text hover:bg-danger-subtle disabled:opacity-50"
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
+                                        {destructiveEnabled ? (
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => openEdit(row)}
+                                                    disabled={!primary_key}
+                                                    className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => deleteRow(row)}
+                                                    disabled={!primary_key}
+                                                    className="rounded-md border border-danger/30 bg-danger-subtle px-2 py-1 text-xs font-medium text-danger-text hover:bg-danger-subtle disabled:opacity-50"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <span className="block text-right text-xs text-ink-faint">Read-only</span>
+                                        )}
                                     </td>
                                 </tr>
                             ))

@@ -48,7 +48,7 @@ class DatabaseQueryControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->postJson($this->adminPath('/database/query'), [
                 'sql' => 'select * from db_panel_fixture',
             ])
@@ -60,7 +60,7 @@ class DatabaseQueryControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->postJson($this->adminPath('/database/query'), [
                 'sql' => 'delete from db_panel_fixture',
             ])
@@ -73,7 +73,7 @@ class DatabaseQueryControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->postJson($this->adminPath('/database/query'), [
                 'sql' => 'delete from db_panel_fixture',
                 'confirm' => 'db_panel_fixture',
@@ -95,7 +95,7 @@ class DatabaseQueryControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->postJson($this->adminPath('/database/query'), [
                 'sql' => 'select * from does_not_exist',
             ])

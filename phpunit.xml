@@ -23,6 +23,8 @@
         <env name="APP_ENV" value="testing"/>
         <env name="APP_URL" value="http://resumegen.test"/>
         <env name="APP_ADMIN_DOMAIN" value="admin.resumegen.test"/>
+        <!-- Existing admin panel tests exercise mutate paths; gate-off coverage is explicit. -->
+        <env name="ADMIN_DESTRUCTIVE_TOOLS" value="true"/>
         <env name="APP_KEY" value="base64:GZXpdL+lywWKtvAAPrd4UBqq3QkzFc6yiWMYNs4k06E="/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <!-- AI is suspended in production; tests keep it on so the code stays proven for re-enablement. -->

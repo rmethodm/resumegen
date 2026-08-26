@@ -12,16 +12,20 @@ class LoginResponse implements LoginResponseContract
     {
         $user = Auth::user();
 
-        if ($user->hasTwoFactorEnabled()) {
-            $request->session()->put('two_factor_auth_pending', true);
-
-            return redirect()->route('two-factor.challenge');
-        }
-
         $adminDomain = config('app.admin_domain');
         $onAdminHost = is_string($adminDomain)
             && $adminDomain !== ''
             && $request->getHost() === $adminDomain;
+
+        if ($user->hasTwoFactorEnabled()) {
+            $request->session()->put('two_factor_auth_pending', true);
+
+            if ($onAdminHost) {
+                $request->session()->put('url.intended', url('/'));
+            }
+
+            return redirect()->route('two-factor.challenge');
+        }
 
         if ($onAdminHost) {
             if (! $user->isAdmin()) {
@@ -34,9 +38,16 @@ class LoginResponse implements LoginResponseContract
                     ->with('error', 'This account does not have admin access.');
             }
 
-            // Stay on the admin host root (admin.dashboard). Avoid intended()
-            // so a leftover product /dashboard URL cannot win.
-            return redirect()->to('/');
+            // Password-only admins are not allowed on the support panel.
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            $profileUrl = rtrim((string) config('app.url'), '/').'/profile';
+
+            return redirect()
+                ->to('/login')
+                ->with('error', 'Admin accounts require two-factor authentication. Enable it at '.$profileUrl.', then sign in here again.');
         }
 
         return redirect()->intended(route('dashboard', absolute: false));

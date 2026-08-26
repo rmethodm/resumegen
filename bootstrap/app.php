@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\EnforceAdminSessionIdleTimeout;
+use App\Http\Middleware\EnsureAdminDestructiveToolsAllowed;
+use App\Http\Middleware\EnsureAdminHasTwoFactor;
 use App\Http\Middleware\EnsureAiEnabled;
 use App\Http\Middleware\EnsureUserCanWrite;
 use App\Http\Middleware\EnsureUserIsAdmin;
@@ -56,6 +59,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'two_factor_challenge' => RequiresTwoFactorChallenge::class,
             'admin' => EnsureUserIsAdmin::class,
+            'admin.two_factor' => EnsureAdminHasTwoFactor::class,
+            'admin.session_idle' => EnforceAdminSessionIdleTimeout::class,
+            'admin.destructive' => EnsureAdminDestructiveToolsAllowed::class,
             'user.not_disabled' => EnsureUserNotDisabled::class,
             'ai_enabled' => EnsureAiEnabled::class,
         ]);

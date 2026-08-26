@@ -101,6 +101,8 @@ export default function Edit({
         pending: boolean;
         qrCodeSvg: string | null;
         recoveryCodes: string[] | null;
+        canDisable: boolean;
+        requiredForAdmin: boolean;
     };
     profile: Record<string, string> | null;
     persona: {
@@ -144,6 +146,8 @@ export default function Edit({
                             pending={twoFactor.pending}
                             qrCodeSvg={twoFactor.qrCodeSvg}
                             recoveryCodes={twoFactor.recoveryCodes}
+                            canDisable={twoFactor.canDisable}
+                            requiredForAdmin={twoFactor.requiredForAdmin}
                             className="max-w-xl"
                         />
                     </Card>

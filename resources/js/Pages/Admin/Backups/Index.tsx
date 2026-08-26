@@ -4,6 +4,11 @@ import { Card } from '@/Components/ui/card';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
+type PageProps = {
+    errors?: Record<string, string>;
+    adminDestructiveTools?: boolean | null;
+};
+
 type BackupRow = {
     filename: string;
     size_bytes: number;
@@ -37,7 +42,8 @@ export default function Index({
     max_backups: number;
     engine_ok: boolean;
 }) {
-    const { errors } = usePage().props as { errors?: Record<string, string> };
+    const { errors, adminDestructiveTools } = usePage().props as PageProps;
+    const destructiveEnabled = adminDestructiveTools === true;
     const [creating, setCreating] = useState(false);
     const [restoreTarget, setRestoreTarget] = useState<string | null>(null);
 
@@ -116,6 +122,13 @@ export default function Index({
                 </div>
             ) : null}
 
+            {!destructiveEnabled ? (
+                <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600">
+                    Restore and delete are locked. Set <code className="font-mono text-xs">ADMIN_DESTRUCTIVE_TOOLS=true</code>{' '}
+                    and confirm your password to unlock them.
+                </div>
+            ) : null}
+
             <div className="mb-4 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-600">
                 Create a fresh backup before restoring if you need a way back. Oldest dumps are removed
                 automatically when the list exceeds {max_backups}.
@@ -160,21 +173,25 @@ export default function Index({
                                             >
                                                 Download
                                             </a>
-                                            <button
-                                                type="button"
-                                                onClick={() => openRestore(row.filename)}
-                                                disabled={!engine_ok}
-                                                className="rounded-md border border-warning/30 bg-warning-subtle px-2 py-1 text-xs font-medium text-warning-text hover:bg-warning-subtle disabled:opacity-50"
-                                            >
-                                                Restore
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => deleteBackup(row.filename)}
-                                                className="rounded-md border border-danger/30 bg-danger-subtle px-2 py-1 text-xs font-medium text-danger-text hover:bg-danger-subtle"
-                                            >
-                                                Delete
-                                            </button>
+                                            {destructiveEnabled ? (
+                                                <>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => openRestore(row.filename)}
+                                                        disabled={!engine_ok}
+                                                        className="rounded-md border border-warning/30 bg-warning-subtle px-2 py-1 text-xs font-medium text-warning-text hover:bg-warning-subtle disabled:opacity-50"
+                                                    >
+                                                        Restore
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => deleteBackup(row.filename)}
+                                                        className="rounded-md border border-danger/30 bg-danger-subtle px-2 py-1 text-xs font-medium text-danger-text hover:bg-danger-subtle"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </>
+                                            ) : null}
                                         </div>
                                     </td>
                                 </tr>

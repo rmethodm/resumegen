@@ -88,7 +88,7 @@ class BackupTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/backups'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
@@ -102,7 +102,7 @@ class BackupTest extends TestCase
         $admin = User::factory()->admin()->create();
         $this->seedBackupFile('resumegen-20260804-120000.sql.gz', 'abc');
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/backups'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
@@ -116,7 +116,7 @@ class BackupTest extends TestCase
         $this->fakeRunnerThatWritesFile();
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->post($this->adminPath('/backups'))
             ->assertRedirect($this->adminPath('/backups'))
             ->assertSessionHas('success');
@@ -146,7 +146,7 @@ class BackupTest extends TestCase
             touch($path, 1_700_000_000 + $i);
         }
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->post($this->adminPath('/backups'))
             ->assertRedirect($this->adminPath('/backups'));
 
@@ -164,7 +164,7 @@ class BackupTest extends TestCase
         $admin = User::factory()->admin()->create();
         $this->seedBackupFile('resumegen-20260804-120000.sql.gz', 'payload-bytes');
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/backups/resumegen-20260804-120000.sql.gz'))
             ->assertOk()
             ->assertHeader('content-disposition');
@@ -174,7 +174,7 @@ class BackupTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/backups/'.rawurlencode('../.env')))
             ->assertNotFound();
     }
@@ -183,7 +183,7 @@ class BackupTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/backups/resumegen-20260804-999999.sql.gz'))
             ->assertNotFound();
     }
@@ -193,7 +193,7 @@ class BackupTest extends TestCase
         $admin = User::factory()->admin()->create();
         $this->seedBackupFile('resumegen-20260804-120000.sql.gz', 'x');
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->delete($this->adminPath('/backups/resumegen-20260804-120000.sql.gz'))
             ->assertRedirect($this->adminPath('/backups'))
             ->assertSessionHas('success');
@@ -214,7 +214,7 @@ class BackupTest extends TestCase
         $admin = User::factory()->admin()->create();
         $this->seedBackupFile('resumegen-20260804-120000.sql.gz', 'x');
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->from($this->adminPath('/backups'))
             ->post($this->adminPath('/backups/resumegen-20260804-120000.sql.gz/restore'), [
                 'confirmation' => 'wrong-name.sql.gz',
@@ -240,7 +240,7 @@ class BackupTest extends TestCase
 
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->post($this->adminPath('/backups/'.$filename.'/restore'), [
                 'confirmation' => $filename,
             ])
@@ -261,7 +261,7 @@ class BackupTest extends TestCase
     {
         $admin = User::factory()->admin()->disabled()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/backups'))
             ->assertRedirect();
     }

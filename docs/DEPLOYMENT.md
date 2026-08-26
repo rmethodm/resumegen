@@ -129,6 +129,11 @@ LOG_STACK=daily
 LOG_LEVEL=warning
 # Support admin (Inertia, not Filament). Must match DNS + TLS host below.
 APP_ADMIN_DOMAIN=admin.yourdomain.com
+# Destructive DB/backup mutations (restore, truncate, non-SELECT SQL, …).
+# Keep false in production; flip true only while you intentionally need them.
+ADMIN_DESTRUCTIVE_TOOLS=false
+# Idle timeout (minutes) for authenticated sessions on the admin host only.
+ADMIN_SESSION_LIFETIME=60
 # Leave null so product and admin each keep host-only session cookies.
 # Admins log in on the admin host. Do not set SESSION_DOMAIN unless you
 # intentionally want a shared cookie across subdomains (extra CSRF care).
@@ -307,12 +312,38 @@ deploy:
 1. DNS + TLS for that host (Part 8).
 2. `.env` has `APP_ADMIN_DOMAIN=admin.yourdomain.com` then `php artisan config:cache`.
 3. Promote yourself: `users.is_admin = true` via tinker (Part 6).
-4. Open `https://admin.yourdomain.com/login` and sign in **on that host**
-   (host-only sessions — apex login does not carry over).
+4. On the **main** site (`APP_URL/profile`), enable and confirm **two-factor
+   authentication** for that admin account (required — admin login rejects
+   password-only admins).
+5. Open `https://admin.yourdomain.com/login` and sign in **on that host**
+   (host-only sessions — apex login does not carry over), then complete the
+   TOTP challenge.
 
 Capabilities: search users, force-verify email, resend verification, disable/enable
-login (data kept), revoke Sanctum tokens, view action log. No resume edit, no
-impersonation, no taxonomy CMS, no billing.
+login (data kept), revoke Sanctum tokens, view action log, browse DB/backups.
+No resume edit, no impersonation, no taxonomy CMS, no billing.
+
+**Admin hardening (app-layer; no Cloudflare / VPN gate):**
+
+| Control | Env / behavior |
+|---|---|
+| Mandatory 2FA | Admins without confirmed 2FA cannot use the panel; they cannot disable 2FA while `is_admin`. |
+| Idle timeout | `ADMIN_SESSION_LIFETIME` (default 60 minutes) on the admin host only. |
+| Login throttle | 3 failed attempts / minute on the admin host (product stays at 5). |
+| Destructive tools | `ADMIN_DESTRUCTIVE_TOOLS=false` (default). Restore/delete backup, row/schema edits, truncate, role mutations, and non-SELECT SQL return 403 until flipped on. |
+
+**Destructive tools runbook** (rare schema/SQL/restore work):
+
+1. Set `ADMIN_DESTRUCTIVE_TOOLS=true` in server `.env`.
+2. `php artisan config:cache` (as `www-data`, never as root).
+3. Sign in on the admin host, confirm password when prompted (`/confirm-password`).
+4. Do the work; typed-name confirmations still apply where they already did.
+5. Set `ADMIN_DESTRUCTIVE_TOOLS=false`, `config:cache` again.
+
+Destructive actions also write `admin_action_logs` and a `admin.destructive_action`
+warning log line. Failed admin-host logins write `admin.login_failed` (warning).
+Review with Pail / daily logs, e.g. `php artisan pail --filter=admin.` or
+`grep admin.login_failed storage/logs/laravel-*.log`.
 
 **Manual deploy (no CI):** `deploy.sh` is self-sufficient — it pulls `main`, installs
 Composer/npm dependencies, builds the frontend, migrates, re-caches, and fixes

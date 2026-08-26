@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdminActionLog;
+use App\Support\AdminDestructiveGate;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -31,7 +33,7 @@ class DatabaseQueryController extends Controller
         ]);
     }
 
-    public function run(Request $request): JsonResponse
+    public function run(Request $request): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([
             'sql' => ['required', 'string'],
@@ -42,6 +44,11 @@ class DatabaseQueryController extends Controller
         $keyword = strtoupper(strtok($sql, " \t\n") ?: '');
 
         if (! in_array($keyword, self::READ_ONLY_KEYWORDS, true)) {
+            $deny = AdminDestructiveGate::denyResponse($request);
+            if ($deny !== null) {
+                return $deny;
+            }
+
             $target = $this->extractTargetIdentifier($sql);
 
             abort_unless(

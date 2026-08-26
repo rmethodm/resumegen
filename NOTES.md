@@ -7,6 +7,11 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 ## Design decisions (locked)
 
+### Admin access = app-layer hardening on subdomain (locked 2026-08-25)
+- What: Keep Inertia admin on `APP_ADMIN_DOMAIN`. Require confirmed 2FA for `is_admin`, shorter admin-host idle sessions (`ADMIN_SESSION_LIFETIME`), tighter admin login throttle (3/min), and gate destructive DB/backup tools behind `ADMIN_DESTRUCTIVE_TOOLS` + password confirm. Log destructive `AdminActionLog` rows and failed admin-host logins.
+- Why: Separate subdomain + `is_admin` already scopes the UI; converting to public admin APIs for a local app relocates risk without removing it. Network gates (Cloudflare Access / Tailscale / IP allowlist) were considered and declined for now.
+- Rejected: Cloudflare Access (or any Cloudflare-fronted admin gate); rewriting admin into public APIs + a local web app; removing the Database section entirely.
+
 ### 2026-08-11 application surfaces
 - Application tracking remains on `/job-applications`; the redesign adds an operator summary above the existing Kanban board without changing its Inertia CRUD or drag/drop routes.
 - The workstation keeps Edit, Review, and Optimize as the core workflow; the pass widens the frame and adds breathing room without moving guidance ahead of editing.
