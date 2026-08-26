@@ -71,10 +71,10 @@ return [
     | Admin Destructive Tools
     |--------------------------------------------------------------------------
     |
-    | When false (recommended in production), backup restore/delete, schema
-    | edits, truncates, role mutations, and non-SELECT SQL return 403. Read
-    | surfaces stay available. When true, those actions also require a recent
-    | password confirmation (host-local /confirm-password).
+    | When false (recommended in production), schema edits, truncates, role
+    | mutations, and non-SELECT SQL return 403. Read surfaces stay available.
+    | When true, those actions also require a recent password confirmation
+    | (host-local /confirm-password).
     |
     */
 

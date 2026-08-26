@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DatabaseController;
 use App\Http\Controllers\Admin\DatabaseQueryController;
@@ -38,22 +37,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge', 'admin.session_id
         ->name('admin.users.revoke-tokens');
 
     Route::get('/visitors', [VisitorController::class, 'index'])->name('admin.visitors.index');
-
-    Route::get('/backups', [BackupController::class, 'index'])->name('admin.backups.index');
-    Route::post('/backups', [BackupController::class, 'store'])
-        ->middleware('throttle:10,1')
-        ->name('admin.backups.store');
-    Route::get('/backups/{filename}', [BackupController::class, 'download'])
-        ->where('filename', 'resumegen-\d{8}-\d{6}\.sql\.gz')
-        ->name('admin.backups.download');
-    Route::delete('/backups/{filename}', [BackupController::class, 'destroy'])
-        ->middleware(['admin.destructive', 'throttle:30,1'])
-        ->where('filename', 'resumegen-\d{8}-\d{6}\.sql\.gz')
-        ->name('admin.backups.destroy');
-    Route::post('/backups/{filename}/restore', [BackupController::class, 'restore'])
-        ->middleware(['admin.destructive', 'throttle:5,1'])
-        ->where('filename', 'resumegen-\d{8}-\d{6}\.sql\.gz')
-        ->name('admin.backups.restore');
 
     Route::get('/database', [DatabaseController::class, 'index'])->name('admin.database.index');
 

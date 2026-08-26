@@ -32,7 +32,7 @@ class SearchController extends Controller
             ->map(fn (Resume $r) => [
                 'id' => $r->id,
                 'name' => $r->title,
-                'url' => route('resumes.workstation', $r->id),
+                'url' => route('resumes.builder', $r->id),
             ])
             ->all();
 

@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 /**
  * Core product destinations must stay reachable for authenticated users.
- * Global nav links these routes (Shares, Jobs, Applications).
+ * Global nav links these routes (Shares, Applications).
  */
 class AuthenticatedNavigationTest extends TestCase
 {
@@ -28,7 +28,6 @@ class AuthenticatedNavigationTest extends TestCase
                 ->has('templates', 4)
                 ->where('templates', ['ats-plain', 'classic', 'modern', 'minimalist']));
         $this->actingAs($user)->get(route('shares.index'))->assertOk();
-        $this->actingAs($user)->get(route('jobs-imports.index'))->assertOk();
         $this->actingAs($user)->get(route('job-applications.index'))->assertOk();
         $this->actingAs($user)->get(route('profile.edit'))->assertOk();
     }

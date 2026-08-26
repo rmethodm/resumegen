@@ -18,7 +18,7 @@ class BuilderRedirectsToWorkstationTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('builder.edit', $resume))
-            ->assertRedirect(route('resumes.workstation', $resume));
+            ->assertRedirect(route('resumes.builder', $resume));
     }
 
     public function test_legacy_builder_index_redirects_to_dashboard(): void

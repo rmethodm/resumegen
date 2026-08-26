@@ -35,18 +35,4 @@ return [
         ],
     ],
 
-    // Job Imports search sources. A source with no key is skipped, never an
-    // error — see App\Services\JobImport\JobImportSearch::availableSources().
-    'adzuna' => [
-        'app_id' => env('ADZUNA_APP_ID'),
-        'app_key' => env('ADZUNA_APP_KEY'),
-        'country' => env('ADZUNA_COUNTRY', 'us'),
-    ],
-
-    'usajobs' => [
-        'key' => env('USAJOBS_KEY'),
-        // Sent as the User-Agent header — must be the address the key was issued to.
-        'email' => env('USAJOBS_EMAIL'),
-    ],
-
 ];

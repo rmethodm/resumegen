@@ -16,11 +16,11 @@ import {
     MonthYearField,
     Pair,
     skillLayouts,
+    UrlField,
     useEntryReorder,
 } from '@/Components/workstation/inspector-fields';
 import { SkillPickerModal } from '@/Components/workstation/skill-picker-modal';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
-import { useResumeAi } from '@/hooks/use-resume-ai';
 import { formatPhone } from '@/lib/contact-validation';
 import { cn } from '@/lib/utils';
 import type { ResumeDraft, ResumeSkill, SkillLibraryGroup } from '@/types';
@@ -158,16 +158,18 @@ export function ContactFields({
                     onChange={(location) => onChange({ ...resume, location })}
                 />
             </Pair>
-            <Field
+            <UrlField
                 label="LinkedIn"
                 value={resume.linkedin}
                 maxLength={255}
+                placeholder="https://linkedin.com/in/you"
                 onChange={(linkedin) => onChange({ ...resume, linkedin })}
             />
-            <Field
+            <UrlField
                 label="Website"
                 value={resume.website}
                 maxLength={255}
+                placeholder="https://example.com"
                 onChange={(website) => onChange({ ...resume, website })}
             />
         </>
@@ -176,72 +178,17 @@ export function ContactFields({
 
 export function SummaryFields({
     resume,
-    resumeId,
     onChange,
 }: {
     resume: ResumeDraft;
-    resumeId: number;
+    resumeId?: number;
     onChange: (resume: ResumeDraft) => void;
 }) {
-    const { status, busy, generateSummary } = useResumeAi(resumeId);
-    const [aiError, setAiError] = useState<string | null>(null);
-    const [draftSummary, setDraftSummary] = useState<string | null>(null);
-
-    async function runGenerate() {
-        setAiError(null);
-        const experienceContext = resume.experiences
-            .map((experience) => {
-                const head = [experience.title, experience.company]
-                    .filter(Boolean)
-                    .join(' @ ');
-                const bullets = (experience.bullets ?? [])
-                    .filter(Boolean)
-                    .map((bullet) => `- ${bullet}`)
-                    .join('\n');
-
-                return [head, bullets].filter(Boolean).join('\n');
-            })
-            .join('\n\n');
-
-        const result = await generateSummary({
-            target_role: resume.target_role,
-            headline: resume.headline,
-            summary: resume.summary,
-            job_description: resume.target_job_description,
-            experience_context: experienceContext,
-        });
-
-        if (!result.ok) {
-            setAiError(result.message);
-
-            return;
-        }
-
-        setDraftSummary(result.summary);
-    }
-
     return (
         <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between gap-2">
-                <Label className="text-xs" htmlFor="field-summary">
-                    Summary
-                </Label>
-                {status?.enabled && (
-                    <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() => void runGenerate()}
-                        className="text-xs font-semibold text-brand hover:underline disabled:opacity-50"
-                    >
-                        {busy ? 'Generating…' : 'AI draft'}
-                        {status.quotas.summary.remaining >= 0 && (
-                            <span className="ml-1 font-normal text-ink-faint">
-                                ({status.quotas.summary.remaining} left)
-                            </span>
-                        )}
-                    </button>
-                )}
-            </div>
+            <Label className="text-xs" htmlFor="field-summary">
+                Summary
+            </Label>
             <Textarea
                 id="field-summary"
                 className="min-h-96"
@@ -254,102 +201,21 @@ export function SummaryFields({
             <p className="text-xs text-ink-muted">
                 {(resume.summary ?? '').length} / 2000 characters
             </p>
-            {aiError && (
-                <p className="text-xs text-danger" role="alert">
-                    {aiError}
-                </p>
-            )}
-            {draftSummary !== null && (
-                <div className="rounded-md border border-brand/30 bg-brand-subtle/40 p-3">
-                    <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                        AI proposal — not saved until you accept
-                    </p>
-                    <p className="text-sm leading-relaxed text-ink">
-                        {draftSummary}
-                    </p>
-                    <div className="mt-2 flex gap-2">
-                        <button
-                            type="button"
-                            className="text-xs font-semibold text-brand hover:underline"
-                            onClick={() => {
-                                onChange({ ...resume, summary: draftSummary });
-                                setDraftSummary(null);
-                            }}
-                        >
-                            Accept
-                        </button>
-                        <button
-                            type="button"
-                            className="text-xs font-semibold text-ink-muted hover:underline"
-                            onClick={() => setDraftSummary(null)}
-                        >
-                            Dismiss
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
 
 export function ExperienceFields({
     resume,
-    resumeId,
     onChange,
 }: {
     resume: ResumeDraft;
-    resumeId: number;
+    resumeId?: number;
     onChange: (resume: ResumeDraft) => void;
 }) {
-    const { status, busy, rewriteBullet } = useResumeAi(resumeId);
-    const [rewriteFor, setRewriteFor] = useState<{
-        experienceIndex: number;
-        bulletIndex: number;
-        options: string[];
-        error: string | null;
-    } | null>(null);
-
     const dragHandle = useEntryReorder(resume.experiences, (experiences) =>
         onChange({ ...resume, experiences }),
     );
-
-    async function runRewrite(experienceIndex: number, bulletIndex: number) {
-        const bullet =
-            resume.experiences[experienceIndex]?.bullets?.[bulletIndex] ?? '';
-        if (bullet.trim() === '') {
-            return;
-        }
-
-        setRewriteFor({
-            experienceIndex,
-            bulletIndex,
-            options: [],
-            error: null,
-        });
-
-        const result = await rewriteBullet(bullet, {
-            target_role: resume.target_role,
-            job_description: resume.target_job_description,
-        });
-
-        if (!result.ok) {
-            setRewriteFor({
-                experienceIndex,
-                bulletIndex,
-                options: [],
-                error: result.message,
-            });
-
-            return;
-        }
-
-        setRewriteFor({
-            experienceIndex,
-            bulletIndex,
-            options: result.options,
-            error: null,
-        });
-    }
 
     return (
         <>
@@ -426,26 +292,32 @@ export function ExperienceFields({
                             })
                         }
                     />
-                    <MonthYearField
-                        label="Start date"
-                        value={experience.start_date}
-                        onChange={(start_date) =>
-                            patch(resume, onChange, 'experiences', index, {
-                                start_date,
-                            })
-                        }
-                    />
-                    <MonthYearField
-                        label="End date"
-                        value={experience.is_current ? '' : experience.end_date}
-                        disabled={experience.is_current}
-                        presentLabel={experience.is_current}
-                        onChange={(end_date) =>
-                            patch(resume, onChange, 'experiences', index, {
-                                end_date,
-                            })
-                        }
-                    />
+                    <Pair>
+                        <MonthYearField
+                            label="Start date"
+                            value={experience.start_date}
+                            onChange={(start_date) =>
+                                patch(resume, onChange, 'experiences', index, {
+                                    start_date,
+                                })
+                            }
+                        />
+                        <MonthYearField
+                            label="End date"
+                            value={
+                                experience.is_current
+                                    ? ''
+                                    : experience.end_date
+                            }
+                            disabled={experience.is_current}
+                            presentLabel={experience.is_current}
+                            onChange={(end_date) =>
+                                patch(resume, onChange, 'experiences', index, {
+                                    end_date,
+                                })
+                            }
+                        />
+                    </Pair>
                     <label className="flex items-center gap-2 text-sm">
                         <Checkbox
                             checked={experience.is_current}
@@ -466,69 +338,7 @@ export function ExperienceFields({
                                 bullets,
                             })
                         }
-                        aiEnabled={Boolean(status?.enabled)}
-                        aiBusy={busy}
-                        aiRemaining={status?.quotas.bullet_rewrite.remaining}
-                        onRewriteBullet={
-                            status?.enabled
-                                ? (bulletIndex) =>
-                                      void runRewrite(index, bulletIndex)
-                                : undefined
-                        }
                     />
-                    {rewriteFor?.experienceIndex === index && (
-                        <div className="rounded-md border border-brand/30 bg-brand-subtle/40 p-3">
-                            <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                                AI rewrite options
-                            </p>
-                            {rewriteFor.error && (
-                                <p className="text-xs text-danger">
-                                    {rewriteFor.error}
-                                </p>
-                            )}
-                            {busy && rewriteFor.options.length === 0 && (
-                                <p className="text-xs text-ink-muted">
-                                    Generating…
-                                </p>
-                            )}
-                            <ul className="space-y-2">
-                                {rewriteFor.options.map((option) => (
-                                    <li key={option}>
-                                        <button
-                                            type="button"
-                                            className="w-full rounded-md border border-surface-border bg-white px-2.5 py-2 text-left text-sm text-ink hover:border-brand"
-                                            onClick={() => {
-                                                const bullets = [
-                                                    ...(resume.experiences[
-                                                        index
-                                                    ]?.bullets ?? []),
-                                                ];
-                                                bullets[rewriteFor.bulletIndex] =
-                                                    option;
-                                                patch(
-                                                    resume,
-                                                    onChange,
-                                                    'experiences',
-                                                    index,
-                                                    { bullets },
-                                                );
-                                                setRewriteFor(null);
-                                            }}
-                                        >
-                                            {option}
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                            <button
-                                type="button"
-                                className="mt-2 text-xs font-semibold text-ink-muted hover:underline"
-                                onClick={() => setRewriteFor(null)}
-                            >
-                                Dismiss
-                            </button>
-                        </div>
-                    )}
                 </EntryCard>
             ))}
             <AddButton
@@ -584,29 +394,28 @@ export function ProjectFields({
                             patch(resume, onChange, 'projects', index, { name })
                         }
                     />
-                    <Field
+                    <UrlField
                         label="Project URL"
                         value={project.url}
                         maxLength={255}
+                        placeholder="https://github.com/you/project"
                         onChange={(url) =>
                             patch(resume, onChange, 'projects', index, { url })
                         }
                     />
                     <Pair>
-                        <Field
+                        <MonthYearField
                             label="Start date"
                             value={project.start_date}
-                            maxLength={60}
                             onChange={(start_date) =>
                                 patch(resume, onChange, 'projects', index, {
                                     start_date,
                                 })
                             }
                         />
-                        <Field
+                        <MonthYearField
                             label="End date"
                             value={project.end_date}
-                            maxLength={60}
                             onChange={(end_date) =>
                                 patch(resume, onChange, 'projects', index, {
                                     end_date,
@@ -921,20 +730,18 @@ export function CertificateFields({
                         }
                     />
                     <Pair>
-                        <Field
+                        <MonthYearField
                             label="Date obtained"
                             value={entry.obtained_at}
-                            maxLength={60}
                             onChange={(obtained_at) =>
                                 patch(resume, onChange, 'certificates', index, {
                                     obtained_at,
                                 })
                             }
                         />
-                        <Field
+                        <MonthYearField
                             label="Expiration date"
                             value={entry.expires_at}
-                            maxLength={60}
                             onChange={(expires_at) =>
                                 patch(resume, onChange, 'certificates', index, {
                                     expires_at,

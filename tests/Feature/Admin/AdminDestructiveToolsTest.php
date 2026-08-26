@@ -58,19 +58,6 @@ class AdminDestructiveToolsTest extends TestCase
         $this->assertSame(1, \DB::table('db_panel_fixture')->count());
     }
 
-    public function test_backup_restore_is_forbidden_when_destructive_tools_are_disabled(): void
-    {
-        Config::set('app.admin_destructive_tools', false);
-        $admin = User::factory()->admin()->create();
-
-        $this->actingAs($admin)
-            ->withConfirmedPassword()
-            ->post($this->adminPath('/backups/resumegen-20260101-120000.sql.gz/restore'), [
-                'confirmation' => 'resumegen-20260101-120000.sql.gz',
-            ])
-            ->assertForbidden();
-    }
-
     public function test_table_truncate_requires_password_confirmation_when_tools_enabled(): void
     {
         Config::set('app.admin_destructive_tools', true);
@@ -123,10 +110,10 @@ class AdminDestructiveToolsTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
-            ->get($this->adminPath('/backups'))
+            ->get($this->adminPath('/database'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
-                ->component('Admin/Backups/Index')
+                ->component('Admin/Database/Overview')
                 ->where('adminDestructiveTools', false));
     }
 }

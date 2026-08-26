@@ -27,10 +27,6 @@
         <env name="ADMIN_DESTRUCTIVE_TOOLS" value="true"/>
         <env name="APP_KEY" value="base64:GZXpdL+lywWKtvAAPrd4UBqq3QkzFc6yiWMYNs4k06E="/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
-        <!-- AI is suspended in production; tests keep it on so the code stays proven for re-enablement. -->
-        <env name="AI_ENABLED" value="true"/>
-        <env name="AI_CAREER_COACH_ENABLED" value="true"/>
-        <env name="OPENAI_API_KEY" value="sk-test-0000000000000000000000000000000000000000"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>

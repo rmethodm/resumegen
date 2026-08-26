@@ -11,7 +11,6 @@ const NAV: Flat[] = [
     { label: 'Dashboard', sub: 'Go to', url: route('dashboard') },
     { label: 'Resumes', sub: 'Go to', url: route('resumes.index') },
     { label: 'Shares', sub: 'Go to', url: route('shares.index') },
-    { label: 'Jobs', sub: 'Go to', url: route('jobs-imports.index') },
     { label: 'Applications', sub: 'Go to', url: route('job-applications.index') },
     { label: 'Profile', sub: 'Go to', url: route('profile.edit') },
 ];

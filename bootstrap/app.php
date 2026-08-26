@@ -3,7 +3,6 @@
 use App\Http\Middleware\EnforceAdminSessionIdleTimeout;
 use App\Http\Middleware\EnsureAdminDestructiveToolsAllowed;
 use App\Http\Middleware\EnsureAdminHasTwoFactor;
-use App\Http\Middleware\EnsureAiEnabled;
 use App\Http\Middleware\EnsureUserCanWrite;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserNotDisabled;
@@ -63,7 +62,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.session_idle' => EnforceAdminSessionIdleTimeout::class,
             'admin.destructive' => EnsureAdminDestructiveToolsAllowed::class,
             'user.not_disabled' => EnsureUserNotDisabled::class,
-            'ai_enabled' => EnsureAiEnabled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

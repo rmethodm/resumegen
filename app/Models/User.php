@@ -53,14 +53,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return HasMany<ImportedJob, $this>
-     */
-    public function importedJobs(): HasMany
-    {
-        return $this->hasMany(ImportedJob::class);
-    }
-
-    /**
      * @return HasMany<JobApplication, $this>
      */
     public function jobApplications(): HasMany
@@ -83,8 +75,6 @@ class User extends Authenticatable implements MustVerifyEmail
             'profile' => 'array',
             'stale_nudge_sent_at' => 'datetime',
             'view_nudge_sent_at' => 'datetime',
-            'ai_blocked' => 'boolean',
-            'ai_usage_reset_at' => 'datetime',
         ];
     }
 

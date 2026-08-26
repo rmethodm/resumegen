@@ -262,17 +262,16 @@ export function MonthYearField({
     const { month, year, unparsed } = splitMonthYear(value);
 
     return (
-        <div className="flex flex-col gap-1.5">
+        <div className="flex min-w-0 flex-col gap-1.5">
             <Label className="text-xs">{label}</Label>
-            {/* Sized to their contents rather than split down the panel — a
-                three-letter month and a four-digit year read as one date only
-                when they sit together. */}
-            <div className="flex gap-2">
+            {/* Flex widths so Start + End can share one row in Pair without
+                overflowing the inspector column. */}
+            <div className="flex min-w-0 gap-2">
                 <PartSelect
                     value={month}
                     options={monthNames}
                     disabled={disabled}
-                    className="w-28"
+                    className="min-w-0 flex-1"
                     placeholder={presentLabel ? 'Present' : 'Month'}
                     onChange={(next) => onChange(joinMonthYear(next, year))}
                 />
@@ -280,7 +279,7 @@ export function MonthYearField({
                     value={year}
                     options={years}
                     disabled={disabled}
-                    className="w-24"
+                    className="min-w-0 flex-1"
                     placeholder={presentLabel ? '' : 'Year'}
                     onChange={(next) => onChange(joinMonthYear(month, next))}
                 />
@@ -295,7 +294,138 @@ export function MonthYearField({
 }
 
 export function Pair({ children }: { children: ReactNode }) {
-    return <div className="grid grid-cols-2 gap-2.5">{children}</div>;
+    return (
+        <div className="grid grid-cols-2 items-start gap-2.5">{children}</div>
+    );
+}
+
+/**
+ * Text URL field with a soft live-site check on blur. Does not block autosave —
+ * it only warns when the URL looks unreachable (non-2xx/3xx or connection fail).
+ */
+export function UrlField({
+    label,
+    value,
+    onChange,
+    placeholder,
+    maxLength = 255,
+}: {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+    maxLength?: number;
+}) {
+    const [touched, setTouched] = useState(false);
+    const [checking, setChecking] = useState(false);
+    const [reachabilityError, setReachabilityError] = useState<string | null>(
+        null,
+    );
+    const messageId = useId();
+    const requestId = useRef(0);
+
+    async function checkUrl(next: string) {
+        const trimmed = next.trim();
+
+        if (trimmed === '') {
+            setReachabilityError(null);
+            setChecking(false);
+
+            return;
+        }
+
+        const id = ++requestId.current;
+        setChecking(true);
+
+        try {
+            const response = await fetch(route('urls.check'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN':
+                        document.querySelector<HTMLMetaElement>(
+                            'meta[name="csrf-token"]',
+                        )?.content ?? '',
+                },
+                body: JSON.stringify({ url: trimmed }),
+            });
+
+            if (id !== requestId.current) {
+                return;
+            }
+
+            if (!response.ok) {
+                setReachabilityError(
+                    'We couldn\'t check this URL right now. Try again in a moment.',
+                );
+
+                return;
+            }
+
+            const payload = (await response.json()) as {
+                ok?: boolean;
+                message?: string | null;
+            };
+
+            setReachabilityError(
+                payload.ok ? null : (payload.message ?? 'This URL doesn\'t look reachable right now.'),
+            );
+        } catch {
+            if (id !== requestId.current) {
+                return;
+            }
+
+            setReachabilityError(
+                'We couldn\'t check this URL right now. Try again in a moment.',
+            );
+        } finally {
+            if (id === requestId.current) {
+                setChecking(false);
+            }
+        }
+    }
+
+    const show = touched && reachabilityError !== null;
+
+    return (
+        <div className="flex flex-col gap-1.5">
+            <Label className="text-xs">{label}</Label>
+            <Input
+                type="url"
+                value={value}
+                placeholder={placeholder}
+                maxLength={maxLength}
+                onChange={(event) => {
+                    onChange(event.target.value);
+                    setReachabilityError(null);
+                }}
+                onBlur={() => {
+                    setTouched(true);
+                    void checkUrl(value);
+                }}
+                aria-invalid={show}
+                aria-describedby={
+                    show || checking ? messageId : undefined
+                }
+            />
+            {checking && (
+                <p id={messageId} className="text-xs text-ink-muted">
+                    Checking if this site is online…
+                </p>
+            )}
+            {show && !checking && (
+                <p
+                    id={messageId}
+                    role="alert"
+                    className="text-xs text-danger"
+                >
+                    {reachabilityError}
+                </p>
+            )}
+        </div>
+    );
 }
 
 /** Drag affordance for one entry in a reorderable list — see `useEntryReorder`. */
@@ -463,10 +593,6 @@ export function BulletsField({
     value,
     onChange,
     idPrefix,
-    aiEnabled = false,
-    aiBusy = false,
-    aiRemaining,
-    onRewriteBullet,
     max = 12,
 }: {
     label: string;
@@ -474,10 +600,6 @@ export function BulletsField({
     onChange: (value: string[]) => void;
     /** When set, each bullet input gets id `${idPrefix}-${index}` for jump-to. */
     idPrefix?: string;
-    aiEnabled?: boolean;
-    aiBusy?: boolean;
-    aiRemaining?: number;
-    onRewriteBullet?: (index: number) => void;
     /** Mirrors UpdateResumeRequest's bullets/highlights array cap. */
     max?: number;
 }) {
@@ -706,21 +828,6 @@ export function BulletsField({
                             }
                         }}
                     />
-                    {aiEnabled && onRewriteBullet && bullet.trim() !== '' && (
-                        <button
-                            type="button"
-                            disabled={aiBusy}
-                            onClick={() => onRewriteBullet(index)}
-                            title={
-                                aiRemaining !== undefined
-                                    ? `AI rewrite (${aiRemaining} left this month)`
-                                    : 'AI rewrite'
-                            }
-                            className="shrink-0 px-1 text-xs font-semibold text-brand hover:underline disabled:opacity-50"
-                        >
-                            AI
-                        </button>
-                    )}
                     <Button
                         variant="ghost"
                         size="icon"

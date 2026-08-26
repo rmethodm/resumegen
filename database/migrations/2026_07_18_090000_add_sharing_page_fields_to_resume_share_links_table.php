@@ -17,8 +17,16 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('resume_share_links', function (Blueprint $table) {
-            $table->dropColumn(['is_primary', 'password_hash', 'views_seen_at']);
+        if (! Schema::hasTable('resume_share_links')) {
+            return;
+        }
+
+        Schema::table('resume_share_links', function (Blueprint $table): void {
+            foreach (['is_primary', 'password_hash', 'views_seen_at'] as $column) {
+                if (Schema::hasColumn('resume_share_links', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
         });
     }
 };

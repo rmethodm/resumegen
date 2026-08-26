@@ -1,27 +1,21 @@
 <?php
 
-use App\Http\Controllers\AiSuggestionController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExtensionTokenController;
-use App\Http\Controllers\InterviewCoachController;
 use App\Http\Controllers\JobApplicationController;
-use App\Http\Controllers\JobImportsController;
-use App\Http\Controllers\JobSearchController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\MobileTokenController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResumeShareController;
-use App\Http\Controllers\ResumeAiController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeCompareController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ResumeGroupController;
-use App\Http\Controllers\ResumeImportController;
 use App\Http\Controllers\ResumeNoteController;
 use App\Http\Controllers\ResumeShareLinkController;
 use App\Http\Controllers\ResumeSnapshotController;
@@ -29,6 +23,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Settings\StarterProfileController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\ShareLinkController;
+use App\Http\Controllers\UrlCheckController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,16 +75,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');
     Route::post('/settings/starter-profile/skip', [StarterProfileController::class, 'skip'])->name('starter-profile.skip');
 
-    // Job Imports: real search (Adzuna/USAJOBS) + persistence. AI job match
-    // (score + missing skills, via ResumeAiController::matchJob) is real too.
-    // Gap analysis and cover letters are still frontend stubs.
-    Route::get('/jobs-imports', [JobImportsController::class, 'index'])->name('jobs-imports.index');
-    Route::post('/jobs-imports/search', [JobImportsController::class, 'search'])
-        ->middleware('throttle:20,1')
-        ->name('jobs-imports.search');
-    Route::post('/jobs-imports', [JobImportsController::class, 'store'])->name('jobs-imports.store');
-    Route::patch('/jobs-imports/{importedJob}', [JobImportsController::class, 'updateStatus'])->name('jobs-imports.update-status');
-
     // Job Application Kanban: tracks applications through Saved/Applied/
     // Interviewing/Offer/Rejected. Contacts and interview notes stay
     // out of scope — see JobApplicationController's docblock.
@@ -101,6 +86,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/resumes', [ResumeController::class, 'index'])->name('resumes.index');
     Route::post('/resumes', [ResumeController::class, 'store'])->name('resumes.store');
     Route::get('/resumes/{resume}/workstation', [ResumeController::class, 'workstation'])->name('resumes.workstation');
+    Route::get('/resumes/{resume}/builder', [ResumeController::class, 'builder'])->name('resumes.builder');
     Route::put('/resumes/{resume}', [ResumeController::class, 'update'])->name('resumes.update');
     Route::get('/resumes/{resume}/export', [ResumeController::class, 'download'])->name('resumes.download');
     Route::get('/resumes/{resume}/export-docx', [ResumeController::class, 'downloadDocx'])->name('resumes.download-docx');
@@ -109,16 +95,10 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/resumes/{resume}/rename', [ResumeController::class, 'rename'])->name('resumes.rename');
     Route::delete('/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
 
-    // Optional AI (gated by config/ai.php — disabled by default).
-    Route::get('/ai/status', [ResumeAiController::class, 'status'])->name('ai.status');
-    Route::middleware('throttle:20,1')->group(function () {
-        Route::post('/resumes/{resume}/ai/rewrite-bullet', [ResumeAiController::class, 'rewriteBullet'])
-            ->name('resumes.ai.rewrite-bullet');
-        Route::post('/resumes/{resume}/ai/summary', [ResumeAiController::class, 'generateSummary'])
-            ->name('resumes.ai.summary');
-        Route::post('/resumes/{resume}/ai/match-job', [ResumeAiController::class, 'matchJob'])
-            ->name('resumes.ai.match-job');
-    });
+    // Soft URL reachability check for resume LinkedIn / website / project fields.
+    Route::post('/urls/check', UrlCheckController::class)
+        ->middleware('throttle:30,1')
+        ->name('urls.check');
 
     Route::get('/resumes/{resume}/share', [ResumeShareLinkController::class, 'show'])->name('resumes.share.show');
     Route::post('/resumes/{resume}/share', [ResumeShareLinkController::class, 'store'])->name('resumes.share.store');
@@ -149,7 +129,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
     Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
     Route::get('/builder/create', [ResumeBuilderController::class, 'create'])->name('builder.create');
-    Route::post('/import/pdf/confirm', [ResumeImportController::class, 'confirm'])->name('import.pdf.confirm');
     Route::get('/builder/{resume}', [ResumeBuilderController::class, 'edit'])->name('builder.edit');
     Route::put('/builder/{resume}', [ResumeBuilderController::class, 'update'])->name('builder.update');
     Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
@@ -161,26 +140,10 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
     Route::get('/search', SearchController::class)->name('search')->middleware('throttle:30,1');
 
-    Route::middleware(['ai_enabled', 'throttle:20,1'])->group(function () {
-        Route::post('/builder/{resume}/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])->name('builder.ai.rewrite-bullet');
-        Route::post('/builder/{resume}/ai/critique-bullet', [AiSuggestionController::class, 'critiqueBullet'])->name('builder.ai.critique-bullet');
-        Route::post('/builder/{resume}/ai/summary', [AiSuggestionController::class, 'summary'])->name('builder.ai.summary');
-        Route::post('/builder/{resume}/ai/ats-keywords', [AiSuggestionController::class, 'atsKeywords'])->name('builder.ai.ats-keywords');
-        Route::post('/builder/{resume}/interview-coach', [InterviewCoachController::class, 'coach'])->name('builder.interview-coach');
-        Route::post('/import/pdf/extract', [ResumeImportController::class, 'extract'])->name('import.pdf.extract');
-        Route::post('/jobs/rank', [JobSearchController::class, 'rank'])->name('jobs.rank');
-        Route::post('/jobs/import-url', [JobSearchController::class, 'importUrl'])->name('jobs.import-url');
-    });
-
     Route::post('/builder/{resume}/share', [ShareLinkController::class, 'store'])->name('share.store');
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
     Route::get('/shares', [ShareController::class, 'index'])->name('shares.index');
-    Route::get('/jobs', [JobSearchController::class, 'index'])->name('jobs.index');
-    Route::post('/jobs/search', [JobSearchController::class, 'search'])->name('jobs.search')->middleware('throttle:30,1');
-    Route::post('/jobs/saved', [JobSearchController::class, 'store'])->name('jobs.saved.store');
-    Route::patch('/jobs/saved/{jobSearch}', [JobSearchController::class, 'update'])->name('jobs.saved.update');
-    Route::delete('/jobs/saved/{jobSearch}', [JobSearchController::class, 'destroy'])->name('jobs.saved.destroy');
 
     // Autocomplete lookup
     Route::middleware('throttle:60,1')->group(function () {
