@@ -61,6 +61,8 @@ class ProfileController extends Controller
                 'pending' => $user->two_factor_secret !== null && ! $user->hasTwoFactorEnabled(),
                 'qrCodeSvg' => $qrCodeSvg,
                 'recoveryCodes' => session('two_factor_recovery_codes'),
+                'canDisable' => ! $user->isAdmin(),
+                'requiredForAdmin' => $user->isAdmin(),
             ],
             'extensionTokens' => $extensionTokens,
             'extensionTokenPlain' => session('extension_token_plain'),

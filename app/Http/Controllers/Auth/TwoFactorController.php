@@ -24,6 +24,13 @@ class TwoFactorController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         $user = $request->user();
+
+        if ($user->isAdmin()) {
+            return redirect()
+                ->route('profile.edit')
+                ->with('error', 'Admin accounts cannot disable two-factor authentication.');
+        }
+
         $user->two_factor_secret = null;
         $user->two_factor_recovery_codes = null;
         $user->two_factor_confirmed_at = null;

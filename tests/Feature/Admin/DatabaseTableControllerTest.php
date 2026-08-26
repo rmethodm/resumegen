@@ -47,7 +47,7 @@ class DatabaseTableControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/database/tables/does_not_exist'))
             ->assertNotFound();
     }
@@ -57,7 +57,7 @@ class DatabaseTableControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
         \DB::table('db_panel_fixture')->insert(['name' => 'alpha', 'created_at' => now(), 'updated_at' => now()]);
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->get($this->adminPath('/database/tables/db_panel_fixture'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
@@ -74,7 +74,7 @@ class DatabaseTableControllerTest extends TestCase
             'name' => 'before', 'created_at' => now(), 'updated_at' => now(),
         ]);
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->patch($this->adminPath("/database/tables/db_panel_fixture/rows/{$id}"), [
                 'values' => ['name' => 'after'],
             ])
@@ -94,7 +94,7 @@ class DatabaseTableControllerTest extends TestCase
             'name' => 'a', 'created_at' => now(), 'updated_at' => now(),
         ]);
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->patch($this->adminPath("/database/tables/db_panel_fixture/rows/{$id}"), [
                 'values' => ['id' => 999, 'name' => 'b'],
             ])
@@ -111,7 +111,7 @@ class DatabaseTableControllerTest extends TestCase
             'name' => 'gone', 'created_at' => now(), 'updated_at' => now(),
         ]);
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->delete($this->adminPath("/database/tables/db_panel_fixture/rows/{$id}"))
             ->assertRedirect();
 
@@ -126,7 +126,7 @@ class DatabaseTableControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->delete($this->adminPath('/database/tables/db_panel_fixture/rows/999'))
             ->assertNotFound();
     }
@@ -135,7 +135,7 @@ class DatabaseTableControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->post($this->adminPath('/database/tables/db_panel_fixture/columns'), [
                 'name' => 'notes',
                 'type' => 'text',
@@ -154,7 +154,7 @@ class DatabaseTableControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->delete($this->adminPath('/database/tables/db_panel_fixture/columns/name'), [
                 'confirm' => 'wrong',
             ])
@@ -167,7 +167,7 @@ class DatabaseTableControllerTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->delete($this->adminPath('/database/tables/db_panel_fixture/columns/name'), [
                 'confirm' => 'name',
             ])
@@ -185,7 +185,7 @@ class DatabaseTableControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
         \DB::table('db_panel_fixture')->insert(['name' => 'x', 'created_at' => now(), 'updated_at' => now()]);
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->post($this->adminPath('/database/tables/db_panel_fixture/truncate'), [
                 'confirm' => 'db_panel_fixture_wrong',
             ])
@@ -199,7 +199,7 @@ class DatabaseTableControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
         \DB::table('db_panel_fixture')->insert(['name' => 'x', 'created_at' => now(), 'updated_at' => now()]);
 
-        $this->actingAs($admin)
+        $this->actingAs($admin)->withConfirmedPassword()
             ->post($this->adminPath('/database/tables/db_panel_fixture/truncate'), [
                 'confirm' => 'db_panel_fixture',
             ])

@@ -6,6 +6,8 @@ use Database\Factories\AdminActionLogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class AdminActionLog extends Model
 {
@@ -54,12 +56,49 @@ class AdminActionLog extends Model
      */
     public static function record(User $actor, ?User $target, string $action, ?array $meta = null): self
     {
-        return self::query()->create([
+        $row = self::query()->create([
             'actor_id' => $actor->id,
             'target_user_id' => $target?->id,
             'action' => $action,
             'meta' => $meta,
             'created_at' => now(),
         ]);
+
+        if (self::isDestructive($action)) {
+            try {
+                Log::warning('admin.destructive_action', [
+                    'action' => $action,
+                    'actor_id' => $actor->id,
+                    'actor_email' => $actor->email,
+                    'target_user_id' => $target?->id,
+                    'meta' => $meta,
+                    'log_id' => $row->id,
+                ]);
+            } catch (Throwable $e) {
+                // Best-effort — logging must never break the privileged write.
+                report($e);
+            }
+        }
+
+        return $row;
+    }
+
+    public static function isDestructive(string $action): bool
+    {
+        if (in_array($action, ['backup.deleted', 'backup.restored'], true)) {
+            return true;
+        }
+
+        if (str_starts_with($action, 'database.table.') || str_starts_with($action, 'database.role.')) {
+            return true;
+        }
+
+        if (str_starts_with($action, 'database.query.')) {
+            $op = substr($action, strlen('database.query.'));
+
+            return ! in_array($op, ['select', 'explain', 'with'], true);
+        }
+
+        return false;
     }
 }

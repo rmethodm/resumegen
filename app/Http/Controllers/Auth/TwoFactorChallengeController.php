@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EnforceAdminSessionIdleTimeout;
 use App\Mail\TwoFactorCodeMail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class TwoFactorChallengeController extends Controller
     public function create(Request $request): Response|RedirectResponse
     {
         if (! $request->session()->get('two_factor_auth_pending')) {
-            return redirect()->route('dashboard');
+            return $this->redirectAfterTwoFactor($request);
         }
 
         return Inertia::render('Auth/TwoFactorChallenge', [
@@ -61,11 +62,11 @@ class TwoFactorChallengeController extends Controller
             $request->session()->forget('two_factor_auth_pending');
 
             if (count($user->two_factor_recovery_codes) < 2) {
-                return redirect()->intended(route('dashboard'))
+                return $this->redirectAfterTwoFactor($request)
                     ->with('error', 'You have fewer than 2 recovery codes left — regenerate them in your profile.');
             }
 
-            return redirect()->intended(route('dashboard'));
+            return $this->redirectAfterTwoFactor($request);
         }
 
         // Email OTP path
@@ -74,7 +75,7 @@ class TwoFactorChallengeController extends Controller
             Cache::forget('2fa_email_otp_'.$user->id);
             $request->session()->forget('two_factor_auth_pending');
 
-            return redirect()->intended(route('dashboard'));
+            return $this->redirectAfterTwoFactor($request);
         }
 
         // TOTP path
@@ -90,13 +91,13 @@ class TwoFactorChallengeController extends Controller
 
         $request->session()->forget('two_factor_auth_pending');
 
-        return redirect()->intended(route('dashboard'));
+        return $this->redirectAfterTwoFactor($request);
     }
 
     public function sendEmail(Request $request): RedirectResponse
     {
         if (! $request->session()->get('two_factor_auth_pending')) {
-            return redirect()->route('dashboard');
+            return $this->redirectAfterTwoFactor($request);
         }
 
         $user = $request->user();
@@ -108,5 +109,24 @@ class TwoFactorChallengeController extends Controller
 
         return redirect()->route('two-factor.challenge')
             ->with('two_factor_email_sent', true);
+    }
+
+    private function redirectAfterTwoFactor(Request $request): RedirectResponse
+    {
+        $adminDomain = config('app.admin_domain');
+        $onAdminHost = is_string($adminDomain)
+            && $adminDomain !== ''
+            && $request->getHost() === $adminDomain;
+
+        if ($onAdminHost && $request->user()?->isAdmin()) {
+            // Fortify regenerates on password login; regenerate again after the
+            // 2FA step so the post-challenge admin session is a fresh ID.
+            $request->session()->regenerate();
+            $request->session()->put(EnforceAdminSessionIdleTimeout::SESSION_KEY, time());
+
+            return redirect()->to('/');
+        }
+
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 }

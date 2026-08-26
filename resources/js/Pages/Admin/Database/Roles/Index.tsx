@@ -1,7 +1,7 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import Modal from '@/Components/Modal';
 import { Card } from '@/Components/ui/card';
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 type Role = { rolname: string; rolsuper: boolean; rolcanlogin: boolean };
@@ -18,6 +18,10 @@ export default function Index({
     roles: Role[];
     grants: Grant[];
 }) {
+    const { adminDestructiveTools } = usePage().props as {
+        adminDestructiveTools?: boolean | null;
+    };
+    const destructiveEnabled = adminDestructiveTools === true;
     const [creating, setCreating] = useState(false);
     const [grantTarget, setGrantTarget] = useState<{ role: string; mode: 'grant' | 'revoke' } | null>(
         null,
@@ -77,14 +81,16 @@ export default function Index({
             header={
                 <div className="flex flex-wrap items-end justify-between gap-4">
                     <h1 className="text-xl font-bold text-gray-900">Roles &amp; permissions</h1>
-                    <button
-                        type="button"
-                        onClick={() => setCreating(true)}
-                        disabled={!engine_ok}
-                        className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                        Create role
-                    </button>
+                    {destructiveEnabled ? (
+                        <button
+                            type="button"
+                            onClick={() => setCreating(true)}
+                            disabled={!engine_ok}
+                            className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            Create role
+                        </button>
+                    ) : null}
                 </div>
             }
         >
@@ -94,6 +100,13 @@ export default function Index({
                 <div className="mb-4 rounded-lg border border-warning/30 bg-warning-subtle px-3 py-2 text-sm text-warning-text">
                     Roles &amp; permissions require PostgreSQL (
                     <code className="font-mono text-xs">DB_CONNECTION=pgsql</code>).
+                </div>
+            ) : null}
+
+            {!destructiveEnabled ? (
+                <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600">
+                    Role listing stays available. Create / grant / revoke / drop are locked until{' '}
+                    <code className="font-mono text-xs">ADMIN_DESTRUCTIVE_TOOLS=true</code>.
                 </div>
             ) : null}
 
@@ -116,35 +129,39 @@ export default function Index({
                                     {r.rolcanlogin ? 'yes' : 'no'}
                                 </td>
                                 <td className="px-3 py-2">
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => setGrantTarget({ role: r.rolname, mode: 'grant' })}
-                                            disabled={!engine_ok}
-                                            className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                                        >
-                                            Grant
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setGrantTarget({ role: r.rolname, mode: 'revoke' })}
-                                            disabled={!engine_ok}
-                                            className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                                        >
-                                            Revoke
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setConfirmText('');
-                                                setDropTarget(r.rolname);
-                                            }}
-                                            disabled={!engine_ok}
-                                            className="rounded-md border border-danger/30 bg-danger-subtle px-2 py-1 text-xs font-medium text-danger-text hover:bg-danger-subtle disabled:opacity-50"
-                                        >
-                                            Drop
-                                        </button>
-                                    </div>
+                                    {destructiveEnabled ? (
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setGrantTarget({ role: r.rolname, mode: 'grant' })}
+                                                disabled={!engine_ok}
+                                                className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                            >
+                                                Grant
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setGrantTarget({ role: r.rolname, mode: 'revoke' })}
+                                                disabled={!engine_ok}
+                                                className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                            >
+                                                Revoke
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setConfirmText('');
+                                                    setDropTarget(r.rolname);
+                                                }}
+                                                disabled={!engine_ok}
+                                                className="rounded-md border border-danger/30 bg-danger-subtle px-2 py-1 text-xs font-medium text-danger-text hover:bg-danger-subtle disabled:opacity-50"
+                                            >
+                                                Drop
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <span className="block text-right text-xs text-ink-faint">Read-only</span>
+                                    )}
                                 </td>
                             </tr>
                         ))}

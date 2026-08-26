@@ -1,6 +1,6 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Card } from '@/Components/ui/card';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 type HistoryEntry = {
@@ -17,6 +17,10 @@ function extractTarget(sql: string): string {
 }
 
 export default function Index({ history }: { history: HistoryEntry[] }) {
+    const { adminDestructiveTools } = usePage().props as {
+        adminDestructiveTools?: boolean | null;
+    };
+    const destructiveEnabled = adminDestructiveTools === true;
     const [sql, setSql] = useState('');
     const [confirm, setConfirm] = useState('');
     const [result, setResult] = useState<{ rows?: unknown[]; rows_affected?: number | null } | null>(
@@ -28,9 +32,14 @@ export default function Index({ history }: { history: HistoryEntry[] }) {
 
     const isMutating = MUTATING_PATTERN.test(sql);
     const target = isMutating ? extractTarget(sql) : '';
+    const mutatingBlocked = isMutating && !destructiveEnabled;
 
     async function run(e: FormEvent) {
         e.preventDefault();
+        if (mutatingBlocked) {
+            setError('Mutating SQL is locked. Set ADMIN_DESTRUCTIVE_TOOLS=true and confirm your password.');
+            return;
+        }
         setRunning(true);
         setError(null);
         setResult(null);
@@ -40,6 +49,7 @@ export default function Index({ history }: { history: HistoryEntry[] }) {
             const res = await fetch(route('admin.database.query.run'), {
                 method: 'POST',
                 headers: {
+                    Accept: 'application/json',
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN':
                         document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '',
@@ -65,6 +75,7 @@ export default function Index({ history }: { history: HistoryEntry[] }) {
             const res = await fetch(route('admin.database.query.explain'), {
                 method: 'POST',
                 headers: {
+                    Accept: 'application/json',
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN':
                         document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '',
@@ -86,6 +97,14 @@ export default function Index({ history }: { history: HistoryEntry[] }) {
         <AdminLayout header={<h1 className="text-xl font-bold text-gray-900">SQL runner</h1>}>
             <Head title="Admin · SQL Runner" />
 
+            {!destructiveEnabled ? (
+                <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600">
+                    SELECT / EXPLAIN stay available. Mutating SQL is locked until{' '}
+                    <code className="font-mono text-xs">ADMIN_DESTRUCTIVE_TOOLS=true</code> and a password
+                    confirmation.
+                </div>
+            ) : null}
+
             <Card className="p-4">
                 <form onSubmit={run} className="space-y-3">
                     <textarea
@@ -96,7 +115,13 @@ export default function Index({ history }: { history: HistoryEntry[] }) {
                         className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm shadow-xs focus:border-brand focus:outline-hidden focus:ring-1 focus:ring-brand"
                     />
 
-                    {isMutating ? (
+                    {mutatingBlocked ? (
+                        <div className="rounded-lg border border-danger/30 bg-danger-subtle px-3 py-2 text-sm text-danger-text">
+                            This statement is locked. Enable destructive tools to run it.
+                        </div>
+                    ) : null}
+
+                    {isMutating && destructiveEnabled ? (
                         <div className="rounded-lg border border-warning/30 bg-warning-subtle px-3 py-2">
                             <p className="text-xs text-warning-text">
                                 This statement mutates the database. Type{' '}
@@ -115,7 +140,12 @@ export default function Index({ history }: { history: HistoryEntry[] }) {
                     <div className="flex gap-2">
                         <button
                             type="submit"
-                            disabled={running || !sql.trim() || (isMutating && (!target || confirm !== target))}
+                            disabled={
+                                running ||
+                                !sql.trim() ||
+                                mutatingBlocked ||
+                                (isMutating && (!target || confirm !== target))
+                            }
                             className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {running ? 'Running…' : 'Run query'}

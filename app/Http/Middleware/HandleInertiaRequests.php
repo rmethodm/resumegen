@@ -19,6 +19,11 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $adminDomain = config('app.admin_domain');
+        $onAdminHost = is_string($adminDomain)
+            && $adminDomain !== ''
+            && $request->getHost() === $adminDomain;
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -28,6 +33,9 @@ class HandleInertiaRequests extends Middleware
                 'success' => session('success'),
                 'error' => session('error'),
             ],
+            'adminDestructiveTools' => $onAdminHost
+                ? (bool) config('app.admin_destructive_tools')
+                : null,
         ];
     }
 }

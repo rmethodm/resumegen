@@ -5,9 +5,9 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** User-directed. UI redesign ladder P0–P2 shipped; application desk, editor frame, and landing hero pass completed 2026-08-11. Remaining UI items parked in `docs/plans/ui-redesign-remaining.md`. Auto-apply research parked 2026-08-13 in `docs/plans/auto-apply-research.md` — user is thinking; do not implement.
-- **Last updated:** 2026-08-13
-- **Next action:** User-directed. If auto-apply is reopened, continue from Open questions in `docs/plans/auto-apply-research.md` (C destinations unanswered). Otherwise: browser-review the application desk/workstation; extension connect polish / Workday QA; Job Imports gap analysis/cover letters remain stubs.
+- **Active:** User-directed. Admin hardening phases 1–4 shipped 2026-08-25 (mandatory admin 2FA, destructive-tools gate, admin session idle + login throttle, observability + DEPLOYMENT/NOTES). UI redesign ladder P0–P2 shipped earlier; remaining UI items parked in `docs/plans/ui-redesign-remaining.md`. Auto-apply research parked 2026-08-13 in `docs/plans/auto-apply-research.md` — do not implement until reopened.
+- **Last updated:** 2026-08-25
+- **Next action:** User-directed. Production: set `ADMIN_DESTRUCTIVE_TOOLS=false`, confirm admin 2FA on the main site, then use admin host. Otherwise: extension connect polish / Workday QA; Job Imports gap analysis/cover letters remain stubs.
 
 ---
 

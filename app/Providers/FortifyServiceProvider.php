@@ -8,9 +8,12 @@ use App\Http\Responses\LoginResponse;
 use App\Http\Responses\RegisterResponse;
 use App\Http\Responses\VerifiedResponse;
 use App\Models\User;
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +25,7 @@ use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\VerifyEmailResponse as VerifyEmailResponseContract;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Throwable;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -37,6 +41,7 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+        $this->configureAdminLoginFailureLogging();
     }
 
     private function configureActions(): void
@@ -94,11 +99,47 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
+            $adminDomain = config('app.admin_domain');
+            $onAdminHost = is_string($adminDomain)
+                && $adminDomain !== ''
+                && $request->getHost() === $adminDomain;
+
+            // Tighter budget on the support panel login surface.
+            if ($onAdminHost) {
+                return Limit::perMinute(3)->by('admin-login|'.$throttleKey);
+            }
+
             return Limit::perMinute(5)->by($throttleKey);
         });
 
         // Fortify's own routes.php has no config hook to throttle password.email
         // (unlike login), so the route is hardened here after Fortify registers it.
         Route::getRoutes()->getByName('password.email')?->middleware('throttle:6,1');
+    }
+
+    private function configureAdminLoginFailureLogging(): void
+    {
+        Event::listen(Failed::class, function (Failed $event): void {
+            try {
+                $request = request();
+                $adminDomain = config('app.admin_domain');
+                $onAdminHost = is_string($adminDomain)
+                    && $adminDomain !== ''
+                    && $request->getHost() === $adminDomain;
+
+                if (! $onAdminHost) {
+                    return;
+                }
+
+                Log::warning('admin.login_failed', [
+                    'email' => $event->credentials[Fortify::username()] ?? null,
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                    'had_user' => $event->user !== null,
+                ]);
+            } catch (Throwable $e) {
+                report($e);
+            }
+        });
     }
 }

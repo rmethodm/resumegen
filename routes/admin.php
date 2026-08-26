@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 | Admins log in on this host; session cookies are host-only by default.
 */
 
-Route::middleware(['auth', 'verified', 'two_factor_challenge', 'admin'])->group(function () {
+Route::middleware(['auth', 'verified', 'two_factor_challenge', 'admin.session_idle', 'admin', 'admin.two_factor'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
@@ -47,11 +47,11 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge', 'admin'])->group(
         ->where('filename', 'resumegen-\d{8}-\d{6}\.sql\.gz')
         ->name('admin.backups.download');
     Route::delete('/backups/{filename}', [BackupController::class, 'destroy'])
-        ->middleware('throttle:30,1')
+        ->middleware(['admin.destructive', 'throttle:30,1'])
         ->where('filename', 'resumegen-\d{8}-\d{6}\.sql\.gz')
         ->name('admin.backups.destroy');
     Route::post('/backups/{filename}/restore', [BackupController::class, 'restore'])
-        ->middleware('throttle:5,1')
+        ->middleware(['admin.destructive', 'throttle:5,1'])
         ->where('filename', 'resumegen-\d{8}-\d{6}\.sql\.gz')
         ->name('admin.backups.restore');
 
@@ -61,31 +61,31 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge', 'admin'])->group(
         ->where('table', '[a-zA-Z0-9_]+')
         ->name('admin.database.tables.show');
     Route::patch('/database/tables/{table}/rows/{id}', [DatabaseTableController::class, 'updateRow'])
-        ->middleware('throttle:30,1')
+        ->middleware(['admin.destructive', 'throttle:30,1'])
         ->where('table', '[a-zA-Z0-9_]+')
         ->name('admin.database.tables.rows.update');
     Route::delete('/database/tables/{table}/rows/{id}', [DatabaseTableController::class, 'destroyRow'])
-        ->middleware('throttle:30,1')
+        ->middleware(['admin.destructive', 'throttle:30,1'])
         ->where('table', '[a-zA-Z0-9_]+')
         ->name('admin.database.tables.rows.destroy');
     Route::post('/database/tables/{table}/columns', [DatabaseTableController::class, 'addColumn'])
-        ->middleware('throttle:10,1')
+        ->middleware(['admin.destructive', 'throttle:10,1'])
         ->where('table', '[a-zA-Z0-9_]+')
         ->name('admin.database.tables.columns.store');
     Route::delete('/database/tables/{table}/columns/{column}', [DatabaseTableController::class, 'dropColumn'])
-        ->middleware('throttle:10,1')
+        ->middleware(['admin.destructive', 'throttle:10,1'])
         ->where(['table' => '[a-zA-Z0-9_]+', 'column' => '[a-zA-Z0-9_]+'])
         ->name('admin.database.tables.columns.destroy');
     Route::post('/database/tables/{table}/indexes', [DatabaseTableController::class, 'addIndex'])
-        ->middleware('throttle:10,1')
+        ->middleware(['admin.destructive', 'throttle:10,1'])
         ->where('table', '[a-zA-Z0-9_]+')
         ->name('admin.database.tables.indexes.store');
     Route::delete('/database/tables/{table}/indexes/{index}', [DatabaseTableController::class, 'dropIndex'])
-        ->middleware('throttle:10,1')
+        ->middleware(['admin.destructive', 'throttle:10,1'])
         ->where(['table' => '[a-zA-Z0-9_]+', 'index' => '[a-zA-Z0-9_]+'])
         ->name('admin.database.tables.indexes.destroy');
     Route::post('/database/tables/{table}/truncate', [DatabaseTableController::class, 'truncate'])
-        ->middleware('throttle:5,1')
+        ->middleware(['admin.destructive', 'throttle:5,1'])
         ->where('table', '[a-zA-Z0-9_]+')
         ->name('admin.database.tables.truncate');
 
@@ -99,18 +99,18 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge', 'admin'])->group(
 
     Route::get('/database/roles', [DatabaseRoleController::class, 'index'])->name('admin.database.roles');
     Route::post('/database/roles', [DatabaseRoleController::class, 'store'])
-        ->middleware('throttle:10,1')
+        ->middleware(['admin.destructive', 'throttle:10,1'])
         ->name('admin.database.roles.store');
     Route::post('/database/roles/{role}/grant', [DatabaseRoleController::class, 'grant'])
-        ->middleware('throttle:10,1')
+        ->middleware(['admin.destructive', 'throttle:10,1'])
         ->where('role', '[a-zA-Z0-9_]+')
         ->name('admin.database.roles.grant');
     Route::post('/database/roles/{role}/revoke', [DatabaseRoleController::class, 'revoke'])
-        ->middleware('throttle:10,1')
+        ->middleware(['admin.destructive', 'throttle:10,1'])
         ->where('role', '[a-zA-Z0-9_]+')
         ->name('admin.database.roles.revoke');
     Route::delete('/database/roles/{role}', [DatabaseRoleController::class, 'destroy'])
-        ->middleware('throttle:5,1')
+        ->middleware(['admin.destructive', 'throttle:5,1'])
         ->where('role', '[a-zA-Z0-9_]+')
         ->name('admin.database.roles.destroy');
 });
