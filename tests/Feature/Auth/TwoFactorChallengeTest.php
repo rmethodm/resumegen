@@ -2,11 +2,9 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Mail\TwoFactorCodeMail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use PragmaRX\Google2FA\Google2FA;
 use Tests\TestCase;
 
@@ -148,18 +146,32 @@ class TwoFactorChallengeTest extends TestCase
             ->assertSessionHasErrors('code');
     }
 
-    public function test_email_otp_is_sent_and_session_flag_set(): void
+    /**
+     * Enforcement is global (web-group middleware), not a per-route alias —
+     * even a route that never carried the alias must bounce a pending-2FA
+     * session to the challenge.
+     */
+    public function test_pending_session_is_blocked_on_routes_without_the_alias(): void
     {
         $user = User::factory()->create(['two_factor_confirmed_at' => now()]);
 
-        Mail::fake();
+        // verification.send is a Fortify route that never carried the
+        // per-route alias — only the global middleware covers it.
+        $this->actingAs($user)
+            ->withSession(['two_factor_auth_pending' => true])
+            ->post(route('verification.send'))
+            ->assertRedirect(route('two-factor.challenge'));
+    }
+
+    public function test_pending_session_can_still_log_out(): void
+    {
+        $user = User::factory()->create(['two_factor_confirmed_at' => now()]);
 
         $this->actingAs($user)
             ->withSession(['two_factor_auth_pending' => true])
-            ->post(route('two-factor.challenge.email'))
-            ->assertRedirect(route('two-factor.challenge'))
-            ->assertSessionHas('two_factor_email_sent', true);
+            ->post(route('logout'))
+            ->assertRedirect('/');
 
-        Mail::assertSent(TwoFactorCodeMail::class);
+        $this->assertGuest();
     }
 }

@@ -26,7 +26,6 @@ class AuthRouteNamesTest extends TestCase
         'verification.send',
         'logout',
         'two-factor.challenge.store',
-        'two-factor.challenge.email',
     ];
 
     public function test_all_route_names_used_by_auth_pages_resolve(): void

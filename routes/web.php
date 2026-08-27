@@ -53,14 +53,14 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/profile/extension-tokens', [ExtensionTokenController::class, 'store'])
-        ->middleware('throttle:10,1')
+        ->middleware(['throttle:10,1', 'password.confirm'])
         ->name('profile.extension-tokens.store');
     Route::delete('/profile/extension-tokens/{token}', [ExtensionTokenController::class, 'destroy'])
         ->middleware('throttle:10,1')
         ->name('profile.extension-tokens.destroy');
 
     Route::post('/profile/mobile-tokens', [MobileTokenController::class, 'store'])
-        ->middleware('throttle:10,1')
+        ->middleware(['throttle:10,1', 'password.confirm'])
         ->name('profile.mobile-tokens.store');
     Route::delete('/profile/mobile-tokens/{token}', [MobileTokenController::class, 'destroy'])
         ->middleware('throttle:10,1')
@@ -118,6 +118,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/resume-groups/{resumeGroup}/compare', [ResumeCompareController::class, 'show'])->name('resume-groups.compare');
 
     Route::post('/user/two-factor-authentication', [TwoFactorController::class, 'store'])
+        ->middleware('password.confirm')
         ->name('two-factor.enable');
     Route::post('/user/confirmed-two-factor-authentication', [ConfirmedTwoFactorController::class, 'store'])
         ->name('two-factor.confirm');

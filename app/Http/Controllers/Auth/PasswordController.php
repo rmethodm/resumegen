@@ -24,6 +24,10 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        // A password change after suspected compromise must also cut off
+        // any API tokens (mobile/extension) the attacker may hold.
+        $request->user()->tokens()->delete();
+
         return back();
     }
 }

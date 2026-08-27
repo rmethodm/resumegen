@@ -43,7 +43,15 @@ class DatabaseQueryController extends Controller
         $sql = trim($validated['sql']);
         $keyword = strtoupper(strtok($sql, " \t\n") ?: '');
 
-        if (! in_array($keyword, self::READ_ONLY_KEYWORDS, true)) {
+        abort_if(
+            str_contains(rtrim($sql, "; \t\n"), ';'),
+            422,
+            'Run one statement at a time.'
+        );
+
+        $readOnly = in_array($keyword, self::READ_ONLY_KEYWORDS, true);
+
+        if (! $readOnly) {
             $deny = AdminDestructiveGate::denyResponse($request);
             if ($deny !== null) {
                 return $deny;
@@ -64,7 +72,14 @@ class DatabaseQueryController extends Controller
         try {
             DB::beginTransaction();
 
-            if (in_array($keyword, self::READ_ONLY_KEYWORDS, true)) {
+            if ($readOnly) {
+                // First-keyword classification is a heuristic: WITH can hide
+                // data-modifying CTEs and EXPLAIN ANALYZE executes the statement.
+                // A READ ONLY transaction makes Postgres itself reject any write.
+                if (DB::getDriverName() === 'pgsql') {
+                    DB::statement('SET TRANSACTION READ ONLY');
+                }
+
                 $rows = DB::select($sql);
             } else {
                 $rowsAffected = DB::affectingStatement($sql);
@@ -100,7 +115,15 @@ class DatabaseQueryController extends Controller
         ]);
 
         try {
-            $plan = DB::select('explain '.trim($validated['sql']));
+            // READ ONLY transaction: input like "(analyze) DELETE ..." would
+            // otherwise execute the statement via EXPLAIN ANALYZE.
+            $plan = DB::transaction(function () use ($validated) {
+                if (DB::getDriverName() === 'pgsql') {
+                    DB::statement('SET TRANSACTION READ ONLY');
+                }
+
+                return DB::select('explain '.trim($validated['sql']));
+            });
         } catch (Throwable $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }

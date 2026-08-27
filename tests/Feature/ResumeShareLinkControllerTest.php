@@ -215,10 +215,10 @@ class ResumeShareLinkControllerTest extends TestCase
         $link = ResumeShareLink::factory()->for($resume)->create(['require_password' => true]);
 
         $this->actingAs($user)
-            ->patch(route('resume-share-links.update', $link), ['password' => 'mypass1'])
+            ->patch(route('resume-share-links.update', $link), ['password' => 'mypass123'])
             ->assertRedirect();
 
-        $this->assertTrue(Hash::check('mypass1', (string) $link->refresh()->password));
+        $this->assertTrue(Hash::check('mypass123', (string) $link->refresh()->password));
     }
 
     /**
@@ -245,14 +245,22 @@ class ResumeShareLinkControllerTest extends TestCase
         $this->assertTrue(Hash::check('secret1', (string) $link->password));
     }
 
-    public function test_password_cannot_exceed_eight_characters(): void
+    /**
+     * min:8 so share passwords aren't trivially guessable; max:72 is the
+     * bcrypt input limit.
+     */
+    public function test_password_must_be_between_eight_and_seventy_two_characters(): void
     {
         $user = User::factory()->create();
         $resume = Resume::factory()->for($user)->create();
         $link = ResumeShareLink::factory()->for($resume)->create();
 
         $this->actingAs($user)
-            ->patch(route('resume-share-links.update', $link), ['password' => 'toolongpassword'])
+            ->patch(route('resume-share-links.update', $link), ['password' => 'short'])
+            ->assertSessionHasErrors('password');
+
+        $this->actingAs($user)
+            ->patch(route('resume-share-links.update', $link), ['password' => str_repeat('a', 73)])
             ->assertSessionHasErrors('password');
     }
 

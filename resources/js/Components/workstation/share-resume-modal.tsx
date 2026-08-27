@@ -292,7 +292,7 @@ export function ShareResumeModal({
                                     <div className="flex gap-2">
                                         <Input
                                             value={passwordDraft}
-                                            maxLength={8}
+                                            maxLength={72}
                                             placeholder={
                                                 share.has_password
                                                     ? 'Set — type to replace'

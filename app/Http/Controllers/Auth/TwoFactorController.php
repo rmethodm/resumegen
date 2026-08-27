@@ -14,6 +14,14 @@ class TwoFactorController extends Controller
         $google2fa = new Google2FA;
         $user = $request->user();
 
+        // Re-enrolling while 2FA is active would null two_factor_confirmed_at,
+        // silently disabling 2FA without the password gate on the disable route.
+        if ($user->two_factor_confirmed_at !== null) {
+            return redirect()
+                ->route('profile.edit')
+                ->with('error', 'Disable two-factor authentication before setting it up again.');
+        }
+
         $user->two_factor_secret = $google2fa->generateSecretKey();
         $user->two_factor_confirmed_at = null;
         $user->save();

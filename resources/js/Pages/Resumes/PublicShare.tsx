@@ -170,7 +170,7 @@ function AccessGate({
                                     type="password"
                                     required
                                     autoFocus={!requireEmail}
-                                    maxLength={8}
+                                    maxLength={72}
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
                                     className="mt-1"

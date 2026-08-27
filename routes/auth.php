@@ -19,7 +19,4 @@ Route::middleware('auth')->group(function () {
     Route::post('two-factor-challenge', [TwoFactorChallengeController::class, 'store'])
         ->middleware('throttle:5,1')
         ->name('two-factor.challenge.store');
-    Route::post('two-factor-challenge/email', [TwoFactorChallengeController::class, 'sendEmail'])
-        ->middleware('throttle:3,1')
-        ->name('two-factor.challenge.email');
 });

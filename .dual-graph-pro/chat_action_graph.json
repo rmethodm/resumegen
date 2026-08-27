@@ -474,6 +474,292 @@
     {
       "id": "tests/Feature/ResumeDeletionPruneTest.php",
       "type": "file"
+    },
+    {
+      "id": "query:inspect untracked status txt docs readme before committing",
+      "type": "query",
+      "meta": {
+        "text": "inspect untracked status.txt and docs/README.md before committing deploy"
+      }
+    },
+    {
+      "id": "resources/js/Pages/Jobs/Imports.tsx::Status",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Pages/Dashboard.tsx::ShareStatus",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/hooks/use-resume-ai.ts::AiStatus",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Pages/Resumes/Workstation.tsx",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/lib/resume-sections.ts::SectionStatus",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1787689292",
+      "type": "action",
+      "meta": {
+        "summary": "Add server-repair.sh and Part 11 troubleshooting section for deploy failures"
+      }
+    },
+    {
+      "id": "scripts/server-repair.sh",
+      "type": "file"
+    },
+    {
+      "id": "docs/DEPLOYMENT.md",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1787691236",
+      "type": "action",
+      "meta": {
+        "summary": "Add Production server section (2026-08-25 fixes) and prod migration-log incident note"
+      }
+    },
+    {
+      "id": "query:workstation autosave loop hook fires when nothing changed",
+      "type": "query",
+      "meta": {
+        "text": "Workstation autosave loop use-autosave hook fires when nothing changed"
+      }
+    },
+    {
+      "id": "resources/js/hooks/use-autosave.ts",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/hooks/useAiSuggestion.ts",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/hooks/useDarkMode.ts",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Components/workstation/brand-theme-switcher.tsx",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/hooks/use-autosave.ts::useAutosave",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/hooks/use-valid-contact.ts",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1787716339",
+      "type": "action",
+      "meta": {
+        "summary": "Autosave loop fix: base_updated_at token moved from state to ref so token refresh no longer changes payload identity"
+      }
+    },
+    {
+      "id": "app/Http/Controllers/ResumeController.php::workstation",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1787716657",
+      "type": "action",
+      "meta": {
+        "summary": "Cloned Workstation page as Resumes/Builder with new resumes.builder route; all app links/redirects now point to builder; workstation route/page kept"
+      }
+    },
+    {
+      "id": "resources/js/Pages/Resumes/Builder.tsx",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Controllers/ResumeImportController.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Controllers/SearchController.php",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Components/workstation/workstation-header.tsx",
+      "type": "file"
+    },
+    {
+      "id": "extension/sidepanel/sidepanel.js",
+      "type": "file"
+    },
+    {
+      "id": "tests/Feature/ResumeCreatePathsTest.php",
+      "type": "file"
+    },
+    {
+      "id": "tests/Feature/BuilderRedirectsToWorkstationTest.php",
+      "type": "file"
+    },
+    {
+      "id": "query:security audit public share links publicresumesharecontroller urlprobe securityheaders",
+      "type": "query",
+      "meta": {
+        "text": "security audit public share links PublicResumeShareController UrlProbe SecurityHeaders TrackSiteVisit PDF templates"
+      }
+    },
+    {
+      "id": "resources/js/lib/brand-themes.ts",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Middleware/TrackSiteVisit.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Services/UrlProbe.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Models/ResumeShareLink.php",
+      "type": "file"
+    },
+    {
+      "id": "resources/views/resumes/export/pdf.blade.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Support/PdfFonts.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Support/PlainTextResumeParser.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Controllers/UrlCheckController.php",
+      "type": "file"
+    },
+    {
+      "id": ".env.example",
+      "type": "file"
+    },
+    {
+      "id": "query:style header heading templates user input",
+      "type": "query",
+      "meta": {
+        "text": "style header heading templates user input"
+      }
+    },
+    {
+      "id": "app/Support/ResumeExport.php",
+      "type": "file"
+    },
+    {
+      "id": "query:urls check middleware throttle",
+      "type": "query",
+      "meta": {
+        "text": "urls check middleware throttle"
+      }
+    },
+    {
+      "id": "action:edit:1787781902",
+      "type": "action",
+      "meta": {
+        "summary": "SQL runner: READ ONLY txn on read-only branch + explain(), reject stacked statements"
+      }
+    },
+    {
+      "id": "app/Http/Controllers/Admin/DatabaseQueryController.php",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1787781961",
+      "type": "action",
+      "meta": {
+        "summary": "Security fixes: 2FA re-enroll gate, password.confirm on token/2FA routes, token revoke on password change/reset, share password min:8, extra security headers"
+      }
+    },
+    {
+      "id": "app/Http/Controllers/Auth/TwoFactorController.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Controllers/Auth/PasswordController.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Actions/Fortify/ResetUserPassword.php",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1787782053",
+      "type": "action",
+      "meta": {
+        "summary": "Password maxLength 72 in UI; tests updated for password.confirm gates and min:8 share password"
+      }
+    },
+    {
+      "id": "tests/Feature/Auth/TwoFactorSetupTest.php",
+      "type": "file"
+    },
+    {
+      "id": "tests/Feature/ExtensionTokenTest.php",
+      "type": "file"
+    },
+    {
+      "id": "tests/Feature/MobileTokenTest.php",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1787783093",
+      "type": "action",
+      "meta": {
+        "summary": "Global 2FA middleware, email-OTP removal, ip_hash view dedupe, CSP with nonce, proxy note, dead controller deleted"
+      }
+    },
+    {
+      "id": "app/Http/Middleware/RequiresTwoFactorChallenge.php",
+      "type": "file"
+    },
+    {
+      "id": "routes/auth.php",
+      "type": "file"
+    },
+    {
+      "id": "app/Http/Controllers/Auth/TwoFactorChallengeController.php",
+      "type": "file"
+    },
+    {
+      "id": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
+      "type": "file"
+    },
+    {
+      "id": "database/migrations/2026_08_26_222240_add_ip_hash_to_resume_share_link_views_table.php",
+      "type": "file"
+    },
+    {
+      "id": "resources/views/app.blade.php",
+      "type": "file"
+    },
+    {
+      "id": "tests/Feature/Auth/TwoFactorChallengeTest.php",
+      "type": "file"
+    },
+    {
+      "id": "tests/Feature/Auth/AuthRouteNamesTest.php",
+      "type": "file"
+    },
+    {
+      "id": "action:edit:1787783141",
+      "type": "action",
+      "meta": {
+        "summary": "Fix global-2FA coverage test route; add cookieless view-flood regression test"
+      }
     }
   ],
   "edges": [
@@ -1379,6 +1665,525 @@
       "to": "tests/Feature/JobUrlImporterTest.php",
       "rel": "edited",
       "ts": 1787170825
+    },
+    {
+      "from": "query:inspect untracked status txt docs readme before committing",
+      "to": "resources/js/Pages/Jobs/Imports.tsx::Status",
+      "rel": "retrieved",
+      "ts": 1787685821
+    },
+    {
+      "from": "query:inspect untracked status txt docs readme before committing",
+      "to": "resources/js/Pages/Dashboard.tsx::ShareStatus",
+      "rel": "retrieved",
+      "ts": 1787685821
+    },
+    {
+      "from": "query:inspect untracked status txt docs readme before committing",
+      "to": "resources/js/hooks/use-resume-ai.ts::AiStatus",
+      "rel": "retrieved",
+      "ts": 1787685821
+    },
+    {
+      "from": "query:inspect untracked status txt docs readme before committing",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1787685821
+    },
+    {
+      "from": "query:inspect untracked status txt docs readme before committing",
+      "to": "resources/js/lib/resume-sections.ts::SectionStatus",
+      "rel": "retrieved",
+      "ts": 1787685821
+    },
+    {
+      "from": "action:edit:1787689292",
+      "to": "scripts/server-repair.sh",
+      "rel": "edited",
+      "ts": 1787689292
+    },
+    {
+      "from": "action:edit:1787689292",
+      "to": "docs/DEPLOYMENT.md",
+      "rel": "edited",
+      "ts": 1787689292
+    },
+    {
+      "from": "action:edit:1787691236",
+      "to": "CLAUDE.md",
+      "rel": "edited",
+      "ts": 1787691236
+    },
+    {
+      "from": "query:workstation autosave loop hook fires when nothing changed",
+      "to": "resources/js/hooks/use-autosave.ts",
+      "rel": "retrieved",
+      "ts": 1787716255
+    },
+    {
+      "from": "query:workstation autosave loop hook fires when nothing changed",
+      "to": "resources/js/hooks/useAiSuggestion.ts",
+      "rel": "retrieved",
+      "ts": 1787716255
+    },
+    {
+      "from": "query:workstation autosave loop hook fires when nothing changed",
+      "to": "resources/js/hooks/useDarkMode.ts",
+      "rel": "retrieved",
+      "ts": 1787716255
+    },
+    {
+      "from": "query:workstation autosave loop hook fires when nothing changed",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "retrieved",
+      "ts": 1787716255
+    },
+    {
+      "from": "query:workstation autosave loop hook fires when nothing changed",
+      "to": "resources/js/Components/workstation/brand-theme-switcher.tsx",
+      "rel": "retrieved",
+      "ts": 1787716255
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/hooks/use-autosave.ts::useAutosave",
+      "rel": "read",
+      "ts": 1787716258,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
+      "rel": "read",
+      "ts": 1787716267,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/js/hooks/use-valid-contact.ts",
+      "rel": "read",
+      "ts": 1787716296,
+      "meta": {
+        "mode": "symbol_excerpt"
+      }
+    },
+    {
+      "from": "action:edit:1787716339",
+      "to": "resources/js/Pages/Resumes/Workstation.tsx",
+      "rel": "edited",
+      "ts": 1787716339
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Http/Controllers/ResumeController.php::workstation",
+      "rel": "read",
+      "ts": 1787716563,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "resources/js/Pages/Resumes/Builder.tsx",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "routes/web.php",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "app/Http/Controllers/ResumeController.php",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "app/Http/Controllers/ResumeBuilderController.php",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "app/Http/Controllers/ResumeImportController.php",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "app/Http/Controllers/SearchController.php",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "resources/js/Pages/Dashboard.tsx",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "resources/js/Components/workstation/workstation-header.tsx",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "extension/sidepanel/sidepanel.js",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "tests/Feature/ResumeCreatePathsTest.php",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "action:edit:1787716657",
+      "to": "tests/Feature/BuilderRedirectsToWorkstationTest.php",
+      "rel": "edited",
+      "ts": 1787716657
+    },
+    {
+      "from": "query:security audit public share links publicresumesharecontroller urlprobe securityheaders",
+      "to": "resources/js/Pages/Resumes/PublicShare.tsx",
+      "rel": "retrieved",
+      "ts": 1787781773
+    },
+    {
+      "from": "query:security audit public share links publicresumesharecontroller urlprobe securityheaders",
+      "to": "resources/js/Pages/Shares/Index.tsx",
+      "rel": "retrieved",
+      "ts": 1787781773
+    },
+    {
+      "from": "query:security audit public share links publicresumesharecontroller urlprobe securityheaders",
+      "to": "resources/js/hooks/useAiSuggestion.ts",
+      "rel": "retrieved",
+      "ts": 1787781773
+    },
+    {
+      "from": "query:security audit public share links publicresumesharecontroller urlprobe securityheaders",
+      "to": "resources/js/hooks/useDarkMode.ts",
+      "rel": "retrieved",
+      "ts": 1787781773
+    },
+    {
+      "from": "query:security audit public share links publicresumesharecontroller urlprobe securityheaders",
+      "to": "resources/js/lib/brand-themes.ts",
+      "rel": "retrieved",
+      "ts": 1787781773
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Http/Controllers/PublicResumeShareController.php",
+      "rel": "read",
+      "ts": 1787781779,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Http/Middleware/SecurityHeaders.php",
+      "rel": "read",
+      "ts": 1787781781,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Http/Middleware/TrackSiteVisit.php",
+      "rel": "read",
+      "ts": 1787781782,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Services/UrlProbe.php",
+      "rel": "read",
+      "ts": 1787781783,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Models/ResumeShareLink.php",
+      "rel": "read",
+      "ts": 1787781794,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "resources/views/resumes/export/pdf.blade.php",
+      "rel": "read",
+      "ts": 1787781797,
+      "meta": {
+        "mode": "head"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "bootstrap/app.php",
+      "rel": "read",
+      "ts": 1787781799,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "routes/web.php",
+      "rel": "read",
+      "ts": 1787781809,
+      "meta": {
+        "mode": "head"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Providers/AppServiceProvider.php",
+      "rel": "read",
+      "ts": 1787781810,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Support/PdfFonts.php",
+      "rel": "read",
+      "ts": 1787781812,
+      "meta": {
+        "mode": "head"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Support/PlainTextResumeParser.php",
+      "rel": "read",
+      "ts": 1787781813,
+      "meta": {
+        "mode": "head"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": "app/Http/Controllers/UrlCheckController.php",
+      "rel": "read",
+      "ts": 1787781815,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:(empty)",
+      "to": ".env.example",
+      "rel": "read",
+      "ts": 1787781816,
+      "meta": {
+        "mode": "full"
+      }
+    },
+    {
+      "from": "query:style header heading templates user input",
+      "to": "app/Support/ResumeExport.php",
+      "rel": "read",
+      "ts": 1787781827,
+      "meta": {
+        "mode": "query_excerpt"
+      }
+    },
+    {
+      "from": "query:urls check middleware throttle",
+      "to": "routes/web.php",
+      "rel": "read",
+      "ts": 1787781834,
+      "meta": {
+        "mode": "anchor_excerpt"
+      }
+    },
+    {
+      "from": "action:edit:1787781902",
+      "to": "app/Http/Controllers/Admin/DatabaseQueryController.php",
+      "rel": "edited",
+      "ts": 1787781902
+    },
+    {
+      "from": "action:edit:1787781961",
+      "to": "app/Http/Requests/UpdateResumeShareLinkRequest.php",
+      "rel": "edited",
+      "ts": 1787781961
+    },
+    {
+      "from": "action:edit:1787781961",
+      "to": "app/Http/Controllers/Auth/TwoFactorController.php",
+      "rel": "edited",
+      "ts": 1787781961
+    },
+    {
+      "from": "action:edit:1787781961",
+      "to": "routes/web.php",
+      "rel": "edited",
+      "ts": 1787781961
+    },
+    {
+      "from": "action:edit:1787781961",
+      "to": "app/Http/Controllers/Auth/PasswordController.php",
+      "rel": "edited",
+      "ts": 1787781961
+    },
+    {
+      "from": "action:edit:1787781961",
+      "to": "app/Actions/Fortify/ResetUserPassword.php",
+      "rel": "edited",
+      "ts": 1787781961
+    },
+    {
+      "from": "action:edit:1787781961",
+      "to": "app/Http/Middleware/SecurityHeaders.php",
+      "rel": "edited",
+      "ts": 1787781961
+    },
+    {
+      "from": "action:edit:1787782053",
+      "to": "resources/js/Pages/Resumes/PublicShare.tsx",
+      "rel": "edited",
+      "ts": 1787782053
+    },
+    {
+      "from": "action:edit:1787782053",
+      "to": "resources/js/Components/workstation/share-resume-modal.tsx",
+      "rel": "edited",
+      "ts": 1787782053
+    },
+    {
+      "from": "action:edit:1787782053",
+      "to": "tests/Feature/Auth/TwoFactorSetupTest.php",
+      "rel": "edited",
+      "ts": 1787782053
+    },
+    {
+      "from": "action:edit:1787782053",
+      "to": "tests/Feature/ExtensionTokenTest.php",
+      "rel": "edited",
+      "ts": 1787782053
+    },
+    {
+      "from": "action:edit:1787782053",
+      "to": "tests/Feature/MobileTokenTest.php",
+      "rel": "edited",
+      "ts": 1787782053
+    },
+    {
+      "from": "action:edit:1787782053",
+      "to": "tests/Feature/ResumeShareLinkControllerTest.php",
+      "rel": "edited",
+      "ts": 1787782053
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "bootstrap/app.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "app/Http/Middleware/RequiresTwoFactorChallenge.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "routes/auth.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "app/Http/Controllers/Auth/TwoFactorChallengeController.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "database/migrations/2026_08_26_222240_add_ip_hash_to_resume_share_link_views_table.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "app/Models/ResumeShareLinkView.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "app/Http/Controllers/PublicResumeShareController.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "app/Http/Middleware/SecurityHeaders.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "resources/views/app.blade.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "tests/Feature/SecurityHeadersTest.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "tests/Feature/Auth/TwoFactorChallengeTest.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783093",
+      "to": "tests/Feature/Auth/AuthRouteNamesTest.php",
+      "rel": "edited",
+      "ts": 1787783093
+    },
+    {
+      "from": "action:edit:1787783141",
+      "to": "tests/Feature/Auth/TwoFactorChallengeTest.php",
+      "rel": "edited",
+      "ts": 1787783141
+    },
+    {
+      "from": "action:edit:1787783141",
+      "to": "tests/Feature/PublicResumeShareControllerTest.php",
+      "rel": "edited",
+      "ts": 1787783141
     }
   ],
   "files": {
@@ -1456,8 +2261,8 @@
       "last_action": "edited",
       "last_ts": "2026-08-19T10:36:01.234713+00:00",
       "edited_count": 1,
-      "last_edited": 1787594624.084076,
-      "edit_count": 2
+      "last_edited": 1787603670.386837,
+      "edit_count": 3
     },
     "resources/js/Components/marketing/marketing-cta.ts": {
       "last_action": "edited",
@@ -1539,20 +2344,23 @@
       "cached_chars": 6000,
       "cached_tokens_est": 1500,
       "last_action": "edited",
-      "last_ts": "2026-08-19T19:57:46.236414+00:00",
+      "last_ts": "2026-08-26T03:57:37.712373+00:00",
       "first_read_turn": 1,
       "last_edited": 1787169354.513381,
       "edit_count": 1,
-      "edited_count": 1
+      "edited_count": 2
     },
     "app/Http/Requests/UpdateResumeShareLinkRequest.php": {
       "query_terms": [],
       "cached_content": "<?php\n\nnamespace App\\Http\\Requests;\n\nuse App\\Concerns\\AbortsAsNotFound;\nuse App\\Models\\ResumeShareLink;\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass UpdateResumeShareLinkRequest extends FormRequest\n{\n    use AbortsAsNotFound;\n\n    /**\n     * The link reaches its owner through its resume. Forei",
       "cached_chars": 991,
       "cached_tokens_est": 247,
-      "last_action": "read",
-      "last_ts": 1787160514,
-      "first_read_turn": 1
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:06:01.282173+00:00",
+      "first_read_turn": 1,
+      "last_edited": 1787781941.273493,
+      "edit_count": 1,
+      "edited_count": 1
     },
     "app/Concerns/GuardsMobileTokens.php": {
       "last_edited": 1787139707.8800719,
@@ -1633,11 +2441,11 @@
       "edited_count": 1
     },
     "CLAUDE.md": {
-      "last_edited": 1787235462.736075,
-      "edit_count": 9,
+      "last_edited": 1787691219.795651,
+      "edit_count": 10,
       "last_action": "edited",
-      "last_ts": "2026-08-19T20:02:31.180694+00:00",
-      "edited_count": 3
+      "last_ts": "2026-08-25T20:53:56.138400+00:00",
+      "edited_count": 4
     },
     "README.md": {
       "last_edited": 1787140851.3842418,
@@ -1649,13 +2457,13 @@
     "app/Http/Controllers/PublicResumeShareController.php": {
       "query_terms": [],
       "cached_content": "<?php\n\nnamespace App\\Http\\Controllers;\n\nuse App\\Models\\ResumeShareLink;\nuse App\\Support\\DocxExport;\nuse App\\Support\\PdfFonts;\nuse App\\Support\\ResumeDocument;\nuse App\\Support\\ResumeExport;\nuse Barryvdh\\DomPDF\\Facade\\Pdf;\nuse Illuminate\\Http\\RedirectResponse;\nuse Illuminate\\Http\\Request;\nuse Illuminat",
-      "cached_chars": 4633,
-      "cached_tokens_est": 1158,
+      "cached_chars": 5598,
+      "cached_tokens_est": 1399,
       "last_action": "edited",
-      "last_ts": "2026-08-19T19:57:46.236411+00:00",
+      "last_ts": "2026-08-26T22:24:53.802423+00:00",
       "first_read_turn": 1,
-      "last_edited": 1787169332.6731038,
-      "edit_count": 5,
+      "last_edited": 1787783054.3154821,
+      "edit_count": 2,
       "edited_count": 1
     },
     "resources/js/Components/workstation/share-resume-modal.tsx::ShareResumeModal": {
@@ -1669,43 +2477,40 @@
     },
     "routes/web.php": {
       "query_terms": [
-        "share",
-        "unlock",
-        "throttle",
-        "token"
+        "urls",
+        "check",
+        "middleware",
+        "throttle"
       ],
-      "cached_content": "<?php\n\nuse App\\Http\\Controllers\\AiSuggestionController;\nuse App\\Http\\Controllers\\Auth\\ConfirmedTwoFactorController;\nuse App\\Http\\Controllers\\Auth\\TwoFactorController;\nuse App\\Http\\Controllers\\Auth\\TwoFactorRecoveryCodesController;\nuse App\\Http\\Controllers\\AutocompleteController;\nuse App\\Http\\Control",
+      "cached_content": "hrottle:10,1')\n        ->name('profile.mobile-tokens.store');\n    Route::delete('/profile/mobile-tokens/{token}', [MobileTokenController::class, 'destroy'])\n        ->middleware('throttle:10,1')\n        ->name('profile.mobile-tokens.destroy');\n\n    Route::get('/onboarding', [OnboardingController::cl",
       "cached_chars": 6000,
       "cached_tokens_est": 1500,
       "last_action": "edited",
-      "last_ts": "2026-08-19T19:57:46.236401+00:00",
+      "last_ts": "2026-08-26T22:06:01.282214+00:00",
       "first_read_turn": 1,
-      "last_edited": 1787169266.8217049,
-      "edit_count": 2,
+      "last_edited": 1787781949.067474,
+      "edit_count": 3,
       "edited_count": 1
     },
     "app/Providers/AppServiceProvider.php": {
       "query_terms": [],
-      "cached_content": "<?php\n\nnamespace App\\Providers;\n\nuse Illuminate\\Cache\\RateLimiting\\Limit;\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\RateLimiter;\nuse Illuminate\\Support\\Facades\\Vite;\nuse Illuminate\\Support\\ServiceProvider;\n\nclass AppServiceProvider extends ServiceProvider\n{\n    /**\n     * Register ",
-      "cached_chars": 715,
-      "cached_tokens_est": 178,
-      "last_action": "edited",
-      "last_ts": "2026-08-19T20:20:25.499121+00:00",
-      "first_read_turn": 1,
-      "last_edited": 1787170619.86653,
-      "edit_count": 2,
-      "edited_count": 1
+      "cached_content": "<?php\n\nnamespace App\\Providers;\n\nuse Illuminate\\Cache\\RateLimiting\\Limit;\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\RateLimiter;\nuse Illuminate\\Support\\Facades\\URL;\nuse Illuminate\\Support\\Facades\\Vite;\nuse Illuminate\\Support\\ServiceProvider;\n\nclass AppServiceProvider extends Servic",
+      "cached_chars": 990,
+      "cached_tokens_est": 247,
+      "last_action": "read",
+      "last_ts": 1787781810,
+      "first_read_turn": 1
     },
     "bootstrap/app.php": {
       "query_terms": [],
-      "cached_content": "<?php\n\nuse App\\Http\\Middleware\\EnsureAiEnabled;\nuse App\\Http\\Middleware\\EnsureUserIsAdmin;\nuse App\\Http\\Middleware\\EnsureUserNotDisabled;\nuse App\\Http\\Middleware\\HandleInertiaRequests;\nuse App\\Http\\Middleware\\RequiresTwoFactorChallenge;\nuse App\\Http\\Middleware\\TrackActivity;\nuse App\\Http\\Middleware\\",
-      "cached_chars": 2141,
-      "cached_tokens_est": 535,
+      "cached_content": "<?php\n\nuse App\\Http\\Middleware\\EnforceAdminSessionIdleTimeout;\nuse App\\Http\\Middleware\\EnsureAdminDestructiveToolsAllowed;\nuse App\\Http\\Middleware\\EnsureAdminHasTwoFactor;\nuse App\\Http\\Middleware\\EnsureUserCanWrite;\nuse App\\Http\\Middleware\\EnsureUserIsAdmin;\nuse App\\Http\\Middleware\\EnsureUserNotDisa",
+      "cached_chars": 2679,
+      "cached_tokens_est": 669,
       "last_action": "edited",
-      "last_ts": "2026-08-19T20:20:25.499054+00:00",
+      "last_ts": "2026-08-26T22:24:53.802328+00:00",
       "first_read_turn": 1,
-      "last_edited": 1787596525.067212,
-      "edit_count": 4,
+      "last_edited": 1787782993.977186,
+      "edit_count": 1,
       "edited_count": 1
     },
     "app/Support/ResumeDocument.php": {
@@ -1725,11 +2530,11 @@
       "edit_count": 1
     },
     "tests/Feature/ResumeShareLinkControllerTest.php": {
-      "last_edited": 1787168162.7710562,
-      "edit_count": 1,
+      "last_edited": 1787782038.307497,
+      "edit_count": 3,
       "last_action": "edited",
-      "last_ts": "2026-08-19T19:36:28.814499+00:00",
-      "edited_count": 1
+      "last_ts": "2026-08-26T22:07:33.105534+00:00",
+      "edited_count": 2
     },
     "app/Support/ResumeDocument.php::save": {
       "last_action": "edited",
@@ -1762,8 +2567,8 @@
       "last_edited": 1787169253.9545548,
       "edit_count": 5,
       "last_action": "edited",
-      "last_ts": "2026-08-19T19:57:46.236405+00:00",
-      "edited_count": 1
+      "last_ts": "2026-08-26T03:57:37.712381+00:00",
+      "edited_count": 2
     },
     "app/Http/Controllers/ShareController.php": {
       "query_terms": [],
@@ -1782,9 +2587,12 @@
       "cached_content": "<?php\n\nnamespace App\\Models;\n\nuse Database\\Factories\\ResumeShareLinkViewFactory;\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;\n\nclass ResumeShareLinkView extends Model\n{\n    /** @use HasFactory<Res",
       "cached_chars": 734,
       "cached_tokens_est": 183,
-      "last_action": "read",
-      "last_ts": 1787169306,
-      "first_read_turn": 1
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:24:53.802416+00:00",
+      "first_read_turn": 1,
+      "last_edited": 1787783047.248013,
+      "edit_count": 1,
+      "edited_count": 1
     },
     "database/migrations/2026_08_19_130000_make_share_link_view_email_nullable.php": {
       "last_edited": 1787169311.983335,
@@ -1794,11 +2602,11 @@
       "edited_count": 1
     },
     "tests/Feature/PublicResumeShareControllerTest.php": {
-      "last_edited": 1787169371.761249,
-      "edit_count": 1,
+      "last_edited": 1787783136.222165,
+      "edit_count": 2,
       "last_action": "edited",
-      "last_ts": "2026-08-19T19:57:46.236428+00:00",
-      "edited_count": 1
+      "last_ts": "2026-08-26T22:25:41.783493+00:00",
+      "edited_count": 2
     },
     "LAUNCH-REVIEW-2026-08-18.md": {
       "last_edited": 1787169999.6921191,
@@ -1956,11 +2764,16 @@
       "edited_count": 1
     },
     "app/Http/Middleware/SecurityHeaders.php": {
-      "last_edited": 1787170493.36643,
-      "edit_count": 1,
+      "query_terms": [],
+      "cached_content": "<?php\n\nnamespace App\\Http\\Middleware;\n\nuse Closure;\nuse Illuminate\\Http\\Request;\nuse Symfony\\Component\\HttpFoundation\\Response;\n\n/**\n * Baseline security headers Laravel does not send on its own. CSP is\n * deliberately absent \u2014 Inertia/Vite need nonce plumbing first; add it as\n * Report-Only when th",
+      "cached_chars": 870,
+      "cached_tokens_est": 217,
       "last_action": "edited",
-      "last_ts": "2026-08-19T20:20:25.498923+00:00",
-      "edited_count": 1
+      "last_ts": "2026-08-26T22:24:53.802432+00:00",
+      "first_read_turn": 1,
+      "last_edited": 1787783063.43063,
+      "edit_count": 2,
+      "edited_count": 2
     },
     "extension/test/app-base.test.mjs": {
       "last_edited": 1787170570.009883,
@@ -1970,11 +2783,11 @@
       "edited_count": 1
     },
     "tests/Feature/SecurityHeadersTest.php": {
-      "last_edited": 1787170638.675168,
-      "edit_count": 1,
+      "last_edited": 1787783073.3652322,
+      "edit_count": 2,
       "last_action": "edited",
-      "last_ts": "2026-08-19T20:20:25.499132+00:00",
-      "edited_count": 1
+      "last_ts": "2026-08-26T22:24:53.802464+00:00",
+      "edited_count": 2
     },
     "tests/Feature/ResumeDeletionPruneTest.php": {
       "last_edited": 1787170655.766019,
@@ -2001,7 +2814,10 @@
     },
     "resources/js/Components/workstation/share-resume-modal.tsx": {
       "last_edited": 1787583300.78547,
-      "edit_count": 1
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:07:33.105488+00:00",
+      "edited_count": 1
     },
     "/private/tmp/claude-501/-Users-rmethod-Herd-Resumegen/8fdb122b-8c96-4d38-af94-9eea164d1f73/scratchpad/modal-fix.patch": {
       "last_edited": 1787584258.939561,
@@ -2012,8 +2828,11 @@
       "edit_count": 5
     },
     "resources/js/Pages/Resumes/Workstation.tsx": {
-      "last_edited": 1787595752.408187,
-      "edit_count": 2
+      "last_edited": 1787716331.129358,
+      "edit_count": 6,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:52:19.561700+00:00",
+      "edited_count": 1
     },
     "database/migrations/2026_08_24_120000_add_is_read_only_to_users_table.php": {
       "last_edited": 1787596513.848344,
@@ -2030,1029 +2849,309 @@
     "tests/Feature/ReadOnlyAccountTest.php": {
       "last_edited": 1787596562.94319,
       "edit_count": 2
+    },
+    "resources/js/Components/marketing/marketing-content.test.ts": {
+      "last_edited": 1787603665.714895,
+      "edit_count": 1
+    },
+    "docs/UNFORGET.md": {
+      "last_edited": 1787666595.198195,
+      "edit_count": 1
+    },
+    "scripts/server-repair.sh": {
+      "last_edited": 1787689275.14006,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-25T20:21:32.761366+00:00",
+      "edited_count": 1
+    },
+    "docs/DEPLOYMENT.md": {
+      "last_edited": 1787689285.626441,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-25T20:21:32.761386+00:00",
+      "edited_count": 1
+    },
+    "/Users/rmethod/.claude/projects/-Users-rmethod-Herd-Resumegen/memory/resumegen-prod-ssh-and-server.md": {
+      "last_edited": 1787690738.1011798,
+      "edit_count": 1
+    },
+    "resources/js/hooks/use-autosave.ts::useAutosave": {
+      "query_terms": [],
+      "cached_content": "export function useAutosave<T extends RequestPayload>(\n    url: string,\n    data: T,\n    delay = 1500,\n    onSuccess?: () => void,\n): AutosaveControls {\n    const [status, setStatus] = useState<SaveStatus>('saved');\n    const [offline, setOffline] = useState(\n        typeof navigator !== 'undefined'",
+      "cached_chars": 4133,
+      "cached_tokens_est": 1033,
+      "last_action": "read",
+      "last_ts": 1787716258,
+      "first_read_turn": 1
+    },
+    "resources/js/Pages/Resumes/Workstation.tsx::Workstation": {
+      "query_terms": [],
+      "cached_content": "export default function Workstation({\n    resume,\n    skillLibrary,\n    share,\n    versions = [],\n    notes = [],\n    snapshots = [],\n}: {\n    resume: ResumePageDocument;\n    /** Server analysis kept on the page for Inertia parity; score UI uses live draft. */\n    analysis?: unknown;\n    skillLibrar",
+      "cached_chars": 3769,
+      "cached_tokens_est": 942,
+      "last_action": "read",
+      "last_ts": 1787716267,
+      "first_read_turn": 1
+    },
+    "resources/js/hooks/use-valid-contact.ts": {
+      "query_terms": [],
+      "cached_content": "export function useValidContact(\n    draft: ResumeDraft,\n    savedEmail: string,\n    savedPhone: string,\n): {\n    payload: ResumeDraft;\n    errors: ContactErrors;\n} {\n    const errors = useMemo<ContactErrors>(\n        () => ({\n            email: emailError(draft.email),\n            phone: phoneError",
+      "cached_chars": 1278,
+      "cached_tokens_est": 319,
+      "last_action": "read",
+      "last_ts": 1787716296,
+      "first_read_turn": 1
+    },
+    "app/Http/Controllers/ResumeController.php::workstation": {
+      "query_terms": [],
+      "cached_content": "<?php\n\nnamespace App\\Http\\Controllers;\n\nuse App\\Http\\Requests\\StoreResumeRequest;\nuse App\\Http\\Requests\\UpdateResumeRequest;\nuse App\\Http\\Requests\\UpdateResumeTitleRequest;\nuse App\\Models\\LibrarySkill;\nuse App\\Models\\Resume;\nuse App\\Models\\ResumeNote;\nuse App\\Models\\StarterProfile;\nuse App\\Support\\D",
+      "cached_chars": 18254,
+      "cached_tokens_est": 4563,
+      "last_action": "read",
+      "last_ts": 1787716563,
+      "first_read_turn": 1
+    },
+    "resources/js/Pages/Resumes/Builder.tsx": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:57:37.712350+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Controllers/ResumeImportController.php": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:57:37.712397+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Controllers/SearchController.php": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:57:37.712409+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Pages/Dashboard.tsx": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:57:37.712415+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Components/workstation/workstation-header.tsx": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:57:37.712425+00:00",
+      "edited_count": 1
+    },
+    "extension/sidepanel/sidepanel.js": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:57:37.712437+00:00",
+      "edited_count": 1
+    },
+    "tests/Feature/ResumeCreatePathsTest.php": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:57:37.712449+00:00",
+      "edited_count": 1
+    },
+    "tests/Feature/BuilderRedirectsToWorkstationTest.php": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T03:57:37.712461+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Middleware/TrackSiteVisit.php": {
+      "query_terms": [],
+      "cached_content": "<?php\n\nnamespace App\\Http\\Middleware;\n\nuse App\\Models\\SiteVisit;\nuse Closure;\nuse Illuminate\\Http\\Request;\nuse Symfony\\Component\\HttpFoundation\\Response;\nuse Throwable;\n\nclass TrackSiteVisit\n{\n    /**\n     * Log one row per request to the main site. Admin-domain traffic is\n     * excluded \u2014 this tra",
+      "cached_chars": 1915,
+      "cached_tokens_est": 478,
+      "last_action": "read",
+      "last_ts": 1787781782,
+      "first_read_turn": 1
+    },
+    "app/Services/UrlProbe.php": {
+      "query_terms": [],
+      "cached_content": "<?php\n\nnamespace App\\Services;\n\nuse Illuminate\\Http\\Client\\ConnectionException;\nuse Illuminate\\Http\\Client\\Response;\nuse Illuminate\\Support\\Facades\\Http;\nuse RuntimeException;\n\n/**\n * Soft reachability check for resume URL fields (LinkedIn, website, project).\n * SSRF posture: public http(s) only, no",
+      "cached_chars": 5704,
+      "cached_tokens_est": 1426,
+      "last_action": "read",
+      "last_ts": 1787781783,
+      "first_read_turn": 1
+    },
+    "app/Models/ResumeShareLink.php": {
+      "query_terms": [],
+      "cached_content": "<?php\n\nnamespace App\\Models;\n\nuse Database\\Factories\\ResumeShareLinkFactory;\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;\nuse Illuminate\\Database\\Eloquent\\Relations\\HasMany;\nuse Illuminate\\Support",
+      "cached_chars": 2019,
+      "cached_tokens_est": 504,
+      "last_action": "read",
+      "last_ts": 1787781794,
+      "first_read_turn": 1
+    },
+    "resources/views/resumes/export/pdf.blade.php": {
+      "query_terms": [],
+      "cached_content": "@php\n    $d = $view['density'] ?? [\n        'body' => '10.5pt', 'line' => '1.45', 'page_pad_y' => '0.65in', 'page_pad_x' => '0.75in',\n        'header_mb' => '14pt', 'section_mt' => '14pt', 'section_mb' => '6pt',\n        'entry_mb' => '8pt', 'bullet_mb' => '2pt', 'row_pb' => '4pt',\n    ];\n    $style ",
+      "cached_chars": 6000,
+      "cached_tokens_est": 1500,
+      "last_action": "read",
+      "last_ts": 1787781797,
+      "first_read_turn": 1
+    },
+    "app/Support/PdfFonts.php": {
+      "query_terms": [],
+      "cached_content": "<?php\n\nnamespace App\\Support;\n\nuse FontLib\\Font;\n\n/**\n * Maps a resume's selected UI font to a PDF-embeddable face.\n *\n * Preview uses web fonts (and system proprietary faces). PDF export cannot\n * ship Calibri / Cambria / Arial / Times / Georgia, so those map to metric\n * clones or core PDF fonts. ",
+      "cached_chars": 6000,
+      "cached_tokens_est": 1500,
+      "last_action": "read",
+      "last_ts": 1787781812,
+      "first_read_turn": 1
+    },
+    "app/Support/PlainTextResumeParser.php": {
+      "query_terms": [],
+      "cached_content": "<?php\n\nnamespace App\\Support;\n\n/**\n * Best-effort plain-text / pasted resume \u2192 document shape.\n * Heuristic only \u2014 user reviews in the workstation. No AI.\n */\nfinal class PlainTextResumeParser\n{\n    private const SECTION_ALIASES = [\n        'summary' => ['summary', 'professional summary', 'profile',",
+      "cached_chars": 6000,
+      "cached_tokens_est": 1500,
+      "last_action": "read",
+      "last_ts": 1787781813,
+      "first_read_turn": 1
+    },
+    "app/Http/Controllers/UrlCheckController.php": {
+      "query_terms": [],
+      "cached_content": "<?php\n\nnamespace App\\Http\\Controllers;\n\nuse App\\Http\\Requests\\CheckUrlRequest;\nuse App\\Services\\UrlProbe;\nuse Illuminate\\Http\\JsonResponse;\n\nclass UrlCheckController extends Controller\n{\n    public function __invoke(CheckUrlRequest $request, UrlProbe $probe): JsonResponse\n    {\n        $result = $pr",
+      "cached_chars": 400,
+      "cached_tokens_est": 100,
+      "last_action": "read",
+      "last_ts": 1787781815,
+      "first_read_turn": 1
+    },
+    ".env.example": {
+      "query_terms": [],
+      "cached_content": "APP_NAME=Laravel\nAPP_ENV=local\nAPP_KEY=\nAPP_DEBUG=true\nAPP_URL=http://localhost\n# Support admin host (domain-scoped routes). Local Herd:\n#   herd link admin.resumegen  \u2192  admin.resumegen.test\n# Production example: admin.yourdomain.com (must match DNS + TLS).\nAPP_ADMIN_DOMAIN=admin.resumegen.test\n# D",
+      "cached_chars": 3130,
+      "cached_tokens_est": 782,
+      "last_action": "read",
+      "last_ts": 1787781816,
+      "first_read_turn": 1
+    },
+    "app/Support/ResumeExport.php": {
+      "query_terms": [
+        "style",
+        "header",
+        "heading",
+        "templates",
+        "user",
+        "input"
+      ],
+      "cached_content": "final class ResumeExport\n{\n    private const TITLES = [\n        'summary' => 'Summary',\n        'experience' => 'Work Experience',\n        'project' => 'Projects',\n        'education' => 'Education',\n        'skills' => 'Skills',\n        'certificate' => 'Certifications',\n    ];\n\n    /**\n     * Port",
+      "cached_chars": 6000,
+      "cached_tokens_est": 1500,
+      "last_action": "read",
+      "last_ts": 1787781827,
+      "first_read_turn": 1
+    },
+    "app/Http/Controllers/Admin/DatabaseQueryController.php": {
+      "last_edited": 1787781898.029414,
+      "edit_count": 3,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:05:02.981251+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Controllers/Auth/TwoFactorController.php": {
+      "last_edited": 1787781944.0995998,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:06:01.282204+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Controllers/Auth/PasswordController.php": {
+      "last_edited": 1787781951.164334,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:06:01.282236+00:00",
+      "edited_count": 1
+    },
+    "app/Actions/Fortify/ResetUserPassword.php": {
+      "last_edited": 1787781953.326148,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:06:01.282262+00:00",
+      "edited_count": 1
+    },
+    "tests/Feature/Auth/TwoFactorSetupTest.php": {
+      "last_edited": 1787782022.060689,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:07:33.105502+00:00",
+      "edited_count": 1
+    },
+    "tests/Feature/ExtensionTokenTest.php": {
+      "last_edited": 1787782027.00519,
+      "edit_count": 2,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:07:33.105514+00:00",
+      "edited_count": 1
+    },
+    "tests/Feature/MobileTokenTest.php": {
+      "last_edited": 1787782031.942729,
+      "edit_count": 2,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:07:33.105527+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Pages/Resumes/PublicShare.tsx": {
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:07:33.105475+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Middleware/RequiresTwoFactorChallenge.php": {
+      "last_edited": 1787782997.490124,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:24:53.802348+00:00",
+      "edited_count": 1
+    },
+    "routes/auth.php": {
+      "last_edited": 1787782999.690454,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:24:53.802363+00:00",
+      "edited_count": 1
+    },
+    "app/Http/Controllers/Auth/TwoFactorChallengeController.php": {
+      "last_edited": 1787783014.489675,
+      "edit_count": 4,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:24:53.802380+00:00",
+      "edited_count": 1
+    },
+    "tests/Feature/Auth/TwoFactorChallengeTest.php": {
+      "last_edited": 1787783132.262036,
+      "edit_count": 3,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:25:41.783473+00:00",
+      "edited_count": 2
+    },
+    "tests/Feature/Auth/AuthRouteNamesTest.php": {
+      "last_edited": 1787783032.414413,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:24:53.802495+00:00",
+      "edited_count": 1
+    },
+    "resources/js/Pages/Auth/TwoFactorChallenge.tsx": {
+      "last_edited": 1787783041.6256378,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:24:53.802395+00:00",
+      "edited_count": 1
+    },
+    "database/migrations/2026_08_26_222240_add_ip_hash_to_resume_share_link_views_table.php": {
+      "last_edited": 1787783045.7983649,
+      "edit_count": 1,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:24:53.802408+00:00",
+      "edited_count": 1
+    },
+    "resources/views/app.blade.php": {
+      "last_edited": 1787783066.2609699,
+      "edit_count": 2,
+      "last_action": "edited",
+      "last_ts": "2026-08-26T22:24:53.802454+00:00",
+      "edited_count": 1
     }
   },
   "actions": [
-    {
-      "ts": 1787139600,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "MobileApiToken|createToken|TOKEN_ABILITY",
-        "hit_count": 2,
-        "hit_files": [
-          "resources/js/Pages/Profile/Partials/ExtensionTokensForm.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Auth"
-        ]
-      }
-    },
-    {
-      "ts": 1787139602,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Requests/UpdateResumeRequest.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 6662
-      }
-    },
-    {
-      "ts": 1787139610,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Support/MobileApiToken.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 309
-      }
-    },
-    {
-      "ts": 1787139616,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "createToken|MobileApiToken|auth/token|preview.*export|download-docx|share.*link.*api",
-        "hit_count": 10,
-        "hit_files": [
-          "app/Http/Controllers/MobileTokenController.php",
-          "app/Support/MobileApiToken.php",
-          "app/Http/Controllers/Api/ResumeController.php",
-          "app/Http/Controllers/ProfileController.php",
-          "app/Http/Controllers/ExtensionTokenController.php"
-        ]
-      }
-    },
-    {
-      "ts": 1787139621,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Controllers/MobileTokenController.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1288
-      }
-    },
-    {
-      "ts": 1787139633,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Controllers/ResumeShareLinkController.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 3802
-      }
-    },
-    {
-      "ts": 1787139636,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "function (export|preview)\\(|loadView|Pdf::|dompdf",
-        "hit_count": 13,
-        "hit_files": [
-          "app/Http/Controllers/ResumeBuilderController.php",
-          "app/Support/PdfFonts.php",
-          "app/Http/Controllers/PublicResumeShareController.php",
-          "app/Support/ResumeExport.php",
-          "app/Http/Controllers/PublicResumeController.php",
-          "app/Http/Controllers/ResumeController.php"
-        ]
-      }
-    },
-    {
-      "ts": 1787139642,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Controllers/ResumeController.php",
-        "query": "preview export download pdf",
-        "mode": "anchor_excerpt",
-        "response_chars": 6000
-      }
-    },
-    {
-      "ts": 1787139662,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Requests/UpdateResumeShareLinkRequest.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 991
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139707.880071,
-      "files": [
-        "app/Concerns/GuardsMobileTokens.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139726.871924,
-      "files": [
-        "app/Http/Controllers/Api/MobileAuthController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139741.617878,
-      "files": [
-        "app/Http/Controllers/Api/ShareLinkController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139752.7594728,
-      "files": [
-        "app/Http/Controllers/Api/ResumeController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139758.415314,
-      "files": [
-        "app/Http/Controllers/Api/ResumeController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139764.013201,
-      "files": [
-        "routes/api.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139767.87905,
-      "files": [
-        "routes/api.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787139776,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "class .*ApiTest extends ApiTestCase|abstract class ApiTestCase",
-        "hit_count": 6,
-        "hit_files": [
-          "./tests/Feature/Api/ExtensionApiTest.php",
-          "./docs/superpowers/plans/2026-06-24-extension-resume-activity.md",
-          "./docs/superpowers/plans/2026-07-07-mobile-app-phase2-editing.md",
-          "./tests/Feature/Api/ApiTestCase.php",
-          "./tests/Feature/Api/MobileResumeApiTest.php"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Auth"
-        ]
-      }
-    },
-    {
-      "ts": 1787139780,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "tests/Feature/Api/MobileResumeApiTest.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 4841
-      }
-    },
-    {
-      "ts": 1787139789,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "resumes.*(preview|download|export).*assert|->get\\(.*(preview|/export)",
-        "hit_count": 5,
-        "hit_files": [
-          "./tests/Feature/ResumeWorkstationRobustnessTest.php-118-        $resume = Resume",
-          "./tests/Feature/ResumeWorkstationRobustnessTest.php",
-          "./docs/superpowers/plans/2026-06-07-batch-9-editor-kanban-nudges.md",
-          "./docs/superpowers/plans/2026-06-07-batch-10-polish-growth.md"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/Profile/Partials",
-          "resources/js/Pages/Auth"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139805.634177,
-      "files": [
-        "tests/Feature/Api/MobileAuthApiTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139819.8798442,
-      "files": [
-        "tests/Feature/Api/MobileShareLinkApiTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787139827.549012,
-      "files": [
-        "tests/Feature/Api/MobileResumeApiTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787139860,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1787140779,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "database/migrations/2026_08_19_120000_add_mobile_sync_support.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 1425
-      }
-    },
-    {
-      "ts": 1787140793,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "deleting.*observer|no `deleting`|mobile|iPhone|iPad|/api|Sanctum",
-        "hit_count": 762,
-        "hit_files": [
-          "docs/superpowers/specs/2026-06-24-extension-resume-activity-design.md",
-          "docs/superpowers/specs/2026-08-18-figma-landing-page-design.md",
-          "docs/claude-design-import-notes-2026-08.md",
-          "README.md",
-          "docs/sdd-fix-plan.md",
-          "docs/DEPLOYMENT.md",
-          "docs/superpowers/specs/2026-06-09-resume-conversation-threads-design.md",
-          "JOURNAL.md",
-          "TODO_code-reviewer.md",
-          "docs/ai-provider-comparison-2026-08.md",
-          "docs/superpowers/specs/2026-06-14-resume-thumbnail-previews-design.md",
-          "docs/superpowers/specs/2026-06-07-batch-2-job-search-intelligence-design.md",
-          "docs/superpowers/specs/2026-05-28-quick-wins-design.md",
-          "docs/superpowers/specs/2026-07-05-resignation-letter-generator-design.md",
-          "docs/superpowers/specs/2026-06-03-chrome-extension-design.md"
-        ]
-      }
-    },
-    {
-      "ts": 1787140807,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "docs/claude/api-layer.md",
-        "query": "",
-        "mode": "full",
-        "response_chars": 2069
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140823.9787068,
-      "files": [
-        "CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140835.497528,
-      "files": [
-        "CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140841.179745,
-      "files": [
-        "CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140842.227409,
-      "files": [
-        "CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140846.939064,
-      "files": [
-        "README.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140850.278709,
-      "files": [
-        "README.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140851.3842409,
-      "files": [
-        "README.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140862.805734,
-      "files": [
-        "docs/claude/api-layer.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787140872.174133,
-      "files": [
-        "docs/claude/api-layer.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787140888,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "ts": 1787160453,
-      "kind": "retrieve",
-      "payload": {
-        "kind": "retrieve",
-        "query": "audit uncommitted mobile API and share link changes: MobileAuthController, ShareLinkController, GuardsMobileTokens, resume sync, share link password"
-      }
-    },
-    {
-      "ts": 1787160453,
-      "kind": "continue_retrieve",
-      "payload": {
-        "kind": "continue_retrieve",
-        "query": "audit uncommitted mobile API and share link changes: MobileAuthController, ShareLinkController, GuardsMobileTokens, resume sync, share link password"
-      }
-    },
-    {
-      "ts": 1787160514,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Requests/UpdateResumeShareLinkRequest.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 991
-      }
-    },
-    {
-      "ts": 1787160516,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Support/MobileApiToken.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 309
-      }
-    },
-    {
-      "ts": 1787160518,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Controllers/PublicResumeShareController.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 4633
-      }
-    },
-    {
-      "ts": 1787160525,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Requests/UpdateResumeRequest.php",
-        "query": "",
-        "mode": "head",
-        "response_chars": 6000
-      }
-    },
-    {
-      "ts": 1787160526,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "resources/js/Components/workstation/share-resume-modal.tsx::ShareResumeModal",
-        "query": "",
-        "mode": "head",
-        "response_chars": 6000
-      }
-    },
-    {
-      "ts": 1787160537,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "function randomPassword|share-unlock|randomPassword\\(",
-        "hit_count": 2,
-        "hit_files": [
-          "resources/js/Components/workstation/share-resume-modal.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/ResumeBuilder",
-          "resources/js/Components/workstation",
-          "resources/js/Pages",
-          "resources/js/Pages/Resumes"
-        ]
-      }
-    },
-    {
-      "ts": 1787160544,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "share-unlock|unlock",
-        "hit_count": 6,
-        "hit_files": [
-          "resources/js/Pages/ResumeBuilder/LinkPassword.tsx",
-          "resources/js/Pages/Resumes/PublicShare.tsx",
-          "resources/js/Components/workstation/share-resume-modal.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/ResumeBuilder",
-          "resources/js/Components/workstation",
-          "resources/js/Pages",
-          "resources/js/Pages/Resumes"
-        ]
-      }
-    },
-    {
-      "ts": 1787160549,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "routes/web.php",
-        "query": "share unlock throttle r/{token}",
-        "mode": "query_excerpt",
-        "response_chars": 6000
-      }
-    },
-    {
-      "ts": 1787160551,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Providers/AppServiceProvider.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 715
-      }
-    },
-    {
-      "ts": 1787160558,
-      "kind": "read_cache_hit",
-      "payload": {
-        "kind": "read_cache_hit",
-        "file": "routes/web.php",
-        "query": "Route r/{token} unlock pdf docx throttle",
-        "mode": "cross_turn_pointer",
-        "response_chars": 0
-      }
-    },
-    {
-      "ts": 1787160566,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "share\\.unlock|share-unlock|/r/\\{token\\}|share\\.show",
-        "hit_count": 113,
-        "hit_files": [
-          "tests/Feature/SharesPageTest.php",
-          "docs/superpowers/specs/2026-06-10-engineering-audit.md",
-          "docs/superpowers/plans/2026-06-24-extension-resume-activity.md",
-          "tests/Feature/PublicResumeShareControllerTest.php",
-          "resources/js/Pages/Dashboard.tsx",
-          "routes/web.php",
-          "docs/superpowers/plans/2026-06-10-audit-remediation.md",
-          "securityscan.md",
-          "app/Http/Controllers/ResumeController.php",
-          "app/Http/Controllers/ResumeBuilderController.php",
-          "docs/superpowers/specs/2026-06-07-batch-10-polish-growth-design.md",
-          "docs/superpowers/specs/2026-06-09-resume-conversation-threads-design.md",
-          "app/Http/Controllers/ResumeShareLinkController.php",
-          "docs/superpowers/plans/2026-06-07-batch-11-master-resume-heatmaps-referral.md",
-          "resources/js/Pages/Resumes/PublicShare.tsx"
-        ]
-      }
-    },
-    {
-      "ts": 1787160602,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "bootstrap/app.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 2141
-      }
-    },
-    {
-      "ts": 1787160604,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "tests/Feature/Api/MobileAuthApiTest.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 3194
-      }
-    },
-    {
-      "ts": 1787160614,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "tests/Feature/Api/MobileShareLinkApiTest.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 4152
-      }
-    },
-    {
-      "ts": 1787160623,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Support/ResumeDocument.php",
-        "query": "save touch updated_at relations",
-        "mode": "query_excerpt",
-        "response_chars": 5924
-      }
-    },
-    {
-      "ts": 1787160658,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Controllers/ResumeController.php",
-        "query": "update base_updated_at conflict check",
-        "mode": "anchor_excerpt",
-        "response_chars": 6000
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787168123.522235,
-      "files": [
-        "app/Support/ResumeDocument.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787168136.693277,
-      "files": [
-        "app/Http/Controllers/ResumeShareLinkController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787168139.464566,
-      "files": [
-        "app/Http/Controllers/Api/ShareLinkController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787168153.662986,
-      "files": [
-        "tests/Feature/Api/MobileResumeApiTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787168162.7710562,
-      "files": [
-        "tests/Feature/ResumeShareLinkControllerTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787168166.244427,
-      "files": [
-        "tests/Feature/Api/MobileShareLinkApiTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787168188,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169077.2414908,
-      "files": [
-        "app/Http/Controllers/Api/ResumeController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169082.099424,
-      "files": [
-        "app/Http/Controllers/Api/ResumeController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169103.2549021,
-      "files": [
-        "tests/Feature/Api/MobileResumeApiTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787169122,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169197.2146828,
-      "files": [
-        "config/ai.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787169202,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "builder\\.(store|docx|thumbnail|duplicate|create-variant)|createVariant|builder/\\{resume\\}/(docx|thumbnail|duplicate|variant)",
-        "hit_count": 0,
-        "hit_files": []
-      }
-    },
-    {
-      "ts": 1787169208,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "builder\\.",
-        "hit_count": 20,
-        "hit_files": [
-          "routes/web.php"
-        ]
-      }
-    },
-    {
-      "ts": 1787169213,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "builder\\.store|builder\\.docx|builder\\.thumbnail|builder\\.duplicate|builder\\.create-variant|'store'|createVariant|function thumbnail|function duplicate|function downloadDocx",
-        "hit_count": 0,
-        "hit_files": []
-      }
-    },
-    {
-      "ts": 1787169218,
-      "kind": "grep_all",
-      "payload": {
-        "kind": "grep_all",
-        "pattern": "builder\\.store|builder\\.docx|builder\\.thumbnail|builder\\.duplicate|builder\\.create-variant",
-        "hit_count": 54,
-        "hit_files": [
-          "docs/superpowers/plans/2026-06-02-ui-redesign.md",
-          "routes/web.php",
-          "docs/superpowers/plans/2026-06-07-batch-1-productivity-engagement.md",
-          "docs/superpowers/specs/2026-06-14-resume-thumbnail-previews-design.md",
-          "docs/superpowers/plans/2026-06-10-skills-section-improvements.md",
-          "docs/superpowers/plans/2026-05-28-billing-subscriptions.md",
-          "docs/superpowers/plans/2026-05-28-quick-wins.md",
-          "docs/superpowers/plans/2026-05-28-templates-visual-polish.md",
-          "docs/superpowers/plans/2026-06-06-group-b-ai-content-intelligence.md",
-          "docs/superpowers/plans/2026-06-14-resume-thumbnail-previews.md",
-          "docs/superpowers/plans/2026-06-05-pricing-tier-enforcement.md",
-          "docs/superpowers/plans/2026-07-19-builder-preview-left-palette.md",
-          "resources/js/Pages/ResumeBuilder/Edit.tsx",
-          "docs/superpowers/plans/2026-06-11-drag-drop-resume-builder.md",
-          "CLAUDE.md"
-        ]
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169234.3737228,
-      "files": [
-        "app/Http/Controllers/ResumeBuilderController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169238.602517,
-      "files": [
-        "app/Http/Controllers/ResumeBuilderController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169241.7390342,
-      "files": [
-        "app/Http/Controllers/ResumeBuilderController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169251.227078,
-      "files": [
-        "app/Http/Controllers/ResumeBuilderController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169253.954554,
-      "files": [
-        "app/Http/Controllers/ResumeBuilderController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169260.880345,
-      "files": [
-        "routes/web.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169266.821704,
-      "files": [
-        "routes/web.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169274.254154,
-      "files": [
-        "app/Http/Controllers/Api/MobileAuthController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787169282,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "resume_share_link_views|ResumeShareLinkView|unique_visitors|distinct",
-        "hit_count": 1,
-        "hit_files": [
-          "resources/js/Components/workstation/optimize-panel.tsx"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/ResumeBuilder",
-          "resources/js/Components/workstation",
-          "resources/js/Pages",
-          "resources/js/Pages/Resumes"
-        ]
-      }
-    },
-    {
-      "ts": 1787169292,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Http/Controllers/ShareController.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 3273
-      }
-    },
-    {
-      "ts": 1787169306,
-      "kind": "read",
-      "payload": {
-        "kind": "read",
-        "file": "app/Models/ResumeShareLinkView.php",
-        "query": "",
-        "mode": "full",
-        "response_chars": 734
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169311.9833338,
-      "files": [
-        "database/migrations/2026_08_19_130000_make_share_link_view_email_nullable.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169317.985924,
-      "files": [
-        "app/Http/Controllers/PublicResumeShareController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169320.7485619,
-      "files": [
-        "app/Http/Controllers/PublicResumeShareController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169326.4061382,
-      "files": [
-        "app/Http/Controllers/PublicResumeShareController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169329.969652,
-      "files": [
-        "app/Http/Controllers/PublicResumeShareController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169332.673103,
-      "files": [
-        "app/Http/Controllers/PublicResumeShareController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169354.51338,
-      "files": [
-        "app/Http/Controllers/ResumeController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169356.639082,
-      "files": [
-        "app/Http/Controllers/ResumeShareLinkController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169358.206072,
-      "files": [
-        "app/Http/Controllers/Api/ShareLinkController.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169371.761248,
-      "files": [
-        "tests/Feature/PublicResumeShareControllerTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169375.348452,
-      "files": [
-        "tests/Feature/Api/MobileAuthApiTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169384.521984,
-      "files": [
-        "tests/Feature/Api/MobileAuthApiTest.php"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169449.768734,
-      "files": [
-        "CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169452.36006,
-      "files": [
-        "CLAUDE.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169458.972703,
-      "files": [
-        "LAUNCH-REVIEW-2026-08-18.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787169466,
-      "kind": "register_edit",
-      "payload": {
-        "kind": "register_edit"
-      }
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169575.211078,
-      "files": [
-        "/Users/rmethod/.claude/projects/-Users-rmethod-Herd-Resumegen/memory/launch-review-2026-08-18.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "type": "edit_auto",
-      "ts": 1787169583.647983,
-      "files": [
-        "/Users/rmethod/.claude/projects/-Users-rmethod-Herd-Resumegen/memory/MEMORY.md"
-      ],
-      "source": "graph_sync_hook"
-    },
-    {
-      "ts": 1787169610,
-      "kind": "fallback_rg",
-      "payload": {
-        "kind": "fallback_rg",
-        "pattern": "is_primary|unread|Make primary|questions",
-        "hit_count": 30,
-        "hit_files": [
-          "resources/js/Pages/Shares/Index.tsx",
-          "resources/js/Pages/Shares/Index.tsx-159-                                        'hover"
-        ],
-        "searched_dirs": [
-          "resources/js/Pages/ResumeBuilder",
-          "resources/js/Components/workstation",
-          "resources/js/Pages",
-          "resources/js/Pages/Resumes"
-        ]
-      }
-    },
     {
       "ts": 1787169625,
       "kind": "grep_all",
@@ -3952,6 +4051,1052 @@
         "tests/Feature/ReadOnlyAccountTest.php"
       ],
       "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787603665.714893,
+      "files": [
+        "resources/js/Components/marketing/marketing-content.test.ts"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787603670.386836,
+      "files": [
+        "resources/js/Components/marketing/marketing-content.ts"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787666595.198194,
+      "files": [
+        "docs/UNFORGET.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787685821,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "inspect untracked status.txt and docs/README.md before committing deploy"
+      }
+    },
+    {
+      "ts": 1787685821,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "inspect untracked status.txt and docs/README.md before committing deploy"
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787689275.140059,
+      "files": [
+        "scripts/server-repair.sh"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787689285.6264389,
+      "files": [
+        "docs/DEPLOYMENT.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787689292,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787690738.101179,
+      "files": [
+        "/Users/rmethod/.claude/projects/-Users-rmethod-Herd-Resumegen/memory/resumegen-prod-ssh-and-server.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787691219.795649,
+      "files": [
+        "CLAUDE.md"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787691236,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1787716255,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "Workstation autosave loop use-autosave hook fires when nothing changed"
+      }
+    },
+    {
+      "ts": 1787716255,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "Workstation autosave loop use-autosave hook fires when nothing changed"
+      }
+    },
+    {
+      "ts": 1787716258,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/hooks/use-autosave.ts::useAutosave",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 4133
+      }
+    },
+    {
+      "ts": 1787716264,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "useAutosave",
+        "hit_count": 3,
+        "hit_files": [
+          "resources/js/hooks/use-autosave.ts",
+          "resources/js/Pages/Resumes/Workstation.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/hooks",
+          "resources/js/Pages/Resumes",
+          "resources/js/Components/workstation"
+        ]
+      }
+    },
+    {
+      "ts": 1787716267,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/Pages/Resumes/Workstation.tsx::Workstation",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 3769
+      }
+    },
+    {
+      "ts": 1787716296,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/js/hooks/use-valid-contact.ts",
+        "query": "",
+        "mode": "symbol_excerpt",
+        "response_chars": 1278
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787716324.812521,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787716327.6459022,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787716329.054647,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787716331.129357,
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787716339,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1787716545,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "resumes\\.workstation|workstation\\(",
+        "hit_count": 2,
+        "hit_files": [
+          "resources/js/Pages/Resumes/Workstation.tsx",
+          "resources/js/Components/workstation/workstation-header.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/hooks",
+          "resources/js/Pages/Resumes",
+          "resources/js/Components/workstation"
+        ]
+      }
+    },
+    {
+      "ts": 1787716550,
+      "kind": "grep_all",
+      "payload": {
+        "kind": "grep_all",
+        "pattern": "resumes\\.workstation|workstation",
+        "hit_count": 104,
+        "hit_files": [
+          "tests/Feature/ResumeCreatePathsTest.php",
+          "tests/Feature/AuthoringPowerTest.php",
+          "tests/Browser/WorkstationResponsiveTest.php",
+          "NOTES.md",
+          "resources/js/Components/resume/suggestion-list.tsx",
+          "resources/js/Components/workstation/target-role-bar.tsx",
+          "resources/js/Components/workstation/inspector.tsx",
+          "database/migrations/2026_08_04_235020_add_composite_resume_id_position_indexes.php",
+          "ds-entry.tsx",
+          "tests/Feature/ResumeWorkstationRobustnessTest.php",
+          "database/migrations/2026_08_02_221700_create_resume_notes_table.php",
+          "resources/js/Components/workstation/section-panel.tsx",
+          "tests/Feature/WorkstationHeaderTest.php",
+          "app/Http/Controllers/SearchController.php",
+          "resources/js/Components/workstation/workstation-header.tsx"
+        ]
+      }
+    },
+    {
+      "ts": 1787716563,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Http/Controllers/ResumeController.php::workstation",
+        "query": "",
+        "mode": "full",
+        "response_chars": 18254
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787716623.464821,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787716630,
+      "kind": "grep_all",
+      "payload": {
+        "kind": "grep_all",
+        "pattern": "function builder|Resumes/Builder|resumes\\.builder|function Builder",
+        "hit_count": 25,
+        "hit_files": [
+          "tests/Feature/ResumeCreatePathsTest.php",
+          "app/Http/Controllers/ResumeBuilderController.php",
+          "app/Http/Controllers/ResumeController.php",
+          "tests/Feature/BuilderRedirectsToWorkstationTest.php",
+          "app/Http/Controllers/ResumeImportController.php",
+          "routes/web.php",
+          "resources/js/Pages/Resumes/Builder.tsx",
+          "resources/js/Pages/Dashboard.tsx",
+          "docs/superpowers/plans/2026-06-11-drag-drop-resume-builder.md",
+          "app/Http/Controllers/SearchController.php",
+          "resources/js/Components/workstation/workstation-header.tsx"
+        ]
+      }
+    },
+    {
+      "ts": 1787716657,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1787781773,
+      "kind": "retrieve",
+      "payload": {
+        "kind": "retrieve",
+        "query": "security audit public share links PublicResumeShareController UrlProbe SecurityHeaders TrackSiteVisit PDF templates"
+      }
+    },
+    {
+      "ts": 1787781773,
+      "kind": "continue_retrieve",
+      "payload": {
+        "kind": "continue_retrieve",
+        "query": "security audit public share links PublicResumeShareController UrlProbe SecurityHeaders TrackSiteVisit PDF templates"
+      }
+    },
+    {
+      "ts": 1787781779,
+      "kind": "grep_all",
+      "payload": {
+        "kind": "grep_all",
+        "pattern": "dangerouslySetInnerHTML",
+        "hit_count": 6,
+        "hit_files": [
+          "resources/js/Pages/Profile/Partials/TwoFactorForm.tsx",
+          "resources/js/Pages/Admin/Database/Table/Show.tsx",
+          "resources/js/Pages/Admin/Visitors/Index.tsx",
+          "resources/js/Pages/Admin/Users/Index.tsx"
+        ]
+      }
+    },
+    {
+      "ts": 1787781779,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Http/Controllers/PublicResumeShareController.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 5598
+      }
+    },
+    {
+      "ts": 1787781781,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Http/Middleware/SecurityHeaders.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 870
+      }
+    },
+    {
+      "ts": 1787781782,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Http/Middleware/TrackSiteVisit.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 1915
+      }
+    },
+    {
+      "ts": 1787781783,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Services/UrlProbe.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 5704
+      }
+    },
+    {
+      "ts": 1787781792,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "share-unlock|urls.check|throttle|PlainTextResumeParser|trustProxies",
+        "hit_count": 40,
+        "hit_files": [
+          "./routes/admin.php-26-    Route",
+          "./routes/admin.php-23-    Route",
+          "./routes/admin.php",
+          "./CLAUDE.md",
+          "./CLAUDE.md-194-- **Job applications tracker** (removed in `93c1c14`) \u2014 since **reintroduced** as the Kanban at `/job-applications` (`JobApplicationController` + `JobApplication` model). `application_contacts` and `interview_notes` stayed dropped and are deliberately out of scope. `AnalyticsController` still queries `job_applications` via `DB",
+          "./routes/admin.php-29-    Route"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Shares",
+          "resources/js/hooks",
+          "resources/js/lib"
+        ]
+      }
+    },
+    {
+      "ts": 1787781794,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Models/ResumeShareLink.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 2019
+      }
+    },
+    {
+      "ts": 1787781797,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "resources/views/resumes/export/pdf.blade.php",
+        "query": "",
+        "mode": "head",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1787781799,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "bootstrap/app.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 2679
+      }
+    },
+    {
+      "ts": 1787781807,
+      "kind": "grep_all",
+      "payload": {
+        "kind": "grep_all",
+        "pattern": "abort_unless|abort_if|authorize\\(",
+        "hit_count": 50,
+        "hit_files": [
+          "app/Http/Controllers/ResumeSnapshotController.php",
+          "app/Http/Controllers/PublicResumeController.php",
+          "app/Http/Controllers/JobApplicationController.php",
+          "app/Http/Controllers/ResumeBuilderController.php",
+          "app/Http/Controllers/MobileTokenController.php",
+          "app/Http/Controllers/ShareLinkController.php",
+          "app/Http/Controllers/ExtensionTokenController.php",
+          "app/Http/Controllers/ResumeCompareController.php",
+          "app/Http/Controllers/ResumeShareLinkController.php",
+          "app/Http/Controllers/ResumeController.php",
+          "app/Http/Controllers/ResumeNoteController.php",
+          "app/Http/Controllers/PublicResumeShareController.php",
+          "app/Http/Controllers/ResumeGroupController.php"
+        ]
+      }
+    },
+    {
+      "ts": 1787781809,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "routes/web.php",
+        "query": "",
+        "mode": "head",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1787781810,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Providers/AppServiceProvider.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 990
+      }
+    },
+    {
+      "ts": 1787781812,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Support/PdfFonts.php",
+        "query": "",
+        "mode": "head",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1787781813,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Support/PlainTextResumeParser.php",
+        "query": "",
+        "mode": "head",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1787781815,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Http/Controllers/UrlCheckController.php",
+        "query": "",
+        "mode": "full",
+        "response_chars": 400
+      }
+    },
+    {
+      "ts": 1787781816,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": ".env.example",
+        "query": "",
+        "mode": "full",
+        "response_chars": 3130
+      }
+    },
+    {
+      "ts": 1787781825,
+      "kind": "grep_all",
+      "payload": {
+        "kind": "grep_all",
+        "pattern": "urls\\.check|urls/check",
+        "hit_count": 2,
+        "hit_files": [
+          "routes/web.php"
+        ]
+      }
+    },
+    {
+      "ts": 1787781827,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "app/Support/ResumeExport.php",
+        "query": "style header heading templates user input",
+        "mode": "query_excerpt",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1787781828,
+      "kind": "grep_all",
+      "payload": {
+        "kind": "grep_all",
+        "pattern": "PublicResumeController|share-unlock|RateLimiter::for",
+        "hit_count": 80,
+        "hit_files": [
+          "app/Http/Controllers/PublicResumeController.php",
+          "docs/superpowers/specs/2026-07-08-free-tier-simplification-design.md",
+          "docs/superpowers/specs/2026-05-28-quick-wins-design.md",
+          "docs/superpowers/plans/2026-05-26-resumegen-full-enhancement.md",
+          "routes/web.php",
+          "securityscan.md",
+          "app/Providers/FortifyServiceProvider.php",
+          "CLAUDE.md",
+          "TODO_vulnerability-auditor.md",
+          "docs/superpowers/specs/2026-06-07-batch-4-growth-conversion-design.md",
+          "app/Providers/AppServiceProvider.php",
+          "docs/superpowers/specs/2026-06-14-freemium-conversion-tuning-design.md",
+          "docs/superpowers/specs/2026-06-10-engineering-audit.md",
+          "docs/superpowers/plans/2026-06-09-resume-conversation-threads.md",
+          "docs/superpowers/plans/2026-07-08-viewer-engagement-nudge-email.md"
+        ]
+      }
+    },
+    {
+      "ts": 1787781834,
+      "kind": "read",
+      "payload": {
+        "kind": "read",
+        "file": "routes/web.php",
+        "query": "urls check middleware throttle",
+        "mode": "anchor_excerpt",
+        "response_chars": 6000
+      }
+    },
+    {
+      "ts": 1787781836,
+      "kind": "grep_all",
+      "payload": {
+        "kind": "grep_all",
+        "pattern": "SESSION_SECURE_COOKIE|'secure'|http_only|same_site",
+        "hit_count": 3,
+        "hit_files": [
+          "config/session.php"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781882.9977531,
+      "files": [
+        "app/Http/Controllers/Admin/DatabaseQueryController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781885.525395,
+      "files": [
+        "app/Http/Controllers/Admin/DatabaseQueryController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781898.0294132,
+      "files": [
+        "app/Http/Controllers/Admin/DatabaseQueryController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787781902,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1787781936,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "max:8",
+        "hit_count": 5,
+        "hit_files": [
+          "./app/Http/Requests/StoreResumeNoteRequest.php",
+          "./app/Http/Requests/UpdateResumeShareLinkRequest.php",
+          "./app/Http/Requests/UpdateResumeNoteRequest.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Shares",
+          "resources/js/hooks",
+          "resources/js/lib"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781941.2734919,
+      "files": [
+        "app/Http/Requests/UpdateResumeShareLinkRequest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781944.0995982,
+      "files": [
+        "app/Http/Controllers/Auth/TwoFactorController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781945.5186508,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781947.598618,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781949.067473,
+      "files": [
+        "routes/web.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781951.164331,
+      "files": [
+        "app/Http/Controllers/Auth/PasswordController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781953.326147,
+      "files": [
+        "app/Actions/Fortify/ResetUserPassword.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787781955.1436648,
+      "files": [
+        "app/Http/Middleware/SecurityHeaders.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787781961,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1787782005,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "maxLength=\\{?8|max.?8|password",
+        "hit_count": 15,
+        "hit_files": [
+          "resources/js/Pages/Shares/Index.tsx-82-    const createForm = useForm({ label",
+          "resources/js/Pages/Shares/Index.tsx"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Shares",
+          "resources/js/hooks",
+          "resources/js/lib"
+        ]
+      }
+    },
+    {
+      "ts": 1787782010,
+      "kind": "grep_all",
+      "payload": {
+        "kind": "grep_all",
+        "pattern": "maxLength=\\{8\\}",
+        "hit_count": 2,
+        "hit_files": [
+          "resources/js/Components/workstation/share-resume-modal.tsx",
+          "resources/js/Pages/Resumes/PublicShare.tsx"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782022.0606878,
+      "files": [
+        "tests/Feature/Auth/TwoFactorSetupTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782024.892,
+      "files": [
+        "tests/Feature/ExtensionTokenTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782027.0051892,
+      "files": [
+        "tests/Feature/ExtensionTokenTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782029.1226392,
+      "files": [
+        "tests/Feature/MobileTokenTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782031.942728,
+      "files": [
+        "tests/Feature/MobileTokenTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782034.075095,
+      "files": [
+        "tests/Feature/ResumeShareLinkControllerTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782038.3074949,
+      "files": [
+        "tests/Feature/ResumeShareLinkControllerTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787782053,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1787782904,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "PublicResumeController|two_factor_challenge|resume_share_link_views",
+        "hit_count": 40,
+        "hit_files": [
+          "./CLAUDE.md-235-5. **FK cascade for dependents** \u2014 `cascadeOnDelete` handles children (share links and their views, snapshots, notes). `Resume",
+          "./CLAUDE.md-76-- **PDF",
+          "./TODO_vulnerability-auditor.md",
+          "./CLAUDE.md",
+          "./Security.md",
+          "./TODO_vulnerability-auditor.md-13-- [x] **SVA-PLAN-1.1 Input validation / injection**",
+          "./CLAUDE.md-169-**Audit log"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Shares",
+          "resources/js/hooks",
+          "resources/js/lib"
+        ]
+      }
+    },
+    {
+      "ts": 1787782938,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "TwoFactorCodeMail|two_factor_email_sent|challenge\\.email|emailSent|sendEmail",
+        "hit_count": 30,
+        "hit_files": [
+          "./tests/Feature/Auth/TwoFactorChallengeTest.php",
+          "./tests/Feature/Auth/AuthRouteNamesTest.php",
+          "./app/Mail/TwoFactorCodeMail.php",
+          "./app/Actions/Fortify/UpdateUserProfileInformation.php",
+          "./routes/auth.php",
+          "./app/Http/Controllers/Admin/UserController.php",
+          "./tests/Feature/Mail/MailRendersTest.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Shares",
+          "resources/js/hooks",
+          "resources/js/lib"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782993.977184,
+      "files": [
+        "bootstrap/app.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782997.490123,
+      "files": [
+        "app/Http/Middleware/RequiresTwoFactorChallenge.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787782999.690451,
+      "files": [
+        "routes/auth.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783006.8048499,
+      "files": [
+        "app/Http/Controllers/Auth/TwoFactorChallengeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783008.139175,
+      "files": [
+        "app/Http/Controllers/Auth/TwoFactorChallengeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783010.951264,
+      "files": [
+        "app/Http/Controllers/Auth/TwoFactorChallengeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783014.489673,
+      "files": [
+        "app/Http/Controllers/Auth/TwoFactorChallengeController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783018.7310998,
+      "files": [
+        "tests/Feature/Auth/TwoFactorChallengeTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783024.073556,
+      "files": [
+        "tests/Feature/Auth/TwoFactorChallengeTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783032.414412,
+      "files": [
+        "tests/Feature/Auth/AuthRouteNamesTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783041.625637,
+      "files": [
+        "resources/js/Pages/Auth/TwoFactorChallenge.tsx"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783045.798364,
+      "files": [
+        "database/migrations/2026_08_26_222240_add_ip_hash_to_resume_share_link_views_table.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783047.248012,
+      "files": [
+        "app/Models/ResumeShareLinkView.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783048.571073,
+      "files": [
+        "app/Http/Controllers/PublicResumeShareController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783054.3154812,
+      "files": [
+        "app/Http/Controllers/PublicResumeShareController.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783063.430628,
+      "files": [
+        "app/Http/Middleware/SecurityHeaders.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783064.8158422,
+      "files": [
+        "resources/views/app.blade.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783066.260968,
+      "files": [
+        "resources/views/app.blade.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783073.365231,
+      "files": [
+        "tests/Feature/SecurityHeadersTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787783093,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
+    },
+    {
+      "ts": 1787783112,
+      "kind": "fallback_rg",
+      "payload": {
+        "kind": "fallback_rg",
+        "pattern": "logs an anonymous|anonymous view|resume_share_link_views|PublicResumeShare",
+        "hit_count": 15,
+        "hit_files": [
+          "./CLAUDE.md-235-5. **FK cascade for dependents** \u2014 `cascadeOnDelete` handles children (share links and their views, snapshots, notes). `Resume",
+          "./routes/web.php-41-Route",
+          "./CLAUDE.md",
+          "./LAUNCH-REVIEW-2026-08-18.md",
+          "./routes/web.php"
+        ],
+        "searched_dirs": [
+          "resources/js/Pages/Resumes",
+          "resources/js/Pages/Shares",
+          "resources/js/hooks",
+          "resources/js/lib"
+        ]
+      }
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783132.262035,
+      "files": [
+        "tests/Feature/Auth/TwoFactorChallengeTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "type": "edit_auto",
+      "ts": 1787783136.222163,
+      "files": [
+        "tests/Feature/PublicResumeShareControllerTest.php"
+      ],
+      "source": "graph_sync_hook"
+    },
+    {
+      "ts": 1787783141,
+      "kind": "register_edit",
+      "payload": {
+        "kind": "register_edit"
+      }
     }
   ],
   "decisions": [
@@ -4052,6 +5197,112 @@
       "files": [
         ".claude/skills/server-deployment/SKILL.md",
         "LAUNCH-REVIEW-2026-08-18.md"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1787689292,
+      "summary": "Add server-repair.sh and Part 11 troubleshooting section for deploy failures",
+      "files": [
+        "scripts/server-repair.sh",
+        "docs/DEPLOYMENT.md"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1787691236,
+      "summary": "Add Production server section (2026-08-25 fixes) and prod migration-log incident note",
+      "files": [
+        "CLAUDE.md"
+      ],
+      "scope": "file"
+    },
+    {
+      "ts": 1787716339,
+      "summary": "Autosave loop fix: base_updated_at token moved from state to ref so token refresh no longer changes payload identity",
+      "files": [
+        "resources/js/Pages/Resumes/Workstation.tsx"
+      ],
+      "scope": "file"
+    },
+    {
+      "ts": 1787716657,
+      "summary": "Cloned Workstation page as Resumes/Builder with new resumes.builder route; all app links/redirects now point to builder; workstation route/page kept",
+      "files": [
+        "resources/js/Pages/Resumes/Builder.tsx",
+        "routes/web.php",
+        "app/Http/Controllers/ResumeController.php",
+        "app/Http/Controllers/ResumeBuilderController.php",
+        "app/Http/Controllers/ResumeImportController.php",
+        "app/Http/Controllers/SearchController.php",
+        "resources/js/Pages/Dashboard.tsx",
+        "resources/js/Components/workstation/workstation-header.tsx",
+        "extension/sidepanel/sidepanel.js",
+        "tests/Feature/ResumeCreatePathsTest.php",
+        "tests/Feature/BuilderRedirectsToWorkstationTest.php"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1787781902,
+      "summary": "SQL runner: READ ONLY txn on read-only branch + explain(), reject stacked statements",
+      "files": [
+        "app/Http/Controllers/Admin/DatabaseQueryController.php"
+      ],
+      "scope": "file"
+    },
+    {
+      "ts": 1787781961,
+      "summary": "Security fixes: 2FA re-enroll gate, password.confirm on token/2FA routes, token revoke on password change/reset, share password min:8, extra security headers",
+      "files": [
+        "app/Http/Requests/UpdateResumeShareLinkRequest.php",
+        "app/Http/Controllers/Auth/TwoFactorController.php",
+        "routes/web.php",
+        "app/Http/Controllers/Auth/PasswordController.php",
+        "app/Actions/Fortify/ResetUserPassword.php",
+        "app/Http/Middleware/SecurityHeaders.php"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1787782053,
+      "summary": "Password maxLength 72 in UI; tests updated for password.confirm gates and min:8 share password",
+      "files": [
+        "resources/js/Pages/Resumes/PublicShare.tsx",
+        "resources/js/Components/workstation/share-resume-modal.tsx",
+        "tests/Feature/Auth/TwoFactorSetupTest.php",
+        "tests/Feature/ExtensionTokenTest.php",
+        "tests/Feature/MobileTokenTest.php",
+        "tests/Feature/ResumeShareLinkControllerTest.php"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1787783093,
+      "summary": "Global 2FA middleware, email-OTP removal, ip_hash view dedupe, CSP with nonce, proxy note, dead controller deleted",
+      "files": [
+        "bootstrap/app.php",
+        "app/Http/Middleware/RequiresTwoFactorChallenge.php",
+        "routes/auth.php",
+        "app/Http/Controllers/Auth/TwoFactorChallengeController.php",
+        "resources/js/Pages/Auth/TwoFactorChallenge.tsx",
+        "database/migrations/2026_08_26_222240_add_ip_hash_to_resume_share_link_views_table.php",
+        "app/Models/ResumeShareLinkView.php",
+        "app/Http/Controllers/PublicResumeShareController.php",
+        "app/Http/Middleware/SecurityHeaders.php",
+        "resources/views/app.blade.php",
+        "tests/Feature/SecurityHeadersTest.php",
+        "tests/Feature/Auth/TwoFactorChallengeTest.php",
+        "tests/Feature/Auth/AuthRouteNamesTest.php"
+      ],
+      "scope": "global"
+    },
+    {
+      "ts": 1787783141,
+      "summary": "Fix global-2FA coverage test route; add cookieless view-flood regression test",
+      "files": [
+        "tests/Feature/Auth/TwoFactorChallengeTest.php",
+        "tests/Feature/PublicResumeShareControllerTest.php"
       ],
       "scope": "global"
     }

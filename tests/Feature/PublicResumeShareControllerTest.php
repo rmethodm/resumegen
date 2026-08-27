@@ -300,6 +300,27 @@ class PublicResumeShareControllerTest extends TestCase
         $this->assertNull($link->views()->sole()->email);
     }
 
+    /**
+     * A cookieless client (curl, script) never round-trips the session
+     * cookie, so the per-session flag can't dedupe it — without the
+     * IP-per-day check it could flood the append-only views table and
+     * inflate the owner's counts.
+     */
+    public function test_cookieless_repeat_visits_log_only_one_view_per_ip_per_day(): void
+    {
+        $link = ResumeShareLink::factory()->for(Resume::factory()->create())->create();
+
+        // Fresh session per request = no cookie persistence, like curl.
+        $this->get(route('share.show', $link->token))->assertOk();
+        $this->flushSession();
+        $this->get(route('share.show', $link->token))->assertOk();
+        $this->flushSession();
+        $this->get(route('share.show', $link->token))->assertOk();
+
+        $this->assertSame(1, $link->views()->count());
+        $this->assertNotNull($link->views()->sole()->ip_hash);
+    }
+
     public function test_gated_unlock_does_not_double_log_a_view(): void
     {
         $link = ResumeShareLink::factory()->for(Resume::factory()->create())->create([
