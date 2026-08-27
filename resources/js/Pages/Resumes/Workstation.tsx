@@ -38,7 +38,6 @@ import { exportChecklist, type ExportCheck } from '@/lib/export-checklist';
 import { applyTemplatePreset } from '@/lib/template-presets';
 import { resumeToPlainText } from '@/lib/resume-plain-text';
 import {
-    allSections,
     insertSectionInOrder,
     isOptionalSection,
     sectionLabels,
@@ -59,6 +58,34 @@ function focusAndFlash(element: HTMLElement): void {
     window.setTimeout(() => {
         element.classList.remove('ring-2', 'ring-brand', 'ring-offset-1');
     }, 1500);
+}
+
+/** PDF preview iframe with a visible loading state while DomPDF streams.
+ *  Local state resets by unmount when the user leaves PDF mode. */
+function PdfPreviewFrame({ src }: { src: string }) {
+    const [loaded, setLoaded] = useState(false);
+
+    return (
+        <div className="relative">
+            {!loaded && (
+                <p
+                    role="status"
+                    className="absolute inset-0 flex items-center justify-center text-sm text-ink-faint"
+                >
+                    Rendering PDF…
+                </p>
+            )}
+            <iframe
+                title="PDF preview"
+                src={src}
+                onLoad={() => setLoaded(true)}
+                className={cn(
+                    'h-[80dvh] w-full bg-surface transition-opacity duration-soft ease-soft motion-reduce:transition-none',
+                    loaded ? 'opacity-100' : 'opacity-0',
+                )}
+            />
+        </div>
+    );
 }
 
 export default function Workstation({
@@ -98,10 +125,10 @@ export default function Workstation({
     const [draggedSection, setDraggedSection] =
         useState<ResumeSectionKey | null>(null);
     /** Double-click a section header to collapse/expand its form body.
-     *  Start fully collapsed so the page loads as a compact section list. */
+     *  Start expanded — editing is the primary task (brief principle 2). */
     const [collapsedSections, setCollapsedSections] = useState<
         ResumeSectionKey[]
-    >(() => [...allSections]);
+    >([]);
     // Concurrency token lives in a ref, not state: a token refresh after a
     // successful save must NOT change the payload identity, or the autosave
     // effect re-fires and saves in a loop forever.
@@ -390,7 +417,7 @@ export default function Workstation({
                             onDrop={() => handleDrop(sectionKey)}
                             onDragEnd={() => setDraggedSection(null)}
                             className={cn(
-                                'gap-0 overflow-hidden border-surface-border border-l-[3px] border-l-brand py-0 shadow-none',
+                                'gap-0 overflow-hidden border-surface-border py-0',
                                 'transition-opacity duration-soft ease-soft',
                                 draggedSection === sectionKey && 'opacity-50',
                             )}
@@ -425,7 +452,7 @@ export default function Workstation({
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="flex items-center gap-1 text-xs font-bold tracking-[0.12em] text-ink uppercase"
+                                    className="focus-ring flex items-center gap-1 rounded-sm text-xs font-semibold tracking-[0.12em] text-ink uppercase"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
@@ -498,21 +525,31 @@ export default function Workstation({
                                     </div>
                                 </div>
                             </div>
-                            {!collapsed && (
+                            <div
+                                className={cn(
+                                    'grid transition-[grid-template-rows] duration-soft ease-soft motion-reduce:transition-none',
+                                    collapsed
+                                        ? 'grid-rows-[0fr]'
+                                        : 'grid-rows-[1fr]',
+                                )}
+                            >
                                 <div
                                     id={`section-${sectionKey}-content`}
-                                    className="px-4 py-4 sm:px-5 sm:py-5"
+                                    inert={collapsed}
+                                    className="overflow-hidden"
                                 >
-                                    <SectionFields
-                                        resume={draft}
-                                        resumeId={id}
-                                        section={sectionKey}
-                                        skillLibrary={skillLibrary}
-                                        contactErrors={errors}
-                                        onChange={setDraft}
-                                    />
+                                    <div className="px-4 py-4 sm:px-5 sm:py-5">
+                                        <SectionFields
+                                            resume={draft}
+                                            resumeId={id}
+                                            section={sectionKey}
+                                            skillLibrary={skillLibrary}
+                                            contactErrors={errors}
+                                            onChange={setDraft}
+                                        />
+                                    </div>
                                 </div>
-                            )}
+                            </div>
                         </Card>
                     );
                 })}
@@ -635,100 +672,121 @@ export default function Workstation({
                         'pr-[max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
-                <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 lg:flex-row lg:items-start lg:gap-6">
-                    <SectionPanel
-                        resumeId={id}
-                        analysis={liveAnalysis}
-                        resume={draft}
-                        selected={section}
-                        onSelect={scrollToSection}
-                        onAddSection={addSection}
-                        onAddKeyword={addKeyword}
-                        onJumpChecklist={jumpChecklist}
-                        onOpenOptimize={() => setTab('Optimize')}
-                        className="order-2 lg:order-0"
-                    />
+                    <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-4">
+                        <SectionPanel
+                            resumeId={id}
+                            analysis={liveAnalysis}
+                            resume={draft}
+                            selected={section}
+                            onSelect={scrollToSection}
+                            onAddSection={addSection}
+                            onAddKeyword={addKeyword}
+                            onJumpChecklist={jumpChecklist}
+                            onOpenOptimize={() => setTab('Optimize')}
+                        />
 
-                    {/* On mobile the score/checklist rail is guidance, not the
-                        task — the editable form leads the stack; lg:order-0
-                        restores side-by-side source order. */}
-                    <div className="order-1 flex min-w-0 flex-col gap-5 lg:order-0 lg:flex-1">
-                        {tab === 'Edit' && (
-                            <TargetRoleBar
-                                targetRole={draft.target_role}
-                                onChange={(target_role) =>
-                                    setDraft({ ...draft, target_role })
-                                }
-                            />
-                        )}
-
-                        {tab === 'Review' && (
-                            <div className="overflow-hidden rounded-lg bg-surface ring-1 ring-ink/5">
-                                {reviewPreviewMode === 'pdf' ? (
-                                    <iframe
-                                        title="PDF preview"
-                                        src={route('resumes.preview', id)}
-                                        className="h-[80dvh] w-full bg-surface"
+                        {/* Form column + sticky live preview side by side on desktop. */}
+                        <div className="flex flex-col gap-6 xl:flex-row xl:items-start">
+                            <div className="flex min-w-0 flex-1 flex-col gap-5">
+                                {tab === 'Edit' && (
+                                    <TargetRoleBar
+                                        targetRole={draft.target_role}
+                                        onChange={(target_role) =>
+                                            setDraft({ ...draft, target_role })
+                                        }
                                     />
-                                ) : (
-                                    <div className="flex justify-center overflow-x-auto p-4 sm:p-6 lg:p-8">
-                                        <div
-                                            className="origin-top-left transition-transform duration-soft ease-soft motion-reduce:transition-none"
-                                            style={{
-                                                transform: `scale(${previewZoom})`,
-                                                width: `${100 / previewZoom}%`,
-                                            }}
-                                        >
-                                            {/* Paper stage — soft ambient lift so the page reads as a document */}
-                                            <div className="rounded-lg bg-white shadow-ambient ring-1 ring-ink/5">
-                                                <ResumePreview
-                                                    resume={draft}
-                                                    className="w-full"
-                                                />
+                                )}
+
+                                {tab === 'Review' && (
+                                    <div className="overflow-hidden rounded-lg bg-surface ring-1 ring-ink/5">
+                                        {reviewPreviewMode === 'pdf' ? (
+                                            <PdfPreviewFrame
+                                                src={route(
+                                                    'resumes.preview',
+                                                    id,
+                                                )}
+                                            />
+                                        ) : (
+                                            <div className="flex justify-center overflow-x-auto p-4 sm:p-6 lg:p-8">
+                                                <div
+                                                    className="origin-top-left transition-transform duration-soft ease-soft motion-reduce:transition-none"
+                                                    style={{
+                                                        transform: `scale(${previewZoom})`,
+                                                        width: `${100 / previewZoom}%`,
+                                                    }}
+                                                >
+                                                    {/* Paper stage — soft ambient lift so the page reads as a document */}
+                                                    <div className="rounded-lg bg-white shadow-ambient ring-1 ring-ink/5">
+                                                        <ResumePreview
+                                                            resume={draft}
+                                                            className="w-full"
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
                                 )}
-                            </div>
-                        )}
 
-                        {tab === 'Optimize' && (
-                            <OptimizePanel
-                                draft={draft}
-                                onChange={setDraft}
-                                onAddKeyword={addKeyword}
-                            >
-                                <AtsPlainTextBlock plainText={plainText} />
-                            </OptimizePanel>
-                        )}
+                                {tab === 'Optimize' && (
+                                    <OptimizePanel
+                                        draft={draft}
+                                        onChange={setDraft}
+                                        onAddKeyword={addKeyword}
+                                    >
+                                        <AtsPlainTextBlock
+                                            plainText={plainText}
+                                        />
+                                    </OptimizePanel>
+                                )}
 
-                        {tab === 'Edit' && (
-                            <div className="min-w-0">{renderFormSections()}</div>
-                        )}
+                                {tab === 'Edit' && (
+                                    <div className="min-w-0">
+                                        {renderFormSections()}
+                                    </div>
+                                )}
 
-                        <div className="flex flex-col gap-3">
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setShowSideTools((open) => !open)
-                                }
-                                className="self-start text-xs font-semibold text-brand hover:underline"
-                            >
-                                {showSideTools ? 'Hide' : 'Show'} notes &
-                                checkpoints
-                            </button>
-                            {showSideTools && (
-                                <div className="grid gap-4 md:grid-cols-2">
-                                    <NotesPanel resumeId={id} notes={notes} />
-                                    <SnapshotsPanel
-                                        resumeId={id}
-                                        snapshots={snapshots}
-                                    />
+                                <div className="flex flex-col gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setShowSideTools((open) => !open)
+                                        }
+                                        className="focus-ring self-start rounded-sm text-xs font-semibold text-brand hover:underline focus-visible:underline"
+                                    >
+                                        {showSideTools ? 'Hide' : 'Show'} notes
+                                        & checkpoints
+                                    </button>
+                                    {showSideTools && (
+                                        <div className="grid gap-4 md:grid-cols-2">
+                                            <NotesPanel
+                                                resumeId={id}
+                                                notes={notes}
+                                            />
+                                            <SnapshotsPanel
+                                                resumeId={id}
+                                                snapshots={snapshots}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
+                            </div>
+
+                            {tab === 'Edit' && (
+                                <aside
+                                    aria-label="Live preview"
+                                    className="hidden shrink-0 xl:sticky xl:top-4 xl:block xl:max-h-[calc(100dvh-2rem)] xl:w-[44%] xl:max-w-[620px] xl:overflow-y-auto xl:rounded-lg xl:bg-surface xl:p-4 xl:ring-1 xl:ring-ink/5"
+                                >
+                                    <div className="rounded-lg bg-white shadow-ambient ring-1 ring-ink/5">
+                                        <ResumePreview
+                                            resume={draft}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                </aside>
                             )}
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
 
