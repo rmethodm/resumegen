@@ -24,5 +24,9 @@ class ResetUserPassword implements ResetsUserPasswords
             'password' => Hash::make($input['password']),
             'remember_token' => Str::random(60),
         ])->save();
+
+        // A reset after suspected compromise must also cut off any API
+        // tokens (mobile/extension) the attacker may hold.
+        $user->tokens()->delete();
     }
 }

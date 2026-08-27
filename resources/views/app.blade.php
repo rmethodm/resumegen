@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <script>
+        <script nonce="{{ Illuminate\Support\Facades\Vite::cspNonce() }}">
         (function() {
             var stored = localStorage.getItem('theme');
             var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -45,7 +45,7 @@
         <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:400,500,600,700|source-serif-4:600,700&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @routes
+        @routes(null, Illuminate\Support\Facades\Vite::cspNonce())
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
         @inertiaHead

@@ -28,12 +28,46 @@ class TwoFactorSetupTest extends TestCase
         $user = User::factory()->create(['two_factor_confirmed_at' => null]);
 
         $this->actingAs($user)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->post(route('two-factor.enable'))
             ->assertRedirect(route('profile.edit'));
 
         $user->refresh();
         $this->assertNotNull($user->two_factor_secret);
         $this->assertNull($user->two_factor_confirmed_at);
+    }
+
+    public function test_enable_requires_password_confirmation(): void
+    {
+        $user = User::factory()->create(['two_factor_confirmed_at' => null]);
+
+        $this->actingAs($user)
+            ->post(route('two-factor.enable'))
+            ->assertRedirect(route('password.confirm'));
+
+        $this->assertNull($user->refresh()->two_factor_secret);
+    }
+
+    /**
+     * Re-enrolling while 2FA is active would null two_factor_confirmed_at —
+     * a silent disable that skips the gates on the disable route.
+     */
+    public function test_enable_is_refused_while_two_factor_is_confirmed(): void
+    {
+        $user = User::factory()->create([
+            'two_factor_secret' => 'somesecret',
+            'two_factor_confirmed_at' => now(),
+        ]);
+
+        $this->actingAs($user)
+            ->withSession(['auth.password_confirmed_at' => time()])
+            ->post(route('two-factor.enable'))
+            ->assertRedirect(route('profile.edit'))
+            ->assertSessionHas('error');
+
+        $user->refresh();
+        $this->assertSame('somesecret', $user->two_factor_secret);
+        $this->assertNotNull($user->two_factor_confirmed_at);
     }
 
     public function test_confirm_with_valid_code_sets_confirmed_at_and_generates_recovery_codes(): void

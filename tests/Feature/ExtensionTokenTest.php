@@ -22,6 +22,7 @@ class ExtensionTokenTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->post(route('profile.extension-tokens.store'))
             ->assertRedirect(route('profile.edit'))
             ->assertSessionHas('extension_token_plain')
@@ -38,6 +39,17 @@ class ExtensionTokenTest extends TestCase
             ->assertSessionHas('status', 'extension-token-revoked');
 
         $this->assertSame(0, $user->fresh()->tokens()->count());
+    }
+
+    public function test_creating_token_requires_password_confirmation(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('profile.extension-tokens.store'))
+            ->assertRedirect(route('password.confirm'));
+
+        $this->assertSame(0, $user->tokens()->count());
     }
 
     public function test_user_cannot_revoke_another_users_token(): void

@@ -18,6 +18,7 @@ class ResumeShareLinkView extends Model
      */
     protected $fillable = [
         'email',
+        'ip_hash',
     ];
 
     /**

@@ -30,7 +30,7 @@ class UpdateResumeShareLinkRequest extends FormRequest
             'allow_download' => ['sometimes', 'boolean'],
             'require_email' => ['sometimes', 'boolean'],
             'require_password' => ['sometimes', 'boolean'],
-            'password' => ['sometimes', 'nullable', 'string', 'max:8'],
+            'password' => ['sometimes', 'nullable', 'string', 'min:8', 'max:72'],
             'expires_at' => ['sometimes', 'nullable', 'date'],
         ];
     }

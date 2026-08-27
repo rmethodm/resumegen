@@ -64,7 +64,10 @@ class PublicResumeShareController extends Controller
         }
 
         if ($link->require_email) {
-            $link->views()->create(['email' => $data['email']]);
+            $link->views()->create([
+                'email' => $data['email'],
+                'ip_hash' => $this->ipHash($request),
+            ]);
             // The unlock IS this session's view — show() must not add an
             // anonymous row on the redirect back.
             $request->session()->put($this->viewedKey($link), true);
@@ -126,8 +129,30 @@ class PublicResumeShareController extends Controller
             return;
         }
 
-        $link->views()->create(['email' => null]);
+        // Cookieless clients (curl, scripts) get a fresh session every hit,
+        // so the flag above never dedupes them — without the IP-per-day
+        // check below they could flood the append-only views table and
+        // inflate the owner's counts.
+        $ipHash = $this->ipHash($request);
+
+        $alreadyLoggedToday = $link->views()
+            ->where('ip_hash', $ipHash)
+            ->where('created_at', '>=', now()->startOfDay())
+            ->exists();
+
+        if (! $alreadyLoggedToday) {
+            $link->views()->create(['email' => null, 'ip_hash' => $ipHash]);
+        }
+
         $request->session()->put($this->viewedKey($link), true);
+    }
+
+    /**
+     * Keyed hash so the append-only analytics table never stores raw IPs.
+     */
+    private function ipHash(Request $request): string
+    {
+        return hash('sha256', $request->ip().'|'.config('app.key'));
     }
 
     private function viewedKey(ResumeShareLink $link): string

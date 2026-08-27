@@ -41,8 +41,18 @@ return Application::configure(basePath: dirname(__DIR__))
         // was bouncing admin visitors onto the product login/dashboard.
         $middleware->redirectGuestsTo(fn () => url('/login'));
 
+        // No trustProxies() on purpose: the app is served directly by Apache,
+        // so $request->ip() is the real REMOTE_ADDR and X-Forwarded-For
+        // spoofing cannot fool IP-keyed throttles or registration velocity.
+        // If a CDN/reverse proxy is ever put in front, configure
+        // $middleware->trustProxies() or every IP-keyed limit silently
+        // collapses to the proxy's IP.
         $middleware->web(append: [
             SecurityHeaders::class,
+            // Global, not per-route: a pending-2FA session is fully
+            // authenticated, so any route that forgot the alias would be a
+            // 2FA bypass. The middleware allowlists the challenge routes.
+            RequiresTwoFactorChallenge::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
             TrackActivity::class,

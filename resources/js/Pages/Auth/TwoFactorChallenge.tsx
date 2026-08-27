@@ -5,21 +5,15 @@ import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import { Button } from '@/Components/ui/button';
 
-type Mode = 'totp' | 'recovery' | 'email';
+type Mode = 'totp' | 'recovery';
 
-export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }) {
+export default function TwoFactorChallenge() {
     const [mode, setMode] = useState<Mode>('totp');
     const { data, setData, post, processing, errors } = useForm({ code: '' });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('two-factor.challenge.store'));
-    };
-
-    const sendEmail = () => {
-        router.post(route('two-factor.challenge.email'), {}, {
-            onSuccess: () => setMode('email'),
-        });
     };
 
     return (
@@ -29,16 +23,8 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
             <div className="mb-4 text-sm text-ink-muted">
                 {mode === 'recovery'
                     ? 'Enter one of your emergency recovery codes.'
-                    : mode === 'email'
-                    ? 'Enter the 6-digit code sent to your email address.'
                     : 'Enter the 6-digit code from your authenticator app.'}
             </div>
-
-            {emailSent && mode !== 'email' && (
-                <div className="mb-4 text-sm text-success">
-                    A code has been sent to your email.
-                </div>
-            )}
 
             <form onSubmit={submit}>
                 {mode === 'recovery' ? (
@@ -94,17 +80,6 @@ export default function TwoFactorChallenge({ emailSent }: { emailSent: boolean }
                     >
                         Use authenticator app instead
                     </button>
-                )}
-                {mode !== 'email' && (
-                    <div>
-                        <button
-                            type="button"
-                            className="text-ink-muted underline hover:text-ink"
-                            onClick={sendEmail}
-                        >
-                            Send code to my email instead
-                        </button>
-                    </div>
                 )}
                 <div>
                     <a

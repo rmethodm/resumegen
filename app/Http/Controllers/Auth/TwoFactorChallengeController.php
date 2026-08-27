@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EnforceAdminSessionIdleTimeout;
-use App\Mail\TwoFactorCodeMail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,9 +21,7 @@ class TwoFactorChallengeController extends Controller
             return $this->redirectAfterTwoFactor($request);
         }
 
-        return Inertia::render('Auth/TwoFactorChallenge', [
-            'emailSent' => session('two_factor_email_sent', false),
-        ]);
+        return Inertia::render('Auth/TwoFactorChallenge');
     }
 
     public function store(Request $request): RedirectResponse
@@ -69,15 +65,6 @@ class TwoFactorChallengeController extends Controller
             return $this->redirectAfterTwoFactor($request);
         }
 
-        // Email OTP path
-        $cachedOtp = Cache::get('2fa_email_otp_'.$user->id);
-        if ($cachedOtp && hash_equals((string) $cachedOtp, (string) $code)) {
-            Cache::forget('2fa_email_otp_'.$user->id);
-            $request->session()->forget('two_factor_auth_pending');
-
-            return $this->redirectAfterTwoFactor($request);
-        }
-
         // TOTP path
         $google2fa = new Google2FA;
         $lastTimestampKey = '2fa_totp_last_ts_'.$user->id;
@@ -92,23 +79,6 @@ class TwoFactorChallengeController extends Controller
         $request->session()->forget('two_factor_auth_pending');
 
         return $this->redirectAfterTwoFactor($request);
-    }
-
-    public function sendEmail(Request $request): RedirectResponse
-    {
-        if (! $request->session()->get('two_factor_auth_pending')) {
-            return $this->redirectAfterTwoFactor($request);
-        }
-
-        $user = $request->user();
-        $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-
-        Cache::put('2fa_email_otp_'.$user->id, $otp, now()->addMinutes(10));
-
-        Mail::to($user->email)->send(new TwoFactorCodeMail($otp));
-
-        return redirect()->route('two-factor.challenge')
-            ->with('two_factor_email_sent', true);
     }
 
     private function redirectAfterTwoFactor(Request $request): RedirectResponse
