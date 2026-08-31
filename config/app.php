@@ -68,6 +68,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Builder Domain
+    |--------------------------------------------------------------------------
+    |
+    | Host for the resume builder UI. Routes are domain-scoped so builder
+    | pages are only served on this host. Local Herd default:
+    | builder.resumegen.test
+    |
+    */
+
+    'builder_domain' => env('APP_BUILDER_DOMAIN', 'builder.resumegen.test'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Admin Destructive Tools
     |--------------------------------------------------------------------------
     |

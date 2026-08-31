@@ -20,6 +20,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -85,7 +86,7 @@ class ResumeController extends Controller
                 return $resume;
             });
 
-            return to_route('resumes.builder', $resume->fresh());
+            return to_route('resumes.workstation', $resume->fresh());
         }
 
         if ($plainText !== '') {
@@ -123,7 +124,7 @@ class ResumeController extends Controller
                 return $resume;
             });
 
-            return to_route('resumes.builder', $resume->fresh());
+            return to_route('resumes.workstation', $resume->fresh());
         }
 
         $resume = DB::transaction(function () use ($request, $validated): Resume {
@@ -139,7 +140,7 @@ class ResumeController extends Controller
             return $resume;
         });
 
-        return to_route('resumes.builder', $resume);
+        return to_route('resumes.workstation', $resume);
     }
 
     /** The section-rail + form workstation (design direction 3a), the only editor. */
@@ -148,10 +149,12 @@ class ResumeController extends Controller
         return $this->render($request, $resume, 'Resumes/Workstation');
     }
 
-    /** Clone of the workstation — the new editor surface (NewEditor branch). */
-    public function builder(Request $request, Resume $resume): Response
+    /** Former NewEditor clone — keep the URL as a bookmark redirect to Workstation. */
+    public function builder(Request $request, Resume $resume): RedirectResponse
     {
-        return $this->render($request, $resume, 'Resumes/Builder');
+        abort_unless($resume->user_id === $request->user()->id, 404);
+
+        return to_route('resumes.workstation', $resume);
     }
 
     public function update(UpdateResumeRequest $request, Resume $resume): RedirectResponse
@@ -259,7 +262,7 @@ class ResumeController extends Controller
             return $copy;
         });
 
-        return to_route('resumes.builder', $copy);
+        return to_route('resumes.workstation', $copy);
     }
 
     /**
@@ -381,6 +384,15 @@ class ResumeController extends Controller
                     ])
                     ->all(),
                 'view_count' => $viewCount,
+            ] : null,
+            // Guest bookmark link (no-account flow). Null for registered
+            // users. `welcome` opens the modal on the first load after the
+            // guest account was created.
+            'guestLink' => $request->user()->guest_token !== null ? [
+                'origin' => rtrim((string) config('app.url'), '/'),
+                'slug' => Str::beforeLast($request->user()->guest_token, '-'),
+                'suffix' => Str::afterLast($request->user()->guest_token, '-'),
+                'welcome' => (bool) session('guest_welcome'),
             ] : null,
         ]);
     }

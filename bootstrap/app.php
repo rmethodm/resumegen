@@ -26,13 +26,19 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function (): void {
             $adminDomain = config('app.admin_domain');
 
-            if (! is_string($adminDomain) || $adminDomain === '') {
-                return;
+            if (is_string($adminDomain) && $adminDomain !== '') {
+                Route::middleware('web')
+                    ->domain($adminDomain)
+                    ->group(base_path('routes/admin.php'));
             }
 
-            Route::middleware('web')
-                ->domain($adminDomain)
-                ->group(base_path('routes/admin.php'));
+            $builderDomain = config('app.builder_domain');
+
+            if (is_string($builderDomain) && $builderDomain !== '') {
+                Route::middleware('web')
+                    ->domain($builderDomain)
+                    ->group(base_path('routes/builder.php'));
+            }
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -47,6 +53,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // If a CDN/reverse proxy is ever put in front, configure
         // $middleware->trustProxies() or every IP-keyed limit silently
         // collapses to the proxy's IP.
+        // Plain marketing flag ("has visited before"), nothing sensitive —
+        // unencrypted so the first-visit redirect is easy to test/debug.
+        $middleware->encryptCookies(except: ['rg_returning']);
+
         $middleware->web(append: [
             SecurityHeaders::class,
             // Global, not per-route: a pending-2FA session is fully
