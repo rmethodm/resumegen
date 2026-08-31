@@ -16,7 +16,9 @@ class WelcomePageTest extends TestCase
 
     public function test_welcome_page_does_not_leak_framework_version(): void
     {
-        $response = $this->get('/');
+        // First-time guests are redirected to the builder subdomain —
+        // the returning cookie is what lands them on Welcome.
+        $response = $this->withCookie('rg_returning', '1')->get('/');
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
@@ -28,7 +30,9 @@ class WelcomePageTest extends TestCase
 
     public function test_guest_sees_welcome_page(): void
     {
-        $response = $this->get('/');
+        // Returning cookie set — first-time guests get the builder redirect
+        // instead (covered by GuestResumeFlowTest).
+        $response = $this->withCookie('rg_returning', '1')->get('/');
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page

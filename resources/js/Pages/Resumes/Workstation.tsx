@@ -10,6 +10,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SectionFields } from '@/Components/workstation/inspector';
 import { ResumePreview } from '@/Components/resume/resume-preview';
 import { ExportChecklistModal } from '@/Components/workstation/export-checklist-modal';
+import {
+    GuestLinkModal,
+    type GuestLink,
+} from '@/Components/workstation/guest-link-modal';
 import { NotesPanel, type WorkstationNote } from '@/Components/workstation/notes-panel';
 import { SectionPanel } from '@/Components/workstation/section-panel';
 import {
@@ -20,6 +24,7 @@ import {
     AtsPlainTextBlock,
     OptimizePanel,
 } from '@/Components/workstation/optimize-panel';
+import { PdfPreviewFrame } from '@/Components/workstation/pdf-preview-frame';
 import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
@@ -35,6 +40,7 @@ import {
     type ScoreChecklistItem,
 } from '@/lib/resume-analysis';
 import { exportChecklist, type ExportCheck } from '@/lib/export-checklist';
+import { resumeFormattingKey } from '@/lib/resume-formatting';
 import { applyTemplatePreset } from '@/lib/template-presets';
 import { resumeToPlainText } from '@/lib/resume-plain-text';
 import {
@@ -60,34 +66,6 @@ function focusAndFlash(element: HTMLElement): void {
     }, 1500);
 }
 
-/** PDF preview iframe with a visible loading state while DomPDF streams.
- *  Local state resets by unmount when the user leaves PDF mode. */
-function PdfPreviewFrame({ src }: { src: string }) {
-    const [loaded, setLoaded] = useState(false);
-
-    return (
-        <div className="relative">
-            {!loaded && (
-                <p
-                    role="status"
-                    className="absolute inset-0 flex items-center justify-center text-sm text-ink-faint"
-                >
-                    Rendering PDF…
-                </p>
-            )}
-            <iframe
-                title="PDF preview"
-                src={src}
-                onLoad={() => setLoaded(true)}
-                className={cn(
-                    'h-[80dvh] w-full bg-surface transition-opacity duration-soft ease-soft motion-reduce:transition-none',
-                    loaded ? 'opacity-100' : 'opacity-0',
-                )}
-            />
-        </div>
-    );
-}
-
 export default function Workstation({
     resume,
     skillLibrary,
@@ -95,6 +73,7 @@ export default function Workstation({
     versions = [],
     notes = [],
     snapshots = [],
+    guestLink = null,
 }: {
     resume: ResumePageDocument;
     /** Server analysis kept on the page for Inertia parity; score UI uses live draft. */
@@ -104,6 +83,7 @@ export default function Workstation({
     versions?: ResumeVersion[];
     notes?: WorkstationNote[];
     snapshots?: WorkstationSnapshot[];
+    guestLink?: GuestLink | null;
 }) {
     const { id, updated_at: initialUpdatedAt, ...initial } = resume;
     const page = usePage();
@@ -122,6 +102,9 @@ export default function Workstation({
     const [reviewPreviewMode, setReviewPreviewMode] = useState<'react' | 'pdf'>(
         'react',
     );
+    /** Cache-bust for DomPDF iframe; bumped on format changes + after save. */
+    const [pdfRevision, setPdfRevision] = useState(() => Date.now());
+    const refreshPdfAfterSaveRef = useRef(false);
     const [draggedSection, setDraggedSection] =
         useState<ResumeSectionKey | null>(null);
     /** Double-click a section header to collapse/expand its form body.
@@ -140,6 +123,10 @@ export default function Workstation({
     const liveAnalysis = useMemo(() => analyzeResume(draft), [draft]);
     const plainText = useMemo(() => resumeToPlainText(draft), [draft]);
     const exportGate = useMemo(() => exportChecklist(draft), [draft]);
+    const formattingKey = useMemo(() => resumeFormattingKey(draft), [draft]);
+    const formattingKeyRef = useRef(formattingKey);
+    const pdfPreviewActive =
+        tab === 'Review' && reviewPreviewMode === 'pdf';
 
     // A badly formatted contact field is held back from the payload rather
     // than failing the whole save — see use-valid-contact.ts.
@@ -172,7 +159,38 @@ export default function Workstation({
         if (typeof next === 'string') {
             baseUpdatedAt.current = next;
         }
+
+        // DomPDF reads the saved row — refresh again once the format landed.
+        if (refreshPdfAfterSaveRef.current) {
+            refreshPdfAfterSaveRef.current = false;
+            setPdfRevision(Date.now());
+        }
     });
+
+    // Bust cached PDF when opening Review → PDF.
+    useEffect(() => {
+        if (pdfPreviewActive) {
+            setPdfRevision(Date.now());
+        }
+    }, [pdfPreviewActive]);
+
+    // While PDF is open, any formatting change remounts the iframe immediately
+    // and flushes autosave so the follow-up revision shows the new render.
+    useEffect(() => {
+        if (formattingKeyRef.current === formattingKey) {
+            return;
+        }
+
+        formattingKeyRef.current = formattingKey;
+
+        if (!pdfPreviewActive) {
+            return;
+        }
+
+        setPdfRevision(Date.now());
+        refreshPdfAfterSaveRef.current = true;
+        retrySave();
+    }, [formattingKey, pdfPreviewActive, retrySave]);
 
     // Sync concurrency token when the server document reloads (restore, version).
     useEffect(() => {
@@ -655,6 +673,14 @@ export default function Workstation({
                             onDensityChange={(density) =>
                                 setDraft({ ...draft, density })
                             }
+                            bulletStyle={draft.bullet_style}
+                            onBulletStyleChange={(bullet_style) =>
+                                setDraft({ ...draft, bullet_style })
+                            }
+                            skillsLayout={draft.skills_layout}
+                            onSkillsLayoutChange={(skills_layout) =>
+                                setDraft({ ...draft, skills_layout })
+                            }
                             zoom={previewZoom}
                             onZoomChange={setPreviewZoom}
                             versions={versions}
@@ -694,6 +720,28 @@ export default function Workstation({
                                         onChange={(target_role) =>
                                             setDraft({ ...draft, target_role })
                                         }
+                                        targetCompany={
+                                            draft.target_company ?? ''
+                                        }
+                                        onTargetCompanyChange={(
+                                            target_company,
+                                        ) =>
+                                            setDraft({
+                                                ...draft,
+                                                target_company,
+                                            })
+                                        }
+                                        targetJobDescription={
+                                            draft.target_job_description ?? ''
+                                        }
+                                        onTargetJobDescriptionChange={(
+                                            target_job_description,
+                                        ) =>
+                                            setDraft({
+                                                ...draft,
+                                                target_job_description,
+                                            })
+                                        }
                                     />
                                 )}
 
@@ -701,10 +749,10 @@ export default function Workstation({
                                     <div className="overflow-hidden rounded-lg bg-surface ring-1 ring-ink/5">
                                         {reviewPreviewMode === 'pdf' ? (
                                             <PdfPreviewFrame
-                                                src={route(
+                                                src={`${route(
                                                     'resumes.preview',
                                                     id,
-                                                )}
+                                                )}?t=${pdfRevision}`}
                                             />
                                         ) : (
                                             <div className="flex justify-center overflow-x-auto p-4 sm:p-6 lg:p-8">
@@ -789,6 +837,8 @@ export default function Workstation({
                     </div>
                 </div>
             </div>
+
+            {guestLink !== null && <GuestLinkModal guestLink={guestLink} />}
 
             <ExportChecklistModal
                 open={exportOpen}
