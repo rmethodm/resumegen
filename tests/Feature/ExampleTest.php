@@ -12,9 +12,7 @@ class ExampleTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response(): void
     {
-        // First-time guests are redirected to the builder subdomain; the
-        // returning cookie keeps this a plain 200 smoke test.
-        $response = $this->withCookie('rg_returning', '1')->get('/');
+        $response = $this->get('/');
 
         $response->assertStatus(200);
     }
