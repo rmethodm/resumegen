@@ -20,7 +20,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -384,15 +383,6 @@ class ResumeController extends Controller
                     ])
                     ->all(),
                 'view_count' => $viewCount,
-            ] : null,
-            // Guest bookmark link (no-account flow). Null for registered
-            // users. `welcome` opens the modal on the first load after the
-            // guest account was created.
-            'guestLink' => $request->user()->guest_token !== null ? [
-                'origin' => rtrim((string) config('app.url'), '/'),
-                'slug' => Str::beforeLast($request->user()->guest_token, '-'),
-                'suffix' => Str::afterLast($request->user()->guest_token, '-'),
-                'welcome' => (bool) session('guest_welcome'),
             ] : null,
         ]);
     }

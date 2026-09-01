@@ -10,10 +10,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SectionFields } from '@/Components/workstation/inspector';
 import { ResumePreview } from '@/Components/resume/resume-preview';
 import { ExportChecklistModal } from '@/Components/workstation/export-checklist-modal';
-import {
-    GuestLinkModal,
-    type GuestLink,
-} from '@/Components/workstation/guest-link-modal';
 import { NotesPanel, type WorkstationNote } from '@/Components/workstation/notes-panel';
 import { SectionPanel } from '@/Components/workstation/section-panel';
 import {
@@ -73,7 +69,6 @@ export default function Workstation({
     versions = [],
     notes = [],
     snapshots = [],
-    guestLink = null,
 }: {
     resume: ResumePageDocument;
     /** Server analysis kept on the page for Inertia parity; score UI uses live draft. */
@@ -83,7 +78,6 @@ export default function Workstation({
     versions?: ResumeVersion[];
     notes?: WorkstationNote[];
     snapshots?: WorkstationSnapshot[];
-    guestLink?: GuestLink | null;
 }) {
     const { id, updated_at: initialUpdatedAt, ...initial } = resume;
     const page = usePage();
@@ -837,8 +831,6 @@ export default function Workstation({
                     </div>
                 </div>
             </div>
-
-            {guestLink !== null && <GuestLinkModal guestLink={guestLink} />}
 
             <ExportChecklistModal
                 open={exportOpen}
