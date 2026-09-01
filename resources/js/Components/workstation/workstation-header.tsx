@@ -132,7 +132,7 @@ export function WorkstationHeader({
     return (
         <div
             className={cn(
-                'overflow-hidden rounded-lg border border-surface-border/80',
+                'overflow-hidden rounded-xl border border-surface-border/80',
                 'bg-white/90 shadow-ambient backdrop-blur-xl',
             )}
         >
@@ -205,14 +205,14 @@ export function WorkstationHeader({
                         type="button"
                         variant="outline"
                         onClick={() => setSharing(true)}
-                        className="h-9"
+                        className="h-9 rounded-full"
                     >
                         <ShareIcon className="size-4" />
                         Share
                     </Button>
 
                     <Menu as="div" className="relative">
-                        <MenuButton className={buttonClassName('default', 'default', 'h-9')}>
+                        <MenuButton className={buttonClassName('default', 'default', 'h-9 rounded-full')}>
                             <ArrowDownTrayIcon className="size-4" />
                             Download
                             <ChevronDownIcon className="size-3.5 opacity-90" />
@@ -264,7 +264,7 @@ export function WorkstationHeader({
 
                     <Menu as="div" className="relative">
                         <MenuButton
-                            className={buttonClassName('outline', 'icon')}
+                            className={buttonClassName('outline', 'icon', 'rounded-full')}
                             aria-label="More actions"
                         >
                             <EllipsisVerticalIcon className="size-4" />

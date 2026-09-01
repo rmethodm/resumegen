@@ -740,7 +740,7 @@ export default function Workstation({
                                 )}
 
                                 {tab === 'Review' && (
-                                    <div className="overflow-hidden rounded-lg bg-surface ring-1 ring-ink/5">
+                                    <div className="overflow-hidden rounded-xl bg-surface ring-1 ring-ink/5">
                                         {reviewPreviewMode === 'pdf' ? (
                                             <PdfPreviewFrame
                                                 src={`${route(
@@ -817,7 +817,7 @@ export default function Workstation({
                             {tab === 'Edit' && (
                                 <aside
                                     aria-label="Live preview"
-                                    className="hidden shrink-0 xl:sticky xl:top-4 xl:block xl:max-h-[calc(100dvh-2rem)] xl:w-[44%] xl:max-w-[620px] xl:overflow-y-auto xl:rounded-lg xl:bg-surface xl:p-4 xl:ring-1 xl:ring-ink/5"
+                                    className="hidden shrink-0 xl:sticky xl:top-4 xl:block xl:max-h-[calc(100dvh-2rem)] xl:w-[44%] xl:max-w-[620px] xl:overflow-y-auto xl:rounded-xl xl:bg-surface xl:p-4 xl:ring-1 xl:ring-ink/5"
                                 >
                                     <div className="rounded-lg bg-white shadow-ambient ring-1 ring-ink/5">
                                         <ResumePreview
