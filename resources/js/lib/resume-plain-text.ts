@@ -1,3 +1,4 @@
+import { markdownToPlainText } from '@/lib/bullet-markdown';
 import type { ResumeDraft } from '@/types';
 
 /**
@@ -69,7 +70,7 @@ export function resumeToPlainText(draft: ResumeDraft): string {
                         lines.push(dates);
                     }
                     for (const bullet of exp.bullets ?? []) {
-                        const text = bullet?.trim() ?? '';
+                        const text = markdownToPlainText(bullet ?? '');
                         if (text !== '') {
                             lines.push(`• ${text}`);
                         }
@@ -96,7 +97,7 @@ export function resumeToPlainText(draft: ResumeDraft): string {
                         lines.push(description);
                     }
                     for (const highlight of project.highlights ?? []) {
-                        const text = highlight?.trim() ?? '';
+                        const text = markdownToPlainText(highlight ?? '');
                         if (text !== '') {
                             lines.push(`• ${text}`);
                         }

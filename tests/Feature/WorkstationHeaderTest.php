@@ -89,4 +89,27 @@ class WorkstationHeaderTest extends TestCase
         $this->assertSame('georgia', $resume->font);
         $this->assertSame('compact', $resume->density);
     }
+
+    public function test_update_persists_bullet_style_and_skills_layout_from_format_toolbar(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create([
+            'bullet_style' => 'bullet',
+            'skills_layout' => 'inline',
+        ]);
+
+        $payload = ResumeDocument::toArray($resume);
+        unset($payload['id']);
+        $payload['bullet_style'] = 'numbered';
+        $payload['skills_layout'] = 'grouped';
+
+        $this->actingAs($user)
+            ->put(route('resumes.update', $resume), $payload)
+            ->assertRedirect();
+
+        $resume->refresh();
+
+        $this->assertSame('numbered', $resume->bullet_style);
+        $this->assertSame('grouped', $resume->skills_layout);
+    }
 }

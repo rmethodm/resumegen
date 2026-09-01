@@ -20,7 +20,7 @@ class ResumeCreatePathsTest extends TestCase
 
         $resume = $user->resumes()->latest('id')->first();
         $this->assertNotNull($resume);
-        $response->assertRedirect(route('resumes.builder', $resume));
+        $response->assertRedirect(route('resumes.workstation', $resume));
 
         $this->assertSame('Software Engineer', $resume->target_role);
         $this->assertGreaterThan(0, $resume->experiences()->count());
@@ -54,7 +54,7 @@ TXT;
 
         $resume = $user->resumes()->latest('id')->first();
         $this->assertNotNull($resume);
-        $response->assertRedirect(route('resumes.builder', $resume));
+        $response->assertRedirect(route('resumes.workstation', $resume));
 
         $this->assertSame('Alex Rivera', $resume->full_name);
         $this->assertSame('alex@example.com', $resume->email);
@@ -69,7 +69,7 @@ TXT;
 
         $resume = $user->resumes()->latest('id')->first();
         $this->assertNotNull($resume);
-        $response->assertRedirect(route('resumes.builder', $resume));
+        $response->assertRedirect(route('resumes.workstation', $resume));
     }
 
     public function test_create_from_template_sets_template_and_opens_workstation(): void
@@ -83,6 +83,6 @@ TXT;
         $resume = $user->resumes()->latest('id')->first();
         $this->assertNotNull($resume);
         $this->assertSame('modern', $resume->template);
-        $response->assertRedirect(route('resumes.builder', $resume));
+        $response->assertRedirect(route('resumes.workstation', $resume));
     }
 }

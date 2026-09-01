@@ -190,7 +190,7 @@ function ResumeCard({
                 <div className="min-w-0 flex-1">
                     <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
                         <Link
-                            href={route('resumes.builder', resume.id)}
+                            href={route('resumes.workstation', resume.id)}
                             className={cn(
                                 'truncate font-semibold text-ink hover:text-brand',
                                 compact ? 'text-[13px]' : 'text-sm',
@@ -261,7 +261,7 @@ function ResumeCard({
                     </MenuItems>
                 </Menu>
                 <Link
-                    href={route('resumes.builder', resume.id)}
+                    href={route('resumes.workstation', resume.id)}
                     className={buttonClassName('default', 'sm')}
                 >
                     Open
@@ -389,7 +389,7 @@ function ResumeCard({
                                         {version.score}/100
                                     </span>
                                     <Link
-                                        href={route('resumes.builder', version.id)}
+                                        href={route('resumes.workstation', version.id)}
                                         className={buttonClassName('outline', 'sm')}
                                     >
                                         Open

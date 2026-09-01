@@ -1,4 +1,9 @@
-import { Bars3Icon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import {
+    Bars3Icon,
+    ChevronDownIcon,
+    PlusIcon,
+    TrashIcon,
+} from '@heroicons/react/24/outline';
 import type { DragEvent, ReactNode } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Button } from '@/Components/ui/button';
@@ -472,69 +477,154 @@ export function useEntryReorder<T>(
     });
 }
 
-/** One repeated entry, with the controls that remove and (optionally) reorder it. */
+/**
+ * Tracks which repeated entries are expanded. Existing rows start collapsed;
+ * call `expand(index)` after Add so the new empty card opens for typing.
+ */
+export function useExpandedEntries(): {
+    isExpanded: (index: number) => boolean;
+    toggle: (index: number) => void;
+    expand: (index: number) => void;
+    remapAfterRemove: (removedIndex: number) => void;
+} {
+    const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
+
+    return {
+        isExpanded: (index) => expanded.has(index),
+        toggle: (index) => {
+            setExpanded((current) => {
+                const next = new Set(current);
+
+                if (next.has(index)) {
+                    next.delete(index);
+                } else {
+                    next.add(index);
+                }
+
+                return next;
+            });
+        },
+        expand: (index) => {
+            setExpanded((current) => new Set(current).add(index));
+        },
+        remapAfterRemove: (removedIndex) => {
+            setExpanded((current) => {
+                const next = new Set<number>();
+
+                for (const index of current) {
+                    if (index < removedIndex) {
+                        next.add(index);
+                    } else if (index > removedIndex) {
+                        next.add(index - 1);
+                    }
+                }
+
+                return next;
+            });
+        },
+    };
+}
+
+/** One repeated entry — collapsed to a summary row until expanded to edit. */
 export function EntryCard({
     title,
+    summary,
+    expanded,
+    onToggleExpand,
     onRemove,
     children,
     dragHandle,
 }: {
     title: string;
+    /** Shown under the title while collapsed (company · dates, etc.). */
+    summary?: string;
+    expanded: boolean;
+    onToggleExpand: () => void;
     onRemove: () => void;
     children: ReactNode;
     dragHandle?: EntryDragHandle;
 }) {
+    const contentId = useId();
+
     return (
         <div
             onDragOver={dragHandle?.onDragOver}
             className={cn(
-                'flex flex-col gap-2.5 rounded-lg border border-surface-border bg-white p-3',
+                'flex flex-col rounded-lg border border-surface-border bg-white',
                 'transition-opacity duration-soft ease-soft',
                 dragHandle?.dragging && 'opacity-50',
             )}
         >
-            <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5">
-                    {dragHandle && (
-                        <button
-                            type="button"
-                            draggable
-                            onDragStart={dragHandle.onDragStart}
-                            onDragEnd={dragHandle.onDragEnd}
-                            onKeyDown={(event) => {
-                                // Alt+↑/↓ reorders without leaving the keyboard.
-                                if (
-                                    event.altKey &&
-                                    (event.key === 'ArrowUp' ||
-                                        event.key === 'ArrowDown')
-                                ) {
-                                    event.preventDefault();
-                                    dragHandle.onKeyMove(
-                                        event.key === 'ArrowUp' ? -1 : 1,
-                                    );
-                                }
-                            }}
-                            className="cursor-grab p-0.5 text-ink-faint focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/40 active:cursor-grabbing"
-                            aria-label={`Reorder ${title} — drag, or Alt+Arrow keys`}
-                        >
-                            <Bars3Icon className="size-3.5" />
-                        </button>
-                    )}
-                    <p className="text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase">
-                        {title}
-                    </p>
-                </div>
+            <div
+                className={cn(
+                    'flex items-center gap-1.5 px-3 py-2.5',
+                    expanded && 'border-b border-surface-border/80',
+                )}
+            >
+                {dragHandle && (
+                    <button
+                        type="button"
+                        draggable
+                        onDragStart={dragHandle.onDragStart}
+                        onDragEnd={dragHandle.onDragEnd}
+                        onKeyDown={(event) => {
+                            // Alt+↑/↓ reorders without leaving the keyboard.
+                            if (
+                                event.altKey &&
+                                (event.key === 'ArrowUp' ||
+                                    event.key === 'ArrowDown')
+                            ) {
+                                event.preventDefault();
+                                dragHandle.onKeyMove(
+                                    event.key === 'ArrowUp' ? -1 : 1,
+                                );
+                            }
+                        }}
+                        className="cursor-grab p-0.5 text-ink-faint focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/40 active:cursor-grabbing"
+                        aria-label={`Reorder ${title} — drag, or Alt+Arrow keys`}
+                    >
+                        <Bars3Icon className="size-3.5" />
+                    </button>
+                )}
+                <button
+                    type="button"
+                    aria-expanded={expanded}
+                    aria-controls={contentId}
+                    onClick={onToggleExpand}
+                    className="focus-ring flex min-w-0 flex-1 items-start gap-1.5 rounded-sm text-left"
+                >
+                    <ChevronDownIcon
+                        className={cn(
+                            'mt-0.5 size-3.5 shrink-0 text-ink-faint transition-transform duration-soft ease-soft',
+                            !expanded && '-rotate-90',
+                        )}
+                    />
+                    <span className="min-w-0">
+                        <span className="block text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase">
+                            {title}
+                        </span>
+                        {!expanded && summary ? (
+                            <span className="mt-0.5 block truncate text-xs font-normal tracking-normal text-ink-muted normal-case">
+                                {summary}
+                            </span>
+                        ) : null}
+                    </span>
+                </button>
                 <Button
                     variant="ghost"
                     size="icon"
                     aria-label={`Remove ${title}`}
                     onClick={onRemove}
-                    className="size-7 text-ink-faint hover:text-danger"
+                    className="size-7 shrink-0 text-ink-faint hover:text-danger"
                 >
                     <TrashIcon className="size-3.5" />
                 </Button>
             </div>
-            {children}
+            {expanded ? (
+                <div id={contentId} className="flex flex-col gap-2.5 p-3">
+                    {children}
+                </div>
+            ) : null}
         </div>
     );
 }
@@ -564,294 +654,6 @@ export function AddButton({
             </Button>
             {disabled && disabledReason && (
                 <p className="text-xs text-ink-faint">{disabledReason}</p>
-            )}
-        </div>
-    );
-}
-
-/** Strip list markers people paste from Word/Docs/Markdown. */
-function cleanBulletLine(line: string): string {
-    return line.replace(/^\s*(?:[•\-*]|\d+[.)])\s*/, '').trimEnd();
-}
-
-/** Split clipboard / bulk text into one bullet per non-empty line. */
-export function splitBulletLines(text: string): string[] {
-    return text
-        .split(/\r?\n/)
-        .map(cleanBulletLine)
-        .filter((line) => line.trim() !== '');
-}
-
-/**
- * One row per bullet, reorderable by dragging the grip. The leading "• " some
- * people type is stripped so it doesn't get stored twice. Pasting several
- * lines (or using “Paste many”) splits into one bullet per line — single-line
- * inputs drop newlines on paste unless we intercept.
- */
-export function BulletsField({
-    label,
-    value,
-    onChange,
-    idPrefix,
-    max = 12,
-}: {
-    label: string;
-    value: string[];
-    onChange: (value: string[]) => void;
-    /** When set, each bullet input gets id `${idPrefix}-${index}` for jump-to. */
-    idPrefix?: string;
-    /** Mirrors UpdateResumeRequest's bullets/highlights array cap. */
-    max?: number;
-}) {
-    // ponytail: native HTML5 drag, no dnd library. Swap in one if touch matters.
-    const [dragging, setDragging] = useState<number | null>(null);
-    const [bulkOpen, setBulkOpen] = useState(false);
-    const [bulkText, setBulkText] = useState('');
-    const inputs = useRef<(HTMLInputElement | null)[]>([]);
-    // A pending focus target, not rendered state — a ref so applying it clears
-    // it without a setState-in-effect. Keyed on `value` below: focus follows the
-    // re-render that onChange triggers.
-    const pendingFocus = useRef<number | null>(null);
-
-    // Empty list still shows one editable row so paste/type work immediately.
-    const rows = value.length === 0 ? [''] : value;
-
-    /** Enter and Backspace shift which row exists, so focus follows the re-render. */
-    useEffect(() => {
-        const index = pendingFocus.current;
-
-        if (index === null) {
-            return;
-        }
-
-        pendingFocus.current = null;
-
-        const input = inputs.current[index];
-
-        input?.focus();
-        input?.setSelectionRange(input.value.length, input.value.length);
-    }, [value]);
-
-    function commit(next: string[]) {
-        // Drop a sole empty row so "no bullets" stays an empty array on save.
-        if (next.length === 1 && next[0] === '') {
-            onChange([]);
-
-            return;
-        }
-
-        // Every mutation (type, paste, bulk-add, Enter) routes through here,
-        // so capping here mirrors UpdateResumeRequest's array max in one place.
-        onChange(next.slice(0, max));
-    }
-
-    function replace(index: number, lines: string[]) {
-        const base = value.length === 0 ? [''] : value;
-        commit(base.flatMap((line, at) => (at === index ? lines : [line])));
-    }
-
-    function insertAfter(index: number) {
-        const base = value.length === 0 ? [''] : value;
-        commit(
-            base.flatMap((line, at) => (at === index ? [line, ''] : [line])),
-        );
-        pendingFocus.current = index + 1;
-    }
-
-    function removeAt(index: number, focus: number | null = null) {
-        const base = value.length === 0 ? [''] : value;
-        commit(base.filter((_, at) => at !== index));
-        pendingFocus.current = focus;
-    }
-
-    function move(from: number, to: number) {
-        const base = value.length === 0 ? [''] : value;
-        commit(reorder(base, from, to));
-    }
-
-    function pasteAt(index: number, text: string) {
-        const lines = splitBulletLines(text);
-
-        if (lines.length === 0) {
-            return false;
-        }
-
-        const base = value.length === 0 ? [''] : [...value];
-        const current = base[index] ?? '';
-        // Multi-line paste replaces the focused row; a single line merges as
-        // normal text insertion (caller falls through when we return false).
-        if (lines.length === 1 && !text.includes('\n')) {
-            return false;
-        }
-
-        if (current.trim() === '') {
-            base.splice(index, 1, ...lines);
-        } else {
-            base.splice(index + 1, 0, ...lines);
-        }
-
-        commit(base);
-        pendingFocus.current = index + lines.length - (current.trim() === '' ? 1 : 0);
-
-        return true;
-    }
-
-    function applyBulk() {
-        const lines = splitBulletLines(bulkText);
-
-        if (lines.length === 0) {
-            setBulkOpen(false);
-            setBulkText('');
-
-            return;
-        }
-
-        const kept = value.filter((line) => line.trim() !== '');
-        commit([...kept, ...lines]);
-        setBulkOpen(false);
-        setBulkText('');
-        pendingFocus.current = kept.length + lines.length - 1;
-    }
-
-    return (
-        <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between gap-2">
-                <Label className="text-xs">{label}</Label>
-                <button
-                    type="button"
-                    className="text-xs font-semibold text-brand hover:text-brand-accent"
-                    onClick={() => setBulkOpen((open) => !open)}
-                >
-                    {bulkOpen ? 'Cancel paste' : 'Paste many'}
-                </button>
-            </div>
-            {bulkOpen && (
-                <div className="flex flex-col gap-2 rounded-lg border border-surface-border bg-surface p-2.5">
-                    <textarea
-                        value={bulkText}
-                        onChange={(event) => setBulkText(event.target.value)}
-                        rows={4}
-                        placeholder={
-                            'Paste bullets — one per line\n• Shipped feature X\n- Reduced costs by 20%'
-                        }
-                        className="w-full resize-y rounded-md border border-surface-border bg-white px-2.5 py-2 text-sm shadow-xs outline-hidden focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30"
-                    />
-                    <Button
-                        type="button"
-                        size="sm"
-                        className="self-end"
-                        onClick={applyBulk}
-                        disabled={splitBulletLines(bulkText).length === 0}
-                    >
-                        Add {splitBulletLines(bulkText).length || ''} bullets
-                    </Button>
-                </div>
-            )}
-            {rows.map((bullet, index) => (
-                <div
-                    key={index}
-                    className="flex items-center gap-1"
-                    onDragOver={(event) => {
-                        event.preventDefault();
-
-                        if (dragging !== null && dragging !== index) {
-                            move(dragging, index);
-                            setDragging(index);
-                        }
-                    }}
-                >
-                    <span
-                        draggable
-                        onDragStart={() => setDragging(index)}
-                        onDragEnd={() => setDragging(null)}
-                        className="cursor-grab p-1 text-ink-muted active:cursor-grabbing"
-                        aria-label="Reorder bullet"
-                    >
-                        <Bars3Icon className="size-3.5" />
-                    </span>
-                    <Input
-                        ref={(element) => {
-                            inputs.current[index] = element;
-                        }}
-                        id={
-                            idPrefix !== undefined
-                                ? `${idPrefix}-${index}`
-                                : undefined
-                        }
-                        value={bullet}
-                        maxLength={500}
-                        onChange={(event) =>
-                            replace(index, [
-                                cleanBulletLine(event.target.value),
-                            ])
-                        }
-                        onPaste={(event) => {
-                            const text = event.clipboardData.getData('text');
-
-                            if (pasteAt(index, text)) {
-                                event.preventDefault();
-                            }
-                        }}
-                        onKeyDown={(event) => {
-                            if (event.key === 'Enter') {
-                                event.preventDefault();
-                                insertAfter(index);
-                            }
-
-                            // Alt+↑/↓ reorders without leaving the keyboard.
-                            if (
-                                event.altKey &&
-                                (event.key === 'ArrowUp' ||
-                                    event.key === 'ArrowDown')
-                            ) {
-                                event.preventDefault();
-                                const to =
-                                    event.key === 'ArrowUp'
-                                        ? index - 1
-                                        : index + 1;
-
-                                if (to >= 0 && to < rows.length) {
-                                    move(index, to);
-                                    pendingFocus.current = to;
-                                }
-                            }
-
-                            // Backspace in an empty row deletes it, landing the
-                            // caret at the end of the row above.
-                            if (
-                                event.key === 'Backspace' &&
-                                bullet === '' &&
-                                rows.length > 1
-                            ) {
-                                event.preventDefault();
-                                removeAt(index, Math.max(0, index - 1));
-                            }
-                        }}
-                    />
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-7 text-ink-muted"
-                        onClick={() => removeAt(index)}
-                        aria-label="Remove bullet"
-                    >
-                        <XMarkIcon className="size-3.5" />
-                    </Button>
-                </div>
-            ))}
-            <Button
-                variant="link"
-                size="sm"
-                className="h-auto self-start p-0 text-xs"
-                disabled={rows.length >= max}
-                onClick={() => commit([...value, ''])}
-            >
-                + Add bullet
-            </Button>
-            {rows.length >= max && (
-                <p className="text-xs text-ink-muted">
-                    Limit reached ({max}).
-                </p>
             )}
         </div>
     );

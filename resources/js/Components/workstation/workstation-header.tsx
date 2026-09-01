@@ -9,7 +9,7 @@ import {
     ExclamationTriangleIcon,
     ShareIcon,
 } from '@heroicons/react/24/outline';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
@@ -25,10 +25,12 @@ import {
 import type { ContactErrors } from '@/hooks/use-valid-contact';
 import { cn } from '@/lib/utils';
 import type {
+    ResumeBulletStyle,
     ResumeDensity,
     ResumeDraft,
     ResumeFont,
     ResumeShareLink,
+    ResumeSkillsLayout,
     ResumeTemplateKey,
     SaveStatus,
 } from '@/types';
@@ -66,6 +68,10 @@ export function WorkstationHeader({
     onFontChange,
     density,
     onDensityChange,
+    bulletStyle,
+    onBulletStyleChange,
+    skillsLayout,
+    onSkillsLayoutChange,
     zoom,
     onZoomChange,
     versions = [],
@@ -107,6 +113,10 @@ export function WorkstationHeader({
     onFontChange: (font: ResumeFont) => void;
     density: ResumeDensity;
     onDensityChange: (density: ResumeDensity) => void;
+    bulletStyle: ResumeBulletStyle;
+    onBulletStyleChange: (style: ResumeBulletStyle) => void;
+    skillsLayout: ResumeSkillsLayout;
+    onSkillsLayoutChange: (layout: ResumeSkillsLayout) => void;
     zoom: PreviewZoom;
     onZoomChange: (zoom: PreviewZoom) => void;
     versions?: HeaderVersion[];
@@ -283,7 +293,7 @@ export function WorkstationHeader({
                                         <MenuItem key={version.id}>
                                             <a
                                                 href={route(
-                                                    'resumes.builder',
+                                                    'resumes.workstation',
                                                     version.id,
                                                 )}
                                                 className={cn(
@@ -343,6 +353,10 @@ export function WorkstationHeader({
                 onFontChange={onFontChange}
                 density={density}
                 onDensityChange={onDensityChange}
+                bulletStyle={bulletStyle}
+                onBulletStyleChange={onBulletStyleChange}
+                skillsLayout={skillsLayout}
+                onSkillsLayoutChange={onSkillsLayoutChange}
                 pageEstimateDraft={pageEstimateDraft}
                 zoom={zoom}
                 onZoomChange={onZoomChange}

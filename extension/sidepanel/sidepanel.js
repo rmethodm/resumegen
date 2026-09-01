@@ -236,7 +236,7 @@ function renderPreview() {
     `;
 
     $('edit-resume-link')?.addEventListener('click', () => {
-        send('OPEN_APP', { path: `/resumes/${p.resume_id}/builder` });
+        send('OPEN_APP', { path: `/resumes/${p.resume_id}/workstation` });
     });
 }
 

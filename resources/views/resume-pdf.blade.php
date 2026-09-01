@@ -244,7 +244,7 @@
               @endif
             </div>
             @foreach (array_filter(explode("\n", $exp['bullets'] ?? '')) as $b)
-              <div style="font-size:{{ $sizeBody }}pt; padding-left:8pt;">• {{ ltrim($b, "•\-\* \t") }}</div>
+              <div style="font-size:{{ $sizeBody }}pt; padding-left:8pt;">• {!! \App\Support\InlineMarkdown::toHtml(ltrim($b, "•\-\* \t")) !!}</div>
             @endforeach
           </div>
         </div>

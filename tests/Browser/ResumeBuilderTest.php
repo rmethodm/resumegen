@@ -34,8 +34,10 @@ class ResumeBuilderTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($user, $resume): void {
             $browser->loginAs($user)
                 ->visit(route('resumes.workstation', $resume, false))
+                ->waitFor('#field-target-role-bar', 10)
+                ->click('button[aria-controls="target-version-details"]')
                 ->waitFor('input[name="target_company"]', 10)
-                ->assertPresent('input[name="target_title"]');
+                ->assertPresent('input[name="target_company"]');
 
             $severe = collect($browser->driver->manage()->getLog('browser'))
                 ->filter(fn (array $entry): bool => $entry['level'] === 'SEVERE')
@@ -47,7 +49,7 @@ class ResumeBuilderTest extends DuskTestCase
     }
 
     /**
-     * The builder saves on blur, not on submit. Target company/title must persist
+     * The builder saves on blur, not on submit. Target company must persist
      * so Optimize / JD keyword overlap has something to work with.
      */
     public function test_target_job_fields_persist_on_blur(): void
@@ -55,15 +57,16 @@ class ResumeBuilderTest extends DuskTestCase
         $user = User::factory()->create();
         $resume = Resume::factory()->for($user)->create([
             'target_company' => null,
-            'target_title' => null,
+            'target_role' => null,
         ]);
 
         $this->browse(function (Browser $browser) use ($user, $resume): void {
             $browser->loginAs($user)
                 ->visit(route('resumes.workstation', $resume, false))
+                ->waitFor('#field-target-role-bar', 10)
+                ->click('button[aria-controls="target-version-details"]')
                 ->waitFor('input[name="target_company"]', 10)
                 ->type('target_company', 'Acme, Inc.')
-                ->type('target_title', 'Senior Product Manager')
                 // The builder saves on blur; blur the focused field directly rather
                 // than clicking a neutral element, which Dusk's resolver will not match.
                 ->script('document.activeElement.blur()');
@@ -74,7 +77,6 @@ class ResumeBuilderTest extends DuskTestCase
         $resume->refresh();
 
         $this->assertSame('Acme, Inc.', $resume->target_company);
-        $this->assertSame('Senior Product Manager', $resume->target_title);
     }
 
     /** A resume belonging to someone else must not be reachable. */

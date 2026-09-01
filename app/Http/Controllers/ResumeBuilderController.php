@@ -37,7 +37,7 @@ class ResumeBuilderController extends Controller
         // Match ResumeController ownership (no ResumePolicy in this app).
         abort_unless($resume->user_id === $request->user()->id, 403);
 
-        return redirect()->route('resumes.builder', $resume);
+        return redirect()->route('resumes.workstation', $resume);
     }
 
     public function update(Request $request, Resume $resume)

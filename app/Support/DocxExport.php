@@ -160,7 +160,35 @@ final class DocxExport
                 ? ['after' => '20', 'indentLeft' => '360']
                 : ['after' => '20', 'indent' => '360'];
 
-            $out .= self::paragraph(self::run($prefix.$bullet), $indentOpts);
+            $segments = InlineMarkdown::toRuns((string) $bullet);
+            $runs = '';
+
+            if ($segments === []) {
+                $runs = self::run($prefix);
+            } else {
+                // Fold the marker into the first text run so plain bullets stay
+                // one contiguous OOXML text node (export tests + copy/paste).
+                $first = array_shift($segments);
+                $runs .= self::run($prefix.$first['text'], [
+                    'b' => $first['bold'],
+                    'i' => $first['italic'],
+                ]);
+                if ($first['href'] !== null && $first['href'] !== '') {
+                    $runs .= self::run(' ('.$first['href'].')', ['size' => '16']);
+                }
+
+                foreach ($segments as $segment) {
+                    $runs .= self::run($segment['text'], [
+                        'b' => $segment['bold'],
+                        'i' => $segment['italic'],
+                    ]);
+                    if ($segment['href'] !== null && $segment['href'] !== '') {
+                        $runs .= self::run(' ('.$segment['href'].')', ['size' => '16']);
+                    }
+                }
+            }
+
+            $out .= self::paragraph($runs, $indentOpts);
         }
 
         return $out.self::paragraph('', ['after' => '80']);

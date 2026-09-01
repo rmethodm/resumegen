@@ -7,15 +7,35 @@ import {
     ListBulletIcon,
 } from '@heroicons/react/24/outline';
 import { buttonClassName } from '@/Components/ui/button';
+import {
+    bulletStyles,
+    skillLayouts,
+} from '@/Components/workstation/inspector-fields';
 import { estimateResumePages } from '@/lib/resume-page-estimate';
 import { templateLabels } from '@/lib/resume-templates';
 import { cn } from '@/lib/utils';
 import type {
+    ResumeBulletStyle,
     ResumeDensity,
     ResumeDraft,
     ResumeFont,
+    ResumeSkillsLayout,
     ResumeTemplateKey,
 } from '@/types';
+
+const bulletStyleLabels: Record<ResumeBulletStyle, string> = {
+    bullet: 'Bullets',
+    numbered: 'Numbered',
+    indented: 'Indented',
+};
+
+const skillsLayoutLabels: Record<ResumeSkillsLayout, string> = {
+    inline: 'Inline',
+    bullets: 'Bullets',
+    grouped: 'Grouped',
+    columns: 'Columns',
+    narrative: 'Narrative',
+};
 
 export const WORKSTATION_TABS = ['Edit', 'Review', 'Optimize'] as const;
 export type WorkstationTab = (typeof WORKSTATION_TABS)[number];
@@ -102,6 +122,10 @@ export function WorkstationFormatToolbar({
     onFontChange,
     density,
     onDensityChange,
+    bulletStyle,
+    onBulletStyleChange,
+    skillsLayout,
+    onSkillsLayoutChange,
     pageEstimateDraft,
     zoom,
     onZoomChange,
@@ -122,6 +146,10 @@ export function WorkstationFormatToolbar({
     onFontChange: (font: ResumeFont) => void;
     density: ResumeDensity;
     onDensityChange: (density: ResumeDensity) => void;
+    bulletStyle: ResumeBulletStyle;
+    onBulletStyleChange: (style: ResumeBulletStyle) => void;
+    skillsLayout: ResumeSkillsLayout;
+    onSkillsLayoutChange: (layout: ResumeSkillsLayout) => void;
     pageEstimateDraft: Pick<
         ResumeDraft,
         | 'summary'
@@ -353,6 +381,68 @@ export function WorkstationFormatToolbar({
             >
                 ≈{pageEstimate.pages} page{pageEstimate.pages === 1 ? '' : 's'}
             </span>
+
+            <Menu as="div" className="relative">
+                <MenuButton
+                    className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
+                    aria-label="Bullet style"
+                    title="Bullet style for experience and projects"
+                >
+                    <span className="hidden text-ink-faint sm:inline">Bullets</span>
+                    <span className="min-w-0 truncate">
+                        {bulletStyleLabels[bulletStyle] ?? bulletStyle}
+                    </span>
+                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
+                </MenuButton>
+                <MenuItems
+                    anchor="bottom start"
+                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                >
+                    {bulletStyles.map((style) => (
+                        <MenuItem key={style}>
+                            <button
+                                type="button"
+                                onClick={() => onBulletStyleChange(style)}
+                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                            >
+                                <MenuCheck on={style === bulletStyle} />
+                                {bulletStyleLabels[style]}
+                            </button>
+                        </MenuItem>
+                    ))}
+                </MenuItems>
+            </Menu>
+
+            <Menu as="div" className="relative">
+                <MenuButton
+                    className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
+                    aria-label="Skills layout"
+                    title="How skills appear on the resume"
+                >
+                    <span className="hidden text-ink-faint sm:inline">Skills</span>
+                    <span className="min-w-0 truncate">
+                        {skillsLayoutLabels[skillsLayout] ?? skillsLayout}
+                    </span>
+                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
+                </MenuButton>
+                <MenuItems
+                    anchor="bottom start"
+                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                >
+                    {skillLayouts.map((layout) => (
+                        <MenuItem key={layout}>
+                            <button
+                                type="button"
+                                onClick={() => onSkillsLayoutChange(layout)}
+                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                            >
+                                <MenuCheck on={layout === skillsLayout} />
+                                {skillsLayoutLabels[layout]}
+                            </button>
+                        </MenuItem>
+                    ))}
+                </MenuItems>
+            </Menu>
 
             <ToolbarDivider />
 
