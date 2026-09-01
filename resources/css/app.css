@@ -25,17 +25,17 @@
   --color-neutral-900: #1c1d20;
   --color-neutral-950: #101113;
 
-  --color-accent-50: #f0efff;
-  --color-accent-100: #e1e5ff;
-  --color-accent-200: #c3c3fb;
-  --color-accent-300: #a29ff2;
-  --color-accent-400: #8079e6;
-  --color-accent-500: #5952d2;
-  --color-accent-600: #4842b0;
-  --color-accent-700: #3c3695;
-  --color-accent-800: #2c2870;
-  --color-accent-900: #1f1c50;
-  --color-accent-950: #131134;
+  --color-accent-50: #f3f0ff;
+  --color-accent-100: #e7e2fe;
+  --color-accent-200: #cfc7fc;
+  --color-accent-300: #b3a4fa;
+  --color-accent-400: #9179f6;
+  --color-accent-500: #7357f0;
+  --color-accent-600: #5f43dd;
+  --color-accent-700: #4f35bb;
+  --color-accent-800: #402b95;
+  --color-accent-900: #362672;
+  --color-accent-950: #211744;
 
   --color-brand: rgb(var(--brand-rgb));
   --color-brand-accent: rgb(var(--brand-accent-rgb));
@@ -133,10 +133,10 @@
  * Default = current violet; navy / teal / copper are preview alternatives.
  */
   :root {
-    --brand-rgb: 89 82 210; /* #5952d2 */
-    --brand-accent-rgb: 60 54 149; /* #3c3695 */
-    --brand-subtle-rgb: 225 229 255; /* #e1e5ff */
-    --brand-soft-rgb: 94 88 196; /* #5e58c4 */
+    --brand-rgb: 115 87 240; /* #7357f0 */
+    --brand-accent-rgb: 79 53 187; /* #4f35bb */
+    --brand-subtle-rgb: 231 226 254; /* #e7e2fe */
+    --brand-soft-rgb: 129 103 240; /* #8167f0 */
     --surface-rgb: 242 246 249; /* #f2f6f9 */
     --surface-border-rgb: 210 216 221; /* #d2d8dd */
   }

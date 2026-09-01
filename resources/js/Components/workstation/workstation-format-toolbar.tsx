@@ -189,7 +189,7 @@ export function WorkstationFormatToolbar({
             <div
                 role="tablist"
                 aria-label="Workstation mode"
-                className="inline-flex items-center rounded-lg border border-surface-border bg-surface p-0.5"
+                className="inline-flex items-center rounded-full border border-surface-border bg-surface p-0.5"
             >
                 {WORKSTATION_TABS.map((tab) => (
                     <button
@@ -199,9 +199,9 @@ export function WorkstationFormatToolbar({
                         aria-selected={tab === activeTab}
                         onClick={() => onTabChange(tab)}
                         className={cn(
-                            'rounded-md px-3 py-1 text-sm font-medium transition-colors',
+                            'rounded-full px-3.5 py-1 text-sm font-medium transition-colors',
                             tab === activeTab
-                                ? 'bg-white font-semibold text-brand shadow-xs'
+                                ? 'bg-brand font-semibold text-white shadow-xs'
                                 : 'text-ink-muted hover:text-ink',
                         )}
                     >
@@ -463,7 +463,7 @@ export function WorkstationFormatToolbar({
                         disabled={!reviewActive}
                         onClick={() => onReviewPreviewModeChange('react')}
                         className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium',
+                            'rounded-full px-2.5 py-1 text-xs font-medium',
                             reviewPreviewMode === 'react'
                                 ? 'bg-brand-subtle text-brand'
                                 : 'text-ink-muted hover:bg-surface',
@@ -476,7 +476,7 @@ export function WorkstationFormatToolbar({
                         disabled={!reviewActive}
                         onClick={() => onReviewPreviewModeChange('pdf')}
                         className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium',
+                            'rounded-full px-2.5 py-1 text-xs font-medium',
                             reviewPreviewMode === 'pdf'
                                 ? 'bg-brand-subtle text-brand'
                                 : 'text-ink-muted hover:bg-surface',

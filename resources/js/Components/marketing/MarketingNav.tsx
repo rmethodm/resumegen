@@ -18,8 +18,8 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
         >
             <nav
                 className={cn(
-                    'mx-auto flex h-14 max-w-6xl items-center gap-4 rounded-2xl border border-surface-border/80',
-                    'bg-white/90 px-4 shadow-ambient backdrop-blur-sm',
+                    'dark mx-auto flex h-14 max-w-6xl items-center gap-4 rounded-2xl border border-white/10',
+                    'bg-neutral-900/85 px-4 shadow-ambient backdrop-blur-sm',
                 )}
                 aria-label="Primary"
             >
@@ -29,7 +29,7 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
                         <a
                             key={link.href}
                             href={link.href}
-                            className="text-sm text-ink-muted transition-colors duration-soft ease-soft hover:text-ink"
+                            className="text-sm text-neutral-400 transition-colors duration-soft ease-soft hover:text-white"
                         >
                             {link.label}
                         </a>
@@ -47,7 +47,7 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
                         <>
                             <Link
                                 href={route('login')}
-                                className="hidden text-sm font-semibold text-ink-muted transition-colors duration-soft ease-soft hover:text-ink sm:inline"
+                                className="hidden text-sm font-semibold text-neutral-400 transition-colors duration-soft ease-soft hover:text-white sm:inline"
                             >
                                 Log in
                             </Link>
