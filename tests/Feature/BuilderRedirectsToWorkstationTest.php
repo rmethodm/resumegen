@@ -18,7 +18,17 @@ class BuilderRedirectsToWorkstationTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('builder.edit', $resume))
-            ->assertRedirect(route('resumes.builder', $resume));
+            ->assertRedirect(route('resumes.workstation', $resume));
+    }
+
+    public function test_resumes_builder_url_redirects_to_workstation(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->get(route('resumes.builder', $resume))
+            ->assertRedirect(route('resumes.workstation', $resume));
     }
 
     public function test_legacy_builder_index_redirects_to_dashboard(): void

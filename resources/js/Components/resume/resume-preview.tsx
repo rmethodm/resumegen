@@ -1,6 +1,7 @@
 import '../../../css/resume-fonts.css';
 import { Fragment } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
+import { markdownToSafeInlineHtml } from '@/lib/bullet-markdown';
 import { orderSectionsForTemplate } from '@/lib/template-presets';
 import { cn } from '@/lib/utils';
 import type {
@@ -310,11 +311,19 @@ function Bullets({
         return null;
     }
 
+    const renderItem = (item: string) => (
+        <span
+            dangerouslySetInnerHTML={{
+                __html: markdownToSafeInlineHtml(item),
+            }}
+        />
+    );
+
     if (style === 'numbered') {
         return (
-            <ol className="mt-1 ml-4 list-decimal">
+            <ol className="mt-1 ml-4 list-decimal [&_a]:underline">
                 {visible.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li key={index}>{renderItem(item)}</li>
                 ))}
             </ol>
         );
@@ -322,18 +331,18 @@ function Bullets({
 
     if (style === 'indented') {
         return (
-            <div className="mt-1 ml-4">
+            <div className="mt-1 ml-4 [&_a]:underline">
                 {visible.map((item, index) => (
-                    <div key={index}>{item}</div>
+                    <div key={index}>{renderItem(item)}</div>
                 ))}
             </div>
         );
     }
 
     return (
-        <ul className="mt-1 ml-4 list-disc">
+        <ul className="mt-1 ml-4 list-disc [&_a]:underline">
             {visible.map((item, index) => (
-                <li key={index}>{item}</li>
+                <li key={index}>{renderItem(item)}</li>
             ))}
         </ul>
     );

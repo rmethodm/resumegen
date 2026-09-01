@@ -157,19 +157,19 @@
                         @if (($section['bullet_style'] ?? 'bullet') === 'numbered')
                             <ol>
                                 @foreach ($entry['bullets'] as $bullet)
-                                    <li>{{ $bullet }}</li>
+                                    <li>{!! \App\Support\InlineMarkdown::toHtml((string) $bullet) !!}</li>
                                 @endforeach
                             </ol>
                         @elseif (($section['bullet_style'] ?? 'bullet') === 'indented')
                             <div class="indented-bullets">
                                 @foreach ($entry['bullets'] as $bullet)
-                                    <div>{{ $bullet }}</div>
+                                    <div>{!! \App\Support\InlineMarkdown::toHtml((string) $bullet) !!}</div>
                                 @endforeach
                             </div>
                         @else
                             <ul>
                                 @foreach ($entry['bullets'] as $bullet)
-                                    <li>{{ $bullet }}</li>
+                                    <li>{!! \App\Support\InlineMarkdown::toHtml((string) $bullet) !!}</li>
                                 @endforeach
                             </ul>
                         @endif

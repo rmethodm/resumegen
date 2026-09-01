@@ -2,29 +2,55 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import AutocompleteInput from '@/Components/AutocompleteInput';
 import SkillGroupEditor from '@/Components/SkillGroupEditor';
+import TagInput from '@/Components/TagInput';
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
+import { BulletsField } from '@/Components/workstation/bullets-editor';
 import {
     AddButton,
-    BulletsField,
-    BulletStyleThumb,
-    bulletStyles,
     EntryCard,
     Field,
     LayoutThumb,
     MonthYearField,
     Pair,
-    skillLayouts,
     UrlField,
+    skillLayouts,
     useEntryReorder,
+    useExpandedEntries,
 } from '@/Components/workstation/inspector-fields';
 import { SkillPickerModal } from '@/Components/workstation/skill-picker-modal';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
 import { formatPhone } from '@/lib/contact-validation';
+import {
+    fromFlatSkillNames,
+    toFlatSkillNames,
+    usesSkillCategories,
+} from '@/lib/skills-editor';
 import { cn } from '@/lib/utils';
-import type { ResumeDraft, ResumeSkill, SkillLibraryGroup } from '@/types';
+import type {
+    ResumeDraft,
+    ResumeSkill,
+    ResumeSkillsLayout,
+    SkillLibraryGroup,
+} from '@/types';
 import type { SkillGroup } from '@/types';
+
+const skillsLayoutLabels: Record<ResumeSkillsLayout, string> = {
+    inline: 'Inline',
+    bullets: 'Bullets',
+    grouped: 'Grouped',
+    columns: 'Columns',
+    narrative: 'Narrative',
+};
+
+/** Compact one-line summary for a collapsed entry card. */
+function joinSummary(...parts: Array<string | null | undefined>): string {
+    return parts
+        .map((part) => part?.trim())
+        .filter((part): part is string => Boolean(part))
+        .join(' · ');
+}
 
 const autocompleteFieldClass =
     'flex h-10 w-full min-w-0 rounded-md border border-surface-border bg-white px-3 py-1 text-sm shadow-xs outline-hidden transition-colors placeholder:text-ink-faint focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30';
@@ -70,50 +96,7 @@ export function ContactFields({
 }) {
     return (
         <>
-            {/* Target role lives in the sticky bar above the form stack.
-                Contact keeps company + JD notes only to avoid duplicate fields. */}
-            <div className="flex flex-col gap-2.5 rounded-lg border border-surface-border bg-surface/60 p-3">
-                <div>
-                    <p className="text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase">
-                        Version labels
-                    </p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-ink-muted">
-                        Optional. Target role is edited above this form. Company
-                        and notes are dashboard-only — not printed on the
-                        resume.
-                    </p>
-                </div>
-                <Field
-                    label="Target company (optional)"
-                    value={resume.target_company}
-                    placeholder="e.g. Acme Corp — dashboard label only"
-                    maxLength={255}
-                    onChange={(target_company) =>
-                        onChange({ ...resume, target_company })
-                    }
-                />
-                <div className="flex flex-col gap-1.5">
-                    <Label className="text-xs">
-                        Job description notes (optional)
-                    </Label>
-                    <Textarea
-                        rows={3}
-                        value={resume.target_job_description ?? ''}
-                        placeholder="Paste key requirements you are matching…"
-                        maxLength={10000}
-                        onChange={(event) =>
-                            onChange({
-                                ...resume,
-                                target_job_description: event.target.value,
-                            })
-                        }
-                    />
-                    <p className="text-xs text-ink-faint">
-                        {(resume.target_job_description ?? '').length} / 10000
-                        characters
-                    </p>
-                </div>
-            </div>
+            {/* Target role / company / JD notes live in TargetRoleBar above the form. */}
             <Field
                 label="Full name"
                 value={resume.full_name}
@@ -216,55 +199,35 @@ export function ExperienceFields({
     const dragHandle = useEntryReorder(resume.experiences, (experiences) =>
         onChange({ ...resume, experiences }),
     );
+    const expansion = useExpandedEntries();
 
     return (
         <>
-            <div className="flex flex-col gap-1.5">
-                <Label className="text-xs">Bullet style</Label>
-                <p className="text-xs text-ink-muted">
-                    Applies to Work Experience and Projects.
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                    {bulletStyles.map((style) => (
-                        <button
-                            key={style}
-                            type="button"
-                            aria-pressed={resume.bullet_style === style}
-                            onClick={() =>
-                                onChange({ ...resume, bullet_style: style })
-                            }
-                            className={cn(
-                                'flex flex-col justify-between gap-2 rounded-lg border p-2.5 text-left transition-colors duration-soft ease-soft',
-                                resume.bullet_style === style
-                                    ? 'border-brand bg-brand-subtle ring-1 ring-brand'
-                                    : 'border-surface-border hover:bg-surface',
-                            )}
-                        >
-                            <span className="flex h-12 flex-col justify-center">
-                                <BulletStyleThumb style={style} />
-                            </span>
-                            <span
-                                className={cn(
-                                    'text-xs font-bold tracking-[0.06em] uppercase',
-                                    resume.bullet_style === style
-                                        ? 'text-brand'
-                                        : 'text-ink-muted',
-                                )}
-                            >
-                                {style}
-                            </span>
-                        </button>
-                    ))}
-                </div>
-            </div>
             {resume.experiences.map((experience, index) => (
                 <EntryCard
                     key={index}
                     title={experience.title || `Role ${index + 1}`}
+                    summary={joinSummary(
+                        experience.company,
+                        [
+                            experience.start_date,
+                            experience.is_current
+                                ? 'Present'
+                                : experience.end_date,
+                        ]
+                            .filter(Boolean)
+                            .join(' – ') || undefined,
+                        experience.bullets.filter(Boolean).length
+                            ? `${experience.bullets.filter(Boolean).length} bullets`
+                            : undefined,
+                    )}
+                    expanded={expansion.isExpanded(index)}
+                    onToggleExpand={() => expansion.toggle(index)}
                     dragHandle={dragHandle(index)}
-                    onRemove={() =>
-                        remove(resume, onChange, 'experiences', index)
-                    }
+                    onRemove={() => {
+                        expansion.remapAfterRemove(index);
+                        remove(resume, onChange, 'experiences', index);
+                    }}
                 >
                     <div className="flex flex-col gap-1.5">
                         <Label className="text-xs">Job title</Label>
@@ -345,7 +308,8 @@ export function ExperienceFields({
                 label="Add experience"
                 disabled={resume.experiences.length >= 20}
                 disabledReason="Limit reached (20)."
-                onClick={() =>
+                onClick={() => {
+                    const nextIndex = resume.experiences.length;
                     onChange({
                         ...resume,
                         experiences: [
@@ -359,8 +323,9 @@ export function ExperienceFields({
                                 bullets: [],
                             },
                         ],
-                    })
-                }
+                    });
+                    expansion.expand(nextIndex);
+                }}
             />
         </>
     );
@@ -376,6 +341,7 @@ export function ProjectFields({
     const dragHandle = useEntryReorder(resume.projects, (projects) =>
         onChange({ ...resume, projects }),
     );
+    const expansion = useExpandedEntries();
 
     return (
         <>
@@ -383,8 +349,21 @@ export function ProjectFields({
                 <EntryCard
                     key={index}
                     title={project.name || `Project ${index + 1}`}
+                    summary={joinSummary(
+                        [project.start_date, project.end_date]
+                            .filter(Boolean)
+                            .join(' – ') || undefined,
+                        project.description
+                            ? project.description.slice(0, 60)
+                            : undefined,
+                    )}
+                    expanded={expansion.isExpanded(index)}
+                    onToggleExpand={() => expansion.toggle(index)}
                     dragHandle={dragHandle(index)}
-                    onRemove={() => remove(resume, onChange, 'projects', index)}
+                    onRemove={() => {
+                        expansion.remapAfterRemove(index);
+                        remove(resume, onChange, 'projects', index);
+                    }}
                 >
                     <Field
                         label="Project name"
@@ -451,7 +430,8 @@ export function ProjectFields({
                 label="Add project"
                 disabled={resume.projects.length >= 20}
                 disabledReason="Limit reached (20)."
-                onClick={() =>
+                onClick={() => {
+                    const nextIndex = resume.projects.length;
                     onChange({
                         ...resume,
                         projects: [
@@ -465,8 +445,9 @@ export function ProjectFields({
                                 highlights: [],
                             },
                         ],
-                    })
-                }
+                    });
+                    expansion.expand(nextIndex);
+                }}
             />
         </>
     );
@@ -482,6 +463,7 @@ export function EducationFields({
     const dragHandle = useEntryReorder(resume.education, (education) =>
         onChange({ ...resume, education }),
     );
+    const expansion = useExpandedEntries();
 
     return (
         <>
@@ -489,10 +471,18 @@ export function EducationFields({
                 <EntryCard
                     key={index}
                     title={entry.school || `Education ${index + 1}`}
+                    summary={joinSummary(
+                        entry.degree,
+                        entry.field,
+                        entry.graduation_year,
+                    )}
+                    expanded={expansion.isExpanded(index)}
+                    onToggleExpand={() => expansion.toggle(index)}
                     dragHandle={dragHandle(index)}
-                    onRemove={() =>
-                        remove(resume, onChange, 'education', index)
-                    }
+                    onRemove={() => {
+                        expansion.remapAfterRemove(index);
+                        remove(resume, onChange, 'education', index);
+                    }}
                 >
                     <Field
                         label="School"
@@ -542,7 +532,8 @@ export function EducationFields({
                 label="Add education"
                 disabled={resume.education.length >= 20}
                 disabledReason="Limit reached (20)."
-                onClick={() =>
+                onClick={() => {
+                    const nextIndex = resume.education.length;
                     onChange({
                         ...resume,
                         education: [
@@ -554,8 +545,9 @@ export function EducationFields({
                                 graduation_year: '',
                             },
                         ],
-                    })
-                }
+                    });
+                    expansion.expand(nextIndex);
+                }}
             />
         </>
     );
@@ -601,54 +593,25 @@ export function SkillsFields({
 }) {
     const [picking, setPicking] = useState(false);
     const atCap = resume.skills.length >= MAX_SKILLS;
+    const layout = resume.skills_layout;
+    const showCategories = usesSkillCategories(layout);
 
     function commitSkills(skills: ResumeSkill[]) {
         onChange({ ...resume, skills: skills.slice(0, MAX_SKILLS) });
     }
 
+    function setLayout(skills_layout: ResumeSkillsLayout) {
+        onChange({ ...resume, skills_layout });
+    }
+
     return (
         <>
-            <div className="flex flex-col gap-1.5">
-                <Label className="text-xs">Layout</Label>
-                <div className="grid grid-cols-3 gap-2">
-                    {skillLayouts.map((layout) => (
-                        <button
-                            key={layout}
-                            type="button"
-                            aria-pressed={resume.skills_layout === layout}
-                            onClick={() =>
-                                onChange({ ...resume, skills_layout: layout })
-                            }
-                            className={cn(
-                                'flex flex-col justify-between gap-2 rounded-lg border p-2.5 text-left transition-colors duration-soft ease-soft',
-                                resume.skills_layout === layout
-                                    ? 'border-brand bg-brand-subtle ring-1 ring-brand'
-                                    : 'border-surface-border hover:bg-surface',
-                            )}
-                        >
-                            <span className="flex h-12 flex-col justify-center">
-                                <LayoutThumb layout={layout} />
-                            </span>
-                            <span
-                                className={cn(
-                                    'text-xs font-bold tracking-[0.06em] uppercase',
-                                    resume.skills_layout === layout
-                                        ? 'text-brand'
-                                        : 'text-ink-muted',
-                                )}
-                            >
-                                {layout}
-                            </span>
-                        </button>
-                    ))}
-                </div>
-            </div>
             <div
                 id="field-skills"
                 tabIndex={-1}
-                className="flex flex-col gap-1.5 rounded-md outline-hidden focus:ring-2 focus:ring-brand/50 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2"
+                className="flex flex-col gap-2 rounded-md outline-hidden focus:ring-2 focus:ring-brand/50 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2"
             >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                     <Label className="text-xs">Skills</Label>
                     <button
                         type="button"
@@ -660,15 +623,80 @@ export function SkillsFields({
                         Add skills
                     </button>
                 </div>
+
+                <div
+                    role="radiogroup"
+                    aria-label="Skills layout"
+                    className="grid grid-cols-5 gap-1.5"
+                >
+                    {skillLayouts.map((option) => {
+                        const selected = layout === option;
+
+                        return (
+                            <button
+                                key={option}
+                                type="button"
+                                role="radio"
+                                aria-checked={selected}
+                                title={skillsLayoutLabels[option]}
+                                onClick={() => setLayout(option)}
+                                className={cn(
+                                    'flex flex-col items-stretch gap-1 rounded-md border px-1.5 py-1.5 text-left transition-colors',
+                                    selected
+                                        ? 'border-brand bg-brand-subtle ring-1 ring-brand/30'
+                                        : 'border-surface-border bg-white hover:border-brand/40',
+                                )}
+                            >
+                                <span className="h-8 rounded-sm bg-surface px-1 py-1">
+                                    <LayoutThumb layout={option} />
+                                </span>
+                                <span
+                                    className={cn(
+                                        'truncate text-[10px] font-semibold leading-tight',
+                                        selected
+                                            ? 'text-brand'
+                                            : 'text-ink-muted',
+                                    )}
+                                >
+                                    {skillsLayoutLabels[option]}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+
+                <p className="text-[11px] leading-snug text-ink-faint">
+                    {showCategories
+                        ? 'Category labels print on the resume for Grouped.'
+                        : 'This layout prints skill names only — categories stay saved if you switch to Grouped.'}
+                </p>
+
                 {atCap && (
                     <p className="text-xs text-ink-muted">
                         Limit reached ({MAX_SKILLS}).
                     </p>
                 )}
-                <SkillGroupEditor
-                    groups={toGroups(resume.skills)}
-                    onChange={(groups) => commitSkills(fromGroups(groups))}
-                />
+
+                {showCategories ? (
+                    <SkillGroupEditor
+                        groups={toGroups(resume.skills)}
+                        onChange={(groups) =>
+                            commitSkills(fromGroups(groups))
+                        }
+                    />
+                ) : (
+                    <TagInput
+                        tags={toFlatSkillNames(resume.skills)}
+                        onChange={(names) =>
+                            commitSkills(
+                                fromFlatSkillNames(names, resume.skills),
+                            )
+                        }
+                        placeholder="Add skill…"
+                        autocompleteEndpoint="job-skills"
+                    />
+                )}
+
                 <SkillPickerModal
                     open={picking}
                     onOpenChange={setPicking}
@@ -699,15 +727,21 @@ export function CertificateFields({
     resume: ResumeDraft;
     onChange: (resume: ResumeDraft) => void;
 }) {
+    const expansion = useExpandedEntries();
+
     return (
         <>
             {resume.certificates.map((entry, index) => (
                 <EntryCard
                     key={index}
                     title={entry.name || `Certificate ${index + 1}`}
-                    onRemove={() =>
-                        remove(resume, onChange, 'certificates', index)
-                    }
+                    summary={joinSummary(entry.issuer, entry.obtained_at)}
+                    expanded={expansion.isExpanded(index)}
+                    onToggleExpand={() => expansion.toggle(index)}
+                    onRemove={() => {
+                        expansion.remapAfterRemove(index);
+                        remove(resume, onChange, 'certificates', index);
+                    }}
                 >
                     <Field
                         label="Certificate name"
@@ -765,7 +799,8 @@ export function CertificateFields({
                 label="Add certificate"
                 disabled={resume.certificates.length >= 20}
                 disabledReason="Limit reached (20)."
-                onClick={() =>
+                onClick={() => {
+                    const nextIndex = resume.certificates.length;
                     onChange({
                         ...resume,
                         certificates: [
@@ -778,8 +813,9 @@ export function CertificateFields({
                                 credential_id: '',
                             },
                         ],
-                    })
-                }
+                    });
+                    expansion.expand(nextIndex);
+                }}
             />
         </>
     );
