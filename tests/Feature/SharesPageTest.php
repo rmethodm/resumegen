@@ -35,6 +35,46 @@ class SharesPageTest extends TestCase
             );
     }
 
+    /**
+     * resume_share_links.resume_id is unique, so offering a resume that already
+     * has a link for create/reassign can only end in a 422. The picker must list
+     * only resumes that can still take one.
+     */
+    public function test_index_offers_only_resumes_without_a_link(): void
+    {
+        $user = User::factory()->create();
+        $linked = Resume::factory()->for($user)->create(['title' => 'Linked']);
+        $free = Resume::factory()->for($user)->create(['title' => 'Free']);
+        ResumeShareLink::factory()->for($linked)->create();
+
+        $this->actingAs($user)->get(route('shares.index'))
+            ->assertInertia(fn ($page) => $page
+                ->has('resumes', 1)
+                ->where('resumes.0.id', $free->id)
+            );
+    }
+
+    /**
+     * Anonymous visits (no email gate) must stay distinguishable from gated ones
+     * in the detail list, and the row carries only fields the schema records.
+     */
+    public function test_index_lists_recent_visits_with_email_or_null(): void
+    {
+        $user = User::factory()->create();
+        $link = ResumeShareLink::factory()->for(Resume::factory()->for($user)->create())->create();
+        $link->views()->create(['email' => null])->forceFill(['created_at' => now()->subMinute()])->save();
+        $link->views()->create(['email' => 'a@example.com']);
+
+        $this->actingAs($user)->get(route('shares.index'))
+            ->assertInertia(fn ($page) => $page
+                ->has('links.0.visits', 2)
+                ->where('links.0.visits.0.email', 'a@example.com')
+                ->where('links.0.visits.1.email', null)
+                ->has('links.0.visits.0.when_exact')
+                ->where('links.0.expires_human', 'Never expires')
+            );
+    }
+
     public function test_index_excludes_other_users_links(): void
     {
         $user = User::factory()->create();

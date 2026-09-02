@@ -34,8 +34,11 @@ class ShareController extends Controller
 
         return Inertia::render('Shares/Index', [
             'links' => $links->map(fn (ResumeShareLink $link) => $this->presentLink($link))->values(),
+            // Only resumes that can still take a link: resume_share_links.resume_id
+            // is unique, so a resume with a link cannot be offered for create/reassign.
             'resumes' => Resume::query()
                 ->where('user_id', $user->id)
+                ->whereDoesntHave('shareLinks')
                 ->orderBy('title')
                 ->get(['id', 'title'])
                 ->map(fn (Resume $resume) => [
@@ -58,22 +61,32 @@ class ShareController extends Controller
             'id' => $link->id,
             'resume_id' => $link->resume_id,
             'resume_name' => $link->resume?->title ?? '(deleted)',
-            'label' => null,
             'url' => route('share.show', $link->token),
             'is_active' => ! $link->isExpired(),
             'has_password' => (bool) $link->require_password,
             'expires_at' => $link->expires_at?->toDateString(),
+            'expires_human' => $this->expiresHuman($link),
             'views' => $views->count(),
             'visitors' => $views->pluck('email')->filter()->unique()->count(),
             'trend' => $this->trend($views),
             'visits' => $views->take(self::VISITS_PER_LINK)->map(fn (ResumeShareLinkView $view) => [
                 'id' => $view->id,
-                'location' => $view->email ?: '—',
-                'when' => $view->created_at?->toDayDateTimeString() ?? '—',
-                'source' => 'Direct',
-                'duration' => '—',
+                'email' => $view->email,
+                'when' => $view->created_at?->diffForHumans() ?? '—',
+                'when_exact' => $view->created_at?->toDayDateTimeString() ?? '—',
             ])->values(),
         ];
+    }
+
+    private function expiresHuman(ResumeShareLink $link): string
+    {
+        if ($link->expires_at === null) {
+            return 'Never expires';
+        }
+
+        return $link->isExpired()
+            ? 'Expired '.$link->expires_at->diffForHumans()
+            : 'Expires '.$link->expires_at->diffForHumans();
     }
 
     /**
