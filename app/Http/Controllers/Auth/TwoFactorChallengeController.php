@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Middleware\EnforceAdminSessionIdleTimeout;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -83,20 +82,6 @@ class TwoFactorChallengeController extends Controller
 
     private function redirectAfterTwoFactor(Request $request): RedirectResponse
     {
-        $adminDomain = config('app.admin_domain');
-        $onAdminHost = is_string($adminDomain)
-            && $adminDomain !== ''
-            && $request->getHost() === $adminDomain;
-
-        if ($onAdminHost && $request->user()?->isAdmin()) {
-            // Fortify regenerates on password login; regenerate again after the
-            // 2FA step so the post-challenge admin session is a fresh ID.
-            $request->session()->regenerate();
-            $request->session()->put(EnforceAdminSessionIdleTimeout::SESSION_KEY, time());
-
-            return redirect()->to('/');
-        }
-
         return redirect()->intended(route('dashboard', absolute: false));
     }
 }

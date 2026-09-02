@@ -139,35 +139,6 @@ class TwoFactorSetupTest extends TestCase
         $this->assertNull($user->two_factor_recovery_codes);
     }
 
-    public function test_admin_cannot_disable_two_factor(): void
-    {
-        $admin = User::factory()->admin()->create();
-
-        $this->actingAs($admin)
-            ->withSession(['auth.password_confirmed_at' => time()])
-            ->delete(route('two-factor.disable'))
-            ->assertRedirect(route('profile.edit'))
-            ->assertSessionHas('error');
-
-        $admin->refresh();
-        $this->assertTrue($admin->hasTwoFactorEnabled());
-        $this->assertNotNull($admin->two_factor_secret);
-    }
-
-    public function test_profile_marks_admin_two_factor_as_required_and_not_disableable(): void
-    {
-        $admin = User::factory()->admin()->create();
-
-        $this->actingAs($admin)
-            ->get(route('profile.edit'))
-            ->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('Profile/Edit')
-                ->where('twoFactor.enabled', true)
-                ->where('twoFactor.canDisable', false)
-                ->where('twoFactor.requiredForAdmin', true));
-    }
-
     public function test_regenerate_recovery_codes_replaces_existing(): void
     {
         $user = User::factory()->create([

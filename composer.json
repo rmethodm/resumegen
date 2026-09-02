@@ -9,7 +9,6 @@
         "php": "^8.5",
         "bacon/bacon-qr-code": "^3.1",
         "barryvdh/laravel-dompdf": "^3.1",
-        "doctrine/dbal": "^4.4",
         "guzzlehttp/guzzle": "^7.15.2",
         "inertiajs/inertia-laravel": "^3.0",
         "laravel/fortify": "^1.32",

@@ -44,18 +44,6 @@ class UserFactory extends Factory
         ]);
     }
 
-    public function admin(): static
-    {
-        // Admins must have confirmed 2FA to use the support panel. Bake it into
-        // the factory so feature tests create usable admins by default.
-        return $this->state(fn (array $attributes) => [
-            'is_admin' => true,
-            'two_factor_secret' => 'test-admin-2fa-secret',
-            'two_factor_confirmed_at' => now(),
-            'two_factor_recovery_codes' => ['recovery-code-1'],
-        ]);
-    }
-
     public function disabled(): static
     {
         return $this->state(fn (array $attributes) => [

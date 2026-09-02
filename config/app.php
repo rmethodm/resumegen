@@ -56,45 +56,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Admin Domain
-    |--------------------------------------------------------------------------
-    |
-    | Host for the support admin UI. Routes are domain-scoped so the main app
-    | host never serves /admin. Local Herd default: admin.resumegen.test
-    |
-    */
-
-    'admin_domain' => env('APP_ADMIN_DOMAIN', 'admin.resumegen.test'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Admin Destructive Tools
-    |--------------------------------------------------------------------------
-    |
-    | When false (recommended in production), schema edits, truncates, role
-    | mutations, and non-SELECT SQL return 403. Read surfaces stay available.
-    | When true, those actions also require a recent password confirmation
-    | (host-local /confirm-password).
-    |
-    */
-
-    'admin_destructive_tools' => (bool) env('ADMIN_DESTRUCTIVE_TOOLS', false),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Admin Session Idle Lifetime
-    |--------------------------------------------------------------------------
-    |
-    | Minutes of inactivity allowed on the support admin host before the
-    | session is invalidated. Independent of SESSION_LIFETIME on the product
-    | host (host-only cookies). Default 60 — shorter than the product default.
-    |
-    */
-
-    'admin_session_lifetime' => (int) env('ADMIN_SESSION_LIFETIME', 60),
-
-    /*
-    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
