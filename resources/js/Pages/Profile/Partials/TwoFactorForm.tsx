@@ -10,8 +10,6 @@ interface Props {
     pending: boolean;
     qrCodeSvg: string | null;
     recoveryCodes: string[] | null;
-    canDisable?: boolean;
-    requiredForAdmin?: boolean;
     className?: string;
 }
 
@@ -20,8 +18,6 @@ export default function TwoFactorForm({
     pending,
     qrCodeSvg,
     recoveryCodes,
-    canDisable = true,
-    requiredForAdmin = false,
     className = '',
 }: Props) {
     const enableForm = useForm({});
@@ -69,11 +65,6 @@ export default function TwoFactorForm({
                 <p className="mt-1 text-sm text-ink-muted">
                     Add extra security to your account using a time-based one-time password.
                 </p>
-                {requiredForAdmin && !enabled && (
-                    <p className="mt-2 text-sm text-amber-700">
-                        Admin accounts must enable two-factor authentication before using the support panel.
-                    </p>
-                )}
             </header>
 
             {/* State 1: Disabled */}
@@ -156,21 +147,15 @@ export default function TwoFactorForm({
                             </button>
                         </form>
 
-                        {canDisable ? (
-                            <form onSubmit={handleDisable}>
-                                <button
-                                    type="submit"
-                                    className="text-sm text-danger underline hover:text-danger-text"
-                                    disabled={disableForm.processing}
-                                >
-                                    Disable 2FA
-                                </button>
-                            </form>
-                        ) : (
-                            <p className="text-sm text-ink-muted">
-                                Admin accounts cannot disable two-factor authentication.
-                            </p>
-                        )}
+                        <form onSubmit={handleDisable}>
+                            <button
+                                type="submit"
+                                className="text-sm text-danger underline hover:text-danger-text"
+                                disabled={disableForm.processing}
+                            >
+                                Disable 2FA
+                            </button>
+                        </form>
                     </div>
                 </div>
             )}

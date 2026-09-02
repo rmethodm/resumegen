@@ -125,7 +125,9 @@ Resume content lives in **separate related tables**, not JSON blobs: `Experience
 There is no `ResumePolicy` (removed) — a live code comment in `ResumeBuilderController::edit` says so explicitly. Ownership is checked inline everywhere: `abort_unless($resume->user_id === $request->user()->id, 403)` (or 404 in the newer controllers) in `ResumeBuilderController`, `ResumeController`, `ShareLinkController`, and the rest. There is no `JobSearchPolicy` — job search/import products were removed 2026-08-26.
 
 ### Frontend page structure
-The core surface is `resources/js/Pages/Resumes/Workstation.tsx` (`resumes.workstation`, `ResumeController@workstation`) — the only editing surface. It saves via the `use-autosave` hook (`router.put` to `resumes.update`) and renders a **client-side** React preview (`Components/resume/resume-preview`); the server PDF stream at `GET /resumes/{resume}/preview` backs PDF preview/export. `builder.edit` is a legacy named route that redirects to the Workstation; `ResumeBuilder/Edit.tsx` still exists on disk but is referenced nowhere.
+The core surface is `resources/js/Pages/Resumes/Workstation.tsx` (`resumes.workstation`, `ResumeController@workstation`) — the only editing surface. It saves via the `use-autosave` hook (`router.put` to `resumes.update`) and renders a **client-side** React preview (`Components/resume/resume-preview`); the Review tab can toggle that preview between the React render and the real DomPDF output in an iframe (`Components/workstation/pdf-preview-frame`, cache-busted after saves), and the server PDF stream at `GET /resumes/{resume}/preview` backs PDF preview/export. `builder.edit` is a legacy named route that redirects to the Workstation; the old page components (`ResumeBuilder/Edit.tsx`, `Resumes/Builder.tsx`) were deleted 2026-08-31 — only `ResumeBuilder/LinkPassword.tsx` remains in that directory.
+
+**Editor rework (2026-08-31):** bullets support inline markdown — `App\Support\InlineMarkdown` (PHP, for DomPDF blades and `DocxExport`) mirrors `resources/js/lib/bullet-markdown.ts` (client), with `resume-formatting.ts` and `skills-editor.ts` alongside (all unit-tested). The Workstation gained a `bullets-editor` component, a format toolbar (`workstation-format-toolbar`) carrying bullet-style and skills-layout controls, and the PDF preview frame above.
 
 **Legacy builder endpoints:** the five that 500'd (`builder.store`, `builder.docx`, `builder.thumbnail`, `builder.duplicate`, `builder.create-variant` — they referenced deleted services/columns) were deleted on 2026-08-19, routes and methods both. Working equivalents live on `ResumeController` (`resumes.download-docx`, `resumes.duplicate`). The surviving `builder.*` routes are redirects/legacy save paths (`builder.edit` → Workstation, `builder.beacon`, `builder.pdf/preview/html-preview`, `builder.share-url`).
 
@@ -162,17 +164,13 @@ Deterministic alternatives that stay: `PlainTextResumeParser` (local text parse 
 - Resume autocomplete dictionaries `job_roles` / `job_skills` / `job_titles` (not a job board product)
 - SSRF-safe URL reachability for resume link fields (`UrlProbe` / `POST urls.check`) — unrelated to job import
 
-## Admin Panel
+## Admin Panel — removed
 
-Hand-rolled Inertia admin (not Filament — the old Filament v3 panel, `AdminPanelProvider`, `is_master_admin`, and `AdminAuditLog`/`admin_audit_logs` were removed 2026-07-21). Routes in `routes/admin.php`, domain-scoped via `bootstrap/app.php` onto `config('app.admin_domain')` (`.env` `APP_ADMIN_DOMAIN`, default `admin.resumegen.test` locally) — not a `/admin` path prefix on the main app host. Middleware group: `['auth', 'verified', 'two_factor_challenge', 'admin']`, where `admin` is `EnsureUserIsAdmin` checking `User::isAdmin()` (`users.is_admin` boolean). `is_admin` is set directly in DB — no self-service UI to grant it. Pages live under `resources/js/Pages/Admin/`, wrapped in `AdminLayout` (nav array + flash banners).
+The hand-rolled Inertia admin (domain-scoped `routes/admin.php`, `EnsureUserIsAdmin`, `AdminActionLog`, the Users/Visitors/Database sections, `TrackSiteVisit` + `site_visits`, `users.is_admin`, the admin-host 2FA/idle-timeout/destructive-tools middleware, and `doctrine/dbal`) was removed on 2026-09-02. Migration `2026_09_02_120000_drop_admin_tables_and_flag` drops `admin_action_logs`, `site_visits`, and `users.is_admin`. Do not reintroduce an admin surface without asking first.
 
-**Audit log:** `AdminActionLog::record(User $actor, ?User $target, string $action, ?array $meta = null)` — **call this on every privileged admin write action.** Append-only `admin_action_logs` table, no `$timestamps` (uses an explicit `created_at`).
+`users.disabled_at` and `EnsureUserNotDisabled` survive (auth and the API still refuse disabled accounts), but nothing in the app sets the column any more — set it directly in the DB if needed.
 
-**Sections:** Dashboard (`admin.dashboard`), Users (search/verify/disable/revoke-tokens, `admin.users.*`), Visitors (`admin.visitors.index`, added 2026-08-13) — paginated log of every request to the main site (method, path, IP, user agent, referrer, linked user when authenticated), and Database (`admin.database.*`, added 2026-08-13) — a Postgres admin panel: connection overview, per-table browse/inline-edit/delete/add-drop-column/add-drop-index/truncate (via `Schema::table()`, needs `doctrine/dbal`), a raw SQL runner gated by a typed-confirmation phrase for anything non-`SELECT`, and Postgres role/grant management. All destructive Database actions require the exact target name typed to confirm (checked server-side, not just in the UI) and log through `AdminActionLog`. The Database section's Postgres-only queries (`pg_stat_user_tables`, `pg_roles`, etc.) no-op behind an `engine_ok` flag when `DB_CONNECTION` isn't `pgsql` — tests run on SQLite.
-
-**App backups:** `spatie/laravel-backup` v10 (`config/backup.php`, disk `backups` → `storage/app/private/spatie-backups`). Scheduled in `routes/console.php`: `backup:clean` 01:00, `backup:run` 01:30, `backup:monitor` 01:45. The old Admin Backups UI (`admin.backups.*`, `DatabaseBackupService`, `DatabaseDumpRunner`) was removed 2026-08-26 — backups are CLI/schedule only; admins still browse live DB rows via Database.
-
-**Visitor tracking:** `TrackSiteVisit` middleware, appended globally to the `web` middleware group in `bootstrap/app.php`, writes one row to append-only `site_visits` per request (`SiteVisit` model, `UPDATED_AT = null`). Best-effort — logs in `terminate()`, wrapped in try/catch, never blocks or fails the request. Skips the admin domain (`request()->getHost() === config('app.admin_domain')`) — this tracks main-site visitors, not admin staff. Captures method, path, IP, user agent, referrer, session id, and `user_id` when authenticated. No consent flow exists in the app; this is the "standard analytics" tier (no fingerprinting) — do not add canvas/WebGL fingerprinting, screen/font enumeration, or other high-entropy client-side signals without asking, since that tier needs a consent banner this app doesn't have.
+**App backups:** `spatie/laravel-backup` v10 (`config/backup.php`, disk `backups` → `storage/app/private/spatie-backups`). Scheduled in `routes/console.php`: `backup:clean` 01:00, `backup:run` 01:30, `backup:monitor` 01:45. CLI/schedule only.
 
 ## API Layer
 
@@ -231,7 +229,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 1. **Relational resume content, not JSON columns** — `Experience`/`Skill`/`Project`/`Education`/`Certificate` are separate tables `hasMany` off `Resume`; only `section_order` (an array of section names) is JSON.
 2. **Client-side live preview, server-side PDF** — the Workstation renders a React preview component; DomPDF renders the real document for preview/stream and export.
 3. **Autosave in the editor** — the Workstation's `use-autosave` hook `router.put`s changes; the old beacon-on-beforeunload save survives only on the legacy `builder.beacon` route.
-4. **Append-only analytics tables** — `resume_share_link_views`, `site_visits`, `admin_action_logs`. Simple, immutable.
+4. **Append-only analytics tables** — `resume_share_link_views`. Simple, immutable.
 5. **FK cascade for dependents** — `cascadeOnDelete` handles children (share links and their views, snapshots, notes). `Resume::booted()`'s `deleting` hook exists only to log into `resume_deletions` for mobile sync — it cleans up no assets (there are none). `User` has no `booted()` deleting its resumes per-model — intentional, nothing to clean up.
 6. **No monetization** — every feature is free and unlimited; AI is metered only to cap OpenAI spend.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
@@ -245,12 +243,12 @@ Hostinger VPS (`srv1861900`), Apache, PostgreSQL, self-hosted GitHub runner. App
 - **Deploy**: manual `gh workflow run ci.yml` only. Full flow + failure table in `docs/DEPLOYMENT.md` (Part 11 added 2026-08-25).
 - **`scripts/server-repair.sh`** (added 2026-08-25): one-shot root fix for the recurring failure class — root-owned files and tracked-file drift from running composer/npm/artisan as root on the server. That single disease caused every deploy failure on 2026-08-25 (dirty `composer.lock`, undeletable `vendor/`, unwritable `storage/framework`, unclearable `public/build`). **Never run composer/npm/artisan as root on the server; use `sudo -u www-data`.**
 - **Queue worker**: `resumegen-queue.service` installed 2026-08-25 — it had been missing since launch (deploy.sh silently no-ops when absent), so queued mail had never sent. If digests stop again, check `systemctl is-active resumegen-queue` first.
-- **Admin panel**: live at `admin.resumegen.app` since 2026-08-25 (`APP_ADMIN_DOMAIN` in server `.env`, `ServerAlias` on both Apache vhosts, cert expanded). Sign in on that host — apex login doesn't carry over.
+- **Admin panel**: removed 2026-09-02. The `admin.resumegen.app` `ServerAlias`, cert entry, and `APP_ADMIN_DOMAIN` in the server `.env` are now dead config and can be cleaned up.
 - The Claude Code auto-mode classifier blocks most server-mutating SSH commands; hand those to the user as `! ssh resumegen-prod '…'` one-liners and verify read-only afterward.
 
 ---
 
-Last updated: 2026-08-25
+Last updated: 2026-09-01
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy
