@@ -2,6 +2,7 @@ import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
+import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Input } from '@/Components/ui/input';
 
 export type WorkstationSnapshot = {
@@ -20,6 +21,9 @@ export function SnapshotsPanel({
 }) {
     const [label, setLabel] = useState('');
     const [busy, setBusy] = useState(false);
+    const [confirmAction, setConfirmAction] = useState<
+        { kind: 'restore' | 'delete'; id: number; label: string } | null
+    >(null);
 
     function saveCheckpoint() {
         setBusy(true);
@@ -37,21 +41,13 @@ export function SnapshotsPanel({
     }
 
     function restore(id: number) {
-        if (
-            !window.confirm(
-                'Restore this checkpoint? Current content will be replaced (you can save a new checkpoint first).',
-            )
-        ) {
-            return;
-        }
-
         router.post(
             route('resume-snapshots.restore', {
                 resume: resumeId,
                 snapshot: id,
             }),
             {},
-            { preserveScroll: false },
+            { preserveScroll: false, onFinish: () => setConfirmAction(null) },
         );
     }
 
@@ -61,7 +57,7 @@ export function SnapshotsPanel({
                 resume: resumeId,
                 snapshot: id,
             }),
-            { preserveScroll: true },
+            { preserveScroll: true, onFinish: () => setConfirmAction(null) },
         );
     }
 
@@ -114,22 +110,26 @@ export function SnapshotsPanel({
                                 type="button"
                                 size="sm"
                                 variant="outline"
-                                onClick={() => restore(snapshot.id)}
+                                onClick={() =>
+                                    setConfirmAction({
+                                        kind: 'restore',
+                                        id: snapshot.id,
+                                        label: snapshot.label || 'Untitled checkpoint',
+                                    })
+                                }
                             >
                                 Restore
                             </Button>
                             <button
                                 type="button"
-                                onClick={() => {
-                                    if (
-                                        window.confirm(
-                                            `Delete checkpoint "${snapshot.label || 'Untitled checkpoint'}"? This can't be undone.`,
-                                        )
-                                    ) {
-                                        remove(snapshot.id);
-                                    }
-                                }}
-                                className="text-xs text-ink-faint hover:text-danger"
+                                onClick={() =>
+                                    setConfirmAction({
+                                        kind: 'delete',
+                                        id: snapshot.id,
+                                        label: snapshot.label || 'Untitled checkpoint',
+                                    })
+                                }
+                                className="focus-ring rounded-sm text-xs text-ink-faint hover:text-danger"
                             >
                                 Delete
                             </button>
@@ -137,6 +137,30 @@ export function SnapshotsPanel({
                     ))}
                 </ul>
             )}
+
+            <ConfirmDialog
+                open={confirmAction !== null}
+                title={
+                    confirmAction?.kind === 'restore'
+                        ? `Restore "${confirmAction.label}"?`
+                        : `Delete "${confirmAction?.label ?? ''}"?`
+                }
+                description={
+                    confirmAction?.kind === 'restore'
+                        ? 'Current content will be replaced. You can save a new checkpoint first.'
+                        : "This can't be undone."
+                }
+                confirmLabel={confirmAction?.kind === 'restore' ? 'Restore' : 'Delete'}
+                confirmVariant={confirmAction?.kind === 'restore' ? 'default' : 'destructive'}
+                onClose={() => setConfirmAction(null)}
+                onConfirm={() => {
+                    if (confirmAction?.kind === 'restore') {
+                        restore(confirmAction.id);
+                    } else if (confirmAction?.kind === 'delete') {
+                        remove(confirmAction.id);
+                    }
+                }}
+            />
         </Card>
     );
 }

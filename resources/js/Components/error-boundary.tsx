@@ -28,7 +28,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                     <button
                         type="button"
                         onClick={() => window.location.reload()}
-                        className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                        className="focus-ring rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
                     >
                         Reload
                     </button>

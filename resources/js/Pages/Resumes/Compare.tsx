@@ -175,7 +175,7 @@ function CompareSidebar({
                             disabled={version.id === left.id}
                             onClick={() => onSelect(version.id)}
                             className={cn(
-                                'rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
+                                'focus-ring rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
                                 version.id === right.id
                                     ? 'border-brand-subtle bg-brand-subtle text-brand'
                                     : 'border-surface-border bg-transparent text-ink hover:bg-surface',

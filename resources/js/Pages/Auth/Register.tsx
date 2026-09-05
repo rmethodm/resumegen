@@ -117,7 +117,7 @@ export default function Register() {
                         I agree to the{' '}
                         <Link
                             href={route('legal.terms')}
-                            className="font-semibold text-brand hover:underline"
+                            className="focus-ring rounded-sm font-semibold text-brand hover:underline"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -126,7 +126,7 @@ export default function Register() {
                         and{' '}
                         <Link
                             href={route('legal.privacy')}
-                            className="font-semibold text-brand hover:underline"
+                            className="focus-ring rounded-sm font-semibold text-brand hover:underline"
                             target="_blank"
                             rel="noopener noreferrer"
                         >

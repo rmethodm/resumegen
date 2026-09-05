@@ -129,7 +129,7 @@ export default function TwoFactorForm({
                             <button
                                 type="button"
                                 onClick={copyAll}
-                                className="text-sm text-brand underline hover:text-brand-accent"
+                                className="focus-ring rounded-sm text-sm text-brand underline hover:text-brand-accent"
                             >
                                 {copied ? 'Copied!' : 'Copy all'}
                             </button>
@@ -140,7 +140,7 @@ export default function TwoFactorForm({
                         <form onSubmit={handleRegen}>
                             <button
                                 type="submit"
-                                className="text-sm text-ink-muted underline hover:text-gray-900"
+                                className="focus-ring rounded-sm text-sm text-ink-muted underline hover:text-gray-900"
                                 disabled={regenForm.processing}
                             >
                                 Regenerate recovery codes
@@ -150,7 +150,7 @@ export default function TwoFactorForm({
                         <form onSubmit={handleDisable}>
                             <button
                                 type="submit"
-                                className="text-sm text-danger underline hover:text-danger-text"
+                                className="focus-ring rounded-sm text-sm text-danger underline hover:text-danger-text"
                                 disabled={disableForm.processing}
                             >
                                 Disable 2FA

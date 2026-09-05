@@ -45,7 +45,7 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                     .
                 </h1>
                 <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-neutral-400 sm:text-[19px]">
-                    Templates, exports, share links, application tracking — all of it, unlimited,
+                    Templates, exports, share links, application tracking: all of it, unlimited,
                     without ever seeing an upgrade button.
                 </p>
                 <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
@@ -58,7 +58,7 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950',
                         )}
                     >
-                        Start building — it&apos;s free
+                        Start building. It&apos;s free
                         <span className="flex size-7 items-center justify-center rounded-full bg-white/18 transition-transform duration-soft ease-soft group-hover:scale-105">
                             →
                         </span>

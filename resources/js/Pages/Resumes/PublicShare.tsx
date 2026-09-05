@@ -201,12 +201,12 @@ function BrandFooter() {
                 Shared with{' '}
                 <a
                     href="/"
-                    className="font-medium text-ink-muted underline-offset-2 transition-colors duration-soft ease-soft hover:text-ink hover:underline"
+                    className="focus-ring rounded-sm font-medium text-ink-muted underline-offset-2 transition-colors duration-soft ease-soft hover:text-ink hover:underline"
                 >
                     Resumegen
                 </a>
                 {' · '}
-                <a href={route('legal.privacy')} className="hover:text-ink hover:underline">
+                <a href={route('legal.privacy')} className="focus-ring rounded-sm hover:text-ink hover:underline">
                     Privacy
                 </a>
             </p>

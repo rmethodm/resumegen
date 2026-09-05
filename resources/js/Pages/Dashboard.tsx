@@ -18,6 +18,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { NewResumeModal } from '@/Components/dashboard/new-resume-modal';
 import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
+import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Shell } from '@/Components/ui/shell';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { scoreDotClass } from '@/lib/score-band';
@@ -72,7 +73,7 @@ function ShareStatus({
                 <button
                     type="button"
                     onClick={onOpenShare}
-                    className="font-medium text-warning-text underline-offset-2 hover:underline"
+                    className="focus-ring rounded-sm font-medium text-warning-text underline-offset-2 hover:underline"
                 >
                     Link expired
                 </button>
@@ -99,7 +100,7 @@ function ShareStatus({
             <button
                 type="button"
                 onClick={onOpenShare}
-                className="truncate font-medium text-ink underline-offset-2 hover:text-brand hover:underline"
+                className="focus-ring truncate rounded-sm font-medium text-ink underline-offset-2 hover:text-brand hover:underline"
             >
                 Shared
             </button>
@@ -121,7 +122,7 @@ function ShareStatus({
             <button
                 type="button"
                 onClick={copyLink}
-                className="inline-flex shrink-0 items-center gap-0.5 rounded-sm px-1 py-0.5 font-medium text-brand hover:bg-brand/5"
+                className="focus-ring inline-flex shrink-0 items-center gap-0.5 rounded-sm px-1 py-0.5 font-medium text-brand hover:bg-brand/5"
                 title="Copy share link"
             >
                 <ClipboardDocumentIcon className={compact ? 'size-3' : 'size-3.5'} />
@@ -142,27 +143,24 @@ function ResumeCard({
     onOpenShare: (resumeId: number) => void;
 }) {
     const [expanded, setExpanded] = useState(false);
+    const [confirmTarget, setConfirmTarget] = useState<
+        { kind: 'group'; title: string } | { kind: 'version'; id: number; title: string } | null
+    >(null);
 
     const hasVersions = resume.versions.length > 1;
     const alreadyShared = resume.share !== null;
 
     function deleteGroup() {
-        if (!confirm(`Delete "${resume.title}"? This can't be undone.`)) {
-            return;
-        }
-
         router.delete(route('resume-groups.destroy', resume.group_id), {
             preserveScroll: true,
+            onFinish: () => setConfirmTarget(null),
         });
     }
 
-    function deleteVersion(versionId: number, title: string) {
-        if (!confirm(`Delete "${title}"? This can't be undone.`)) {
-            return;
-        }
-
+    function deleteVersion(versionId: number) {
         router.delete(route('resumes.destroy', versionId), {
             preserveScroll: true,
+            onFinish: () => setConfirmTarget(null),
         });
     }
 
@@ -313,7 +311,9 @@ function ResumeCard({
                             <MenuItem>
                                 <button
                                     type="button"
-                                    onClick={deleteGroup}
+                                    onClick={() =>
+                                        setConfirmTarget({ kind: 'group', title: resume.title })
+                                    }
                                     className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-danger data-focus:bg-danger-subtle"
                                 >
                                     <TrashIcon className="size-4" />
@@ -397,9 +397,24 @@ function ResumeCard({
                                     <button
                                         type="button"
                                         disabled={version.is_base}
-                                        onClick={() => deleteVersion(version.id, version.title)}
+                                        onClick={() =>
+                                            setConfirmTarget({
+                                                kind: 'version',
+                                                id: version.id,
+                                                title: version.title,
+                                            })
+                                        }
                                         aria-label={`Delete ${version.title}`}
-                                        className="text-ink-faint hover:text-danger disabled:cursor-not-allowed disabled:opacity-40"
+                                        title={
+                                            version.is_base
+                                                ? "The base version can't be deleted"
+                                                : undefined
+                                        }
+                                        className={buttonClassName(
+                                            'ghost',
+                                            'icon',
+                                            'size-11 shrink-0 text-ink-faint hover:text-danger disabled:cursor-not-allowed disabled:opacity-40 sm:size-8',
+                                        )}
                                     >
                                         <TrashIcon className="size-4" />
                                     </button>
@@ -410,6 +425,19 @@ function ResumeCard({
                 </div>
             )}
 
+            <ConfirmDialog
+                open={confirmTarget !== null}
+                title={`Delete "${confirmTarget?.title ?? ''}"?`}
+                description="This can't be undone."
+                onClose={() => setConfirmTarget(null)}
+                onConfirm={() => {
+                    if (confirmTarget?.kind === 'group') {
+                        deleteGroup();
+                    } else if (confirmTarget?.kind === 'version') {
+                        deleteVersion(confirmTarget.id);
+                    }
+                }}
+            />
         </Shell>
     );
 }
@@ -478,11 +506,14 @@ export default function Dashboard({
     const [shareModalResumeId, setShareModalResumeId] = useState<number | null>(null);
     const [shareModalDetail, setShareModalDetail] = useState<ResumeShareLink | null>(null);
     const [shareModalReady, setShareModalReady] = useState(false);
+    const [shareModalError, setShareModalError] = useState(false);
+    const [shareLoadAttempt, setShareLoadAttempt] = useState(0);
 
     useEffect(() => {
         if (shareModalResumeId === null) {
             setShareModalDetail(null);
             setShareModalReady(false);
+            setShareModalError(false);
 
             return;
         }
@@ -490,6 +521,7 @@ export default function Dashboard({
         // `shareModalReady` stays true across refetches — dropping it would
         // unmount the open modal. Refetches update the detail in place.
         let cancelled = false;
+        setShareModalError(false);
 
         fetch(route('resumes.share.show', shareModalResumeId), {
             headers: {
@@ -513,16 +545,16 @@ export default function Dashboard({
             })
             .catch(() => {
                 if (!cancelled) {
-                    // Keep any previously loaded detail — nulling it while the
-                    // modal is open would make it POST a brand-new share link.
-                    setShareModalReady(true);
+                    // A genuine fetch failure — distinct from a 200 with
+                    // `share: null` (no share yet), which lands in .then above.
+                    setShareModalError(true);
                 }
             });
 
         return () => {
             cancelled = true;
         };
-    }, [shareModalResumeId, resumes]);
+    }, [shareModalResumeId, resumes, shareLoadAttempt]);
 
     const averageScore =
         resumes && resumes.length > 0
@@ -595,14 +627,14 @@ export default function Dashboard({
                         </div>
 
                         {!hasStarterProfile && (
-                            <Shell innerClassName="border-l-4 border-l-brand p-4 sm:px-5">
+                            <div className="rounded-lg border border-brand/20 bg-brand-subtle/40 p-4 sm:px-5">
                                 <p className="text-sm font-bold text-ink">
                                     Tip: fill your starter profile once
                                 </p>
                                 <p className="mt-1 text-sm text-ink-muted">
                                     Every new resume can pre-fill from it — contact, summary, and more.
                                 </p>
-                            </Shell>
+                            </div>
                         )}
 
                         <div className="flex items-end justify-between gap-4">
@@ -644,6 +676,19 @@ export default function Dashboard({
                 open={newResumeOpen}
                 onClose={() => setNewResumeOpen(false)}
                 roleSamples={roleSamples}
+            />
+
+            <ConfirmDialog
+                open={shareModalError}
+                title="Couldn't load share settings"
+                description="Check your connection and try again."
+                confirmLabel="Retry"
+                confirmVariant="default"
+                onClose={() => setShareModalResumeId(null)}
+                onConfirm={() => {
+                    setShareModalError(false);
+                    setShareLoadAttempt((n) => n + 1);
+                }}
             />
 
             {shareModalReady && shareModalResumeId !== null && (

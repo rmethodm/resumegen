@@ -141,7 +141,7 @@ const DropdownLink = ({
             }}
             className={cn(
                 'block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft',
-                'hover:bg-surface focus:bg-surface focus:outline-hidden',
+                'hover:bg-surface focus:outline-hidden focus-visible:bg-surface',
                 className,
             )}
         >

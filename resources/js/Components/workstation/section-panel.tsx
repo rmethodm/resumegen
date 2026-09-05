@@ -94,8 +94,8 @@ function sectionSummary(
     }
 }
 
-/** Horizontal score strip — collapsed by default; the expandable drawer holds
- * the checklist, keywords, job match, and section navigation. */
+/** Horizontal score strip with an always-visible section nav; the expandable
+ * drawer holds the checklist, keywords, and job match detail. */
 export function SectionPanel({
     resume,
     analysis,
@@ -216,6 +216,46 @@ export function SectionPanel({
                     </Button>
                 </div>
 
+                {/* Always visible — jumping to a section shouldn't require
+                    expanding "Details" first (Recognition over recall). */}
+                <nav
+                    aria-label="Resume sections"
+                    className="mt-3 flex flex-wrap gap-1.5 border-t border-surface-border/60 pt-3"
+                >
+                    {resume.section_order.map((section) => (
+                        <button
+                            key={section}
+                            type="button"
+                            onClick={() => onSelect(section)}
+                            aria-current={selected === section}
+                            className={cn(
+                                'flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+                                selected === section
+                                    ? 'border-brand bg-brand-subtle text-brand'
+                                    : 'border-surface-border text-ink-muted hover:border-ink/20 hover:text-ink',
+                            )}
+                        >
+                            {sectionLabels[section]}
+                            <span className="tabular-nums text-ink-faint">
+                                {sectionSummary(resume, section)}
+                            </span>
+                        </button>
+                    ))}
+                    {addable.length > 0 && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setExpanded(true)}
+                            className="h-7 gap-1 rounded-full px-2.5 text-xs text-ink-muted"
+                            title="Show hidden sections in Details"
+                        >
+                            <PlusIcon className="size-3.5 shrink-0" />
+                            Add section
+                        </Button>
+                    )}
+                </nav>
+
                 <div
                     className={cn(
                         'grid transition-[grid-template-rows] duration-soft ease-soft motion-reduce:transition-none',
@@ -249,53 +289,12 @@ export function SectionPanel({
                             />
                         </div>
 
-                        <div className="mt-4 border-t border-surface-border pt-4">
-                            <p className="mb-2 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                                Resume sections
-                            </p>
-                            <ul className="space-y-1">
-                                {resume.section_order.map((section) => (
-                                    <li key={section}>
-                                        <button
-                                            type="button"
-                                            onClick={() => onSelect(section)}
-                                            aria-current={selected === section}
-                                            className={cn(
-                                                'flex w-full items-center justify-between rounded-md border-l-2 px-2 py-1.5 text-left text-sm transition-[color,background-color,box-shadow] duration-soft ease-soft',
-                                                selected === section
-                                                    ? 'border-brand bg-brand-subtle font-medium text-brand shadow-shell'
-                                                    : 'border-transparent text-ink hover:bg-surface',
-                                            )}
-                                        >
-                                            <span>
-                                                {sectionLabels[section]}
-                                            </span>
-                                            <span className="text-xs tabular-nums text-ink-faint">
-                                                {sectionSummary(
-                                                    resume,
-                                                    section,
-                                                )}
-                                            </span>
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                            {addable.length === 0 ? (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="mt-2 w-full"
-                                    disabled
-                                    title="All available sections are already on this resume."
-                                >
-                                    <PlusIcon className="size-3.5 shrink-0" />
-                                    Add section
-                                </Button>
-                            ) : (
-                                <div className="mt-2 flex flex-col gap-1">
-                                    <p className="px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                                        Hidden sections
-                                    </p>
+                        {addable.length > 0 && (
+                            <div className="mt-4 border-t border-surface-border pt-4 md:col-span-2 md:mt-0 md:border-t-0 md:pt-0 xl:col-span-1 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
+                                <p className="mb-2 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                                    Hidden sections
+                                </p>
+                                <div className="flex flex-col gap-1">
                                     {addable.map((section) => (
                                         <button
                                             key={section}
@@ -310,8 +309,8 @@ export function SectionPanel({
                                         </button>
                                     ))}
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </Card>

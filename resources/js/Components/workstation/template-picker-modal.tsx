@@ -62,7 +62,7 @@ export function TemplatePickerModal({
                                         onOpenChange(false);
                                     }}
                                     className={cn(
-                                        'flex flex-col gap-1.5 rounded-lg border p-2 text-left transition-colors',
+                                        'focus-ring flex flex-col gap-1.5 rounded-lg border p-2 text-left transition-colors',
                                         selected
                                             ? 'border-brand ring-2 ring-brand/30'
                                             : 'border-surface-border hover:border-surface-border',

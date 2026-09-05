@@ -64,7 +64,7 @@ export function ExportChecklistModal({
                                 }
                                 onClick={() => onJump(check)}
                                 className={cn(
-                                    'flex w-full items-start gap-2 rounded-lg border px-3 py-2 text-left text-sm',
+                                    'focus-ring flex w-full items-start gap-2 rounded-lg border px-3 py-2 text-left text-sm',
                                     check.severity === 'error' &&
                                         'border-danger/30 bg-danger-subtle text-danger-text',
                                     check.severity === 'warn' &&

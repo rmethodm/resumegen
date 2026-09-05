@@ -1,11 +1,19 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import {
+    Popover,
+    PopoverButton,
+    PopoverPanel,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+} from '@headlessui/react';
 import {
     ArrowUturnLeftIcon,
     ArrowUturnRightIcon,
     CheckIcon,
     ChevronDownIcon,
-    ListBulletIcon,
 } from '@heroicons/react/24/outline';
+import type { ReactNode } from 'react';
 import { buttonClassName } from '@/Components/ui/button';
 import {
     bulletStyles,
@@ -80,24 +88,30 @@ const fontKeys = (Object.keys(fontLabels) as ResumeFont[]).sort((a, b) =>
 );
 
 /**
- * Density is the real stored field. Font-size menu shows pt-like labels that
- * track the preview scale (see resume-preview densityScale).
+ * Density is the real stored field. Each option carries both the pt-like
+ * size label and the style name so Font/Size/Density collapse into one
+ * "Format" control instead of three (Tesler's Law — one knob, not three).
  */
-const densitySizeOptions: { density: ResumeDensity; label: string }[] = [
-    { density: 'compact', label: '11' },
-    { density: 'balanced', label: '12' },
-    { density: 'spacious', label: '13' },
-];
-
-/** "Normal" in the mock maps to balanced density. */
-const densityStyleOptions: { density: ResumeDensity; label: string }[] = [
-    { density: 'compact', label: 'Compact' },
-    { density: 'balanced', label: 'Normal' },
-    { density: 'spacious', label: 'Spacious' },
+const densityOptions: {
+    density: ResumeDensity;
+    sizeLabel: string;
+    styleLabel: string;
+}[] = [
+    { density: 'compact', sizeLabel: '11', styleLabel: 'Compact' },
+    { density: 'balanced', sizeLabel: '12', styleLabel: 'Normal' },
+    { density: 'spacious', sizeLabel: '13', styleLabel: 'Spacious' },
 ];
 
 export const PREVIEW_ZOOM_OPTIONS = [0.75, 1, 1.25, 1.5] as const;
 export type PreviewZoom = (typeof PREVIEW_ZOOM_OPTIONS)[number];
+
+/** Zoom levels double as named preview views — one control, not two. */
+const zoomViewLabels: Record<PreviewZoom, string> = {
+    0.75: 'Compact',
+    1: 'Fit width',
+    1.25: 'Large',
+    1.5: 'Extra large',
+};
 
 function ToolbarDivider() {
     return <div className="mx-0.5 hidden h-5 w-px shrink-0 bg-gray-200 sm:block" aria-hidden />;
@@ -110,6 +124,28 @@ function MenuCheck({ on }: { on: boolean }) {
         />
     );
 }
+
+/** Touch-safe on mobile (44px), compact on desktop (32px) — Fitts's Law. */
+const iconButtonSize = 'size-11 sm:size-8';
+const controlHeight = 'h-11 sm:h-8';
+
+function FormatField({
+    label,
+    children,
+}: {
+    label: string;
+    children: ReactNode;
+}) {
+    return (
+        <label className="block text-xs font-medium text-ink-muted">
+            {label}
+            {children}
+        </label>
+    );
+}
+
+const selectClassName =
+    'mt-1 block w-full rounded-md border border-surface-border bg-white px-2 py-1.5 text-sm text-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50';
 
 export function WorkstationFormatToolbar({
     canUndo,
@@ -169,11 +205,6 @@ export function WorkstationFormatToolbar({
     reviewPreviewMode?: 'react' | 'pdf';
     onReviewPreviewModeChange?: (mode: 'react' | 'pdf') => void;
 }) {
-    const sizeLabel =
-        densitySizeOptions.find((option) => option.density === density)?.label ?? '12';
-    const styleLabel =
-        densityStyleOptions.find((option) => option.density === density)?.label ?? 'Normal';
-    const zoomLabel = `${Math.round(zoom * 100)}%`;
     // Never throw — a bad estimate used to unmount the whole workstation header.
     const pageEstimate = estimateResumePages(
         pageEstimateDraft ?? null,
@@ -212,19 +243,16 @@ export function WorkstationFormatToolbar({
 
             <ToolbarDivider />
 
-            <span className="mr-1 hidden text-xs font-bold tracking-[0.08em] text-ink-muted uppercase sm:inline">
-                Format
-            </span>
             <button
                 type="button"
                 aria-label="Undo"
-                title="Undo"
+                title="Undo (Cmd/Ctrl+Z)"
                 disabled={!canUndo}
                 onClick={onUndo}
                 className={buttonClassName(
                     'ghost',
                     'icon',
-                    'size-8 disabled:opacity-40',
+                    cn(iconButtonSize, 'disabled:opacity-40'),
                 )}
             >
                 <ArrowUturnLeftIcon className="size-4" />
@@ -232,13 +260,13 @@ export function WorkstationFormatToolbar({
             <button
                 type="button"
                 aria-label="Redo"
-                title="Redo"
+                title="Redo (Cmd/Ctrl+Shift+Z)"
                 disabled={!canRedo}
                 onClick={onRedo}
                 className={buttonClassName(
                     'ghost',
                     'icon',
-                    'size-8 disabled:opacity-40',
+                    cn(iconButtonSize, 'disabled:opacity-40'),
                 )}
             >
                 <ArrowUturnRightIcon className="size-4" />
@@ -249,7 +277,11 @@ export function WorkstationFormatToolbar({
             <button
                 type="button"
                 onClick={onTemplateClick}
-                className={buttonClassName('ghost', 'sm', 'h-8 max-w-44 gap-1 px-2 font-medium')}
+                className={buttonClassName(
+                    'ghost',
+                    'sm',
+                    cn(controlHeight, 'max-w-44 gap-1 px-2 font-medium'),
+                )}
                 aria-label="Template"
                 title="Choose resume template"
             >
@@ -260,120 +292,114 @@ export function WorkstationFormatToolbar({
                 <ChevronDownIcon className="size-3.5 shrink-0 text-ink-faint" />
             </button>
 
-            <Menu as="div" className="relative">
-                <MenuButton
-                    className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
-                    aria-label="Font"
+            {/* Font, size/density, bullets, and skills layout grouped into one
+                control — Hick's Law (fewer top-level choices) and Tesler's
+                Law (progressive disclosure instead of four always-on knobs). */}
+            <Popover className="relative">
+                <PopoverButton
+                    className={buttonClassName(
+                        'ghost',
+                        'sm',
+                        cn(controlHeight, 'gap-1 px-2 font-medium'),
+                    )}
+                    aria-label="Text format"
+                    title="Font, size, bullets, and skills layout"
                 >
-                    <span className="max-w-30 truncate">
-                        {fontLabels[font] ?? font ?? 'Font'}
-                    </span>
+                    Format
                     <ChevronDownIcon className="size-3.5 text-ink-faint" />
-                </MenuButton>
-                <MenuItems
+                </PopoverButton>
+                <PopoverPanel
                     anchor="bottom start"
-                    className="z-50 max-h-72 w-52 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                    className="z-50 w-64 space-y-3 rounded-md border border-surface-border bg-white p-3 shadow-lg focus:outline-hidden"
                 >
-                    {fontKeys.map((key) => (
-                        <MenuItem key={key}>
-                            <button
-                                type="button"
-                                onClick={() => onFontChange(key)}
-                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                            >
-                                <MenuCheck on={key === font} />
-                                <span className="min-w-0 flex-1">
-                                    <span
-                                        className="block truncate"
-                                        style={{ fontFamily: fontLabels[key] }}
+                    <FormatField label="Font">
+                        <select
+                            value={font}
+                            onChange={(event) =>
+                                onFontChange(event.target.value as ResumeFont)
+                            }
+                            className={selectClassName}
+                        >
+                            {fontKeys.map((key) => (
+                                <option key={key} value={key}>
+                                    {fontLabels[key]}
+                                    {pdfFontNotes[key]
+                                        ? ` (${pdfFontNotes[key]})`
+                                        : ''}
+                                </option>
+                            ))}
+                        </select>
+                    </FormatField>
+
+                    <FormatField label="Size & density">
+                        <select
+                            value={density}
+                            onChange={(event) =>
+                                onDensityChange(
+                                    event.target.value as ResumeDensity,
+                                )
+                            }
+                            className={selectClassName}
+                        >
+                            {densityOptions.map((option) => {
+                                const optionPages = estimateResumePages(
+                                    pageEstimateDraft,
+                                    option.density,
+                                ).pages;
+
+                                return (
+                                    <option
+                                        key={option.density}
+                                        value={option.density}
                                     >
-                                        {fontLabels[key]}
-                                    </span>
-                                    {pdfFontNotes[key] ? (
-                                        <span className="block truncate text-xs text-ink-faint">
-                                            {pdfFontNotes[key]}
-                                        </span>
-                                    ) : null}
-                                </span>
-                            </button>
-                        </MenuItem>
-                    ))}
-                </MenuItems>
-            </Menu>
+                                        {option.sizeLabel}pt · {option.styleLabel}{' '}
+                                        (≈{optionPages}p)
+                                    </option>
+                                );
+                            })}
+                        </select>
+                        <span className="mt-1 block text-xs text-ink-faint">
+                            {pageEstimate.hint}
+                        </span>
+                    </FormatField>
 
-            <Menu as="div" className="relative">
-                <MenuButton
-                    className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
-                    aria-label="Size (density)"
-                    title="Maps to resume density"
-                >
-                    {sizeLabel}
-                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
-                </MenuButton>
-                <MenuItems
-                    anchor="bottom start"
-                    className="z-50 w-40 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
-                >
-                    {densitySizeOptions.map((option) => (
-                        <MenuItem key={option.density}>
-                            <button
-                                type="button"
-                                onClick={() => onDensityChange(option.density)}
-                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                            >
-                                <MenuCheck on={option.density === density} />
-                                {option.label}
-                                <span className="ml-auto text-xs text-ink-faint">
-                                    {densityStyleOptions.find(
-                                        (style) => style.density === option.density,
-                                    )?.label}
-                                </span>
-                            </button>
-                        </MenuItem>
-                    ))}
-                </MenuItems>
-            </Menu>
+                    <FormatField label="Bullet style">
+                        <select
+                            value={bulletStyle}
+                            onChange={(event) =>
+                                onBulletStyleChange(
+                                    event.target.value as ResumeBulletStyle,
+                                )
+                            }
+                            className={selectClassName}
+                        >
+                            {bulletStyles.map((style) => (
+                                <option key={style} value={style}>
+                                    {bulletStyleLabels[style]}
+                                </option>
+                            ))}
+                        </select>
+                    </FormatField>
 
-            <Menu as="div" className="relative">
-                <MenuButton
-                    className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
-                    aria-label="Density"
-                    title="Resume density"
-                >
-                    {styleLabel}
-                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
-                </MenuButton>
-                <MenuItems
-                    anchor="bottom start"
-                    className="z-50 w-48 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
-                >
-                    {densityStyleOptions.map((option) => {
-                        const optionPages = estimateResumePages(
-                            pageEstimateDraft,
-                            option.density,
-                        ).pages;
-
-                        return (
-                            <MenuItem key={option.density}>
-                                <button
-                                    type="button"
-                                    onClick={() => onDensityChange(option.density)}
-                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                                >
-                                    <MenuCheck on={option.density === density} />
-                                    {option.label}
-                                    <span className="ml-auto text-xs text-ink-faint">
-                                        ≈{optionPages}p
-                                    </span>
-                                </button>
-                            </MenuItem>
-                        );
-                    })}
-                    <div className="mt-1 border-t border-surface-border/80 px-2 py-1.5 text-xs leading-snug text-ink-muted">
-                        {pageEstimate.hint}
-                    </div>
-                </MenuItems>
-            </Menu>
+                    <FormatField label="Skills layout">
+                        <select
+                            value={skillsLayout}
+                            onChange={(event) =>
+                                onSkillsLayoutChange(
+                                    event.target.value as ResumeSkillsLayout,
+                                )
+                            }
+                            className={selectClassName}
+                        >
+                            {skillLayouts.map((layout) => (
+                                <option key={layout} value={layout}>
+                                    {skillsLayoutLabels[layout]}
+                                </option>
+                            ))}
+                        </select>
+                    </FormatField>
+                </PopoverPanel>
+            </Popover>
 
             <span
                 className="hidden max-w-44 truncate text-xs text-ink-faint sm:inline"
@@ -381,68 +407,6 @@ export function WorkstationFormatToolbar({
             >
                 ≈{pageEstimate.pages} page{pageEstimate.pages === 1 ? '' : 's'}
             </span>
-
-            <Menu as="div" className="relative">
-                <MenuButton
-                    className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
-                    aria-label="Bullet style"
-                    title="Bullet style for experience and projects"
-                >
-                    <span className="hidden text-ink-faint sm:inline">Bullets</span>
-                    <span className="min-w-0 truncate">
-                        {bulletStyleLabels[bulletStyle] ?? bulletStyle}
-                    </span>
-                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
-                </MenuButton>
-                <MenuItems
-                    anchor="bottom start"
-                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
-                >
-                    {bulletStyles.map((style) => (
-                        <MenuItem key={style}>
-                            <button
-                                type="button"
-                                onClick={() => onBulletStyleChange(style)}
-                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                            >
-                                <MenuCheck on={style === bulletStyle} />
-                                {bulletStyleLabels[style]}
-                            </button>
-                        </MenuItem>
-                    ))}
-                </MenuItems>
-            </Menu>
-
-            <Menu as="div" className="relative">
-                <MenuButton
-                    className={buttonClassName('ghost', 'sm', 'h-8 gap-1 px-2 font-medium')}
-                    aria-label="Skills layout"
-                    title="How skills appear on the resume"
-                >
-                    <span className="hidden text-ink-faint sm:inline">Skills</span>
-                    <span className="min-w-0 truncate">
-                        {skillsLayoutLabels[skillsLayout] ?? skillsLayout}
-                    </span>
-                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
-                </MenuButton>
-                <MenuItems
-                    anchor="bottom start"
-                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
-                >
-                    {skillLayouts.map((layout) => (
-                        <MenuItem key={layout}>
-                            <button
-                                type="button"
-                                onClick={() => onSkillsLayoutChange(layout)}
-                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                            >
-                                <MenuCheck on={layout === skillsLayout} />
-                                {skillsLayoutLabels[layout]}
-                            </button>
-                        </MenuItem>
-                    ))}
-                </MenuItems>
-            </Menu>
 
             <ToolbarDivider />
 
@@ -463,7 +427,8 @@ export function WorkstationFormatToolbar({
                         disabled={!reviewActive}
                         onClick={() => onReviewPreviewModeChange('react')}
                         className={cn(
-                            'rounded-full px-2.5 py-1 text-xs font-medium',
+                            'rounded-full px-2.5 text-xs font-medium',
+                            controlHeight,
                             reviewPreviewMode === 'react'
                                 ? 'bg-brand-subtle text-brand'
                                 : 'text-ink-muted hover:bg-surface',
@@ -476,7 +441,8 @@ export function WorkstationFormatToolbar({
                         disabled={!reviewActive}
                         onClick={() => onReviewPreviewModeChange('pdf')}
                         className={cn(
-                            'rounded-full px-2.5 py-1 text-xs font-medium',
+                            'rounded-full px-2.5 text-xs font-medium',
+                            controlHeight,
                             reviewPreviewMode === 'pdf'
                                 ? 'bg-brand-subtle text-brand'
                                 : 'text-ink-muted hover:bg-surface',
@@ -487,6 +453,8 @@ export function WorkstationFormatToolbar({
                 </div>
             )}
 
+            {/* Zoom and "view" were the same four presets under two labels —
+                one menu now, named by what each level looks like. */}
             <Menu as="div" className="relative">
                 <MenuButton
                     disabled={!reviewActive}
@@ -494,7 +462,8 @@ export function WorkstationFormatToolbar({
                         'ghost',
                         'sm',
                         cn(
-                            'h-8 gap-1 px-2 font-medium',
+                            controlHeight,
+                            'gap-1 px-2 font-medium',
                             !reviewActive && 'opacity-40',
                         ),
                     )}
@@ -505,12 +474,12 @@ export function WorkstationFormatToolbar({
                             : 'Switch to Review to zoom the preview'
                     }
                 >
-                    {zoomLabel}
+                    {Math.round(zoom * 100)}%
                     <ChevronDownIcon className="size-3.5 text-ink-faint" />
                 </MenuButton>
                 <MenuItems
                     anchor="bottom end"
-                    className="z-50 w-36 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
                 >
                     {PREVIEW_ZOOM_OPTIONS.map((level) => (
                         <MenuItem key={level}>
@@ -520,79 +489,13 @@ export function WorkstationFormatToolbar({
                                 className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
                             >
                                 <MenuCheck on={level === zoom} />
-                                {Math.round(level * 100)}%
+                                <span className="min-w-0 flex-1 truncate">
+                                    {Math.round(level * 100)}% ·{' '}
+                                    {zoomViewLabels[level]}
+                                </span>
                             </button>
                         </MenuItem>
                     ))}
-                </MenuItems>
-            </Menu>
-
-            <Menu as="div" className="relative">
-                <MenuButton
-                    disabled={!reviewActive}
-                    className={buttonClassName(
-                        'ghost',
-                        'sm',
-                        cn(
-                            'h-8 gap-1 px-2 font-medium',
-                            !reviewActive && 'opacity-40',
-                        ),
-                    )}
-                    aria-label="View"
-                    title={
-                        reviewActive
-                            ? 'Preview view'
-                            : 'Switch to Review to change preview view'
-                    }
-                >
-                    <ListBulletIcon className="size-4" />
-                    View
-                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
-                </MenuButton>
-                <MenuItems
-                    anchor="bottom end"
-                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
-                >
-                    <MenuItem>
-                        <button
-                            type="button"
-                            onClick={() => onZoomChange(1)}
-                            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                        >
-                            <MenuCheck on={zoom === 1} />
-                            Fit width (100%)
-                        </button>
-                    </MenuItem>
-                    <MenuItem>
-                        <button
-                            type="button"
-                            onClick={() => onZoomChange(0.75)}
-                            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                        >
-                            <MenuCheck on={zoom === 0.75} />
-                            Compact (75%)
-                        </button>
-                    </MenuItem>
-                    <MenuItem>
-                        <button
-                            type="button"
-                            onClick={() => onZoomChange(1.25)}
-                            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                        >
-                            <MenuCheck on={zoom === 1.25} />
-                            Large (125%)
-                        </button>
-                    </MenuItem>
-                    <MenuItem>
-                        <button
-                            type="button"
-                            onClick={() => onZoomChange(1.5)}
-                            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                        >
-                            <MenuCheck on={zoom === 1.5} />
-                            Extra large (150%)
-                        </button>
-                    </MenuItem>
                 </MenuItems>
             </Menu>
         </div>

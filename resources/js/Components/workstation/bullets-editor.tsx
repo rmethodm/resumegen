@@ -220,7 +220,7 @@ function ToolbarButton({
             onMouseDown={(event) => event.preventDefault()}
             onClick={onClick}
             className={cn(
-                'inline-flex h-7 min-w-7 items-center justify-center rounded-md px-1.5 text-xs font-semibold text-ink-muted transition-colors',
+                'focus-ring inline-flex h-7 min-w-7 items-center justify-center rounded-md px-1.5 text-xs font-semibold text-ink-muted transition-colors',
                 active
                     ? 'bg-brand-subtle text-brand'
                     : 'hover:bg-surface hover:text-ink',
