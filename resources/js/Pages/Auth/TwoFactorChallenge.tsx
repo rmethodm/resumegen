@@ -66,7 +66,7 @@ export default function TwoFactorChallenge() {
                 {mode !== 'recovery' && (
                     <button
                         type="button"
-                        className="text-ink-muted underline hover:text-ink"
+                        className="focus-ring rounded-sm text-ink-muted underline hover:text-ink"
                         onClick={() => setMode('recovery')}
                     >
                         Use a recovery code instead
@@ -75,7 +75,7 @@ export default function TwoFactorChallenge() {
                 {mode === 'recovery' && (
                     <button
                         type="button"
-                        className="text-ink-muted underline hover:text-ink"
+                        className="focus-ring rounded-sm text-ink-muted underline hover:text-ink"
                         onClick={() => setMode('totp')}
                     >
                         Use authenticator app instead
@@ -88,7 +88,7 @@ export default function TwoFactorChallenge() {
                             e.preventDefault();
                             router.post(route('logout'));
                         }}
-                        className="text-ink-muted underline hover:text-ink"
+                        className="focus-ring rounded-sm text-ink-muted underline hover:text-ink"
                     >
                         Sign out
                     </a>

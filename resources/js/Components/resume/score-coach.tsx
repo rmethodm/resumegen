@@ -41,7 +41,7 @@ export function ScoreChecklist({
                             disabled={item.done}
                             onClick={() => onJump(item)}
                             className={cn(
-                                'flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs leading-snug transition-colors',
+                                'focus-ring flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs leading-snug transition-colors',
                                 item.done
                                     ? 'cursor-default text-ink-faint'
                                     : 'text-ink hover:bg-brand-subtle hover:text-brand',

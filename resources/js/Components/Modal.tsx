@@ -56,7 +56,7 @@ export default function Modal({
             <Dialog
                 as="div"
                 id="modal"
-                className="fixed inset-0 z-50 flex transform items-center overflow-y-auto px-4 py-6 transition-all sm:px-0"
+                className="fixed inset-0 z-50 flex transform items-center overflow-y-auto px-4 py-6 transition-[opacity,transform] sm:px-0"
                 onClose={close}
                 aria-describedby={hasDescription ? descriptionId : undefined}
             >
@@ -80,7 +80,7 @@ export default function Modal({
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95 motion-reduce:translate-y-0 motion-reduce:scale-100"
                 >
                     <DialogPanel
-                        className={`relative mb-6 flex max-h-[85dvh] w-full transform flex-col overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto ${maxWidthClass}`}
+                        className={`relative mb-6 flex max-h-[85dvh] w-full transform flex-col overflow-hidden rounded-lg bg-white shadow-xl transition-[opacity,transform] sm:mx-auto ${maxWidthClass}`}
                     >
                         {hasHeader && (
                             <div className="border-b border-gray-200 px-5 py-4">

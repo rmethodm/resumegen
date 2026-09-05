@@ -37,20 +37,20 @@ export default function Privacy() {
                         <h2 className="text-base font-bold text-ink">Information you provide</h2>
                         <ul className="list-disc space-y-1 pl-5 text-ink-muted">
                             <li>
-                                <strong className="text-ink">Account data</strong> — name, email, and
+                                <strong className="text-ink">Account data:</strong> name, email, and
                                 password (stored hashed) when you register.
                             </li>
                             <li>
-                                <strong className="text-ink">Resume content</strong> — the text and
+                                <strong className="text-ink">Resume content:</strong> the text and
                                 structure you enter (experience, education, skills, etc.).
                             </li>
                             <li>
-                                <strong className="text-ink">Optional settings</strong> — starter
+                                <strong className="text-ink">Optional settings:</strong> starter
                                 profile, share-link options (including an optional share password and
                                 visitor emails if you enable those gates).
                             </li>
                             <li>
-                                <strong className="text-ink">Support actions</strong> — if you contact
+                                <strong className="text-ink">Support actions:</strong> if you contact
                                 us, the content of that message.
                             </li>
                         </ul>
@@ -98,7 +98,7 @@ export default function Privacy() {
                         <p className="text-ink-muted">
                             The Resumegen Apply browser extension fills job application forms from
                             your resumes. It stores a connection token (which you generate and can
-                            revoke from Profile settings) in your browser's local sync storage — this
+                            revoke from Profile settings) in your browser's local sync storage. This
                             token is sent only to the Resumegen API to fetch your resume data, never
                             to the job site you're filling. The extension reads and writes form
                             fields only on pages where you actively open it; it does not run in the
@@ -140,7 +140,7 @@ export default function Privacy() {
 
                 <p className="mt-10 text-sm text-ink-muted">
                     See also{' '}
-                    <Link href={route('legal.terms')} className="font-semibold text-brand hover:underline">
+                    <Link href={route('legal.terms')} className="focus-ring rounded-sm font-semibold text-brand hover:underline">
                         Terms of Service
                     </Link>
                     .

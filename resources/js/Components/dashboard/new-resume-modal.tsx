@@ -122,7 +122,7 @@ export function NewResumeModal({
                         <div className="mt-4 flex flex-col gap-2">
                             <button
                                 type="button"
-                                className="self-start text-[11px] font-semibold text-brand hover:underline"
+                                className="focus-ring self-start rounded-sm text-[11px] font-semibold text-brand hover:underline"
                                 onClick={() => setMode('choose')}
                             >
                                 ← Back
@@ -153,7 +153,7 @@ export function NewResumeModal({
                         <div className="mt-4 flex flex-col gap-3">
                             <button
                                 type="button"
-                                className="self-start text-[11px] font-semibold text-brand hover:underline"
+                                className="focus-ring self-start rounded-sm text-[11px] font-semibold text-brand hover:underline"
                                 onClick={() => setMode('choose')}
                             >
                                 ← Back

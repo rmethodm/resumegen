@@ -31,7 +31,7 @@ export default function Terms() {
                             Service and our{' '}
                             <Link
                                 href={route('legal.privacy')}
-                                className="font-semibold text-brand hover:underline"
+                                className="focus-ring rounded-sm font-semibold text-brand hover:underline"
                             >
                                 Privacy Policy
                             </Link>

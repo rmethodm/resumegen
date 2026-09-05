@@ -35,7 +35,7 @@ export function OptimizePanel({
                     </h2>
                     <p className="text-xs text-ink-muted">
                         Paste a job description. We score keyword overlap with
-                        no AI — then you decide what to add.
+                        no AI, then you decide what to add.
                     </p>
                 </div>
 
@@ -81,7 +81,7 @@ export function OptimizePanel({
                         {overlap.missing.length > 0 && (
                             <div className="mb-3">
                                 <p className="mb-1.5 text-xs font-semibold tracking-wide text-ink-faint uppercase">
-                                    Missing — click to add as skill
+                                    Missing: click to add as skill
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {overlap.missing.slice(0, 32).map((term) => (
@@ -89,7 +89,7 @@ export function OptimizePanel({
                                             key={term}
                                             type="button"
                                             onClick={() => onAddKeyword(term)}
-                                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-white px-2.5 py-1 text-xs font-medium text-warning-text hover:border-warning hover:bg-warning-subtle"
+                                            className="focus-ring inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-white px-2.5 py-1 text-xs font-medium text-warning-text hover:border-warning hover:bg-warning-subtle"
                                         >
                                             <PlusIcon className="size-3" />
                                             {formatKeywordLabel(term)}

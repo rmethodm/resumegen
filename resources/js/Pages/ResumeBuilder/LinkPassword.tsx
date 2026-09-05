@@ -1,5 +1,6 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, useForm } from '@inertiajs/react';
+import { LockClosedIcon } from '@heroicons/react/24/outline';
 
 export default function LinkPassword({ token, label }: { token: string; label: string | null }) {
     const form = useForm({ password: '' });
@@ -9,7 +10,8 @@ export default function LinkPassword({ token, label }: { token: string; label: s
             <Head title="Password required" />
             <div className="flex min-h-screen items-center justify-center bg-surface">
                 <div className="w-full max-w-sm px-6 text-center">
-                    <div className="mb-6 text-5xl">🔒</div>
+                    <LockClosedIcon className="mx-auto mb-6 size-10 text-ink-faint" />
+
                     <h1 className="mb-3 text-2xl font-semibold text-ink">This resume is password protected</h1>
                     <p className="mb-6 text-sm leading-relaxed text-ink-muted">
                         {label
@@ -39,7 +41,7 @@ export default function LinkPassword({ token, label }: { token: string; label: s
                         <button
                             type="submit"
                             disabled={form.processing}
-                            className="mt-4 w-full rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-subtle0 disabled:opacity-50"
+                            className="focus-ring mt-4 w-full rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-accent disabled:opacity-50"
                         >
                             View resume
                         </button>

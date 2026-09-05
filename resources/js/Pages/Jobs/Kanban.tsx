@@ -4,12 +4,13 @@ import {
     BriefcaseIcon,
     PlusIcon,
 } from '@heroicons/react/24/outline';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
 import { Button } from '@/Components/ui/button';
+import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Shell } from '@/Components/ui/shell';
 import { cn } from '@/lib/utils';
 import type { JobApplication, JobStatus } from '@/types';
@@ -76,6 +77,7 @@ function JobCard({ job, resumeTitle }: { job: JobApplication; resumeTitle: strin
                 'transition-[box-shadow,opacity,transform] duration-soft ease-soft',
                 'hover:border-surface-border hover:shadow-ambient',
                 'active:cursor-grabbing motion-reduce:transition-none',
+                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1',
                 isDragging && 'scale-[1.03] opacity-95 shadow-ambient ring-1 ring-brand/20',
             )}
         >
@@ -153,12 +155,26 @@ export default function JobApplicationKanban({
     resumes: ResumeOption[];
 }) {
     const [form, setForm] = useState<FormState | null>(null);
+    const [formError, setFormError] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<{ id: number } | null>(null);
+    // Local mirror of the `applications` prop so a drag can move a card
+    // immediately (Doherty threshold) instead of waiting on the round-trip;
+    // it resyncs whenever the server sends fresh props (create/edit/delete).
+    const [localApplications, setLocalApplications] = useState(applications);
+
+    useEffect(() => {
+        setLocalApplications(applications);
+    }, [applications]);
 
     const resumesById = new Map(resumes.map((r) => [r.id, r.title]));
 
-    const openCreate = () => setForm(emptyForm());
-    const openEdit = (job: JobApplication) =>
+    const openCreate = () => {
+        setFormError(null);
+        setForm(emptyForm());
+    };
+    const openEdit = (job: JobApplication) => {
+        setFormError(null);
         setForm({
             id: job.id,
             company: job.company,
@@ -168,7 +184,11 @@ export default function JobApplicationKanban({
             status: job.status,
             follow_up_at: job.follow_up_at ?? '',
         });
-    const closeForm = () => setForm(null);
+    };
+    const closeForm = () => {
+        setForm(null);
+        setFormError(null);
+    };
 
     const submitForm = (e: FormEvent) => {
         e.preventDefault();
@@ -186,37 +206,39 @@ export default function JobApplicationKanban({
         };
 
         setProcessing(true);
-        const onFinish = () => {
-            setProcessing(false);
-            closeForm();
+        setFormError(null);
+
+        const options = {
+            preserveScroll: true,
+            // Only close on success — closing on error too was silently
+            // discarding whatever the user had typed with no feedback.
+            onSuccess: () => closeForm(),
+            onError: (errors: Record<string, string>) => {
+                setFormError(
+                    Object.values(errors)[0] ?? 'Could not save. Check the fields and try again.',
+                );
+            },
+            onFinish: () => setProcessing(false),
         };
 
         if (form.id) {
-            router.patch(route('job-applications.update', form.id), payload, {
-                preserveScroll: true,
-                onFinish,
-            });
+            router.patch(route('job-applications.update', form.id), payload, options);
         } else {
-            router.post(route('job-applications.store'), payload, {
-                preserveScroll: true,
-                onFinish,
-            });
+            router.post(route('job-applications.store'), payload, options);
         }
     };
 
     const deleteApplication = () => {
-        if (!form?.id) {
-            return;
-        }
-        if (!confirm('Delete this application?')) {
+        if (!deleteTarget) {
             return;
         }
 
         setProcessing(true);
-        router.delete(route('job-applications.destroy', form.id), {
+        router.delete(route('job-applications.destroy', deleteTarget.id), {
             preserveScroll: true,
             onFinish: () => {
                 setProcessing(false);
+                setDeleteTarget(null);
                 closeForm();
             },
         });
@@ -225,7 +247,7 @@ export default function JobApplicationKanban({
     const onDragEnd = (event: DragEndEvent) => {
         const { active, over, delta } = event;
 
-        const job = applications.find((j) => j.id === active.id);
+        const job = localApplications.find((j) => j.id === active.id);
         if (!job) {
             return;
         }
@@ -245,17 +267,27 @@ export default function JobApplicationKanban({
             return;
         }
 
+        const previous = localApplications;
+        setLocalApplications((current) =>
+            current.map((item) => (item.id === job.id ? { ...item, status: newStatus } : item)),
+        );
+
         router.patch(
             route('job-applications.update', job.id),
             { status: newStatus },
-            { preserveScroll: true },
+            {
+                preserveScroll: true,
+                // The move already happened on screen — put the card back
+                // only if the server actually rejected it.
+                onError: () => setLocalApplications(previous),
+            },
         );
     };
 
-    const activeApplications = applications.filter((job) => job.status !== 'rejected');
-    const interviewing = applications.filter((job) => job.status === 'interviewing');
-    const offers = applications.filter((job) => job.status === 'offer');
-    const followUps = applications
+    const activeApplications = localApplications.filter((job) => job.status !== 'rejected');
+    const interviewing = localApplications.filter((job) => job.status === 'interviewing');
+    const offers = localApplications.filter((job) => job.status === 'offer');
+    const followUps = localApplications
         .filter((job) => job.follow_up_at)
         .sort((a, b) => (a.follow_up_at ?? '').localeCompare(b.follow_up_at ?? ''))
         .slice(0, 3);
@@ -285,7 +317,7 @@ export default function JobApplicationKanban({
                     <div className="rounded-lg border border-brand/20 bg-brand-subtle/50 p-4 shadow-card">
                         <p className="text-xs font-medium text-brand">Active pipeline</p>
                         <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-ink">{activeApplications.length}</p>
-                        <p className="mt-1 text-xs text-ink-muted">of {applications.length} tracked roles</p>
+                        <p className="mt-1 text-xs text-ink-muted">of {localApplications.length} tracked roles</p>
                     </div>
                     <div className="rounded-lg border border-surface-border bg-white p-4 shadow-card">
                         <p className="text-xs font-medium text-ink-muted">Interviews</p>
@@ -304,18 +336,12 @@ export default function JobApplicationKanban({
                     </div>
                 </div>
 
-                <div className="mb-5 flex items-end justify-between gap-4">
-                    <div>
-                        <h2 className="text-base font-bold text-ink">Your pipeline</h2>
-                        <p className="mt-1 text-xs text-ink-muted">Drag a role to update its status.</p>
-                    </div>
-                    <Button type="button" onClick={openCreate} className="group rounded-full">
-                        New application
-                        <PlusIcon className="size-4" />
-                    </Button>
+                <div className="mb-5">
+                    <h2 className="text-base font-bold text-ink">Your pipeline</h2>
+                    <p className="mt-1 text-xs text-ink-muted">Drag a role to update its status.</p>
                 </div>
 
-                {applications.length === 0 ? (
+                {localApplications.length === 0 ? (
                     <Shell innerClassName="px-6 py-14 text-center sm:px-10">
                         <BriefcaseIcon className="mx-auto size-8 text-brand" />
                         <h3 className="mt-4 text-lg font-bold tracking-tight text-ink">
@@ -344,7 +370,7 @@ export default function JobApplicationKanban({
                                     key={column.status}
                                     status={column.status}
                                     label={column.label}
-                                    jobs={applications.filter((job) => job.status === column.status)}
+                                    jobs={localApplications.filter((job) => job.status === column.status)}
                                     resumesById={resumesById}
                                 />
                             ))}
@@ -356,6 +382,11 @@ export default function JobApplicationKanban({
             <Modal show={form !== null} onClose={closeForm} maxWidth="lg" title={form?.id ? 'Edit application' : 'New application'}>
                 {form && (
                     <form onSubmit={submitForm} className="p-6">
+                        {formError && (
+                            <p className="mb-4 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-sm text-danger-text">
+                                {formError}
+                            </p>
+                        )}
                         <div className="space-y-4">
                             <div>
                                 <InputLabel value="Company" />
@@ -434,7 +465,7 @@ export default function JobApplicationKanban({
                                 <Button
                                     variant="outline"
                                     type="button"
-                                    onClick={deleteApplication}
+                                    onClick={() => setDeleteTarget({ id: form.id! })}
                                     disabled={processing}
                                 >
                                     Delete
@@ -454,6 +485,14 @@ export default function JobApplicationKanban({
                     </form>
                 )}
             </Modal>
+
+            <ConfirmDialog
+                open={deleteTarget !== null}
+                title="Delete this application?"
+                description="This can't be undone."
+                onClose={() => setDeleteTarget(null)}
+                onConfirm={deleteApplication}
+            />
         </AuthenticatedLayout>
     );
 }

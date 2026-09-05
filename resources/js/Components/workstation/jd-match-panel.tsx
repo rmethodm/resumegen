@@ -30,7 +30,7 @@ export function JdMatchPanel({
                     <button
                         type="button"
                         onClick={onOpenOptimize}
-                        className="mt-2 px-1 text-xs font-semibold text-brand hover:underline"
+                        className="focus-ring mt-2 rounded-sm px-1 text-xs font-semibold text-brand hover:underline"
                     >
                         Open Optimize →
                     </button>

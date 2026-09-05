@@ -29,7 +29,7 @@ export function MarketingFooter() {
                                 <li key={link.label}>
                                     <a
                                         href={link.href}
-                                        className="text-sm text-ink-muted hover:text-ink hover:underline"
+                                        className="focus-ring rounded-sm text-sm text-ink-muted hover:text-ink hover:underline"
                                     >
                                         {link.label}
                                     </a>
@@ -44,7 +44,7 @@ export function MarketingFooter() {
                         <li>
                             <Link
                                 href={route('legal.privacy')}
-                                className="text-sm text-ink-muted hover:text-ink hover:underline"
+                                className="focus-ring rounded-sm text-sm text-ink-muted hover:text-ink hover:underline"
                             >
                                 Privacy
                             </Link>
@@ -52,7 +52,7 @@ export function MarketingFooter() {
                         <li>
                             <Link
                                 href={route('legal.terms')}
-                                className="text-sm text-ink-muted hover:text-ink hover:underline"
+                                className="focus-ring rounded-sm text-sm text-ink-muted hover:text-ink hover:underline"
                             >
                                 Terms
                             </Link>
