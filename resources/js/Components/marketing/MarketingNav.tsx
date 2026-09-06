@@ -20,7 +20,7 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
         >
             <Disclosure
                 as="div"
-                className="dark mx-auto max-w-6xl rounded-2xl border border-white/10 bg-neutral-900/85 shadow-ambient backdrop-blur-sm"
+                className="mx-auto max-w-6xl rounded-2xl border border-surface-border bg-white/85 shadow-ambient backdrop-blur-sm"
             >
                 {({ open }) => (
                     <>
@@ -31,7 +31,7 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
                                     <a
                                         key={link.href}
                                         href={link.href}
-                                        className="rounded-sm text-sm text-neutral-400 transition-colors duration-soft ease-soft hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
+                                        className="rounded-sm text-sm text-ink-muted transition-colors duration-soft ease-soft hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                                     >
                                         {link.label}
                                     </a>
@@ -49,7 +49,7 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
                                     <>
                                         <Link
                                             href={route('login')}
-                                            className="hidden rounded-sm text-sm font-semibold text-neutral-400 transition-colors duration-soft ease-soft hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 sm:inline"
+                                            className="hidden rounded-sm text-sm font-semibold text-ink-muted transition-colors duration-soft ease-soft hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:inline"
                                         >
                                             Log in
                                         </Link>
@@ -63,7 +63,7 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
                                 )}
                                 <DisclosureButton
                                     aria-label={open ? 'Close menu' : 'Open menu'}
-                                    className="flex size-11 shrink-0 items-center justify-center rounded-full text-neutral-300 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 md:hidden"
+                                    className="flex size-11 shrink-0 items-center justify-center rounded-full text-ink-muted hover:bg-accent-50 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white md:hidden"
                                 >
                                     {open ? (
                                         <XMarkIcon className="size-5" />
@@ -73,13 +73,13 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
                                 </DisclosureButton>
                             </div>
                         </nav>
-                        <DisclosurePanel className="border-t border-white/10 px-4 py-3 md:hidden">
+                        <DisclosurePanel className="border-t border-surface-border px-4 py-3 md:hidden">
                             <div className="flex flex-col gap-1">
                                 {NAV_LINKS.map((link) => (
                                     <a
                                         key={link.href}
                                         href={link.href}
-                                        className="rounded-lg px-2 py-2.5 text-sm font-medium text-neutral-300 hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
+                                        className="rounded-lg px-2 py-2.5 text-sm font-medium text-ink-muted hover:bg-accent-50 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                                     >
                                         {link.label}
                                     </a>
@@ -87,7 +87,7 @@ export function MarketingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
                                 {!isLoggedIn && (
                                     <Link
                                         href={route('login')}
-                                        className="rounded-lg px-2 py-2.5 text-sm font-medium text-neutral-300 hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
+                                        className="rounded-lg px-2 py-2.5 text-sm font-medium text-ink-muted hover:bg-accent-50 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                                     >
                                         Log in
                                     </Link>
