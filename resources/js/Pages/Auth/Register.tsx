@@ -4,6 +4,7 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import { SocialLoginButtons } from '@/Components/auth/SocialLoginButtons';
 import { Button } from '@/Components/ui/button';
 import { Checkbox } from '@/Components/ui/checkbox';
 
@@ -146,6 +147,10 @@ export default function Register() {
                     </Link>
                 </p>
             </form>
+
+            <div className="mt-6">
+                <SocialLoginButtons />
+            </div>
         </GuestLayout>
     );
 }

@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 class CreateNewUser implements CreatesNewUsers
@@ -26,11 +25,7 @@ class CreateNewUser implements CreatesNewUsers
         $ip = request()->ip();
 
         return DB::transaction(function () use ($input, $ip) {
-            if (User::where('registration_ip', $ip)->where('created_at', '>=', now()->subDay())->count() >= 5) {
-                throw ValidationException::withMessages([
-                    'registration' => 'Too many accounts created from this IP. Please try again tomorrow.',
-                ]);
-            }
+            RegistrationIpLimiter::assertNotThrottled($ip);
 
             return User::create([
                 'name' => $input['name'],
