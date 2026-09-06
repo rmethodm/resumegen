@@ -17,13 +17,13 @@ const FRAME_FIELDS = [
 
 export function MarketingHero({ ctaHref }: { ctaHref: string }) {
     return (
-        <section className="relative overflow-hidden bg-neutral-950 px-4 pb-0 pt-16 sm:px-6 sm:pt-20">
+        <section className="relative overflow-hidden bg-white px-4 pb-0 pt-16 sm:px-6 sm:pt-20">
             <div
-                className="pointer-events-none absolute -right-40 -top-56 size-[480px] rounded-full border-[80px] border-white/[0.03]"
+                className="pointer-events-none absolute -right-40 -top-56 size-[480px] rounded-full border-[80px] border-accent-50"
                 aria-hidden
             />
             <div
-                className="pointer-events-none absolute -bottom-24 -left-40 size-[420px] rounded-full border-[70px] border-white/[0.03]"
+                className="pointer-events-none absolute -bottom-24 -left-40 size-[420px] rounded-full border-[70px] border-accent-50"
                 aria-hidden
             />
             <div
@@ -32,10 +32,10 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
             />
 
             <div className="relative mx-auto max-w-3xl text-center">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-bold text-accent-300">
+                <span className="inline-flex items-center gap-2 rounded-full border border-surface-border bg-accent-50 px-4 py-1.5 text-xs font-bold text-accent-700">
                     ✓ Free forever — really
                 </span>
-                <h1 className="mt-6 text-4xl font-extrabold leading-[1.06] tracking-tighter text-white text-balance sm:text-5xl lg:text-[4.25rem]">
+                <h1 className="mt-6 text-4xl font-extrabold leading-[1.06] tracking-tighter text-ink text-balance sm:text-5xl lg:text-[4.25rem]">
                     Make a resume.
                     <br />
                     Skip the{' '}
@@ -44,7 +44,7 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                     </span>
                     .
                 </h1>
-                <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-neutral-400 sm:text-[19px]">
+                <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-ink-muted sm:text-[19px]">
                     Templates, exports, share links, application tracking: all of it, unlimited,
                     without ever seeing an upgrade button.
                 </p>
@@ -55,7 +55,7 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                             'group inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-base font-bold text-white',
                             'shadow-[0_12px_28px_rgba(115,87,240,0.4)] transition-[background-color,transform] duration-soft ease-soft',
                             'hover:bg-accent-600 active:scale-[0.98] motion-reduce:active:scale-100',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white',
                         )}
                     >
                         Start building. It&apos;s free
@@ -66,9 +66,9 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                     <a
                         href="#how-it-works"
                         className={cn(
-                            'inline-flex items-center rounded-full border border-white/15 bg-white/5 px-6 py-3.5 text-base font-semibold text-white',
-                            'transition-colors duration-soft ease-soft hover:bg-white/10',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950',
+                            'inline-flex items-center rounded-full border border-surface-border bg-white px-6 py-3.5 text-base font-semibold text-ink',
+                            'transition-colors duration-soft ease-soft hover:bg-accent-50',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white',
                         )}
                     >
                         See how it works
@@ -78,7 +78,7 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                     {CHIPS.map((chip) => (
                         <span
                             key={chip.label}
-                            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-neutral-300"
+                            className="rounded-full border border-surface-border bg-accent-50/60 px-4 py-2 text-[13px] font-semibold text-ink-muted"
                         >
                             {chip.icon} {chip.label}
                         </span>
@@ -88,12 +88,12 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
 
             {/* Product frame — stylized Workstation (editor fields + live template preview) */}
             <div className="relative mx-auto mt-14 max-w-4xl" aria-hidden>
-                <div className="overflow-hidden rounded-t-3xl border border-b-0 border-white/10 bg-surface-dark-raised shadow-[0_-20px_80px_rgba(115,87,240,0.18)]">
-                    <div className="flex items-center gap-2 border-b border-white/8 px-5 py-3">
-                        <span className="size-2.5 rounded-full bg-white/15" />
-                        <span className="size-2.5 rounded-full bg-white/15" />
-                        <span className="size-2.5 rounded-full bg-white/15" />
-                        <span className="ml-3 hidden rounded-md bg-white/5 px-3 py-1 text-[11px] text-neutral-400 sm:block">
+                <div className="overflow-hidden rounded-t-3xl border border-b-0 border-surface-border bg-white shadow-[0_-20px_80px_rgba(115,87,240,0.12)]">
+                    <div className="flex items-center gap-2 border-b border-surface-border px-5 py-3">
+                        <span className="size-2.5 rounded-full bg-neutral-200" />
+                        <span className="size-2.5 rounded-full bg-neutral-200" />
+                        <span className="size-2.5 rounded-full bg-neutral-200" />
+                        <span className="ml-3 hidden rounded-md bg-accent-50 px-3 py-1 text-[11px] text-ink-faint sm:block">
                             resumegen.app — Workstation
                         </span>
                         <span className="ml-auto rounded-full bg-success-subtle px-2.5 py-0.5 text-[10px] font-bold text-success-text">
@@ -104,18 +104,18 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                         <div className="space-y-4">
                             {FRAME_FIELDS.map((field) => (
                                 <div key={field.label}>
-                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-ink-faint">
                                         {field.label}
                                     </div>
                                     <div
                                         className={cn(
-                                            'mt-1.5 h-7 rounded-lg bg-white/8',
+                                            'mt-1.5 h-7 rounded-lg bg-accent-50',
                                             field.width,
                                         )}
                                     />
                                 </div>
                             ))}
-                            <div className="inline-flex rounded-full bg-brand/20 px-3 py-1.5 text-[11px] font-bold text-accent-300">
+                            <div className="inline-flex rounded-full bg-accent-100 px-3 py-1.5 text-[11px] font-bold text-accent-700">
                                 Keyword match 86%
                             </div>
                         </div>
