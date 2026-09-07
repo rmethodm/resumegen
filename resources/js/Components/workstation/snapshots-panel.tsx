@@ -96,7 +96,7 @@ export function SnapshotsPanel({
                     {snapshots.map((snapshot) => (
                         <li
                             key={snapshot.id}
-                            className="flex items-center gap-2 rounded-md border border-gray-100 px-2 py-1.5"
+                            className="flex items-center gap-2 rounded-md border border-surface-border px-2 py-1.5"
                         >
                             <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-medium text-ink">

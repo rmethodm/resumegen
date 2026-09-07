@@ -24,7 +24,7 @@ export function MarketingTemplatePicker() {
                     Four ATS-tuned templates. Switch with one click — your content reflows
                     instantly.
                 </p>
-                <div className="mx-auto mt-11 max-w-4xl rounded-3xl border border-surface-border bg-accent-50/60 p-4 shadow-[0_16px_44px_rgba(115,87,240,0.1)] sm:p-7">
+                <div className="mx-auto mt-11 max-w-4xl rounded-3xl border border-surface-border bg-accent-50/60 p-4 shadow-[0_16px_44px_rgba(0,0,0,0.08)] sm:p-7">
                     <div className="flex items-center justify-between px-1 pb-4">
                         <span className="text-sm font-bold text-ink">Choose a template</span>
                         <span className="text-xs text-ink-faint">Your content stays put</span>
@@ -41,7 +41,7 @@ export function MarketingTemplatePicker() {
                                     'hover:-translate-y-0.5 motion-reduce:hover:translate-y-0',
                                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2',
                                     template.selected
-                                        ? 'border-[3px] border-brand shadow-[0_8px_20px_rgba(115,87,240,0.2)]'
+                                        ? 'border-[3px] border-brand shadow-[0_8px_20px_rgba(0,0,0,0.14)]'
                                         : 'border border-surface-border',
                                 )}
                             >

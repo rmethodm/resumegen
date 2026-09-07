@@ -53,7 +53,7 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                         href={ctaHref}
                         className={cn(
                             'group inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-base font-bold text-white',
-                            'shadow-[0_12px_28px_rgba(115,87,240,0.4)] transition-[background-color,transform] duration-soft ease-soft',
+                            'shadow-[0_12px_28px_rgba(0,0,0,0.18)] transition-[background-color,transform] duration-soft ease-soft',
                             'hover:bg-accent-600 active:scale-[0.98] motion-reduce:active:scale-100',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white',
                         )}
@@ -88,7 +88,7 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
 
             {/* Product frame — stylized Workstation (editor fields + live template preview) */}
             <div className="relative mx-auto mt-14 max-w-4xl" aria-hidden>
-                <div className="overflow-hidden rounded-t-3xl border border-b-0 border-surface-border bg-white shadow-[0_-20px_80px_rgba(115,87,240,0.12)]">
+                <div className="overflow-hidden rounded-t-3xl border border-b-0 border-surface-border bg-white shadow-[0_-20px_80px_rgba(0,0,0,0.08)]">
                     <div className="flex items-center gap-2 border-b border-surface-border px-5 py-3">
                         <span className="size-2.5 rounded-full bg-neutral-200" />
                         <span className="size-2.5 rounded-full bg-neutral-200" />

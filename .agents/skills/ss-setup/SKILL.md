@@ -140,5 +140,5 @@ Mention `/ss-reference` as the path for future references that need their own gr
 - Brand recipe is required; `auto` resolves to a concrete maintained recipe.
 - Palette recipe is required; `auto` resolves to a contrast-verified semantic palette.
 - A skin is tokens, not design judgment.
-- Never fetch a brand `DESIGN.md` and treat its palette as a complete rule set.
+- Never fetch an external brand design doc and treat its palette as a complete rule set.
 - Never scaffold an unscored first page or claim visual verification without a screenshot.

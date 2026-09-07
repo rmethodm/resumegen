@@ -40,7 +40,7 @@ function Bar({ w, dark = false }: { w: string; dark?: boolean }) {
         <span
             className={cn(
                 'h-1.5 rounded-full',
-                dark ? 'bg-gray-700/70' : 'bg-brand/30',
+                dark ? 'bg-ink/70' : 'bg-brand/30',
             )}
             style={{ width: w }}
         />
@@ -48,7 +48,7 @@ function Bar({ w, dark = false }: { w: string; dark?: boolean }) {
 }
 
 function Dot() {
-    return <span className="size-1 shrink-0 rounded-full bg-gray-700/60" />;
+    return <span className="size-1 shrink-0 rounded-full bg-ink/60" />;
 }
 
 /** A wordless sketch of how the layout arranges skills on the page. */

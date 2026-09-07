@@ -69,7 +69,7 @@ export function TemplatePickerModal({
                                     )}
                                 >
                                     <div
-                                        className="relative aspect-8.5/11 w-full overflow-hidden rounded-sm border border-gray-100 bg-white shadow-xs"
+                                        className="relative aspect-8.5/11 w-full overflow-hidden rounded-sm border border-surface-border bg-white shadow-xs"
                                         style={{
                                             borderLeft: style.pageAccent
                                                 ? `3px solid ${style.pageAccent}`
@@ -128,7 +128,7 @@ export function TemplatePickerModal({
                                                                   : ''
                                                         }
                                                     >
-                                                        <div className="h-0.5 w-[80%] rounded-sm bg-gray-200" />
+                                                        <div className="h-0.5 w-[80%] rounded-sm bg-neutral-300" />
                                                         <div className="mt-0.5 h-0.5 w-full rounded-sm bg-surface" />
                                                     </div>
                                                 ))}

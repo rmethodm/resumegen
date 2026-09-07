@@ -42,10 +42,10 @@ function PersonaForm({
 
     const field = (label: string, key: keyof typeof data, type = 'text') => (
         <div>
-            <label className="block text-sm font-medium text-gray-700">{label}</label>
+            <label className="block text-sm font-medium text-ink-muted">{label}</label>
             <input
                 type={type}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-brand focus:ring-brand sm:text-sm"
+                className="mt-1 block w-full rounded-md border-surface-border shadow-xs focus:border-brand focus:ring-brand sm:text-sm"
                 value={data[key]}
                 onChange={e => setData(prev => ({ ...prev, [key]: e.target.value }))}
                 onBlur={save}
@@ -65,9 +65,9 @@ function PersonaForm({
             {field('Industry', 'industry')}
             {field('Years of Experience', 'years_experience', 'number')}
             <div>
-                <label className="block text-sm font-medium text-gray-700">Preferred Template</label>
+                <label className="block text-sm font-medium text-ink-muted">Preferred Template</label>
                 <select
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-brand focus:ring-brand sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-surface-border shadow-xs focus:border-brand focus:ring-brand sm:text-sm"
                     value={data.preferred_template}
                     onChange={e => {
                         setData(prev => ({ ...prev, preferred_template: e.target.value }));
@@ -159,7 +159,7 @@ export default function Edit({
                     <Card className="p-6">
                         <section className="space-y-6">
                             <header>
-                                <h2 className="text-lg font-medium text-gray-900">Starter Profile</h2>
+                                <h2 className="text-lg font-medium text-ink">Starter Profile</h2>
                                 <p className="mt-1 text-sm text-ink-muted">
                                     Pre-fills the contact section and defaults on every new resume you create.
                                 </p>

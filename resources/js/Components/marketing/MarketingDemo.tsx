@@ -25,7 +25,7 @@ export function MarketingDemo() {
             </div>
 
             <div className="relative mx-auto mt-11 max-w-3xl" aria-hidden>
-                <div className="overflow-hidden rounded-3xl border border-surface-border bg-white shadow-[0_20px_60px_rgba(115,87,240,0.12)]">
+                <div className="overflow-hidden rounded-3xl border border-surface-border bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
                     <div className="flex items-center gap-2 border-b border-surface-border px-5 py-3">
                         <span className="size-2.5 rounded-full bg-neutral-200" />
                         <span className="size-2.5 rounded-full bg-neutral-200" />

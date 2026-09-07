@@ -7,12 +7,12 @@
         <title>@yield('title') — Resumegen</title>
         <style>
             :root {
-                --brand: #5952d2;
-                --surface: #f2f6f9;
-                --border: #d2d8dd;
-                --ink: #171b1f;
-                --muted: #50565a;
-                --faint: #6d7277;
+                --brand: #000000;
+                --surface: #fafafa;
+                --border: #e5e5e5;
+                --ink: #171717;
+                --muted: #525252;
+                --faint: #737373;
             }
             * { box-sizing: border-box; }
             html, body {
@@ -20,7 +20,7 @@
                 min-height: 100dvh;
                 background: var(--surface);
                 color: var(--ink);
-                font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+                font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
                 -webkit-font-smoothing: antialiased;
             }
             body {

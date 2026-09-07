@@ -5,7 +5,7 @@ Source of truth: `resources/css/app.css` (Tailwind v4 CSS-first `@theme` — no 
 ## Layers
 
 - **Primitives**: `--color-neutral-50…950`, `--color-accent-50…950` ramps.
-- **Semantics**: `--color-ink / ink-muted / ink-faint` (text), `--color-surface / surface-border` (canvas), `--color-brand / brand-accent / brand-subtle / brand-soft` (accent, swappable via `html[data-brand-theme]`: default violet, navy, teal, copper), status trios `success / warning / danger` (base + `-subtle` + `-text`).
+- **Semantics**: `--color-ink / ink-muted / ink-faint` (text), `--color-surface / surface-border` (canvas), `--color-brand / brand-accent / brand-subtle / brand-soft` (grayscale accent; `html[data-brand-theme]` variants all resolve to the same black/gray tokens), status trios `success / warning / danger` (grayscale base + `-subtle` + `-text`).
 - **Component tokens**: none — deferred on purpose until a specific component needs one. Do not add speculatively.
 
 ## Categories

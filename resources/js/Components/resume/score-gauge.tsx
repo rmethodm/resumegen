@@ -53,7 +53,7 @@ export function ScoreGauge({
                     style={{
                         width: size,
                         height: size,
-                        background: `conic-gradient(from 270deg, #dc2626 0deg, #f59e0b 60deg, #fbbf24 100deg, #16a34a 180deg, transparent 180deg 360deg)`,
+                        background: `conic-gradient(from 270deg, #000000 0deg, #525252 60deg, #a3a3a3 100deg, #171717 180deg, transparent 180deg 360deg)`,
                     }}
                 />
                 <div

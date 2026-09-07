@@ -61,7 +61,7 @@ export function OptimizePanel({
                 </div>
 
                 {jd.trim() !== '' && (
-                    <div className="mt-4 rounded-md border border-gray-100 bg-surface p-3">
+                    <div className="mt-4 rounded-md border border-surface-border bg-surface p-3">
                         <div className="mb-2 flex items-baseline justify-between">
                             <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
                                 Match score
@@ -162,7 +162,7 @@ export function AtsPlainTextBlock({
                     Copy all
                 </Button>
             </div>
-            <pre className="max-h-[50dvh] overflow-auto rounded-md border border-gray-100 bg-surface p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-ink">
+            <pre className="max-h-[50dvh] overflow-auto rounded-md border border-surface-border bg-surface p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-ink">
                 {plainText}
             </pre>
         </Card>

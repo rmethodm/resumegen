@@ -8,7 +8,8 @@
             if (stored === 'dark' || (!stored && prefersDark)) {
                 document.documentElement.classList.add('dark');
             }
-            // Brand accent preview (violet | navy | teal | copper) — avoid flash.
+            // Brand theme attribute kept for compatibility; CSS maps every
+            // variant to the same grayscale tokens.
             try {
                 var brand = localStorage.getItem('resumegen.brand-theme');
                 if (brand === 'navy' || brand === 'teal' || brand === 'copper' || brand === 'violet') {
