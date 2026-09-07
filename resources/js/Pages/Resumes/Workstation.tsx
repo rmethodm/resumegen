@@ -464,7 +464,7 @@ export default function Workstation({
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="focus-ring flex items-center gap-1 rounded-sm text-xs font-semibold tracking-[0.12em] text-ink uppercase"
+                                    className="focus-ring flex items-center gap-1 rounded-sm text-sm font-semibold text-ink"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
@@ -681,6 +681,26 @@ export default function Workstation({
                             onRequestDownload={requestDownload}
                             reviewPreviewMode={reviewPreviewMode}
                             onReviewPreviewModeChange={setReviewPreviewMode}
+                            sideToolsOpen={showSideTools}
+                            onToggleSideTools={() => {
+                                setShowSideTools((open) => {
+                                    const next = !open;
+                                    if (next) {
+                                        window.setTimeout(() => {
+                                            document
+                                                .getElementById(
+                                                    'workstation-side-tools',
+                                                )
+                                                ?.scrollIntoView({
+                                                    behavior: 'smooth',
+                                                    block: 'start',
+                                                });
+                                        }, 50);
+                                    }
+
+                                    return next;
+                                });
+                            }}
                         />
                     </div>
                 </div>
@@ -693,17 +713,21 @@ export default function Workstation({
                     )}
                 >
                     <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-4">
-                        <SectionPanel
-                            resumeId={id}
-                            analysis={liveAnalysis}
-                            resume={draft}
-                            selected={section}
-                            onSelect={scrollToSection}
-                            onAddSection={addSection}
-                            onAddKeyword={addKeyword}
-                            onJumpChecklist={jumpChecklist}
-                            onOpenOptimize={() => setTab('Optimize')}
-                        />
+                        {/* Score strip is Edit/Optimize guidance — hide on Review
+                            so the tab reads as a document viewer. */}
+                        {tab !== 'Review' && (
+                            <SectionPanel
+                                resumeId={id}
+                                analysis={liveAnalysis}
+                                resume={draft}
+                                selected={section}
+                                onSelect={scrollToSection}
+                                onAddSection={addSection}
+                                onAddKeyword={addKeyword}
+                                onJumpChecklist={jumpChecklist}
+                                onOpenOptimize={() => setTab('Optimize')}
+                            />
+                        )}
 
                         {/* Form column + sticky live preview side by side on desktop. */}
                         <div className="flex flex-col gap-6 xl:flex-row xl:items-start">
@@ -725,22 +749,18 @@ export default function Workstation({
                                                 target_company,
                                             })
                                         }
-                                        targetJobDescription={
-                                            draft.target_job_description ?? ''
+                                        hasJobDescription={
+                                            (draft.target_job_description ??
+                                                '').trim() !== ''
                                         }
-                                        onTargetJobDescriptionChange={(
-                                            target_job_description,
-                                        ) =>
-                                            setDraft({
-                                                ...draft,
-                                                target_job_description,
-                                            })
+                                        onOpenOptimize={() =>
+                                            setTab('Optimize')
                                         }
                                     />
                                 )}
 
                                 {tab === 'Review' && (
-                                    <div className="overflow-hidden rounded-xl bg-surface ring-1 ring-ink/5">
+                                    <div className="overflow-hidden rounded-xl bg-neutral-100 ring-1 ring-ink/10">
                                         {reviewPreviewMode === 'pdf' ? (
                                             <PdfPreviewFrame
                                                 src={`${route(
@@ -749,7 +769,7 @@ export default function Workstation({
                                                 )}?t=${pdfRevision}`}
                                             />
                                         ) : (
-                                            <div className="flex justify-center overflow-x-auto p-4 sm:p-6 lg:p-8">
+                                            <div className="flex justify-center overflow-x-auto p-5 sm:p-8 lg:p-10">
                                                 <div
                                                     className="origin-top-left transition-transform duration-soft ease-soft motion-reduce:transition-none"
                                                     style={{
@@ -757,8 +777,8 @@ export default function Workstation({
                                                         width: `${100 / previewZoom}%`,
                                                     }}
                                                 >
-                                                    {/* Paper stage — soft ambient lift so the page reads as a document */}
-                                                    <div className="rounded-lg bg-white shadow-ambient ring-1 ring-ink/5">
+                                                    {/* Paper stage — B&W signature: document lift over quiet chrome */}
+                                                    <div className="rounded-sm bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_16px_40px_rgba(0,0,0,0.14)] ring-1 ring-black/10">
                                                         <ResumePreview
                                                             resume={draft}
                                                             className="w-full"
@@ -788,38 +808,29 @@ export default function Workstation({
                                     </div>
                                 )}
 
-                                <div className="flex flex-col gap-3">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setShowSideTools((open) => !open)
-                                        }
-                                        className="focus-ring self-start rounded-sm text-xs font-semibold text-brand hover:underline focus-visible:underline"
+                                {showSideTools && (
+                                    <div
+                                        id="workstation-side-tools"
+                                        className="grid gap-4 md:grid-cols-2"
                                     >
-                                        {showSideTools ? 'Hide' : 'Show'} notes
-                                        & checkpoints
-                                    </button>
-                                    {showSideTools && (
-                                        <div className="grid gap-4 md:grid-cols-2">
-                                            <NotesPanel
-                                                resumeId={id}
-                                                notes={notes}
-                                            />
-                                            <SnapshotsPanel
-                                                resumeId={id}
-                                                snapshots={snapshots}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
+                                        <NotesPanel
+                                            resumeId={id}
+                                            notes={notes}
+                                        />
+                                        <SnapshotsPanel
+                                            resumeId={id}
+                                            snapshots={snapshots}
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             {tab === 'Edit' && (
                                 <aside
                                     aria-label="Live preview"
-                                    className="hidden shrink-0 xl:sticky xl:top-4 xl:block xl:max-h-[calc(100dvh-2rem)] xl:w-[44%] xl:max-w-[620px] xl:overflow-y-auto xl:rounded-xl xl:bg-surface xl:p-4 xl:ring-1 xl:ring-ink/5"
+                                    className="hidden shrink-0 xl:sticky xl:top-4 xl:block xl:max-h-[calc(100dvh-2rem)] xl:w-[44%] xl:max-w-[620px] xl:overflow-y-auto xl:rounded-xl xl:bg-neutral-100 xl:p-5 xl:ring-1 xl:ring-ink/10"
                                 >
-                                    <div className="rounded-lg bg-white shadow-ambient ring-1 ring-ink/5">
+                                    <div className="rounded-sm bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_16px_40px_rgba(0,0,0,0.14)] ring-1 ring-black/10">
                                         <ResumePreview
                                             resume={draft}
                                             className="w-full"

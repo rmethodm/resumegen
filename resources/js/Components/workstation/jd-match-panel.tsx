@@ -19,7 +19,7 @@ export function JdMatchPanel({
     if (jd.trim() === '') {
         return (
             <div className="mt-4 border-t border-surface-border pt-4">
-                <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                <p className="mb-1 px-1 text-xs font-semibold text-ink-muted">
                     Job match
                 </p>
                 <p className="px-1 text-xs leading-relaxed text-ink-muted">
@@ -42,7 +42,7 @@ export function JdMatchPanel({
     return (
         <div className="mt-4 border-t border-surface-border pt-4">
             <div className="mb-2 flex items-baseline justify-between px-1">
-                <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                <p className="text-xs font-semibold text-ink-muted">
                     Job match
                 </p>
                 <p className="text-sm font-bold tabular-nums text-brand">
@@ -55,7 +55,7 @@ export function JdMatchPanel({
             </p>
             {overlap.missing.length > 0 && (
                 <>
-                    <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-ink-faint uppercase">
+                    <p className="mb-1 px-1 text-xs font-semibold text-ink-faint">
                         Missing from resume
                     </p>
                     <div className="flex flex-wrap gap-1 px-0.5">
@@ -88,7 +88,7 @@ export function JdMatchPanel({
             )}
             {overlap.matched.length > 0 && (
                 <>
-                    <p className="mt-2 mb-1 px-1 text-xs font-semibold tracking-wide text-ink-faint uppercase">
+                    <p className="mt-2 mb-1 px-1 text-xs font-semibold text-ink-faint">
                         Present
                     </p>
                     <div className="flex flex-wrap gap-1 px-0.5">

@@ -68,7 +68,7 @@ export function NotesPanel({
     return (
         <Card className="gap-0 p-4">
             <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-xs font-bold tracking-wide text-ink-muted uppercase">
+                <h3 className="text-xs font-semibold text-ink-muted">
                     Private notes
                 </h3>
                 <span className="text-xs text-ink-faint">

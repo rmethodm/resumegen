@@ -241,263 +241,258 @@ export function WorkstationFormatToolbar({
                 ))}
             </div>
 
-            <ToolbarDivider />
+            {/* Document tools on Edit/Review only — Optimize stays lean. */}
+            {activeTab !== 'Optimize' && (
+                <>
+                    <ToolbarDivider />
 
-            <button
-                type="button"
-                aria-label="Undo"
-                title="Undo (Cmd/Ctrl+Z)"
-                disabled={!canUndo}
-                onClick={onUndo}
-                className={buttonClassName(
-                    'ghost',
-                    'icon',
-                    cn(iconButtonSize, 'disabled:opacity-40'),
-                )}
-            >
-                <ArrowUturnLeftIcon className="size-4" />
-            </button>
-            <button
-                type="button"
-                aria-label="Redo"
-                title="Redo (Cmd/Ctrl+Shift+Z)"
-                disabled={!canRedo}
-                onClick={onRedo}
-                className={buttonClassName(
-                    'ghost',
-                    'icon',
-                    cn(iconButtonSize, 'disabled:opacity-40'),
-                )}
-            >
-                <ArrowUturnRightIcon className="size-4" />
-            </button>
+                    <button
+                        type="button"
+                        aria-label="Undo"
+                        title="Undo (Cmd/Ctrl+Z)"
+                        disabled={!canUndo}
+                        onClick={onUndo}
+                        className={buttonClassName(
+                            'ghost',
+                            'icon',
+                            cn(iconButtonSize, 'disabled:opacity-40'),
+                        )}
+                    >
+                        <ArrowUturnLeftIcon className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        aria-label="Redo"
+                        title="Redo (Cmd/Ctrl+Shift+Z)"
+                        disabled={!canRedo}
+                        onClick={onRedo}
+                        className={buttonClassName(
+                            'ghost',
+                            'icon',
+                            cn(iconButtonSize, 'disabled:opacity-40'),
+                        )}
+                    >
+                        <ArrowUturnRightIcon className="size-4" />
+                    </button>
 
-            <ToolbarDivider />
+                    <ToolbarDivider />
 
-            <button
-                type="button"
-                onClick={onTemplateClick}
-                className={buttonClassName(
-                    'ghost',
-                    'sm',
-                    cn(controlHeight, 'max-w-44 gap-1 px-2 font-medium'),
-                )}
-                aria-label="Template"
-                title="Choose resume template"
-            >
-                <span className="hidden text-ink-faint sm:inline">Template</span>
-                <span className="min-w-0 truncate">
-                    {templateLabels[template] ?? template}
-                </span>
-                <ChevronDownIcon className="size-3.5 shrink-0 text-ink-faint" />
-            </button>
-
-            {/* Font, size/density, bullets, and skills layout grouped into one
-                control — Hick's Law (fewer top-level choices) and Tesler's
-                Law (progressive disclosure instead of four always-on knobs). */}
-            <Popover className="relative">
-                <PopoverButton
-                    className={buttonClassName(
-                        'ghost',
-                        'sm',
-                        cn(controlHeight, 'gap-1 px-2 font-medium'),
-                    )}
-                    aria-label="Text format"
-                    title="Font, size, bullets, and skills layout"
-                >
-                    Format
-                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
-                </PopoverButton>
-                <PopoverPanel
-                    anchor="bottom start"
-                    className="z-50 w-64 space-y-3 rounded-md border border-surface-border bg-white p-3 shadow-lg focus:outline-hidden"
-                >
-                    <FormatField label="Font">
-                        <select
-                            value={font}
-                            onChange={(event) =>
-                                onFontChange(event.target.value as ResumeFont)
-                            }
-                            className={selectClassName}
-                        >
-                            {fontKeys.map((key) => (
-                                <option key={key} value={key}>
-                                    {fontLabels[key]}
-                                    {pdfFontNotes[key]
-                                        ? ` (${pdfFontNotes[key]})`
-                                        : ''}
-                                </option>
-                            ))}
-                        </select>
-                    </FormatField>
-
-                    <FormatField label="Size & density">
-                        <select
-                            value={density}
-                            onChange={(event) =>
-                                onDensityChange(
-                                    event.target.value as ResumeDensity,
-                                )
-                            }
-                            className={selectClassName}
-                        >
-                            {densityOptions.map((option) => {
-                                const optionPages = estimateResumePages(
-                                    pageEstimateDraft,
-                                    option.density,
-                                ).pages;
-
-                                return (
-                                    <option
-                                        key={option.density}
-                                        value={option.density}
-                                    >
-                                        {option.sizeLabel}pt · {option.styleLabel}{' '}
-                                        (≈{optionPages}p)
-                                    </option>
-                                );
-                            })}
-                        </select>
-                        <span className="mt-1 block text-xs text-ink-faint">
-                            {pageEstimate.hint}
+                    <button
+                        type="button"
+                        onClick={onTemplateClick}
+                        className={buttonClassName(
+                            'ghost',
+                            'sm',
+                            cn(controlHeight, 'max-w-44 gap-1 px-2 font-medium'),
+                        )}
+                        aria-label="Template"
+                        title="Choose resume template"
+                    >
+                        <span className="hidden text-ink-faint sm:inline">
+                            Template
                         </span>
-                    </FormatField>
-
-                    <FormatField label="Bullet style">
-                        <select
-                            value={bulletStyle}
-                            onChange={(event) =>
-                                onBulletStyleChange(
-                                    event.target.value as ResumeBulletStyle,
-                                )
-                            }
-                            className={selectClassName}
-                        >
-                            {bulletStyles.map((style) => (
-                                <option key={style} value={style}>
-                                    {bulletStyleLabels[style]}
-                                </option>
-                            ))}
-                        </select>
-                    </FormatField>
-
-                    <FormatField label="Skills layout">
-                        <select
-                            value={skillsLayout}
-                            onChange={(event) =>
-                                onSkillsLayoutChange(
-                                    event.target.value as ResumeSkillsLayout,
-                                )
-                            }
-                            className={selectClassName}
-                        >
-                            {skillLayouts.map((layout) => (
-                                <option key={layout} value={layout}>
-                                    {skillsLayoutLabels[layout]}
-                                </option>
-                            ))}
-                        </select>
-                    </FormatField>
-                </PopoverPanel>
-            </Popover>
-
-            <span
-                className="hidden max-w-44 truncate text-xs text-ink-faint sm:inline"
-                title={pageEstimate.hint}
-            >
-                ≈{pageEstimate.pages} page{pageEstimate.pages === 1 ? '' : 's'}
-            </span>
-
-            <ToolbarDivider />
-
-            {onReviewPreviewModeChange && (
-                <div
-                    className={cn(
-                        'inline-flex items-center gap-0.5',
-                        !reviewActive && 'pointer-events-none opacity-40',
-                    )}
-                    title={
-                        reviewActive
-                            ? 'Preview mode'
-                            : 'Switch to Review to change preview mode'
-                    }
-                >
-                    <button
-                        type="button"
-                        disabled={!reviewActive}
-                        onClick={() => onReviewPreviewModeChange('react')}
-                        className={cn(
-                            'rounded-full px-2.5 text-xs font-medium',
-                            controlHeight,
-                            reviewPreviewMode === 'react'
-                                ? 'bg-brand-subtle text-brand'
-                                : 'text-ink-muted hover:bg-surface',
-                        )}
-                    >
-                        Live
+                        <span className="min-w-0 truncate">
+                            {templateLabels[template] ?? template}
+                        </span>
+                        <ChevronDownIcon className="size-3.5 shrink-0 text-ink-faint" />
                     </button>
-                    <button
-                        type="button"
-                        disabled={!reviewActive}
-                        onClick={() => onReviewPreviewModeChange('pdf')}
-                        className={cn(
-                            'rounded-full px-2.5 text-xs font-medium',
-                            controlHeight,
-                            reviewPreviewMode === 'pdf'
-                                ? 'bg-brand-subtle text-brand'
-                                : 'text-ink-muted hover:bg-surface',
-                        )}
+
+                    {/* Font, size/density, bullets, and skills layout in one
+                        control — Hick's Law + Tesler's Law. */}
+                    <Popover className="relative">
+                        <PopoverButton
+                            className={buttonClassName(
+                                'ghost',
+                                'sm',
+                                cn(controlHeight, 'gap-1 px-2 font-medium'),
+                            )}
+                            aria-label="Text format"
+                            title="Font, size, bullets, and skills layout"
+                        >
+                            Format
+                            <ChevronDownIcon className="size-3.5 text-ink-faint" />
+                        </PopoverButton>
+                        <PopoverPanel
+                            anchor="bottom start"
+                            className="z-50 w-64 space-y-3 rounded-md border border-surface-border bg-white p-3 shadow-lg focus:outline-hidden"
+                        >
+                            <FormatField label="Font">
+                                <select
+                                    value={font}
+                                    onChange={(event) =>
+                                        onFontChange(
+                                            event.target.value as ResumeFont,
+                                        )
+                                    }
+                                    className={selectClassName}
+                                >
+                                    {fontKeys.map((key) => (
+                                        <option key={key} value={key}>
+                                            {fontLabels[key]}
+                                            {pdfFontNotes[key]
+                                                ? ` (${pdfFontNotes[key]})`
+                                                : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                            </FormatField>
+
+                            <FormatField label="Size & density">
+                                <select
+                                    value={density}
+                                    onChange={(event) =>
+                                        onDensityChange(
+                                            event.target
+                                                .value as ResumeDensity,
+                                        )
+                                    }
+                                    className={selectClassName}
+                                >
+                                    {densityOptions.map((option) => {
+                                        const optionPages = estimateResumePages(
+                                            pageEstimateDraft,
+                                            option.density,
+                                        ).pages;
+
+                                        return (
+                                            <option
+                                                key={option.density}
+                                                value={option.density}
+                                            >
+                                                {option.sizeLabel}pt ·{' '}
+                                                {option.styleLabel} (≈
+                                                {optionPages}p)
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                                <span className="mt-1 block text-xs text-ink-faint">
+                                    {pageEstimate.hint}
+                                </span>
+                            </FormatField>
+
+                            <FormatField label="Bullet style">
+                                <select
+                                    value={bulletStyle}
+                                    onChange={(event) =>
+                                        onBulletStyleChange(
+                                            event.target
+                                                .value as ResumeBulletStyle,
+                                        )
+                                    }
+                                    className={selectClassName}
+                                >
+                                    {bulletStyles.map((style) => (
+                                        <option key={style} value={style}>
+                                            {bulletStyleLabels[style]}
+                                        </option>
+                                    ))}
+                                </select>
+                            </FormatField>
+
+                            <FormatField label="Skills layout">
+                                <select
+                                    value={skillsLayout}
+                                    onChange={(event) =>
+                                        onSkillsLayoutChange(
+                                            event.target
+                                                .value as ResumeSkillsLayout,
+                                        )
+                                    }
+                                    className={selectClassName}
+                                >
+                                    {skillLayouts.map((layout) => (
+                                        <option key={layout} value={layout}>
+                                            {skillsLayoutLabels[layout]}
+                                        </option>
+                                    ))}
+                                </select>
+                            </FormatField>
+                        </PopoverPanel>
+                    </Popover>
+
+                    <span
+                        className="hidden max-w-44 truncate text-xs text-ink-faint sm:inline"
+                        title={pageEstimate.hint}
                     >
-                        PDF
-                    </button>
-                </div>
+                        ≈{pageEstimate.pages} page
+                        {pageEstimate.pages === 1 ? '' : 's'}
+                    </span>
+                </>
             )}
 
-            {/* Zoom and "view" were the same four presets under two labels —
-                one menu now, named by what each level looks like. */}
-            <Menu as="div" className="relative">
-                <MenuButton
-                    disabled={!reviewActive}
-                    className={buttonClassName(
-                        'ghost',
-                        'sm',
-                        cn(
-                            controlHeight,
-                            'gap-1 px-2 font-medium',
-                            !reviewActive && 'opacity-40',
-                        ),
-                    )}
-                    aria-label="Zoom"
-                    title={
-                        reviewActive
-                            ? 'Preview zoom'
-                            : 'Switch to Review to zoom the preview'
-                    }
-                >
-                    {Math.round(zoom * 100)}%
-                    <ChevronDownIcon className="size-3.5 text-ink-faint" />
-                </MenuButton>
-                <MenuItems
-                    anchor="bottom end"
-                    className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
-                >
-                    {PREVIEW_ZOOM_OPTIONS.map((level) => (
-                        <MenuItem key={level}>
-                            <button
-                                type="button"
-                                onClick={() => onZoomChange(level)}
-                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
-                            >
-                                <MenuCheck on={level === zoom} />
-                                <span className="min-w-0 flex-1 truncate">
-                                    {Math.round(level * 100)}% ·{' '}
-                                    {zoomViewLabels[level]}
-                                </span>
-                            </button>
-                        </MenuItem>
-                    ))}
-                </MenuItems>
-            </Menu>
+            {/* Preview chrome only on Review — never show disabled Live/PDF/Zoom. */}
+            {reviewActive && onReviewPreviewModeChange && (
+                <>
+                    <ToolbarDivider />
+                    <div
+                        className="inline-flex items-center gap-0.5"
+                        title="Preview mode"
+                    >
+                        <button
+                            type="button"
+                            onClick={() => onReviewPreviewModeChange('react')}
+                            className={cn(
+                                'rounded-full px-2.5 text-xs font-medium',
+                                controlHeight,
+                                reviewPreviewMode === 'react'
+                                    ? 'bg-brand-subtle text-brand'
+                                    : 'text-ink-muted hover:bg-surface',
+                            )}
+                        >
+                            Live
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => onReviewPreviewModeChange('pdf')}
+                            className={cn(
+                                'rounded-full px-2.5 text-xs font-medium',
+                                controlHeight,
+                                reviewPreviewMode === 'pdf'
+                                    ? 'bg-brand-subtle text-brand'
+                                    : 'text-ink-muted hover:bg-surface',
+                            )}
+                        >
+                            PDF
+                        </button>
+                    </div>
+
+                    <Menu as="div" className="relative">
+                        <MenuButton
+                            className={buttonClassName(
+                                'ghost',
+                                'sm',
+                                cn(controlHeight, 'gap-1 px-2 font-medium'),
+                            )}
+                            aria-label="Zoom"
+                            title="Preview zoom"
+                        >
+                            {Math.round(zoom * 100)}%
+                            <ChevronDownIcon className="size-3.5 text-ink-faint" />
+                        </MenuButton>
+                        <MenuItems
+                            anchor="bottom end"
+                            className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                        >
+                            {PREVIEW_ZOOM_OPTIONS.map((level) => (
+                                <MenuItem key={level}>
+                                    <button
+                                        type="button"
+                                        onClick={() => onZoomChange(level)}
+                                        className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    >
+                                        <MenuCheck on={level === zoom} />
+                                        <span className="min-w-0 flex-1 truncate">
+                                            {Math.round(level * 100)}% ·{' '}
+                                            {zoomViewLabels[level]}
+                                        </span>
+                                    </button>
+                                </MenuItem>
+                            ))}
+                        </MenuItems>
+                    </Menu>
+                </>
+            )}
         </div>
     );
 }

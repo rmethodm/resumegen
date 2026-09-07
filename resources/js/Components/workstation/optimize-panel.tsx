@@ -63,7 +63,7 @@ export function OptimizePanel({
                 {jd.trim() !== '' && (
                     <div className="mt-4 rounded-md border border-surface-border bg-surface p-3">
                         <div className="mb-2 flex items-baseline justify-between">
-                            <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                            <p className="text-xs font-semibold text-ink-muted">
                                 Match score
                             </p>
                             <p className="text-2xl font-extrabold tabular-nums text-brand">
@@ -80,7 +80,7 @@ export function OptimizePanel({
 
                         {overlap.missing.length > 0 && (
                             <div className="mb-3">
-                                <p className="mb-1.5 text-xs font-semibold tracking-wide text-ink-faint uppercase">
+                                <p className="mb-1.5 text-xs font-semibold text-ink-faint">
                                     Missing: click to add as skill
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
@@ -101,7 +101,7 @@ export function OptimizePanel({
 
                         {overlap.matched.length > 0 && (
                             <div>
-                                <p className="mb-1.5 text-xs font-semibold tracking-wide text-ink-faint uppercase">
+                                <p className="mb-1.5 text-xs font-semibold text-ink-faint">
                                     Present
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
