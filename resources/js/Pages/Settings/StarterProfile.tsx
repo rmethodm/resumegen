@@ -245,7 +245,7 @@ export default function StarterProfilePage({
                                     {experiences.map((experience, index) => (
                                         <div
                                             key={index}
-                                            className="grid gap-2 rounded-md border border-gray-200 p-3"
+                                            className="grid gap-2 rounded-md border border-surface-border p-3"
                                         >
                                             <div className="grid gap-2 sm:grid-cols-2">
                                                 <Input

@@ -12,17 +12,17 @@
 - Palette recipe: quiet-mineral (role/structure template only — see override below)
 - Aesthetic profile: none
 - Skin: custom
-- Primary action: #5952D2
-- Palette override (real DESIGN.md tokens, not quiet-mineral's example hexes):
-  background=gray-50 #F8FAFB · surface=#FFFFFF · chrome=gray-100 #F2F6F9 ·
-  foreground=gray-900 #171B1F · mutedForeground=gray-600 #60666C ·
-  border=gray-200 #E3E8EC · primary=accent-500 #5952D2 · primaryHover=accent-600 #4A44B8 ·
-  focus=accent-400 #7D74E2 · success=#16A34A · warning=#D97706 · danger=#DC2626 · info=#2563EB
+- Primary action: #000000
+- Palette override (plain black-and-white — no hue):
+  background=#FFFFFF · surface=#FAFAFA · chrome=#F5F5F5 ·
+  foreground=#171717 · mutedForeground=#525252 ·
+  border=#E5E5E5 · primary=#000000 · primaryHover=#171717 ·
+  focus=#525252 · success=#171717 · warning=#525252 · danger=#000000 · info=#404040
 - Font: IBM Plex Sans
 - Radius: sharp-soft (2-14px, no pill except avatars/badges)
 - Elevation: light=1px border + shadow-sm · dark=hairline ring, no shadow
 - Density: comfortable
 - Motion: restrained
 - Imagery/data role: none — no gradients, no decorative color, no atmospheric imagery
-- Signature move: single restrained accent spent only on primary action, focus ring, active nav, links
-- Locked: 2026-08-08
+- Signature move: near-black primary actions only; no brand hue
+- Locked: 2026-09-07

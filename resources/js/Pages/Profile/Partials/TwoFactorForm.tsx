@@ -61,7 +61,7 @@ export default function TwoFactorForm({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">Two-Factor Authentication</h2>
+                <h2 className="text-lg font-medium text-ink">Two-Factor Authentication</h2>
                 <p className="mt-1 text-sm text-ink-muted">
                     Add extra security to your account using a time-based one-time password.
                 </p>
@@ -83,7 +83,7 @@ export default function TwoFactorForm({
                         Scan this QR code with your authenticator app, then enter the 6-digit code below to confirm.
                     </p>
                     <div
-                        className="inline-block rounded-sm border border-gray-200 p-2"
+                        className="inline-block rounded-sm border border-surface-border p-2"
                         dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
                     />
                     <form onSubmit={handleConfirm} className="space-y-4">
@@ -119,11 +119,11 @@ export default function TwoFactorForm({
 
                     {recoveryCodes && recoveryCodes.length > 0 && (
                         <div className="space-y-2">
-                            <p className="text-sm font-medium text-gray-700">Recovery Codes</p>
+                            <p className="text-sm font-medium text-ink-muted">Recovery Codes</p>
                             <p className="rounded-sm border border-warning/30 bg-warning-subtle p-2 text-sm text-amber-700">
                                 Save these somewhere safe — they won't be shown again.
                             </p>
-                            <pre className="rounded-sm bg-gray-100 p-4 text-sm font-mono leading-relaxed">
+                            <pre className="rounded-sm bg-surface p-4 text-sm font-mono leading-relaxed">
                                 {recoveryCodes.join('\n')}
                             </pre>
                             <button
@@ -140,7 +140,7 @@ export default function TwoFactorForm({
                         <form onSubmit={handleRegen}>
                             <button
                                 type="submit"
-                                className="focus-ring rounded-sm text-sm text-ink-muted underline hover:text-gray-900"
+                                className="focus-ring rounded-sm text-sm text-ink-muted underline hover:text-ink"
                                 disabled={regenForm.processing}
                             >
                                 Regenerate recovery codes

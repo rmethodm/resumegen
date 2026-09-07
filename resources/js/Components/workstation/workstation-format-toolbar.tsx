@@ -114,7 +114,7 @@ const zoomViewLabels: Record<PreviewZoom, string> = {
 };
 
 function ToolbarDivider() {
-    return <div className="mx-0.5 hidden h-5 w-px shrink-0 bg-gray-200 sm:block" aria-hidden />;
+    return <div className="mx-0.5 hidden h-5 w-px shrink-0 bg-surface-border sm:block" aria-hidden />;
 }
 
 function MenuCheck({ on }: { on: boolean }) {
