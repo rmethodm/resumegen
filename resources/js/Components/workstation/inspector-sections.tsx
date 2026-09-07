@@ -96,7 +96,7 @@ export function ContactFields({
 }) {
     return (
         <>
-            {/* Target role / company / JD notes live in TargetRoleBar above the form. */}
+            {/* Target role / company live in TargetRoleBar; JD paste is on Optimize. */}
             <Field
                 label="Full name"
                 value={resume.full_name}
@@ -199,7 +199,10 @@ export function ExperienceFields({
     const dragHandle = useEntryReorder(resume.experiences, (experiences) =>
         onChange({ ...resume, experiences }),
     );
-    const expansion = useExpandedEntries();
+    // First role opens by default so editing does not need an extra click.
+    const expansion = useExpandedEntries({
+        initial: resume.experiences.length > 0 ? [0] : [],
+    });
 
     return (
         <>

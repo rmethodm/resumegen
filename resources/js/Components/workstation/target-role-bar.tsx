@@ -1,39 +1,33 @@
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
 import AutocompleteInput from '@/Components/AutocompleteInput';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import { Textarea } from '@/Components/ui/textarea';
 import { keywordsFor } from '@/lib/resume-analysis';
 import { cn } from '@/lib/utils';
 
 /**
- * Always-visible target role control under the workstation header so scoring
- * context is never buried inside Contact. Optional company / JD notes live
- * behind a disclosure — dashboard-only, not printed on the resume.
+ * Thin Edit-tab target controls. Job description paste lives on Optimize only
+ * so the same JD field is not entered twice.
  */
 export function TargetRoleBar({
     targetRole,
     onChange,
     targetCompany,
     onTargetCompanyChange,
-    targetJobDescription,
-    onTargetJobDescriptionChange,
+    hasJobDescription = false,
+    onOpenOptimize,
     className,
 }: {
     targetRole: string;
     onChange: (targetRole: string) => void;
     targetCompany: string;
     onTargetCompanyChange: (targetCompany: string) => void;
-    targetJobDescription: string;
-    onTargetJobDescriptionChange: (value: string) => void;
+    /** True when a JD is already saved — show a jump chip to Optimize. */
+    hasJobDescription?: boolean;
+    onOpenOptimize?: () => void;
     className?: string;
 }) {
     const familyKeywords = keywordsFor(targetRole);
     const recognized = familyKeywords.length > 0;
-    const hasVersionMeta =
-        targetCompany.trim() !== '' || targetJobDescription.trim() !== '';
-    const [versionOpen, setVersionOpen] = useState(hasVersionMeta);
 
     return (
         <div
@@ -42,11 +36,11 @@ export function TargetRoleBar({
                 className,
             )}
         >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-4">
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-end sm:gap-3">
                 <div className="min-w-0 flex-1">
                     <label
                         htmlFor="field-target-role-bar"
-                        className="mb-1 block text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase"
+                        className="mb-1 block text-xs font-medium text-ink-muted"
                     >
                         Target role
                     </label>
@@ -60,99 +54,47 @@ export function TargetRoleBar({
                         onChange={onChange}
                     />
                 </div>
-                <p className="shrink-0 pb-1 text-xs leading-snug text-ink-muted sm:max-w-60">
+                <div className="min-w-0 sm:w-52">
+                    <Label
+                        htmlFor="field-target-company"
+                        className="mb-1 block text-xs font-medium text-ink-muted"
+                    >
+                        Target company
+                    </Label>
+                    <Input
+                        id="field-target-company"
+                        name="target_company"
+                        value={targetCompany}
+                        maxLength={255}
+                        placeholder="Optional"
+                        className="h-9"
+                        onChange={(event) =>
+                            onTargetCompanyChange(event.target.value)
+                        }
+                    />
+                </div>
+            </div>
+
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <p className="text-xs leading-snug text-ink-muted">
                     {targetRole.trim() === ''
                         ? 'Sets the Keywords score band. Not printed on the resume.'
                         : recognized
-                          ? 'Role family recognized — keyword chips update in the rail.'
+                          ? 'Role family recognized — keyword chips update in the score strip.'
                           : 'Tip: include design, engineer, data, product, or market.'}
                 </p>
-            </div>
-
-            <div className="mt-2 border-t border-surface-border/80 pt-2">
-                <button
-                    type="button"
-                    aria-expanded={versionOpen}
-                    aria-controls="target-version-details"
-                    onClick={() => setVersionOpen((open) => !open)}
-                    className="focus-ring flex items-center gap-1 rounded-sm text-xs font-semibold text-ink-muted hover:text-ink"
-                >
-                    <ChevronDownIcon
-                        className={cn(
-                            'size-3.5 transition-transform duration-soft ease-soft',
-                            !versionOpen && '-rotate-90',
-                        )}
-                    />
-                    Version details
-                    {hasVersionMeta && !versionOpen ? (
-                        <span className="ml-1 font-normal text-ink-faint">
-                            (
-                            {joinMetaHint(targetCompany, targetJobDescription)})
-                        </span>
-                    ) : null}
-                </button>
-                {versionOpen ? (
-                    <div
-                        id="target-version-details"
-                        className="mt-2 flex flex-col gap-2.5"
+                {onOpenOptimize && (
+                    <button
+                        type="button"
+                        onClick={onOpenOptimize}
+                        className="focus-ring rounded-sm text-xs font-semibold text-brand hover:underline"
                     >
-                        <p className="text-xs leading-relaxed text-ink-muted">
-                            Optional labels for this resume version — not
-                            printed on the PDF or DOCX.
-                        </p>
-                        <div className="flex flex-col gap-1.5">
-                            <Label
-                                htmlFor="field-target-company"
-                                className="text-xs"
-                            >
-                                Target company
-                            </Label>
-                            <Input
-                                id="field-target-company"
-                                name="target_company"
-                                value={targetCompany}
-                                maxLength={255}
-                                placeholder="e.g. Acme Corp — dashboard label only"
-                                onChange={(event) =>
-                                    onTargetCompanyChange(event.target.value)
-                                }
-                            />
-                        </div>
-                        <div className="flex flex-col gap-1.5">
-                            <Label
-                                htmlFor="field-target-job-description"
-                                className="text-xs"
-                            >
-                                Job description notes
-                            </Label>
-                            <Textarea
-                                id="field-target-job-description"
-                                name="target_job_description"
-                                rows={3}
-                                value={targetJobDescription}
-                                maxLength={10000}
-                                placeholder="Paste key requirements you are matching…"
-                                onChange={(event) =>
-                                    onTargetJobDescriptionChange(
-                                        event.target.value,
-                                    )
-                                }
-                            />
-                            <p className="text-xs text-ink-faint">
-                                {targetJobDescription.length} / 10000 characters
-                            </p>
-                        </div>
-                    </div>
-                ) : null}
+                        {hasJobDescription
+                            ? 'Job description on Optimize →'
+                            : 'Paste job description on Optimize →'}
+                    </button>
+                )}
             </div>
         </div>
     );
-}
-
-function joinMetaHint(company: string, notes: string): string {
-    if (company.trim() !== '') {
-        return company.trim();
-    }
-
-    return `${notes.trim().slice(0, 28)}${notes.trim().length > 28 ? '…' : ''}`;
 }

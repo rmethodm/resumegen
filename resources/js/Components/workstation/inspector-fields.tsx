@@ -478,16 +478,19 @@ export function useEntryReorder<T>(
 }
 
 /**
- * Tracks which repeated entries are expanded. Existing rows start collapsed;
+ * Tracks which repeated entries are expanded. Existing rows start collapsed
+ * unless `initial` is provided (e.g. experience expands the first row);
  * call `expand(index)` after Add so the new empty card opens for typing.
  */
-export function useExpandedEntries(): {
+export function useExpandedEntries(options?: { initial?: number[] }): {
     isExpanded: (index: number) => boolean;
     toggle: (index: number) => void;
     expand: (index: number) => void;
     remapAfterRemove: (removedIndex: number) => void;
 } {
-    const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
+    const [expanded, setExpanded] = useState<Set<number>>(
+        () => new Set(options?.initial ?? []),
+    );
 
     return {
         isExpanded: (index) => expanded.has(index),

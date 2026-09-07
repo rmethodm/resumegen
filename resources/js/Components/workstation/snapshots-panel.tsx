@@ -63,7 +63,7 @@ export function SnapshotsPanel({
 
     return (
         <Card className="gap-0 p-4">
-            <h3 className="mb-1 text-xs font-bold tracking-wide text-ink-muted uppercase">
+            <h3 className="mb-1 text-xs font-semibold text-ink-muted">
                 Checkpoints
             </h3>
             <p className="mb-3 text-xs text-ink-muted">
