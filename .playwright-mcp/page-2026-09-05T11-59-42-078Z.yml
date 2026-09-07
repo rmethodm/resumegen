@@ -1,0 +1,356 @@
+- generic [ref=f2e130]:
+  - link "Skip to content" [ref=f2e131] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f2e133]:
+    - generic [ref=f2e134]:
+      - link "Resumegen" [ref=f2e135] [cursor=pointer]:
+        - /url: https://resumegen.test/dashboard
+      - navigation [ref=f2e138]:
+        - link "Dashboard" [ref=f2e139] [cursor=pointer]:
+          - /url: https://resumegen.test/dashboard
+        - link "Resumes" [ref=f2e140] [cursor=pointer]:
+          - /url: https://resumegen.test/resumes
+        - link "Shares" [ref=f2e141] [cursor=pointer]:
+          - /url: https://resumegen.test/shares
+        - link "Applications" [ref=f2e142] [cursor=pointer]:
+          - /url: https://resumegen.test/job-applications
+        - link "Profile" [ref=f2e143] [cursor=pointer]:
+          - /url: https://resumegen.test/profile
+      - generic [ref=f2e144]:
+        - button "Open navigation menu" [ref=f2e145]:
+          - generic [ref=f2e146]: Go to…
+        - generic: ⌘K
+      - button "Critique Tester" [ref=f2e150]:
+        - generic [aria-hidden] [ref=f2e151]: CT
+  - main [ref=f2e153]:
+    - generic [ref=f2e154]:
+      - generic [ref=f2e157]:
+        - generic [ref=f2e158]:
+          - generic [ref=f2e159]: Software Engineer sample
+          - generic [ref=f2e161]:
+            - button "Share" [ref=f2e162]
+            - button "Download" [ref=f2e166]
+            - button "More actions" [ref=f2e172]
+        - toolbar "Document formatting" [ref=f2e175]:
+          - tablist "Workstation mode" [ref=f2e176]:
+            - tab "Edit" [selected] [ref=f2e177]
+            - tab "Review" [ref=f2e178]
+            - tab "Optimize" [ref=f2e179]
+          - button "Undo" [disabled]
+          - button "Redo" [disabled]
+          - button "Template" [ref=f2e182]:
+            - generic [ref=f2e184]: Modern Sans
+          - button "Text format" [ref=f2e188]: Format
+          - generic "Likely fits on one page" [ref=f2e191]: ≈1 page
+          - generic "Switch to Review to change preview mode":
+            - button "Live" [disabled]
+            - button "PDF" [disabled]
+          - generic [ref=f2e193]:
+            - button "Zoom" [disabled]: 100%
+      - generic [ref=f2e195]:
+        - region "Resume score" [ref=f2e196]:
+          - generic [ref=f2e197]:
+            - generic [ref=f2e198]:
+              - generic "Updates as you edit" [ref=f2e199]:
+                - generic [ref=f2e200]: "93"
+                - generic [ref=f2e201]: /100
+                - generic [ref=f2e202]: Resume score
+              - generic [ref=f2e203]:
+                - button "Profile 20/25" [ref=f2e204]:
+                  - generic [ref=f2e205]:
+                    - generic [ref=f2e206]: Profile
+                    - generic [ref=f2e207]: 20/25
+                - button "Experience 23/25" [ref=f2e210]:
+                  - generic [ref=f2e211]:
+                    - generic [ref=f2e212]: Experience
+                    - generic [ref=f2e213]: 23/25
+                - button "Impact 25/25" [ref=f2e216]:
+                  - generic [ref=f2e217]:
+                    - generic [ref=f2e218]: Impact
+                    - generic [ref=f2e219]: 25/25
+                - button "Keywords 25/25" [ref=f2e222]:
+                  - generic [ref=f2e223]:
+                    - generic [ref=f2e224]: Keywords
+                    - generic [ref=f2e225]: 25/25
+              - button "6/8 steps done" [ref=f2e228]
+            - navigation "Resume sections" [ref=f2e231]:
+              - button "Contact Incomplete" [ref=f2e232]:
+                - text: Contact
+                - generic [ref=f2e233]: Incomplete
+              - button "Professional Summary Complete" [ref=f2e234]:
+                - text: Professional Summary
+                - generic [ref=f2e235]: Complete
+              - button "Experience 2/2" [ref=f2e236]:
+                - text: Experience
+                - generic [ref=f2e237]: 2/2
+              - button "Project Not started" [ref=f2e238]:
+                - text: Project
+                - generic [ref=f2e239]: Not started
+              - button "Education 1/1" [ref=f2e240]:
+                - text: Education
+                - generic [ref=f2e241]: 1/1
+              - button "Skills Complete" [ref=f2e242]:
+                - text: Skills
+                - generic [ref=f2e243]: Complete
+              - button "Certificate Not started" [ref=f2e244]:
+                - text: Certificate
+                - generic [ref=f2e245]: Not started
+            - generic:
+              - generic:
+                - generic [ref=f2e247]:
+                  - generic [ref=f2e248]:
+                    - paragraph [ref=f2e249]: Raise your score
+                    - paragraph [ref=f2e250]: 6/8
+                  - list [ref=f2e251]:
+                    - listitem [ref=f2e252]:
+                      - button "Set a target role (unlocks keyword scoring) Keywords" [disabled] [ref=f2e253]:
+                        - generic [ref=f2e257]:
+                          - text: Set a target role (unlocks keyword scoring)
+                          - generic [ref=f2e258]: Keywords
+                    - listitem [ref=f2e259]:
+                      - button "Name, headline, email, and location Profile" [ref=f2e260]:
+                        - generic [ref=f2e262]:
+                          - text: Name, headline, email, and location
+                          - generic [ref=f2e263]: Profile
+                    - listitem [ref=f2e264]:
+                      - button "Write a summary (80+ characters) Profile" [disabled] [ref=f2e265]:
+                        - generic [ref=f2e269]:
+                          - text: Write a summary (80+ characters)
+                          - generic [ref=f2e270]: Profile
+                    - listitem [ref=f2e271]:
+                      - button "Add two jobs with title and company Experience" [disabled] [ref=f2e272]:
+                        - generic [ref=f2e276]:
+                          - text: Add two jobs with title and company
+                          - generic [ref=f2e277]: Experience
+                    - listitem [ref=f2e278]:
+                      - button "Add at least six experience bullets Experience" [ref=f2e279]:
+                        - generic [ref=f2e281]:
+                          - text: Add at least six experience bullets
+                          - generic [ref=f2e282]: Experience
+                    - listitem [ref=f2e283]:
+                      - button "Put a number in at least half of your bullets Impact" [disabled] [ref=f2e284]:
+                        - generic [ref=f2e288]:
+                          - text: Put a number in at least half of your bullets
+                          - generic [ref=f2e289]: Impact
+                    - listitem [ref=f2e290]:
+                      - button "List at least five skills Keywords" [disabled] [ref=f2e291]:
+                        - generic [ref=f2e295]:
+                          - text: List at least five skills
+                          - generic [ref=f2e296]: Keywords
+                    - listitem [ref=f2e297]:
+                      - button "Cover role keywords (use chips below) Keywords" [disabled] [ref=f2e298]:
+                        - generic [ref=f2e302]:
+                          - text: Cover role keywords (use chips below)
+                          - generic [ref=f2e303]: Keywords
+                - generic [ref=f2e304]:
+                  - generic [ref=f2e305]:
+                    - paragraph [ref=f2e306]: Role keywords
+                    - paragraph [ref=f2e307]: Click a missing term to add it as a skill. Only add skills you actually have.
+                    - generic [ref=f2e308]:
+                      - generic [ref=f2e309]: TypeScript
+                      - generic [ref=f2e312]: React
+                      - generic [ref=f2e315]: API
+                      - generic [ref=f2e318]: Testing
+                      - generic [ref=f2e321]: CI/CD
+                      - generic [ref=f2e324]: Performance
+                    - paragraph [ref=f2e327]: All role keywords are covered.
+                  - generic [ref=f2e328]:
+                    - paragraph [ref=f2e329]: Job match
+                    - paragraph [ref=f2e330]: Paste a job description on the Optimize tab to see keyword overlap (no AI).
+                    - button "Open Optimize →" [ref=f2e331]
+        - generic [ref=f2e332]:
+          - generic [ref=f2e333]:
+            - generic [ref=f2e334]:
+              - generic [ref=f2e335]:
+                - generic [ref=f2e336]:
+                  - generic [ref=f2e337]: Target role
+                  - textbox "Target role" [ref=f2e339]:
+                    - /placeholder: e.g. Senior Software Engineer
+                    - text: Software Engineer
+                - paragraph [ref=f2e340]: Role family recognized — keyword chips update in the rail.
+              - button "Version details" [ref=f2e342]
+            - main "Section form" [ref=f2e346]:
+              - generic [ref=f2e347]:
+                - generic "Double-click to collapse or expand" [ref=f2e348]:
+                  - button "Contact" [expanded] [ref=f2e351]
+                  - generic [ref=f2e355]:
+                    - button "Move Contact up" [disabled]
+                    - button "Move Contact down" [ref=f2e356]
+                - generic [ref=f2e362]:
+                  - generic [ref=f2e363]:
+                    - generic [ref=f2e364]: Full name
+                    - textbox [ref=f2e365]: Critique Tester
+                  - generic [ref=f2e366]:
+                    - generic [ref=f2e367]: Headline
+                    - generic [ref=f2e368]:
+                      - textbox "e.g. Product Designer" [ref=f2e369]: Software Engineer
+                      - list [ref=f2e370]:
+                        - listitem [ref=f2e371] [cursor=pointer]: Entry Level Software Engineer
+                        - listitem [ref=f2e372] [cursor=pointer]: Java Software Engineer
+                        - listitem [ref=f2e373] [cursor=pointer]: Junior Software Engineer
+                        - listitem [ref=f2e374] [cursor=pointer]: Principal Software Engineer
+                        - listitem [ref=f2e375] [cursor=pointer]: Senior Software Engineer
+                        - listitem [ref=f2e376] [cursor=pointer]: Staff Software Engineer
+                        - listitem [ref=f2e377] [cursor=pointer]: Vice President of Software Engineering
+                  - generic [ref=f2e378]:
+                    - generic [ref=f2e379]: Email
+                    - textbox [ref=f2e380]: critique-tester@resumegen.test
+                  - generic [ref=f2e381]:
+                    - generic [ref=f2e382]:
+                      - generic [ref=f2e383]: Phone
+                      - textbox "(123) 456-7890" [ref=f2e384]
+                    - generic [ref=f2e385]:
+                      - generic [ref=f2e386]: Location
+                      - textbox [ref=f2e387]
+                  - generic [ref=f2e388]:
+                    - generic [ref=f2e389]: LinkedIn
+                    - textbox "https://linkedin.com/in/you" [ref=f2e390]
+                  - generic [ref=f2e391]:
+                    - generic [ref=f2e392]: Website
+                    - textbox "https://example.com" [ref=f2e393]
+              - generic [ref=f2e394]:
+                - generic "Double-click to collapse or expand" [ref=f2e395]:
+                  - button "Professional Summary" [expanded] [ref=f2e398]
+                  - generic [ref=f2e402]:
+                    - button "Move Professional Summary up" [ref=f2e403]
+                    - button "Move Professional Summary down" [ref=f2e406]
+                - generic [ref=f2e413]:
+                  - generic [ref=f2e414]: Summary
+                  - textbox "Summary" [ref=f2e415]: Software engineer with 5+ years building TypeScript/React products and reliable APIs. Focused on performance, testing, and shipping measurable outcomes with cross-functional teams.
+                  - paragraph [ref=f2e416]: 180 / 2000 characters
+              - generic [ref=f2e417]:
+                - generic "Double-click to collapse or expand" [ref=f2e418]:
+                  - button "Experience" [expanded] [ref=f2e421]
+                  - generic [ref=f2e425]:
+                    - button "Move Experience up" [ref=f2e426]
+                    - button "Move Experience down" [ref=f2e429]
+                - generic [ref=f2e435]:
+                  - generic [ref=f2e437]:
+                    - button "Reorder Software Engineer — drag, or Alt+Arrow keys" [ref=f2e438]
+                    - button "Software Engineer Northline Labs · 2021-03 – Present · 3 bullets" [ref=f2e441]:
+                      - generic [ref=f2e444]:
+                        - generic [ref=f2e445]: Software Engineer
+                        - generic [ref=f2e446]: Northline Labs · 2021-03 – Present · 3 bullets
+                    - button "Remove Software Engineer" [ref=f2e447]
+                  - generic [ref=f2e451]:
+                    - button "Reorder Junior Developer — drag, or Alt+Arrow keys" [ref=f2e452]
+                    - button "Junior Developer Bright Harbor · 2019-06 – 2021-02 · 2 bullets" [ref=f2e455]:
+                      - generic [ref=f2e458]:
+                        - generic [ref=f2e459]: Junior Developer
+                        - generic [ref=f2e460]: Bright Harbor · 2019-06 – 2021-02 · 2 bullets
+                    - button "Remove Junior Developer" [ref=f2e461]
+                  - button "Add experience" [ref=f2e465]
+              - generic [ref=f2e468]:
+                - generic "Double-click to collapse or expand" [ref=f2e469]:
+                  - button "Project" [expanded] [ref=f2e472]
+                  - generic [ref=f2e475]:
+                    - button "Hide" [ref=f2e476]
+                    - generic [ref=f2e477]:
+                      - button "Move Project up" [ref=f2e478]
+                      - button "Move Project down" [ref=f2e481]
+                - button "Add project" [ref=f2e489]
+              - generic [ref=f2e492]:
+                - generic "Double-click to collapse or expand" [ref=f2e493]:
+                  - button "Education" [expanded] [ref=f2e496]
+                  - generic [ref=f2e499]:
+                    - button "Hide" [ref=f2e500]
+                    - generic [ref=f2e501]:
+                      - button "Move Education up" [ref=f2e502]
+                      - button "Move Education down" [ref=f2e505]
+                - generic [ref=f2e511]:
+                  - generic [ref=f2e513]:
+                    - button "Reorder State University — drag, or Alt+Arrow keys" [ref=f2e514]
+                    - button "State University B.S. · Computer Science · 2019" [ref=f2e517]:
+                      - generic [ref=f2e520]:
+                        - generic [ref=f2e521]: State University
+                        - generic [ref=f2e522]: B.S. · Computer Science · 2019
+                    - button "Remove State University" [ref=f2e523]
+                  - button "Add education" [ref=f2e527]
+              - generic [ref=f2e530]:
+                - generic "Double-click to collapse or expand" [ref=f2e531]:
+                  - button "Skills" [expanded] [ref=f2e534]
+                  - generic [ref=f2e538]:
+                    - button "Move Skills up" [ref=f2e539]
+                    - button "Move Skills down" [ref=f2e542]
+                - generic [ref=f2e549]:
+                  - generic [ref=f2e550]:
+                    - generic [ref=f2e551]: Skills
+                    - button "Add skills" [ref=f2e552]
+                  - radiogroup "Skills layout" [ref=f2e555]:
+                    - radio "Inline" [checked] [ref=f2e556]
+                    - radio "Bullets" [ref=f2e567]
+                    - radio "Grouped" [ref=f2e580]
+                    - radio "Columns" [ref=f2e596]
+                    - radio "Narrative" [ref=f2e606]
+                  - paragraph [ref=f2e614]: This layout prints skill names only — categories stay saved if you switch to Grouped.
+                  - generic [ref=f2e616]:
+                    - generic [ref=f2e617]:
+                      - text: TypeScript
+                      - button "×" [ref=f2e618]
+                    - generic [ref=f2e619]:
+                      - text: Python
+                      - button "×" [ref=f2e620]
+                    - generic [ref=f2e621]:
+                      - text: React
+                      - button "×" [ref=f2e622]
+                    - generic [ref=f2e623]:
+                      - text: API design
+                      - button "×" [ref=f2e624]
+                    - generic [ref=f2e625]:
+                      - text: Testing
+                      - button "×" [ref=f2e626]
+                    - generic [ref=f2e627]:
+                      - text: CI/CD
+                      - button "×" [ref=f2e628]
+                    - generic [ref=f2e629]:
+                      - text: Performance
+                      - button "×" [ref=f2e630]
+                    - textbox [ref=f2e631]
+              - generic [ref=f2e632]:
+                - generic "Double-click to collapse or expand" [ref=f2e633]:
+                  - button "Certificate" [expanded] [ref=f2e636]
+                  - generic [ref=f2e639]:
+                    - button "Hide" [ref=f2e640]
+                    - generic [ref=f2e641]:
+                      - button "Move Certificate up" [ref=f2e642]
+                      - button "Move Certificate down" [disabled]
+                - button "Add certificate" [ref=f2e650]
+            - button "Show notes & checkpoints" [ref=f2e654]
+          - complementary "Live preview" [ref=f2e655]:
+            - article [ref=f2e657]:
+              - generic [ref=f2e658]:
+                - heading "Critique Tester" [level=1] [ref=f2e659]
+                - paragraph [ref=f2e660]: Software Engineer
+                - paragraph [ref=f2e661]: critique-tester@resumegen.test
+              - generic [ref=f2e662]:
+                - heading "Summary" [level=2] [ref=f2e663]
+                - paragraph [ref=f2e664]: Software engineer with 5+ years building TypeScript/React products and reliable APIs. Focused on performance, testing, and shipping measurable outcomes with cross-functional teams.
+              - generic [ref=f2e665]:
+                - heading "Work Experience" [level=2] [ref=f2e666]
+                - generic [ref=f2e667]:
+                  - generic [ref=f2e668]:
+                    - generic [ref=f2e669]: Software Engineer
+                    - generic [ref=f2e670]: Northline Labs
+                    - generic [ref=f2e671]: 2021-03 – Present
+                  - list [ref=f2e672]:
+                    - listitem [ref=f2e673]: Shipped React + TypeScript features used by 120k monthly active users.
+                    - listitem [ref=f2e674]: Cut p95 API latency 35% by rewriting hot paths and adding query caching.
+                    - listitem [ref=f2e675]: Raised unit test coverage from 42% to 81% and blocked regressions in CI/CD.
+                - generic [ref=f2e676]:
+                  - generic [ref=f2e677]:
+                    - generic [ref=f2e678]: Junior Developer
+                    - generic [ref=f2e679]: Bright Harbor
+                    - generic [ref=f2e680]: 2019-06 – 2021-02
+                  - list [ref=f2e681]:
+                    - listitem [ref=f2e682]: Built internal tooling that reduced support ticket triage time by 20%.
+                    - listitem [ref=f2e683]: Collaborated with design on accessibility fixes across 8 core flows.
+              - generic [ref=f2e684]:
+                - heading "Education" [level=2] [ref=f2e685]
+                - generic [ref=f2e686]:
+                  - generic [ref=f2e687]:
+                    - strong [ref=f2e689]: State University
+                    - generic [ref=f2e690]: B.S. · Computer Science
+                  - generic [ref=f2e691]: "2019"
+              - generic [ref=f2e692]:
+                - heading "Skills" [level=2] [ref=f2e693]
+                - paragraph [ref=f2e694]: TypeScript • Python • React • API design • Testing • CI/CD • Performance

@@ -1,0 +1,35 @@
+- generic [ref=f1e3]:
+  - link "Skip to content" [ref=f1e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - link "Resumegen" [ref=f1e6] [cursor=pointer]:
+    - /url: /
+  - generic [ref=f1e11]:
+    - heading "Create your account" [level=1] [ref=f1e12]
+    - paragraph [ref=f1e13]: Start building a resume that gets noticed.
+    - generic [ref=f1e14]:
+      - generic [ref=f1e15]:
+        - generic [ref=f1e16]: Name
+        - textbox "Name" [active] [ref=f1e17]
+      - generic [ref=f1e18]:
+        - generic [ref=f1e19]: Email
+        - textbox "Email" [ref=f1e20]
+      - generic [ref=f1e21]:
+        - generic [ref=f1e22]: Password
+        - textbox "Password" [ref=f1e23]
+      - generic [ref=f1e24]:
+        - generic [ref=f1e25]: Confirm Password
+        - textbox "Confirm Password" [ref=f1e26]
+      - generic [ref=f1e27]:
+        - checkbox "I agree to the Terms of Service and Privacy Policy" [ref=f1e28]
+        - generic [ref=f1e29]:
+          - text: I agree to the
+          - link "Terms of Service" [ref=f1e30] [cursor=pointer]:
+            - /url: https://resumegen.test/terms
+          - text: and
+          - link "Privacy Policy" [ref=f1e31] [cursor=pointer]:
+            - /url: https://resumegen.test/privacy
+      - button "Create account" [ref=f1e32]
+      - paragraph [ref=f1e33]:
+        - text: Already have an account?
+        - link "Log in" [ref=f1e34] [cursor=pointer]:
+          - /url: https://resumegen.test/login

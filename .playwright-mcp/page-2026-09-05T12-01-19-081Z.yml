@@ -1,0 +1,296 @@
+- generic [ref=f4e3]:
+  - link "Skip to content" [ref=f4e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f4e6]:
+    - generic [ref=f4e7]:
+      - link "Resumegen" [ref=f4e8] [cursor=pointer]:
+        - /url: https://resumegen.test/dashboard
+      - button "Open navigation menu" [ref=f4e12]:
+        - generic [ref=f4e13]: Go to…
+      - generic [ref=f4e14]:
+        - button [ref=f4e17]:
+          - generic [aria-hidden] [ref=f4e18]: CT
+        - button "Toggle navigation" [ref=f4e19]
+  - main [ref=f4e22]:
+    - generic [ref=f4e23]:
+      - generic [ref=f4e26]:
+        - generic [ref=f4e27]:
+          - generic [ref=f4e28]: Software Engineer sample
+          - generic [ref=f4e30]:
+            - button "Share" [ref=f4e31]
+            - button "Download" [ref=f4e35]
+            - button "More actions" [ref=f4e41]
+        - toolbar "Document formatting" [ref=f4e44]:
+          - tablist "Workstation mode" [ref=f4e45]:
+            - tab "Edit" [selected] [ref=f4e46]
+            - tab "Review" [ref=f4e47]
+            - tab "Optimize" [ref=f4e48]
+          - button "Undo" [disabled]
+          - button "Redo" [disabled]
+          - button "Template" [ref=f4e49]:
+            - generic [ref=f4e50]: Modern Sans
+          - button "Text format" [ref=f4e54]: Format
+          - generic "Switch to Review to change preview mode":
+            - button "Live" [disabled]
+            - button "PDF" [disabled]
+          - generic [ref=f4e57]:
+            - button "Zoom" [disabled]: 100%
+      - generic [ref=f4e59]:
+        - region "Resume score" [ref=f4e60]:
+          - generic [ref=f4e61]:
+            - generic [ref=f4e62]:
+              - generic "Updates as you edit" [ref=f4e63]:
+                - generic [ref=f4e64]: "93"
+                - generic [ref=f4e65]: /100
+                - generic [ref=f4e66]: Resume score
+              - generic [ref=f4e67]:
+                - button "Profile 20/25" [ref=f4e68]:
+                  - generic [ref=f4e69]:
+                    - generic [ref=f4e70]: Profile
+                    - generic [ref=f4e71]: 20/25
+                - button "Experience 23/25" [ref=f4e74]:
+                  - generic [ref=f4e75]:
+                    - generic [ref=f4e76]: Experience
+                    - generic [ref=f4e77]: 23/25
+                - button "Impact 25/25" [ref=f4e80]:
+                  - generic [ref=f4e81]:
+                    - generic [ref=f4e82]: Impact
+                    - generic [ref=f4e83]: 25/25
+                - button "Keywords 25/25" [ref=f4e86]:
+                  - generic [ref=f4e87]:
+                    - generic [ref=f4e88]: Keywords
+                    - generic [ref=f4e89]: 25/25
+              - button "6/8 steps done" [ref=f4e92]
+            - navigation "Resume sections" [ref=f4e95]:
+              - button "Contact Incomplete" [ref=f4e96]:
+                - text: Contact
+                - generic [ref=f4e97]: Incomplete
+              - button "Professional Summary Complete" [ref=f4e98]:
+                - text: Professional Summary
+                - generic [ref=f4e99]: Complete
+              - button "Experience 2/2" [ref=f4e100]:
+                - text: Experience
+                - generic [ref=f4e101]: 2/2
+              - button "Project Not started" [ref=f4e102]:
+                - text: Project
+                - generic [ref=f4e103]: Not started
+              - button "Education 1/1" [ref=f4e104]:
+                - text: Education
+                - generic [ref=f4e105]: 1/1
+              - button "Skills Complete" [ref=f4e106]:
+                - text: Skills
+                - generic [ref=f4e107]: Complete
+              - button "Certificate Not started" [ref=f4e108]:
+                - text: Certificate
+                - generic [ref=f4e109]: Not started
+            - generic:
+              - generic:
+                - generic [ref=f4e111]:
+                  - generic [ref=f4e112]:
+                    - paragraph [ref=f4e113]: Raise your score
+                    - paragraph [ref=f4e114]: 6/8
+                  - list [ref=f4e115]:
+                    - listitem [ref=f4e116]:
+                      - button "Set a target role (unlocks keyword scoring) Keywords" [disabled] [ref=f4e117]:
+                        - generic [ref=f4e121]:
+                          - text: Set a target role (unlocks keyword scoring)
+                          - generic [ref=f4e122]: Keywords
+                    - listitem [ref=f4e123]:
+                      - button "Name, headline, email, and location Profile" [ref=f4e124]:
+                        - generic [ref=f4e126]:
+                          - text: Name, headline, email, and location
+                          - generic [ref=f4e127]: Profile
+                    - listitem [ref=f4e128]:
+                      - button "Write a summary (80+ characters) Profile" [disabled] [ref=f4e129]:
+                        - generic [ref=f4e133]:
+                          - text: Write a summary (80+ characters)
+                          - generic [ref=f4e134]: Profile
+                    - listitem [ref=f4e135]:
+                      - button "Add two jobs with title and company Experience" [disabled] [ref=f4e136]:
+                        - generic [ref=f4e140]:
+                          - text: Add two jobs with title and company
+                          - generic [ref=f4e141]: Experience
+                    - listitem [ref=f4e142]:
+                      - button "Add at least six experience bullets Experience" [ref=f4e143]:
+                        - generic [ref=f4e145]:
+                          - text: Add at least six experience bullets
+                          - generic [ref=f4e146]: Experience
+                    - listitem [ref=f4e147]:
+                      - button "Put a number in at least half of your bullets Impact" [disabled] [ref=f4e148]:
+                        - generic [ref=f4e152]:
+                          - text: Put a number in at least half of your bullets
+                          - generic [ref=f4e153]: Impact
+                    - listitem [ref=f4e154]:
+                      - button "List at least five skills Keywords" [disabled] [ref=f4e155]:
+                        - generic [ref=f4e159]:
+                          - text: List at least five skills
+                          - generic [ref=f4e160]: Keywords
+                    - listitem [ref=f4e161]:
+                      - button "Cover role keywords (use chips below) Keywords" [disabled] [ref=f4e162]:
+                        - generic [ref=f4e166]:
+                          - text: Cover role keywords (use chips below)
+                          - generic [ref=f4e167]: Keywords
+                - generic [ref=f4e168]:
+                  - generic [ref=f4e169]:
+                    - paragraph [ref=f4e170]: Role keywords
+                    - paragraph [ref=f4e171]: Click a missing term to add it as a skill. Only add skills you actually have.
+                    - generic [ref=f4e172]:
+                      - generic [ref=f4e173]: TypeScript
+                      - generic [ref=f4e176]: React
+                      - generic [ref=f4e179]: API
+                      - generic [ref=f4e182]: Testing
+                      - generic [ref=f4e185]: CI/CD
+                      - generic [ref=f4e188]: Performance
+                    - paragraph [ref=f4e191]: All role keywords are covered.
+                  - generic [ref=f4e192]:
+                    - paragraph [ref=f4e193]: Job match
+                    - paragraph [ref=f4e194]: Paste a job description on the Optimize tab to see keyword overlap (no AI).
+                    - button "Open Optimize →" [ref=f4e195]
+        - generic [ref=f4e197]:
+          - generic [ref=f4e198]:
+            - generic [ref=f4e199]:
+              - generic [ref=f4e200]:
+                - generic [ref=f4e201]: Target role
+                - textbox "Target role" [ref=f4e203]:
+                  - /placeholder: e.g. Senior Software Engineer
+                  - text: Software Engineer
+              - paragraph [ref=f4e204]: Role family recognized — keyword chips update in the rail.
+            - button "Version details" [ref=f4e206]
+          - main "Section form" [ref=f4e210]:
+            - generic [ref=f4e211]:
+              - generic "Double-click to collapse or expand" [ref=f4e212]:
+                - button "Contact" [expanded] [ref=f4e213]
+                - generic [ref=f4e217]:
+                  - button "Move Contact up" [disabled]
+                  - button "Move Contact down" [ref=f4e218]
+              - generic [ref=f4e224]:
+                - generic [ref=f4e225]:
+                  - generic [ref=f4e226]: Full name
+                  - textbox [ref=f4e227]: Critique Tester
+                - generic [ref=f4e228]:
+                  - generic [ref=f4e229]: Headline
+                  - textbox "e.g. Product Designer" [ref=f4e231]: Software Engineer
+                - generic [ref=f4e232]:
+                  - generic [ref=f4e233]: Email
+                  - textbox [ref=f4e234]: critique-tester@resumegen.test
+                - generic [ref=f4e235]:
+                  - generic [ref=f4e236]:
+                    - generic [ref=f4e237]: Phone
+                    - textbox "(123) 456-7890" [ref=f4e238]
+                  - generic [ref=f4e239]:
+                    - generic [ref=f4e240]: Location
+                    - textbox [ref=f4e241]
+                - generic [ref=f4e242]:
+                  - generic [ref=f4e243]: LinkedIn
+                  - textbox "https://linkedin.com/in/you" [ref=f4e244]
+                - generic [ref=f4e245]:
+                  - generic [ref=f4e246]: Website
+                  - textbox "https://example.com" [ref=f4e247]
+            - generic [ref=f4e248]:
+              - generic "Double-click to collapse or expand" [ref=f4e249]:
+                - button "Professional Summary" [expanded] [ref=f4e250]
+                - generic [ref=f4e254]:
+                  - button "Move Professional Summary up" [ref=f4e255]
+                  - button "Move Professional Summary down" [ref=f4e258]
+              - generic [ref=f4e265]:
+                - generic [ref=f4e266]: Summary
+                - textbox "Summary" [ref=f4e267]: Software engineer with 5+ years building TypeScript/React products and reliable APIs. Focused on performance, testing, and shipping measurable outcomes with cross-functional teams.
+                - paragraph [ref=f4e268]: 180 / 2000 characters
+            - generic [ref=f4e269]:
+              - generic "Double-click to collapse or expand" [ref=f4e270]:
+                - button "Experience" [expanded] [ref=f4e271]
+                - generic [ref=f4e275]:
+                  - button "Move Experience up" [ref=f4e276]
+                  - button "Move Experience down" [ref=f4e279]
+              - generic [ref=f4e285]:
+                - generic [ref=f4e287]:
+                  - button "Reorder Software Engineer — drag, or Alt+Arrow keys" [ref=f4e288]
+                  - button "Software Engineer Northline Labs · 2021-03 – Present · 3 bullets" [ref=f4e291]:
+                    - generic [ref=f4e294]:
+                      - generic [ref=f4e295]: Software Engineer
+                      - generic [ref=f4e296]: Northline Labs · 2021-03 – Present · 3 bullets
+                  - button "Remove Software Engineer" [ref=f4e297]
+                - generic [ref=f4e301]:
+                  - button "Reorder Junior Developer — drag, or Alt+Arrow keys" [ref=f4e302]
+                  - button "Junior Developer Bright Harbor · 2019-06 – 2021-02 · 2 bullets" [ref=f4e305]:
+                    - generic [ref=f4e308]:
+                      - generic [ref=f4e309]: Junior Developer
+                      - generic [ref=f4e310]: Bright Harbor · 2019-06 – 2021-02 · 2 bullets
+                  - button "Remove Junior Developer" [ref=f4e311]
+                - button "Add experience" [ref=f4e315]
+            - generic [ref=f4e318]:
+              - generic "Double-click to collapse or expand" [ref=f4e319]:
+                - button "Project" [expanded] [ref=f4e320]
+                - generic [ref=f4e323]:
+                  - button "Hide" [ref=f4e324]
+                  - generic [ref=f4e325]:
+                    - button "Move Project up" [ref=f4e326]
+                    - button "Move Project down" [ref=f4e329]
+              - button "Add project" [ref=f4e337]
+            - generic [ref=f4e340]:
+              - generic "Double-click to collapse or expand" [ref=f4e341]:
+                - button "Education" [expanded] [ref=f4e342]
+                - generic [ref=f4e345]:
+                  - button "Hide" [ref=f4e346]
+                  - generic [ref=f4e347]:
+                    - button "Move Education up" [ref=f4e348]
+                    - button "Move Education down" [ref=f4e351]
+              - generic [ref=f4e357]:
+                - generic [ref=f4e359]:
+                  - button "Reorder State University — drag, or Alt+Arrow keys" [ref=f4e360]
+                  - button "State University B.S. · Computer Science · 2019" [ref=f4e363]:
+                    - generic [ref=f4e366]:
+                      - generic [ref=f4e367]: State University
+                      - generic [ref=f4e368]: B.S. · Computer Science · 2019
+                  - button "Remove State University" [ref=f4e369]
+                - button "Add education" [ref=f4e373]
+            - generic [ref=f4e376]:
+              - generic "Double-click to collapse or expand" [ref=f4e377]:
+                - button "Skills" [expanded] [ref=f4e378]
+                - generic [ref=f4e382]:
+                  - button "Move Skills up" [ref=f4e383]
+                  - button "Move Skills down" [ref=f4e386]
+              - generic [ref=f4e393]:
+                - generic [ref=f4e394]:
+                  - generic [ref=f4e395]: Skills
+                  - button "Add skills" [ref=f4e396]
+                - radiogroup "Skills layout" [ref=f4e399]:
+                  - radio "Inline" [checked] [ref=f4e400]
+                  - radio "Bullets" [ref=f4e407]
+                  - radio "Grouped" [ref=f4e420]
+                  - radio "Columns" [ref=f4e436]
+                  - radio "Narrative" [ref=f4e446]
+                - paragraph [ref=f4e454]: This layout prints skill names only — categories stay saved if you switch to Grouped.
+                - generic [ref=f4e456]:
+                  - generic [ref=f4e457]:
+                    - text: TypeScript
+                    - button "×" [ref=f4e458]
+                  - generic [ref=f4e459]:
+                    - text: Python
+                    - button "×" [ref=f4e460]
+                  - generic [ref=f4e461]:
+                    - text: React
+                    - button "×" [ref=f4e462]
+                  - generic [ref=f4e463]:
+                    - text: API design
+                    - button "×" [ref=f4e464]
+                  - generic [ref=f4e465]:
+                    - text: Testing
+                    - button "×" [ref=f4e466]
+                  - generic [ref=f4e467]:
+                    - text: CI/CD
+                    - button "×" [ref=f4e468]
+                  - generic [ref=f4e469]:
+                    - text: Performance
+                    - button "×" [ref=f4e470]
+                  - textbox [ref=f4e471]
+            - generic [ref=f4e472]:
+              - generic "Double-click to collapse or expand" [ref=f4e473]:
+                - button "Certificate" [expanded] [ref=f4e474]
+                - generic [ref=f4e477]:
+                  - button "Hide" [ref=f4e478]
+                  - generic [ref=f4e479]:
+                    - button "Move Certificate up" [ref=f4e480]
+                    - button "Move Certificate down" [disabled]
+              - button "Add certificate" [ref=f4e488]
+          - button "Show notes & checkpoints" [ref=f4e492]
