@@ -1,0 +1,37 @@
+- generic [ref=f1e3]:
+  - generic [ref=f1e4]:
+    - generic [aria-hidden] [ref=f1e6]:
+      - generic [ref=f1e7]: Loading
+      - progressbar [aria-hidden] [ref=f1e8]
+    - main [ref=f1e15]:
+      - generic [ref=f1e16]:
+        - generic [ref=f1e17]: Sign in with Google
+        - 'heading "Access blocked: Authorization Error" [level=1] [ref=f1e23]'
+      - generic [ref=f1e31]:
+        - generic [ref=f1e32]:
+          - text: "Missing required parameter: client_id"
+          - link "Learn more about this error (external, opens in a new window)" [ref=f1e33] [cursor=pointer]:
+            - /url: https://developers.google.com/identity/protocols/oauth2
+            - text: Learn more about this error
+        - generic [ref=f1e34]:
+          - text: If you are a developer of this app, see
+          - button "error details" [ref=f1e35] [cursor=pointer]
+          - text: .
+        - generic [ref=f1e36]: "Error 400: invalid_request"
+  - contentinfo [ref=f1e41]:
+    - combobox "Change language English (United States)" [ref=f1e45] [cursor=pointer]:
+      - generic [aria-hidden]:
+        - generic: English (United States)
+    - list [ref=f1e47]:
+      - listitem [ref=f1e48]:
+        - link "Open Google Account Help Center (external, opens in a new window)" [ref=f1e49] [cursor=pointer]:
+          - /url: https://support.google.com/accounts?hl=en-US&p=account_iph
+          - text: Help
+      - listitem [ref=f1e50]:
+        - link "Privacy Policy (external, opens in a new window)" [ref=f1e51] [cursor=pointer]:
+          - /url: https://accounts.google.com/TOS?loc=US&hl=en-US&privacy=true
+          - text: Privacy
+      - listitem [ref=f1e52]:
+        - link "Google Terms of Service (external, opens in a new window)" [ref=f1e53] [cursor=pointer]:
+          - /url: https://accounts.google.com/TOS?loc=US&hl=en-US
+          - text: Terms

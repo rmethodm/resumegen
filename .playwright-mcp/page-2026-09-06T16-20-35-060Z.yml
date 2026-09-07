@@ -1,0 +1,35 @@
+- generic [ref=f2e3]:
+  - link "Skip to content" [ref=f2e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - link "Resumegen" [ref=f2e6] [cursor=pointer]:
+    - /url: /
+  - generic [ref=f2e11]:
+    - heading "Welcome back" [level=1] [ref=f2e12]
+    - paragraph [ref=f2e13]: Log in to keep building your resume.
+    - generic [ref=f2e14]:
+      - generic [ref=f2e15]:
+        - generic [ref=f2e16]: Email
+        - textbox "Email" [active] [ref=f2e17]
+      - generic [ref=f2e18]:
+        - generic [ref=f2e19]: Password
+        - textbox "Password" [ref=f2e20]
+      - generic [ref=f2e21]:
+        - generic [ref=f2e22]:
+          - checkbox "Remember me" [checked] [ref=f2e23]
+          - generic [ref=f2e24]: Remember me
+        - link "Forgot your password?" [ref=f2e25] [cursor=pointer]:
+          - /url: https://resumegen.test/forgot-password
+      - button "Log in" [ref=f2e26]
+      - paragraph [ref=f2e27]:
+        - text: No account yet?
+        - link "Sign up" [ref=f2e28] [cursor=pointer]:
+          - /url: https://resumegen.test/register
+    - generic [ref=f2e30]:
+      - generic [ref=f2e31]: or continue with
+      - generic [ref=f2e34]:
+        - link "Google" [ref=f2e35] [cursor=pointer]:
+          - /url: https://resumegen.test/auth/google/redirect
+        - link "GitHub" [ref=f2e42] [cursor=pointer]:
+          - /url: https://resumegen.test/auth/github/redirect
+        - link "Microsoft" [ref=f2e46] [cursor=pointer]:
+          - /url: https://resumegen.test/auth/microsoft/redirect

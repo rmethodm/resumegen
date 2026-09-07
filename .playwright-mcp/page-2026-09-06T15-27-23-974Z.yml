@@ -1,0 +1,185 @@
+- generic [ref=f4e3]:
+  - link "Skip to content" [ref=f4e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Primary" [ref=f4e7]:
+    - link "Resumegen" [ref=f4e8] [cursor=pointer]:
+      - /url: /
+    - generic [ref=f4e11]:
+      - link "Get started →" [ref=f4e12] [cursor=pointer]:
+        - /url: https://resumegen.test/register
+        - text: Get started
+        - generic [ref=f4e13]: →
+      - button "Open menu" [ref=f4e14]
+  - main [ref=f4e17]:
+    - generic [ref=f4e18]:
+      - generic [ref=f4e19]:
+        - generic [ref=f4e20]: ✓ Free forever — really
+        - heading "Make a resume. Skip the paywall ." [level=1] [ref=f4e21]:
+          - text: Make a resume.Skip the
+          - generic [ref=f4e22]: paywall
+          - text: .
+        - paragraph [ref=f4e23]: "Templates, exports, share links, application tracking: all of it, unlimited, without ever seeing an upgrade button."
+        - generic [ref=f4e24]:
+          - link "Start building. It's free →" [ref=f4e25] [cursor=pointer]:
+            - /url: https://resumegen.test/register
+            - text: Start building. It's free
+            - generic [ref=f4e26]: →
+          - link "See how it works" [ref=f4e27] [cursor=pointer]:
+            - /url: "#how-it-works"
+        - generic [ref=f4e28]:
+          - generic [ref=f4e29]: 📄 PDF & DOCX
+          - generic [ref=f4e30]: 🎨 4 templates
+          - generic [ref=f4e31]: 🔒 Private share links
+          - generic [ref=f4e32]: 📋 Application tracker
+      - generic [ref=f4e34]:
+        - generic [ref=f4e35]: Saved ✓
+        - generic [ref=f4e40]:
+          - generic [ref=f4e41]:
+            - generic [ref=f4e42]: Full name
+            - generic [ref=f4e45]: Headline
+            - generic [ref=f4e48]: Experience
+            - generic [ref=f4e51]: Skills
+            - generic [ref=f4e54]: Keyword match 86%
+          - generic [ref=f4e55]:
+            - generic [ref=f4e56]: ATS check ✓
+            - generic [ref=f4e57]: PDF ready
+    - generic [ref=f4e58]:
+      - generic [ref=f4e59]:
+        - paragraph [ref=f4e60]: See Resumegen in action
+        - heading "Watch your resume score climb" [level=2] [ref=f4e61]
+        - paragraph [ref=f4e62]: Every edit updates the live preview and the score on the right — no save button, no waiting.
+      - generic [aria-hidden] [ref=f4e63]:
+        - generic [ref=f4e64]: resumegen.app — Optimize
+        - generic [ref=f4e76]:
+          - generic [ref=f4e77]: Resume score
+          - generic [ref=f4e78]: "93"
+    - generic [ref=f4e80]:
+      - paragraph [ref=f4e81]: Why Resumegen
+      - heading "Easy, fast, and actually free" [level=2] [ref=f4e82]
+      - generic [ref=f4e83]:
+        - generic [ref=f4e84]:
+          - generic [ref=f4e85]: ⚡
+          - heading "Live editor, instant preview" [level=3] [ref=f4e86]
+          - paragraph [ref=f4e87]: Type on the left, watch the document update on the right. Autosave means nothing is ever lost.
+        - generic [ref=f4e88]:
+          - generic [ref=f4e89]: 🎯
+          - heading "Tuned to the job" [level=3] [ref=f4e90]
+          - paragraph [ref=f4e91]: Paste a job description and see which keywords your resume hits — and which it misses.
+        - generic [ref=f4e92]:
+          - generic [ref=f4e93]: 🔗
+          - heading "Share links that report back" [level=3] [ref=f4e94]
+          - paragraph [ref=f4e95]: Send recruiters a private link and see views, unique visitors, and a 7-day trend.
+      - generic [ref=f4e96]:
+        - generic [ref=f4e97]:
+          - paragraph [ref=f4e98]: Beat the screeners
+          - heading "Match the job before you apply" [level=2] [ref=f4e99]
+          - list [ref=f4e100]:
+            - listitem [ref=f4e101]:
+              - generic [ref=f4e102]: ✓
+              - generic [ref=f4e103]: Keyword overlap against the job description, scored live
+            - listitem [ref=f4e104]:
+              - generic [ref=f4e105]: ✓
+              - generic [ref=f4e106]: Section-by-section suggestions as you type
+            - listitem [ref=f4e107]:
+              - generic [ref=f4e108]: ✓
+              - generic [ref=f4e109]: Four ATS-tuned templates — switch without retyping
+        - generic [aria-hidden] [ref=f4e110]:
+          - generic [ref=f4e111]: Keyword match
+          - generic [ref=f4e112]:
+            - generic [ref=f4e113]: 86%
+            - generic [ref=f4e114]: ↑ 24 pts
+      - generic [ref=f4e125]:
+        - generic [aria-hidden] [ref=f4e126]:
+          - generic [ref=f4e127]: Share link views — 7 days
+          - generic [ref=f4e128]:
+            - generic [ref=f4e129]: "31"
+            - generic [ref=f4e130]: ↑ 12
+        - generic [ref=f4e141]:
+          - paragraph [ref=f4e142]: Know what happens next
+          - heading "See when recruiters actually look" [level=2] [ref=f4e143]
+          - list [ref=f4e144]:
+            - listitem [ref=f4e145]:
+              - generic [ref=f4e146]: ✓
+              - generic [ref=f4e147]: "Gated links: require an email or password to open"
+            - listitem [ref=f4e148]:
+              - generic [ref=f4e149]: ✓
+              - generic [ref=f4e150]: Every view logged — see who looked and when
+            - listitem [ref=f4e151]:
+              - generic [ref=f4e152]: ✓
+              - generic [ref=f4e153]: PDF and DOCX downloads straight from the link
+    - generic [ref=f4e155]:
+      - heading "Pick a look. Change it anytime." [level=2] [ref=f4e156]
+      - paragraph [ref=f4e157]: Four ATS-tuned templates. Switch with one click — your content reflows instantly.
+      - generic [ref=f4e158]:
+        - generic [ref=f4e159]:
+          - generic [ref=f4e160]: Choose a template
+          - generic [ref=f4e161]: Your content stays put
+        - generic [ref=f4e162]:
+          - button "View Modern Sans template" [ref=f4e163]:
+            - img "Modern Sans template" [ref=f4e164]
+            - generic [ref=f4e165]:
+              - generic [ref=f4e166]: Modern Sans
+              - generic [ref=f4e167]: ✓
+          - button "View Classic Serif template" [ref=f4e168]:
+            - img "Classic Serif template" [ref=f4e169]
+            - generic [ref=f4e170]: Classic Serif
+          - button "View ATS Plain template" [ref=f4e172]:
+            - img "ATS Plain template" [ref=f4e173]
+            - generic [ref=f4e174]: ATS Plain
+          - button "View Minimalist template" [ref=f4e176]:
+            - img "Minimalist template" [ref=f4e177]
+            - generic [ref=f4e178]: Minimalist
+    - generic [ref=f4e181]:
+      - paragraph [ref=f4e182]: How it works
+      - heading "Three steps. Zero dollars." [level=2] [ref=f4e183]
+      - generic [ref=f4e184]:
+        - generic [ref=f4e185]:
+          - generic [ref=f4e186]: "1"
+          - heading "Start from a template" [level=3] [ref=f4e187]
+          - paragraph [ref=f4e188]: Pick a layout and fill sections in a live editor. Your starter profile pre-fills the basics.
+        - generic [ref=f4e189]:
+          - generic [ref=f4e190]: "2"
+          - heading "Tighten the story" [level=3] [ref=f4e191]
+          - paragraph [ref=f4e192]: Reorder sections, polish bullets, and preview the document before you send it anywhere.
+        - generic [ref=f4e193]:
+          - generic [ref=f4e194]: "3"
+          - heading "Export or share" [level=3] [ref=f4e195]
+          - paragraph [ref=f4e196]: Download PDF or DOCX, or send a gated link recruiters can open without an account.
+    - generic [ref=f4e198]:
+      - heading "Questions & answers" [level=2] [ref=f4e199]
+      - generic [ref=f4e200]:
+        - button "Is Resumegen really free?" [ref=f4e202]
+        - button "What file formats can I export?" [ref=f4e206]
+        - button "Can recruiters view my resume without an account?" [ref=f4e210]
+        - button "How does the job-match score work?" [ref=f4e214]
+    - generic [ref=f4e218]:
+      - heading "Your next job is one page away." [level=2] [ref=f4e219]
+      - link "Start building — it's free →" [ref=f4e220] [cursor=pointer]:
+        - /url: https://resumegen.test/register
+    - generic [ref=f4e221]:
+      - generic [ref=f4e222]:
+        - generic [ref=f4e223]:
+          - link "Resumegen" [ref=f4e224] [cursor=pointer]:
+            - /url: /
+          - paragraph [ref=f4e227]: A resume builder with everything included and nothing behind a paywall.
+        - generic [ref=f4e228]:
+          - heading "Product" [level=3] [ref=f4e229]
+          - list [ref=f4e230]:
+            - listitem [ref=f4e231]:
+              - link "Templates" [ref=f4e232] [cursor=pointer]:
+                - /url: "#features"
+            - listitem [ref=f4e233]:
+              - link "How it works" [ref=f4e234] [cursor=pointer]:
+                - /url: "#how-it-works"
+        - generic [ref=f4e235]:
+          - heading "Legal" [level=3] [ref=f4e236]
+          - list [ref=f4e237]:
+            - listitem [ref=f4e238]:
+              - link "Privacy" [ref=f4e239] [cursor=pointer]:
+                - /url: https://resumegen.test/privacy
+            - listitem [ref=f4e240]:
+              - link "Terms" [ref=f4e241] [cursor=pointer]:
+                - /url: https://resumegen.test/terms
+      - generic [ref=f4e242]:
+        - generic [ref=f4e243]: © 2026 Resumegen. All rights reserved.
+        - generic [ref=f4e244]: Free forever — really.

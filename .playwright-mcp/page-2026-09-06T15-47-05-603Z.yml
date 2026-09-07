@@ -1,0 +1,40 @@
+- generic [ref=f5e1]:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - img "Organization background image" [ref=f5e2]
+          - generic [ref=f5e3]:
+            - generic [ref=f5e8]:
+              - generic [ref=f5e9]:
+                - img "Microsoft" [ref=f5e12]
+                - main [ref=f5e13]:
+                  - generic [ref=f5e16]:
+                    - heading "Sign in" [level=1] [ref=f5e17]
+                    - paragraph [ref=f5e19]: Sorry, but we’re having trouble signing you in.
+                    - generic [ref=f5e20]: "AADSTS900144: The request body must contain the following parameter: 'client_id'."
+              - generic [ref=f5e23]:
+                - generic [ref=f5e24]:
+                  - generic [ref=f5e25]:
+                    - heading "Troubleshooting details" [level=2] [ref=f5e26]
+                    - generic [ref=f5e27]: If you contact your administrator, send this info to them.
+                    - button "Copy info to clipboard" [ref=f5e28] [cursor=pointer]
+                  - generic [ref=f5e29]:
+                    - generic [ref=f5e30]: "Request Id: d4890e68-5ed2-4a3b-9804-9d888e197c00"
+                    - generic [ref=f5e31]: "Correlation Id: 05857311-33ca-476b-8dbb-ab604c8cd682"
+                    - generic [ref=f5e32]: "Timestamp: 2026-09-06T15:47:07Z"
+                    - generic [ref=f5e33]: "Message: AADSTS900144: The request body must contain the following parameter: 'client_id'."
+                  - generic [ref=f5e34]:
+                    - generic [ref=f5e35]:
+                      - text: "Flag sign-in errors for review:"
+                      - button "Enable flagging" [ref=f5e36] [cursor=pointer]
+                    - generic [ref=f5e37]: If you plan on getting help for this problem, enable flagging and try to reproduce the error within 20 minutes. Flagged events make diagnostics available and are raised to admin attention.
+                - button "Close troubleshooting details" [ref=f5e38] [cursor=pointer]
+            - contentinfo [ref=f5e39]:
+              - generic [ref=f5e40]:
+                - link "Terms of use" [ref=f5e41] [cursor=pointer]:
+                  - /url: https://www.microsoft.com/en-US/servicesagreement/
+                - link "Privacy & cookies" [ref=f5e42] [cursor=pointer]:
+                  - /url: https://privacy.microsoft.com/en-US/privacystatement
+                - button "Click here for troubleshooting information" [ref=f5e43] [cursor=pointer]: ...
+  - textbox [aria-hidden] [ref=f5e44]: "Request Id: d4890e68-5ed2-4a3b-9804-9d888e197c00 Correlation Id: 05857311-33ca-476b-8dbb-ab604c8cd682 Timestamp: 2026-09-06T15:47:07Z Message: AADSTS900144: The request body must contain the following parameter: 'client_id'."

@@ -1,0 +1,10 @@
+- generic [ref=f1e35]:
+  - link "Skip to content" [ref=f1e36] [cursor=pointer]:
+    - /url: "#main-content"
+  - link "Resumegen" [ref=f1e38] [cursor=pointer]:
+    - /url: /
+  - generic [ref=f1e43]:
+    - generic [ref=f1e44]: Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
+    - generic [ref=f1e46]:
+      - button "Resend Verification Email" [ref=f1e47]
+      - button "Log Out" [ref=f1e48]
