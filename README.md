@@ -1,26 +1,26 @@
 # Resumegen
 
-Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create and share resumes. The app also includes a Sanctum API used by the browser extension and the iPhone/iPad apps, and a support admin panel.
+Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create and share resumes. The app also includes a Sanctum API used by the browser extension and the iPhone/iPad apps.
 
 ## Current Status
 
 - Laravel 13 app with React 19, Inertia v3, Tailwind CSS, Sanctum, DOMPDF, and PHPWord.
 - Mobile is active again (native iPhone/iPad apps in development, 2026-08). The server ships a mobile API: password login (`POST /api/auth/token`, Sanctum token with `mobile` ability), full resume CRUD with offline sync (`client_uuid` idempotent creates, `?since=` incremental pulls with a `resume_deletions` log, 409 conflict responses), PDF streaming, and share-link management. The 2026-07-08 removal covered the earlier Expo-era surface only.
 - **The app is free and unlimited.** There is no billing, no plan tier, and nothing is metered.
-- **AI is narrow and disabled by default.** A Tier-1 slice (bullet rewrite, summary generation, job match) shipped 2026-08-04 via `App\Services\OpenAiResumeAssistant` (`ResumeAiController`), gated by `AI_ENABLED`/`OPENAI_API_KEY` in `config/ai.php` (both unset by default). A legacy `AiService`/`AiPrompts` stack (builder bullet rewrite/critique, ATS keywords, interview coach, PDF import extract, job ranking/URL import) still exists behind the `ai_enabled` middleware, which 404s all of it while `AI_ENABLED` is false. See `CLAUDE.md`'s AI section.
-- **There is a support admin panel**, domain-scoped to `APP_ADMIN_DOMAIN` (`admin.resumegen.test` locally): user search/verify/disable/revoke-tokens, a visitor log of every main-site request (added 2026-08-13), Postgres backups (create/download/delete/restore), and a Postgres admin panel (table browse/edit/schema, raw SQL runner, roles/grants — added 2026-08-13). Admins need confirmed 2FA; destructive DB/backup mutations are gated by `ADMIN_DESTRUCTIVE_TOOLS` (default off). No resume edit, no impersonation, no billing. The old Filament admin, impersonation, the audit log, system-event logging, and the Career Hub remain removed (2026-07-21).
+- **There is no AI.** Every AI stack was removed 2026-08-26 (no OpenAI, no `config/ai.php`, no AI routes). Deterministic alternatives remain: `PlainTextResumeParser` on create, and the Workstation's keyword-overlap JD match/optimize panels. See `CLAUDE.md`'s AI section.
+- **There is no admin panel.** The hand-rolled Inertia admin was removed 2026-09-02 (see `CLAUDE.md`'s "Admin Panel — removed"). App backups are CLI/schedule only via `spatie/laravel-backup`.
+- Login supports email/password (Fortify, opt-in 2FA) plus "continue with Google/GitHub/Microsoft" (Socialite) — auto-links to an existing account only when the provider confirms the email is verified.
 - Deployment notes live in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Main Product Areas
 
-- Resume Workstation (`/resumes/{id}/workstation`, the only editing surface) with templates, section reordering, autosave, live client-side preview, snapshots, notes, version groups with compare, duplication, and PDF/DOCX export.
+- Resume Workstation (`/resumes/{id}/workstation`, the only editing surface) with templates, section reordering, autosave, inline-markdown bullets, live client-side preview plus an in-editor DomPDF preview frame, snapshots, notes, version groups with compare, duplication, and PDF/DOCX export.
 - Public resume sharing through `/r/{token}` with PDF/DOCX downloads and an optional email/password gate.
 - Dashboard analytics, strength scoring, and job-role/title/skill autocomplete.
 - **Resumegen Apply** (Chrome/Edge MV3): side panel fills job forms from your resume via Sanctum (`/api/extension/*`; tokens on Profile). See `extension/README.md`.
-- **Job Imports** (`/jobs-imports`): live Adzuna/USAJOBS search, saved per user to `imported_jobs`; AI resume match/tailoring is real (`ResumeAiController::matchJob`, gated by `AI_ENABLED`). Gap analysis and cover letters are still frontend stubs, not implemented.
-- **Job Search** (`/jobs`): saved searches with daily email alerts (`jobs:run-alerts`), plus a Kanban application tracker at `/job-applications`.
+- **Job application tracker**: a manual Kanban at `/job-applications`.
 
-Cover letters, resignation letters, proofreading, portfolio pages, A/B resume variants, and salary hints have all been removed — see `CLAUDE.md`'s "Removed Features" section for dates and detail.
+Job search (`/jobs`), job imports (`/jobs-imports`), cover letters, resignation letters, proofreading, portfolio pages, A/B resume variants, and salary hints have all been removed — see `CLAUDE.md`'s "Removed Features" section for dates and detail.
 
 ## Local Development
 
@@ -57,7 +57,7 @@ npm run build
 - `extension/` - Resumegen Apply (side panel + ATS fill heuristics)
 - `app/Http/Controllers` - app controllers
 - `app/Models` - domain models
-- `app/Services` - AI, job search/import, scoring, backups, and the template allowlist (`UserLimits`)
+- `app/Services` - completion scoring, growth report, SSRF-safe URL probe, and the template allowlist (`UserLimits`)
 - `resources/js/Pages` - Inertia React pages
 - `database/migrations` - schema history
 - `tests` - PHPUnit feature and unit tests
@@ -71,7 +71,7 @@ npm run build
 
 ## Verification From Latest Scan
 
-Last scanned: 2026-08-18.
+Last scanned: 2026-09-01.
 
-- `php artisan route:list --except-vendor` succeeded and reported 146 routes.
+- `php artisan route:list --except-vendor` succeeded and reported 122 routes.
 - No application code was changed during this scan.
