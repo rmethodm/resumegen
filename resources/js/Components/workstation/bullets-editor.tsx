@@ -1,17 +1,40 @@
 import {
     LinkIcon,
+    SparklesIcon,
 } from '@heroicons/react/24/outline';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, useEditor, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect, useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, useReducer, type ReactNode } from 'react';
+import { Button } from '@/Components/ui/button';
 import { Label } from '@/Components/ui/label';
+import { bulletRewriteReducer } from '@/lib/bullet-rewrite';
 import {
     htmlListToMarkdownLines,
     markdownLinesToHtmlList,
 } from '@/lib/bullet-markdown';
 import { cn } from '@/lib/utils';
+
+function currentListItemRange(
+    editor: Editor,
+): { from: number; to: number; text: string } | null {
+    const { $from } = editor.state.selection;
+
+    for (let depth = $from.depth; depth > 0; depth--) {
+        const node = $from.node(depth);
+
+        if (node.type.name === 'listItem') {
+            return {
+                from: $from.before(depth) + 1,
+                to: $from.after(depth) - 1,
+                text: node.textContent,
+            };
+        }
+    }
+
+    return null;
+}
 
 /**
  * TipTap bullet list that looks like the resume list while editing.
@@ -24,6 +47,7 @@ export function BulletsField({
     onChange,
     idPrefix,
     max = 12,
+    targetRole,
 }: {
     label: string;
     value: string[];
@@ -32,6 +56,8 @@ export function BulletsField({
     idPrefix?: string;
     /** Mirrors UpdateResumeRequest's bullets/highlights array cap. */
     max?: number;
+    /** Threaded into the "Rewrite with AI" request; omitted if the resume has none. */
+    targetRole?: string;
 }) {
     const initialHtml = useMemo(
         () => markdownLinesToHtmlList(value),
@@ -87,6 +113,81 @@ export function BulletsField({
             onChange(htmlListToMarkdownLines(current.getHTML(), max));
         },
     });
+
+    const [rewrite, dispatchRewrite] = useReducer(bulletRewriteReducer, {
+        status: 'idle',
+    } as const);
+
+    async function requestRewrite() {
+        if (!editor) return;
+
+        const range = currentListItemRange(editor);
+        const bulletText = range?.text.trim();
+
+        if (!range || !bulletText) return;
+
+        dispatchRewrite({ type: 'start' });
+
+        try {
+            const res = await fetch(route('ai.rewrite-bullet'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN':
+                        document.querySelector<HTMLMetaElement>(
+                            'meta[name="csrf-token"]',
+                        )?.content ?? '',
+                },
+                body: JSON.stringify({
+                    bullet: bulletText,
+                    target_role: targetRole || undefined,
+                }),
+            });
+
+            if (res.status === 429) {
+                dispatchRewrite({ type: 'error', message: 'AI unavailable' });
+                return;
+            }
+
+            if (!res.ok) {
+                dispatchRewrite({
+                    type: 'error',
+                    message: 'Rewrite failed. Try again.',
+                });
+                return;
+            }
+
+            const data = (await res.json()) as { text: string };
+            dispatchRewrite({
+                type: 'success',
+                original: bulletText,
+                suggestion: data.text,
+            });
+        } catch {
+            dispatchRewrite({
+                type: 'error',
+                message: 'Rewrite failed. Try again.',
+            });
+        }
+    }
+
+    function acceptRewrite() {
+        if (rewrite.status !== 'suggested' || !editor) return;
+
+        const range = currentListItemRange(editor);
+
+        if (range) {
+            editor
+                .chain()
+                .focus()
+                .insertContentAt({ from: range.from, to: range.to }, rewrite.suggestion)
+                .run();
+        }
+
+        dispatchRewrite({ type: 'accept' });
+    }
 
     // Undo / external draft reloads — re-seed without fighting local typing.
     useEffect(() => {
@@ -179,6 +280,13 @@ export function BulletsField({
                     >
                         <LinkIcon className="size-3.5" />
                     </ToolbarButton>
+                    <ToolbarButton
+                        label="Rewrite with AI"
+                        active={false}
+                        onClick={() => void requestRewrite()}
+                    >
+                        <SparklesIcon className="size-3.5" />
+                    </ToolbarButton>
                     <span className="mx-1 h-4 w-px bg-surface-border" aria-hidden />
                     <ToolbarButton
                         label="Bullet list"
@@ -190,6 +298,37 @@ export function BulletsField({
                         List
                     </ToolbarButton>
                 </div>
+                {rewrite.status === 'loading' && (
+                    <p className="border-b border-surface-border/80 bg-surface/40 px-3 py-1.5 text-xs text-ink-muted">
+                        Rewriting…
+                    </p>
+                )}
+                {rewrite.status === 'error' && (
+                    <p className="border-b border-surface-border/80 bg-danger-subtle px-3 py-1.5 text-xs text-danger-text">
+                        {rewrite.message}
+                    </p>
+                )}
+                {rewrite.status === 'suggested' && (
+                    <div className="border-b border-surface-border/80 bg-brand-subtle/40 px-3 py-2">
+                        <p className="mb-1.5 text-xs text-ink-muted">
+                            Suggested:{' '}
+                            <span className="text-ink">{rewrite.suggestion}</span>
+                        </p>
+                        <div className="flex gap-2">
+                            <Button type="button" size="sm" onClick={acceptRewrite}>
+                                Accept
+                            </Button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => dispatchRewrite({ type: 'discard' })}
+                            >
+                                Discard
+                            </Button>
+                        </div>
+                    </div>
+                )}
                 <EditorContent editor={editor} />
             </div>
             {value.length >= max && (

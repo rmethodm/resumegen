@@ -11,11 +11,9 @@ import {
     AddButton,
     EntryCard,
     Field,
-    LayoutThumb,
     MonthYearField,
     Pair,
     UrlField,
-    skillLayouts,
     useEntryReorder,
     useExpandedEntries,
 } from '@/Components/workstation/inspector-fields';
@@ -27,22 +25,12 @@ import {
     toFlatSkillNames,
     usesSkillCategories,
 } from '@/lib/skills-editor';
-import { cn } from '@/lib/utils';
 import type {
     ResumeDraft,
     ResumeSkill,
-    ResumeSkillsLayout,
     SkillLibraryGroup,
 } from '@/types';
 import type { SkillGroup } from '@/types';
-
-const skillsLayoutLabels: Record<ResumeSkillsLayout, string> = {
-    inline: 'Inline',
-    bullets: 'Bullets',
-    grouped: 'Grouped',
-    columns: 'Columns',
-    narrative: 'Narrative',
-};
 
 /** Compact one-line summary for a collapsed entry card. */
 function joinSummary(...parts: Array<string | null | undefined>): string {
@@ -299,6 +287,7 @@ export function ExperienceFields({
                         label="Bullets"
                         idPrefix={`experience-bullet-${index}`}
                         value={experience.bullets}
+                        targetRole={resume.target_role || undefined}
                         onChange={(bullets) =>
                             patch(resume, onChange, 'experiences', index, {
                                 bullets,
@@ -421,6 +410,7 @@ export function ProjectFields({
                     <BulletsField
                         label="Highlights"
                         value={project.highlights}
+                        targetRole={resume.target_role || undefined}
                         onChange={(highlights) =>
                             patch(resume, onChange, 'projects', index, {
                                 highlights,
@@ -603,10 +593,6 @@ export function SkillsFields({
         onChange({ ...resume, skills: skills.slice(0, MAX_SKILLS) });
     }
 
-    function setLayout(skills_layout: ResumeSkillsLayout) {
-        onChange({ ...resume, skills_layout });
-    }
-
     return (
         <>
             <div
@@ -626,53 +612,6 @@ export function SkillsFields({
                         Add skills
                     </button>
                 </div>
-
-                <div
-                    role="radiogroup"
-                    aria-label="Skills layout"
-                    className="grid grid-cols-5 gap-1.5"
-                >
-                    {skillLayouts.map((option) => {
-                        const selected = layout === option;
-
-                        return (
-                            <button
-                                key={option}
-                                type="button"
-                                role="radio"
-                                aria-checked={selected}
-                                title={skillsLayoutLabels[option]}
-                                onClick={() => setLayout(option)}
-                                className={cn(
-                                    'flex flex-col items-stretch gap-1 rounded-md border px-1.5 py-1.5 text-left transition-colors',
-                                    selected
-                                        ? 'border-brand bg-brand-subtle ring-1 ring-brand/30'
-                                        : 'border-surface-border bg-white hover:border-brand/40',
-                                )}
-                            >
-                                <span className="h-8 rounded-sm bg-surface px-1 py-1">
-                                    <LayoutThumb layout={option} />
-                                </span>
-                                <span
-                                    className={cn(
-                                        'truncate text-[10px] font-semibold leading-tight',
-                                        selected
-                                            ? 'text-brand'
-                                            : 'text-ink-muted',
-                                    )}
-                                >
-                                    {skillsLayoutLabels[option]}
-                                </span>
-                            </button>
-                        );
-                    })}
-                </div>
-
-                <p className="text-[11px] leading-snug text-ink-faint">
-                    {showCategories
-                        ? 'Category labels print on the resume for Grouped.'
-                        : 'This layout prints skill names only — categories stay saved if you switch to Grouped.'}
-                </p>
 
                 {atCap && (
                     <p className="text-xs text-ink-muted">
