@@ -120,12 +120,24 @@ export type Resume = {
 /** What the editor sends back; the id travels in the URL, not the body. */
 export type ResumeDraft = Omit<Resume, 'id'>;
 
+export type AiReviewSeverity = 'high' | 'medium' | 'low';
+
+export type AiReviewSuggestion = {
+    id: string;
+    label: string;
+    severity: AiReviewSeverity;
+    section: 'contact' | 'summary' | 'experience' | 'skills' | 'education';
+    detail: string;
+};
+
 /**
  * Document payload plus concurrency token. `updated_at` is server-owned and
  * not written by ResumeDocument; it rides on the Inertia page for C11.
  */
 export type ResumePageDocument = Resume & {
     updated_at?: string | null;
+    ai_review?: AiReviewSuggestion[] | null;
+    ai_review_generated_at?: string | null;
 };
 
 export type SaveStatus = 'saved' | 'dirty' | 'saving' | 'error';
