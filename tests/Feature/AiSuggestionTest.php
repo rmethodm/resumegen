@@ -73,4 +73,78 @@ class AiSuggestionTest extends TestCase
                 ->assertOk();
         }
     }
+
+    public function test_a_resume_is_reviewed_and_cached(): void
+    {
+        $user = User::factory()->create();
+        $resume = \App\Models\Resume::factory()->for($user)->create([
+            'target_job_description' => 'Looking for a senior backend engineer with AWS experience.',
+        ]);
+
+        OpenAI::fake([
+            CreateResponse::fake([
+                'choices' => [
+                    [
+                        'message' => [
+                            'role' => 'assistant',
+                            'content' => json_encode([
+                                'suggestions' => [
+                                    [
+                                        'id' => 'summary-vague',
+                                        'label' => 'Summary is too generic',
+                                        'severity' => 'high',
+                                        'section' => 'summary',
+                                        'detail' => 'Mention AWS explicitly since the target JD asks for it.',
+                                    ],
+                                ],
+                            ]),
+                        ],
+                    ],
+                ],
+                'usage' => ['prompt_tokens' => 500, 'completion_tokens' => 80],
+            ]),
+        ]);
+
+        $response = $this->actingAs($user)
+            ->postJson(route('resumes.ai-review', $resume));
+
+        $response->assertOk()
+            ->assertJsonPath('suggestions.0.id', 'summary-vague')
+            ->assertJsonPath('suggestions.0.severity', 'high');
+
+        $this->assertDatabaseHas('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'resume_review',
+            'model' => 'gpt-4o',
+        ]);
+
+        $row = \DB::table('ai_requests')->where('feature', 'resume_review')->first();
+        $this->assertGreaterThan(0, $row->cost_micro_cents);
+
+        $resume->refresh();
+        $this->assertNotNull($resume->ai_review);
+        $this->assertSame('summary-vague', $resume->ai_review[0]['id']);
+        $this->assertNotNull($resume->ai_review_generated_at);
+    }
+
+    public function test_reviewing_another_users_resume_is_not_found(): void
+    {
+        $owner = User::factory()->create();
+        $intruder = User::factory()->create();
+        $resume = \App\Models\Resume::factory()->for($owner)->create();
+
+        $this->actingAs($intruder)
+            ->postJson(route('resumes.ai-review', $resume))
+            ->assertNotFound();
+    }
+
+    public function test_blocked_users_cannot_review(): void
+    {
+        $user = User::factory()->create(['ai_blocked' => true]);
+        $resume = \App\Models\Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->postJson(route('resumes.ai-review', $resume))
+            ->assertStatus(429);
+    }
 }

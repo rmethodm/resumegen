@@ -77,4 +77,93 @@ class AiService
             'completion_tokens' => $completionTokens,
         ];
     }
+
+    private const REVIEW_MODEL = 'gpt-4o';
+
+    /**
+     * @param  array<string, mixed>  $resumeData
+     * @return array{suggestions: array<int, array<string, mixed>>, prompt_tokens: int, completion_tokens: int}
+     */
+    public function reviewResume(User $user, array $resumeData, ?string $jd = null): array
+    {
+        $response = OpenAI::chat()->create([
+            'model' => self::REVIEW_MODEL,
+            'messages' => [
+                ['role' => 'user', 'content' => $this->buildReviewPrompt($resumeData, $jd)],
+            ],
+            'temperature' => 0.3,
+            'response_format' => [
+                'type' => 'json_schema',
+                'json_schema' => [
+                    'name' => 'resume_review',
+                    'strict' => true,
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'suggestions' => [
+                                'type' => 'array',
+                                'items' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'id' => ['type' => 'string'],
+                                        'label' => ['type' => 'string'],
+                                        'severity' => ['type' => 'string', 'enum' => ['high', 'medium', 'low']],
+                                        'section' => ['type' => 'string', 'enum' => ['contact', 'summary', 'experience', 'skills', 'education']],
+                                        'detail' => ['type' => 'string'],
+                                    ],
+                                    'required' => ['id', 'label', 'severity', 'section', 'detail'],
+                                    'additionalProperties' => false,
+                                ],
+                            ],
+                        ],
+                        'required' => ['suggestions'],
+                        'additionalProperties' => false,
+                    ],
+                ],
+            ],
+        ]);
+
+        $content = $response->choices[0]->message->content ?? '{"suggestions":[]}';
+        $decoded = json_decode($content, true);
+        $suggestions = is_array($decoded['suggestions'] ?? null) ? $decoded['suggestions'] : [];
+
+        $promptTokens = $response->usage->promptTokens ?? 0;
+        $completionTokens = $response->usage->completionTokens ?? 0;
+
+        $user->aiRequests()->create([
+            'feature' => 'resume_review',
+            'model' => self::REVIEW_MODEL,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+            'cost_micro_cents' => self::costMicroCents(self::REVIEW_MODEL, $promptTokens, $completionTokens),
+        ]);
+
+        return [
+            'suggestions' => $suggestions,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $resumeData
+     */
+    private function buildReviewPrompt(array $resumeData, ?string $jd): string
+    {
+        $resumeJson = json_encode($resumeData, JSON_PRETTY_PRINT);
+        $prompt = 'You are a resume reviewer. Read the resume below and return a '
+            .'prioritized list of concrete improvement suggestions. Each suggestion '
+            .'needs an id (short slug), a label (one short sentence), a severity '
+            .'(high, medium, or low), a section it applies to (contact, summary, '
+            .'experience, skills, or education), and a detail (one to two sentences '
+            ."explaining why and how to fix it). Be specific, reference actual content \n"
+            ."from the resume, and do not invent facts.\n\nResume:\n{$resumeJson}";
+
+        if ($jd !== null && trim($jd) !== '') {
+            $prompt .= "\n\nTailor the review against this target job description — "
+                ."flag gaps between the resume and what it asks for:\n{$jd}";
+        }
+
+        return $prompt;
+    }
 }
