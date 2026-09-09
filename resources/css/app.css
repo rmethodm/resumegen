@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @plugin '@tailwindcss/forms';
 
@@ -8,36 +10,43 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  /* DESIGN.md Social Proof-Focused — system UI stack + JetBrains Mono. */
   --font-sans:
-    IBM Plex Sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-display: 'Source Serif 4', Georgia, Times New Roman, serif;
+  --font-display:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
 
-  /* Plain black-and-white token spine — accent aliases the neutral ramp so
-     token-based chrome cannot reintroduce hue. */
+  /* Neutrals — white / charcoal; never pure #000 (use #1A1A1A). */
   --color-neutral-50: #ffffff;
-  --color-neutral-100: #fafafa;
-  --color-neutral-200: #e5e5e5;
-  --color-neutral-300: #d4d4d4;
-  --color-neutral-400: #a3a3a3;
-  --color-neutral-500: #737373;
-  --color-neutral-600: #525252;
-  --color-neutral-700: #404040;
-  --color-neutral-800: #262626;
-  --color-neutral-900: #171717;
-  --color-neutral-950: #000000;
+  --color-neutral-100: #f7f7f7;
+  --color-neutral-200: #ebebeb;
+  --color-neutral-300: #d6d6d6;
+  --color-neutral-400: #b0b0b0;
+  --color-neutral-500: #8a8a8a;
+  --color-neutral-600: #4a4a4a;
+  --color-neutral-700: #333333;
+  --color-neutral-800: #1a1a1a;
+  --color-neutral-900: #141414;
+  --color-neutral-950: #0f0f0f;
 
-  --color-accent-50: #ffffff;
-  --color-accent-100: #fafafa;
-  --color-accent-200: #e5e5e5;
-  --color-accent-300: #d4d4d4;
-  --color-accent-400: #525252;
-  --color-accent-500: #000000;
-  --color-accent-600: #171717;
-  --color-accent-700: #262626;
-  --color-accent-800: #404040;
-  --color-accent-900: #525252;
-  --color-accent-950: #000000;
+  /* Accent ramp — tertiary CTA blue #0066FF (sat capped). */
+  --color-accent-50: #e5f0ff;
+  --color-accent-100: #cce0ff;
+  --color-accent-200: #99c2ff;
+  --color-accent-300: #66a3ff;
+  --color-accent-400: #3385ff;
+  --color-accent-500: #0066ff;
+  --color-accent-600: #005ce6;
+  --color-accent-700: #0047b3;
+  --color-accent-800: #003380;
+  --color-accent-900: #001f4d;
+  --color-accent-950: #001133;
 
   --color-brand: rgb(var(--brand-rgb));
   --color-brand-accent: rgb(var(--brand-accent-rgb));
@@ -47,29 +56,33 @@
 
   --color-surface: rgb(var(--surface-rgb));
   --color-surface-border: rgb(var(--surface-border-rgb));
-  --color-surface-dark: #171717;
-  --color-surface-dark-raised: #262626;
-  --color-surface-dark-border: #404040;
+  --color-surface-dark: #1a1a1a;
+  --color-surface-dark-raised: #333333;
+  --color-surface-dark-border: #4a4a4a;
 
-  --color-ink: #171717;
-  --color-ink-muted: #525252;
-  --color-ink-faint: #737373;
-  --color-ink-dark: #fafafa;
-  --color-ink-dark-muted: #a3a3a3;
-  --color-ink-dark-faint: #737373;
+  --color-ink: #1a1a1a;
+  --color-ink-muted: #4a4a4a;
+  --color-ink-faint: #8a8a8a;
+  --color-ink-dark: #f7f7f7;
+  --color-ink-dark-muted: #b0b0b0;
+  --color-ink-dark-faint: #8a8a8a;
 
-  /* Status stays grayscale; labels carry meaning, not color. */
-  --color-success: #171717;
-  --color-success-subtle: #fafafa;
-  --color-success-text: #000000;
+  /* Semantic status — danger stays readable red for form errors. */
+  --color-success: #1a7f4c;
+  --color-success-subtle: #e8f6ef;
+  --color-success-text: #145c38;
 
-  --color-warning: #171717;
-  --color-warning-subtle: #fafafa;
-  --color-warning-text: #000000;
+  --color-warning: #a16207;
+  --color-warning-subtle: #fef6e7;
+  --color-warning-text: #854d0e;
 
-  --color-danger: #171717;
-  --color-danger-subtle: #fafafa;
-  --color-danger-text: #000000;
+  --color-danger: #c62828;
+  --color-danger-subtle: #fdecec;
+  --color-danger-text: #8e1b1b;
+
+  --color-info: #0066ff;
+  --color-info-subtle: #e5f0ff;
+  --color-info-text: #0047b3;
 
   --z-index-base: 0;
   --z-index-raised: 1;
@@ -80,22 +93,19 @@
   --z-index-toast: 60;
   --z-index-tooltip: 70;
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-ambient:
-    0 8px 30px rgba(23, 27, 31, 0.06), 0 1px 2px rgba(23, 27, 31, 0.04);
+  /* Cards: 0 2px 12px /0.06; hover lift stays subtle. */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-ambient: 0 4px 16px rgba(0, 0, 0, 0.08);
   --shadow-shell: inset 0 1px 1px rgba(255, 255, 255, 0.65);
 
   /*
-   * Radius scale — values match Tailwind v4 defaults on purpose (no visual
-   * change); the tokens exist to make the roles explicit:
-   * sm = small inline controls/chips, md = buttons/inputs/list items,
-   * lg = cards/panels/modals, xl = large feature surfaces. Pills use
-   * rounded-full. Don't add one-off arbitrary radii.
+   * Radius — base 8px (0.5rem) for buttons, cards, inputs.
+   * sm/md share 8px; lg steps up for larger panels.
    */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 
   --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
 
@@ -118,6 +128,15 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }
 
 @utility focus-ring {
@@ -132,24 +151,25 @@
 @layer utilities {
   /*
  * Brand tokens as RGB channels so Tailwind opacity modifiers
- * (bg-brand/25, ring-brand/30) keep working. All brand-theme variants
- * resolve to the same grayscale — no hue preview remains.
+ * (bg-brand/25, ring-brand/30) keep working. DESIGN.md Social Proof-Focused:
+ * CTA accent #0066FF; ink #1A1A1A; legacy data-brand-theme variants share
+ * the same tokens.
  */
   :root,
   html[data-brand-theme='violet'],
   html[data-brand-theme='navy'],
   html[data-brand-theme='teal'],
   html[data-brand-theme='copper'] {
-    --brand-rgb: 0 0 0; /* #000000 */
-    --brand-accent-rgb: 23 23 23; /* #171717 */
-    --brand-subtle-rgb: 245 245 245; /* #f5f5f5 */
-    --brand-soft-rgb: 64 64 64; /* #404040 */
-    --surface-rgb: 250 250 250; /* #fafafa */
-    --surface-border-rgb: 229 229 229; /* #e5e5e5 */
+    --brand-rgb: 0 102 255; /* #0066FF — tertiary / CTA */
+    --brand-accent-rgb: 0 92 230; /* #005CE6 — ~8% darken hover */
+    --brand-subtle-rgb: 229 240 255; /* #E5F0FF */
+    --brand-soft-rgb: 0 71 179; /* #0047B3 — deep solid CTA */
+    --surface-rgb: 247 247 247; /* #F7F7F7 — muted page surface */
+    --surface-border-rgb: 235 235 235; /* #EBEBEB */
   }
 
   html {
-    /* Light-only — native form controls/scrollbars stay light. */
+    /* Light canvas — white page, charcoal ink via utilities. */
     color-scheme: light;
     background-color: #ffffff;
     scroll-behavior: smooth;
@@ -207,4 +227,217 @@
         size: letter;
         margin: 0;
     }
+}
+
+@theme inline {
+  --font-heading:
+    var(--font-sans);
+  --color-sidebar-ring:
+    var(--sidebar-ring);
+  --color-sidebar-border:
+    var(--sidebar-border);
+  --color-sidebar-accent-foreground:
+    var(--sidebar-accent-foreground);
+  --color-sidebar-accent:
+    var(--sidebar-accent);
+  --color-sidebar-primary-foreground:
+    var(--sidebar-primary-foreground);
+  --color-sidebar-primary:
+    var(--sidebar-primary);
+  --color-sidebar-foreground:
+    var(--sidebar-foreground);
+  --color-sidebar:
+    var(--sidebar);
+  --color-chart-5:
+    var(--chart-5);
+  --color-chart-4:
+    var(--chart-4);
+  --color-chart-3:
+    var(--chart-3);
+  --color-chart-2:
+    var(--chart-2);
+  --color-chart-1:
+    var(--chart-1);
+  --color-ring:
+    var(--ring);
+  --color-input:
+    var(--input);
+  --color-border:
+    var(--border);
+  --color-destructive:
+    var(--destructive);
+  --color-accent-foreground:
+    var(--accent-foreground);
+  --color-accent:
+    var(--accent);
+  --color-muted-foreground:
+    var(--muted-foreground);
+  --color-muted:
+    var(--muted);
+  --color-secondary-foreground:
+    var(--secondary-foreground);
+  --color-secondary:
+    var(--secondary);
+  --color-primary-foreground:
+    var(--primary-foreground);
+  --color-primary:
+    var(--primary);
+  --color-popover-foreground:
+    var(--popover-foreground);
+  --color-popover:
+    var(--popover);
+  --color-card-foreground:
+    var(--card-foreground);
+  --color-card:
+    var(--card);
+  --color-foreground:
+    var(--foreground);
+  --color-background:
+    var(--background);
+  --radius-sm:
+    calc(var(--radius) * 0.6);
+  --radius-md:
+    calc(var(--radius) * 0.8);
+  --radius-lg:
+    var(--radius);
+  --radius-xl:
+    calc(var(--radius) * 1.4);
+  --radius-2xl:
+    calc(var(--radius) * 1.8);
+  --radius-3xl:
+    calc(var(--radius) * 2.2);
+  --radius-4xl:
+    calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background:
+    oklch(1 0 0);
+  --foreground:
+    oklch(0.145 0 0);
+  --card:
+    oklch(1 0 0);
+  --card-foreground:
+    oklch(0.145 0 0);
+  --popover:
+    oklch(1 0 0);
+  --popover-foreground:
+    oklch(0.145 0 0);
+  --primary:
+    oklch(0.205 0 0);
+  --primary-foreground:
+    oklch(0.985 0 0);
+  --secondary:
+    oklch(0.97 0 0);
+  --secondary-foreground:
+    oklch(0.205 0 0);
+  --muted:
+    oklch(0.97 0 0);
+  --muted-foreground:
+    oklch(0.556 0 0);
+  --accent:
+    oklch(0.97 0 0);
+  --accent-foreground:
+    oklch(0.205 0 0);
+  --destructive:
+    oklch(0.577 0.245 27.325);
+  --border:
+    oklch(0.922 0 0);
+  --input:
+    oklch(0.922 0 0);
+  --ring:
+    oklch(0.708 0 0);
+  --chart-1:
+    oklch(0.87 0 0);
+  --chart-2:
+    oklch(0.556 0 0);
+  --chart-3:
+    oklch(0.439 0 0);
+  --chart-4:
+    oklch(0.371 0 0);
+  --chart-5:
+    oklch(0.269 0 0);
+  --radius:
+    0.625rem;
+  --sidebar:
+    oklch(0.985 0 0);
+  --sidebar-foreground:
+    oklch(0.145 0 0);
+  --sidebar-primary:
+    oklch(0.205 0 0);
+  --sidebar-primary-foreground:
+    oklch(0.985 0 0);
+  --sidebar-accent:
+    oklch(0.97 0 0);
+  --sidebar-accent-foreground:
+    oklch(0.205 0 0);
+  --sidebar-border:
+    oklch(0.922 0 0);
+  --sidebar-ring:
+    oklch(0.708 0 0);
+}
+
+.dark {
+  --background:
+    oklch(0.145 0 0);
+  --foreground:
+    oklch(0.985 0 0);
+  --card:
+    oklch(0.205 0 0);
+  --card-foreground:
+    oklch(0.985 0 0);
+  --popover:
+    oklch(0.205 0 0);
+  --popover-foreground:
+    oklch(0.985 0 0);
+  --primary:
+    oklch(0.922 0 0);
+  --primary-foreground:
+    oklch(0.205 0 0);
+  --secondary:
+    oklch(0.269 0 0);
+  --secondary-foreground:
+    oklch(0.985 0 0);
+  --muted:
+    oklch(0.269 0 0);
+  --muted-foreground:
+    oklch(0.708 0 0);
+  --accent:
+    oklch(0.269 0 0);
+  --accent-foreground:
+    oklch(0.985 0 0);
+  --destructive:
+    oklch(0.704 0.191 22.216);
+  --border:
+    oklch(1 0 0 / 10%);
+  --input:
+    oklch(1 0 0 / 15%);
+  --ring:
+    oklch(0.556 0 0);
+  --chart-1:
+    oklch(0.87 0 0);
+  --chart-2:
+    oklch(0.556 0 0);
+  --chart-3:
+    oklch(0.439 0 0);
+  --chart-4:
+    oklch(0.371 0 0);
+  --chart-5:
+    oklch(0.269 0 0);
+  --sidebar:
+    oklch(0.205 0 0);
+  --sidebar-foreground:
+    oklch(0.985 0 0);
+  --sidebar-primary:
+    oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground:
+    oklch(0.985 0 0);
+  --sidebar-accent:
+    oklch(0.269 0 0);
+  --sidebar-accent-foreground:
+    oklch(0.985 0 0);
+  --sidebar-border:
+    oklch(1 0 0 / 10%);
+  --sidebar-ring:
+    oklch(0.556 0 0);
 }
