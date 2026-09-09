@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AiSuggestionController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExtensionTokenController;
 use App\Http\Controllers\JobApplicationController;
@@ -145,6 +147,15 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/builder/{resume}/share/{link}', [ShareLinkController::class, 'update'])->name('share.update');
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
     Route::get('/shares', [ShareController::class, 'index'])->name('shares.index');
+
+    Route::get('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
+    Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
+
+    Route::middleware('throttle:20,1')->post('/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])
+        ->name('ai.rewrite-bullet');
+
+    Route::middleware('throttle:20,1')->post('/resumes/{resume}/ai-review', [AiSuggestionController::class, 'reviewResume'])
+        ->name('resumes.ai-review');
 
     // Autocomplete lookup
     Route::middleware('throttle:60,1')->group(function () {

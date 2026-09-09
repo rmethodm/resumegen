@@ -320,6 +320,9 @@ class ResumeController extends Controller
         $document = ResumeDocument::toArray($resume);
         // Concurrency token for C11 — not part of the document schema.
         $document['updated_at'] = $resume->updated_at?->toIso8601String();
+        // Cached AI review — Workstation-only, not part of the public share document.
+        $document['ai_review'] = $resume->ai_review;
+        $document['ai_review_generated_at'] = $resume->ai_review_generated_at?->toIso8601String();
 
         return Inertia::render($component, [
             'resume' => $document,
