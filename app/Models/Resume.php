@@ -221,6 +221,8 @@ class Resume extends Model
     {
         return [
             'section_order' => 'array',
+            'ai_review' => 'array',
+            'ai_review_generated_at' => 'datetime',
         ];
     }
 
