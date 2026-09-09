@@ -12,6 +12,7 @@ import { ResumePreview } from '@/Components/resume/resume-preview';
 import { ExportChecklistModal } from '@/Components/workstation/export-checklist-modal';
 import { NotesPanel, type WorkstationNote } from '@/Components/workstation/notes-panel';
 import { SectionPanel } from '@/Components/workstation/section-panel';
+import { CoachPanel } from '@/Components/workstation/coach-panel';
 import {
     SnapshotsPanel,
     type WorkstationSnapshot,
@@ -46,6 +47,7 @@ import {
 } from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
 import type {
+    AiReviewSuggestion,
     ResumeDraft,
     ResumePageDocument,
     ResumeSectionKey,
@@ -113,6 +115,12 @@ export default function Workstation({
     const [exportOpen, setExportOpen] = useState(false);
     const [exportFormat, setExportFormat] = useState<'pdf' | 'docx'>('pdf');
     const [showSideTools, setShowSideTools] = useState(false);
+    const [aiReview, setAiReview] = useState<AiReviewSuggestion[] | null>(
+        resume.ai_review ?? null,
+    );
+    const [aiReviewGeneratedAt, setAiReviewGeneratedAt] = useState<
+        string | null
+    >(resume.ai_review_generated_at ?? null);
     // Live score from the draft (B7) — same rules as PHP ResumeAnalysis.
     const liveAnalysis = useMemo(() => analyzeResume(draft), [draft]);
     const plainText = useMemo(() => resumeToPlainText(draft), [draft]);
@@ -318,6 +326,11 @@ export default function Workstation({
                 }
             }, 300);
         }
+    }
+
+    function jumpToSection(section: AiReviewSuggestion['section']) {
+        setTab('Edit');
+        scrollToSection(section);
     }
 
     // Native HTML5 drag-and-drop — no library needed for a plain reorder.
@@ -713,54 +726,22 @@ export default function Workstation({
                     )}
                 >
                     <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-4">
-                        {/* Score strip is Edit/Optimize guidance — hide on Review
-                            so the tab reads as a document viewer. */}
-                        {tab !== 'Review' && (
-                            <SectionPanel
-                                resumeId={id}
-                                analysis={liveAnalysis}
-                                resume={draft}
-                                selected={section}
-                                onSelect={scrollToSection}
-                                onAddSection={addSection}
-                                onAddKeyword={addKeyword}
-                                onJumpChecklist={jumpChecklist}
-                                onOpenOptimize={() => setTab('Optimize')}
-                            />
-                        )}
+                        <SectionPanel
+                            resumeId={id}
+                            analysis={liveAnalysis}
+                            resume={draft}
+                            selected={section}
+                            onSelect={scrollToSection}
+                            onAddSection={addSection}
+                            onAddKeyword={addKeyword}
+                            onJumpChecklist={jumpChecklist}
+                            onOpenOptimize={() => setTab('Optimize')}
+                        />
 
-                        {/* Form column + sticky live preview side by side on desktop. */}
-                        <div className="flex flex-col gap-6 xl:flex-row xl:items-start">
+                        <div className="flex flex-col gap-6">
                             <div className="flex min-w-0 flex-1 flex-col gap-5">
-                                {tab === 'Edit' && (
-                                    <TargetRoleBar
-                                        targetRole={draft.target_role}
-                                        onChange={(target_role) =>
-                                            setDraft({ ...draft, target_role })
-                                        }
-                                        targetCompany={
-                                            draft.target_company ?? ''
-                                        }
-                                        onTargetCompanyChange={(
-                                            target_company,
-                                        ) =>
-                                            setDraft({
-                                                ...draft,
-                                                target_company,
-                                            })
-                                        }
-                                        hasJobDescription={
-                                            (draft.target_job_description ??
-                                                '').trim() !== ''
-                                        }
-                                        onOpenOptimize={() =>
-                                            setTab('Optimize')
-                                        }
-                                    />
-                                )}
-
                                 {tab === 'Review' && (
-                                    <div className="overflow-hidden rounded-xl bg-neutral-100 ring-1 ring-ink/10">
+                                    <div className="overflow-hidden">
                                         {reviewPreviewMode === 'pdf' ? (
                                             <PdfPreviewFrame
                                                 src={`${route(
@@ -769,7 +750,7 @@ export default function Workstation({
                                                 )}?t=${pdfRevision}`}
                                             />
                                         ) : (
-                                            <div className="flex justify-center overflow-x-auto p-5 sm:p-8 lg:p-10">
+                                            <div className="overflow-x-auto">
                                                 <div
                                                     className="origin-top-left transition-transform duration-soft ease-soft motion-reduce:transition-none"
                                                     style={{
@@ -777,13 +758,10 @@ export default function Workstation({
                                                         width: `${100 / previewZoom}%`,
                                                     }}
                                                 >
-                                                    {/* Paper stage — B&W signature: document lift over quiet chrome */}
-                                                    <div className="rounded-sm bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_16px_40px_rgba(0,0,0,0.14)] ring-1 ring-black/10">
-                                                        <ResumePreview
-                                                            resume={draft}
-                                                            className="w-full"
-                                                        />
-                                                    </div>
+                                                    <ResumePreview
+                                                        resume={draft}
+                                                        className="w-full"
+                                                    />
                                                 </div>
                                             </div>
                                         )}
@@ -800,6 +778,21 @@ export default function Workstation({
                                             plainText={plainText}
                                         />
                                     </OptimizePanel>
+                                )}
+
+                                {tab === 'Coach' && (
+                                    <CoachPanel
+                                        resumeId={id}
+                                        aiReview={aiReview}
+                                        aiReviewGeneratedAt={aiReviewGeneratedAt}
+                                        onReviewed={(suggestions, generatedAt) => {
+                                            setAiReview(suggestions);
+                                            setAiReviewGeneratedAt(generatedAt);
+                                        }}
+                                        saveStatus={saveStatus}
+                                        onFlushSave={retrySave}
+                                        onJumpSection={jumpToSection}
+                                    />
                                 )}
 
                                 {tab === 'Edit' && (
@@ -824,20 +817,6 @@ export default function Workstation({
                                     </div>
                                 )}
                             </div>
-
-                            {tab === 'Edit' && (
-                                <aside
-                                    aria-label="Live preview"
-                                    className="hidden shrink-0 xl:sticky xl:top-4 xl:block xl:max-h-[calc(100dvh-2rem)] xl:w-[44%] xl:max-w-[620px] xl:overflow-y-auto xl:rounded-xl xl:bg-neutral-100 xl:p-5 xl:ring-1 xl:ring-ink/10"
-                                >
-                                    <div className="rounded-sm bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_16px_40px_rgba(0,0,0,0.14)] ring-1 ring-black/10">
-                                        <ResumePreview
-                                            resume={draft}
-                                            className="w-full"
-                                        />
-                                    </div>
-                                </aside>
-                            )}
                         </div>
                     </div>
                 </div>
