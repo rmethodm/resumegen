@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -77,7 +78,7 @@ class AiSuggestionTest extends TestCase
     public function test_a_resume_is_reviewed_and_cached(): void
     {
         $user = User::factory()->create();
-        $resume = \App\Models\Resume::factory()->for($user)->create([
+        $resume = Resume::factory()->for($user)->create([
             'target_job_description' => 'Looking for a senior backend engineer with AWS experience.',
         ]);
 
@@ -131,7 +132,7 @@ class AiSuggestionTest extends TestCase
     {
         $owner = User::factory()->create();
         $intruder = User::factory()->create();
-        $resume = \App\Models\Resume::factory()->for($owner)->create();
+        $resume = Resume::factory()->for($owner)->create();
 
         $this->actingAs($intruder)
             ->postJson(route('resumes.ai-review', $resume))
@@ -141,7 +142,7 @@ class AiSuggestionTest extends TestCase
     public function test_blocked_users_cannot_review(): void
     {
         $user = User::factory()->create(['ai_blocked' => true]);
-        $resume = \App\Models\Resume::factory()->for($user)->create();
+        $resume = Resume::factory()->for($user)->create();
 
         $this->actingAs($user)
             ->postJson(route('resumes.ai-review', $resume))
