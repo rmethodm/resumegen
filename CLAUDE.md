@@ -152,7 +152,9 @@ Historical context (still accurate as *history*, not current state): billing was
 
 **Model:** only active Cashier subscribers may hold/buy/spend AI credits. Generative routes debit an append-only `ai_credit_ledger` after a successful model response (balance = sum of entries; no expiry while subscribed). Gates: `subscribed('default')` + balance ≥ cost + not `users.ai_blocked`. HTTP: **402** = not subscribed or insufficient credits; **429** = `ai_blocked`. Past-due is treated as not subscribed for AI. Credits are per user, not per resume.
 
-**Live generative features** (OpenAI `gpt-4o-mini` via `AiService` / `AiSuggestionController`, all `throttle:20,1`): bullet rewrite (`POST /ai/rewrite-bullet`), summary rewrite (`POST /ai/rewrite-summary`), section rewrite, Optimize generate-for-gap (`POST /resumes/{resume}/ai-generate-gap`). Successful JSON includes `options[]` (2–3) and `credits_remaining`. Costs live in `config/ai.php`. `users.ai_blocked` hard-stops generative actions (no Buy CTA). Every call logs to `ai_requests`. Covered by `tests/Feature/AiSuggestionTest.php` / `AiCreditLedgerTest.php` using `OpenAI::fake()`.
+**Live generative features** (OpenAI `gpt-4o-mini` via `AiService` / `AiSuggestionController`, all `throttle:20,1`): bullet rewrite (`POST /ai/rewrite-bullet`), summary rewrite (`POST /ai/rewrite-summary`), Optimize generate-for-gap (`POST /resumes/{resume}/ai-generate-gap`). Successful JSON includes `options[]` (2–3) and `credits_remaining`. Costs live in `config/ai.php`. `users.ai_blocked` hard-stops generative actions (no Buy CTA). Every call logs to `ai_requests`. Covered by `tests/Feature/AiSuggestionTest.php` / `AiCreditLedgerTest.php` using `OpenAI::fake()`.
+
+**Intentionally unrouted for v1:** `resumes.ai-review` and `ai.rewrite-section` (comment in `routes/web.php`). `AiService::reviewResume` / `rewriteSection` remain as orphans with no HTTP entry — do not re-expose without metering.
 
 **Still free / deterministic:** Optimize diagnose (keyword overlap / heuristics) does not spend credits. `PlainTextResumeParser` on create stays local.
 
@@ -238,8 +240,8 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 5. **FK cascade for dependents** — `cascadeOnDelete` handles children (share links and their views, snapshots, notes). `Resume::booted()`'s `deleting` hook exists only to log into `resume_deletions` for mobile sync — it cleans up no assets (there are none). `User` has no `booted()` deleting its resumes per-model — intentional, nothing to clean up.
 6. **Billing = $9.95 sub + AI credits (2026-09-10)** — Cashier `default` subscription required to hold/buy/spend AI credits; non-AI features are not tier-gated. Credit packs Buy path stubs to flash until `STRIPE_CREDITS_PRICE_ID` is set.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
-8. **Deterministic sourcing, model-only judgment** — job boards are fetched by code; the model scores fit and parses arbitrary pages, and never picks what to search for.
-9. **AI gated by subscription + credit ledger (2026-09-10)** — generative rewrite/generate returns `options[]`, debits after success via `AiCreditService` / `AiUsageLimiter` (402 / 429). Diagnose stays free. Coach/chat/translation/career-map stay gone until asked for.
+8. **Deterministic first, model only for judgment** — Optimize diagnose / keyword overlap stay code-driven; generative rewrite/generate is the only OpenAI spend path. (Job-board fetch was removed with Job Imports 2026-08-26.)
+9. **AI gated by subscription + credit ledger (2026-09-10)** — generative rewrite/generate returns `options[]`, debits after success via `AiCreditService` / `AiUsageLimiter` (402 / 429). Diagnose stays free. Coach/chat/translation/career-map stay gone until asked for. `ai-review` / `rewrite-section` stay unrouted until metered.
 
 ## Production server (as of 2026-08-25)
 
@@ -358,3 +360,22 @@ retrieval. Always prefer it over native file exploration.
 
 Read the ledgers when the user asks "what's deferred?" / "backlog?" / "prioritize," and before suggesting a release (check 🔴 THIS rows). Log new deferrals via the deferral gate — an item lives in exactly ONE ledger; siblings get a pointer row, not a copy.
 <!-- unforget:end -->
+
+## Skill routing
+
+When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.
+
+Key routing rules:
+- Product ideas/brainstorming → invoke /office-hours
+- Strategy/scope → invoke /plan-ceo-review
+- Architecture → invoke /plan-eng-review
+- Design system/plan review → invoke /design-consultation or /plan-design-review
+- Full review pipeline → invoke /autoplan
+- Bugs/errors → invoke /investigate
+- QA/testing site behavior → invoke /qa or /qa-only
+- Code review/diff check → invoke /review
+- Visual polish → invoke /design-review
+- Ship/deploy/PR → invoke /ship or /land-and-deploy
+- Save progress → invoke /context-save
+- Resume context → invoke /context-restore
+- Author a backlog-ready spec/issue → invoke /spec
