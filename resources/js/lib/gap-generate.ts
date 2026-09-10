@@ -1,5 +1,6 @@
 import {
     bulletRewriteControl,
+    type AiControlLockReason,
     type BulletRewriteCredits,
 } from '@/lib/bullet-rewrite';
 import type { ResumeDraft, ResumeExperience } from '@/types';
@@ -12,6 +13,7 @@ export function gapGenerateControl(credits: BulletRewriteCredits | null): {
     disabled: boolean;
     title?: string;
     label: string;
+    lockReason?: AiControlLockReason;
 } {
     const control = bulletRewriteControl(credits);
 
@@ -96,4 +98,52 @@ export function creditsPurchaseHref(): string | null {
     }
 
     return null;
+}
+
+export function subscriptionCheckoutHref(): string | null {
+    if (typeof route !== 'function') {
+        return null;
+    }
+
+    try {
+        const ziggy = route();
+
+        if (typeof ziggy.has === 'function' && ziggy.has('billing.checkout')) {
+            return route('billing.checkout');
+        }
+    } catch {
+        return null;
+    }
+
+    return null;
+}
+
+export type AiControlClick =
+    | { type: 'run' }
+    | { type: 'navigate'; href: string }
+    | { type: 'noop' };
+
+export function resolveAiControlClick(
+    control: {
+        visible: boolean;
+        disabled: boolean;
+        lockReason?: 'subscribe' | 'credits' | 'blocked';
+    },
+    checkoutHref: string | null,
+): AiControlClick {
+    if (!control.visible) {
+        return { type: 'noop' };
+    }
+
+    if (control.lockReason === 'subscribe') {
+        return checkoutHref
+            ? { type: 'navigate', href: checkoutHref }
+            : { type: 'noop' };
+    }
+
+    if (control.disabled) {
+        return { type: 'noop' };
+    }
+
+    return { type: 'run' };
 }
