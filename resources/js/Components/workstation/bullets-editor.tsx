@@ -6,12 +6,13 @@ import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import { EditorContent, useEditor, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect, useMemo, useReducer, type ReactNode } from 'react';
+import { useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
 import { Button } from '@/Components/ui/button';
 import { Label } from '@/Components/ui/label';
 import {
     bulletRewriteControl,
     bulletRewriteReducer,
+    rewriteFailureCreditsRemaining,
     rewriteFailureMessage,
     type BulletRewriteCredits,
 } from '@/lib/bullet-rewrite';
@@ -126,10 +127,16 @@ export function BulletsField({
     const [rewrite, dispatchRewrite] = useReducer(bulletRewriteReducer, {
         status: 'idle',
     } as const);
+    const rewriteInFlight = useRef(false);
     const rewriteControl = bulletRewriteControl(aiCredits);
 
     async function requestRewrite() {
-        if (!editor || rewriteControl.disabled || rewrite.status === 'loading') {
+        if (
+            !editor ||
+            rewriteControl.disabled ||
+            rewrite.status === 'loading' ||
+            rewriteInFlight.current
+        ) {
             return;
         }
 
@@ -138,6 +145,7 @@ export function BulletsField({
 
         if (!range || !bulletText) return;
 
+        rewriteInFlight.current = true;
         dispatchRewrite({ type: 'start' });
 
         try {
@@ -162,6 +170,12 @@ export function BulletsField({
 
             if (failure) {
                 dispatchRewrite({ type: 'error', message: failure });
+                const remaining = rewriteFailureCreditsRemaining(res.status);
+
+                if (remaining !== null) {
+                    onCreditsRemaining?.(remaining);
+                }
+
                 return;
             }
 
@@ -206,6 +220,8 @@ export function BulletsField({
                 type: 'error',
                 message: 'Rewrite failed. Try again.',
             });
+        } finally {
+            rewriteInFlight.current = false;
         }
     }
 

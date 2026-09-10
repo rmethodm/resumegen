@@ -69,6 +69,10 @@ export function rewriteFailureMessage(status: number): string | null {
     return null;
 }
 
+export function rewriteFailureCreditsRemaining(status: number): number | null {
+    return status === 402 ? 0 : null;
+}
+
 export function bulletRewriteControl(credits: BulletRewriteCredits | null): {
     visible: boolean;
     disabled: boolean;

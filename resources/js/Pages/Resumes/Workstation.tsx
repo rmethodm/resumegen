@@ -83,9 +83,15 @@ export default function Workstation({
 }) {
     const { id, updated_at: initialUpdatedAt, ...initial } = resume;
     const page = usePage();
+    const sharedBalance = page.props.aiCredits?.balance;
     const [creditsRemaining, setCreditsRemaining] = useState<number | null>(
         null,
     );
+    useEffect(() => {
+        if (typeof sharedBalance === 'number') {
+            setCreditsRemaining(sharedBalance);
+        }
+    }, [sharedBalance]);
     const aiCredits = page.props.aiCredits
         ? {
               ...page.props.aiCredits,
