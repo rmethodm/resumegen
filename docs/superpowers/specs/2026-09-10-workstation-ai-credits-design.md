@@ -1,7 +1,7 @@
 # Workstation AI: Tailor + inline rewrite under subscription credits
 
 Date: 2026-09-10  
-Status: draft (awaiting human review of this file)
+Status: approved
 
 ## Relationship to prior work
 
