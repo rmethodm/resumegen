@@ -40,8 +40,8 @@ return [
     | Placeholder Subscription Price
     |--------------------------------------------------------------------------
     |
-    | Single-tier scaffold price ID until pricing tiers are decided. Set in
-    | the Stripe dashboard and referenced by BillingController::checkout().
+    | $9.95/mo default subscription price. Set in the Stripe dashboard and
+    | referenced by BillingController::checkout().
     |
     */
 
