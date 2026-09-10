@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GenerateGapBulletsRequest;
 use App\Http\Requests\RewriteBulletRequest;
 use App\Http\Requests\RewriteSectionRequest;
+use App\Http\Requests\RewriteSummaryRequest;
 use App\Models\Experience;
 use App\Models\Resume;
 use App\Models\User;
@@ -41,6 +42,35 @@ class AiSuggestionController extends Controller
         }
 
         $credits->spend($user, $cost, 'bullet_rewrite', $result['ai_request_id']);
+
+        return response()->json([
+            'options' => $result['options'],
+            'credits_remaining' => $credits->balance($user),
+        ]);
+    }
+
+    public function rewriteSummary(RewriteSummaryRequest $request, AiService $ai, AiUsageLimiter $limiter, AiCreditService $credits): JsonResponse
+    {
+        $user = $request->user();
+        $cost = (int) config('ai.costs.summary_rewrite');
+
+        if ($refusal = $this->aiRefusal($limiter, $user, $cost)) {
+            return $refusal;
+        }
+
+        try {
+            $result = $ai->rewriteSummary(
+                $user,
+                (string) $request->validated('summary'),
+                $request->validated('target_role'),
+            );
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'AI rewrite failed.'], 500);
+        }
+
+        $credits->spend($user, $cost, 'summary_rewrite', $result['ai_request_id']);
 
         return response()->json([
             'options' => $result['options'],

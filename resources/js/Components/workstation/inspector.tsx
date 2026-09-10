@@ -52,6 +52,8 @@ export function SectionFields({
                 resume={resume}
                 resumeId={resumeId}
                 onChange={onChange}
+                aiCredits={aiCredits}
+                onCreditsRemaining={onCreditsRemaining}
             />
         ),
         experience: (

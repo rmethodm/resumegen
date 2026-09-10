@@ -182,6 +182,131 @@ class AiSuggestionTest extends TestCase
         $this->assertSame(8, app(AiCreditService::class)->balance($user));
     }
 
+    public function test_guests_cannot_rewrite_summaries(): void
+    {
+        $this->postJson(route('ai.rewrite-summary'), ['summary' => 'Did stuff at companies.'])
+            ->assertUnauthorized();
+    }
+
+    public function test_unsubscribed_users_cannot_rewrite_summaries(): void
+    {
+        $user = User::factory()->create();
+        app(AiCreditService::class)->grant($user, 5, 'admin');
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-summary'), ['summary' => 'Did stuff at companies.'])
+            ->assertStatus(402)
+            ->assertJson(['message' => 'Subscription or AI credits required.']);
+
+        $this->assertSame(5, app(AiCreditService::class)->balance($user));
+    }
+
+    public function test_subscribers_without_credits_cannot_rewrite_summaries(): void
+    {
+        $user = User::factory()->create();
+        $this->subscribeUser($user);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-summary'), ['summary' => 'Did stuff at companies.'])
+            ->assertStatus(402)
+            ->assertJson(['message' => 'Subscription or AI credits required.']);
+
+        $this->assertSame(0, app(AiCreditService::class)->balance($user));
+    }
+
+    public function test_a_summary_is_rewritten_and_logged(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+
+        OpenAI::fake([$this->fakeRewriteOptions(['Backend engineer with AWS experience.', 'Shipped cloud platforms at scale.', 'Built reliable services for operators.'])]);
+
+        $response = $this->actingAs($user)
+            ->postJson(route('ai.rewrite-summary'), [
+                'summary' => 'Did stuff at companies.',
+                'target_role' => 'Backend Engineer',
+            ]);
+
+        $response->assertOk()->assertExactJson([
+            'options' => ['Backend engineer with AWS experience.', 'Shipped cloud platforms at scale.', 'Built reliable services for operators.'],
+            'credits_remaining' => 4,
+        ]);
+
+        $this->assertSame(4, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseHas('ai_credit_ledger', [
+            'user_id' => $user->id,
+            'amount' => -1,
+            'reason' => 'spend',
+            'feature' => 'summary_rewrite',
+        ]);
+
+        $this->assertDatabaseHas('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'summary_rewrite',
+            'model' => 'gpt-4o-mini',
+            'prompt_tokens' => 40,
+            'completion_tokens' => 12,
+            'cost_micro_cents' => 600 + 720,
+        ]);
+    }
+
+    public function test_openai_failure_does_not_debit_summary_rewrite_credits(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+
+        OpenAI::fake([new RuntimeException('openai unavailable')]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-summary'), ['summary' => 'Did stuff at companies.'])
+            ->assertStatus(500);
+
+        $this->assertSame(5, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseMissing('ai_credit_ledger', [
+            'user_id' => $user->id,
+            'reason' => 'spend',
+        ]);
+        $this->assertDatabaseMissing('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'summary_rewrite',
+        ]);
+    }
+
+    public function test_unusable_summary_rewrite_response_does_not_debit_credits(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+
+        OpenAI::fake([
+            CreateResponse::fake([
+                'choices' => [
+                    ['message' => ['role' => 'assistant', 'content' => 'not-json']],
+                ],
+            ]),
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-summary'), ['summary' => 'Did stuff at companies.'])
+            ->assertStatus(500);
+
+        $this->assertSame(5, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseMissing('ai_credit_ledger', [
+            'user_id' => $user->id,
+            'reason' => 'spend',
+        ]);
+        $this->assertDatabaseMissing('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'summary_rewrite',
+        ]);
+    }
+
+    public function test_blocked_users_cannot_rewrite_summaries(): void
+    {
+        $user = User::factory()->create(['ai_blocked' => true]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-summary'), ['summary' => 'Did stuff at companies.'])
+            ->assertStatus(429)
+            ->assertJson(['message' => 'AI access is blocked.']);
+    }
+
     public function test_a_resume_is_reviewed_and_cached(): void
     {
         $user = $this->subscribedUserWithCredits();

@@ -101,6 +101,61 @@ class AiService
     /**
      * @return array{options: list<string>, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
      */
+    public function rewriteSummary(User $user, string $summary, ?string $targetRole = null): array
+    {
+        $prompt = $targetRole !== null && $targetRole !== ''
+            ? "Rewrite this resume professional summary into three distinct, more impactful options targeting a {$targetRole} role. Keep them factual; do not fabricate numbers. Return JSON with an \"options\" array of exactly three strings.\n\n{$summary}"
+            : "Rewrite this resume professional summary into three distinct, more impactful options. Keep them factual; do not fabricate numbers. Return JSON with an \"options\" array of exactly three strings.\n\n{$summary}";
+
+        $response = OpenAI::chat()->create([
+            'model' => self::MODEL,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt],
+            ],
+            'temperature' => 0.5,
+            'response_format' => [
+                'type' => 'json_schema',
+                'json_schema' => [
+                    'name' => 'summary_rewrite_options',
+                    'strict' => true,
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'options' => [
+                                'type' => 'array',
+                                'items' => ['type' => 'string'],
+                            ],
+                        ],
+                        'required' => ['options'],
+                        'additionalProperties' => false,
+                    ],
+                ],
+            ],
+        ]);
+
+        $options = $this->parseRewriteOptions($response->choices[0]->message->content ?? null);
+        $promptTokens = $response->usage->promptTokens ?? 0;
+        $completionTokens = $response->usage->completionTokens ?? 0;
+
+        $aiRequest = $user->aiRequests()->create([
+            'feature' => 'summary_rewrite',
+            'model' => self::MODEL,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+            'cost_micro_cents' => self::costMicroCents(self::MODEL, $promptTokens, $completionTokens),
+        ]);
+
+        return [
+            'options' => $options,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+            'ai_request_id' => $aiRequest->id,
+        ];
+    }
+
+    /**
+     * @return array{options: list<string>, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
+     */
     public function generateGapBullets(User $user, string $keyword, string $jd, string $roleContext): array
     {
         $prompt = "Write three distinct one-sentence resume bullet options for this role that naturally incorporate the missing keyword \"{$keyword}\". Keep them factual; do not fabricate numbers or employers. Tailor language to the job description. Return JSON with an \"options\" array of exactly three strings.\n\nRole context:\n{$roleContext}\n\nJob description:\n{$jd}";

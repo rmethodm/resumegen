@@ -12,7 +12,6 @@ import { ResumePreview } from '@/Components/resume/resume-preview';
 import { ExportChecklistModal } from '@/Components/workstation/export-checklist-modal';
 import { NotesPanel, type WorkstationNote } from '@/Components/workstation/notes-panel';
 import { SectionPanel } from '@/Components/workstation/section-panel';
-import { CoachPanel } from '@/Components/workstation/coach-panel';
 import {
     SnapshotsPanel,
     type WorkstationSnapshot,
@@ -47,7 +46,6 @@ import {
 } from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
 import type {
-    AiReviewSuggestion,
     ResumeDraft,
     ResumePageDocument,
     ResumeSectionKey,
@@ -130,12 +128,6 @@ export default function Workstation({
     const [exportOpen, setExportOpen] = useState(false);
     const [exportFormat, setExportFormat] = useState<'pdf' | 'docx'>('pdf');
     const [showSideTools, setShowSideTools] = useState(false);
-    const [aiReview, setAiReview] = useState<AiReviewSuggestion[] | null>(
-        resume.ai_review ?? null,
-    );
-    const [aiReviewGeneratedAt, setAiReviewGeneratedAt] = useState<
-        string | null
-    >(resume.ai_review_generated_at ?? null);
     // Live score from the draft (B7) — same rules as PHP ResumeAnalysis.
     const liveAnalysis = useMemo(() => analyzeResume(draft), [draft]);
     const plainText = useMemo(() => resumeToPlainText(draft), [draft]);
@@ -341,11 +333,6 @@ export default function Workstation({
                 }
             }, 300);
         }
-    }
-
-    function jumpToSection(section: AiReviewSuggestion['section']) {
-        setTab('Edit');
-        scrollToSection(section);
     }
 
     // Native HTML5 drag-and-drop — no library needed for a plain reorder.
@@ -799,26 +786,7 @@ export default function Workstation({
                                     </OptimizePanel>
                                 )}
 
-                                {tab === 'Coach' && (
-                                    <CoachPanel
-                                        resumeId={id}
-                                        aiReview={aiReview}
-                                        aiReviewGeneratedAt={aiReviewGeneratedAt}
-                                        onReviewed={(suggestions, generatedAt) => {
-                                            setAiReview(suggestions);
-                                            setAiReviewGeneratedAt(generatedAt);
-                                        }}
-                                        saveStatus={saveStatus}
-                                        onFlushSave={retrySave}
-                                        onJumpSection={jumpToSection}
-                                    />
-                                )}
-
-                                {tab === 'Edit' && (
-                                    <div className="min-w-0">
-                                        {renderFormSections()}
-                                    </div>
-                                )}
+                                {tab === 'Edit' && renderFormSections()}
 
                                 {showSideTools && (
                                     <div
