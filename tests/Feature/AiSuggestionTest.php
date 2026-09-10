@@ -267,7 +267,7 @@ class AiSuggestionTest extends TestCase
 
     public function test_a_section_is_rewritten_and_logged(): void
     {
-        $user = $this->subscribedUserWithCredits();
+        $user = $this->subscribedUserWithCredits(5);
         $resume = Resume::factory()->for($user)->create(['summary' => 'Did stuff at companies.']);
 
         OpenAI::fake([
@@ -290,12 +290,46 @@ class AiSuggestionTest extends TestCase
 
         $response->assertOk()->assertJson(['text' => 'Backend engineer with AWS experience.']);
 
+        $this->assertSame(4, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseHas('ai_credit_ledger', [
+            'user_id' => $user->id,
+            'amount' => -1,
+            'reason' => 'spend',
+            'feature' => 'summary_rewrite',
+        ]);
+
         $this->assertDatabaseHas('ai_requests', [
             'user_id' => $user->id,
             'feature' => 'section_rewrite',
             'model' => 'gpt-4o-mini',
             'prompt_tokens' => 60,
             'completion_tokens' => 15,
+        ]);
+    }
+
+    public function test_openai_failure_does_not_debit_section_rewrite_credits(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+        $resume = Resume::factory()->for($user)->create(['summary' => 'Did stuff at companies.']);
+
+        OpenAI::fake([new RuntimeException('openai unavailable')]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-section', $resume), [
+                'section' => 'summary',
+                'text' => 'Did stuff at companies.',
+                'detail' => 'Mention AWS explicitly since the target JD asks for it.',
+            ])
+            ->assertStatus(500);
+
+        $this->assertSame(5, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseMissing('ai_credit_ledger', [
+            'user_id' => $user->id,
+            'reason' => 'spend',
+        ]);
+        $this->assertDatabaseMissing('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'section_rewrite',
         ]);
     }
 

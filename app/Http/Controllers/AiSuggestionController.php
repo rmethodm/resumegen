@@ -68,7 +68,7 @@ class AiSuggestionController extends Controller
         ]);
     }
 
-    public function rewriteSection(RewriteSectionRequest $request, Resume $resume, AiService $ai, AiUsageLimiter $limiter): JsonResponse
+    public function rewriteSection(RewriteSectionRequest $request, Resume $resume, AiService $ai, AiUsageLimiter $limiter, AiCreditService $credits): JsonResponse
     {
         $user = $request->user();
 
@@ -80,11 +80,19 @@ class AiSuggestionController extends Controller
             return $refusal;
         }
 
-        $result = $ai->rewriteSection(
-            $user,
-            (string) $request->validated('text'),
-            (string) $request->validated('detail'),
-        );
+        try {
+            $result = $ai->rewriteSection(
+                $user,
+                (string) $request->validated('text'),
+                (string) $request->validated('detail'),
+            );
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'AI rewrite failed.'], 500);
+        }
+
+        $credits->spend($user, $cost, 'summary_rewrite', $result['ai_request_id']);
 
         return response()->json(['text' => $result['text']]);
     }
