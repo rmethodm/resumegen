@@ -55,3 +55,4 @@ docs/UNFORGET-archive-*.md
 .unforget-session.json
 .unforget.json
 docs/.unforget.json
+.worktrees/
