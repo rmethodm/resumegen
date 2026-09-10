@@ -566,6 +566,52 @@ class AiSuggestionTest extends TestCase
             ->assertInvalid(['experience_id']);
     }
 
+    public function test_gap_bullets_can_be_generated_by_experience_index(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+        $resume = Resume::factory()->for($user)->create([
+            'target_job_description' => 'Looking for a senior backend engineer with AWS experience.',
+        ]);
+        Experience::factory()->for($resume)->create([
+            'position' => 0,
+            'title' => 'Backend Engineer',
+            'company' => 'Acme',
+        ]);
+        Experience::factory()->for($resume)->create([
+            'position' => 1,
+            'title' => 'Older role',
+        ]);
+
+        OpenAI::fake([$this->fakeRewriteOptions(['Led AWS migration.', 'Cut AWS spend.'])]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.generate-gap', $resume), [
+                'keyword' => 'AWS',
+                'experience_index' => 0,
+            ])
+            ->assertOk()
+            ->assertJson([
+                'options' => ['Led AWS migration.', 'Cut AWS spend.'],
+                'credits_remaining' => 4,
+            ]);
+    }
+
+    public function test_experience_index_must_exist_on_the_resume(): void
+    {
+        $user = $this->subscribedUserWithCredits();
+        $resume = Resume::factory()->for($user)->create([
+            'target_job_description' => 'Need AWS experience.',
+        ]);
+        Experience::factory()->for($resume)->create();
+
+        $this->actingAs($user)
+            ->postJson(route('ai.generate-gap', $resume), [
+                'keyword' => 'AWS',
+                'experience_index' => 4,
+            ])
+            ->assertInvalid(['experience_index']);
+    }
+
     public function test_gap_bullets_are_generated_and_debited(): void
     {
         $user = $this->subscribedUserWithCredits(5);

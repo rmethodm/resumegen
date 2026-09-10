@@ -150,7 +150,7 @@ class AiSuggestionController extends Controller
             return $refusal;
         }
 
-        $experience = $resume->experiences()->findOrFail($request->validated('experience_id'));
+        $experience = $this->gapExperience($resume, $request->validated());
 
         try {
             $result = $ai->generateGapBullets(
@@ -171,6 +171,26 @@ class AiSuggestionController extends Controller
             'options' => $result['options'],
             'credits_remaining' => $credits->balance($user),
         ]);
+    }
+
+    /**
+     * @param  array{experience_id?: int, experience_index?: int}  $validated
+     */
+    private function gapExperience(Resume $resume, array $validated): Experience
+    {
+        if (isset($validated['experience_id'])) {
+            return $resume->experiences()->findOrFail($validated['experience_id']);
+        }
+
+        $experience = $resume->experiences->values()->get((int) $validated['experience_index']);
+
+        if ($experience === null) {
+            throw ValidationException::withMessages([
+                'experience_index' => 'The selected experience is invalid.',
+            ]);
+        }
+
+        return $experience;
     }
 
     private function gapRoleContext(Experience $experience): string
