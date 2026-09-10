@@ -22,4 +22,17 @@ class BillingCreditsTest extends TestCase
             ->assertRedirect(route('dashboard'))
             ->assertSessionHas('error', 'AI credit packs coming soon');
     }
+
+    public function test_credits_route_refuses_non_subscribers_when_price_set(): void
+    {
+        config(['cashier.credits_price_id' => 'price_test_credits']);
+
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('dashboard'))
+            ->get(route('billing.credits'))
+            ->assertRedirect(route('dashboard'))
+            ->assertSessionHas('error', 'Subscribe to purchase AI credits');
+    }
 }
