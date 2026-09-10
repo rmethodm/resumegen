@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
     bulletRewriteControl,
     bulletRewriteReducer,
+    rewriteFailureCreditsRemaining,
     rewriteFailureMessage,
 } from './bullet-rewrite';
 
@@ -114,6 +115,14 @@ describe('rewriteFailureMessage', () => {
         expect(rewriteFailureMessage(402)).toBe('Out of AI credits');
         expect(rewriteFailureMessage(500)).toBeNull();
         expect(rewriteFailureMessage(200)).toBeNull();
+    });
+});
+
+describe('rewriteFailureCreditsRemaining', () => {
+    it('zeros credits on 402 so the Rewrite control can disable', () => {
+        expect(rewriteFailureCreditsRemaining(402)).toBe(0);
+        expect(rewriteFailureCreditsRemaining(429)).toBeNull();
+        expect(rewriteFailureCreditsRemaining(500)).toBeNull();
     });
 });
 
