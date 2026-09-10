@@ -5,26 +5,38 @@ namespace App\Services;
 use App\Models\User;
 
 /**
- * Free-tier AI request cap. `ai_limit_override` on the user bypasses the
- * default; `ai_blocked` is a hard stop regardless of remaining quota.
+ * Gates AI spend on Cashier subscription + credit balance.
+ * `ai_blocked` is a hard stop (429) regardless of subscription or balance.
  */
 class AiUsageLimiter
 {
-    private const DEFAULT_DAILY_LIMIT = 10;
+    public function __construct(private AiCreditService $credits) {}
 
     public function remaining(User $user): int
     {
-        $limit = $user->ai_limit_override ?? self::DEFAULT_DAILY_LIMIT;
-
-        $used = $user->aiRequests()
-            ->where('created_at', '>=', now()->subDay())
-            ->count();
-
-        return max(0, $limit - $used);
+        return $this->credits->balance($user);
     }
 
-    public function allows(User $user): bool
+    public function subscribedForAi(User $user): bool
     {
-        return ! $user->ai_blocked;
+        return $user->subscribed('default');
+    }
+
+    public function allows(User $user, int $cost = 1): bool
+    {
+        return $this->refusalStatus($user, $cost) === null;
+    }
+
+    public function refusalStatus(User $user, int $cost = 1): ?int
+    {
+        if ($user->ai_blocked) {
+            return 429;
+        }
+
+        if (! $this->subscribedForAi($user) || $this->credits->balance($user) < $cost) {
+            return 402;
+        }
+
+        return null;
     }
 }
