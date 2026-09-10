@@ -333,7 +333,7 @@ export function OptimizePanel({
                                                 (subscribeLock ? (
                                                     <a
                                                         href={checkoutHref}
-                                                        title={generateTitle}
+                                                        title={generateControl.title}
                                                         className={buttonClassName(
                                                             'outline',
                                                             'sm',
