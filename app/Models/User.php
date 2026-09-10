@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
 // 2FA fields are deliberately absent: every write is a direct property
@@ -21,7 +22,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use Billable, HasApiTokens, HasFactory, Notifiable;
 
     /**
      * @return HasMany<Resume, $this>
@@ -50,6 +51,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(JobApplication::class);
     }
 
+    /**
+     * @return HasMany<AiRequest, $this>
+     */
+    public function aiRequests(): HasMany
+    {
+        return $this->hasMany(AiRequest::class);
+    }
+
+    /**
+     * @return HasMany<AiCreditLedgerEntry, $this>
+     */
+    public function aiCreditLedger(): HasMany
+    {
+        return $this->hasMany(AiCreditLedgerEntry::class);
+    }
+
     protected function casts(): array
     {
         return [
@@ -64,6 +81,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'profile' => 'array',
             'stale_nudge_sent_at' => 'datetime',
             'view_nudge_sent_at' => 'datetime',
+            'ai_blocked' => 'boolean',
+            'ai_usage_reset_at' => 'datetime',
+            'ai_starter_credits_granted_at' => 'datetime',
         ];
     }
 
