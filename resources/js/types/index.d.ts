@@ -123,12 +123,19 @@ export interface ShareLink {
     created_at: string;
 }
 
+export interface AiCredits {
+    balance: number;
+    subscribed: boolean;
+    canPurchase: boolean;
+}
+
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
     auth: {
         user: User;
     };
+    aiCredits: AiCredits | null;
 };
 
 export interface AtsScoreCategory {
