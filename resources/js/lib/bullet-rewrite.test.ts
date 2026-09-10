@@ -127,7 +127,7 @@ describe('rewriteFailureCreditsRemaining', () => {
 });
 
 describe('bulletRewriteControl', () => {
-    it('hides when not subscribed', () => {
+    it('shows locked Subscribe to unlock when not subscribed', () => {
         expect(
             bulletRewriteControl({
                 balance: 20,
@@ -135,11 +135,14 @@ describe('bulletRewriteControl', () => {
                 canPurchase: false,
             }),
         ).toEqual({
-            visible: false,
+            visible: true,
             disabled: true,
+            title: 'Subscribe to unlock',
             label: 'Rewrite · 1 credit',
+            lockReason: 'subscribe',
         });
         expect(bulletRewriteControl(null).visible).toBe(false);
+        expect(bulletRewriteControl(null).lockReason).toBeUndefined();
     });
 
     it('disables without a purchase title when blocked', () => {
@@ -153,6 +156,7 @@ describe('bulletRewriteControl', () => {
             visible: true,
             disabled: true,
             label: 'Rewrite · 1 credit',
+            lockReason: 'blocked',
         });
     });
 
@@ -168,6 +172,7 @@ describe('bulletRewriteControl', () => {
             disabled: true,
             title: 'Out of AI credits',
             label: 'Rewrite · 1 credit',
+            lockReason: 'credits',
         });
     });
 

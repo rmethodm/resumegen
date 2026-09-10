@@ -52,14 +52,20 @@ function draft(overrides: Partial<ResumeDraft> = {}): ResumeDraft {
 }
 
 describe('gapGenerateControl', () => {
-    it('hides when not subscribed', () => {
+    it('shows locked Subscribe to unlock when not subscribed', () => {
         expect(
             gapGenerateControl({
                 balance: 20,
                 subscribed: false,
                 canPurchase: false,
-            }).visible,
-        ).toBe(false);
+            }),
+        ).toEqual({
+            visible: true,
+            disabled: true,
+            title: 'Subscribe to unlock',
+            label: 'Generate · 1 credit',
+            lockReason: 'subscribe',
+        });
         expect(gapGenerateControl(null).visible).toBe(false);
     });
 
@@ -75,6 +81,7 @@ describe('gapGenerateControl', () => {
             disabled: true,
             title: 'Out of AI credits',
             label: 'Generate · 1 credit',
+            lockReason: 'credits',
         });
     });
 
