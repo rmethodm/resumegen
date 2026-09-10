@@ -25,9 +25,14 @@ class GenerateGapBulletsRequest extends FormRequest
         return [
             'keyword' => ['required', 'string', 'max:100'],
             'experience_id' => [
-                'required',
+                'required_without:experience_index',
                 'integer',
                 Rule::exists('experiences', 'id')->where('resume_id', $resumeId),
+            ],
+            'experience_index' => [
+                'required_without:experience_id',
+                'integer',
+                'min:0',
             ],
         ];
     }

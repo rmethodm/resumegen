@@ -777,8 +777,13 @@ export default function Workstation({
                                 {tab === 'Optimize' && (
                                     <OptimizePanel
                                         draft={draft}
+                                        resumeId={id}
                                         onChange={setDraft}
                                         onAddKeyword={addKeyword}
+                                        aiCredits={aiCredits}
+                                        onCreditsRemaining={
+                                            setCreditsRemaining
+                                        }
                                     >
                                         <AtsPlainTextBlock
                                             plainText={plainText}
