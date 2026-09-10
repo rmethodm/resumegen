@@ -3,7 +3,7 @@ import { useReducer, useRef, useState } from 'react';
 import AutocompleteInput from '@/Components/AutocompleteInput';
 import SkillGroupEditor from '@/Components/SkillGroupEditor';
 import TagInput from '@/Components/TagInput';
-import { Button } from '@/Components/ui/button';
+import { Button, buttonClassName } from '@/Components/ui/button';
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
@@ -26,6 +26,7 @@ import {
     rewriteFailureCreditsRemaining,
     rewriteFailureMessage,
 } from '@/lib/bullet-rewrite';
+import { subscriptionCheckoutHref } from '@/lib/gap-generate';
 import { formatPhone } from '@/lib/contact-validation';
 import {
     fromFlatSkillNames,
@@ -173,6 +174,9 @@ export function SummaryFields({
     } as const);
     const rewriteInFlight = useRef(false);
     const rewriteControl = bulletRewriteControl(aiCredits);
+    const checkoutHref = subscriptionCheckoutHref();
+    const subscribeLock =
+        rewriteControl.lockReason === 'subscribe' && checkoutHref !== null;
     const summary = resume.summary ?? '';
 
     async function requestRewrite() {
@@ -290,23 +294,33 @@ export function SummaryFields({
                 <Label className="text-xs" htmlFor="field-summary">
                     Summary
                 </Label>
-                {rewriteControl.visible && (
-                    <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        title={rewriteControl.title}
-                        disabled={
-                            rewriteControl.disabled ||
-                            rewrite.status === 'loading' ||
-                            summary.trim() === ''
-                        }
-                        onClick={() => void requestRewrite()}
-                    >
-                        <SparklesIcon className="size-3.5" />
-                        {rewriteControl.label}
-                    </Button>
-                )}
+                {rewriteControl.visible &&
+                    (subscribeLock ? (
+                        <a
+                            href={checkoutHref}
+                            title={rewriteControl.title}
+                            className={buttonClassName('outline', 'sm')}
+                        >
+                            <SparklesIcon className="size-3.5" />
+                            {rewriteControl.label}
+                        </a>
+                    ) : (
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            title={rewriteControl.title}
+                            disabled={
+                                rewriteControl.disabled ||
+                                rewrite.status === 'loading' ||
+                                summary.trim() === ''
+                            }
+                            onClick={() => void requestRewrite()}
+                        >
+                            <SparklesIcon className="size-3.5" />
+                            {rewriteControl.label}
+                        </Button>
+                    ))}
             </div>
             {rewrite.status === 'loading' && (
                 <p className="rounded-md border border-surface-border/80 bg-surface/40 px-3 py-1.5 text-xs text-ink-muted">

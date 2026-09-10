@@ -10,6 +10,7 @@ import {
     GAP_GENERATE_KEYWORD_MAX,
     GAP_GENERATE_MAX_BULLETS,
     gapGenerateControl,
+    subscriptionCheckoutHref,
 } from '@/lib/gap-generate';
 import {
     bulletRewriteReducer,
@@ -17,7 +18,7 @@ import {
     rewriteFailureMessage,
 } from '@/lib/bullet-rewrite';
 import { cn } from '@/lib/utils';
-import { Button } from '@/Components/ui/button';
+import { Button, buttonClassName } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
@@ -49,6 +50,9 @@ export function OptimizePanel({
     const overlap = jdKeywordOverlap(draft, jd);
     const generateControl = gapGenerateControl(aiCredits);
     const purchaseHref = creditsPurchaseHref();
+    const checkoutHref = subscriptionCheckoutHref();
+    const subscribeLock =
+        generateControl.lockReason === 'subscribe' && checkoutHref !== null;
     const experiences = draft.experiences;
     const [experienceIndex, setExperienceIndex] = useState(() =>
         Math.max(0, defaultExperienceIndex(experiences)),
@@ -325,21 +329,38 @@ export function OptimizePanel({
                                                 <PlusIcon className="size-3" />
                                                 {formatKeywordLabel(term)}
                                             </button>
-                                            {generateControl.visible && (
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    variant="outline"
-                                                    title={generateTitle}
-                                                    disabled={generateDisabled}
-                                                    onClick={() =>
-                                                        void requestGenerate(term)
-                                                    }
-                                                >
-                                                    <SparklesIcon className="size-3.5" />
-                                                    {generateControl.label}
-                                                </Button>
-                                            )}
+                                            {generateControl.visible &&
+                                                (subscribeLock ? (
+                                                    <a
+                                                        href={checkoutHref}
+                                                        title={generateTitle}
+                                                        className={buttonClassName(
+                                                            'outline',
+                                                            'sm',
+                                                        )}
+                                                    >
+                                                        <SparklesIcon className="size-3.5" />
+                                                        {generateControl.label}
+                                                    </a>
+                                                ) : (
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        variant="outline"
+                                                        title={generateTitle}
+                                                        disabled={
+                                                            generateDisabled
+                                                        }
+                                                        onClick={() =>
+                                                            void requestGenerate(
+                                                                term,
+                                                            )
+                                                        }
+                                                    >
+                                                        <SparklesIcon className="size-3.5" />
+                                                        {generateControl.label}
+                                                    </Button>
+                                                ))}
                                         </div>
                                     ))}
                                 </div>
