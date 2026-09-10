@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GenerateGapBulletsRequest;
 use App\Http\Requests\RewriteBulletRequest;
 use App\Http\Requests\RewriteSectionRequest;
+use App\Models\Experience;
 use App\Models\Resume;
 use App\Models\User;
 use App\Services\AiCreditService;
@@ -12,6 +14,7 @@ use App\Services\AiUsageLimiter;
 use App\Support\ResumeDocument;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class AiSuggestionController extends Controller
@@ -95,6 +98,61 @@ class AiSuggestionController extends Controller
         $credits->spend($user, $cost, 'summary_rewrite', $result['ai_request_id']);
 
         return response()->json(['text' => $result['text']]);
+    }
+
+    public function generateGap(GenerateGapBulletsRequest $request, Resume $resume, AiService $ai, AiUsageLimiter $limiter, AiCreditService $credits): JsonResponse
+    {
+        $user = $request->user();
+
+        abort_unless($resume->user_id === $user->id, 404);
+
+        $jd = trim((string) $resume->target_job_description);
+
+        if ($jd === '') {
+            throw ValidationException::withMessages([
+                'target_job_description' => 'A target job description is required to generate for a gap.',
+            ]);
+        }
+
+        $cost = (int) config('ai.costs.gap_generate');
+
+        if ($refusal = $this->aiRefusal($limiter, $user, $cost)) {
+            return $refusal;
+        }
+
+        $experience = $resume->experiences()->findOrFail($request->validated('experience_id'));
+
+        try {
+            $result = $ai->generateGapBullets(
+                $user,
+                (string) $request->validated('keyword'),
+                $jd,
+                $this->gapRoleContext($experience),
+            );
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'AI generate failed.'], 500);
+        }
+
+        $credits->spend($user, $cost, 'gap_generate', $result['ai_request_id']);
+
+        return response()->json([
+            'options' => $result['options'],
+            'credits_remaining' => $credits->balance($user),
+        ]);
+    }
+
+    private function gapRoleContext(Experience $experience): string
+    {
+        $role = trim(collect([$experience->title, $experience->company])->filter()->implode(' at '));
+        $bullets = collect($experience->bullets ?? [])
+            ->filter(fn ($bullet) => is_string($bullet) && trim($bullet) !== '')
+            ->take(8)
+            ->map(fn ($bullet) => trim($bullet))
+            ->implode("\n");
+
+        return trim($role."\n".$bullets);
     }
 
     private function aiRefusal(AiUsageLimiter $limiter, User $user, int $cost): ?JsonResponse

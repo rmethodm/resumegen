@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\Resume;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class GenerateGapBulletsRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        $resume = $this->route('resume');
+        $resumeId = $resume instanceof Resume ? $resume->id : null;
+
+        return [
+            'keyword' => ['required', 'string', 'max:100'],
+            'experience_id' => [
+                'required',
+                'integer',
+                Rule::exists('experiences', 'id')->where('resume_id', $resumeId),
+            ],
+        ];
+    }
+}
