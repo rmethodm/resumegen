@@ -150,6 +150,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
     Route::get('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
+    Route::get('/billing/credits', [BillingController::class, 'credits'])->name('billing.credits');
 
     Route::middleware('throttle:20,1')->post('/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])
         ->name('ai.rewrite-bullet');
