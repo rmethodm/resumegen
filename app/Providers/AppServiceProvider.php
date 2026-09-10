@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\GrantAiStarterCredits;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Events\WebhookReceived;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use SocialiteProviders\Microsoft\MicrosoftExtendSocialite;
 
@@ -42,5 +44,7 @@ class AppServiceProvider extends ServiceProvider
         // Google and GitHub are built into Socialite; Microsoft needs the
         // community SocialiteProviders package registered via this event.
         Event::listen(SocialiteWasCalled::class, MicrosoftExtendSocialite::class);
+
+        Event::listen(WebhookReceived::class, GrantAiStarterCredits::class);
     }
 }
