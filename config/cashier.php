@@ -54,6 +54,7 @@ return [
     |
     | One-time Stripe price for AI credit packs. When empty, BillingController
     | credits() redirects with a "coming soon" flash instead of Checkout.
+    | Keep unset until a grant webhook credits ai_credit_ledger after payment.
     |
     */
 

@@ -158,11 +158,8 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::middleware('throttle:20,1')->post('/ai/rewrite-summary', [AiSuggestionController::class, 'rewriteSummary'])
         ->name('ai.rewrite-summary');
 
-    Route::middleware('throttle:20,1')->post('/resumes/{resume}/ai-review', [AiSuggestionController::class, 'reviewResume'])
-        ->name('resumes.ai-review');
-
-    Route::middleware('throttle:20,1')->post('/resumes/{resume}/ai-rewrite-section', [AiSuggestionController::class, 'rewriteSection'])
-        ->name('ai.rewrite-section');
+    // resumes.ai-review and ai.rewrite-section intentionally unregistered for v1
+    // (deep review UI deferred; section rewrite returned silent {text} overwrite).
 
     Route::middleware('throttle:20,1')->post('/resumes/{resume}/ai-generate-gap', [AiSuggestionController::class, 'generateGap'])
         ->name('ai.generate-gap');
