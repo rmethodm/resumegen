@@ -36,12 +36,23 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'aiCredits' => fn () => $request->user() === null ? null : [
-                'balance' => app(AiCreditService::class)->balance($request->user()),
-                'subscribed' => app(AiUsageLimiter::class)->subscribedForAi($request->user()),
-                'canPurchase' => app(AiUsageLimiter::class)->subscribedForAi($request->user())
-                    && ! $request->user()->ai_blocked,
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
             ],
+            'aiCredits' => function () use ($request) {
+                if ($request->user() === null) {
+                    return null;
+                }
+
+                $subscribed = app(AiUsageLimiter::class)->subscribedForAi($request->user());
+
+                return [
+                    'balance' => app(AiCreditService::class)->balance($request->user()),
+                    'subscribed' => $subscribed,
+                    'canPurchase' => $subscribed && ! $request->user()->ai_blocked,
+                ];
+            },
         ];
     }
 }

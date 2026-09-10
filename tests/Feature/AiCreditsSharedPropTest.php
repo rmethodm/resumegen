@@ -19,7 +19,23 @@ class AiCreditsSharedPropTest extends TestCase
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('Welcome')
-                ->where('aiCredits', null));
+                ->where('aiCredits', null)
+                ->has('flash.success')
+                ->has('flash.error'));
+    }
+
+    public function test_flash_success_and_error_remain_shared(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->withSession(['success' => 'Saved.', 'error' => 'Nope.'])
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('flash.success', 'Saved.')
+                ->where('flash.error', 'Nope.')
+                ->has('aiCredits'));
     }
 
     public function test_authenticated_pages_include_ai_credits(): void
