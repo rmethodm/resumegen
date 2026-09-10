@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Services\AiCreditService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Cashier\Events\WebhookReceived;
 use Tests\TestCase;
 
 class AiCreditLedgerTest extends TestCase
@@ -27,5 +28,26 @@ class AiCreditLedgerTest extends TestCase
         $this->assertTrue($credits->grantStarterIfNeeded($user));
         $this->assertFalse($credits->grantStarterIfNeeded($user));
         $this->assertSame(config('ai.starter_credits'), $credits->balance($user));
+    }
+
+    public function test_subscription_created_webhook_grants_starter_credits(): void
+    {
+        $user = User::factory()->create();
+        $user->forceFill(['stripe_id' => 'cus_test_starter'])->save();
+
+        WebhookReceived::dispatch([
+            'type' => 'customer.subscription.created',
+            'data' => [
+                'object' => [
+                    'customer' => 'cus_test_starter',
+                ],
+            ],
+        ]);
+
+        $user->refresh();
+        $credits = app(AiCreditService::class);
+
+        $this->assertSame(config('ai.starter_credits'), $credits->balance($user));
+        $this->assertNotNull($user->ai_starter_credits_granted_at);
     }
 }
