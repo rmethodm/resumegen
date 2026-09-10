@@ -19,7 +19,7 @@ Resumegen helps people build a polished, ATS-friendly resume and get through the
 
 ## Positioning
 
-Free and unlimited, with no paywall anywhere — every template, PDF/DOCX export, resume, and share link is unlimited at zero cost. Most competitor resume builders (Zety, Novoresume, Rezi, etc.) gate templates, exports, or resume count behind a paid tier. This is a confirmed, durable product decision (see CLAUDE.md "Billing — there is none") — do not design in upgrade CTAs, paywalls, tier badges, or locked-template treatments.
+Non-AI product surfaces (templates, PDF/DOCX export, resume editing, share links, Kanban) are not tier-gated. Generative AI requires an active **$9.95/mo** Cashier subscription plus AI credits (starter pack on first subscribe; Buy credits stub until Stripe pack price is configured). Do not invent extra paid tiers, locked templates, or unlimited-AI marketing without asking (see CLAUDE.md "Billing — subscription + AI credits").
 
 Secondarily, Resumegen goes beyond "just a builder": job-application tracking and a browser extension for autofilling applications make it an end-to-end apply workflow, not a one-time document generator.
 
@@ -29,12 +29,12 @@ Secondarily, Resumegen goes beyond "just a builder": job-application tracking an
 - Applying: Job Application Kanban tracker (`/job-applications`) and a live job-import search (Adzuna/USAJOBS).
 - Sharing: token-based public share links with optional email/password gates and expiry, for sending a resume to a recruiter or checking who viewed it.
 - Browser extension: autofills job-application forms on external ATS pages using data from a Resumegen resume.
-- AI is narrow and opt-in: bullet rewrite and summary generation only, disabled by default (`AI_ENABLED`), edit-in-place with no auto-save. Not a chat assistant, not a full resume generator.
+- AI is credit-gated on the Workstation: bullet/summary rewrite and Optimize generate-for-gap return 2–3 options and debit the ledger after success; Optimize diagnose (keyword overlap) stays free. No chat Coach. See CLAUDE.md "AI — subscription credit gates".
 
 ## Capabilities and Constraints
 
-- No billing, tiers, or metering of any kind — every feature is free and unlimited. Do not introduce paywall, upgrade, or locked-feature UI without asking first.
-- No AI beyond the Tier-1 bullet-rewrite/summary slice; expanding AI is a product decision, not a design default.
+- Billing: $9.95/mo subscription + AI credit ledger. Upgrade/Buy CTAs belong only on generative-AI empty states (not subscribed / out of credits), not as a global paywall over the builder.
+- AI UI must show cost, disabled + Buy when out of credits, and Accept/Discard for options — never silent-overwrite user text. Coach/chat stays out of scope unless explicitly requested.
 - No public resume gallery/portfolio feature currently exists.
 - Support admin exists on a separate domain (`admin.resumegen.test`) but is out of scope for user-facing design work.
 
@@ -45,7 +45,7 @@ Secondarily, Resumegen goes beyond "just a builder": job-application tracking an
 
 ## Product Principles
 
-- Free and unlimited is a selling point, not an implementation detail — never let a design imply a paid tier exists.
+- Core builder/export/share stays usable without implying multi-tier lockouts; paid messaging is for the $9.95 plan and AI credits only.
 - Speed and low friction for the multi-application job seeker; structure and guidance for the first-time/career-change resume builder — designs should serve both without forcing a persona choice.
 - The product is an apply workflow, not just a document generator — builder, tracker, and extension should feel like one system, not three bolted-together tools.
 - ATS-compatibility is a functional constraint on the resume templates themselves (server-rendered PDF), not just a marketing claim.

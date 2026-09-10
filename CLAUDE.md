@@ -75,7 +75,8 @@ Default to surfacing uncertainty, not hiding it.
 - **Auth:** Laravel Fortify (session-based; replaced Breeze in the 2026-08-02 foundation swap), Sanctum (API tokens). `User` implements `MustVerifyEmail` — new registrations must verify before accessing the app. The main authenticated group in `web.php` runs `['auth', 'verified', 'two_factor_challenge']`. OAuth login (Google/GitHub/Microsoft via `laravel/socialite` + `socialiteproviders/microsoft`, added 2026-09-06) is additive on top of this: `App\Http\Controllers\Auth\SocialiteController` (`routes/auth.php`) auto-links to an existing account only when the provider confirms the email is verified, otherwise the user is sent back to password login; new OAuth signups share `App\Actions\Fortify\RegistrationIpLimiter` with password registration.
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Current routes: `GET /resumes/{resume}/export` (download), `GET /resumes/{resume}/preview` (inline stream). The legacy `builder/{resume}/pdf|preview` routes still resolve.
 - **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia`, and `spatie/laravel-medialibrary` is no longer in `composer.json` either.
-- **Billing:** none — see "Billing — there is none" below. No Cashier, no Stripe.
+- **Billing:** `laravel/cashier` v16 (Stripe) — $9.95/mo `default` subscription (`STRIPE_PRICE_ID`) unlocks AI credit hold/buy/spend; non-AI app features are not tier-gated. See "Billing — subscription + AI credits" below.
+- **AI:** `openai-php/laravel` — generative Workstation AI (bullet/summary rewrite, gap generate) gated by active subscription + credit ledger. See "AI — subscription credit gates" below.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
 ## Commands
@@ -135,23 +136,27 @@ The core surface is `resources/js/Pages/Resumes/Workstation.tsx` (`resumes.works
 Two live flows: the Workstation's share panel (`ResumeShareLinkController`, `resumes/{resume}/share` + `resume-share-links.*`) and the `/shares` index (`ShareController@index`, `Shares/Index.tsx`), which lists every link with views, unique visitors, and a 7-day trend. Analytics come from `resume_share_link_views` — email-gated unlocks log a row with the email (`PublicResumeShareController::unlock`), and since 2026-08-19 ungated visits log an anonymous row (null `email`) once per session per link from `show()`/`pdf()`/`docx()`. The modal's "recent views" lists only the email rows; `view_count`/`/shares` count both. The old `resume_share_events` system was dropped; the dead affordances it fed ("Make primary", unread badges) were stripped from `Shares/Index.tsx` and the `ShareController` payload on 2026-08-19 — only `label: null` is still stubbed (displayed as a fallback name). Public access is `GET /r/{token}` with optional email/password gate and gated PDF/DOCX downloads.
 
 ### Shared Inertia props
-`HandleInertiaRequests::share()` passes `auth.user` and `flash.{success,error}` only. There is no `aiEnabled` prop, no `impersonating`, and no `featureGate` — see "Billing". AI was removed entirely (2026-08-26).
+`HandleInertiaRequests::share()` passes `auth.user`, `flash.{success,error}`, and for authenticated users `aiCredits: { balance, subscribed, canPurchase }` (null for guests). No `aiEnabled`, `impersonating`, or `featureGate` prop — AI gating uses the credit ledger + Cashier `subscribed('default')`, not a generic feature-gate bag.
 
-## Billing — there is none
+## Billing — subscription + AI credits (as of 2026-09-10)
 
-**The app is free and unlimited.** Billing was removed on 2026-07-14: Cashier is uninstalled, there are no plan tiers, no Stripe, no payments, no `UpgradeModal`, no `featureGate`. A later experiment (2026-07-20) built prepaid-pricing *instrumentation* at $0 (`JobPairing`, `BalanceTransaction`, `config/pricing.php`, `PricingUsageReport`/`PricingGrowthReport`) purely to collect usage data for a possible future prepaid model — it never charged anyone. That instrumentation, `docs/prepaid-pricing-model.md`, and every other pricing-strategy doc were removed outright on 2026-08-14: the product decision is the app stays free, so there is nothing left to instrument for. **Do not add a paywall, a tier check, a balance/credit system, or an upgrade CTA without asking first** — and don't resurrect the deleted `JobPairing`/`BalanceTransaction` pattern as a starting point if pricing is ever revisited; start fresh with a real product decision.
+**Reversal:** on 2026-09-09 the user explicitly asked to allow charging and to allow AI again, superseding the 2026-07-14 removal. Product decision 2026-09-10: **$9.95/mo** (`STRIPE_PRICE_ID` / `config('cashier.price_id')`) for the app; **AI credits** gate generative AI. `laravel/cashier` v16 is in `composer.json`/`vendor/`; Cashier's migrations are applied; `User` uses the `Billable` trait.
 
-**Laravel Boost's auto-generated context block lies about this.** It lists `laravel/cashier (CASHIER) - v16` among the installed packages. Cashier is in neither `composer.json` nor `vendor/` — verify against the filesystem, not that header. The matching `.claude/skills/cashier-stripe-development` skill and the two `mcp__plugin_stripe_stripe__*` permissions were deleted on 2026-07-19 for the same reason.
+**What exists:** `BillingController::checkout()` (subscription Checkout), `::portal()` (Billing Portal), and `::credits()` (one-time credit-pack Checkout when `STRIPE_CREDITS_PRICE_ID` / `config('cashier.credits_price_id')` is set; otherwise redirect-back flash `"AI credit packs coming soon"`). Routes: `/billing/checkout`, `/billing/portal`, `/billing/credits` (`billing.credits`) inside the authenticated group. Cashier's `/stripe/webhook` auto-registers. First successful subscribe grants starter credits once (`AI_STARTER_CREDITS`, default 20) via `GrantAiStarterCredits` / `AiCreditService::grantStarterIfNeeded`.
 
-`App\Services\UserLimits` survives only for the template allowlist (`allTemplates()`, backed by `ResumeDocument::TEMPLATES`). AI metering is gone. Every other limit (resumes, custom sections, DOCX, share-link views, PDF watermark) is unlimited. Several tests assert `assertSessionMissing('featureGate')` specifically to catch a paywall creeping back in; if one starts failing, that is the alarm working.
+**What does NOT exist yet:** multi-tier plans (`plan_tier`/`is_pro` were not resurrected), live Stripe credit-pack SKUs (Buy path is stubbed until `STRIPE_CREDITS_PRICE_ID` is set), paywalling of non-AI features. `App\Services\UserLimits` remains the template allowlist only. Do not invent additional paid tiers without asking.
 
-Gone with it: `plan_tier` / `is_pro` / `stripe_id` columns, the `subscriptions` tables, `BillingController`, the admin Revenue dashboards (`RevenuePage`, `RevenueReport`, `RevenueSnapshot`, `CaptureRevenueSnapshot`), forced 2FA (which was gated on the pro tier — 2FA is now opt-in only), and — as of 2026-08-14 — `JobPairing`, `BalanceTransaction`, `config/pricing.php`, `JobPairingService`, `PricingUsageReport`/`PricingGrowthReport`, `GrowthSampleSeeder`, and every pricing-strategy doc (`docs/prepaid-pricing-model.md`, `docs/pricing-recommendations-2026-08.md`, `docs/competitive-pricing-one-pager-2026-08.md`, `docs/resume-builder-competitive-analysis.md`, `docs/competitive-research-resumegen-2026-08.md`).
+Historical context (still accurate as *history*, not current state): billing was removed 2026-07-14 (`763a2648`), a $0 prepaid-instrumentation experiment (`JobPairing`/`BalanceTransaction`/`config/pricing.php`) was built 2026-07-20 and deleted 2026-08-14 — don't resurrect that pattern. The admin Revenue dashboards and pro-gated forced-2FA stay gone; 2FA is still opt-in only.
 
-## AI — removed
+## AI — subscription credit gates (as of 2026-09-10)
 
-**There is no AI in this app.** As of 2026-08-26 every AI stack was deleted: `AiService` / `AiPrompts` / `AiSuggestionController` / `InterviewCoachController`, `ResumeAiController` / `OpenAiResumeAssistant` / `AiUsageLimiter`, `config/ai.php`, `openai-php/laravel`, Workstation AI rewrite/summary UI, PDF AI extract (`ResumeImportController`), and the `ai_requests` table plus `users.ai_*` columns. Do **not** reintroduce OpenAI/Anthropic, an AI quota, or an AI CTA without an explicit product decision.
+**Model:** only active Cashier subscribers may hold/buy/spend AI credits. Generative routes debit an append-only `ai_credit_ledger` after a successful model response (balance = sum of entries; no expiry while subscribed). Gates: `subscribed('default')` + balance ≥ cost + not `users.ai_blocked`. HTTP: **402** = not subscribed or insufficient credits; **429** = `ai_blocked`. Past-due is treated as not subscribed for AI. Credits are per user, not per resume.
 
-Deterministic alternatives that stay: `PlainTextResumeParser` (local text parse on create), Workstation `JdMatchPanel` / `OptimizePanel` (keyword overlap, no model).
+**Live generative features** (OpenAI `gpt-4o-mini` via `AiService` / `AiSuggestionController`, all `throttle:20,1`): bullet rewrite (`POST /ai/rewrite-bullet`), summary rewrite (`POST /ai/rewrite-summary`), section rewrite, Optimize generate-for-gap (`POST /resumes/{resume}/ai-generate-gap`). Successful JSON includes `options[]` (2–3) and `credits_remaining`. Costs live in `config/ai.php`. `users.ai_blocked` hard-stops generative actions (no Buy CTA). Every call logs to `ai_requests`. Covered by `tests/Feature/AiSuggestionTest.php` / `AiCreditLedgerTest.php` using `OpenAI::fake()`.
+
+**Still free / deterministic:** Optimize diagnose (keyword overlap / heuristics) does not spend credits. `PlainTextResumeParser` on create stays local.
+
+**What stays gone** until asked for: Coach sidebar / chat agent, resume translation, career map, PDF AI extract, InterviewCoach. Spec: `docs/superpowers/specs/2026-09-10-workstation-ai-credits-design.md`.
 
 **Registration IP velocity:** Max 5 accounts per IP per 24h. Enforced in `App\Actions\Fortify\CreateNewUser` via `registration_ip` column on `users`.
 
@@ -231,10 +236,10 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 3. **Autosave in the editor** — the Workstation's `use-autosave` hook `router.put`s changes; the old beacon-on-beforeunload save survives only on the legacy `builder.beacon` route.
 4. **Append-only analytics tables** — `resume_share_link_views`. Simple, immutable.
 5. **FK cascade for dependents** — `cascadeOnDelete` handles children (share links and their views, snapshots, notes). `Resume::booted()`'s `deleting` hook exists only to log into `resume_deletions` for mobile sync — it cleans up no assets (there are none). `User` has no `booted()` deleting its resumes per-model — intentional, nothing to clean up.
-6. **No monetization** — every feature is free and unlimited; AI is metered only to cap OpenAI spend.
+6. **Billing = $9.95 sub + AI credits (2026-09-10)** — Cashier `default` subscription required to hold/buy/spend AI credits; non-AI features are not tier-gated. Credit packs Buy path stubs to flash until `STRIPE_CREDITS_PRICE_ID` is set.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 8. **Deterministic sourcing, model-only judgment** — job boards are fetched by code; the model scores fit and parses arbitrary pages, and never picks what to search for.
-9. **No AI** — do not reintroduce model-backed rewrite, ranking, or import without an explicit product decision.
+9. **AI gated by subscription + credit ledger (2026-09-10)** — generative rewrite/generate returns `options[]`, debits after success via `AiCreditService` / `AiUsageLimiter` (402 / 429). Diagnose stays free. Coach/chat/translation/career-map stay gone until asked for.
 
 ## Production server (as of 2026-08-25)
 
@@ -248,7 +253,7 @@ Hostinger VPS (`srv1861900`), Apache, PostgreSQL, self-hosted GitHub runner. App
 
 ---
 
-Last updated: 2026-09-01
+Last updated: 2026-09-10
 
 <!-- dgc-policy-v11 -->
 # Dual-Graph Context Policy

@@ -6,8 +6,8 @@ Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps use
 
 - Laravel 13 app with React 19, Inertia v3, Tailwind CSS, Sanctum, DOMPDF, and PHPWord.
 - Mobile is active again (native iPhone/iPad apps in development, 2026-08). The server ships a mobile API: password login (`POST /api/auth/token`, Sanctum token with `mobile` ability), full resume CRUD with offline sync (`client_uuid` idempotent creates, `?since=` incremental pulls with a `resume_deletions` log, 409 conflict responses), PDF streaming, and share-link management. The 2026-07-08 removal covered the earlier Expo-era surface only.
-- **The app is free and unlimited.** There is no billing, no plan tier, and nothing is metered.
-- **There is no AI.** Every AI stack was removed 2026-08-26 (no OpenAI, no `config/ai.php`, no AI routes). Deterministic alternatives remain: `PlainTextResumeParser` on create, and the Workstation's keyword-overlap JD match/optimize panels. See `CLAUDE.md`'s AI section.
+- **Billing is $9.95/mo + AI credits.** Cashier subscription (`/billing/checkout`, `/billing/portal`) is required to hold/buy/spend AI credits; non-AI features are not tier-gated. `/billing/credits` stubs to a “coming soon” flash until `STRIPE_CREDITS_PRICE_ID` is set. See `CLAUDE.md`'s Billing section.
+- **Generative AI is credit-gated.** Workstation rewrite (bullet/summary) and Optimize generate-for-gap spend ledger credits after success (402 if unsubscribed/insufficient, 429 if `ai_blocked`); Optimize diagnose stays free. Coach/chat/translation stay removed. See `CLAUDE.md`'s AI section.
 - **There is no admin panel.** The hand-rolled Inertia admin was removed 2026-09-02 (see `CLAUDE.md`'s "Admin Panel — removed"). App backups are CLI/schedule only via `spatie/laravel-backup`.
 - Login supports email/password (Fortify, opt-in 2FA) plus "continue with Google/GitHub/Microsoft" (Socialite) — auto-links to an existing account only when the provider confirms the email is verified.
 - Deployment notes live in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
