@@ -5,6 +5,8 @@ import {
     experienceOptionLabel,
     GAP_GENERATE_MAX_BULLETS,
     gapGenerateControl,
+    resolveAiControlClick,
+    subscriptionCheckoutHref,
 } from './gap-generate';
 import type { ResumeDraft, ResumeExperience } from '@/types';
 
@@ -163,5 +165,70 @@ describe('appendExperienceBullet', () => {
         expect(appendExperienceBullet(current, 0, 'Extra')).toBe(current);
         expect(appendExperienceBullet(current, 4, 'Extra')).toBe(current);
         expect(appendExperienceBullet(current, 0, '   ')).toBe(current);
+    });
+});
+
+describe('resolveAiControlClick', () => {
+    const lockedSubscribe = gapGenerateControl({
+        balance: 0,
+        subscribed: false,
+        canPurchase: false,
+    });
+
+    it('navigates to checkout when lockReason is subscribe and href exists', () => {
+        expect(resolveAiControlClick(lockedSubscribe, '/billing/checkout')).toEqual({
+            type: 'navigate',
+            href: '/billing/checkout',
+        });
+    });
+
+    it('noops subscribe lock when checkout href is missing', () => {
+        expect(resolveAiControlClick(lockedSubscribe, null)).toEqual({
+            type: 'noop',
+        });
+    });
+
+    it('noops when credits-locked or blocked', () => {
+        expect(
+            resolveAiControlClick(
+                gapGenerateControl({
+                    balance: 0,
+                    subscribed: true,
+                    canPurchase: true,
+                }),
+                '/billing/checkout',
+            ),
+        ).toEqual({ type: 'noop' });
+
+        expect(
+            resolveAiControlClick(
+                gapGenerateControl({
+                    balance: 5,
+                    subscribed: true,
+                    canPurchase: false,
+                }),
+                '/billing/checkout',
+            ),
+        ).toEqual({ type: 'noop' });
+    });
+
+    it('runs when enabled', () => {
+        expect(
+            resolveAiControlClick(
+                gapGenerateControl({
+                    balance: 2,
+                    subscribed: true,
+                    canPurchase: true,
+                }),
+                '/billing/checkout',
+            ),
+        ).toEqual({ type: 'run' });
+    });
+});
+
+describe('subscriptionCheckoutHref', () => {
+    it('returns null when route() is unavailable in this environment', () => {
+        // Vitest has no Ziggy route global by default.
+        expect(subscriptionCheckoutHref()).toBeNull();
     });
 });
