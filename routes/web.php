@@ -154,6 +154,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::middleware('throttle:20,1')->post('/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])
         ->name('ai.rewrite-bullet');
 
+    Route::middleware('throttle:20,1')->post('/ai/rewrite-summary', [AiSuggestionController::class, 'rewriteSummary'])
+        ->name('ai.rewrite-summary');
+
     Route::middleware('throttle:20,1')->post('/resumes/{resume}/ai-review', [AiSuggestionController::class, 'reviewResume'])
         ->name('resumes.ai-review');
 
