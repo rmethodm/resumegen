@@ -719,6 +719,18 @@ class AiSuggestionTest extends TestCase
         ]);
     }
 
+    public function test_guests_cannot_generate_gap_bullets(): void
+    {
+        $resume = Resume::factory()->create([
+            'target_job_description' => 'Need AWS experience.',
+        ]);
+        $experience = Experience::factory()->for($resume)->create();
+
+        $this->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
+            'experience_id' => $experience->id,
+        ]))->assertUnauthorized();
+    }
+
     public function test_subscribers_without_credits_cannot_generate_gap_bullets(): void
     {
         $user = User::factory()->create();
