@@ -20,6 +20,10 @@ import {
     htmlListToMarkdownLines,
     markdownLinesToHtmlList,
 } from '@/lib/bullet-markdown';
+import {
+    resolveAiControlClick,
+    subscriptionCheckoutHref,
+} from '@/lib/gap-generate';
 import { cn } from '@/lib/utils';
 
 function currentListItemRange(
@@ -129,6 +133,7 @@ export function BulletsField({
     } as const);
     const rewriteInFlight = useRef(false);
     const rewriteControl = bulletRewriteControl(aiCredits);
+    const checkoutHref = subscriptionCheckoutHref();
 
     async function requestRewrite() {
         if (
@@ -338,11 +343,28 @@ export function BulletsField({
                             label={rewriteControl.label}
                             title={rewriteControl.title}
                             active={false}
+                            locked={rewriteControl.lockReason === 'subscribe'}
                             disabled={
-                                rewriteControl.disabled ||
-                                rewrite.status === 'loading'
+                                rewriteControl.lockReason === 'subscribe'
+                                    ? false
+                                    : rewriteControl.disabled ||
+                                      rewrite.status === 'loading'
                             }
-                            onClick={() => void requestRewrite()}
+                            onClick={() => {
+                                const decision = resolveAiControlClick(
+                                    rewriteControl,
+                                    checkoutHref,
+                                );
+
+                                if (decision.type === 'navigate') {
+                                    window.location.assign(decision.href);
+                                    return;
+                                }
+
+                                if (decision.type === 'run') {
+                                    void requestRewrite();
+                                }
+                            }}
                         >
                             <SparklesIcon className="size-3.5" />
                             <span className="whitespace-nowrap">
@@ -441,6 +463,7 @@ function ToolbarButton({
     onClick,
     children,
     disabled = false,
+    locked = false,
     title,
 }: {
     label: string;
@@ -448,6 +471,7 @@ function ToolbarButton({
     onClick: () => void;
     children: ReactNode;
     disabled?: boolean;
+    locked?: boolean;
     title?: string;
 }) {
     return (
@@ -470,7 +494,8 @@ function ToolbarButton({
                 active
                     ? 'bg-brand-subtle text-brand'
                     : 'hover:bg-surface hover:text-ink',
-                disabled && 'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-ink-muted',
+                (disabled || locked) &&
+                    'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-ink-muted',
             )}
         >
             {children}
