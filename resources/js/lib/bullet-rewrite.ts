@@ -73,20 +73,38 @@ export function rewriteFailureCreditsRemaining(status: number): number | null {
     return status === 402 ? 0 : null;
 }
 
+export type AiControlLockReason = 'subscribe' | 'credits' | 'blocked';
+
 export function bulletRewriteControl(credits: BulletRewriteCredits | null): {
     visible: boolean;
     disabled: boolean;
     title?: string;
     label: string;
+    lockReason?: AiControlLockReason;
 } {
     const label = 'Rewrite · 1 credit';
 
-    if (!credits?.subscribed) {
+    if (credits === null) {
         return { visible: false, disabled: true, label };
     }
 
+    if (!credits.subscribed) {
+        return {
+            visible: true,
+            disabled: true,
+            title: 'Subscribe to unlock',
+            label,
+            lockReason: 'subscribe',
+        };
+    }
+
     if (!credits.canPurchase) {
-        return { visible: true, disabled: true, label };
+        return {
+            visible: true,
+            disabled: true,
+            label,
+            lockReason: 'blocked',
+        };
     }
 
     if (credits.balance < 1) {
@@ -95,6 +113,7 @@ export function bulletRewriteControl(credits: BulletRewriteCredits | null): {
             disabled: true,
             title: 'Out of AI credits',
             label,
+            lockReason: 'credits',
         };
     }
 
