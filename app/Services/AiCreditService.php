@@ -20,6 +20,10 @@ class AiCreditService
             throw new InvalidArgumentException('Grant amount must be greater than zero.');
         }
 
+        if (! in_array($reason, ['starter', 'purchase', 'spend', 'admin'], true)) {
+            throw new InvalidArgumentException('Grant reason must be starter, purchase, spend, or admin.');
+        }
+
         AiCreditLedgerEntry::create([
             'user_id' => $user->id,
             'amount' => $amount,
@@ -46,7 +50,7 @@ class AiCreditService
     public function grantStarterIfNeeded(User $user): bool
     {
         return DB::transaction(function () use ($user) {
-            $locked = User::whereKey($user->id)->lockForUpdate()->first();
+            $locked = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
 
             if ($locked->ai_starter_credits_granted_at !== null) {
                 return false;
