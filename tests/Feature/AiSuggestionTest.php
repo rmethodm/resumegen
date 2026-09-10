@@ -320,180 +320,23 @@ class AiSuggestionTest extends TestCase
             ->assertJson(['message' => 'AI access is blocked.']);
     }
 
-    public function test_a_resume_is_reviewed_and_cached(): void
+    public function test_ai_review_route_is_unregistered(): void
     {
         $user = $this->subscribedUserWithCredits();
-        $resume = Resume::factory()->for($user)->create([
-            'target_job_description' => 'Looking for a senior backend engineer with AWS experience.',
-        ]);
+        $resume = Resume::factory()->for($user)->create();
 
-        OpenAI::fake([
-            CreateResponse::fake([
-                'choices' => [
-                    [
-                        'message' => [
-                            'role' => 'assistant',
-                            'content' => json_encode([
-                                'suggestions' => [
-                                    [
-                                        'id' => 'summary-vague',
-                                        'label' => 'Summary is too generic',
-                                        'severity' => 'high',
-                                        'section' => 'summary',
-                                        'detail' => 'Mention AWS explicitly since the target JD asks for it.',
-                                    ],
-                                ],
-                            ]),
-                        ],
-                    ],
-                ],
-                'usage' => ['prompt_tokens' => 500, 'completion_tokens' => 80],
-            ]),
-        ]);
-
-        $response = $this->actingAs($user)
-            ->postJson(route('resumes.ai-review', $resume));
-
-        $response->assertOk()
-            ->assertJsonPath('suggestions.0.id', 'summary-vague')
-            ->assertJsonPath('suggestions.0.severity', 'high');
-
-        $this->assertDatabaseHas('ai_requests', [
-            'user_id' => $user->id,
-            'feature' => 'resume_review',
-            'model' => 'gpt-4o',
-        ]);
-
-        $row = \DB::table('ai_requests')->where('feature', 'resume_review')->first();
-        $this->assertGreaterThan(0, $row->cost_micro_cents);
-
-        $resume->refresh();
-        $this->assertNotNull($resume->ai_review);
-        $this->assertSame('summary-vague', $resume->ai_review[0]['id']);
-        $this->assertNotNull($resume->ai_review_generated_at);
-    }
-
-    public function test_reviewing_another_users_resume_is_not_found(): void
-    {
-        $owner = User::factory()->create();
-        $intruder = User::factory()->create();
-        $resume = Resume::factory()->for($owner)->create();
-
-        $this->actingAs($intruder)
-            ->postJson(route('resumes.ai-review', $resume))
+        $this->actingAs($user)
+            ->postJson("/resumes/{$resume->id}/ai-review")
             ->assertNotFound();
     }
 
-    public function test_unsubscribed_users_cannot_review(): void
-    {
-        $user = User::factory()->create();
-        $resume = Resume::factory()->for($user)->create();
-
-        $this->actingAs($user)
-            ->postJson(route('resumes.ai-review', $resume))
-            ->assertStatus(402);
-    }
-
-    public function test_blocked_users_cannot_review(): void
-    {
-        $user = User::factory()->create(['ai_blocked' => true]);
-        $resume = Resume::factory()->for($user)->create();
-
-        $this->actingAs($user)
-            ->postJson(route('resumes.ai-review', $resume))
-            ->assertStatus(429);
-    }
-
-    public function test_a_section_is_rewritten_and_logged(): void
-    {
-        $user = $this->subscribedUserWithCredits(5);
-        $resume = Resume::factory()->for($user)->create(['summary' => 'Did stuff at companies.']);
-
-        OpenAI::fake([
-            CreateResponse::fake([
-                'choices' => [
-                    [
-                        'message' => ['role' => 'assistant', 'content' => 'Backend engineer with AWS experience.'],
-                    ],
-                ],
-                'usage' => ['prompt_tokens' => 60, 'completion_tokens' => 15],
-            ]),
-        ]);
-
-        $response = $this->actingAs($user)
-            ->postJson(route('ai.rewrite-section', $resume), [
-                'section' => 'summary',
-                'text' => 'Did stuff at companies.',
-                'detail' => 'Mention AWS explicitly since the target JD asks for it.',
-            ]);
-
-        $response->assertOk()->assertJson(['text' => 'Backend engineer with AWS experience.']);
-
-        $this->assertSame(4, app(AiCreditService::class)->balance($user));
-        $this->assertDatabaseHas('ai_credit_ledger', [
-            'user_id' => $user->id,
-            'amount' => -1,
-            'reason' => 'spend',
-            'feature' => 'summary_rewrite',
-        ]);
-
-        $this->assertDatabaseHas('ai_requests', [
-            'user_id' => $user->id,
-            'feature' => 'section_rewrite',
-            'model' => 'gpt-4o-mini',
-            'prompt_tokens' => 60,
-            'completion_tokens' => 15,
-        ]);
-    }
-
-    public function test_openai_failure_does_not_debit_section_rewrite_credits(): void
-    {
-        $user = $this->subscribedUserWithCredits(5);
-        $resume = Resume::factory()->for($user)->create(['summary' => 'Did stuff at companies.']);
-
-        OpenAI::fake([new RuntimeException('openai unavailable')]);
-
-        $this->actingAs($user)
-            ->postJson(route('ai.rewrite-section', $resume), [
-                'section' => 'summary',
-                'text' => 'Did stuff at companies.',
-                'detail' => 'Mention AWS explicitly since the target JD asks for it.',
-            ])
-            ->assertStatus(500);
-
-        $this->assertSame(5, app(AiCreditService::class)->balance($user));
-        $this->assertDatabaseMissing('ai_credit_ledger', [
-            'user_id' => $user->id,
-            'reason' => 'spend',
-        ]);
-        $this->assertDatabaseMissing('ai_requests', [
-            'user_id' => $user->id,
-            'feature' => 'section_rewrite',
-        ]);
-    }
-
-    public function test_only_summary_section_can_be_rewritten(): void
+    public function test_ai_rewrite_section_route_is_unregistered(): void
     {
         $user = $this->subscribedUserWithCredits();
         $resume = Resume::factory()->for($user)->create();
 
         $this->actingAs($user)
-            ->postJson(route('ai.rewrite-section', $resume), [
-                'section' => 'experience',
-                'text' => 'Did stuff.',
-                'detail' => 'Add metrics.',
-            ])
-            ->assertInvalid(['section']);
-    }
-
-    public function test_rewriting_a_section_on_another_users_resume_is_not_found(): void
-    {
-        $owner = User::factory()->create();
-        $intruder = User::factory()->create();
-        $resume = Resume::factory()->for($owner)->create();
-
-        $this->actingAs($intruder)
-            ->postJson(route('ai.rewrite-section', $resume), [
+            ->postJson("/resumes/{$resume->id}/ai-rewrite-section", [
                 'section' => 'summary',
                 'text' => 'Did stuff.',
                 'detail' => 'Add metrics.',
@@ -501,32 +344,32 @@ class AiSuggestionTest extends TestCase
             ->assertNotFound();
     }
 
-    public function test_unsubscribed_users_cannot_rewrite_sections(): void
+    public function test_past_due_subscribers_cannot_rewrite_bullets_even_with_credits(): void
     {
         $user = User::factory()->create();
-        $resume = Resume::factory()->for($user)->create();
+        $this->subscribeUser($user, 'past_due');
+        app(AiCreditService::class)->grant($user, 10, 'admin');
 
         $this->actingAs($user)
-            ->postJson(route('ai.rewrite-section', $resume), [
-                'section' => 'summary',
-                'text' => 'Did stuff.',
-                'detail' => 'Add metrics.',
-            ])
-            ->assertStatus(402);
+            ->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did stuff'])
+            ->assertStatus(402)
+            ->assertJson(['message' => 'Subscription or AI credits required.']);
+
+        $this->assertSame(10, app(AiCreditService::class)->balance($user));
     }
 
-    public function test_blocked_users_cannot_rewrite_sections(): void
+    public function test_canceled_ended_subscribers_cannot_rewrite_bullets_even_with_credits(): void
     {
-        $user = User::factory()->create(['ai_blocked' => true]);
-        $resume = Resume::factory()->for($user)->create();
+        $user = User::factory()->create();
+        $this->subscribeUser($user, 'canceled', now()->subDay());
+        app(AiCreditService::class)->grant($user, 10, 'admin');
 
         $this->actingAs($user)
-            ->postJson(route('ai.rewrite-section', $resume), [
-                'section' => 'summary',
-                'text' => 'Did stuff.',
-                'detail' => 'Add metrics.',
-            ])
-            ->assertStatus(429);
+            ->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did stuff'])
+            ->assertStatus(402)
+            ->assertJson(['message' => 'Subscription or AI credits required.']);
+
+        $this->assertSame(10, app(AiCreditService::class)->balance($user));
     }
 
     public function test_generating_gap_bullets_on_another_users_resume_is_not_found(): void

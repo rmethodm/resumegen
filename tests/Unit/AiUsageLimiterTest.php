@@ -53,6 +53,30 @@ class AiUsageLimiterTest extends TestCase
         $this->assertSame(402, $limiter->refusalStatus($user, 1));
     }
 
+    public function test_past_due_subscriber_with_credits_cannot_spend(): void
+    {
+        $user = User::factory()->create();
+        $this->subscribeUser($user, 'past_due');
+        app(AiCreditService::class)->grant($user, 10, 'admin');
+        $limiter = app(AiUsageLimiter::class);
+
+        $this->assertFalse($limiter->subscribedForAi($user));
+        $this->assertFalse($limiter->allows($user, 1));
+        $this->assertSame(402, $limiter->refusalStatus($user, 1));
+    }
+
+    public function test_canceled_ended_subscriber_with_credits_cannot_spend(): void
+    {
+        $user = User::factory()->create();
+        $this->subscribeUser($user, 'canceled', now()->subDay());
+        app(AiCreditService::class)->grant($user, 10, 'admin');
+        $limiter = app(AiUsageLimiter::class);
+
+        $this->assertFalse($limiter->subscribedForAi($user));
+        $this->assertFalse($limiter->allows($user, 1));
+        $this->assertSame(402, $limiter->refusalStatus($user, 1));
+    }
+
     public function test_remaining_delegates_to_credit_balance(): void
     {
         $user = User::factory()->create();

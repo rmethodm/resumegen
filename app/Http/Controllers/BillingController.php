@@ -30,6 +30,8 @@ class BillingController extends Controller
 
     public function credits(Request $request, AiUsageLimiter $limiter): RedirectResponse
     {
+        // Do not set STRIPE_CREDITS_PRICE_ID until a checkout.session.completed
+        // (or equivalent) listener grants ledger credits — Checkout alone charges without crediting.
         $priceId = config('cashier.credits_price_id');
 
         if (blank($priceId)) {
