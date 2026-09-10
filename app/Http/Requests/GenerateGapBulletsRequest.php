@@ -24,6 +24,7 @@ class GenerateGapBulletsRequest extends FormRequest
 
         return [
             'keyword' => ['required', 'string', 'max:100'],
+            'job_description' => ['required', 'string', 'max:10000'],
             'experience_id' => [
                 'required_without:experience_index',
                 'integer',
