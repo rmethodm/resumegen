@@ -45,7 +45,7 @@ const skillsLayoutLabels: Record<ResumeSkillsLayout, string> = {
     narrative: 'Narrative',
 };
 
-export const WORKSTATION_TABS = ['Edit', 'Review', 'Optimize', 'Coach'] as const;
+export const WORKSTATION_TABS = ['Edit', 'Review', 'Optimize'] as const;
 export type WorkstationTab = (typeof WORKSTATION_TABS)[number];
 
 /** Display names for the document fonts ResumeDocument accepts. */
