@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use OpenAI\Laravel\Facades\OpenAI;
+use RuntimeException;
 
 /**
  * Thin wrapper around the OpenAI chat completions API for resume bullet
@@ -43,13 +44,67 @@ class AiService
     }
 
     /**
-     * @return array{text: string, prompt_tokens: int, completion_tokens: int}
+     * @return array{options: list<string>, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
      */
     public function rewriteBullet(User $user, string $bullet, ?string $targetRole = null): array
     {
         $prompt = $targetRole !== null && $targetRole !== ''
-            ? "Rewrite this resume bullet point to be more impactful, targeting a {$targetRole} role. Keep it factual, one sentence, no fabricated numbers:\n\n{$bullet}"
-            : "Rewrite this resume bullet point to be more impactful and concise. Keep it factual, one sentence, no fabricated numbers:\n\n{$bullet}";
+            ? "Rewrite this resume bullet point into three distinct, more impactful one-sentence options targeting a {$targetRole} role. Keep them factual; do not fabricate numbers. Return JSON with an \"options\" array of exactly three strings.\n\n{$bullet}"
+            : "Rewrite this resume bullet point into three distinct, more impactful one-sentence options. Keep them factual; do not fabricate numbers. Return JSON with an \"options\" array of exactly three strings.\n\n{$bullet}";
+
+        $response = OpenAI::chat()->create([
+            'model' => self::MODEL,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt],
+            ],
+            'temperature' => 0.5,
+            'response_format' => [
+                'type' => 'json_schema',
+                'json_schema' => [
+                    'name' => 'bullet_rewrite_options',
+                    'strict' => true,
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'options' => [
+                                'type' => 'array',
+                                'items' => ['type' => 'string'],
+                            ],
+                        ],
+                        'required' => ['options'],
+                        'additionalProperties' => false,
+                    ],
+                ],
+            ],
+        ]);
+
+        $options = $this->parseRewriteOptions($response->choices[0]->message->content ?? null);
+        $promptTokens = $response->usage->promptTokens ?? 0;
+        $completionTokens = $response->usage->completionTokens ?? 0;
+
+        $aiRequest = $user->aiRequests()->create([
+            'feature' => 'bullet_rewrite',
+            'model' => self::MODEL,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+            'cost_micro_cents' => self::costMicroCents(self::MODEL, $promptTokens, $completionTokens),
+        ]);
+
+        return [
+            'options' => $options,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+            'ai_request_id' => $aiRequest->id,
+        ];
+    }
+
+    /**
+     * @return array{text: string, prompt_tokens: int, completion_tokens: int}
+     */
+    public function rewriteSection(User $user, string $text, string $detail): array
+    {
+        $prompt = "Rewrite this resume summary to address the following feedback: {$detail}\n\n"
+            ."Keep it factual, concise, and do not invent facts. Return only the rewritten summary.\n\n{$text}";
 
         $response = OpenAI::chat()->create([
             'model' => self::MODEL,
@@ -59,12 +114,12 @@ class AiService
             'temperature' => 0.5,
         ]);
 
-        $text = trim($response->choices[0]->message->content ?? $bullet);
+        $rewritten = trim($response->choices[0]->message->content ?? $text);
         $promptTokens = $response->usage->promptTokens ?? 0;
         $completionTokens = $response->usage->completionTokens ?? 0;
 
         $user->aiRequests()->create([
-            'feature' => 'bullet_rewrite',
+            'feature' => 'section_rewrite',
             'model' => self::MODEL,
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
@@ -72,7 +127,7 @@ class AiService
         ]);
 
         return [
-            'text' => $text,
+            'text' => $rewritten,
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
         ];
@@ -143,6 +198,44 @@ class AiService
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
         ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function parseRewriteOptions(?string $content): array
+    {
+        $decoded = json_decode((string) $content, true);
+        $raw = is_array($decoded) ? ($decoded['options'] ?? null) : null;
+
+        if (! is_array($raw)) {
+            throw new RuntimeException('Invalid bullet rewrite response.');
+        }
+
+        $options = [];
+
+        foreach ($raw as $option) {
+            if (! is_string($option)) {
+                throw new RuntimeException('Invalid bullet rewrite response.');
+            }
+
+            $trimmed = trim($option);
+
+            if ($trimmed === '') {
+                continue;
+            }
+
+            $options[] = $trimmed;
+        }
+
+        $options = array_values(array_unique($options));
+        $count = count($options);
+
+        if ($count < 2 || $count > 3) {
+            throw new RuntimeException('Invalid bullet rewrite response.');
+        }
+
+        return $options;
     }
 
     /**

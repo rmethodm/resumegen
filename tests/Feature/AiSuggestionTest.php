@@ -8,6 +8,7 @@ use App\Services\AiCreditService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenAI\Laravel\Facades\OpenAI;
 use OpenAI\Responses\Chat\CreateResponse;
+use RuntimeException;
 use Tests\Concerns\CreatesCashierSubscription;
 use Tests\TestCase;
 
@@ -25,31 +26,77 @@ class AiSuggestionTest extends TestCase
         return $user;
     }
 
+    /**
+     * @param  list<string>  $options
+     */
+    private function fakeRewriteOptions(array $options = ['A', 'B', 'C'], int $promptTokens = 40, int $completionTokens = 12): CreateResponse
+    {
+        return CreateResponse::fake([
+            'choices' => [
+                [
+                    'message' => [
+                        'role' => 'assistant',
+                        'content' => json_encode(['options' => $options]),
+                    ],
+                ],
+            ],
+            'usage' => ['prompt_tokens' => $promptTokens, 'completion_tokens' => $completionTokens],
+        ]);
+    }
+
     public function test_guests_cannot_rewrite_bullets(): void
     {
         $this->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did stuff'])
             ->assertUnauthorized();
     }
 
+    public function test_unsubscribed_users_cannot_rewrite_bullets(): void
+    {
+        $user = User::factory()->create();
+        app(AiCreditService::class)->grant($user, 5, 'admin');
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did stuff'])
+            ->assertStatus(402)
+            ->assertJson(['message' => 'Subscription or AI credits required.']);
+
+        $this->assertSame(5, app(AiCreditService::class)->balance($user));
+    }
+
+    public function test_subscribers_without_credits_cannot_rewrite_bullets(): void
+    {
+        $user = User::factory()->create();
+        $this->subscribeUser($user);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did stuff'])
+            ->assertStatus(402)
+            ->assertJson(['message' => 'Subscription or AI credits required.']);
+
+        $this->assertSame(0, app(AiCreditService::class)->balance($user));
+    }
+
     public function test_a_bullet_is_rewritten_and_logged(): void
     {
-        $user = $this->subscribedUserWithCredits();
+        $user = $this->subscribedUserWithCredits(5);
 
-        OpenAI::fake([
-            CreateResponse::fake([
-                'choices' => [
-                    [
-                        'message' => ['role' => 'assistant', 'content' => 'Led backend migration reducing latency 30%.'],
-                    ],
-                ],
-                'usage' => ['prompt_tokens' => 40, 'completion_tokens' => 12],
-            ]),
-        ]);
+        OpenAI::fake([$this->fakeRewriteOptions(['Led backend migration.', 'Cut API latency.', 'Shipped the cutover.'])]);
 
         $response = $this->actingAs($user)
             ->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did backend stuff']);
 
-        $response->assertOk()->assertJson(['text' => 'Led backend migration reducing latency 30%.']);
+        $response->assertOk()->assertExactJson([
+            'options' => ['Led backend migration.', 'Cut API latency.', 'Shipped the cutover.'],
+            'credits_remaining' => 4,
+        ]);
+
+        $this->assertSame(4, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseHas('ai_credit_ledger', [
+            'user_id' => $user->id,
+            'amount' => -1,
+            'reason' => 'spend',
+            'feature' => 'bullet_rewrite',
+        ]);
 
         $this->assertDatabaseHas('ai_requests', [
             'user_id' => $user->id,
@@ -61,30 +108,77 @@ class AiSuggestionTest extends TestCase
         ]);
     }
 
+    public function test_openai_failure_does_not_debit_rewrite_credits(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+
+        OpenAI::fake([new RuntimeException('openai unavailable')]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did backend stuff'])
+            ->assertStatus(500);
+
+        $this->assertSame(5, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseMissing('ai_credit_ledger', [
+            'user_id' => $user->id,
+            'reason' => 'spend',
+        ]);
+        $this->assertDatabaseMissing('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'bullet_rewrite',
+        ]);
+    }
+
+    public function test_unusable_rewrite_response_does_not_debit_credits(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+
+        OpenAI::fake([
+            CreateResponse::fake([
+                'choices' => [
+                    ['message' => ['role' => 'assistant', 'content' => 'not-json']],
+                ],
+            ]),
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did backend stuff'])
+            ->assertStatus(500);
+
+        $this->assertSame(5, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseMissing('ai_credit_ledger', [
+            'user_id' => $user->id,
+            'reason' => 'spend',
+        ]);
+        $this->assertDatabaseMissing('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'bullet_rewrite',
+        ]);
+    }
+
     public function test_blocked_users_are_refused(): void
     {
         $user = User::factory()->create(['ai_blocked' => true]);
 
         $this->actingAs($user)
             ->postJson(route('ai.rewrite-bullet'), ['bullet' => 'Did stuff'])
-            ->assertStatus(429);
+            ->assertStatus(429)
+            ->assertJson(['message' => 'AI access is blocked.']);
     }
 
     public function test_the_count_cap_no_longer_blocks_usage(): void
     {
         $user = $this->subscribedUserWithCredits(20);
 
-        OpenAI::fake(array_fill(0, 12, CreateResponse::fake([
-            'choices' => [
-                ['message' => ['role' => 'assistant', 'content' => 'Rewritten.']],
-            ],
-        ])));
+        OpenAI::fake(array_fill(0, 12, $this->fakeRewriteOptions()));
 
         for ($i = 0; $i < 12; $i++) {
             $this->actingAs($user)
                 ->postJson(route('ai.rewrite-bullet'), ['bullet' => "Bullet {$i}"])
                 ->assertOk();
         }
+
+        $this->assertSame(8, app(AiCreditService::class)->balance($user));
     }
 
     public function test_a_resume_is_reviewed_and_cached(): void
@@ -149,6 +243,16 @@ class AiSuggestionTest extends TestCase
         $this->actingAs($intruder)
             ->postJson(route('resumes.ai-review', $resume))
             ->assertNotFound();
+    }
+
+    public function test_unsubscribed_users_cannot_review(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->postJson(route('resumes.ai-review', $resume))
+            ->assertStatus(402);
     }
 
     public function test_blocked_users_cannot_review(): void
@@ -222,6 +326,20 @@ class AiSuggestionTest extends TestCase
                 'detail' => 'Add metrics.',
             ])
             ->assertNotFound();
+    }
+
+    public function test_unsubscribed_users_cannot_rewrite_sections(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->postJson(route('ai.rewrite-section', $resume), [
+                'section' => 'summary',
+                'text' => 'Did stuff.',
+                'detail' => 'Add metrics.',
+            ])
+            ->assertStatus(402);
     }
 
     public function test_blocked_users_cannot_rewrite_sections(): void
