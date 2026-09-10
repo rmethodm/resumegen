@@ -28,6 +28,19 @@ class AiSuggestionTest extends TestCase
     }
 
     /**
+     * @param  array<string, mixed>  $overrides
+     * @return array<string, mixed>
+     */
+    private function generateGapPayload(array $overrides = []): array
+    {
+        return [
+            'keyword' => 'AWS',
+            'job_description' => 'Need AWS experience.',
+            ...$overrides,
+        ];
+    }
+
+    /**
      * @param  list<string>  $options
      */
     private function fakeRewriteOptions(array $options = ['A', 'B', 'C'], int $promptTokens = 40, int $completionTokens = 12): CreateResponse
@@ -526,17 +539,16 @@ class AiSuggestionTest extends TestCase
         $experience = Experience::factory()->for($resume)->create();
 
         $this->actingAs($intruder)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_id' => $experience->id,
-            ])
+            ]))
             ->assertNotFound();
     }
 
     public function test_generating_gap_bullets_without_a_job_description_is_invalid(): void
     {
         $user = $this->subscribedUserWithCredits();
-        $resume = Resume::factory()->for($user)->create(['target_job_description' => '']);
+        $resume = Resume::factory()->for($user)->create(['target_job_description' => 'Need AWS experience.']);
         $experience = Experience::factory()->for($resume)->create();
 
         $this->actingAs($user)
@@ -544,7 +556,34 @@ class AiSuggestionTest extends TestCase
                 'keyword' => 'AWS',
                 'experience_id' => $experience->id,
             ])
-            ->assertInvalid(['target_job_description']);
+            ->assertInvalid(['job_description']);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
+                'experience_id' => $experience->id,
+                'job_description' => '   ',
+            ]))
+            ->assertInvalid(['job_description']);
+    }
+
+    public function test_gap_generate_uses_request_job_description_when_resume_has_none(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+        $resume = Resume::factory()->for($user)->create(['target_job_description' => '']);
+        $experience = Experience::factory()->for($resume)->create();
+
+        OpenAI::fake([$this->fakeRewriteOptions(['Led AWS migration.', 'Cut AWS spend.'])]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
+                'experience_id' => $experience->id,
+                'job_description' => 'Need AWS experience now.',
+            ]))
+            ->assertOk()
+            ->assertJson([
+                'options' => ['Led AWS migration.', 'Cut AWS spend.'],
+                'credits_remaining' => 4,
+            ]);
     }
 
     public function test_experience_id_must_belong_to_the_resume(): void
@@ -559,10 +598,9 @@ class AiSuggestionTest extends TestCase
         $foreignExperience = Experience::factory()->for($otherResume)->create();
 
         $this->actingAs($user)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_id' => $foreignExperience->id,
-            ])
+            ]))
             ->assertInvalid(['experience_id']);
     }
 
@@ -585,10 +623,10 @@ class AiSuggestionTest extends TestCase
         OpenAI::fake([$this->fakeRewriteOptions(['Led AWS migration.', 'Cut AWS spend.'])]);
 
         $this->actingAs($user)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_index' => 0,
-            ])
+                'job_description' => 'Looking for a senior backend engineer with AWS experience.',
+            ]))
             ->assertOk()
             ->assertJson([
                 'options' => ['Led AWS migration.', 'Cut AWS spend.'],
@@ -605,10 +643,9 @@ class AiSuggestionTest extends TestCase
         Experience::factory()->for($resume)->create();
 
         $this->actingAs($user)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_index' => 4,
-            ])
+            ]))
             ->assertInvalid(['experience_index']);
     }
 
@@ -627,10 +664,10 @@ class AiSuggestionTest extends TestCase
         OpenAI::fake([$this->fakeRewriteOptions(['Led AWS migration.', 'Cut AWS spend.', 'Hardened AWS deploys.'])]);
 
         $response = $this->actingAs($user)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_id' => $experience->id,
-            ]);
+                'job_description' => 'Looking for a senior backend engineer with AWS experience.',
+            ]));
 
         $response->assertOk()->assertExactJson([
             'options' => ['Led AWS migration.', 'Cut AWS spend.', 'Hardened AWS deploys.'],
@@ -666,10 +703,9 @@ class AiSuggestionTest extends TestCase
         OpenAI::fake([new RuntimeException('openai unavailable')]);
 
         $this->actingAs($user)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_id' => $experience->id,
-            ])
+            ]))
             ->assertStatus(500);
 
         $this->assertSame(5, app(AiCreditService::class)->balance($user));
@@ -693,10 +729,9 @@ class AiSuggestionTest extends TestCase
         $experience = Experience::factory()->for($resume)->create();
 
         $this->actingAs($user)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_id' => $experience->id,
-            ])
+            ]))
             ->assertStatus(402)
             ->assertJson(['message' => 'Subscription or AI credits required.']);
 
@@ -713,10 +748,9 @@ class AiSuggestionTest extends TestCase
         $experience = Experience::factory()->for($resume)->create();
 
         $this->actingAs($user)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_id' => $experience->id,
-            ])
+            ]))
             ->assertStatus(402)
             ->assertJson(['message' => 'Subscription or AI credits required.']);
 
@@ -732,11 +766,33 @@ class AiSuggestionTest extends TestCase
         $experience = Experience::factory()->for($resume)->create();
 
         $this->actingAs($user)
-            ->postJson(route('ai.generate-gap', $resume), [
-                'keyword' => 'AWS',
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
                 'experience_id' => $experience->id,
-            ])
+            ]))
             ->assertStatus(429)
             ->assertJson(['message' => 'AI access is blocked.']);
+    }
+
+    public function test_full_experience_does_not_debit_gap_generate_credits(): void
+    {
+        $user = $this->subscribedUserWithCredits(5);
+        $resume = Resume::factory()->for($user)->create([
+            'target_job_description' => 'Need AWS experience.',
+        ]);
+        $experience = Experience::factory()->for($resume)->create([
+            'bullets' => array_fill(0, 12, 'Existing bullet.'),
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('ai.generate-gap', $resume), $this->generateGapPayload([
+                'experience_id' => $experience->id,
+            ]))
+            ->assertInvalid(['experience_id']);
+
+        $this->assertSame(5, app(AiCreditService::class)->balance($user));
+        $this->assertDatabaseMissing('ai_requests', [
+            'user_id' => $user->id,
+            'feature' => 'gap_generate',
+        ]);
     }
 }

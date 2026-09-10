@@ -63,13 +63,20 @@ export function OptimizePanel({
     const generateInFlight = useRef(false);
     const [targetIndex, setTargetIndex] = useState(0);
     const noExperience = experiences.length === 0;
+    const atBulletCap =
+        selectedIndex >= 0 &&
+        (experiences[selectedIndex]?.bullets.length ?? 0) >=
+            GAP_GENERATE_MAX_BULLETS;
     const generateDisabled =
         generateControl.disabled ||
         noExperience ||
+        atBulletCap ||
         generate.status === 'loading';
     const generateTitle = noExperience
         ? 'Add an experience first'
-        : generateControl.title;
+        : atBulletCap
+          ? `Limit reached (${GAP_GENERATE_MAX_BULLETS}).`
+          : generateControl.title;
 
     async function requestGenerate(keyword: string) {
         if (generateDisabled || generateInFlight.current || selectedIndex < 0) {
@@ -101,6 +108,7 @@ export function OptimizePanel({
                 body: JSON.stringify({
                     keyword: term,
                     experience_index: selectedIndex,
+                    job_description: jd,
                 }),
             });
 

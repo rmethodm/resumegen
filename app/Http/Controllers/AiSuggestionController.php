@@ -136,11 +136,12 @@ class AiSuggestionController extends Controller
 
         abort_unless($resume->user_id === $user->id, 404);
 
-        $jd = trim((string) $resume->target_job_description);
+        $validated = $request->validated();
+        $jd = trim((string) $validated['job_description']);
 
         if ($jd === '') {
             throw ValidationException::withMessages([
-                'target_job_description' => 'A target job description is required to generate for a gap.',
+                'job_description' => 'A target job description is required to generate for a gap.',
             ]);
         }
 
@@ -150,12 +151,22 @@ class AiSuggestionController extends Controller
             return $refusal;
         }
 
-        $experience = $this->gapExperience($resume, $request->validated());
+        $experience = $this->gapExperience($resume, $validated);
+
+        if ($this->filledBulletCount($experience) >= 12) {
+            $field = array_key_exists('experience_id', $validated)
+                ? 'experience_id'
+                : 'experience_index';
+
+            throw ValidationException::withMessages([
+                $field => 'This experience already has the maximum number of bullets.',
+            ]);
+        }
 
         try {
             $result = $ai->generateGapBullets(
                 $user,
-                (string) $request->validated('keyword'),
+                (string) $validated['keyword'],
                 $jd,
                 $this->gapRoleContext($experience),
             );
@@ -171,6 +182,13 @@ class AiSuggestionController extends Controller
             'options' => $result['options'],
             'credits_remaining' => $credits->balance($user),
         ]);
+    }
+
+    private function filledBulletCount(Experience $experience): int
+    {
+        return collect($experience->bullets ?? [])
+            ->filter(fn ($bullet) => is_string($bullet) && trim($bullet) !== '')
+            ->count();
     }
 
     /**
