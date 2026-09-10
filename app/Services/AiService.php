@@ -99,7 +99,7 @@ class AiService
     }
 
     /**
-     * @return array{text: string, prompt_tokens: int, completion_tokens: int}
+     * @return array{text: string, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
      */
     public function rewriteSection(User $user, string $text, string $detail): array
     {
@@ -115,10 +115,15 @@ class AiService
         ]);
 
         $rewritten = trim($response->choices[0]->message->content ?? $text);
+
+        if ($rewritten === '') {
+            throw new RuntimeException('Invalid section rewrite response.');
+        }
+
         $promptTokens = $response->usage->promptTokens ?? 0;
         $completionTokens = $response->usage->completionTokens ?? 0;
 
-        $user->aiRequests()->create([
+        $aiRequest = $user->aiRequests()->create([
             'feature' => 'section_rewrite',
             'model' => self::MODEL,
             'prompt_tokens' => $promptTokens,
@@ -130,6 +135,7 @@ class AiService
             'text' => $rewritten,
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
+            'ai_request_id' => $aiRequest->id,
         ];
     }
 
