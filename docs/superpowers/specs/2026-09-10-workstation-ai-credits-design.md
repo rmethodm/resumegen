@@ -103,7 +103,7 @@ Regenerate / “Try again” costs another full action credit. Cost is always vi
 
 Every generative control supports:
 
-1. **Not subscribed** — hide on Edit; optional quiet upsell on Optimize.
+1. **Not subscribed** — show locked generative controls in place; click → Subscribe checkout (`billing.checkout`). (Superseded 2026-09-10 by `docs/superpowers/specs/2026-09-10-ai-feature-discovery-unsubscribed-design.md`; Approach A.)
 2. **Subscribed, balance > 0** — enabled; label includes cost; optional `N credits left` in Optimize header / account chrome.
 3. **Subscribed, balance = 0** — visible but disabled; “Out of AI credits” + Buy credits.
 4. **In flight** — busy; client does not decrement until server returns success + `credits_remaining`.
