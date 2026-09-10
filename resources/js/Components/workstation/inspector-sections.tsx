@@ -26,6 +26,7 @@ import {
     usesSkillCategories,
 } from '@/lib/skills-editor';
 import type {
+    AiCredits,
     ResumeDraft,
     ResumeSkill,
     SkillLibraryGroup,
@@ -179,10 +180,14 @@ export function SummaryFields({
 export function ExperienceFields({
     resume,
     onChange,
+    aiCredits = null,
+    onCreditsRemaining,
 }: {
     resume: ResumeDraft;
     resumeId?: number;
     onChange: (resume: ResumeDraft) => void;
+    aiCredits?: AiCredits | null;
+    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
     const dragHandle = useEntryReorder(resume.experiences, (experiences) =>
         onChange({ ...resume, experiences }),
@@ -288,6 +293,8 @@ export function ExperienceFields({
                         idPrefix={`experience-bullet-${index}`}
                         value={experience.bullets}
                         targetRole={resume.target_role || undefined}
+                        aiCredits={aiCredits}
+                        onCreditsRemaining={onCreditsRemaining}
                         onChange={(bullets) =>
                             patch(resume, onChange, 'experiences', index, {
                                 bullets,
@@ -326,9 +333,13 @@ export function ExperienceFields({
 export function ProjectFields({
     resume,
     onChange,
+    aiCredits = null,
+    onCreditsRemaining,
 }: {
     resume: ResumeDraft;
     onChange: (resume: ResumeDraft) => void;
+    aiCredits?: AiCredits | null;
+    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
     const dragHandle = useEntryReorder(resume.projects, (projects) =>
         onChange({ ...resume, projects }),
@@ -411,6 +422,8 @@ export function ProjectFields({
                         label="Highlights"
                         value={project.highlights}
                         targetRole={resume.target_role || undefined}
+                        aiCredits={aiCredits}
+                        onCreditsRemaining={onCreditsRemaining}
                         onChange={(highlights) =>
                             patch(resume, onChange, 'projects', index, {
                                 highlights,
