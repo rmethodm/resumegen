@@ -160,6 +160,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::middleware('throttle:20,1')->post('/resumes/{resume}/ai-rewrite-section', [AiSuggestionController::class, 'rewriteSection'])
         ->name('ai.rewrite-section');
 
+    Route::middleware('throttle:20,1')->post('/resumes/{resume}/ai-generate-gap', [AiSuggestionController::class, 'generateGap'])
+        ->name('ai.generate-gap');
+
     // Autocomplete lookup
     Route::middleware('throttle:60,1')->group(function () {
         Route::get('/autocomplete/job-roles', [AutocompleteController::class, 'searchRoles'])->name('autocomplete.job-roles.search');
