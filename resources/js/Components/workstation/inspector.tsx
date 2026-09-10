@@ -9,7 +9,12 @@ import {
     SummaryFields,
 } from '@/Components/workstation/inspector-sections';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
-import type { ResumeDraft, ResumeSectionKey, SkillLibraryGroup } from '@/types';
+import type {
+    AiCredits,
+    ResumeDraft,
+    ResumeSectionKey,
+    SkillLibraryGroup,
+} from '@/types';
 
 /**
  * The form fields for one section — no chrome of its own. workstation.tsx
@@ -22,6 +27,8 @@ export function SectionFields({
     skillLibrary,
     contactErrors,
     onChange,
+    aiCredits = null,
+    onCreditsRemaining,
 }: {
     resume: ResumeDraft;
     resumeId: number;
@@ -29,6 +36,8 @@ export function SectionFields({
     skillLibrary: SkillLibraryGroup[];
     contactErrors: ContactErrors;
     onChange: (resume: ResumeDraft) => void;
+    aiCredits?: AiCredits | null;
+    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
     const content: Record<ResumeSectionKey, ReactNode> = {
         contact: (
@@ -50,9 +59,18 @@ export function SectionFields({
                 resume={resume}
                 resumeId={resumeId}
                 onChange={onChange}
+                aiCredits={aiCredits}
+                onCreditsRemaining={onCreditsRemaining}
             />
         ),
-        project: <ProjectFields resume={resume} onChange={onChange} />,
+        project: (
+            <ProjectFields
+                resume={resume}
+                onChange={onChange}
+                aiCredits={aiCredits}
+                onCreditsRemaining={onCreditsRemaining}
+            />
+        ),
         education: <EducationFields resume={resume} onChange={onChange} />,
         skills: (
             <SkillsFields

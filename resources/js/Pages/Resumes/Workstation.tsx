@@ -83,6 +83,15 @@ export default function Workstation({
 }) {
     const { id, updated_at: initialUpdatedAt, ...initial } = resume;
     const page = usePage();
+    const [creditsRemaining, setCreditsRemaining] = useState<number | null>(
+        null,
+    );
+    const aiCredits = page.props.aiCredits
+        ? {
+              ...page.props.aiCredits,
+              balance: creditsRemaining ?? page.props.aiCredits.balance,
+          }
+        : null;
     const {
         value: draft,
         set: setDraft,
@@ -571,6 +580,10 @@ export default function Workstation({
                                             skillLibrary={skillLibrary}
                                             contactErrors={errors}
                                             onChange={setDraft}
+                                            aiCredits={aiCredits}
+                                            onCreditsRemaining={
+                                                setCreditsRemaining
+                                            }
                                         />
                                     </div>
                                 </div>

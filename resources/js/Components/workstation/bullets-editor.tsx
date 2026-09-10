@@ -9,7 +9,12 @@ import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useMemo, useReducer, type ReactNode } from 'react';
 import { Button } from '@/Components/ui/button';
 import { Label } from '@/Components/ui/label';
-import { bulletRewriteReducer } from '@/lib/bullet-rewrite';
+import {
+    bulletRewriteControl,
+    bulletRewriteReducer,
+    rewriteFailureMessage,
+    type BulletRewriteCredits,
+} from '@/lib/bullet-rewrite';
 import {
     htmlListToMarkdownLines,
     markdownLinesToHtmlList,
@@ -48,6 +53,8 @@ export function BulletsField({
     idPrefix,
     max = 12,
     targetRole,
+    aiCredits = null,
+    onCreditsRemaining,
 }: {
     label: string;
     value: string[];
@@ -58,6 +65,8 @@ export function BulletsField({
     max?: number;
     /** Threaded into the "Rewrite with AI" request; omitted if the resume has none. */
     targetRole?: string;
+    aiCredits?: BulletRewriteCredits | null;
+    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
     const initialHtml = useMemo(
         () => markdownLinesToHtmlList(value),
@@ -117,9 +126,12 @@ export function BulletsField({
     const [rewrite, dispatchRewrite] = useReducer(bulletRewriteReducer, {
         status: 'idle',
     } as const);
+    const rewriteControl = bulletRewriteControl(aiCredits);
 
     async function requestRewrite() {
-        if (!editor) return;
+        if (!editor || rewriteControl.disabled || rewrite.status === 'loading') {
+            return;
+        }
 
         const range = currentListItemRange(editor);
         const bulletText = range?.text.trim();
@@ -146,8 +158,10 @@ export function BulletsField({
                 }),
             });
 
-            if (res.status === 429) {
-                dispatchRewrite({ type: 'error', message: 'AI unavailable' });
+            const failure = rewriteFailureMessage(res.status);
+
+            if (failure) {
+                dispatchRewrite({ type: 'error', message: failure });
                 return;
             }
 
@@ -159,12 +173,34 @@ export function BulletsField({
                 return;
             }
 
-            const data = (await res.json()) as { text: string };
+            const data = (await res.json()) as {
+                options?: unknown;
+                credits_remaining?: unknown;
+            };
+            const options = Array.isArray(data.options)
+                ? data.options.filter(
+                      (option): option is string =>
+                          typeof option === 'string' && option.trim() !== '',
+                  )
+                : [];
+
+            if (options.length === 0) {
+                dispatchRewrite({
+                    type: 'error',
+                    message: 'Rewrite failed. Try again.',
+                });
+                return;
+            }
+
             dispatchRewrite({
                 type: 'success',
                 original: bulletText,
-                suggestion: data.text,
+                options,
             });
+
+            if (typeof data.credits_remaining === 'number') {
+                onCreditsRemaining?.(data.credits_remaining);
+            }
         } catch {
             dispatchRewrite({
                 type: 'error',
@@ -176,13 +212,14 @@ export function BulletsField({
     function acceptRewrite() {
         if (rewrite.status !== 'suggested' || !editor) return;
 
+        const selected = rewrite.options[rewrite.selectedIndex];
         const range = currentListItemRange(editor);
 
-        if (range) {
+        if (range && selected) {
             editor
                 .chain()
                 .focus()
-                .insertContentAt({ from: range.from, to: range.to }, rewrite.suggestion)
+                .insertContentAt({ from: range.from, to: range.to }, selected)
                 .run();
         }
 
@@ -280,13 +317,23 @@ export function BulletsField({
                     >
                         <LinkIcon className="size-3.5" />
                     </ToolbarButton>
-                    <ToolbarButton
-                        label="Rewrite with AI"
-                        active={false}
-                        onClick={() => void requestRewrite()}
-                    >
-                        <SparklesIcon className="size-3.5" />
-                    </ToolbarButton>
+                    {rewriteControl.visible && (
+                        <ToolbarButton
+                            label={rewriteControl.label}
+                            title={rewriteControl.title}
+                            active={false}
+                            disabled={
+                                rewriteControl.disabled ||
+                                rewrite.status === 'loading'
+                            }
+                            onClick={() => void requestRewrite()}
+                        >
+                            <SparklesIcon className="size-3.5" />
+                            <span className="whitespace-nowrap">
+                                {rewriteControl.label}
+                            </span>
+                        </ToolbarButton>
+                    )}
                     <span className="mx-1 h-4 w-px bg-surface-border" aria-hidden />
                     <ToolbarButton
                         label="Bullet list"
@@ -311,10 +358,42 @@ export function BulletsField({
                 {rewrite.status === 'suggested' && (
                     <div className="border-b border-surface-border/80 bg-brand-subtle/40 px-3 py-2">
                         <p className="mb-1.5 text-xs text-ink-muted">
-                            Suggested:{' '}
-                            <span className="text-ink">{rewrite.suggestion}</span>
+                            Suggested rewrites
                         </p>
-                        <div className="flex gap-2">
+                        <div
+                            role="radiogroup"
+                            aria-label="Rewrite options"
+                            className="flex flex-col gap-1.5"
+                        >
+                            {rewrite.options.map((option, index) => {
+                                const selected =
+                                    index === rewrite.selectedIndex;
+
+                                return (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        role="radio"
+                                        aria-checked={selected}
+                                        onClick={() =>
+                                            dispatchRewrite({
+                                                type: 'selectOption',
+                                                index,
+                                            })
+                                        }
+                                        className={cn(
+                                            'focus-ring w-full rounded-md border px-2 py-1.5 text-left text-xs text-ink',
+                                            selected
+                                                ? 'border-brand bg-white'
+                                                : 'border-surface-border/80 bg-white/70 hover:border-brand/40',
+                                        )}
+                                    >
+                                        {option}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <div className="mt-2 flex gap-2">
                             <Button type="button" size="sm" onClick={acceptRewrite}>
                                 Accept
                             </Button>
@@ -345,24 +424,37 @@ function ToolbarButton({
     active,
     onClick,
     children,
+    disabled = false,
+    title,
 }: {
     label: string;
     active: boolean;
     onClick: () => void;
     children: ReactNode;
+    disabled?: boolean;
+    title?: string;
 }) {
     return (
         <button
             type="button"
             aria-label={label}
             aria-pressed={active}
+            aria-disabled={disabled || undefined}
+            title={title}
             onMouseDown={(event) => event.preventDefault()}
-            onClick={onClick}
+            onClick={() => {
+                if (disabled) {
+                    return;
+                }
+
+                onClick();
+            }}
             className={cn(
-                'focus-ring inline-flex h-7 min-w-7 items-center justify-center rounded-md px-1.5 text-xs font-semibold text-ink-muted transition-colors',
+                'focus-ring inline-flex h-7 min-w-7 items-center justify-center gap-1 rounded-md px-1.5 text-xs font-semibold text-ink-muted transition-colors',
                 active
                     ? 'bg-brand-subtle text-brand'
                     : 'hover:bg-surface hover:text-ink',
+                disabled && 'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-ink-muted',
             )}
         >
             {children}
