@@ -650,7 +650,7 @@ export default function Workstation({
                         'pr-[max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
-                    <div className="mx-auto max-w-[1440px]">
+                    <div className="mx-auto max-w-[1944px]">
                         <WorkstationHeader
                             resumeId={id}
                             title={draft.title}
@@ -731,7 +731,7 @@ export default function Workstation({
                         'pr-[max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
-                    <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-4">
+                    <div className="mx-auto flex w-full max-w-[1944px] flex-col gap-4">
                         <SectionPanel
                             resumeId={id}
                             analysis={liveAnalysis}
