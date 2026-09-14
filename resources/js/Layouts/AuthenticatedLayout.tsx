@@ -78,6 +78,7 @@ export default function Authenticated({
             }
             if (event.key === 'Escape') {
                 setCommandOpen(false);
+                setMobileOpen(false);
             }
         }
 
@@ -104,169 +105,176 @@ export default function Authenticated({
             >
                 Skip to content
             </a>
+
+            {/* Mobile top strip — brand, search trigger, drawer toggle. The vertical
+                nav itself lives only in the sidebar/drawer below (lg:hidden here). */}
             <div
                 className={cn(
-                    'sticky top-0 z-30 px-3 pb-2 pt-3 sm:px-4 sm:pt-4',
-                    'pt-[max(0.75rem,env(safe-area-inset-top))]',
+                    'sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-surface-border/80',
+                    'bg-white/90 px-3 backdrop-blur-xl lg:hidden',
+                    'pt-[max(0px,env(safe-area-inset-top))]',
                     'pl-[max(0.75rem,env(safe-area-inset-left))]',
                     'pr-[max(0.75rem,env(safe-area-inset-right))]',
+                    'dark:border-gray-700/80 dark:bg-gray-800/90',
                 )}
             >
-                {/* overflow-visible so user dropdown / command sheet are not clipped */}
-                <header
-                    className={cn(
-                        'relative mx-auto max-w-[1440px] rounded-lg border border-surface-border/80',
-                        'bg-white/90 shadow-ambient backdrop-blur-xl',
-                        'transition-[box-shadow,background-color] duration-soft ease-soft motion-reduce:transition-none',
-                        'dark:border-gray-700/80 dark:bg-gray-800/90',
-                    )}
-                >
-                    <div className="flex h-14 items-center gap-2 px-3 sm:gap-3 sm:px-4">
-                        <BrandMark href={route('dashboard')} size="md" />
+                <BrandMark href={route('dashboard')} size="md" />
+                <div className="ml-auto flex items-center gap-0.5">
+                    <button
+                        type="button"
+                        onClick={() => setCommandOpen(true)}
+                        aria-label="Open navigation search"
+                        className="rounded-lg p-2 text-ink-muted transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        <MagnifyingGlassIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                        type="button"
+                        aria-label="Toggle navigation"
+                        aria-expanded={mobileOpen}
+                        onClick={() => setMobileOpen((v) => !v)}
+                        className="rounded-lg p-2 text-ink-muted transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        {mobileOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
+                    </button>
+                </div>
+            </div>
 
-                        <nav className="hidden items-center gap-0.5 lg:flex">
-                            {nav.map((item) => (
-                                <Link
-                                    key={item.label}
-                                    href={item.href}
-                                    className={cn(
-                                        'rounded-lg px-3 py-1.5 text-sm font-medium transition-[color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
-                                        'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2',
-                                        item.active
-                                            ? 'bg-brand-subtle text-brand shadow-shell dark:bg-gray-700 dark:text-white'
-                                            : 'text-ink-muted hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
-                                    )}
-                                >
-                                    {item.label}
-                                </Link>
-                            ))}
-                        </nav>
+            {mobileOpen && (
+                <div
+                    aria-hidden="true"
+                    onClick={() => setMobileOpen(false)}
+                    className="fixed inset-0 z-30 bg-black/30 lg:hidden"
+                />
+            )}
 
-                        <div className="relative ml-1 min-w-0 flex-1 sm:ml-2 lg:ml-auto lg:max-w-sm" ref={commandRef}>
-                            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-ink-faint" />
-                            <button
-                                type="button"
-                                onClick={() => setCommandOpen((open) => !open)}
-                                aria-expanded={commandOpen}
-                                aria-haspopup="listbox"
-                                aria-label="Open navigation menu"
-                                className={cn(
-                                    'flex w-full items-center rounded-full border border-surface-border bg-surface py-2 pl-9 pr-3 text-left text-sm sm:pr-14',
-                                    'text-ink-faint transition-[border-color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
-                                    'hover:border-brand/30 hover:bg-white',
-                                    'focus:border-brand focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-brand/25',
-                                    commandOpen && 'border-brand bg-white ring-2 ring-brand/25',
-                                    'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400',
-                                )}
-                            >
-                                <span className="truncate">Go to…</span>
-                            </button>
-                            <span className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded-md border border-surface-border bg-white px-1.5 py-0.5 text-xs font-semibold text-ink-faint sm:inline dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">
-                                ⌘K
-                            </span>
+            {/* Vertical nav — persistent sidebar at lg+, off-canvas drawer below it. */}
+            <aside
+                className={cn(
+                    'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-surface-border/80',
+                    'bg-white/95 shadow-ambient backdrop-blur-xl',
+                    'transition-transform duration-soft ease-soft motion-reduce:transition-none',
+                    'pl-[env(safe-area-inset-left)]',
+                    mobileOpen ? 'translate-x-0' : '-translate-x-full',
+                    'lg:translate-x-0 lg:shadow-none',
+                    'dark:border-gray-700/80 dark:bg-gray-800/95',
+                )}
+            >
+                <div className="flex h-14 shrink-0 items-center px-4">
+                    <BrandMark href={route('dashboard')} size="md" />
+                </div>
 
-                            {commandOpen && (
-                                <div
-                                    role="listbox"
-                                    aria-label="Destinations"
-                                    className="absolute left-0 right-0 top-[calc(100%+0.35rem)] z-tooltip overflow-hidden rounded-xl border border-surface-border bg-white py-1 shadow-ambient dark:border-gray-700 dark:bg-gray-800"
-                                >
-                                    <p className="px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-ink-faint">
-                                        Navigate
-                                    </p>
-                                    {nav.map((item) => (
-                                        <button
-                                            key={item.label}
-                                            type="button"
-                                            role="option"
-                                            aria-selected={item.active}
-                                            onClick={() => go(item.href)}
-                                            className={cn(
-                                                'flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors duration-soft ease-soft motion-reduce:transition-none',
-                                                item.active
-                                                    ? 'bg-brand-subtle font-semibold text-brand'
-                                                    : 'text-ink hover:bg-surface',
-                                            )}
-                                        >
-                                            <item.icon className="size-4 shrink-0 text-ink-faint" />
-                                            {item.label}
-                                        </button>
-                                    ))}
-                                </div>
+                <div className="px-3 pb-2">
+                    <button
+                        type="button"
+                        onClick={() => setCommandOpen(true)}
+                        aria-haspopup="dialog"
+                        aria-label="Open navigation search"
+                        className={cn(
+                            'flex w-full items-center gap-2 rounded-full border border-surface-border bg-surface px-3 py-2 text-left text-sm',
+                            'text-ink-faint transition-[border-color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
+                            'hover:border-brand/30 hover:bg-white',
+                            'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25',
+                            'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400',
+                        )}
+                    >
+                        <MagnifyingGlassIcon className="h-4 w-4 shrink-0" />
+                        <span className="flex-1 truncate">Go to…</span>
+                        <span className="rounded-md border border-surface-border bg-white px-1.5 py-0.5 text-xs font-semibold text-ink-faint dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">
+                            ⌘K
+                        </span>
+                    </button>
+                </div>
+
+                <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-1">
+                    {nav.map((item) => (
+                        <Link
+                            key={item.label}
+                            href={item.href}
+                            onClick={() => setMobileOpen(false)}
+                            className={cn(
+                                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium',
+                                'transition-[color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
+                                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2',
+                                item.active
+                                    ? 'bg-brand-subtle text-brand shadow-shell dark:bg-gray-700 dark:text-white'
+                                    : 'text-ink-muted hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
                             )}
-                        </div>
+                        >
+                            <item.icon className="size-5 shrink-0" />
+                            {item.label}
+                        </Link>
+                    ))}
+                </nav>
 
-                        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
-                            <Dropdown>
-                                <Dropdown.Trigger>
-                                    <button
-                                        type="button"
-                                        className="flex min-h-11 items-center gap-2 rounded-full py-1 pl-1 pr-1.5 text-sm font-medium text-ink-muted transition-[color,background-color] duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 sm:pr-2.5"
-                                    >
-                                        <span
-                                            aria-hidden="true"
-                                            className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-subtle text-xs font-bold tracking-wide text-brand"
-                                        >
-                                            {initials}
-                                        </span>
-                                        <span className="hidden max-w-32 truncate sm:inline">{user.name}</span>
-                                    </button>
-                                </Dropdown.Trigger>
-                                <Dropdown.Content>
-                                    <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
-                                    <button
-                                        type="button"
-                                        onClick={logOut}
-                                        className="block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface focus:bg-surface focus:outline-hidden"
-                                    >
-                                        Log out
-                                    </button>
-                                </Dropdown.Content>
-                            </Dropdown>
+                <div className="shrink-0 border-t border-surface-border/80 p-3 dark:border-gray-700/80">
+                    <Dropdown>
+                        <Dropdown.Trigger>
                             <button
                                 type="button"
-                                aria-label="Toggle navigation"
-                                aria-expanded={mobileOpen}
-                                onClick={() => setMobileOpen((v) => !v)}
-                                className="rounded-lg p-2 text-ink-muted transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 lg:hidden"
+                                className="flex min-h-11 w-full items-center gap-2 rounded-lg py-1.5 pl-1 pr-2 text-sm font-medium text-ink-muted transition-[color,background-color] duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
                             >
-                                {mobileOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
-                            </button>
-                        </div>
-                    </div>
-
-                    {mobileOpen && (
-                        <nav className="flex flex-col gap-0.5 border-t border-surface-border/80 px-2 py-2 dark:border-gray-700/80 lg:hidden">
-                            {nav.map((item) => (
-                                <Link
-                                    key={item.label}
-                                    href={item.href}
-                                    onClick={() => setMobileOpen(false)}
-                                    className={cn(
-                                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium',
-                                        'transition-[color,background-color] duration-soft ease-soft motion-reduce:transition-none',
-                                        item.active
-                                            ? 'bg-brand-subtle text-brand dark:bg-gray-700 dark:text-white'
-                                            : 'text-ink-muted hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
-                                    )}
+                                <span
+                                    aria-hidden="true"
+                                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-subtle text-xs font-bold tracking-wide text-brand"
                                 >
-                                    <item.icon className="h-5 w-5 shrink-0" />
-                                    {item.label}
-                                </Link>
-                            ))}
+                                    {initials}
+                                </span>
+                                <span className="truncate">{user.name}</span>
+                            </button>
+                        </Dropdown.Trigger>
+                        <Dropdown.Content>
+                            <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
                             <button
                                 type="button"
                                 onClick={logOut}
-                                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-ink-muted hover:bg-surface hover:text-ink"
+                                className="block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface focus:bg-surface focus:outline-hidden"
                             >
                                 Log out
                             </button>
-                        </nav>
-                    )}
-                </header>
-            </div>
+                        </Dropdown.Content>
+                    </Dropdown>
+                </div>
+            </aside>
 
-            <main id="main-content" className="min-w-0 flex-1" tabIndex={-1}>
+            {commandOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 px-4 pt-24"
+                    onClick={() => setCommandOpen(false)}
+                >
+                    <div
+                        ref={commandRef}
+                        role="listbox"
+                        aria-label="Destinations"
+                        onClick={(event) => event.stopPropagation()}
+                        className="w-full max-w-sm overflow-hidden rounded-xl border border-surface-border bg-white py-1 shadow-ambient dark:border-gray-700 dark:bg-gray-800"
+                    >
+                        <p className="px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-ink-faint">
+                            Navigate
+                        </p>
+                        {nav.map((item) => (
+                            <button
+                                key={item.label}
+                                type="button"
+                                role="option"
+                                aria-selected={item.active}
+                                onClick={() => go(item.href)}
+                                className={cn(
+                                    'flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors duration-soft ease-soft motion-reduce:transition-none',
+                                    item.active
+                                        ? 'bg-brand-subtle font-semibold text-brand'
+                                        : 'text-ink hover:bg-surface',
+                                )}
+                            >
+                                <item.icon className="size-4 shrink-0 text-ink-faint" />
+                                {item.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <main id="main-content" className="min-w-0 lg:pl-64" tabIndex={-1}>
                 {header ? (
                     <div
                         className={cn(
