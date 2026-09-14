@@ -1,55 +1,30 @@
 # Progress checkpoint — Workstation AI credits
 
-**Stopped:** 2026-09-10 (session paused at user request)  
+**Stopped:** 2026-09-10 (Tasks 1–12 + final review complete)  
 **Branch:** `ShadEditor`  
-**Resume HEAD:** `08f097d0` — *Use draft job description for Optimize Generate-for-gap*  
+**Resume HEAD:** `12395396` — *Close final-review gaps: unroute unmetered review, cancel gate test, Stripe env*  
 **Plan:** `docs/superpowers/plans/2026-09-10-workstation-ai-credits.md`  
 **Spec:** `docs/superpowers/specs/2026-09-10-workstation-ai-credits-design.md` (approved)  
 **SDD ledger:** `.superpowers/sdd/2026-09-10-workstation-ai-credits/progress.md`
 
-## Done (Tasks 1–10, reviewed)
+## Done (Tasks 1–12 + final review)
 
 | Task | Status | Notes |
 | --- | --- | --- |
-| 1 Config + ledger migration | complete | `config/ai.php`, `ai_credit_ledger`, starter flag |
-| 2 AiCreditService + model | complete | balance/grant/spend/starter; Billable kept on User (ruling) |
-| 3 AiUsageLimiter + subscribe helper | complete | 402/429 statuses; Cashier `subscribed('default')` |
-| 4 Starter webhook | complete | `GrantAiStarterCredits` on `subscription.created` |
-| 5 Rewrite → `options[]` + debit | complete | FormRequests/routes committed; section spends too |
-| 6 Generate-for-gap API | complete | `ai.generate-gap` |
-| 7 Inertia `aiCredits` | complete | flash share restored after regression |
-| 8 Bullets UI options + credits | complete | 402→0 balance, in-flight ref, prop sync |
-| 9 Remove Coach + summary rewrite | complete | `POST /ai/rewrite-summary`; Coach tab removed |
-| 10 Optimize Generate UI | complete | draft JD in POST; `experience_index`; 12-bullet cap |
+| 1–10 | complete | Credits ledger, gates, Rewrite/Generate UI, Coach removed |
+| 11 Buy-credits stub + docs | complete | `billing.credits` + subscriber gate; docs synced (`f02776c3`..`5dc68fdc`) |
+| 12 Gate-matrix regression | complete | Guest gap-generate 401; matrix mapped (`ea2c235c`) |
+| Final review fix wave | complete | Unrouted unmetered ai-review/rewrite-section; cancel/lapse tests; Stripe env (`12395396`) |
 
-## Not done
+## Still deferred (do not block merge of plan code)
 
-| Task | Status | Resume how |
-| --- | --- | --- |
-| **11** Buy-credits stub + docs | **interrupted** | Subagent killed mid-work. `BillingController::credits()` exists on disk (untracked file) with stub flash “AI credit packs coming soon”; **`billing.credits` route was reverted** so named-route does not 500. Buy CTAs already fall back to `billing.portal` via `gap-generate.ts`. Finish: add route + `cashier.credits_price_id` config, wire Buy → `billing.credits`, surgically update CLAUDE/PRODUCT/README for **$9.95 + credits** (current docs still describe old “scaffold / 10-day cap”). |
-| **12** Full gate-matrix regression | pending | Run checklist in plan Task 12 after Task 11. |
-| Final whole-branch review | pending | SDD final reviewer + `finishing-a-development-branch`. |
-| Browser verify | **not done** | Live Rewrite / Generate clicks not exercised in browser. |
+- check-then-spend race (no DB lock around gate + spend)
+- ~~Live Optimize Generate / Rewrite not browser-verified~~ **verified 2026-09-10** on fixture `ai-credits-browser@resumegen.test` / resume 39 after `npm run build`: Rewrite showed 3 options + Accept replaced bullet; Optimize Generate (Redis) showed 3 options + Accept appended bullet; ledger 20→17 across 2 rewrites + 1 generate. Console: tip-tap duplicate `link` warning only. **Superseded 2026-09-10 (uncommitted):** Rewrite/Generate UI and its backing controller/requests/lib were subsequently removed; `ai.rewrite-bullet`, `ai.rewrite-summary`, `ai.generate-gap` are unrouted again, matching CLAUDE.md/PLAN.md/NOTES.md. This verification note describes a state that no longer holds.
+- No feature test for `ai_blocked` on `billing.credits` (code present; Buy CTA hidden via `canPurchase`)
+- Plan `npm test` vs repo `npm run test:js`
+- Orphaned `AiService::reviewResume` / `rewriteSection` (no HTTP)
+- Do not set `STRIPE_CREDITS_PRICE_ID` until a purchase grant webhook exists
 
-## Rulings worth keeping
+## Next
 
-1. Empty migration `down()` — forward-only.  
-2. Keep `Billable` / `aiRequests` / `ai_blocked` casts on User (were missing; needed for T3–T5).  
-3. `subscribedForAi` = Cashier `subscribed('default')` (includes grace until `ends_at`).  
-4. `experience_index` accepted on generate-gap because experience row IDs are recreated on save.  
-5. Task 11 partial route addition reverted on stop — resume Task 11 from plan brief, not from half-applied route.
-
-## Deferred minors
-
-- Check-then-spend race (no DB lock around balance gate + spend).  
-- Live Optimize Generate / Rewrite not browser-verified.  
-- Docs (CLAUDE/PRODUCT/README) still stale vs shipped AI credits model — Task 11.
-
-## Next session kickoff
-
-```text
-Read docs/superpowers/plans/2026-09-10-workstation-ai-credits-PROGRESS.md
-and .superpowers/sdd/2026-09-10-workstation-ai-credits/progress.md.
-Resume SDD on branch ShadEditor at 08f097d0: Task 11, then Task 12,
-then final branch review. Do not re-do Tasks 1–10.
-```
+Finishing-a-development-branch: **keep `ShadEditor` as-is** (user choice; no PR/merge/push). Do not push/deploy unless asked. Docs audit 2026-09-10 synced CLAUDE/PLAN/NOTES/CONTEXT/UNFORGET + ai-reintroduction-map banner to match unrouted review/section + credits model.
