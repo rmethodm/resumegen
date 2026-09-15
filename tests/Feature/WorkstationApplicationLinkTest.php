@@ -42,4 +42,18 @@ class WorkstationApplicationLinkTest extends TestCase
             ->get(route('resumes.workstation', $resume))
             ->assertInertia(fn ($page) => $page->where('application', null));
     }
+
+    public function test_compare_versions_carry_linked_application_status(): void
+    {
+        $user = User::factory()->create();
+        $base = Resume::factory()->for($user)->create();
+        $tailored = Resume::factory()->for($user)->create(['group_id' => $base->group_id]);
+        JobApplication::factory()->for($user)->create(['resume_id' => $tailored->id, 'status' => 'interviewing']);
+
+        $this->actingAs($user)
+            ->get(route('resume-groups.compare', $base->group_id))
+            ->assertInertia(fn ($page) => $page
+                ->where('versions.0.application_status', null)
+                ->where('versions.1.application_status', 'interviewing'));
+    }
 }
