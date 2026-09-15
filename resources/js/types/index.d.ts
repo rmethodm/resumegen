@@ -174,6 +174,14 @@ export interface StrengthHistoryPoint {
 
 export type JobStatus = 'saved' | 'applied' | 'interviewing' | 'offer' | 'rejected';
 
+export interface JobApplicationInterview {
+    id: number;
+    round: number;
+    scheduled_at: string | null;
+    type: string | null;
+    notes: string | null;
+}
+
 export interface JobApplication {
     id: number;
     company: string;
@@ -185,5 +193,6 @@ export interface JobApplication {
     applied_at: string | null;
     follow_up_at: string | null;
     created_at: string | null;
+    interviews: JobApplicationInterview[];
 }
 

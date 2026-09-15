@@ -164,7 +164,11 @@ export function WorkstationHeader({
                             }}
                         />
                     ) : (
-                        <span className="truncate text-base font-bold text-ink">
+                        <span
+                            onDoubleClick={() => setRenaming(true)}
+                            title="Double-click to rename"
+                            className="truncate text-base font-bold text-ink"
+                        >
                             {title || 'Untitled resume'}
                         </span>
                     )}
@@ -381,7 +385,7 @@ export function WorkstationHeader({
                 pageEstimateDraft={pageEstimateDraft}
                 zoom={zoom}
                 onZoomChange={onZoomChange}
-                reviewActive={activeTab === 'Review'}
+                reviewActive={activeTab === 'Edit'}
                 activeTab={activeTab}
                 onTabChange={onTabChange}
                 reviewPreviewMode={reviewPreviewMode}

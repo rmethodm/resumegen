@@ -1,6 +1,6 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, router } from '@inertiajs/react';
 import { BriefcaseIcon, CheckCircleIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import InputError from '@/Components/InputError';
 import { Button, buttonClassName } from '@/Components/ui/button';
@@ -10,10 +10,149 @@ import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { formatPhone } from '@/lib/contact-validation';
 import type {
+    QaBankEntry,
     StarterProfile,
     StarterProfileExperience,
     StarterProfileSkill,
 } from '@/types';
+
+const MAX_QA_ENTRIES = 30;
+
+// Read the fresh XSRF-TOKEN cookie Laravel refreshes on every response — the
+// <meta> CSRF token goes stale in an SPA (see commit cc11c580).
+const xsrfToken = (): string => {
+    const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+    return match ? decodeURIComponent(match[1]) : '';
+};
+
+function QaBankSection({ entries }: { entries: QaBankEntry[] }) {
+    const [newQuestion, setNewQuestion] = useState('');
+    const [drafts, setDrafts] = useState<Record<number, string>>({});
+    const [drafting, setDrafting] = useState<number | null>(null);
+    const [processingId, setProcessingId] = useState<number | 'new' | null>(null);
+
+    const addEntry = () => {
+        if (!newQuestion.trim()) {
+            return;
+        }
+        setProcessingId('new');
+        router.post(
+            route('qa-bank-entries.store'),
+            { question: newQuestion },
+            {
+                preserveScroll: true,
+                onSuccess: () => setNewQuestion(''),
+                onFinish: () => setProcessingId(null),
+            },
+        );
+    };
+
+    const updateAnswer = (entry: QaBankEntry, answer: string) => {
+        setProcessingId(entry.id);
+        router.patch(
+            route('qa-bank-entries.update', entry.id),
+            { answer },
+            { preserveScroll: true, onFinish: () => setProcessingId(null) },
+        );
+    };
+
+    const deleteEntry = (entry: QaBankEntry) => {
+        setProcessingId(entry.id);
+        router.delete(route('qa-bank-entries.destroy', entry.id), {
+            preserveScroll: true,
+            onFinish: () => setProcessingId(null),
+        });
+    };
+
+    const draftAnswer = async (entry: QaBankEntry) => {
+        setDrafting(entry.id);
+        try {
+            const response = await fetch(route('qa-bank-entries.draft', entry.id), {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-XSRF-TOKEN': xsrfToken(),
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            });
+            const body = await response.json();
+            if (response.ok) {
+                setDrafts((current) => ({ ...current, [entry.id]: body.draft }));
+            } else {
+                setDrafts((current) => ({ ...current, [entry.id]: `Error: ${body.message}` }));
+            }
+        } finally {
+            setDrafting(null);
+        }
+    };
+
+    return (
+        <div className="grid gap-3">
+            <Label>Application Q&A bank</Label>
+            <p className="text-xs text-ink-muted">
+                Save answers to common application questions to reuse them when applying — the browser extension can autofill from these.
+            </p>
+            {entries.map((entry) => (
+                <div key={entry.id} className="grid gap-2 rounded-md border border-surface-border p-3">
+                    <p className="text-sm font-semibold text-ink">{entry.question}</p>
+                    <textarea
+                        aria-label={`Answer to: ${entry.question}`}
+                        defaultValue={entry.answer ?? ''}
+                        onBlur={(e) => updateAnswer(entry, e.target.value)}
+                        placeholder="Your answer"
+                        rows={3}
+                        disabled={processingId === entry.id}
+                        className="block w-full rounded-lg border-surface-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand"
+                    />
+                    {drafts[entry.id] && (
+                        <p className="rounded-md bg-brand-subtle/50 p-2 text-xs text-ink">
+                            <span className="font-semibold">AI draft:</span> {drafts[entry.id]}
+                        </p>
+                    )}
+                    <div className="flex gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            disabled={drafting === entry.id}
+                            onClick={() => draftAnswer(entry)}
+                        >
+                            {drafting === entry.id ? 'Drafting…' : 'Draft with AI'}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteEntry(entry)}
+                            disabled={processingId === entry.id}
+                        >
+                            Remove
+                        </Button>
+                    </div>
+                </div>
+            ))}
+            <div className="flex gap-2">
+                <Input
+                    aria-label="New question"
+                    value={newQuestion}
+                    onChange={(e) => setNewQuestion(e.target.value)}
+                    placeholder="Why do you want to work here?"
+                    className="flex-1"
+                />
+                <Button
+                    type="button"
+                    variant="outline"
+                    disabled={entries.length >= MAX_QA_ENTRIES || processingId === 'new'}
+                    onClick={addEntry}
+                >
+                    Add question
+                </Button>
+            </div>
+        </div>
+    );
+}
 
 const MAX_EXPERIENCES = 20;
 const MAX_SKILLS = 60;
@@ -29,8 +168,10 @@ const blankExperience = (): StarterProfileExperience => ({
 
 export default function StarterProfilePage({
     starterProfile,
+    qaBankEntries,
 }: {
     starterProfile: StarterProfile | null;
+    qaBankEntries: QaBankEntry[];
 }) {
     const [experiences, setExperiences] = useState<StarterProfileExperience[]>(
         starterProfile?.experience_snapshot ?? [],
@@ -39,6 +180,14 @@ export default function StarterProfilePage({
         starterProfile?.skills ?? [],
     );
     const [phone, setPhone] = useState(starterProfile?.phone ?? '');
+
+    // After a successful save Inertia reuses this page with fresh props;
+    // re-sync list/phone state so blank rows dropped server-side disappear.
+    useEffect(() => {
+        setExperiences(starterProfile?.experience_snapshot ?? []);
+        setSkills(starterProfile?.skills ?? []);
+        setPhone(starterProfile?.phone ?? '');
+    }, [starterProfile]);
 
     const updateExperience = (
         index: number,
@@ -108,7 +257,7 @@ export default function StarterProfilePage({
                         options={{ preserveScroll: true }}
                         className="space-y-8"
                     >
-                        {({ processing, errors }) => (
+                        {({ processing, errors, recentlySuccessful }) => (
                             <>
                                 <section className="space-y-3">
                                     <div className="flex items-center gap-2">
@@ -377,17 +526,26 @@ export default function StarterProfilePage({
                                             key={index}
                                             className="flex items-center gap-2"
                                         >
-                                            <Input
-                                                aria-label={`Skill ${index + 1}`}
-                                                value={skill.name}
-                                                onChange={(event) =>
-                                                    updateSkill(index, {
-                                                        name: event.target.value,
-                                                    })
-                                                }
-                                                name={`skills[${index}][name]`}
-                                                placeholder="PostgreSQL"
-                                            />
+                                            <div className="min-w-0 flex-1">
+                                                <Input
+                                                    aria-label={`Skill ${index + 1}`}
+                                                    value={skill.name}
+                                                    onChange={(event) =>
+                                                        updateSkill(index, {
+                                                            name: event.target.value,
+                                                        })
+                                                    }
+                                                    name={`skills[${index}][name]`}
+                                                    placeholder="PostgreSQL"
+                                                />
+                                                <InputError
+                                                    message={
+                                                        errors[
+                                                            `skills.${index}.name`
+                                                        ]
+                                                    }
+                                                />
+                                            </div>
                                             <input
                                                 type="hidden"
                                                 name={`skills[${index}][category]`}
@@ -426,7 +584,14 @@ export default function StarterProfilePage({
                                 </div>
 
                                 <div className="flex items-center gap-4">
-                                    <Button disabled={processing}>Save</Button>
+                                    <Button type="submit" disabled={processing}>
+                                        Save
+                                    </Button>
+                                    {recentlySuccessful && (
+                                        <p className="text-sm text-ink-muted">
+                                            Saved.
+                                        </p>
+                                    )}
                                     <Link
                                         href={route('starter-profile.skip')}
                                         method="post"
@@ -439,6 +604,8 @@ export default function StarterProfilePage({
                             </>
                         )}
                     </Form>
+
+                    <QaBankSection entries={qaBankEntries} />
                 </div>
             </div>
         </AuthenticatedLayout>

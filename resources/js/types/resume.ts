@@ -269,3 +269,9 @@ export interface StarterProfile {
     experience_snapshot: StarterProfileExperience[] | null;
     skills: StarterProfileSkill[] | null;
 }
+
+export interface QaBankEntry {
+    id: number;
+    question: string;
+    answer: string | null;
+}

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AiSuggestionController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
@@ -9,6 +8,8 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExtensionTokenController;
 use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\JobApplicationInterviewController;
+use App\Http\Controllers\JobApplicationStatsController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\MobileTokenController;
 use App\Http\Controllers\OnboardingController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\ResumeNoteController;
 use App\Http\Controllers\ResumeShareLinkController;
 use App\Http\Controllers\ResumeSnapshotController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Settings\QaBankEntryController;
 use App\Http\Controllers\Settings\StarterProfileController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\ShareLinkController;
@@ -77,13 +79,24 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');
     Route::post('/settings/starter-profile/skip', [StarterProfileController::class, 'skip'])->name('starter-profile.skip');
 
+    Route::post('/settings/starter-profile/qa-bank', [QaBankEntryController::class, 'store'])->name('qa-bank-entries.store');
+    Route::patch('/settings/starter-profile/qa-bank/{entry}', [QaBankEntryController::class, 'update'])->name('qa-bank-entries.update');
+    Route::delete('/settings/starter-profile/qa-bank/{entry}', [QaBankEntryController::class, 'destroy'])->name('qa-bank-entries.destroy');
+    Route::post('/settings/starter-profile/qa-bank/{entry}/draft', [QaBankEntryController::class, 'draft'])->name('qa-bank-entries.draft');
+
     // Job Application Kanban: tracks applications through Saved/Applied/
-    // Interviewing/Offer/Rejected. Contacts and interview notes stay
-    // out of scope — see JobApplicationController's docblock.
+    // Interviewing/Offer/Rejected, plus a per-round interview log. Contact
+    // management stays out of scope — see JobApplicationController's docblock.
     Route::get('/job-applications', [JobApplicationController::class, 'index'])->name('job-applications.index');
     Route::post('/job-applications', [JobApplicationController::class, 'store'])->name('job-applications.store');
     Route::patch('/job-applications/{jobApplication}', [JobApplicationController::class, 'update'])->name('job-applications.update');
     Route::delete('/job-applications/{jobApplication}', [JobApplicationController::class, 'destroy'])->name('job-applications.destroy');
+
+    Route::post('/job-applications/{jobApplication}/interviews', [JobApplicationInterviewController::class, 'store'])->name('job-application-interviews.store');
+    Route::patch('/job-applications/{jobApplication}/interviews/{interview}', [JobApplicationInterviewController::class, 'update'])->name('job-application-interviews.update');
+    Route::delete('/job-applications/{jobApplication}/interviews/{interview}', [JobApplicationInterviewController::class, 'destroy'])->name('job-application-interviews.destroy');
+
+    Route::get('/job-applications/stats', [JobApplicationStatsController::class, 'index'])->name('job-applications.stats');
 
     Route::get('/resumes', [ResumeController::class, 'index'])->name('resumes.index');
     Route::post('/resumes', [ResumeController::class, 'store'])->name('resumes.store');
@@ -152,17 +165,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
     Route::get('/billing/credits', [BillingController::class, 'credits'])->name('billing.credits');
 
-    Route::middleware('throttle:20,1')->post('/ai/rewrite-bullet', [AiSuggestionController::class, 'rewriteBullet'])
-        ->name('ai.rewrite-bullet');
-
-    Route::middleware('throttle:20,1')->post('/ai/rewrite-summary', [AiSuggestionController::class, 'rewriteSummary'])
-        ->name('ai.rewrite-summary');
-
-    // resumes.ai-review and ai.rewrite-section intentionally unregistered for v1
-    // (deep review UI deferred; section rewrite returned silent {text} overwrite).
-
-    Route::middleware('throttle:20,1')->post('/resumes/{resume}/ai-generate-gap', [AiSuggestionController::class, 'generateGap'])
-        ->name('ai.generate-gap');
+    // Generative Workstation AI HTTP is intentionally unregistered for v1:
+    // ai.rewrite-bullet, ai.rewrite-summary, ai.generate-gap, resumes.ai-review,
+    // ai.rewrite-section (Rewrite/Generate UI removed; review/section stay deferred).
 
     // Autocomplete lookup
     Route::middleware('throttle:60,1')->group(function () {

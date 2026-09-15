@@ -583,7 +583,7 @@ export function EntryCard({
                                 );
                             }
                         }}
-                        className="cursor-grab p-0.5 text-ink-faint focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/40 active:cursor-grabbing"
+                        className="self-start cursor-grab p-0.5 text-ink-faint focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/40 active:cursor-grabbing"
                         aria-label={`Reorder ${title} — drag, or Alt+Arrow keys`}
                     >
                         <Bars3Icon className="size-3.5" />

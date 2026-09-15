@@ -1,50 +1,14 @@
-import {
-    LinkIcon,
-    SparklesIcon,
-} from '@heroicons/react/24/outline';
-import Link from '@tiptap/extension-link';
+import { LinkIcon } from '@heroicons/react/24/outline';
 import Placeholder from '@tiptap/extension-placeholder';
-import { EditorContent, useEditor, type Editor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
-import { Button } from '@/Components/ui/button';
+import { useEffect, useMemo, type ReactNode } from 'react';
 import { Label } from '@/Components/ui/label';
-import {
-    bulletRewriteControl,
-    bulletRewriteReducer,
-    rewriteFailureCreditsRemaining,
-    rewriteFailureMessage,
-    type BulletRewriteCredits,
-} from '@/lib/bullet-rewrite';
 import {
     htmlListToMarkdownLines,
     markdownLinesToHtmlList,
 } from '@/lib/bullet-markdown';
-import {
-    resolveAiControlClick,
-    subscriptionCheckoutHref,
-} from '@/lib/gap-generate';
 import { cn } from '@/lib/utils';
-
-function currentListItemRange(
-    editor: Editor,
-): { from: number; to: number; text: string } | null {
-    const { $from } = editor.state.selection;
-
-    for (let depth = $from.depth; depth > 0; depth--) {
-        const node = $from.node(depth);
-
-        if (node.type.name === 'listItem') {
-            return {
-                from: $from.before(depth) + 1,
-                to: $from.after(depth) - 1,
-                text: node.textContent,
-            };
-        }
-    }
-
-    return null;
-}
 
 /**
  * TipTap bullet list that looks like the resume list while editing.
@@ -57,9 +21,6 @@ export function BulletsField({
     onChange,
     idPrefix,
     max = 12,
-    targetRole,
-    aiCredits = null,
-    onCreditsRemaining,
 }: {
     label: string;
     value: string[];
@@ -68,10 +29,6 @@ export function BulletsField({
     idPrefix?: string;
     /** Mirrors UpdateResumeRequest's bullets/highlights array cap. */
     max?: number;
-    /** Threaded into the "Rewrite with AI" request; omitted if the resume has none. */
-    targetRole?: string;
-    aiCredits?: BulletRewriteCredits | null;
-    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
     const initialHtml = useMemo(
         () => markdownLinesToHtmlList(value),
@@ -82,6 +39,8 @@ export function BulletsField({
 
     const editor = useEditor({
         extensions: [
+            // TipTap 3.30+ StarterKit already includes Link — configure it here
+            // instead of adding @tiptap/extension-link a second time.
             StarterKit.configure({
                 heading: false,
                 blockquote: false,
@@ -92,13 +51,13 @@ export function BulletsField({
                 bulletList: {
                     keepMarks: true,
                 },
-            }),
-            Link.configure({
-                openOnClick: false,
-                autolink: true,
-                defaultProtocol: 'https',
-                HTMLAttributes: {
-                    class: 'text-brand underline',
+                link: {
+                    openOnClick: false,
+                    autolink: true,
+                    defaultProtocol: 'https',
+                    HTMLAttributes: {
+                        class: 'text-brand underline',
+                    },
                 },
             }),
             Placeholder.configure({
@@ -127,125 +86,6 @@ export function BulletsField({
             onChange(htmlListToMarkdownLines(current.getHTML(), max));
         },
     });
-
-    const [rewrite, dispatchRewrite] = useReducer(bulletRewriteReducer, {
-        status: 'idle',
-    } as const);
-    const rewriteInFlight = useRef(false);
-    const rewriteControl = bulletRewriteControl(aiCredits);
-    const checkoutHref = subscriptionCheckoutHref();
-
-    async function requestRewrite() {
-        if (
-            !editor ||
-            rewriteControl.disabled ||
-            rewrite.status === 'loading' ||
-            rewriteInFlight.current
-        ) {
-            return;
-        }
-
-        const range = currentListItemRange(editor);
-        const bulletText = range?.text.trim();
-
-        if (!range || !bulletText) return;
-
-        rewriteInFlight.current = true;
-        dispatchRewrite({ type: 'start' });
-
-        try {
-            const res = await fetch(route('ai.rewrite-bullet'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN':
-                        document.querySelector<HTMLMetaElement>(
-                            'meta[name="csrf-token"]',
-                        )?.content ?? '',
-                },
-                body: JSON.stringify({
-                    bullet: bulletText,
-                    target_role: targetRole || undefined,
-                }),
-            });
-
-            const failure = rewriteFailureMessage(res.status);
-
-            if (failure) {
-                dispatchRewrite({ type: 'error', message: failure });
-                const remaining = rewriteFailureCreditsRemaining(res.status);
-
-                if (remaining !== null) {
-                    onCreditsRemaining?.(remaining);
-                }
-
-                return;
-            }
-
-            if (!res.ok) {
-                dispatchRewrite({
-                    type: 'error',
-                    message: 'Rewrite failed. Try again.',
-                });
-                return;
-            }
-
-            const data = (await res.json()) as {
-                options?: unknown;
-                credits_remaining?: unknown;
-            };
-            const options = Array.isArray(data.options)
-                ? data.options.filter(
-                      (option): option is string =>
-                          typeof option === 'string' && option.trim() !== '',
-                  )
-                : [];
-
-            if (options.length === 0) {
-                dispatchRewrite({
-                    type: 'error',
-                    message: 'Rewrite failed. Try again.',
-                });
-                return;
-            }
-
-            dispatchRewrite({
-                type: 'success',
-                original: bulletText,
-                options,
-            });
-
-            if (typeof data.credits_remaining === 'number') {
-                onCreditsRemaining?.(data.credits_remaining);
-            }
-        } catch {
-            dispatchRewrite({
-                type: 'error',
-                message: 'Rewrite failed. Try again.',
-            });
-        } finally {
-            rewriteInFlight.current = false;
-        }
-    }
-
-    function acceptRewrite() {
-        if (rewrite.status !== 'suggested' || !editor) return;
-
-        const selected = rewrite.options[rewrite.selectedIndex];
-        const range = currentListItemRange(editor);
-
-        if (range && selected) {
-            editor
-                .chain()
-                .focus()
-                .insertContentAt({ from: range.from, to: range.to }, selected)
-                .run();
-        }
-
-        dispatchRewrite({ type: 'accept' });
-    }
 
     // Undo / external draft reloads — re-seed without fighting local typing.
     useEffect(() => {
@@ -338,40 +178,6 @@ export function BulletsField({
                     >
                         <LinkIcon className="size-3.5" />
                     </ToolbarButton>
-                    {rewriteControl.visible && (
-                        <ToolbarButton
-                            label={rewriteControl.label}
-                            title={rewriteControl.title}
-                            active={false}
-                            locked={rewriteControl.lockReason === 'subscribe'}
-                            disabled={
-                                rewriteControl.lockReason === 'subscribe'
-                                    ? false
-                                    : rewriteControl.disabled ||
-                                      rewrite.status === 'loading'
-                            }
-                            onClick={() => {
-                                const decision = resolveAiControlClick(
-                                    rewriteControl,
-                                    checkoutHref,
-                                );
-
-                                if (decision.type === 'navigate') {
-                                    window.location.assign(decision.href);
-                                    return;
-                                }
-
-                                if (decision.type === 'run') {
-                                    void requestRewrite();
-                                }
-                            }}
-                        >
-                            <SparklesIcon className="size-3.5" />
-                            <span className="whitespace-nowrap">
-                                {rewriteControl.label}
-                            </span>
-                        </ToolbarButton>
-                    )}
                     <span className="mx-1 h-4 w-px bg-surface-border" aria-hidden />
                     <ToolbarButton
                         label="Bullet list"
@@ -383,69 +189,6 @@ export function BulletsField({
                         List
                     </ToolbarButton>
                 </div>
-                {rewrite.status === 'loading' && (
-                    <p className="border-b border-surface-border/80 bg-surface/40 px-3 py-1.5 text-xs text-ink-muted">
-                        Rewriting…
-                    </p>
-                )}
-                {rewrite.status === 'error' && (
-                    <p className="border-b border-surface-border/80 bg-danger-subtle px-3 py-1.5 text-xs text-danger-text">
-                        {rewrite.message}
-                    </p>
-                )}
-                {rewrite.status === 'suggested' && (
-                    <div className="border-b border-surface-border/80 bg-brand-subtle/40 px-3 py-2">
-                        <p className="mb-1.5 text-xs text-ink-muted">
-                            Suggested rewrites
-                        </p>
-                        <div
-                            role="radiogroup"
-                            aria-label="Rewrite options"
-                            className="flex flex-col gap-1.5"
-                        >
-                            {rewrite.options.map((option, index) => {
-                                const selected =
-                                    index === rewrite.selectedIndex;
-
-                                return (
-                                    <button
-                                        key={index}
-                                        type="button"
-                                        role="radio"
-                                        aria-checked={selected}
-                                        onClick={() =>
-                                            dispatchRewrite({
-                                                type: 'selectOption',
-                                                index,
-                                            })
-                                        }
-                                        className={cn(
-                                            'focus-ring w-full rounded-md border px-2 py-1.5 text-left text-xs text-ink',
-                                            selected
-                                                ? 'border-brand bg-white'
-                                                : 'border-surface-border/80 bg-white/70 hover:border-brand/40',
-                                        )}
-                                    >
-                                        {option}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        <div className="mt-2 flex gap-2">
-                            <Button type="button" size="sm" onClick={acceptRewrite}>
-                                Accept
-                            </Button>
-                            <Button
-                                type="button"
-                                size="sm"
-                                variant="outline"
-                                onClick={() => dispatchRewrite({ type: 'discard' })}
-                            >
-                                Discard
-                            </Button>
-                        </div>
-                    </div>
-                )}
                 <EditorContent editor={editor} />
             </div>
             {value.length >= max && (
@@ -463,7 +206,6 @@ function ToolbarButton({
     onClick,
     children,
     disabled = false,
-    locked = false,
     title,
 }: {
     label: string;
@@ -471,7 +213,6 @@ function ToolbarButton({
     onClick: () => void;
     children: ReactNode;
     disabled?: boolean;
-    locked?: boolean;
     title?: string;
 }) {
     return (
@@ -494,7 +235,7 @@ function ToolbarButton({
                 active
                     ? 'bg-brand-subtle text-brand'
                     : 'hover:bg-surface hover:text-ink',
-                (disabled || locked) &&
+                disabled &&
                     'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-ink-muted',
             )}
         >

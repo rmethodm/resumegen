@@ -3,12 +3,15 @@
 namespace Tests\Feature;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class SpatieBackupSetupTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_backup_config_uses_dedicated_backups_disk(): void
     {
         $this->assertSame(['backups'], config('backup.backup.destination.disks'));
@@ -32,6 +35,11 @@ class SpatieBackupSetupTest extends TestCase
 
     public function test_backup_commands_are_scheduled_daily(): void
     {
+        // routes/console.php's DB-backed loop first ran at boot, before
+        // RefreshDatabase migrated scheduled_task_configs — re-require now
+        // that the table exists, same as ScheduleControllerTest.
+        require base_path('routes/console.php');
+
         $events = collect(app(Schedule::class)->events())
             ->map(fn ($event) => $event->command ?? $event->description ?? '')
             ->implode("\n");

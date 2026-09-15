@@ -81,21 +81,6 @@ export default function Workstation({
 }) {
     const { id, updated_at: initialUpdatedAt, ...initial } = resume;
     const page = usePage();
-    const sharedBalance = page.props.aiCredits?.balance;
-    const [creditsRemaining, setCreditsRemaining] = useState<number | null>(
-        null,
-    );
-    useEffect(() => {
-        if (typeof sharedBalance === 'number') {
-            setCreditsRemaining(sharedBalance);
-        }
-    }, [sharedBalance]);
-    const aiCredits = page.props.aiCredits
-        ? {
-              ...page.props.aiCredits,
-              balance: creditsRemaining ?? page.props.aiCredits.balance,
-          }
-        : null;
     const {
         value: draft,
         set: setDraft,
@@ -134,8 +119,7 @@ export default function Workstation({
     const exportGate = useMemo(() => exportChecklist(draft), [draft]);
     const formattingKey = useMemo(() => resumeFormattingKey(draft), [draft]);
     const formattingKeyRef = useRef(formattingKey);
-    const pdfPreviewActive =
-        tab === 'Review' && reviewPreviewMode === 'pdf';
+    const pdfPreviewActive = tab === 'Edit' && reviewPreviewMode === 'pdf';
 
     // A badly formatted contact field is held back from the payload rather
     // than failing the whole save — see use-valid-contact.ts.
@@ -176,7 +160,7 @@ export default function Workstation({
         }
     });
 
-    // Bust cached PDF when opening Review → PDF.
+    // Bust cached PDF when opening the PDF preview.
     useEffect(() => {
         if (pdfPreviewActive) {
             setPdfRevision(Date.now());
@@ -425,6 +409,30 @@ export default function Workstation({
         );
     }
 
+    function renderPreview() {
+        if (reviewPreviewMode === 'pdf') {
+            return (
+                <PdfPreviewFrame
+                    src={`${route('resumes.preview', id)}?t=${pdfRevision}`}
+                />
+            );
+        }
+
+        return (
+            <div className="overflow-x-auto">
+                <div
+                    className="origin-top-left transition-transform duration-soft ease-soft motion-reduce:transition-none"
+                    style={{
+                        transform: `scale(${previewZoom})`,
+                        width: `${100 / previewZoom}%`,
+                    }}
+                >
+                    <ResumePreview resume={draft} className="w-full" />
+                </div>
+            </div>
+        );
+    }
+
     function renderFormSections() {
         return (
             <main
@@ -573,10 +581,6 @@ export default function Workstation({
                                             skillLibrary={skillLibrary}
                                             contactErrors={errors}
                                             onChange={setDraft}
-                                            aiCredits={aiCredits}
-                                            onCreditsRemaining={
-                                                setCreditsRemaining
-                                            }
                                         />
                                     </div>
                                 </div>
@@ -746,44 +750,11 @@ export default function Workstation({
 
                         <div className="flex flex-col gap-6">
                             <div className="flex min-w-0 flex-1 flex-col gap-5">
-                                {tab === 'Review' && (
-                                    <div className="overflow-hidden">
-                                        {reviewPreviewMode === 'pdf' ? (
-                                            <PdfPreviewFrame
-                                                src={`${route(
-                                                    'resumes.preview',
-                                                    id,
-                                                )}?t=${pdfRevision}`}
-                                            />
-                                        ) : (
-                                            <div className="overflow-x-auto">
-                                                <div
-                                                    className="origin-top-left transition-transform duration-soft ease-soft motion-reduce:transition-none"
-                                                    style={{
-                                                        transform: `scale(${previewZoom})`,
-                                                        width: `${100 / previewZoom}%`,
-                                                    }}
-                                                >
-                                                    <ResumePreview
-                                                        resume={draft}
-                                                        className="w-full"
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
                                 {tab === 'Optimize' && (
                                     <OptimizePanel
                                         draft={draft}
-                                        resumeId={id}
                                         onChange={setDraft}
                                         onAddKeyword={addKeyword}
-                                        aiCredits={aiCredits}
-                                        onCreditsRemaining={
-                                            setCreditsRemaining
-                                        }
                                     >
                                         <AtsPlainTextBlock
                                             plainText={plainText}
@@ -791,7 +762,14 @@ export default function Workstation({
                                     </OptimizePanel>
                                 )}
 
-                                {tab === 'Edit' && renderFormSections()}
+                                {tab === 'Edit' && (
+                                    <div className="grid min-w-0 gap-4 lg:grid-cols-2">
+                                        {renderFormSections()}
+                                        <div className="min-w-0 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
+                                            {renderPreview()}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {showSideTools && (
                                     <div

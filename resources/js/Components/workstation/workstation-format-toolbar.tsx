@@ -45,7 +45,7 @@ const skillsLayoutLabels: Record<ResumeSkillsLayout, string> = {
     narrative: 'Narrative',
 };
 
-export const WORKSTATION_TABS = ['Edit', 'Review', 'Optimize'] as const;
+export const WORKSTATION_TABS = ['Edit', 'Optimize'] as const;
 export type WorkstationTab = (typeof WORKSTATION_TABS)[number];
 
 /** Display names for the document fonts ResumeDocument accepts. */
@@ -198,7 +198,6 @@ export function WorkstationFormatToolbar({
     >;
     zoom: PreviewZoom;
     onZoomChange: (zoom: PreviewZoom) => void;
-    /** Zoom/View only affect the Review preview; dim when on Edit. */
     reviewActive: boolean;
     activeTab: WorkstationTab;
     onTabChange: (tab: WorkstationTab) => void;
@@ -241,7 +240,7 @@ export function WorkstationFormatToolbar({
                 ))}
             </div>
 
-            {/* Document tools on Edit/Review only — Optimize stays lean. */}
+            {/* Document tools on Edit only — Optimize stays lean. */}
             {activeTab !== 'Optimize' && (
                 <>
                     <ToolbarDivider />
@@ -421,7 +420,7 @@ export function WorkstationFormatToolbar({
                 </>
             )}
 
-            {/* Preview chrome only on Review — never show disabled Live/PDF/Zoom. */}
+            {/* Preview chrome on Edit — never show disabled Live/PDF/Zoom. */}
             {reviewActive && onReviewPreviewModeChange && (
                 <>
                     <ToolbarDivider />

@@ -2,7 +2,7 @@ import type { ResumeDraft } from '@/types';
 
 /**
  * Signature of presentation fields that change DomPDF output without
- * editing body copy. Used to refresh the Review → PDF iframe.
+ * editing body copy. Used to refresh the PDF preview iframe.
  */
 export function resumeFormattingKey(
     draft: Pick<

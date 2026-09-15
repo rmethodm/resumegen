@@ -10,7 +10,6 @@ import {
 } from '@/Components/workstation/inspector-sections';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
 import type {
-    AiCredits,
     ResumeDraft,
     ResumeSectionKey,
     SkillLibraryGroup,
@@ -22,22 +21,17 @@ import type {
  */
 export function SectionFields({
     resume,
-    resumeId,
     section,
     skillLibrary,
     contactErrors,
     onChange,
-    aiCredits = null,
-    onCreditsRemaining,
 }: {
     resume: ResumeDraft;
-    resumeId: number;
+    resumeId?: number;
     section: ResumeSectionKey;
     skillLibrary: SkillLibraryGroup[];
     contactErrors: ContactErrors;
     onChange: (resume: ResumeDraft) => void;
-    aiCredits?: AiCredits | null;
-    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
     const content: Record<ResumeSectionKey, ReactNode> = {
         contact: (
@@ -47,32 +41,9 @@ export function SectionFields({
                 onChange={onChange}
             />
         ),
-        summary: (
-            <SummaryFields
-                resume={resume}
-                resumeId={resumeId}
-                onChange={onChange}
-                aiCredits={aiCredits}
-                onCreditsRemaining={onCreditsRemaining}
-            />
-        ),
-        experience: (
-            <ExperienceFields
-                resume={resume}
-                resumeId={resumeId}
-                onChange={onChange}
-                aiCredits={aiCredits}
-                onCreditsRemaining={onCreditsRemaining}
-            />
-        ),
-        project: (
-            <ProjectFields
-                resume={resume}
-                onChange={onChange}
-                aiCredits={aiCredits}
-                onCreditsRemaining={onCreditsRemaining}
-            />
-        ),
+        summary: <SummaryFields resume={resume} onChange={onChange} />,
+        experience: <ExperienceFields resume={resume} onChange={onChange} />,
+        project: <ProjectFields resume={resume} onChange={onChange} />,
         education: <EducationFields resume={resume} onChange={onChange} />,
         skills: (
             <SkillsFields

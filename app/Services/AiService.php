@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\StarterProfile;
 use App\Models\User;
 use OpenAI\Laravel\Facades\OpenAI;
 use RuntimeException;
 
 /**
- * Thin wrapper around the OpenAI chat completions API for resume bullet
- * rewriting. Every call is metered into `ai_requests` via AiUsageLimiter's
- * quota check in the controller — this class does not enforce limits itself.
+ * Thin wrapper around the OpenAI chat completions API for orphaned resume AI
+ * helpers (`reviewResume`, `rewriteSection`). No live HTTP entry points in v1 —
+ * this class does not enforce credit limits itself.
  */
 class AiService
 {
@@ -41,169 +42,6 @@ class AiService
             + ($completionTokens / 1000) * $rates['completion'];
 
         return (int) round($cost);
-    }
-
-    /**
-     * @return array{options: list<string>, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
-     */
-    public function rewriteBullet(User $user, string $bullet, ?string $targetRole = null): array
-    {
-        $prompt = $targetRole !== null && $targetRole !== ''
-            ? "Rewrite this resume bullet point into three distinct, more impactful one-sentence options targeting a {$targetRole} role. Keep them factual; do not fabricate numbers. Return JSON with an \"options\" array of exactly three strings.\n\n{$bullet}"
-            : "Rewrite this resume bullet point into three distinct, more impactful one-sentence options. Keep them factual; do not fabricate numbers. Return JSON with an \"options\" array of exactly three strings.\n\n{$bullet}";
-
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.5,
-            'response_format' => [
-                'type' => 'json_schema',
-                'json_schema' => [
-                    'name' => 'bullet_rewrite_options',
-                    'strict' => true,
-                    'schema' => [
-                        'type' => 'object',
-                        'properties' => [
-                            'options' => [
-                                'type' => 'array',
-                                'items' => ['type' => 'string'],
-                            ],
-                        ],
-                        'required' => ['options'],
-                        'additionalProperties' => false,
-                    ],
-                ],
-            ],
-        ]);
-
-        $options = $this->parseRewriteOptions($response->choices[0]->message->content ?? null);
-        $promptTokens = $response->usage->promptTokens ?? 0;
-        $completionTokens = $response->usage->completionTokens ?? 0;
-
-        $aiRequest = $user->aiRequests()->create([
-            'feature' => 'bullet_rewrite',
-            'model' => self::MODEL,
-            'prompt_tokens' => $promptTokens,
-            'completion_tokens' => $completionTokens,
-            'cost_micro_cents' => self::costMicroCents(self::MODEL, $promptTokens, $completionTokens),
-        ]);
-
-        return [
-            'options' => $options,
-            'prompt_tokens' => $promptTokens,
-            'completion_tokens' => $completionTokens,
-            'ai_request_id' => $aiRequest->id,
-        ];
-    }
-
-    /**
-     * @return array{options: list<string>, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
-     */
-    public function rewriteSummary(User $user, string $summary, ?string $targetRole = null): array
-    {
-        $prompt = $targetRole !== null && $targetRole !== ''
-            ? "Rewrite this resume professional summary into three distinct, more impactful options targeting a {$targetRole} role. Keep them factual; do not fabricate numbers. Return JSON with an \"options\" array of exactly three strings.\n\n{$summary}"
-            : "Rewrite this resume professional summary into three distinct, more impactful options. Keep them factual; do not fabricate numbers. Return JSON with an \"options\" array of exactly three strings.\n\n{$summary}";
-
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.5,
-            'response_format' => [
-                'type' => 'json_schema',
-                'json_schema' => [
-                    'name' => 'summary_rewrite_options',
-                    'strict' => true,
-                    'schema' => [
-                        'type' => 'object',
-                        'properties' => [
-                            'options' => [
-                                'type' => 'array',
-                                'items' => ['type' => 'string'],
-                            ],
-                        ],
-                        'required' => ['options'],
-                        'additionalProperties' => false,
-                    ],
-                ],
-            ],
-        ]);
-
-        $options = $this->parseRewriteOptions($response->choices[0]->message->content ?? null);
-        $promptTokens = $response->usage->promptTokens ?? 0;
-        $completionTokens = $response->usage->completionTokens ?? 0;
-
-        $aiRequest = $user->aiRequests()->create([
-            'feature' => 'summary_rewrite',
-            'model' => self::MODEL,
-            'prompt_tokens' => $promptTokens,
-            'completion_tokens' => $completionTokens,
-            'cost_micro_cents' => self::costMicroCents(self::MODEL, $promptTokens, $completionTokens),
-        ]);
-
-        return [
-            'options' => $options,
-            'prompt_tokens' => $promptTokens,
-            'completion_tokens' => $completionTokens,
-            'ai_request_id' => $aiRequest->id,
-        ];
-    }
-
-    /**
-     * @return array{options: list<string>, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
-     */
-    public function generateGapBullets(User $user, string $keyword, string $jd, string $roleContext): array
-    {
-        $prompt = "Write three distinct one-sentence resume bullet options for this role that naturally incorporate the missing keyword \"{$keyword}\". Keep them factual; do not fabricate numbers or employers. Tailor language to the job description. Return JSON with an \"options\" array of exactly three strings.\n\nRole context:\n{$roleContext}\n\nJob description:\n{$jd}";
-
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.5,
-            'response_format' => [
-                'type' => 'json_schema',
-                'json_schema' => [
-                    'name' => 'gap_generate_options',
-                    'strict' => true,
-                    'schema' => [
-                        'type' => 'object',
-                        'properties' => [
-                            'options' => [
-                                'type' => 'array',
-                                'items' => ['type' => 'string'],
-                            ],
-                        ],
-                        'required' => ['options'],
-                        'additionalProperties' => false,
-                    ],
-                ],
-            ],
-        ]);
-
-        $options = $this->parseRewriteOptions($response->choices[0]->message->content ?? null);
-        $promptTokens = $response->usage->promptTokens ?? 0;
-        $completionTokens = $response->usage->completionTokens ?? 0;
-
-        $aiRequest = $user->aiRequests()->create([
-            'feature' => 'gap_generate',
-            'model' => self::MODEL,
-            'prompt_tokens' => $promptTokens,
-            'completion_tokens' => $completionTokens,
-            'cost_micro_cents' => self::costMicroCents(self::MODEL, $promptTokens, $completionTokens),
-        ]);
-
-        return [
-            'options' => $options,
-            'prompt_tokens' => $promptTokens,
-            'completion_tokens' => $completionTokens,
-            'ai_request_id' => $aiRequest->id,
-        ];
     }
 
     /**
@@ -241,6 +79,59 @@ class AiService
 
         return [
             'text' => $rewritten,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+            'ai_request_id' => $aiRequest->id,
+        ];
+    }
+
+    /**
+     * @return array{text: string, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
+     */
+    public function draftQaAnswer(User $user, string $question, StarterProfile $profile): array
+    {
+        $resume = $user->resumes()->latest('updated_at')->first();
+
+        $context = collect([
+            $profile->full_name,
+            $profile->headline,
+            $profile->target_role,
+            $resume?->summary,
+        ])->filter()->implode("\n");
+
+        $prompt = "You are helping a job applicant draft an answer to a job application question.\n"
+            ."Use only the background below — do not invent facts. Keep the answer concise (2-4 sentences).\n\n"
+            ."Background:\n{$context}\n\n"
+            ."Question: {$question}\n\n"
+            .'Return only the answer text.';
+
+        $response = OpenAI::chat()->create([
+            'model' => self::MODEL,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt],
+            ],
+            'temperature' => 0.5,
+        ]);
+
+        $answer = trim($response->choices[0]->message->content ?? '');
+
+        if ($answer === '') {
+            throw new RuntimeException('Invalid Q&A draft response.');
+        }
+
+        $promptTokens = $response->usage->promptTokens ?? 0;
+        $completionTokens = $response->usage->completionTokens ?? 0;
+
+        $aiRequest = $user->aiRequests()->create([
+            'feature' => 'qa_bank_draft',
+            'model' => self::MODEL,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+            'cost_micro_cents' => self::costMicroCents(self::MODEL, $promptTokens, $completionTokens),
+        ]);
+
+        return [
+            'text' => $answer,
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
             'ai_request_id' => $aiRequest->id,
@@ -312,44 +203,6 @@ class AiService
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
         ];
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function parseRewriteOptions(?string $content): array
-    {
-        $decoded = json_decode((string) $content, true);
-        $raw = is_array($decoded) ? ($decoded['options'] ?? null) : null;
-
-        if (! is_array($raw)) {
-            throw new RuntimeException('Invalid bullet rewrite response.');
-        }
-
-        $options = [];
-
-        foreach ($raw as $option) {
-            if (! is_string($option)) {
-                throw new RuntimeException('Invalid bullet rewrite response.');
-            }
-
-            $trimmed = trim($option);
-
-            if ($trimmed === '') {
-                continue;
-            }
-
-            $options[] = $trimmed;
-        }
-
-        $options = array_values(array_unique($options));
-        $count = count($options);
-
-        if ($count < 2 || $count > 3) {
-            throw new RuntimeException('Invalid bullet rewrite response.');
-        }
-
-        return $options;
     }
 
     /**

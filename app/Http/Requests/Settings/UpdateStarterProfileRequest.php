@@ -8,6 +8,61 @@ use Illuminate\Foundation\Http\FormRequest;
 class UpdateStarterProfileRequest extends FormRequest
 {
     /**
+     * Drop blank skill/experience rows before validation.
+     *
+     * The intake UI lets users click "Add skill" / "Add role" and Save without
+     * filling the row. Those empty rows used to fail `skills.*.name` required
+     * and silently block the whole profile write (no skill error was shown).
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->exists('skills')) {
+            $skills = collect($this->input('skills', []))
+                ->filter(fn (mixed $skill): bool => filled(data_get($skill, 'name')))
+                ->map(fn (mixed $skill): array => [
+                    'category' => (string) (data_get($skill, 'category') ?? ''),
+                    'name' => (string) data_get($skill, 'name'),
+                ])
+                ->values()
+                ->all();
+
+            $this->merge(['skills' => $skills]);
+        }
+
+        if ($this->exists('experience_snapshot')) {
+            $experiences = collect($this->input('experience_snapshot', []))
+                ->map(function (mixed $experience): array {
+                    $bullets = collect(data_get($experience, 'bullets', []))
+                        ->filter(fn (mixed $bullet): bool => filled($bullet))
+                        ->map(fn (mixed $bullet): string => (string) $bullet)
+                        ->values()
+                        ->all();
+
+                    return [
+                        'title' => (string) (data_get($experience, 'title') ?? ''),
+                        'company' => (string) (data_get($experience, 'company') ?? ''),
+                        'start_date' => (string) (data_get($experience, 'start_date') ?? ''),
+                        'end_date' => (string) (data_get($experience, 'end_date') ?? ''),
+                        'is_current' => filter_var(
+                            data_get($experience, 'is_current', false),
+                            FILTER_VALIDATE_BOOLEAN,
+                        ),
+                        'bullets' => $bullets,
+                    ];
+                })
+                ->filter(fn (array $experience): bool => filled($experience['title'])
+                    || filled($experience['company'])
+                    || filled($experience['start_date'])
+                    || filled($experience['end_date'])
+                    || $experience['bullets'] !== [])
+                ->values()
+                ->all();
+
+            $this->merge(['experience_snapshot' => $experiences]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * The rules mirror UpdateResumeRequest so the starter profile cannot store

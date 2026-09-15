@@ -1,9 +1,8 @@
-import { PlusIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import { useReducer, useRef, useState } from 'react';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
 import AutocompleteInput from '@/Components/AutocompleteInput';
 import SkillGroupEditor from '@/Components/SkillGroupEditor';
 import TagInput from '@/Components/TagInput';
-import { Button, buttonClassName } from '@/Components/ui/button';
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
@@ -20,22 +19,13 @@ import {
 } from '@/Components/workstation/inspector-fields';
 import { SkillPickerModal } from '@/Components/workstation/skill-picker-modal';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
-import {
-    bulletRewriteControl,
-    bulletRewriteReducer,
-    rewriteFailureCreditsRemaining,
-    rewriteFailureMessage,
-} from '@/lib/bullet-rewrite';
-import { subscriptionCheckoutHref } from '@/lib/gap-generate';
 import { formatPhone } from '@/lib/contact-validation';
 import {
     fromFlatSkillNames,
     toFlatSkillNames,
     usesSkillCategories,
 } from '@/lib/skills-editor';
-import { cn } from '@/lib/utils';
 import type {
-    AiCredits,
     ResumeDraft,
     ResumeSkill,
     SkillLibraryGroup,
@@ -160,232 +150,17 @@ export function ContactFields({
 export function SummaryFields({
     resume,
     onChange,
-    aiCredits = null,
-    onCreditsRemaining,
 }: {
     resume: ResumeDraft;
-    resumeId?: number;
     onChange: (resume: ResumeDraft) => void;
-    aiCredits?: AiCredits | null;
-    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
-    const [rewrite, dispatchRewrite] = useReducer(bulletRewriteReducer, {
-        status: 'idle',
-    } as const);
-    const rewriteInFlight = useRef(false);
-    const rewriteControl = bulletRewriteControl(aiCredits);
-    const checkoutHref = subscriptionCheckoutHref();
-    const subscribeLock =
-        rewriteControl.lockReason === 'subscribe' && checkoutHref !== null;
     const summary = resume.summary ?? '';
-
-    async function requestRewrite() {
-        if (
-            rewriteControl.disabled ||
-            rewrite.status === 'loading' ||
-            rewriteInFlight.current
-        ) {
-            return;
-        }
-
-        const text = summary.trim();
-
-        if (!text) {
-            return;
-        }
-
-        rewriteInFlight.current = true;
-        dispatchRewrite({ type: 'start' });
-
-        try {
-            const res = await fetch(route('ai.rewrite-summary'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN':
-                        document.querySelector<HTMLMetaElement>(
-                            'meta[name="csrf-token"]',
-                        )?.content ?? '',
-                },
-                body: JSON.stringify({
-                    summary: text,
-                    target_role: resume.target_role || undefined,
-                }),
-            });
-
-            const failure = rewriteFailureMessage(res.status);
-
-            if (failure) {
-                dispatchRewrite({ type: 'error', message: failure });
-                const remaining = rewriteFailureCreditsRemaining(res.status);
-
-                if (remaining !== null) {
-                    onCreditsRemaining?.(remaining);
-                }
-
-                return;
-            }
-
-            if (!res.ok) {
-                dispatchRewrite({
-                    type: 'error',
-                    message: 'Rewrite failed. Try again.',
-                });
-                return;
-            }
-
-            const data = (await res.json()) as {
-                options?: unknown;
-                credits_remaining?: unknown;
-            };
-            const options = Array.isArray(data.options)
-                ? data.options.filter(
-                      (option): option is string =>
-                          typeof option === 'string' && option.trim() !== '',
-                  )
-                : [];
-
-            if (options.length === 0) {
-                dispatchRewrite({
-                    type: 'error',
-                    message: 'Rewrite failed. Try again.',
-                });
-                return;
-            }
-
-            dispatchRewrite({
-                type: 'success',
-                original: text,
-                options,
-            });
-
-            if (typeof data.credits_remaining === 'number') {
-                onCreditsRemaining?.(data.credits_remaining);
-            }
-        } catch {
-            dispatchRewrite({
-                type: 'error',
-                message: 'Rewrite failed. Try again.',
-            });
-        } finally {
-            rewriteInFlight.current = false;
-        }
-    }
-
-    function acceptRewrite() {
-        if (rewrite.status !== 'suggested') {
-            return;
-        }
-
-        const selected = rewrite.options[rewrite.selectedIndex];
-
-        if (selected) {
-            onChange({ ...resume, summary: selected });
-        }
-
-        dispatchRewrite({ type: 'accept' });
-    }
 
     return (
         <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between gap-2">
-                <Label className="text-xs" htmlFor="field-summary">
-                    Summary
-                </Label>
-                {rewriteControl.visible &&
-                    (subscribeLock ? (
-                        <a
-                            href={checkoutHref}
-                            title={rewriteControl.title}
-                            className={buttonClassName('outline', 'sm')}
-                        >
-                            <SparklesIcon className="size-3.5" />
-                            {rewriteControl.label}
-                        </a>
-                    ) : (
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            title={rewriteControl.title}
-                            disabled={
-                                rewriteControl.disabled ||
-                                rewrite.status === 'loading' ||
-                                summary.trim() === ''
-                            }
-                            onClick={() => void requestRewrite()}
-                        >
-                            <SparklesIcon className="size-3.5" />
-                            {rewriteControl.label}
-                        </Button>
-                    ))}
-            </div>
-            {rewrite.status === 'loading' && (
-                <p className="rounded-md border border-surface-border/80 bg-surface/40 px-3 py-1.5 text-xs text-ink-muted">
-                    Rewriting…
-                </p>
-            )}
-            {rewrite.status === 'error' && (
-                <p className="rounded-md border border-danger/30 bg-danger-subtle px-3 py-1.5 text-xs text-danger-text">
-                    {rewrite.message}
-                </p>
-            )}
-            {rewrite.status === 'suggested' && (
-                <div className="rounded-md border border-surface-border/80 bg-brand-subtle/40 px-3 py-2">
-                    <p className="mb-1.5 text-xs text-ink-muted">
-                        Suggested rewrites
-                    </p>
-                    <div
-                        role="radiogroup"
-                        aria-label="Rewrite options"
-                        className="flex flex-col gap-1.5"
-                    >
-                        {rewrite.options.map((option, index) => {
-                            const selected = index === rewrite.selectedIndex;
-
-                            return (
-                                <button
-                                    key={index}
-                                    type="button"
-                                    role="radio"
-                                    aria-checked={selected}
-                                    onClick={() =>
-                                        dispatchRewrite({
-                                            type: 'selectOption',
-                                            index,
-                                        })
-                                    }
-                                    className={cn(
-                                        'focus-ring w-full rounded-md border px-2 py-1.5 text-left text-xs text-ink',
-                                        selected
-                                            ? 'border-brand bg-white'
-                                            : 'border-surface-border/80 bg-white/70 hover:border-brand/40',
-                                    )}
-                                >
-                                    {option}
-                                </button>
-                            );
-                        })}
-                    </div>
-                    <div className="mt-2 flex gap-2">
-                        <Button type="button" size="sm" onClick={acceptRewrite}>
-                            Accept
-                        </Button>
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                                dispatchRewrite({ type: 'discard' })
-                            }
-                        >
-                            Discard
-                        </Button>
-                    </div>
-                </div>
-            )}
+            <Label className="text-xs" htmlFor="field-summary">
+                Summary
+            </Label>
             <Textarea
                 id="field-summary"
                 className="min-h-96"
@@ -405,14 +180,9 @@ export function SummaryFields({
 export function ExperienceFields({
     resume,
     onChange,
-    aiCredits = null,
-    onCreditsRemaining,
 }: {
     resume: ResumeDraft;
-    resumeId?: number;
     onChange: (resume: ResumeDraft) => void;
-    aiCredits?: AiCredits | null;
-    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
     const dragHandle = useEntryReorder(resume.experiences, (experiences) =>
         onChange({ ...resume, experiences }),
@@ -517,9 +287,6 @@ export function ExperienceFields({
                         label="Bullets"
                         idPrefix={`experience-bullet-${index}`}
                         value={experience.bullets}
-                        targetRole={resume.target_role || undefined}
-                        aiCredits={aiCredits}
-                        onCreditsRemaining={onCreditsRemaining}
                         onChange={(bullets) =>
                             patch(resume, onChange, 'experiences', index, {
                                 bullets,
@@ -558,13 +325,9 @@ export function ExperienceFields({
 export function ProjectFields({
     resume,
     onChange,
-    aiCredits = null,
-    onCreditsRemaining,
 }: {
     resume: ResumeDraft;
     onChange: (resume: ResumeDraft) => void;
-    aiCredits?: AiCredits | null;
-    onCreditsRemaining?: (creditsRemaining: number) => void;
 }) {
     const dragHandle = useEntryReorder(resume.projects, (projects) =>
         onChange({ ...resume, projects }),
@@ -646,9 +409,6 @@ export function ProjectFields({
                     <BulletsField
                         label="Highlights"
                         value={project.highlights}
-                        targetRole={resume.target_role || undefined}
-                        aiCredits={aiCredits}
-                        onCreditsRemaining={onCreditsRemaining}
                         onChange={(highlights) =>
                             patch(resume, onChange, 'projects', index, {
                                 highlights,

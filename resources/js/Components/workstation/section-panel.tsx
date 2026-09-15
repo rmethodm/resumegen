@@ -162,16 +162,7 @@ export function SectionPanel({
     const isNarrow = useIsNarrow();
     /** Mobile starts collapsed so the form is reachable sooner. */
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [expanded, setExpanded] = useState(() => {
-        if (
-            typeof window !== 'undefined' &&
-            window.matchMedia('(max-width: 639px)').matches
-        ) {
-            return false;
-        }
-
-        return hasWeakBand || nextGap !== null;
-    });
+    const [expanded, setExpanded] = useState(false);
     const showChrome = !isNarrow || mobileOpen;
     const mobileSummary = hasWeakBand
         ? `${weakestBand!.label} needs work`
@@ -211,7 +202,13 @@ export function SectionPanel({
 
     return (
         <section aria-label="Resume score" className={cn('w-full', className)}>
-            <Card className="gap-0 p-3">
+            <Card
+                className={cn(
+                    'gap-0 p-3',
+                    (isNarrow ? mobileOpen : expanded) &&
+                        'shadow-[0px_13px_27px_-5px_rgba(50,50,93,0.25),0px_8px_16px_-8px_rgba(0,0,0,0.3)]',
+                )}
+            >
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
                     <div
                         className="flex items-baseline gap-1.5 pl-1"
@@ -246,8 +243,6 @@ export function SectionPanel({
                                         className={cn(
                                             'min-w-[110px] flex-1 space-y-1 rounded-md p-1.5 text-left transition-colors',
                                             'hover:bg-brand-subtle/60 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand',
-                                            isWeakest &&
-                                                'ring-2 ring-ink ring-offset-1',
                                         )}
                                     >
                                         <div
@@ -274,11 +269,11 @@ export function SectionPanel({
                                                 </span>
                                             </span>
                                         </div>
-                                        <div className="h-1.5 rounded-full bg-surface">
+                                        <div className="h-1.5 rounded-full bg-surface-border">
                                             <div
                                                 className={cn(
                                                     'h-full w-full origin-left rounded-full bg-brand transition-transform duration-200 motion-reduce:transition-none',
-                                                    isWeakest && 'bg-ink',
+                                                    isWeakest && 'bg-danger',
                                                 )}
                                                 style={{
                                                     transform: `scaleX(${band.score / 25})`,
