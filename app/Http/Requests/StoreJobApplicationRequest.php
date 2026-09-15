@@ -28,6 +28,8 @@ class StoreJobApplicationRequest extends FormRequest
             'company' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', 'max:255'],
             'resume_id' => ['nullable', 'integer', Rule::exists('resumes', 'id')->where('user_id', $this->user()?->id)],
+            'base_resume_id' => ['nullable', 'integer', Rule::exists('resumes', 'id')->where('user_id', $this->user()?->id)],
+            'job_description' => ['nullable', 'string', 'max:10000'],
             'job_url' => ['nullable', 'string', 'max:500'],
             'status' => ['sometimes', 'string', Rule::in(self::STATUSES)],
             'applied_at' => ['nullable', 'date'],
