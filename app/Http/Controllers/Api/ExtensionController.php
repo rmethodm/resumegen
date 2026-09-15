@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\CreateJobApplication;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\StoreQaBankEntryRequest;
 use App\Models\Resume;
 use App\Services\AiCreditService;
 use App\Services\AiService;
 use App\Services\AiUsageLimiter;
+use App\Support\PdfFonts;
 use App\Support\QaBankMatcher;
+use App\Support\ResumeDocument;
+use App\Support\ResumeExport;
 use App\Support\ResumeFillProfile;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Throwable;
 
 /**
@@ -176,6 +183,55 @@ class ExtensionController extends Controller
             'cost' => $cost,
             'credits_remaining' => $credits->balance($user),
         ]);
+    }
+
+    public function jobApplicationStore(StoreJobApplicationRequest $request, CreateJobApplication $createJobApplication): JsonResponse
+    {
+        $this->ensureExtensionToken($request);
+
+        $jobApplication = $createJobApplication->handle($request->user(), $request->validated());
+
+        return response()->json([
+            'id' => $jobApplication->id,
+            'company' => $jobApplication->company,
+            'role' => $jobApplication->role,
+            'status' => $jobApplication->status,
+            'resume_id' => $jobApplication->resume_id,
+        ], 201);
+    }
+
+    public function updateTargetJobDescription(Request $request, Resume $resume): JsonResponse
+    {
+        $this->ensureExtensionToken($request);
+
+        abort_unless($resume->user_id === $request->user()->id, 404);
+
+        $request->validate([
+            'target_job_description' => ['nullable', 'string', 'max:10000'],
+        ]);
+
+        $resume->update(['target_job_description' => $request->input('target_job_description', '')]);
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function pdf(Request $request, Resume $resume): HttpResponse
+    {
+        $this->ensureExtensionToken($request);
+
+        $user = $request->user();
+        abort_unless($resume->user_id === $user->id, 404);
+
+        $doc = ResumeDocument::toArray($resume);
+        $filename = ResumeExport::filename($doc);
+        $pdfFont = PdfFonts::resolve($resume->font);
+        PdfFonts::ensureInstalled($pdfFont);
+
+        return Pdf::loadView('resumes.export.pdf', [
+            'view' => ResumeExport::build($doc),
+            'fontStack' => $pdfFont['stack'],
+            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
+        ])->setPaper('letter')->stream("{$filename}.pdf");
     }
 
     private function ensureExtensionToken(Request $request): void

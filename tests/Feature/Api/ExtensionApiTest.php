@@ -385,6 +385,146 @@ class ExtensionApiTest extends ApiTestCase
             ->assertNotFound();
     }
 
+    public function test_job_application_store_creates_a_saved_application(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->postJson('/api/extension/job-applications', [
+                'company' => 'Acme Corp',
+                'role' => 'Senior Engineer',
+                'job_url' => 'https://example.com/jobs/1',
+            ])
+            ->assertCreated()
+            ->assertJsonPath('company', 'Acme Corp')
+            ->assertJsonPath('status', 'saved');
+
+        $this->assertDatabaseHas('job_applications', [
+            'user_id' => $user->id,
+            'company' => 'Acme Corp',
+            'status' => 'saved',
+        ]);
+        $this->assertDatabaseHas('job_application_status_events', [
+            'from_status' => null,
+            'to_status' => 'saved',
+        ]);
+    }
+
+    public function test_job_application_store_requires_company_and_role(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->postJson('/api/extension/job-applications', [])
+            ->assertStatus(422);
+    }
+
+    public function test_job_application_store_with_base_resume_creates_tailored_version(): void
+    {
+        $user = User::factory()->create();
+        $base = Resume::factory()->for($user)->create(['title' => 'Base']);
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $response = $this->withToken($token)
+            ->postJson('/api/extension/job-applications', [
+                'company' => 'Acme Corp',
+                'role' => 'Senior Engineer',
+                'base_resume_id' => $base->id,
+                'job_description' => 'Go and Kubernetes.',
+            ])
+            ->assertCreated();
+
+        $versionId = $response->json('resume_id');
+        $this->assertNotNull($versionId);
+        $this->assertNotSame($base->id, $versionId);
+        $this->assertDatabaseHas('resumes', [
+            'id' => $versionId,
+            'group_id' => $base->group_id,
+            'title' => 'Acme Corp – Senior Engineer',
+            'target_job_description' => 'Go and Kubernetes.',
+        ]);
+    }
+
+    public function test_target_job_description_update_persists_and_is_owner_scoped(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create(['target_job_description' => '']);
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->patchJson("/api/extension/resumes/{$resume->id}/target-job-description", [
+                'target_job_description' => 'We need a senior engineer with Laravel experience.',
+            ])
+            ->assertOk()
+            ->assertJson(['ok' => true]);
+
+        $this->assertDatabaseHas('resumes', [
+            'id' => $resume->id,
+            'target_job_description' => 'We need a senior engineer with Laravel experience.',
+        ]);
+    }
+
+    public function test_target_job_description_update_is_scoped_to_owner(): void
+    {
+        $owner = User::factory()->create();
+        $intruder = User::factory()->create();
+        $resume = Resume::factory()->for($owner)->create();
+        $token = $intruder->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->patchJson("/api/extension/resumes/{$resume->id}/target-job-description", [
+                'target_job_description' => 'Hijacked.',
+            ])
+            ->assertNotFound();
+    }
+
+    public function test_extension_pdf_streams_for_the_owner(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create(['title' => 'My Resume']);
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->get("/api/extension/resumes/{$resume->id}/pdf")
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+    }
+
+    public function test_extension_pdf_hides_other_users_resumes(): void
+    {
+        $owner = User::factory()->create();
+        $intruder = User::factory()->create();
+        $resume = Resume::factory()->for($owner)->create();
+        $token = $intruder->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->get("/api/extension/resumes/{$resume->id}/pdf")
+            ->assertNotFound();
+    }
+
     public function test_disabled_user_is_rejected(): void
     {
         $user = User::factory()->create(['disabled_at' => now()]);
