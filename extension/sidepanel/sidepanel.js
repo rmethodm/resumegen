@@ -20,6 +20,7 @@ let state = {
     profile: null,
     previewOpen: false,
     previousView: 'ready',
+    questions: [],
 };
 
 // ── Views ─────────────────────────────────────────────────────────────────────
@@ -323,6 +324,174 @@ async function onInsert(key) {
     setBanner(result.message || `Inserted ${label} into the focused field.`, 'success');
 }
 
+async function onScanQuestions() {
+    if (!state.profile) {
+        setBanner('Select a resume first.', 'warn');
+        return;
+    }
+
+    const btn = $('scan-questions-btn');
+    btn.disabled = true;
+    btn.textContent = 'Scanning…';
+
+    const result = await send('DETECT_QUESTIONS', { profile: state.profile });
+
+    btn.disabled = false;
+    btn.textContent = 'Scan for questions';
+
+    if (!result?.ok) {
+        setBanner(result?.message || 'Could not scan this page.', 'warn');
+        return;
+    }
+
+    state.questions = (result.questions || []).map((q) => ({ ...q, draft: null, drafting: false, saved: false }));
+    renderQuestions();
+
+    if (state.questions.length === 0) {
+        setBanner('No free-text questions found on this page.', 'warn');
+    } else {
+        setBanner('');
+    }
+}
+
+function renderQuestions() {
+    const container = $('questions-list');
+    container.innerHTML = '';
+
+    for (const q of state.questions) {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+
+        const questionEl = document.createElement('p');
+        questionEl.className = 'question-text';
+        questionEl.textContent = q.question;
+        card.appendChild(questionEl);
+
+        if (q.draft) {
+            const draftEl = document.createElement('div');
+            draftEl.className = 'draft-text';
+            draftEl.textContent = q.draft.answer;
+            card.appendChild(draftEl);
+
+            const meta = document.createElement('p');
+            meta.className = 'draft-meta';
+            meta.textContent = q.draft.source === 'qa_bank'
+                ? 'From your Q&A bank'
+                : `Drafted with AI · ${q.draft.credits_remaining ?? 0} credits left`;
+            card.appendChild(meta);
+        }
+
+        const actions = document.createElement('div');
+        actions.className = 'question-actions';
+
+        const draftBtn = document.createElement('button');
+        draftBtn.type = 'button';
+        draftBtn.className = 'btn-secondary';
+        draftBtn.textContent = q.drafting ? 'Drafting…' : (q.draft ? 'Redraft' : 'Draft');
+        draftBtn.disabled = q.drafting;
+        draftBtn.addEventListener('click', () => onDraftQuestion(q.id));
+        actions.appendChild(draftBtn);
+
+        if (q.draft) {
+            const insertBtn = document.createElement('button');
+            insertBtn.type = 'button';
+            insertBtn.className = 'btn-secondary';
+            insertBtn.textContent = 'Insert';
+            insertBtn.addEventListener('click', () => onInsertDraft(q.id));
+            actions.appendChild(insertBtn);
+
+            if (q.draft.source === 'ai' && !q.saved) {
+                const saveBtn = document.createElement('button');
+                saveBtn.type = 'button';
+                saveBtn.className = 'btn-link';
+                saveBtn.textContent = 'Save to Q&A bank';
+                saveBtn.addEventListener('click', () => onSaveQuestion(q.id));
+                actions.appendChild(saveBtn);
+            } else if (q.saved) {
+                const savedNote = document.createElement('span');
+                savedNote.className = 'hint';
+                savedNote.textContent = 'Saved to Q&A bank';
+                actions.appendChild(savedNote);
+            }
+        }
+
+        card.appendChild(actions);
+        container.appendChild(card);
+    }
+}
+
+function findQuestion(id) {
+    return state.questions.find((q) => q.id === id);
+}
+
+async function onDraftQuestion(id) {
+    const q = findQuestion(id);
+    if (!q) {
+        return;
+    }
+
+    q.drafting = true;
+    renderQuestions();
+
+    const result = await send('DRAFT_QA_ANSWER', {
+        question: q.question,
+        resumeId: state.selectedResumeId,
+    });
+
+    q.drafting = false;
+
+    if (!result?.ok) {
+        if (result?.status === 402) {
+            setBanner('Not enough AI credits for a draft.', 'warn');
+            const buyLink = confirm('Buy more AI credits now?');
+            if (buyLink) {
+                send('OPEN_APP', { path: '/billing/credits' });
+            }
+        } else if (result?.status === 429) {
+            setBanner('AI drafting is currently blocked on your account.', 'error');
+        } else {
+            setBanner(result?.body?.message || result?.message || 'Could not draft an answer.', 'warn');
+        }
+        renderQuestions();
+        return;
+    }
+
+    q.draft = result.data;
+    q.saved = false;
+    renderQuestions();
+}
+
+async function onInsertDraft(id) {
+    const q = findQuestion(id);
+    if (!q?.draft) {
+        return;
+    }
+
+    const result = await send('INSERT_QA_DRAFT', { id, text: q.draft.answer });
+    if (!result?.ok) {
+        setBanner(result?.message || 'Re-scan the page and try again.', 'warn');
+        return;
+    }
+    setBanner('Inserted the draft into the field.', 'success');
+}
+
+async function onSaveQuestion(id) {
+    const q = findQuestion(id);
+    if (!q?.draft) {
+        return;
+    }
+
+    const result = await send('SAVE_QA_BANK_ENTRY', { question: q.question, answer: q.draft.answer });
+    if (!result?.ok) {
+        setBanner(result?.message || 'Could not save to your Q&A bank.', 'warn');
+        return;
+    }
+
+    q.saved = true;
+    renderQuestions();
+    setBanner('Saved to your Q&A bank.', 'success');
+}
+
 // ── Events ────────────────────────────────────────────────────────────────────
 
 $('connect-btn').addEventListener('click', () => {
@@ -333,6 +502,7 @@ $('open-options-setup').addEventListener('click', () => chrome.runtime.openOptio
 $('create-resume-btn').addEventListener('click', () => send('OPEN_APP', { path: '/dashboard' }));
 $('refresh-empty-btn').addEventListener('click', () => loadResumes());
 $('fill-btn').addEventListener('click', onFill);
+$('scan-questions-btn').addEventListener('click', onScanQuestions);
 $('footer-open').addEventListener('click', () => send('OPEN_APP', { path: '/dashboard' }));
 $('footer-help').addEventListener('click', () => {
     state.previousView = $('view-ready').classList.contains('hidden') ? 'setup' : 'ready';
@@ -416,6 +586,7 @@ $('menu').addEventListener('click', async (e) => {
                 profile: null,
                 previewOpen: false,
                 previousView: 'ready',
+                questions: [],
             };
             showView('setup');
         }

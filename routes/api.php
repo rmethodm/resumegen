@@ -24,7 +24,9 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->prefix('extension')->group
     Route::get('/resumes/{resume}/fill-profile', [ExtensionController::class, 'fillProfile'])
         ->name('api.extension.fill-profile');
     Route::get('/qa-bank', [ExtensionController::class, 'qaBank'])->name('api.extension.qa-bank');
+    Route::post('/qa-bank', [ExtensionController::class, 'qaBankStore'])->name('api.extension.qa-bank.store');
     Route::get('/qa-bank/match', [ExtensionController::class, 'qaBankMatch'])->name('api.extension.qa-bank.match');
+    Route::post('/qa-bank/draft', [ExtensionController::class, 'qaBankDraft'])->name('api.extension.qa-bank.draft');
 });
 
 /*

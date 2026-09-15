@@ -617,14 +617,62 @@
         return { index: bestIndex, score: bestScore };
     }
 
+    /**
+     * Free-text fields whose label indicates a cover-letter-shaped prompt.
+     * Detection-time exclusion — these never get a "Draft" affordance, so
+     * there's no UI path to bypass it. See CLAUDE.md "Cover letters".
+     */
+    const COVER_LETTER_EXCLUDE = [
+        /\bcover[_.\-\s]?letter\b/i,
+        /\bletter\s*of\s*interest\b/i,
+        /\bwhy\s*this\s*letter\b/i,
+        /\bmotivation\s*letter\b/i,
+        /\bintroductory\s*letter\b/i,
+    ];
+
+    /**
+     * @param {ReturnType<typeof buildSignals>} signals
+     */
+    function isCoverLetterField(signals) {
+        return COVER_LETTER_EXCLUDE.some((re) => re.test(signals.labelNorm) || re.test(signals.blob));
+    }
+
+    /**
+     * A free-text field is a screening-question candidate when it can hold
+     * multi-line prose, has a real label, isn't a cover-letter prompt, and
+     * isn't already a confident match for a known profile field (so
+     * "Summary" stays an Insert chip, not a drafted question).
+     * @param {ReturnType<typeof buildSignals>} signals
+     * @param {number} claimedScore best score against any profile key (0 if none)
+     */
+    function detectQuestionCandidate(signals, claimedScore = 0) {
+        const multiLine = signals.tag === 'textarea' || Boolean(signals.raw?.contentEditable);
+        if (!multiLine) {
+            return false;
+        }
+        if (signals.labelNorm.length < 8) {
+            return false;
+        }
+        if (isCoverLetterField(signals)) {
+            return false;
+        }
+        if (claimedScore >= 40) {
+            return false;
+        }
+        return true;
+    }
+
     return {
         KEY_ORDER,
         RULES,
+        COVER_LETTER_EXCLUDE,
         normalize,
         buildSignals,
         scoreField,
         matchFields,
         valuesFromProfile,
         bestOptionMatch,
+        isCoverLetterField,
+        detectQuestionCandidate,
     };
 }));
