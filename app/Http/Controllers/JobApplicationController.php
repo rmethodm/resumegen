@@ -6,6 +6,8 @@ use App\Actions\CreateJobApplication;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\UpdateJobApplicationRequest;
 use App\Models\JobApplication;
+use App\Models\Resume;
+use App\Support\ResumeAnalysis;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,11 +25,18 @@ class JobApplicationController extends Controller
     public function index(Request $request): Response
     {
         $applications = $request->user()->jobApplications()->with('interviews')->latest()->get();
-        $resumes = $request->user()->resumes()->orderBy('title')->get(['id', 'title']);
+        $resumes = $request->user()->resumes()
+            ->with(['experiences', 'skills'])
+            ->latest('updated_at')
+            ->get();
 
         return Inertia::render('Jobs/Kanban', [
             'applications' => $applications->map(fn (JobApplication $job) => $this->present($job))->all(),
-            'resumes' => $resumes->map(fn ($resume) => ['id' => $resume->id, 'title' => $resume->title])->all(),
+            'resumes' => $resumes->map(fn (Resume $resume) => [
+                'id' => $resume->id,
+                'title' => $resume->title,
+                'score' => ResumeAnalysis::score($resume),
+            ])->all(),
         ]);
     }
 

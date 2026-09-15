@@ -196,3 +196,9 @@ export interface JobApplication {
     interviews: JobApplicationInterview[];
 }
 
+export interface ResumeOption {
+    id: number;
+    title: string;
+    score: number;
+}
+

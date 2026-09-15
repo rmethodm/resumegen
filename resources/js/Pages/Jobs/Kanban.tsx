@@ -14,9 +14,8 @@ import { Button, buttonClassName } from '@/Components/ui/button';
 import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Shell } from '@/Components/ui/shell';
 import { cn } from '@/lib/utils';
-import type { JobApplication, JobApplicationInterview, JobStatus } from '@/types';
-
-type ResumeOption = { id: number; title: string };
+import { AddJobModal } from '@/Components/jobs/add-job-modal';
+import type { JobApplication, JobApplicationInterview, JobStatus, ResumeOption } from '@/types';
 
 const COLUMNS: { status: JobStatus; label: string }[] = [
     { status: 'saved', label: 'Saved' },
@@ -47,17 +46,7 @@ type FormState = {
     follow_up_at: string;
 };
 
-const emptyForm = (status: JobStatus = 'saved'): FormState => ({
-    id: null,
-    company: '',
-    role: '',
-    job_url: '',
-    resume_id: '',
-    status,
-    follow_up_at: '',
-});
-
-function JobCard({ job, resumeTitle }: { job: JobApplication; resumeTitle: string | null }) {
+function JobCard({ job, resume, highlighted }: { job: JobApplication; resume: ResumeOption | null; highlighted: boolean }) {
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: job.id });
 
     return (
@@ -67,10 +56,7 @@ function JobCard({ job, resumeTitle }: { job: JobApplication; resumeTitle: strin
             {...attributes}
             style={
                 transform
-                    ? {
-                          transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-                          zIndex: 20,
-                      }
+                    ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, zIndex: 20 }
                     : undefined
             }
             className={cn(
@@ -80,12 +66,24 @@ function JobCard({ job, resumeTitle }: { job: JobApplication; resumeTitle: strin
                 'active:cursor-grabbing motion-reduce:transition-none',
                 'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1',
                 isDragging && 'scale-[1.03] opacity-95 shadow-ambient ring-1 ring-brand/20',
+                highlighted && 'ring-2 ring-brand',
             )}
         >
             <div className="text-sm font-bold text-ink">{job.role}</div>
             <div className="text-xs font-medium text-ink-muted">{job.company}</div>
-            {resumeTitle && (
-                <div className="mt-1.5 text-xs font-medium text-ink-faint">Using: {resumeTitle}</div>
+            {resume && (
+                <div className="mt-1.5 flex items-center justify-between gap-2 text-xs">
+                    <span className="truncate font-medium text-ink-faint">
+                        {resume.title} · {resume.score}/100
+                    </span>
+                    <Link
+                        href={route('resumes.workstation', resume.id)}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        className="shrink-0 font-semibold text-brand underline-offset-2 hover:underline"
+                    >
+                        Open resume
+                    </Link>
+                </div>
             )}
             {job.follow_up_at && (
                 <div className="mt-1.5 text-xs font-semibold text-brand">
@@ -101,11 +99,13 @@ function Column({
     label,
     jobs,
     resumesById,
+    highlightId,
 }: {
     status: JobStatus;
     label: string;
     jobs: JobApplication[];
-    resumesById: Map<number, string>;
+    resumesById: Map<number, ResumeOption>;
+    highlightId: number | null;
 }) {
     const { setNodeRef, isOver } = useDroppable({ id: status });
 
@@ -139,7 +139,8 @@ function Column({
                         <JobCard
                             key={job.id}
                             job={job}
-                            resumeTitle={job.resume_id ? (resumesById.get(job.resume_id) ?? null) : null}
+                            resume={job.resume_id ? (resumesById.get(job.resume_id) ?? null) : null}
+                            highlighted={job.id === highlightId}
                         />
                     ))
                 )}
@@ -252,6 +253,7 @@ export default function JobApplicationKanban({
     const [formError, setFormError] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<{ id: number } | null>(null);
+    const [addOpen, setAddOpen] = useState(false);
     // Local mirror of the `applications` prop so a drag can move a card
     // immediately (Doherty threshold) instead of waiting on the round-trip;
     // it resyncs whenever the server sends fresh props (create/edit/delete).
@@ -261,12 +263,9 @@ export default function JobApplicationKanban({
         setLocalApplications(applications);
     }, [applications]);
 
-    const resumesById = new Map(resumes.map((r) => [r.id, r.title]));
+    const resumesById = new Map(resumes.map((r) => [r.id, r]));
 
-    const openCreate = () => {
-        setFormError(null);
-        setForm(emptyForm());
-    };
+    const openCreate = () => setAddOpen(true);
     const openEdit = (job: JobApplication) => {
         setFormError(null);
         setForm({
@@ -378,6 +377,11 @@ export default function JobApplicationKanban({
         );
     };
 
+    const highlightId = (() => {
+        const raw = new URLSearchParams(window.location.search).get('highlight');
+        return raw ? Number(raw) : null;
+    })();
+
     const activeApplications = localApplications.filter((job) => job.status !== 'rejected');
     const interviewing = localApplications.filter((job) => job.status === 'interviewing');
     const offers = localApplications.filter((job) => job.status === 'offer');
@@ -471,12 +475,15 @@ export default function JobApplicationKanban({
                                     label={column.label}
                                     jobs={localApplications.filter((job) => job.status === column.status)}
                                     resumesById={resumesById}
+                                    highlightId={highlightId}
                                 />
                             ))}
                         </div>
                     </DndContext>
                 )}
             </div>
+
+            <AddJobModal open={addOpen} onClose={() => setAddOpen(false)} resumes={resumes} />
 
             <Modal show={form !== null} onClose={closeForm} maxWidth="lg" title={form?.id ? 'Edit application' : 'New application'}>
                 {form && (
