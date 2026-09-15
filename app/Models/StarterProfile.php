@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * A reusable seed for resume *content* — distinct from the account profile
@@ -40,6 +41,14 @@ class StarterProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return HasMany<QaBankEntry, $this>
+     */
+    public function qaBankEntries(): HasMany
+    {
+        return $this->hasMany(QaBankEntry::class)->orderBy('position');
     }
 
     /**

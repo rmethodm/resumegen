@@ -9,7 +9,7 @@
                 document.documentElement.classList.add('dark');
             }
             // Brand theme attribute kept for compatibility; CSS maps every
-            // variant to the same grayscale tokens.
+            // variant to the DESIGN.md Social Proof accent (#0066FF).
             try {
                 var brand = localStorage.getItem('resumegen.brand-theme');
                 if (brand === 'navy' || brand === 'teal' || brand === 'copper' || brand === 'violet') {
@@ -41,9 +41,9 @@
         <link rel="icon" type="image/svg+xml" href="/r-monogram.svg">
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts: IBM Plex for product UI; Source Serif 4 for marketing display -->
+        <!-- Fonts: system UI stack for sans; JetBrains Mono for code (DESIGN.md) -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:400,500,600,700|source-serif-4:600,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=jetbrains-mono:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @routes(null, Illuminate\Support\Facades\Vite::cspNonce())

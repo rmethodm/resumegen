@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Resume;
+use App\Support\QaBankMatcher;
 use App\Support\ResumeFillProfile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -61,6 +62,34 @@ class ExtensionController extends Controller
         abort_unless($resume->user_id === $user->id, 404);
 
         return response()->json(ResumeFillProfile::from($resume));
+    }
+
+    public function qaBank(Request $request): JsonResponse
+    {
+        $this->ensureExtensionToken($request);
+
+        $entries = $request->user()->starterProfile?->qaBankEntries ?? collect();
+
+        return response()->json([
+            'entries' => $entries->map(fn ($entry) => [
+                'id' => $entry->id,
+                'question' => $entry->question,
+                'answer' => $entry->answer,
+            ])->all(),
+        ]);
+    }
+
+    public function qaBankMatch(Request $request): JsonResponse
+    {
+        $this->ensureExtensionToken($request);
+
+        $request->validate(['question' => ['required', 'string', 'max:2000']]);
+
+        $entries = $request->user()->starterProfile?->qaBankEntries ?? collect();
+
+        $result = QaBankMatcher::match($entries, $request->string('question')->toString());
+
+        return response()->json($result);
     }
 
     private function ensureExtensionToken(Request $request): void

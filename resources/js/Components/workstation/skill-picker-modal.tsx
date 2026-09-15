@@ -149,7 +149,7 @@ export function SkillPickerModal({
                                             disabled={added}
                                             onClick={() => toggle(group.category, name)}
                                             className={cn(
-                                                'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-semibold',
+                                                'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold',
                                                 added
                                                     ? 'cursor-not-allowed border border-surface-border bg-surface text-ink-faint'
                                                     : selected
@@ -212,10 +212,10 @@ export function SkillPickerModal({
 
                 <TabGroup className="flex min-h-0 flex-1 flex-col">
                     <TabList className="flex gap-4 border-b border-surface-border px-6 pt-3.5">
-                        <Tab className="rounded-xs border-b-2 border-transparent pb-2.5 text-xs font-bold text-ink-muted outline-hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 data-selected:border-brand data-selected:text-brand">
+                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-ink-muted outline-hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 data-selected:border-brand data-selected:text-brand">
                             Soft skills
                         </Tab>
-                        <Tab className="rounded-xs border-b-2 border-transparent pb-2.5 text-xs font-bold text-ink-muted outline-hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 data-selected:border-brand data-selected:text-brand">
+                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-ink-muted outline-hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 data-selected:border-brand data-selected:text-brand">
                             Hard skills
                         </Tab>
                     </TabList>

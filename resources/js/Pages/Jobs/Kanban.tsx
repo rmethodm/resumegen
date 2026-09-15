@@ -1,19 +1,20 @@
 import { DndContext, DragEndEvent, useDraggable, useDroppable } from '@dnd-kit/core';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import {
     BriefcaseIcon,
     PlusIcon,
+    TrashIcon,
 } from '@heroicons/react/24/outline';
 import { FormEvent, useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
-import { Button } from '@/Components/ui/button';
+import { Button, buttonClassName } from '@/Components/ui/button';
 import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Shell } from '@/Components/ui/shell';
 import { cn } from '@/lib/utils';
-import type { JobApplication, JobStatus } from '@/types';
+import type { JobApplication, JobApplicationInterview, JobStatus } from '@/types';
 
 type ResumeOption = { id: number; title: string };
 
@@ -144,6 +145,99 @@ function Column({
                 )}
             </div>
         </Shell>
+    );
+}
+
+const INTERVIEW_TYPES = ['phone', 'video', 'onsite', 'technical', 'other'];
+
+function InterviewsEditor({ jobApplicationId, interviews }: { jobApplicationId: number; interviews: JobApplicationInterview[] }) {
+    const [processingId, setProcessingId] = useState<number | 'new' | null>(null);
+
+    const addRound = () => {
+        setProcessingId('new');
+        router.post(
+            route('job-application-interviews.store', jobApplicationId),
+            { type: 'phone' },
+            { preserveScroll: true, onFinish: () => setProcessingId(null) },
+        );
+    };
+
+    const updateInterview = (interview: JobApplicationInterview, changes: Partial<Pick<JobApplicationInterview, 'type' | 'scheduled_at' | 'notes'>>) => {
+        setProcessingId(interview.id);
+        router.patch(
+            route('job-application-interviews.update', [jobApplicationId, interview.id]),
+            changes,
+            { preserveScroll: true, onFinish: () => setProcessingId(null) },
+        );
+    };
+
+    const deleteInterview = (interview: JobApplicationInterview) => {
+        setProcessingId(interview.id);
+        router.delete(
+            route('job-application-interviews.destroy', [jobApplicationId, interview.id]),
+            { preserveScroll: true, onFinish: () => setProcessingId(null) },
+        );
+    };
+
+    return (
+        <div>
+            <div className="flex items-center justify-between">
+                <InputLabel value="Interviews" />
+                <Button type="button" variant="outline" size="sm" onClick={addRound} disabled={processingId !== null}>
+                    <PlusIcon className="size-3.5" />
+                    Add round
+                </Button>
+            </div>
+            {interviews.length === 0 ? (
+                <p className="mt-2 text-xs text-ink-faint">No interview rounds logged yet.</p>
+            ) : (
+                <div className="mt-2 space-y-2">
+                    {interviews.map((interview) => (
+                        <div key={interview.id} className="rounded-lg border border-surface-border/80 p-2.5">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-ink">Round {interview.round}</span>
+                                <select
+                                    defaultValue={interview.type ?? ''}
+                                    onBlur={(e) => updateInterview(interview, { type: e.target.value || null })}
+                                    className={cn(selectClassName, 'mt-0 flex-1')}
+                                    disabled={processingId === interview.id}
+                                >
+                                    {INTERVIEW_TYPES.map((type) => (
+                                        <option key={type} value={type}>
+                                            {type}
+                                        </option>
+                                    ))}
+                                </select>
+                                <TextInput
+                                    type="datetime-local"
+                                    defaultValue={interview.scheduled_at ? interview.scheduled_at.slice(0, 16) : ''}
+                                    onBlur={(e) => updateInterview(interview, { scheduled_at: e.target.value || null })}
+                                    className="mt-0"
+                                    disabled={processingId === interview.id}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => deleteInterview(interview)}
+                                    disabled={processingId === interview.id}
+                                    className="text-ink-faint hover:text-danger"
+                                    aria-label={`Delete round ${interview.round}`}
+                                >
+                                    <TrashIcon className="size-4" />
+                                </button>
+                            </div>
+                            <textarea
+                                defaultValue={interview.notes ?? ''}
+                                onBlur={(e) => updateInterview(interview, { notes: e.target.value || null })}
+                                placeholder="Notes"
+                                rows={2}
+                                disabled={processingId === interview.id}
+                                className="mt-2 block w-full rounded-lg border-surface-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand"
+                            />
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -307,10 +401,15 @@ export default function JobApplicationKanban({
                             Track each role from saved to offer, then open the resume that matches the opportunity.
                         </p>
                     </div>
-                    <Button type="button" onClick={openCreate} className="rounded-md">
-                        <PlusIcon className="size-4" />
-                        New application
-                    </Button>
+                    <div className="flex gap-2">
+                        <Link href={route('job-applications.stats')} className={buttonClassName('outline', 'default', 'rounded-md')}>
+                            View stats
+                        </Link>
+                        <Button type="button" onClick={openCreate} className="rounded-md">
+                            <PlusIcon className="size-4" />
+                            New application
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -459,6 +558,15 @@ export default function JobApplicationKanban({
                                 />
                             </div>
                         </div>
+
+                        {form.id && (
+                            <div className="mt-6 border-t border-surface-border/80 pt-4">
+                                <InterviewsEditor
+                                    jobApplicationId={form.id}
+                                    interviews={localApplications.find((job) => job.id === form.id)?.interviews ?? []}
+                                />
+                            </div>
+                        )}
 
                         <div className="mt-6 flex items-center justify-between">
                             {form.id ? (

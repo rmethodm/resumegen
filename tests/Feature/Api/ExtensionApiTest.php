@@ -4,9 +4,11 @@ namespace Tests\Feature\Api;
 
 use App\Models\Education;
 use App\Models\Experience;
+use App\Models\QaBankEntry;
 use App\Models\Resume;
 use App\Models\ResumeGroup;
 use App\Models\Skill;
+use App\Models\StarterProfile;
 use App\Models\User;
 use App\Support\ResumeFillProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -154,6 +156,82 @@ class ExtensionApiTest extends ApiTestCase
         $this->withToken($token)
             ->getJson("/api/extension/resumes/{$resume->id}/fill-profile")
             ->assertNotFound();
+    }
+
+    public function test_qa_bank_lists_the_users_entries(): void
+    {
+        $user = User::factory()->create();
+        $profile = StarterProfile::factory()->for($user)->create();
+        QaBankEntry::factory()->for($profile)->create(['question' => 'Why this role?', 'answer' => 'Because.']);
+
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson('/api/extension/qa-bank')
+            ->assertOk()
+            ->assertJsonPath('entries.0.question', 'Why this role?')
+            ->assertJsonPath('entries.0.answer', 'Because.');
+    }
+
+    public function test_qa_bank_match_finds_a_near_duplicate_question(): void
+    {
+        $user = User::factory()->create();
+        $profile = StarterProfile::factory()->for($user)->create();
+        QaBankEntry::factory()->for($profile)->create([
+            'question' => 'Why do you want to work here?',
+            'answer' => 'Because of the mission.',
+        ]);
+
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson('/api/extension/qa-bank/match?'.http_build_query(['question' => 'Why do you want to work here']))
+            ->assertOk()
+            ->assertJsonPath('match.answer', 'Because of the mission.');
+    }
+
+    public function test_qa_bank_match_returns_null_for_no_match(): void
+    {
+        $user = User::factory()->create();
+        $profile = StarterProfile::factory()->for($user)->create();
+        QaBankEntry::factory()->for($profile)->create(['question' => 'What is your greatest strength?']);
+
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson('/api/extension/qa-bank/match?'.http_build_query(['question' => 'Describe a time you resolved a supply chain outage']))
+            ->assertOk()
+            ->assertJsonPath('match', null);
+    }
+
+    public function test_qa_bank_match_is_scoped_to_the_tokens_own_user(): void
+    {
+        $owner = User::factory()->create();
+        $intruder = User::factory()->create();
+        $profile = StarterProfile::factory()->for($owner)->create();
+        QaBankEntry::factory()->for($profile)->create([
+            'question' => 'Why do you want to work here?',
+            'answer' => 'Owner secret answer.',
+        ]);
+
+        $token = $intruder->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson('/api/extension/qa-bank/match?'.http_build_query(['question' => 'Why do you want to work here?']))
+            ->assertOk()
+            ->assertJsonPath('match', null);
     }
 
     public function test_disabled_user_is_rejected(): void

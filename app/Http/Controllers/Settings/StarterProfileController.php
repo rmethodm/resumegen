@@ -18,6 +18,11 @@ class StarterProfileController extends Controller
     {
         return Inertia::render('Settings/StarterProfile', [
             'starterProfile' => $request->user()->starterProfile,
+            'qaBankEntries' => $request->user()->starterProfile?->qaBankEntries->map(fn ($entry) => [
+                'id' => $entry->id,
+                'question' => $entry->question,
+                'answer' => $entry->answer,
+            ])->all() ?? [],
         ]);
     }
 

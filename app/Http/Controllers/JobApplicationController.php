@@ -7,20 +7,21 @@ use App\Http\Requests\UpdateJobApplicationRequest;
 use App\Models\JobApplication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 /**
  * Job Application Kanban: track applications through Saved, Applied,
- * Interviewing, Offer, and Rejected. Contact management and interview
- * notes are NOT part of this — those were removed features and stay
- * out of scope (see CLAUDE.md "Removed Features").
+ * Interviewing, Offer, and Rejected, plus a per-round interview log
+ * (see JobApplicationInterviewController). Contact management stays out
+ * of scope (see CLAUDE.md "Removed Features").
  */
 class JobApplicationController extends Controller
 {
     public function index(Request $request): Response
     {
-        $applications = $request->user()->jobApplications()->latest()->get();
+        $applications = $request->user()->jobApplications()->with('interviews')->latest()->get();
         $resumes = $request->user()->resumes()->orderBy('title')->get(['id', 'title']);
 
         return Inertia::render('Jobs/Kanban', [
@@ -32,10 +33,18 @@ class JobApplicationController extends Controller
     public function store(StoreJobApplicationRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $status = $data['status'] ?? 'saved';
 
-        $request->user()->jobApplications()->create([
+        $jobApplication = $request->user()->jobApplications()->create([
             ...$data,
-            'status' => $data['status'] ?? 'saved',
+            'status' => $status,
+        ]);
+
+        DB::table('job_application_status_events')->insert([
+            'job_application_id' => $jobApplication->id,
+            'from_status' => null,
+            'to_status' => $status,
+            'created_at' => now(),
         ]);
 
         return back();
@@ -43,7 +52,18 @@ class JobApplicationController extends Controller
 
     public function update(UpdateJobApplicationRequest $request, JobApplication $jobApplication): RedirectResponse
     {
-        $jobApplication->update($request->validated());
+        $data = $request->validated();
+
+        if (array_key_exists('status', $data) && $data['status'] !== $jobApplication->status) {
+            DB::table('job_application_status_events')->insert([
+                'job_application_id' => $jobApplication->id,
+                'from_status' => $jobApplication->status,
+                'to_status' => $data['status'],
+                'created_at' => now(),
+            ]);
+        }
+
+        $jobApplication->update($data);
 
         return back();
     }
@@ -58,7 +78,7 @@ class JobApplicationController extends Controller
     }
 
     /**
-     * @return array{id: int, company: string, role: string, status: string, resume_id: ?int, job_url: ?string, notes: ?string, applied_at: ?string, follow_up_at: ?string, created_at: ?string}
+     * @return array{id: int, company: string, role: string, status: string, resume_id: ?int, job_url: ?string, notes: ?string, applied_at: ?string, follow_up_at: ?string, created_at: ?string, interviews: array<int, array{id: int, round: int, scheduled_at: ?string, type: ?string, notes: ?string}>}
      */
     private function present(JobApplication $job): array
     {
@@ -73,6 +93,13 @@ class JobApplicationController extends Controller
             'applied_at' => $job->applied_at?->toDateString(),
             'follow_up_at' => $job->follow_up_at?->toDateString(),
             'created_at' => $job->created_at?->toIso8601String(),
+            'interviews' => $job->interviews->map(fn ($interview) => [
+                'id' => $interview->id,
+                'round' => $interview->round,
+                'scheduled_at' => $interview->scheduled_at?->toIso8601String(),
+                'type' => $interview->type,
+                'notes' => $interview->notes,
+            ])->all(),
         ];
     }
 }

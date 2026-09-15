@@ -74,6 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'has_completed_onboarding' => 'boolean',
             'is_read_only' => 'boolean',
+            'is_admin' => 'boolean',
             'disabled_at' => 'datetime',
             'two_factor_secret' => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted:array',
