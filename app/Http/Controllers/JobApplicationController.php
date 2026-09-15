@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateJobApplication;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\UpdateJobApplicationRequest;
 use App\Models\JobApplication;
@@ -30,24 +31,15 @@ class JobApplicationController extends Controller
         ]);
     }
 
-    public function store(StoreJobApplicationRequest $request): RedirectResponse
+    public function store(StoreJobApplicationRequest $request, CreateJobApplication $createJobApplication): RedirectResponse
     {
-        $data = $request->validated();
-        $status = $data['status'] ?? 'saved';
+        $application = $createJobApplication->handle($request->user(), $request->validated());
 
-        $jobApplication = $request->user()->jobApplications()->create([
-            ...$data,
-            'status' => $status,
-        ]);
+        if (isset($request->validated()['base_resume_id'])) {
+            return to_route('resumes.workstation', $application->resume_id);
+        }
 
-        DB::table('job_application_status_events')->insert([
-            'job_application_id' => $jobApplication->id,
-            'from_status' => null,
-            'to_status' => $status,
-            'created_at' => now(),
-        ]);
-
-        return back();
+        return to_route('job-applications.index');
     }
 
     public function update(UpdateJobApplicationRequest $request, JobApplication $jobApplication): RedirectResponse
