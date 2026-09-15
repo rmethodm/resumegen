@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplyWizardController;
 use App\Http\Controllers\Auth\ConfirmedTwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
@@ -109,6 +110,8 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::delete('/job-applications/{jobApplication}/interviews/{interview}', [JobApplicationInterviewController::class, 'destroy'])->name('job-application-interviews.destroy');
 
     Route::get('/job-applications/stats', [JobApplicationStatsController::class, 'index'])->name('job-applications.stats');
+
+    Route::get('/apply/new', [ApplyWizardController::class, 'show'])->name('apply.wizard');
 
     Route::get('/resumes', [ResumeController::class, 'index'])->name('resumes.index');
     Route::post('/resumes', [ResumeController::class, 'store'])->name('resumes.store');

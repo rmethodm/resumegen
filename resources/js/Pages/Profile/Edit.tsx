@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { Card } from '@/Components/ui/card';
+import ApplyWizardPreferenceForm from './Partials/ApplyWizardPreferenceForm';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import ExtensionTokensForm from './Partials/ExtensionTokensForm';
 import TwoFactorForm from './Partials/TwoFactorForm';
@@ -93,6 +94,7 @@ export default function Edit({
     allowedTemplates,
     extensionTokens,
     extensionTokenPlain,
+    prefersApplyWizard,
 }: PageProps<{
     mustVerifyEmail: boolean;
     status?: string;
@@ -117,6 +119,7 @@ export default function Edit({
         created_at: string | null;
     }>;
     extensionTokenPlain: string | null;
+    prefersApplyWizard: boolean;
 }>) {
     return (
         <AuthenticatedLayout>
@@ -154,6 +157,10 @@ export default function Edit({
                             plainToken={extensionTokenPlain}
                             className="max-w-xl"
                         />
+                    </Card>
+
+                    <Card className="p-6">
+                        <ApplyWizardPreferenceForm prefersApplyWizard={prefersApplyWizard} />
                     </Card>
 
                     <Card className="p-6">

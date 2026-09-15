@@ -66,6 +66,7 @@ class ProfileController extends Controller
             'extensionTokenPlain' => session('extension_token_plain'),
             'mobileTokens' => $mobileTokens,
             'mobileTokenPlain' => session('mobile_token_plain'),
+            'prefersApplyWizard' => (bool) $user->prefers_apply_wizard,
         ]);
     }
 
