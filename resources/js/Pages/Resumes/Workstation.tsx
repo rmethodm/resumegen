@@ -46,6 +46,7 @@ import {
 } from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
 import type {
+    LinkedApplication,
     ResumeDraft,
     ResumePageDocument,
     ResumeSectionKey,
@@ -69,6 +70,7 @@ export default function Workstation({
     versions = [],
     notes = [],
     snapshots = [],
+    application = null,
 }: {
     resume: ResumePageDocument;
     /** Server analysis kept on the page for Inertia parity; score UI uses live draft. */
@@ -78,6 +80,7 @@ export default function Workstation({
     versions?: ResumeVersion[];
     notes?: WorkstationNote[];
     snapshots?: WorkstationSnapshot[];
+    application?: LinkedApplication | null;
 }) {
     const { id, updated_at: initialUpdatedAt, ...initial } = resume;
     const page = usePage();
@@ -657,6 +660,7 @@ export default function Workstation({
                     <div className="mx-auto max-w-[1944px]">
                         <WorkstationHeader
                             resumeId={id}
+                            application={application}
                             title={draft.title}
                             onTitleChange={(title) =>
                                 setDraft({ ...draft, title })

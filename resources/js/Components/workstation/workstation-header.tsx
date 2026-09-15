@@ -15,6 +15,7 @@ import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { buttonClassName } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
+import { ApplicationChip } from '@/Components/workstation/application-chip';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { TemplatePickerModal } from '@/Components/workstation/template-picker-modal';
 import {
@@ -25,6 +26,7 @@ import {
 import type { ContactErrors } from '@/hooks/use-valid-contact';
 import { cn } from '@/lib/utils';
 import type {
+    LinkedApplication,
     ResumeBulletStyle,
     ResumeDensity,
     ResumeDraft,
@@ -80,6 +82,7 @@ export function WorkstationHeader({
     onReviewPreviewModeChange,
     sideToolsOpen = false,
     onToggleSideTools,
+    application = null,
 }: {
     resumeId: number;
     title: string;
@@ -127,6 +130,7 @@ export function WorkstationHeader({
     onReviewPreviewModeChange?: (mode: 'react' | 'pdf') => void;
     sideToolsOpen?: boolean;
     onToggleSideTools?: () => void;
+    application?: LinkedApplication | null;
 }) {
     const [renaming, setRenaming] = useState(false);
     const [duplicating, setDuplicating] = useState(false);
@@ -191,6 +195,7 @@ export function WorkstationHeader({
                             Saving
                         </Badge>
                     )}
+                    {application && <ApplicationChip application={application} />}
                     {(contactErrors.email !== null || contactErrors.phone !== null) && (
                         <button
                             type="button"

@@ -202,3 +202,10 @@ export interface ResumeOption {
     score: number;
 }
 
+export interface LinkedApplication {
+    id: number;
+    company: string;
+    role: string;
+    status: JobStatus;
+}
+

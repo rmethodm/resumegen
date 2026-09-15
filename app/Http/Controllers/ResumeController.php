@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreResumeRequest;
 use App\Http\Requests\UpdateResumeRequest;
 use App\Http\Requests\UpdateResumeTitleRequest;
+use App\Models\JobApplication;
 use App\Models\LibrarySkill;
 use App\Models\Resume;
 use App\Models\ResumeNote;
@@ -324,8 +325,22 @@ class ResumeController extends Controller
         $document['ai_review'] = $resume->ai_review;
         $document['ai_review_generated_at'] = $resume->ai_review_generated_at?->toIso8601String();
 
+        // Newest linked Kanban card, if any. One resume can be attached to
+        // several cards from the Kanban's edit form; the chip shows one.
+        $application = JobApplication::query()
+            ->where('user_id', $request->user()->id)
+            ->where('resume_id', $resume->id)
+            ->latest('id')
+            ->first();
+
         return Inertia::render($component, [
             'resume' => $document,
+            'application' => $application === null ? null : [
+                'id' => $application->id,
+                'company' => $application->company,
+                'role' => $application->role,
+                'status' => $application->status,
+            ],
             'analysis' => [
                 'score' => ResumeAnalysis::score($resume),
                 'breakdown' => ResumeAnalysis::breakdown($resume),
