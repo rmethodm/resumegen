@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BellAlertIcon, CalendarDaysIcon, DocumentPlusIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { BellAlertIcon, CalendarDaysIcon, DocumentPlusIcon } from '@heroicons/react/24/outline';
 import { Shell } from '@/Components/ui/shell';
 import type { NextUpItem } from '@/types';
 
@@ -7,7 +7,6 @@ const ICON: Record<NextUpItem['kind'], typeof BellAlertIcon> = {
     follow_up: BellAlertIcon,
     interview: CalendarDaysIcon,
     unattached: DocumentPlusIcon,
-    pending_suggestions: SparklesIcon,
 };
 
 export function NextUpStrip({ items }: { items: NextUpItem[] }) {

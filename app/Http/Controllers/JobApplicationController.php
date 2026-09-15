@@ -25,18 +25,13 @@ class JobApplicationController extends Controller
     public function index(Request $request): Response
     {
         $applications = $request->user()->jobApplications()->with('interviews')->latest()->get();
-        $resumes = $request->user()->resumes()
-            ->with(['experiences', 'skills'])
-            ->latest('updated_at')
-            ->get();
 
         return Inertia::render('Jobs/Kanban', [
             'applications' => $applications->map(fn (JobApplication $job) => $this->present($job))->all(),
-            'resumes' => $resumes->map(fn (Resume $resume) => [
-                'id' => $resume->id,
-                'title' => $resume->title,
-                'score' => ResumeAnalysis::score($resume),
-            ])->all(),
+            // Deferred: scores every resume server-side, same cost as the
+            // Dashboard's `resumeOptions`. Only feeds a <select> in a modal
+            // that starts closed (and score text on already-attached cards).
+            'resumes' => Inertia::defer(fn () => $this->resumeOptions($request)),
         ]);
     }
 
@@ -76,6 +71,22 @@ class JobApplicationController extends Controller
         $jobApplication->delete();
 
         return back();
+    }
+
+    /**
+     * @return list<array{id: int, title: string, score: int}>
+     */
+    private function resumeOptions(Request $request): array
+    {
+        return $request->user()->resumes()
+            ->with(['experiences', 'skills'])
+            ->latest('updated_at')
+            ->get()
+            ->map(fn (Resume $resume) => [
+                'id' => $resume->id,
+                'title' => $resume->title,
+                'score' => ResumeAnalysis::score($resume),
+            ])->all();
     }
 
     /**

@@ -247,7 +247,7 @@ export default function JobApplicationKanban({
     resumes,
 }: {
     applications: JobApplication[];
-    resumes: ResumeOption[];
+    resumes: ResumeOption[] | undefined;
 }) {
     const [form, setForm] = useState<FormState | null>(null);
     const [formError, setFormError] = useState<string | null>(null);
@@ -261,7 +261,14 @@ export default function JobApplicationKanban({
             role: params.get('role') ?? undefined,
             job_url: params.get('job_url') ?? undefined,
             job_description: params.get('job_description') ?? undefined,
-            base_resume_id: params.get('base_resume_id') ? Number(params.get('base_resume_id')) : undefined,
+            // Present-but-empty ("") means the wizard's user explicitly chose
+            // "None, track only" — that must stay `null`, not fall through to
+            // AddJobModal's most-recent-resume default like a missing key does.
+            base_resume_id: params.has('base_resume_id')
+                ? params.get('base_resume_id')
+                    ? Number(params.get('base_resume_id'))
+                    : null
+                : undefined,
         }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
@@ -275,7 +282,7 @@ export default function JobApplicationKanban({
         setLocalApplications(applications);
     }, [applications]);
 
-    const resumesById = new Map(resumes.map((r) => [r.id, r]));
+    const resumesById = new Map((resumes ?? []).map((r) => [r.id, r]));
 
     const openCreate = () => setAddOpen(true);
     const openEdit = (job: JobApplication) => {
@@ -297,7 +304,7 @@ export default function JobApplicationKanban({
 
     const submitForm = (e: FormEvent) => {
         e.preventDefault();
-        if (!form) {
+        if (!form || form.id === null) {
             return;
         }
 
@@ -326,11 +333,7 @@ export default function JobApplicationKanban({
             onFinish: () => setProcessing(false),
         };
 
-        if (form.id) {
-            router.patch(route('job-applications.update', form.id), payload, options);
-        } else {
-            router.post(route('job-applications.store'), payload, options);
-        }
+        router.patch(route('job-applications.update', form.id), payload, options);
     };
 
     const deleteApplication = () => {
@@ -495,9 +498,9 @@ export default function JobApplicationKanban({
                 )}
             </div>
 
-            <AddJobModal open={addOpen} onClose={() => setAddOpen(false)} resumes={resumes} initial={addInitial} />
+            <AddJobModal open={addOpen} onClose={() => setAddOpen(false)} resumes={resumes ?? []} initial={addInitial} />
 
-            <Modal show={form !== null} onClose={closeForm} maxWidth="lg" title={form?.id ? 'Edit application' : 'New application'}>
+            <Modal show={form !== null} onClose={closeForm} maxWidth="lg" title="Edit application">
                 {form && (
                     <form onSubmit={submitForm} className="p-6">
                         {formError && (
@@ -543,7 +546,7 @@ export default function JobApplicationKanban({
                                         className={selectClassName}
                                     >
                                         <option value="">None</option>
-                                        {resumes.map((resume) => (
+                                        {(resumes ?? []).map((resume) => (
                                             <option key={resume.id} value={resume.id}>
                                                 {resume.title}
                                             </option>

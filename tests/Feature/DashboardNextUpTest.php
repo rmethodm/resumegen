@@ -94,10 +94,20 @@ class DashboardNextUpTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('dashboard'))
-            ->assertInertia(fn ($page) => $page
-                ->where('prefersApplyWizard', false)
-                ->has('resumeOptions', 1)
-                ->where('resumeOptions.0.title', 'Base'));
+            ->assertInertia(fn ($page) => $page->where('prefersApplyWizard', false));
+
+        $resumeOptions = null;
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertInertia(function (AssertableInertia $page) use (&$resumeOptions) {
+                $page->reloadOnly('resumeOptions', function (AssertableInertia $reloaded) use (&$resumeOptions) {
+                    $resumeOptions = $reloaded->toArray()['props']['resumeOptions'];
+                });
+            });
+
+        $this->assertCount(1, $resumeOptions);
+        $this->assertSame('Base', $resumeOptions[0]['title']);
     }
 
     public function test_dashboard_checklist_facts_and_dismissal(): void
