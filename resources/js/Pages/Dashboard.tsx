@@ -19,11 +19,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { AddJobModal } from '@/Components/jobs/add-job-modal';
 import { NewResumeModal } from '@/Components/dashboard/new-resume-modal';
 import { NextUpStrip } from '@/Components/dashboard/next-up-strip';
+import { FirstWeekChecklist } from '@/Components/dashboard/first-week-checklist';
 import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Shell } from '@/Components/ui/shell';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
+import { type ChecklistFacts } from '@/lib/checklist-steps';
 import { scoreDotClass } from '@/lib/score-band';
 import { cn } from '@/lib/utils';
 import type { DashboardShareBadge, NextUpItem, ResumeOption, ResumeShareLink, ResumeSummary } from '@/types';
@@ -494,6 +496,7 @@ export default function Dashboard({
     prefersApplyWizard,
     hasStarterProfile,
     roleSamples = [],
+    checklist,
 }: {
     resumes: ResumeSummary[] | undefined;
     nextUp: NextUpItem[] | undefined;
@@ -506,6 +509,7 @@ export default function Dashboard({
         description: string;
         target_role: string;
     }[];
+    checklist: { dismissed: boolean; facts: ChecklistFacts };
 }) {
     const [newResumeOpen, setNewResumeOpen] = useState(false);
     const [addJobOpen, setAddJobOpen] = useState(false);
@@ -674,6 +678,8 @@ export default function Dashboard({
                                 </p>
                             </div>
                         )}
+
+                        <FirstWeekChecklist facts={checklist.facts} dismissed={checklist.dismissed} />
 
                         <Deferred data="nextUp" fallback={null}>
                             <NextUpStrip items={nextUp ?? []} />
