@@ -681,7 +681,7 @@ export default function Dashboard({
 
                         <FirstWeekChecklist facts={checklist.facts} dismissed={checklist.dismissed} />
 
-                        <Deferred data="nextUp" fallback={null}>
+                        <Deferred data="nextUp" fallback={<></>}>
                             <NextUpStrip items={nextUp ?? []} />
                         </Deferred>
 

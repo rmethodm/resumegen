@@ -26,7 +26,7 @@ Secondarily, Resumegen goes beyond "just a builder": job-application tracking an
 ## Operating Context
 
 - Builder: relational per-section editor (`Workstation.tsx`) with 24 resume templates, autosave, live preview, versioning/compare.
-- Applying: Job Application Kanban tracker (`/job-applications`) with status-change history, interview-round logging, and a funnel/stats dashboard (`/job-applications/stats`). Job Imports (Adzuna/USAJOBS search) was removed 2026-08-26 — do not restore without asking.
+- Applying: Job Application Kanban tracker (`/job-applications`) with status-change history, interview-round logging, and a funnel/stats dashboard (`/job-applications/stats`). Job Imports (Adzuna/USAJOBS search) was removed 2026-08-26 — do not restore without asking. Add job creates the card and a tailored resume version from a user-picked base in one step; Dashboard shows Next up items and a first-week checklist.
 - Q&A bank: per-user library of application question/answer pairs (`Settings/StarterProfile.tsx`), with AI-assisted draft matching against new questions, gated by the same AI credit ledger.
 - Sharing: token-based public share links with optional email/password gates and expiry, for sending a resume to a recruiter or checking who viewed it.
 - Browser extension: autofills job-application forms on external ATS pages using data from a Resumegen resume.
