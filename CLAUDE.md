@@ -76,7 +76,7 @@ Default to surfacing uncertainty, not hiding it.
 - **PDF:** `barryvdh/laravel-dompdf` — server-side generation. Current routes: `GET /resumes/{resume}/export` (download), `GET /resumes/{resume}/preview` (inline stream). The legacy `builder/{resume}/pdf|preview` routes still resolve.
 - **Media:** none. The resume photo feature was removed; `Resume` no longer implements `HasMedia`, and `spatie/laravel-medialibrary` is no longer in `composer.json` either.
 - **Billing:** `laravel/cashier` v16 (Stripe) — $9.95/mo `default` subscription (`STRIPE_PRICE_ID`) unlocks AI credit hold/buy/spend; non-AI app features are not tier-gated. See "Billing — subscription + AI credits" below.
-- **AI:** `openai-php/laravel` — generative Workstation AI (bullet/summary rewrite, gap generate) gated by active subscription + credit ledger. See "AI — subscription credit gates" below.
+- **AI:** `openai-php/laravel` — credit ledger + Cashier gates remain; Workstation Rewrite/Generate HTTP is unrouted for v1. See "AI — subscription credit gates" below.
 - **Routing (frontend):** Ziggy v2 (`route()` helper globally available via `resources/js/types/global.d.ts`)
 
 ## Commands
@@ -152,9 +152,7 @@ Historical context (still accurate as *history*, not current state): billing was
 
 **Model:** only active Cashier subscribers may hold/buy/spend AI credits. Generative routes debit an append-only `ai_credit_ledger` after a successful model response (balance = sum of entries; no expiry while subscribed). Gates: `subscribed('default')` + balance ≥ cost + not `users.ai_blocked`. HTTP: **402** = not subscribed or insufficient credits; **429** = `ai_blocked`. Past-due is treated as not subscribed for AI. Credits are per user, not per resume.
 
-**Live generative features** (OpenAI `gpt-4o-mini` via `AiService` / `AiSuggestionController`, all `throttle:20,1`): bullet rewrite (`POST /ai/rewrite-bullet`), summary rewrite (`POST /ai/rewrite-summary`), Optimize generate-for-gap (`POST /resumes/{resume}/ai-generate-gap`). Successful JSON includes `options[]` (2–3) and `credits_remaining`. Costs live in `config/ai.php`. `users.ai_blocked` hard-stops generative actions (no Buy CTA). Every call logs to `ai_requests`. Covered by `tests/Feature/AiSuggestionTest.php` / `AiCreditLedgerTest.php` using `OpenAI::fake()`.
-
-**Intentionally unrouted for v1:** `resumes.ai-review` and `ai.rewrite-section` (comment in `routes/web.php`). `AiService::reviewResume` / `rewriteSection` remain as orphans with no HTTP entry — do not re-expose without metering.
+**No live generative Workstation HTTP in v1.** Rewrite (bullet/summary), Optimize Generate, deep review, and section rewrite are unrouted (comment in `routes/web.php`). Credit ledger, starter grant, and `/billing/credits` stub remain. `AiService::reviewResume` / `rewriteSection` remain as orphans — do not re-expose without metering. Optimize diagnose (keyword overlap) stays free.
 
 **Still free / deterministic:** Optimize diagnose (keyword overlap / heuristics) does not spend credits. `PlainTextResumeParser` on create stays local.
 
@@ -183,7 +181,7 @@ The hand-rolled Inertia admin (domain-scoped `routes/admin.php`, `EnsureUserIsAd
 
 Token-based Sanctum API at `/api`. `config/sanctum.php` sets `'guard' => []` (intentionally empty) — only token-auth works, no session fallback. Two client surfaces, distinguished by token ability (checked in app code, not middleware):
 
-- **Extension** (`/api/extension/*`, ability `extension`): read-only fill-profile payloads for the Resumegen Apply browser extension. Tokens issued from the Profile page only.
+- **Extension** (`/api/extension/*`, ability `extension`): fill-profile payloads for the Resumegen Apply browser extension. Tokens issued from the Profile page only. Mostly read-only (`me`, `resumes`, `resumes/{id}/fill-profile`, `qa-bank`, `qa-bank/match`); as of 2026-09-14 (extension upgrade Phase A) also `POST qa-bank` (save an entry) and `POST qa-bank/draft` (match-first against `QaBankMatcher`, AI fallback via the same `AiUsageLimiter`/`AiCreditService` gate as `QaBankEntryController::draft` — 402/429 conventions apply here too).
 - **Mobile** (ability `mobile`, `App\Support\MobileApiToken`, guards in `App\Concerns\GuardsMobileTokens`): built 2026-08-18/19 for the iPhone/iPad apps. `POST /api/auth/token` is password login (throttle 5/min; refuses unverified, disabled, and 2FA-enabled accounts — 2FA users create tokens from the Profile page so password-only login can't bypass 2FA); `DELETE /api/auth/token` revokes the calling token. Full resume CRUD via the `ResumeDocument` shape, `GET /api/resumes/{id}/pdf` (DomPDF stream), and share-link management (`/api/resumes/{id}/share`, `/api/share-links/{id}`). Sync support (added 2026-08-19): `POST /api/resumes` accepts a `client_uuid` for idempotent offline creates (unique per user); `PUT` returns **409 with the current server document** on a stale `base_updated_at` (web returns an error banner instead); `GET /api/resumes?since=` returns only changed rows plus a `deleted` id list read from `resume_deletions`, populated by `Resume::booted()`'s `deleting` hook.
 
 **Test base class:** All API tests extend `Tests\Feature\Api\ApiTestCase` (not `Tests\TestCase`). It calls `$this->app['auth']->forgetGuards()` before each request to prevent Sanctum guard cache from masking token revocation.
@@ -241,7 +239,7 @@ Do not fix the stale "IMPORTANT: Activate…" lines inside the `<laravel-boost-g
 6. **Billing = $9.95 sub + AI credits (2026-09-10)** — Cashier `default` subscription required to hold/buy/spend AI credits; non-AI features are not tier-gated. Credit packs Buy path stubs to flash until `STRIPE_CREDITS_PRICE_ID` is set.
 7. **Best-effort system logging** — `try/catch` swallows exceptions so logging never crashes requests.
 8. **Deterministic first, model only for judgment** — Optimize diagnose / keyword overlap stay code-driven; generative rewrite/generate is the only OpenAI spend path. (Job-board fetch was removed with Job Imports 2026-08-26.)
-9. **AI gated by subscription + credit ledger (2026-09-10)** — generative rewrite/generate returns `options[]`, debits after success via `AiCreditService` / `AiUsageLimiter` (402 / 429). Diagnose stays free. Coach/chat/translation/career-map stay gone until asked for. `ai-review` / `rewrite-section` stay unrouted until metered.
+9. **AI credit ledger remains (2026-09-10); Workstation Rewrite/Generate UI removed** — no live generative spend path on the Workstation. Optimize diagnose stays free. Coach/chat/translation/career-map stay gone until asked for. Do not re-route rewrite/generate/review without metering.
 
 ## Production server (as of 2026-08-25)
 

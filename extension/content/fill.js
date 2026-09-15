@@ -16,6 +16,7 @@
     }
 
     let crossOriginFrameCount = 0;
+    let detectedQuestionEls = [];
 
     chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         if (message.type === 'PING') {
@@ -53,6 +54,14 @@
             sendResponse(insertFocused(message.text || '', message.label || 'value'));
             return;
         }
+        if (message.type === 'DETECT_QUESTIONS') {
+            sendResponse(detectQuestions(message.profile || {}));
+            return;
+        }
+        if (message.type === 'INSERT_QA_DRAFT') {
+            sendResponse(insertQaDraft(message.id, message.text || ''));
+            return;
+        }
     });
 
     async function scanFields(profile) {
@@ -82,6 +91,53 @@
             crossOriginFrames: crossOriginFrameCount,
             fieldCount: fieldEls.length,
         };
+    }
+
+    function detectQuestions(profile) {
+        const values = H.valuesFromProfile(profile);
+        const profileKeys = H.KEY_ORDER.filter((k) => values[k]);
+        const fieldEls = collectFieldsDeep(document);
+        const scored = fieldEls.map((el) => H.buildSignals(extractRaw(el)));
+
+        detectedQuestionEls = [];
+        const questions = [];
+
+        fieldEls.forEach((el, index) => {
+            const signals = scored[index];
+            const claimedScore = profileKeys.reduce(
+                (best, key) => Math.max(best, H.scoreField(signals, key)),
+                0
+            );
+            if (!H.detectQuestionCandidate(signals, claimedScore)) {
+                return;
+            }
+            const id = detectedQuestionEls.length;
+            detectedQuestionEls.push(el);
+            questions.push({
+                id,
+                question: signals.raw.label || signals.raw.ariaLabel || signals.raw.placeholder || 'Question',
+                empty: isEmptyField(el),
+            });
+        });
+
+        return { ok: true, questions };
+    }
+
+    function insertQaDraft(id, text) {
+        const el = detectedQuestionEls[id];
+        if (!el || !el.isConnected) {
+            return {
+                ok: false,
+                reason: 'stale_field',
+                message: 'Re-scan the page and try again.',
+            };
+        }
+        if (!text) {
+            return { ok: false, reason: 'empty_value', message: 'No draft to insert.' };
+        }
+
+        setFieldValue(el, text, { overwrite: true });
+        return { ok: true, message: 'Inserted the draft into the field.' };
     }
 
     function getFocusContext(profile) {
@@ -317,6 +373,7 @@
             dataTestId: el.getAttribute('data-testid') || el.getAttribute('data-test-id') || '',
             type: el instanceof HTMLInputElement ? (el.type || 'text') : '',
             tag: el.tagName.toLowerCase(),
+            contentEditable: Boolean(el.isContentEditable),
         };
     }
 

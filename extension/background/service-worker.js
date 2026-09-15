@@ -28,6 +28,14 @@ async function handleMessage(message) {
             return getFocusContext(message.tabId, message.profile);
         case 'INSERT_FOCUSED':
             return insertFocused(message.tabId, message.text, message.label);
+        case 'DETECT_QUESTIONS':
+            return detectQuestions(message.tabId, message.profile);
+        case 'DRAFT_QA_ANSWER':
+            return draftQaAnswer(message.question, message.resumeId);
+        case 'INSERT_QA_DRAFT':
+            return insertQaDraft(message.tabId, message.id, message.text);
+        case 'SAVE_QA_BANK_ENTRY':
+            return saveQaBankEntry(message.question, message.answer);
         case 'OPEN_APP':
             return openApp(message.path || '/dashboard');
         case 'DISCONNECT':
@@ -71,7 +79,8 @@ async function apiFetch(path, options = {}) {
         }
 
         if (!res.ok) {
-            return { ok: false, reason: `http_${res.status}`, status: res.status };
+            const body = await res.json().catch(() => ({}));
+            return { ok: false, reason: `http_${res.status}`, status: res.status, body };
         }
 
         const data = await res.json();
@@ -222,6 +231,57 @@ async function insertFocused(tabId, text, label) {
             message: 'Click a text field on the page first, then insert.',
         };
     }
+}
+
+async function detectQuestions(tabId, profile) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
+    }
+
+    try {
+        await ensureContentScript(id);
+        const result = await chrome.tabs.sendMessage(id, { type: 'DETECT_QUESTIONS', profile });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return { ok: false, reason: 'detect_failed', error: err.message, message: 'Could not scan this page for questions.' };
+    }
+}
+
+async function draftQaAnswer(question, resumeId) {
+    return apiFetch('/extension/qa-bank/draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, resume_id: resumeId }),
+    });
+}
+
+async function insertQaDraft(tabId, id, text) {
+    const tid = tabId || (await activeTabId());
+    if (!tid) {
+        return { ok: false, reason: 'no_tab' };
+    }
+
+    try {
+        await ensureContentScript(tid);
+        const result = await chrome.tabs.sendMessage(tid, { type: 'INSERT_QA_DRAFT', id, text });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return {
+            ok: false,
+            reason: 'inject_failed',
+            error: err.message,
+            message: 'Re-scan the page and try again.',
+        };
+    }
+}
+
+async function saveQaBankEntry(question, answer) {
+    return apiFetch('/extension/qa-bank', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, answer }),
+    });
 }
 
 async function activeTabId() {

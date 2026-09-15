@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreQaBankEntryRequest;
 use App\Models\Resume;
+use App\Services\AiCreditService;
+use App\Services\AiService;
+use App\Services\AiUsageLimiter;
 use App\Support\QaBankMatcher;
 use App\Support\ResumeFillProfile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 /**
  * Token-auth JSON API for the Resumegen Apply browser extension.
@@ -90,6 +95,87 @@ class ExtensionController extends Controller
         $result = QaBankMatcher::match($entries, $request->string('question')->toString());
 
         return response()->json($result);
+    }
+
+    public function qaBankStore(StoreQaBankEntryRequest $request): JsonResponse
+    {
+        $this->ensureExtensionToken($request);
+
+        $profile = $request->user()->starterProfile()->firstOrCreate(
+            ['user_id' => $request->user()->id],
+        );
+
+        $nextPosition = ((int) $profile->qaBankEntries()->max('position')) + 1;
+
+        $entry = $profile->qaBankEntries()->create([
+            ...$request->validated(),
+            'position' => $nextPosition,
+        ]);
+
+        return response()->json([
+            'id' => $entry->id,
+            'question' => $entry->question,
+            'answer' => $entry->answer,
+        ], 201);
+    }
+
+    public function qaBankDraft(Request $request, AiService $ai, AiUsageLimiter $limiter, AiCreditService $credits): JsonResponse
+    {
+        $this->ensureExtensionToken($request);
+
+        $user = $request->user();
+
+        if ($user->disabled_at !== null) {
+            return response()->json(['message' => 'Account disabled.'], 403);
+        }
+
+        $request->validate([
+            'question' => ['required', 'string', 'max:2000'],
+            'resume_id' => ['required', 'integer'],
+        ]);
+
+        abort_unless(
+            Resume::where('id', $request->integer('resume_id'))->where('user_id', $user->id)->exists(),
+            404
+        );
+
+        $question = $request->string('question')->toString();
+
+        $profile = $user->starterProfile()->firstOrCreate(['user_id' => $user->id]);
+
+        $matched = QaBankMatcher::match($profile->qaBankEntries, $question);
+        if ($matched['match'] !== null && filled($matched['match']['answer'])) {
+            return response()->json([
+                'answer' => $matched['match']['answer'],
+                'source' => 'qa_bank',
+                'cost' => null,
+            ]);
+        }
+
+        $cost = (int) config('ai.costs.qa_bank_draft');
+
+        if ($status = $limiter->refusalStatus($user, $cost)) {
+            $message = $status === 429 ? 'AI access is blocked.' : 'Subscription or AI credits required.';
+
+            return response()->json(['message' => $message], $status);
+        }
+
+        try {
+            $result = $ai->draftQaAnswer($user, $question, $profile);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'AI draft failed.'], 500);
+        }
+
+        $credits->spend($user, $cost, 'qa_bank_draft', $result['ai_request_id']);
+
+        return response()->json([
+            'answer' => $result['text'],
+            'source' => 'ai',
+            'cost' => $cost,
+            'credits_remaining' => $credits->balance($user),
+        ]);
     }
 
     private function ensureExtensionToken(Request $request): void
