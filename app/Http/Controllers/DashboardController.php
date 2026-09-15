@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobApplicationInterview;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
+use App\Models\User;
 use App\Support\ResumeAnalysis;
 use App\Support\RoleSamples;
 use Illuminate\Http\Request;
@@ -14,15 +16,90 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request): Response
     {
+        $user = $request->user();
+
         return Inertia::render('Dashboard', [
             // Deferred: scores every version server-side and scales with the
             // user's resume count. Payload is intentionally lean — badge-level
             // share only, no full document preview (unused on this page). Full
             // share modal data is loaded on demand via resumes.share.show.
             'resumes' => Inertia::defer(fn () => $this->resumesForDashboard($request)),
-            'hasStarterProfile' => $request->user()->starterProfile()->exists(),
+            'nextUp' => Inertia::defer(fn () => $this->nextUp($user)),
+            'resumeOptions' => $user->resumes()
+                ->with(['experiences', 'skills'])
+                ->latest('updated_at')
+                ->get()
+                ->map(fn (Resume $resume): array => [
+                    'id' => $resume->id,
+                    'title' => $resume->title,
+                    'score' => ResumeAnalysis::score($resume),
+                ])->all(),
+            'prefersApplyWizard' => (bool) $user->prefers_apply_wizard,
+            'hasStarterProfile' => $user->starterProfile()->exists(),
             'roleSamples' => RoleSamples::catalogue(),
         ]);
+    }
+
+    /**
+     * Actionable items for the "Next up" strip. Order: overdue follow-ups,
+     * upcoming interviews, cards with no resume. Each links straight to the
+     * card (Kanban ?highlight) so the user lands on the thing to do.
+     *
+     * @return list<array{kind: string, label: string, detail: string, href: string}>
+     */
+    private function nextUp(User $user): array
+    {
+        $items = [];
+
+        $followUps = $user->jobApplications()
+            ->whereIn('status', ['saved', 'applied'])
+            ->whereNotNull('follow_up_at')
+            ->whereDate('follow_up_at', '<=', today())
+            ->orderBy('follow_up_at')
+            ->get();
+
+        foreach ($followUps as $job) {
+            $items[] = [
+                'kind' => 'follow_up',
+                'label' => "Follow up: {$job->company} – {$job->role}",
+                'detail' => $job->follow_up_at->isToday() ? 'Due today' : 'Overdue since '.$job->follow_up_at->toFormattedDateString(),
+                'href' => route('job-applications.index', ['highlight' => $job->id]),
+            ];
+        }
+
+        $interviews = JobApplicationInterview::query()
+            ->whereHas('jobApplication', fn ($q) => $q->where('user_id', $user->id))
+            ->whereBetween('scheduled_at', [now(), now()->addDays(7)])
+            ->with('jobApplication')
+            ->orderBy('scheduled_at')
+            ->get();
+
+        foreach ($interviews as $interview) {
+            $job = $interview->jobApplication;
+            $items[] = [
+                'kind' => 'interview',
+                'label' => "Interview: {$job->company} – {$job->role}",
+                'detail' => $interview->scheduled_at->diffForHumans(),
+                'href' => route('job-applications.index', ['highlight' => $job->id]),
+            ];
+        }
+
+        $unattached = $user->jobApplications()
+            ->whereNull('resume_id')
+            ->whereIn('status', ['saved', 'applied', 'interviewing'])
+            ->latest()
+            ->get();
+
+        foreach ($unattached as $job) {
+            $items[] = [
+                'kind' => 'unattached',
+                'label' => "No resume attached: {$job->company} – {$job->role}",
+                'detail' => 'Attach or create a tailored version',
+                'href' => route('job-applications.index', ['highlight' => $job->id]),
+            ];
+        }
+
+        return $items;
     }
 
     /**

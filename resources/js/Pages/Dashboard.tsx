@@ -1,6 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import {
     ArrowsRightLeftIcon,
+    BriefcaseIcon,
     ChevronDownIcon,
     ClipboardDocumentIcon,
     DocumentTextIcon,
@@ -15,7 +16,9 @@ import {
 import { Deferred, Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState, type MouseEvent } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { AddJobModal } from '@/Components/jobs/add-job-modal';
 import { NewResumeModal } from '@/Components/dashboard/new-resume-modal';
+import { NextUpStrip } from '@/Components/dashboard/next-up-strip';
 import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
@@ -23,7 +26,7 @@ import { Shell } from '@/Components/ui/shell';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { scoreDotClass } from '@/lib/score-band';
 import { cn } from '@/lib/utils';
-import type { DashboardShareBadge, ResumeShareLink, ResumeSummary } from '@/types';
+import type { DashboardShareBadge, NextUpItem, ResumeOption, ResumeShareLink, ResumeSummary } from '@/types';
 
 function ShareStatus({
     share,
@@ -486,10 +489,16 @@ function EmptyResumes({ onCreate }: { onCreate: () => void }) {
 
 export default function Dashboard({
     resumes,
+    nextUp,
+    resumeOptions,
+    prefersApplyWizard,
     hasStarterProfile,
     roleSamples = [],
 }: {
     resumes: ResumeSummary[] | undefined;
+    nextUp: NextUpItem[] | undefined;
+    resumeOptions: ResumeOption[];
+    prefersApplyWizard: boolean;
     hasStarterProfile: boolean;
     roleSamples?: {
         id: string;
@@ -499,6 +508,7 @@ export default function Dashboard({
     }[];
 }) {
     const [newResumeOpen, setNewResumeOpen] = useState(false);
+    const [addJobOpen, setAddJobOpen] = useState(false);
     // Share-modal state lives at page level, NOT inside ResumeCard: `resumes`
     // is a deferred prop, so every Inertia reload (each toggle in the modal
     // patches and reloads props) swaps the card list for skeletons and back,
@@ -610,6 +620,34 @@ export default function Dashboard({
                                         <PlusIcon className="size-3.5" />
                                     </span>
                                 </Button>
+                                {prefersApplyWizard ? (
+                                    <Link
+                                        href={route('apply.wizard')}
+                                        className={cn(buttonClassName('default'), 'group w-full justify-between rounded-full')}
+                                    >
+                                        <span className="inline-flex items-center gap-2">
+                                            <BriefcaseIcon className="size-4" />
+                                            Add job
+                                        </span>
+                                        <span className="flex size-6 items-center justify-center rounded-full bg-white/15">
+                                            <PlusIcon className="size-3.5" />
+                                        </span>
+                                    </Link>
+                                ) : (
+                                    <Button
+                                        type="button"
+                                        onClick={() => setAddJobOpen(true)}
+                                        className="group w-full justify-between rounded-full"
+                                    >
+                                        <span className="inline-flex items-center gap-2">
+                                            <BriefcaseIcon className="size-4" />
+                                            Add job
+                                        </span>
+                                        <span className="flex size-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-soft ease-soft group-hover:scale-105">
+                                            <PlusIcon className="size-3.5" />
+                                        </span>
+                                    </Button>
+                                )}
                                 <Link
                                     href={route('starter-profile.edit')}
                                     className={cn(
@@ -636,6 +674,10 @@ export default function Dashboard({
                                 </p>
                             </div>
                         )}
+
+                        <Deferred data="nextUp" fallback={null}>
+                            <NextUpStrip items={nextUp ?? []} />
+                        </Deferred>
 
                         <div className="flex items-end justify-between gap-4">
                             <p className="text-xs font-bold tracking-[0.12em] text-ink-faint uppercase">
@@ -677,6 +719,8 @@ export default function Dashboard({
                 onClose={() => setNewResumeOpen(false)}
                 roleSamples={roleSamples}
             />
+
+            <AddJobModal open={addJobOpen} onClose={() => setAddJobOpen(false)} resumes={resumeOptions} />
 
             <ConfirmDialog
                 open={shareModalError}
