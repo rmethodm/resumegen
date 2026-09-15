@@ -209,3 +209,10 @@ export interface LinkedApplication {
     status: JobStatus;
 }
 
+export interface NextUpItem {
+    kind: 'follow_up' | 'interview' | 'unattached' | 'pending_suggestions';
+    label: string;
+    detail: string;
+    href: string;
+}
+
