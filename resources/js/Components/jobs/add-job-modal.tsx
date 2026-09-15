@@ -48,11 +48,13 @@ export function AddJobModal({
         setJobUrl(initial?.job_url ?? '');
         setJobDescription(initial?.job_description ?? '');
         setBaseResumeId(
-            initial?.base_resume_id !== undefined && initial.base_resume_id !== null
-                ? String(initial.base_resume_id)
-                : resumes[0]
-                  ? String(resumes[0].id)
-                  : '',
+            initial?.base_resume_id === null
+                ? '' // Explicit "None, track only" from the wizard — do not default.
+                : initial?.base_resume_id !== undefined
+                  ? String(initial.base_resume_id)
+                  : resumes[0]
+                    ? String(resumes[0].id)
+                    : '',
         );
         setError(null);
         // Seed once when the modal opens — must not re-run on `initial`/`resumes`
