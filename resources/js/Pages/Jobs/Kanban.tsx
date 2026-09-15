@@ -253,7 +253,15 @@ export default function JobApplicationKanban({
     const [formError, setFormError] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<{ id: number } | null>(null);
-    const [addOpen, setAddOpen] = useState(false);
+    const params = new URLSearchParams(window.location.search);
+    const [addOpen, setAddOpen] = useState(params.get('add') === '1');
+    const addInitial = {
+        company: params.get('company') ?? undefined,
+        role: params.get('role') ?? undefined,
+        job_url: params.get('job_url') ?? undefined,
+        job_description: params.get('job_description') ?? undefined,
+        base_resume_id: params.get('base_resume_id') ? Number(params.get('base_resume_id')) : undefined,
+    };
     // Local mirror of the `applications` prop so a drag can move a card
     // immediately (Doherty threshold) instead of waiting on the round-trip;
     // it resyncs whenever the server sends fresh props (create/edit/delete).
@@ -378,7 +386,7 @@ export default function JobApplicationKanban({
     };
 
     const highlightId = (() => {
-        const raw = new URLSearchParams(window.location.search).get('highlight');
+        const raw = params.get('highlight');
         return raw ? Number(raw) : null;
     })();
 
@@ -483,7 +491,7 @@ export default function JobApplicationKanban({
                 )}
             </div>
 
-            <AddJobModal open={addOpen} onClose={() => setAddOpen(false)} resumes={resumes} />
+            <AddJobModal open={addOpen} onClose={() => setAddOpen(false)} resumes={resumes} initial={addInitial} />
 
             <Modal show={form !== null} onClose={closeForm} maxWidth="lg" title={form?.id ? 'Edit application' : 'New application'}>
                 {form && (
