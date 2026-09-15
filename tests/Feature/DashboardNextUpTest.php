@@ -6,6 +6,7 @@ use App\Models\JobApplication;
 use App\Models\JobApplicationInterview;
 use App\Models\Resume;
 use App\Models\User;
+use App\Support\ResumeFillProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
@@ -97,5 +98,30 @@ class DashboardNextUpTest extends TestCase
                 ->where('prefersApplyWizard', false)
                 ->has('resumeOptions', 1)
                 ->where('resumeOptions.0.title', 'Base'));
+    }
+
+    public function test_dashboard_checklist_facts_and_dismissal(): void
+    {
+        $user = User::factory()->create();
+        Resume::factory()->for($user)->create();
+        JobApplication::factory()->for($user)->create(['status' => 'applied']);
+        $user->createToken(ResumeFillProfile::TOKEN_NAME, [ResumeFillProfile::TOKEN_ABILITY]);
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertInertia(fn ($page) => $page
+                ->where('checklist.dismissed', false)
+                ->where('checklist.facts.has_starter_profile', false)
+                ->where('checklist.facts.resume_count', 1)
+                ->where('checklist.facts.extension_connected', true)
+                ->where('checklist.facts.job_count', 1)
+                ->where('checklist.facts.applied_count', 1));
+
+        $this->actingAs($user)->patch(route('checklist.dismiss'))->assertRedirect();
+
+        $this->assertNotNull($user->fresh()->dismissed_checklist_at);
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertInertia(fn ($page) => $page->where('checklist.dismissed', true));
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Models\User;
 use App\Support\ResumeAnalysis;
+use App\Support\ResumeFillProfile;
 use App\Support\RoleSamples;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -37,6 +38,18 @@ class DashboardController extends Controller
             'prefersApplyWizard' => (bool) $user->prefers_apply_wizard,
             'hasStarterProfile' => $user->starterProfile()->exists(),
             'roleSamples' => RoleSamples::catalogue(),
+            'checklist' => [
+                'dismissed' => $user->dismissed_checklist_at !== null,
+                'facts' => [
+                    'has_starter_profile' => $user->starterProfile()->exists(),
+                    'resume_count' => $user->resumes()->count(),
+                    'extension_connected' => $user->tokens()
+                        ->where('abilities', 'like', '%'.ResumeFillProfile::TOKEN_ABILITY.'%')
+                        ->exists(),
+                    'job_count' => $user->jobApplications()->count(),
+                    'applied_count' => $user->jobApplications()->whereIn('status', ['applied', 'interviewing', 'offer', 'rejected'])->count(),
+                ],
+            ],
         ]);
     }
 
