@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobApplication;
 use App\Models\Resume;
 use App\Models\ResumeGroup;
 use App\Support\ResumeAnalysis;
@@ -36,10 +37,21 @@ class ResumeCompareController extends Controller
                 ->sortByDesc('updated_at')
                 ->first();
 
+        $statusByResume = JobApplication::query()
+            ->where('user_id', $request->user()->id)
+            ->whereIn('resume_id', $versions->pluck('id'))
+            ->orderBy('id')
+            ->get(['resume_id', 'status'])
+            ->keyBy('resume_id');
+
         return Inertia::render('Resumes/Compare', [
             'group' => ['id' => $resumeGroup->id, 'title' => $resumeGroup->title],
             'versions' => $versions
-                ->map(fn (Resume $version): array => ['id' => $version->id, 'title' => $version->title])
+                ->map(fn (Resume $version): array => [
+                    'id' => $version->id,
+                    'title' => $version->title,
+                    'application_status' => $statusByResume->get($version->id)?->status,
+                ])
                 ->all(),
             'left' => $this->side($left),
             'right' => $this->side($right),
