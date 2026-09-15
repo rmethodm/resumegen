@@ -15,7 +15,7 @@ Two primary audiences, both served by the same builder:
 
 ## Product Purpose
 
-Resumegen helps people build a polished, ATS-friendly resume and get through the whole apply cycle: build the resume, track where they've applied (Kanban: Saved/Applied/Interviewing/Offer/Rejected), and (via a companion browser extension) autofill job-application forms with their resume data. Success is landing more interviews.
+Resumegen helps people build a polished, ATS-friendly resume and get through the whole apply cycle: build the resume, track where they've applied (Kanban: Saved/Applied/Interviewing/Offer/Rejected) with status history, interview-round logging, and a funnel/stats dashboard, keep a personal Q&A bank of application answers (with AI-draft matching), and (via a companion browser extension) autofill job-application forms with their resume data. Success is landing more interviews.
 
 ## Positioning
 
@@ -26,17 +26,18 @@ Secondarily, Resumegen goes beyond "just a builder": job-application tracking an
 ## Operating Context
 
 - Builder: relational per-section editor (`Workstation.tsx`) with 24 resume templates, autosave, live preview, versioning/compare.
-- Applying: Job Application Kanban tracker (`/job-applications`) and a live job-import search (Adzuna/USAJOBS).
+- Applying: Job Application Kanban tracker (`/job-applications`) with status-change history, interview-round logging, and a funnel/stats dashboard (`/job-applications/stats`). Job Imports (Adzuna/USAJOBS search) was removed 2026-08-26 — do not restore without asking.
+- Q&A bank: per-user library of application question/answer pairs (`Settings/StarterProfile.tsx`), with AI-assisted draft matching against new questions, gated by the same AI credit ledger.
 - Sharing: token-based public share links with optional email/password gates and expiry, for sending a resume to a recruiter or checking who viewed it.
 - Browser extension: autofills job-application forms on external ATS pages using data from a Resumegen resume.
-- AI is credit-gated on the Workstation: bullet/summary rewrite and Optimize generate-for-gap return 2–3 options and debit the ledger after success; Optimize diagnose (keyword overlap) stays free. No chat Coach. See CLAUDE.md "AI — subscription credit gates".
+- AI credit ledger remains for billing; Workstation Rewrite/Generate controls are removed. Optimize diagnose (keyword overlap) stays free. Chat Coach stays out. See CLAUDE.md "AI — subscription credit gates".
 
 ## Capabilities and Constraints
 
 - Billing: $9.95/mo subscription + AI credit ledger. Upgrade/Buy CTAs belong only on generative-AI empty states (not subscribed / out of credits), not as a global paywall over the builder.
-- AI UI must show cost, disabled + Buy when out of credits, and Accept/Discard for options — never silent-overwrite user text. Coach/chat stays out of scope unless explicitly requested.
+- No Workstation generative Rewrite/Generate UI in v1. If AI actions return later, show cost, disable + Buy when out of credits, and Accept/Discard for options — never silent-overwrite user text. Coach/chat stays out of scope unless explicitly requested.
 - No public resume gallery/portfolio feature currently exists.
-- Support admin exists on a separate domain (`admin.resumegen.test`) but is out of scope for user-facing design work.
+- Admin surface is narrow: scheduled-task config only (`/admin/schedule`, `users.is_admin` gate), reintroduced 2026-09-14 after full removal on 2026-09-02. No Users/Visitors/Database admin sections — out of scope for user-facing design work.
 
 ## Brand Commitments
 

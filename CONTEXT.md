@@ -1,20 +1,23 @@
 # Context
 
 ## Current Task
-Branch `NewEditor` (as of 2026-09-07): editor rework landed 2026-08-31 — inline-markdown
-bullets (`App\Support\InlineMarkdown` + `resources/js/lib/bullet-markdown.ts`), a skills
-editor, bullet-style/skills-layout format toolbar, and an in-editor DomPDF preview frame.
-The guest resume flow / builder subdomain was added and reverted the same day (net zero).
+Branch `ShadEditor` @ `1252e9a5` (2026-09-14): JobNavigator Tier-1 import shipped —
+all 5 phases (status history, interview rounds, funnel/Sankey stats, Q&A bank +
+AI-draft matching, admin reintroduction + cron UI). Spec:
+`docs/superpowers/specs/2026-09-14-jobnavigator-tier1-import-design.md`.
+Pushed to remote `ShadEditor` branch (no PR/merge).
 
-Since then: the guest landing page (`Welcome.tsx` + `Marketing*` components) was reworked
-with a "see it in action" section and an FAQ block; OAuth login (Google/GitHub/Microsoft
-via Socialite, `App\Http\Controllers\Auth\SocialiteController`) was added alongside password
-login (commits `9bc1d2b9`, `2e35e4a1`); and DESIGN.md theming was stripped for a plain
-black-and-white token spine (commit `349f98a7`), with DESIGN.md tooling/skills removed.
+Earlier: Workstation AI credits plan complete (2026-09-10) — AI credit ledger +
+Cashier gates remain; Workstation Rewrite/Generate UI and HTTP removed/unrouted
+(`ai.rewrite-bullet`, `ai.rewrite-summary`, `ai.generate-gap`). Shared Inertia
+`aiCredits` prop and `/billing/credits` stub remain. Optimize diagnose stays free.
+Nav moved to vertical left sidebar; Workstation content width widened 35% (2026-09-14).
 
 ## Next Steps
-1. Register real OAuth app credentials (Google Cloud Console, GitHub Developer Settings,
-   Azure app registration) and fill `GOOGLE_/GITHUB_/MICROSOFT_CLIENT_ID/SECRET` in `.env`
-   — the redirect flow works but the provider client IDs are still empty.
-2. Decide on merging `NewEditor` into `main` (landing, OAuth, editor rework, and B&W
-   chrome are already browser-verified locally).
+1. User-directed: PR / local merge / keep branch — only when asked.
+2. Do not set `STRIPE_CREDITS_PRICE_ID` until a Stripe webhook grants ledger credits on purchase.
+3. Optional deferred: check-then-spend race on gate + spend; orphaned `AiService::reviewResume` /
+   `rewriteSection` cleanup or metered re-route.
+4. Register real OAuth app credentials if providers are still empty in `.env`
+   (`GOOGLE_/GITHUB_/MICROSOFT_CLIENT_ID/SECRET`).
+5. See `docs/UNFORGET.md` for full deferred-work ledger (P1–P10, A1–A3).
