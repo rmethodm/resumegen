@@ -5,6 +5,7 @@ import { Button, buttonClassName } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { diffBullets, diffSummary } from '@/lib/resume-diff';
 import type { DiffPart } from '@/lib/resume-diff';
+import type { JobStatus } from '@/types';
 import { sectionLabels } from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
 
@@ -33,7 +34,7 @@ type CompareSide = {
 
 type Props = {
     group: { id: number; title: string };
-    versions: { id: number; title: string }[];
+    versions: { id: number; title: string; application_status: JobStatus | null }[];
     left: CompareSide;
     right: CompareSide;
 };
@@ -142,7 +143,7 @@ function CompareSidebar({
     right,
     onSelect,
 }: {
-    versions: { id: number; title: string }[];
+    versions: { id: number; title: string; application_status: JobStatus | null }[];
     left: CompareSide;
     right: CompareSide;
     onSelect: (id: number) => void;
@@ -175,13 +176,18 @@ function CompareSidebar({
                             disabled={version.id === left.id}
                             onClick={() => onSelect(version.id)}
                             className={cn(
-                                'focus-ring rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
+                                'focus-ring flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
                                 version.id === right.id
                                     ? 'border-brand-subtle bg-brand-subtle text-brand'
                                     : 'border-surface-border bg-transparent text-ink hover:bg-surface',
                             )}
                         >
-                            {version.title}
+                            <span>{version.title}</span>
+                            {version.application_status && (
+                                <span className="ml-1.5 rounded-full bg-brand-subtle px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand">
+                                    {version.application_status}
+                                </span>
+                            )}
                         </button>
                     ))}
                 </div>
