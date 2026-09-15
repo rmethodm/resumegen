@@ -5,7 +5,7 @@ import {
     PlusIcon,
     TrashIcon,
 } from '@heroicons/react/24/outline';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
@@ -255,13 +255,17 @@ export default function JobApplicationKanban({
     const [deleteTarget, setDeleteTarget] = useState<{ id: number } | null>(null);
     const params = new URLSearchParams(window.location.search);
     const [addOpen, setAddOpen] = useState(params.get('add') === '1');
-    const addInitial = {
-        company: params.get('company') ?? undefined,
-        role: params.get('role') ?? undefined,
-        job_url: params.get('job_url') ?? undefined,
-        job_description: params.get('job_description') ?? undefined,
-        base_resume_id: params.get('base_resume_id') ? Number(params.get('base_resume_id')) : undefined,
-    };
+    const addInitial = useMemo(
+        () => ({
+            company: params.get('company') ?? undefined,
+            role: params.get('role') ?? undefined,
+            job_url: params.get('job_url') ?? undefined,
+            job_description: params.get('job_description') ?? undefined,
+            base_resume_id: params.get('base_resume_id') ? Number(params.get('base_resume_id')) : undefined,
+        }),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
     // Local mirror of the `applications` prop so a drag can move a card
     // immediately (Doherty threshold) instead of waiting on the round-trip;
     // it resyncs whenever the server sends fresh props (create/edit/delete).
