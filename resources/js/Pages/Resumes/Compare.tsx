@@ -356,7 +356,7 @@ function CompareColumn({
                                     }}
                                 />
                             </div>
-                            <p className="text-xs font-bold">
+                            <p className="text-xs font-bold tabular-nums">
                                 {band.score}/25
                             </p>
                         </div>

@@ -164,7 +164,7 @@ export function NewResumeModal({
                                 onChange={(event) =>
                                     setPlainText(event.target.value)
                                 }
-                                placeholder={`Jane Doe\nSoftware Engineer\njane@example.com\n\nSUMMARY\n…\n\nEXPERIENCE\nEngineer — Acme\n• Shipped feature X\n\nSKILLS\nTypeScript, React, SQL`}
+                                placeholder={`Morgan Reyes\nSoftware Engineer\nmorgan.reyes@gmail.com\n\nSUMMARY\n…\n\nEXPERIENCE\nEngineer — Lumen Health\n• Shipped feature X\n\nSKILLS\nTypeScript, React, SQL`}
                                 className="font-mono text-xs"
                             />
                             <p className="text-[11px] text-gray-500">
