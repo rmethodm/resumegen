@@ -36,6 +36,10 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
 
     function skipWizard() {
         // Remember the choice, then hand the typed values to the Kanban modal.
+        // base_resume_id is always sent, even as an empty string for an
+        // explicit "None, track only" — the Kanban side distinguishes
+        // "present but empty" (explicit none) from "key missing" (no opinion)
+        // by checking for the key's presence, not its truthiness.
         router.patch(
             route('apply-wizard.preference'),
             { prefers_apply_wizard: false },

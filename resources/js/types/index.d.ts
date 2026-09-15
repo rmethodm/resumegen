@@ -210,7 +210,7 @@ export interface LinkedApplication {
 }
 
 export interface NextUpItem {
-    kind: 'follow_up' | 'interview' | 'unattached' | 'pending_suggestions';
+    kind: 'follow_up' | 'interview' | 'unattached';
     label: string;
     detail: string;
     href: string;

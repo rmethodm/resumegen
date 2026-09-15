@@ -55,7 +55,11 @@ export function AddJobModal({
                   : '',
         );
         setError(null);
-    }, [open, initial, resumes]);
+        // Seed once when the modal opens — must not re-run on `initial`/`resumes`
+        // identity changes (e.g. a deferred-prop resolution or a Kanban drag
+        // patch while the modal is open), or it wipes what the user typed.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open]);
 
     function submit(event: FormEvent) {
         event.preventDefault();

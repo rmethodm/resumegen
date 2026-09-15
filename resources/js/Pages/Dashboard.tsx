@@ -500,7 +500,7 @@ export default function Dashboard({
 }: {
     resumes: ResumeSummary[] | undefined;
     nextUp: NextUpItem[] | undefined;
-    resumeOptions: ResumeOption[];
+    resumeOptions: ResumeOption[] | undefined;
     prefersApplyWizard: boolean;
     hasStarterProfile: boolean;
     roleSamples?: {
@@ -726,7 +726,7 @@ export default function Dashboard({
                 roleSamples={roleSamples}
             />
 
-            <AddJobModal open={addJobOpen} onClose={() => setAddJobOpen(false)} resumes={resumeOptions} />
+            <AddJobModal open={addJobOpen} onClose={() => setAddJobOpen(false)} resumes={resumeOptions ?? []} />
 
             <ConfirmDialog
                 open={shareModalError}

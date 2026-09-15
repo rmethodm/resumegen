@@ -18,6 +18,7 @@ class DashboardController extends Controller
     public function __invoke(Request $request): Response
     {
         $user = $request->user();
+        $hasStarterProfile = $user->starterProfile()->exists();
 
         return Inertia::render('Dashboard', [
             // Deferred: scores every version server-side and scales with the
@@ -26,22 +27,16 @@ class DashboardController extends Controller
             // share modal data is loaded on demand via resumes.share.show.
             'resumes' => Inertia::defer(fn () => $this->resumesForDashboard($request)),
             'nextUp' => Inertia::defer(fn () => $this->nextUp($user)),
-            'resumeOptions' => $user->resumes()
-                ->with(['experiences', 'skills'])
-                ->latest('updated_at')
-                ->get()
-                ->map(fn (Resume $resume): array => [
-                    'id' => $resume->id,
-                    'title' => $resume->title,
-                    'score' => ResumeAnalysis::score($resume),
-                ])->all(),
+            // Deferred: same scoring cost as `resumes` above, but this only
+            // feeds a <select> inside a modal that starts closed.
+            'resumeOptions' => Inertia::defer(fn () => $this->resumeOptions($user)),
             'prefersApplyWizard' => (bool) $user->prefers_apply_wizard,
-            'hasStarterProfile' => $user->starterProfile()->exists(),
+            'hasStarterProfile' => $hasStarterProfile,
             'roleSamples' => RoleSamples::catalogue(),
             'checklist' => [
                 'dismissed' => $user->dismissed_checklist_at !== null,
                 'facts' => [
-                    'has_starter_profile' => $user->starterProfile()->exists(),
+                    'has_starter_profile' => $hasStarterProfile,
                     'resume_count' => $user->resumes()->count(),
                     'extension_connected' => $user->tokens()
                         ->where('abilities', 'like', '%'.ResumeFillProfile::TOKEN_ABILITY.'%')
@@ -69,6 +64,7 @@ class DashboardController extends Controller
             ->whereNotNull('follow_up_at')
             ->whereDate('follow_up_at', '<=', today())
             ->orderBy('follow_up_at')
+            ->limit(5)
             ->get();
 
         foreach ($followUps as $job) {
@@ -85,6 +81,7 @@ class DashboardController extends Controller
             ->whereBetween('scheduled_at', [now(), now()->addDays(7)])
             ->with('jobApplication')
             ->orderBy('scheduled_at')
+            ->limit(5)
             ->get();
 
         foreach ($interviews as $interview) {
@@ -101,6 +98,7 @@ class DashboardController extends Controller
             ->whereNull('resume_id')
             ->whereIn('status', ['saved', 'applied', 'interviewing'])
             ->latest()
+            ->limit(5)
             ->get();
 
         foreach ($unattached as $job) {
@@ -113,6 +111,22 @@ class DashboardController extends Controller
         }
 
         return $items;
+    }
+
+    /**
+     * @return list<array{id: int, title: string, score: int}>
+     */
+    private function resumeOptions(User $user): array
+    {
+        return $user->resumes()
+            ->with(['experiences', 'skills'])
+            ->latest('updated_at')
+            ->get()
+            ->map(fn (Resume $resume): array => [
+                'id' => $resume->id,
+                'title' => $resume->title,
+                'score' => ResumeAnalysis::score($resume),
+            ])->all();
     }
 
     /**
