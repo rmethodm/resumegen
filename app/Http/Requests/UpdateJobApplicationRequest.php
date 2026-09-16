@@ -36,6 +36,7 @@ class UpdateJobApplicationRequest extends FormRequest
             'role' => ['sometimes', 'string', 'max:255'],
             'resume_id' => ['nullable', 'integer', Rule::exists('resumes', 'id')->where('user_id', $this->user()?->id)],
             'job_url' => ['nullable', 'string', 'max:500'],
+            'job_description' => ['nullable', 'string', 'max:10000'],
             'status' => ['sometimes', 'string', Rule::in(self::STATUSES)],
             'applied_at' => ['nullable', 'date'],
             'follow_up_at' => ['nullable', 'date'],
