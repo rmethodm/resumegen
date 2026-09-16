@@ -2,6 +2,7 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { Button } from '@/Components/ui/button';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     const { post, processing } = useForm({});
@@ -24,10 +25,12 @@ export default function VerifyEmail({ status }: { status?: string }) {
             </div>
 
             {status === 'verification-link-sent' && (
-                <div className="mb-4 text-sm font-medium text-success">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
-                </div>
+                <Alert className="mb-4">
+                    <AlertDescription>
+                        A new verification link has been sent to the email
+                        address you provided during registration.
+                    </AlertDescription>
+                </Alert>
             )}
 
             <form onSubmit={submit}>
