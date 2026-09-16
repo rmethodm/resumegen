@@ -79,7 +79,9 @@ export function NotesPanel({
 
             {error && (
                 <Alert variant="destructive" className="mb-3">
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription className="text-xs font-medium">
+                        {error}
+                    </AlertDescription>
                 </Alert>
             )}
 

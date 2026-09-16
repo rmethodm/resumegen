@@ -19,18 +19,28 @@ const alertVariants = cva(
     },
 );
 
+// Mirrors the variant-propagation pattern already used by ToggleGroup
+// (see @/Components/ui/toggle-group): the container's variant color (e.g.
+// text-destructive) is set once on Alert and must reach AlertDescription
+// without a hardcoded text color winning over it via tailwind-merge.
+const AlertContext = React.createContext<VariantProps<typeof alertVariants>>({
+    variant: 'default',
+});
+
 function Alert({
     className,
     variant,
     ...props
 }: React.ComponentProps<'div'> & VariantProps<typeof alertVariants>) {
     return (
-        <div
-            data-slot="alert"
-            role="alert"
-            className={cn(alertVariants({ variant }), className)}
-            {...props}
-        />
+        <AlertContext.Provider value={{ variant }}>
+            <div
+                data-slot="alert"
+                role="alert"
+                className={cn(alertVariants({ variant }), className)}
+                {...props}
+            />
+        </AlertContext.Provider>
     );
 }
 
@@ -48,11 +58,17 @@ function AlertDescription({
     className,
     ...props
 }: React.ComponentProps<'div'>) {
+    const { variant } = React.useContext(AlertContext);
+
     return (
         <div
             data-slot="alert-description"
             className={cn(
-                'col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground',
+                'col-start-2 grid justify-items-start gap-1 text-sm',
+                // Only the neutral "default" variant mutes to gray — the
+                // destructive/warning variants must stay as visible as the
+                // container they're announcing (role="alert").
+                (variant ?? 'default') === 'default' && 'text-muted-foreground',
                 className,
             )}
             {...props}
