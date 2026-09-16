@@ -1,6 +1,8 @@
 import { BrandMark } from '@/Components/BrandMark';
 import { CommandPalette } from '@/Components/command-palette';
+import { KeyboardShortcutsOverlay } from '@/Components/keyboard-shortcuts-overlay';
 import Dropdown from '@/Components/Dropdown';
+import { Toaster } from '@/Components/ui/sonner';
 import {
     Bars3Icon,
     ClipboardDocumentListIcon,
@@ -20,6 +22,7 @@ import {
     useMemo,
     useState,
 } from 'react';
+import { useFlashToasts } from '@/hooks/use-flash-toasts';
 import { cn } from '@/lib/utils';
 
 type NavItem = { label: string; href: string; active: boolean; icon: typeof HomeIcon };
@@ -43,6 +46,8 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const { user } = usePage().props.auth;
+    const { url } = usePage();
+    useFlashToasts();
     // Dark mode is incomplete across app surfaces (design-review Important #10).
     // Force light until Shell/inputs/tables have full dark coverage — hide the toggle.
     useEffect(() => {
@@ -56,6 +61,15 @@ export default function Authenticated({
     const [mobileOpen, setMobileOpen] = useState(false);
     const [commandOpen, setCommandOpen] = useState(false);
     const initials = useMemo(() => userInitials(user.name), [user.name]);
+
+    // Fade the page outlet on navigation only (keyed on the Inertia URL) — not
+    // wired to Workstation's internal autosave-driven re-renders.
+    const [outletVisible, setOutletVisible] = useState(true);
+    useEffect(() => {
+        setOutletVisible(false);
+        const timer = window.setTimeout(() => setOutletVisible(true), 20);
+        return () => window.clearTimeout(timer);
+    }, [url]);
 
     const nav: NavItem[] = [
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
@@ -245,6 +259,8 @@ export default function Authenticated({
                     }
                 }}
             />
+            <KeyboardShortcutsOverlay />
+            <Toaster position="bottom-center" />
 
             <main id="main-content" className="min-w-0 lg:pl-64" tabIndex={-1}>
                 {header ? (
@@ -258,7 +274,9 @@ export default function Authenticated({
                         <div className="mx-auto max-w-[1440px]">{header}</div>
                     </div>
                 ) : null}
-                {children}
+                <div className={outletVisible ? 'animate-in fade-in duration-150' : 'opacity-0'}>
+                    {children}
+                </div>
             </main>
         </div>
     );
