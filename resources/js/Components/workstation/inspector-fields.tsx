@@ -9,6 +9,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
+import { Select } from '@/Components/ui/select';
 import {
     joinMonthYear,
     monthNames,
@@ -224,14 +225,11 @@ function PartSelect({
     onChange: (value: string) => void;
 }) {
     return (
-        <select
+        <Select
             value={value}
             disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
-            className={cn(
-                'h-11 min-h-11 rounded-md border border-surface-border bg-white px-2 text-sm shadow-xs outline-hidden focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-50',
-                className,
-            )}
+            className={cn('h-11 min-h-11', className)}
         >
             <option value="">{placeholder}</option>
             {options.map((option) => (
@@ -239,7 +237,7 @@ function PartSelect({
                     {option}
                 </option>
             ))}
-        </select>
+        </Select>
     );
 }
 
@@ -565,8 +563,10 @@ export function EntryCard({
                 )}
             >
                 {dragHandle && (
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
+                        size="icon"
                         draggable
                         onDragStart={dragHandle.onDragStart}
                         onDragEnd={dragHandle.onDragEnd}
@@ -583,11 +583,11 @@ export function EntryCard({
                                 );
                             }
                         }}
-                        className="self-start cursor-grab p-0.5 text-ink-faint focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/40 active:cursor-grabbing"
+                        className="size-7 shrink-0 cursor-grab self-start p-0.5 text-ink-faint hover:bg-transparent active:cursor-grabbing"
                         aria-label={`Reorder ${title} — drag, or Alt+Arrow keys`}
                     >
                         <Bars3Icon className="size-3.5" />
-                    </button>
+                    </Button>
                 )}
                 <button
                     type="button"

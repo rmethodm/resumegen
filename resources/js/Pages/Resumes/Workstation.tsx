@@ -24,6 +24,7 @@ import { PdfPreviewFrame } from '@/Components/workstation/pdf-preview-frame';
 import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
 import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { useAutosave } from '@/hooks/use-autosave';
@@ -483,14 +484,15 @@ export default function Workstation({
                                         isMobile ? 'hidden' : 'cursor-grab',
                                     )}
                                 />
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     aria-expanded={!collapsed}
                                     aria-controls={`section-${sectionKey}-content`}
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="focus-ring flex items-center gap-1 rounded-sm text-sm font-semibold text-ink"
+                                    className="h-auto gap-1 rounded-sm p-0 text-sm font-semibold text-ink hover:bg-transparent"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
@@ -499,7 +501,7 @@ export default function Workstation({
                                         )}
                                     />
                                     {sectionLabels[sectionKey]}
-                                </button>
+                                </Button>
                                 {collapsed && (
                                     <span className="text-xs font-medium tracking-normal text-ink-faint normal-case">
                                         Collapsed
@@ -601,22 +603,24 @@ export default function Workstation({
 
             <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-surface">
                 {(offline || saveStatus === 'error') && (
-                    <div
-                        className={cn(
-                            'flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2 text-sm',
+                    <Alert
+                        variant={
                             conflict
-                                ? 'border-warning/30 bg-warning-subtle text-warning-text'
+                                ? 'warning'
                                 : offline
-                                  ? 'border-surface-border bg-surface text-ink'
-                                  : 'border-danger/30 bg-danger-subtle text-danger-text',
+                                  ? 'default'
+                                  : 'destructive'
+                        }
+                        className={cn(
+                            'flex flex-wrap items-center justify-between gap-2 rounded-none border-x-0 border-t-0',
                         )}
                     >
-                        <p>
+                        <AlertDescription className="text-sm">
                             {errorMessage ??
                                 (offline
                                     ? 'You are offline.'
                                     : 'Save failed.')}
-                        </p>
+                        </AlertDescription>
                         <div className="flex gap-2">
                             {conflict && (
                                 <Button
@@ -646,7 +650,7 @@ export default function Workstation({
                                 Retry save
                             </Button>
                         </div>
-                    </div>
+                    </Alert>
                 )}
 
                 {/* Resume chrome — same width / gutters as the main top nav island */}

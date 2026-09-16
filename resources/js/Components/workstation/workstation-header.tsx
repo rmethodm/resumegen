@@ -197,10 +197,12 @@ export function WorkstationHeader({
                     )}
                     {application && <ApplicationChip application={application} />}
                     {(contactErrors.email !== null || contactErrors.phone !== null) && (
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="sm"
                             onClick={onFixContact}
-                            className="inline-flex items-center gap-1 rounded-full border border-transparent bg-warning-subtle px-2.5 py-0.5 text-xs font-medium text-warning hover:underline"
+                            className="h-auto gap-1 rounded-full bg-warning-subtle px-2.5 py-0.5 text-xs font-medium text-warning hover:bg-warning-subtle hover:underline"
                         >
                             <ExclamationTriangleIcon className="size-3" />
                             {contactErrors.email !== null && contactErrors.phone !== null
@@ -208,7 +210,7 @@ export function WorkstationHeader({
                                 : contactErrors.email !== null
                                   ? 'Email not saving'
                                   : 'Phone not saving'}
-                        </button>
+                        </Button>
                     )}
                 </div>
 

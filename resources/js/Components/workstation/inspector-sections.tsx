@@ -3,6 +3,7 @@ import { useState } from 'react';
 import AutocompleteInput from '@/Components/AutocompleteInput';
 import SkillGroupEditor from '@/Components/SkillGroupEditor';
 import TagInput from '@/Components/TagInput';
+import { Button } from '@/Components/ui/button';
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
@@ -600,15 +601,17 @@ export function SkillsFields({
             >
                 <div className="flex items-center justify-between gap-2">
                     <Label className="text-xs">Skills</Label>
-                    <button
+                    <Button
                         type="button"
+                        variant="link"
+                        size="sm"
                         disabled={atCap}
                         onClick={() => setPicking(true)}
-                        className="flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-accent disabled:opacity-50"
+                        className="h-auto gap-1 p-0 text-xs font-semibold"
                     >
                         <PlusIcon className="size-3.5" />
                         Add skills
-                    </button>
+                    </Button>
                 </div>
 
                 {atCap && (
