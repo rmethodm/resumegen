@@ -93,6 +93,10 @@ export type Resume = {
     target_company: string;
     /** Optional job-posting notes; not printed on the resume. */
     target_job_description: string;
+    /** Cached AI critique — regenerated explicitly, never auto-triggered. */
+    ai_review?: AiReviewSuggestion[] | null;
+    ai_review_generated_at?: string | null;
+    ai_review_preset?: AiReviewPreset | null;
 
     full_name: string;
     headline: string;
@@ -122,6 +126,13 @@ export type ResumeDraft = Omit<Resume, 'id'>;
 
 export type AiReviewSeverity = 'high' | 'medium' | 'low';
 
+export type AiReviewPreset =
+    | 'general'
+    | 'tailor_jd'
+    | 'concise'
+    | 'leadership'
+    | 'quantify';
+
 export type AiReviewSuggestion = {
     id: string;
     label: string;
@@ -136,8 +147,6 @@ export type AiReviewSuggestion = {
  */
 export type ResumePageDocument = Resume & {
     updated_at?: string | null;
-    ai_review?: AiReviewSuggestion[] | null;
-    ai_review_generated_at?: string | null;
 };
 
 export type SaveStatus = 'saved' | 'dirty' | 'saving' | 'error';
