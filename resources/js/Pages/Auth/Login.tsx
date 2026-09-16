@@ -90,7 +90,7 @@ export default function Login({
                 </div>
 
                 <div className="mt-4 flex items-center justify-between">
-                    <Label className="cursor-pointer">
+                    <Label className="cursor-pointer font-normal">
                         <Checkbox
                             name="remember"
                             checked={data.remember}
