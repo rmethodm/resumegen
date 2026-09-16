@@ -26,7 +26,7 @@ try {
                 ->withoutOverlapping();
         }
     }
-} catch (\Throwable) {
+} catch (Throwable) {
     // DB unreachable at boot (e.g. composer install before services are up).
 }
 
