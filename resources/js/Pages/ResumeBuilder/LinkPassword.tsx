@@ -1,4 +1,6 @@
 import PublicLayout from '@/Layouts/PublicLayout';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 import { Head, useForm } from '@inertiajs/react';
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 
@@ -27,24 +29,23 @@ export default function LinkPassword({ token, label }: { token: string; label: s
                             });
                         }}
                     >
-                        <input
+                        <Input
                             type="password"
                             autoFocus
                             value={form.data.password}
                             onChange={e => form.setData('password', e.target.value)}
                             placeholder="Password"
-                            className="block w-full rounded-lg border-surface-border text-sm shadow-xs focus:border-brand focus:ring-brand/25"
                         />
                         {form.errors.password && (
                             <p className="mt-2 text-xs text-danger">{form.errors.password}</p>
                         )}
-                        <button
+                        <Button
                             type="submit"
                             disabled={form.processing}
-                            className="focus-ring mt-4 w-full rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-accent disabled:opacity-50"
+                            className="mt-4 w-full rounded-lg"
                         >
                             View resume
-                        </button>
+                        </Button>
                     </form>
                 </div>
             </div>

@@ -1,8 +1,12 @@
 import Modal from '@/Components/Modal';
 import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import { Select } from '@/Components/ui/select';
 import { Shell } from '@/Components/ui/shell';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { cn, focusRingClass } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { PageProps } from '@/types';
 import { CheckIcon, ClipboardIcon, LinkIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
@@ -36,12 +40,6 @@ interface ResumeOption {
 }
 
 type Props = PageProps<{ links: ShareLinkRow[]; resumes: ResumeOption[] }>;
-
-const fieldClass = cn(
-    'mt-1 block w-full rounded-md border-surface-border text-sm text-ink shadow-xs',
-    'placeholder:text-ink-faint focus:border-brand focus:ring-0',
-    focusRingClass,
-);
 
 function Sparkline({ values }: { values: number[] }) {
     const max = Math.max(...values, 1);
@@ -154,57 +152,65 @@ export default function SharesIndex() {
                             )}
                         </Shell>
                     ) : (
-                        <Shell innerClassName="divide-y divide-surface-border">
-                            {links.map((link) => (
-                                <div
-                                    key={link.id}
-                                    className={cn(
-                                        'flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-4',
-                                        !link.is_active && 'opacity-60',
-                                    )}
-                                >
-                                    <div className="min-w-0 flex-1">
-                                        <p className="flex items-center gap-1.5 text-sm font-semibold text-ink">
-                                            <span className="truncate" title={link.resume_name}>{link.resume_name}</span>
-                                            {link.has_password && (
-                                                <LockClosedIcon
-                                                    className="h-3.5 w-3.5 shrink-0 text-ink-faint"
-                                                    aria-label="Password protected"
-                                                />
-                                            )}
-                                        </p>
-                                        <p className="mt-0.5 text-xs text-ink-muted">{link.expires_human}</p>
-                                    </div>
-
-                                    <div className="flex items-center gap-4 sm:gap-6">
-                                        <Sparkline values={link.trend} />
-                                        <p className="text-xs text-ink-muted tabular-nums">
-                                            <span className="block text-sm font-medium text-ink">{link.views}</span>
-                                            {link.visitors} {link.visitors === 1 ? 'visitor' : 'visitors'}
-                                        </p>
-                                    </div>
-
-                                    <div className="flex gap-2 sm:ml-2">
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="min-h-11 flex-1 sm:flex-none"
-                                            onClick={() => copy(link)}
-                                        >
-                                            {copiedId === link.id ? <CheckIcon /> : <ClipboardIcon />}
-                                            {copiedId === link.id ? 'Copied' : 'Copy link'}
-                                        </Button>
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            className="min-h-11 flex-1 sm:flex-none"
-                                            onClick={() => openDetail(link)}
-                                        >
-                                            Details
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
+                        <Shell innerClassName="overflow-hidden">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Resume</TableHead>
+                                        <TableHead>Trend</TableHead>
+                                        <TableHead>Views</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {links.map((link) => (
+                                        <TableRow key={link.id} className={cn(!link.is_active && 'opacity-60')}>
+                                            <TableCell>
+                                                <p className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+                                                    <span className="truncate" title={link.resume_name}>{link.resume_name}</span>
+                                                    {link.has_password && (
+                                                        <LockClosedIcon
+                                                            className="h-3.5 w-3.5 shrink-0 text-ink-faint"
+                                                            aria-label="Password protected"
+                                                        />
+                                                    )}
+                                                </p>
+                                                <p className="mt-0.5 text-xs text-ink-muted">{link.expires_human}</p>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Sparkline values={link.trend} />
+                                            </TableCell>
+                                            <TableCell className="tabular-nums">
+                                                <span className="block text-sm font-medium text-ink">{link.views}</span>
+                                                <span className="text-xs text-ink-muted">
+                                                    {link.visitors} {link.visitors === 1 ? 'visitor' : 'visitors'}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => copy(link)}
+                                                    >
+                                                        {copiedId === link.id ? <CheckIcon /> : <ClipboardIcon />}
+                                                        {copiedId === link.id ? 'Copied' : 'Copy link'}
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => openDetail(link)}
+                                                    >
+                                                        Details
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
                         </Shell>
                     )}
                 </div>
@@ -215,25 +221,28 @@ export default function SharesIndex() {
                     <h2 className="text-lg font-semibold text-ink">New share link</h2>
                     <p className="mt-1 text-xs text-ink-muted">Each resume gets one link.</p>
 
-                    <label className="mt-4 block text-xs font-medium text-ink-muted">
-                        Resume
-                        <select
+                    <div className="mt-4">
+                        <Label htmlFor="share-create-resume" className="text-xs font-medium text-ink-muted">
+                            Resume
+                        </Label>
+                        <Select
+                            id="share-create-resume"
                             value={createForm.data.resume_id}
                             onChange={(e) => createForm.setData('resume_id', Number(e.target.value))}
-                            className={fieldClass}
+                            className="mt-1"
                         >
                             {resumes.map((r) => (
                                 <option key={r.id} value={r.id}>
                                     {r.name}
                                 </option>
                             ))}
-                        </select>
+                        </Select>
                         {createForm.errors.resume_id && (
                             <span className="mt-1 block text-xs text-danger" role="alert">
                                 {createForm.errors.resume_id}
                             </span>
                         )}
-                    </label>
+                    </div>
 
                     <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                         <Button type="button" variant="outline" className="min-h-11" onClick={() => setCreating(false)}>
@@ -250,19 +259,17 @@ export default function SharesIndex() {
                 {detailFor && (
                     <div className="p-6">
                         <h2 className="text-lg font-semibold text-ink">{detailFor.resume_name}</h2>
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={() => copy(detailFor)}
-                            className={cn(
-                                'mb-5 mt-1 flex min-h-11 max-w-full items-center gap-1.5 rounded-md text-left text-xs text-ink-muted hover:text-brand',
-                                focusRingClass,
-                            )}
+                            className="mb-5 mt-1 h-auto min-h-11 max-w-full justify-start px-0 text-left text-xs font-normal text-ink-muted hover:bg-transparent hover:text-brand"
                         >
                             <span className="truncate">{detailFor.url}</span>
                             <span className="shrink-0 font-medium">
                                 {copiedId === detailFor.id ? 'Copied' : 'Copy link'}
                             </span>
-                        </button>
+                        </Button>
 
                         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-faint">
                             Recent visits
@@ -293,13 +300,16 @@ export default function SharesIndex() {
                             </div>
                             <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
                                 {resumes.length > 0 && (
-                                    <label className="text-xs font-medium text-ink-muted">
-                                        Resume
-                                        <select
+                                    <div>
+                                        <Label htmlFor="share-detail-resume" className="text-xs font-medium text-ink-muted">
+                                            Resume
+                                        </Label>
+                                        <Select
+                                            id="share-detail-resume"
                                             value={detailFor.resume_id}
                                             disabled={saving}
                                             onChange={(e) => patchLink(detailFor, { resume_id: Number(e.target.value) })}
-                                            className={cn(fieldClass, 'min-h-11')}
+                                            className="mt-1 min-h-11"
                                         >
                                             <option value={detailFor.resume_id}>{detailFor.resume_name}</option>
                                             {resumes.map((r) => (
@@ -307,13 +317,16 @@ export default function SharesIndex() {
                                                     {r.name}
                                                 </option>
                                             ))}
-                                        </select>
-                                    </label>
+                                        </Select>
+                                    </div>
                                 )}
 
-                                <label className="text-xs font-medium text-ink-muted">
-                                    Expires
-                                    <input
+                                <div>
+                                    <Label htmlFor="share-detail-expires" className="text-xs font-medium text-ink-muted">
+                                        Expires
+                                    </Label>
+                                    <Input
+                                        id="share-detail-expires"
                                         type="date"
                                         defaultValue={detailFor.expires_at ?? ''}
                                         disabled={saving}
@@ -323,25 +336,26 @@ export default function SharesIndex() {
                                                 patchLink(detailFor, { expires_at: value });
                                             }
                                         }}
-                                        className={cn(fieldClass, 'min-h-11')}
+                                        className="mt-1 min-h-11"
                                     />
-                                </label>
+                                </div>
 
-                                <label className="text-xs font-medium text-ink-muted">
-                                    <span className="flex items-center gap-1">
+                                <div>
+                                    <Label htmlFor="share-detail-password" className="text-xs font-medium text-ink-muted">
                                         <LockClosedIcon className="h-3.5 w-3.5" />
                                         Password {detailFor.has_password && '(set)'}
-                                    </span>
-                                    <input
+                                    </Label>
+                                    <Input
+                                        id="share-detail-password"
                                         type="password"
                                         value={password}
                                         disabled={saving}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="At least 4 characters"
                                         minLength={4}
-                                        className={cn(fieldClass, 'min-h-11')}
+                                        className="mt-1 min-h-11"
                                     />
-                                </label>
+                                </div>
 
                                 <Button
                                     type="button"
