@@ -1,9 +1,22 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { PlusIcon, RotateCcwIcon, StickyNoteIcon } from 'lucide-react';
 import { Button } from '@/shadcn-demo/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shadcn-demo/components/ui/sheet';
 import { Separator } from '@/shadcn-demo/components/ui/separator';
 import { Textarea } from '@/shadcn-demo/components/ui/textarea';
+import { ScrollArea } from '@/shadcn-demo/components/ui/scroll-area';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/shadcn-demo/components/ui/alert-dialog';
 import { SAMPLE_NOTES, SAMPLE_SNAPSHOTS, type DemoNote } from '@/shadcn-demo/types';
 
 export function SidePanel({
@@ -21,6 +34,7 @@ export function SidePanel({
 
         setNotes([{ id: crypto.randomUUID(), body: draft, created_at: 'Just now' }, ...notes]);
         setDraft('');
+        toast.success('Note added');
     }
 
     return (
@@ -48,16 +62,18 @@ export function SidePanel({
                             <PlusIcon />
                             Add note
                         </Button>
-                        <ul className="flex flex-col gap-2">
-                            {notes.map((note) => (
-                                <li key={note.id} className="rounded-md border p-2 text-sm">
-                                    <p>{note.body}</p>
-                                    <p className="mt-1 text-xs text-muted-foreground">
-                                        {note.created_at}
-                                    </p>
-                                </li>
-                            ))}
-                        </ul>
+                        <ScrollArea className="h-40 rounded-md border">
+                            <ul className="flex flex-col gap-2 p-2">
+                                {notes.map((note) => (
+                                    <li key={note.id} className="rounded-md border p-2 text-sm">
+                                        <p>{note.body}</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">
+                                            {note.created_at}
+                                        </p>
+                                    </li>
+                                ))}
+                            </ul>
+                        </ScrollArea>
                     </section>
 
                     <Separator />
@@ -76,10 +92,31 @@ export function SidePanel({
                                             {snapshot.created_at}
                                         </p>
                                     </div>
-                                    <Button variant="ghost" size="sm">
-                                        <RotateCcwIcon />
-                                        Restore
-                                    </Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button variant="ghost" size="sm">
+                                                <RotateCcwIcon />
+                                                Restore
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Restore this snapshot?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This would replace the current draft with "{snapshot.label}"
+                                                    ({snapshot.created_at}). Demo only — nothing changes.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={() => toast.success(`Restored "${snapshot.label}" (demo)`)}
+                                                >
+                                                    Restore
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </li>
                             ))}
                         </ul>
