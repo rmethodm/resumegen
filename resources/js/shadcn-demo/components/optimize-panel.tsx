@@ -1,13 +1,13 @@
 import { CheckCircle2Icon, CircleIcon } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shadcn-demo/components/ui/card';
-import { Progress } from '@/shadcn-demo/components/ui/progress';
-import { Badge } from '@/shadcn-demo/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Progress } from '@/Components/ui/progress';
+import { Badge } from '@/Components/ui/badge';
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from '@/shadcn-demo/components/ui/accordion';
+} from '@/Components/ui/accordion';
 import {
     Table,
     TableBody,
@@ -15,7 +15,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/shadcn-demo/components/ui/table';
+} from '@/Components/ui/table';
 import { cn } from '@/shadcn-demo/lib/utils';
 import type { ResumeDraft } from '@/shadcn-demo/types';
 

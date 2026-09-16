@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { XIcon } from 'lucide-react';
-import { cn } from '@/shadcn-demo/lib/utils';
+import { cn } from '@/lib/utils';
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;

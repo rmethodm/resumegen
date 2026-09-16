@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui';
 import { CheckIcon } from 'lucide-react';
-import { cn } from '@/shadcn-demo/lib/utils';
+import { cn } from '@/lib/utils';
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;

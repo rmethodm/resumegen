@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Toggle as TogglePrimitive } from 'radix-ui';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/shadcn-demo/lib/utils';
+import { cn } from '@/lib/utils';
 
 const toggleVariants = cva(
     "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium outline-none transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:ring-2 focus-visible:ring-ring/50",

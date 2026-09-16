@@ -10,6 +10,11 @@ Source of truth: `resources/css/app.css` (Tailwind v4 CSS-first `@theme` — no 
 
 ## Accent (from DESIGN.md)
 
+> **Superseded 2026-09-16:** app-wide shadcn/ui conversion replaced this token
+> layer with shadcn's stock `radix-nova`/neutral theme (see
+> `docs/superpowers/specs/2026-09-16-shadcn-conversion-design.md`). Left here
+> for history only.
+
 | Role | Token | Value |
 |---|---|---|
 | Brand / CTA | `--brand-rgb` / `accent-500` | `#007BFF` |
