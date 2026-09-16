@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
 import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { Textarea } from '@/Components/ui/textarea';
@@ -77,9 +78,9 @@ export function NotesPanel({
             </div>
 
             {error && (
-                <div className="mb-3 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-xs font-medium text-danger-text">
-                    {error}
-                </div>
+                <Alert variant="destructive" className="mb-3">
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
             )}
 
             <div className="mb-3 flex flex-col gap-2">
@@ -127,14 +128,16 @@ export function NotesPanel({
                                 <span className="text-xs text-ink-faint">
                                     {note.created_at}
                                 </span>
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
+                                    size="icon"
                                     aria-label="Delete note"
                                     onClick={() => deleteNote(note.id)}
-                                    className="rounded-sm p-1 text-ink-faint hover:bg-white hover:text-danger"
+                                    className="size-6 text-ink-faint hover:bg-white hover:text-danger"
                                 >
                                     <TrashIcon className="size-3.5" />
-                                </button>
+                                </Button>
                             </div>
                         </li>
                     ))}

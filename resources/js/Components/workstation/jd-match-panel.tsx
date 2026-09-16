@@ -1,4 +1,5 @@
 import { jdKeywordOverlap } from '@/lib/jd-keyword-overlap';
+import { Button } from '@/Components/ui/button';
 import type { ResumeDraft } from '@/types';
 
 /** Deterministic JD ↔ resume overlap (B8). */
@@ -23,13 +24,14 @@ export function JdMatchPanel({
                     overlap (no AI).
                 </p>
                 {onOpenOptimize && (
-                    <button
+                    <Button
                         type="button"
+                        variant="link"
                         onClick={onOpenOptimize}
-                        className="focus-ring mt-2 rounded-sm px-1 text-xs font-semibold text-brand hover:underline"
+                        className="mt-2 h-auto p-0 px-1 text-xs font-semibold"
                     >
                         Open Optimize →
-                    </button>
+                    </Button>
                 )}
             </div>
         );
@@ -84,13 +86,14 @@ export function JdMatchPanel({
                 </>
             )}
             {onOpenOptimize && (
-                <button
+                <Button
                     type="button"
+                    variant="link"
                     onClick={onOpenOptimize}
-                    className="mt-2 px-1 text-xs font-semibold text-brand hover:underline"
+                    className="mt-2 h-auto p-0 px-1 text-xs font-semibold"
                 >
                     Edit job description →
-                </button>
+                </Button>
             )}
         </div>
     );

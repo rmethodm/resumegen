@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import Modal from '@/Components/Modal';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
+import { Select } from '@/Components/ui/select';
 import { cn } from '@/lib/utils';
 import type { ResumeShareLink } from '@/types';
 
@@ -341,38 +342,38 @@ export function ShareResumeModal({
                             />
                             {expiryDate && (
                                 <div className="flex gap-2">
-                                    <select
+                                    <Select
                                         value={expiryDate.getMonth() + 1}
                                         onChange={(e) =>
                                             updateExpiryPart('month', Number(e.target.value))
                                         }
-                                        className="h-9 flex-1 rounded-md border border-surface-border bg-white px-2 text-xs"
+                                        className="h-9 flex-1 text-xs"
                                     >
                                         {MONTHS.map((label, index) => (
                                             <option key={label} value={index + 1}>
                                                 {label}
                                             </option>
                                         ))}
-                                    </select>
-                                    <select
+                                    </Select>
+                                    <Select
                                         value={expiryDate.getDate()}
                                         onChange={(e) =>
                                             updateExpiryPart('day', Number(e.target.value))
                                         }
-                                        className="h-9 w-16 rounded-md border border-surface-border bg-white px-2 text-xs"
+                                        className="h-9 w-16 text-xs"
                                     >
                                         {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                                             <option key={day} value={day}>
                                                 {day}
                                             </option>
                                         ))}
-                                    </select>
-                                    <select
+                                    </Select>
+                                    <Select
                                         value={expiryDate.getFullYear()}
                                         onChange={(e) =>
                                             updateExpiryPart('year', Number(e.target.value))
                                         }
-                                        className="h-9 w-20 rounded-md border border-surface-border bg-white px-2 text-xs"
+                                        className="h-9 w-20 text-xs"
                                     >
                                         {Array.from({ length: 6 }, (_, i) => thisYear + i).map(
                                             (year) => (
@@ -381,7 +382,7 @@ export function ShareResumeModal({
                                                 </option>
                                             ),
                                         )}
-                                    </select>
+                                    </Select>
                                 </div>
                             )}
                         </div>
