@@ -64,22 +64,24 @@ export default function TwoFactorChallenge() {
 
             <div className="mt-4 space-y-2 text-center text-sm">
                 {mode !== 'recovery' && (
-                    <button
+                    <Button
                         type="button"
-                        className="focus-ring rounded-sm text-ink-muted underline hover:text-ink"
+                        variant="link"
+                        className="h-auto p-0 text-ink-muted"
                         onClick={() => setMode('recovery')}
                     >
                         Use a recovery code instead
-                    </button>
+                    </Button>
                 )}
                 {mode === 'recovery' && (
-                    <button
+                    <Button
                         type="button"
-                        className="focus-ring rounded-sm text-ink-muted underline hover:text-ink"
+                        variant="link"
+                        className="h-auto p-0 text-ink-muted"
                         onClick={() => setMode('totp')}
                     >
                         Use authenticator app instead
-                    </button>
+                    </Button>
                 )}
                 <div>
                     <a
