@@ -192,9 +192,9 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                     )}
 
                     <div className="mt-6 flex items-center justify-between">
-                        <button type="button" onClick={skipWizard} disabled={processing} className="text-xs font-medium text-ink-muted underline-offset-2 hover:underline">
+                        <Button type="button" variant="ghost" size="sm" onClick={skipWizard} disabled={processing}>
                             Skip wizard
-                        </button>
+                        </Button>
                         <div className="flex gap-2">
                             {index > 0 && (
                                 <Button type="button" variant="outline" onClick={back} disabled={processing}>
