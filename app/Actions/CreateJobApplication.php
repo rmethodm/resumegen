@@ -24,7 +24,7 @@ class CreateJobApplication
     {
         $baseResumeId = $data['base_resume_id'] ?? null;
         $jobDescription = $data['job_description'] ?? null;
-        unset($data['base_resume_id'], $data['job_description']);
+        unset($data['base_resume_id']);
 
         $status = $data['status'] ?? 'saved';
 

@@ -24,10 +24,11 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $follow_up_at
  * @property string|null $notes
  * @property string|null $job_url
+ * @property string|null $job_description
  */
 #[Fillable([
     'user_id', 'resume_id', 'company', 'role', 'status',
-    'applied_at', 'follow_up_at', 'notes', 'job_url',
+    'applied_at', 'follow_up_at', 'notes', 'job_url', 'job_description',
 ])]
 class JobApplication extends Model
 {
