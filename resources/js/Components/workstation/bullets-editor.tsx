@@ -4,6 +4,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useMemo, type ReactNode } from 'react';
 import { Label } from '@/Components/ui/label';
+import { Toggle } from '@/Components/ui/toggle';
 import {
     htmlListToMarkdownLines,
     markdownLinesToHtmlList,
@@ -216,14 +217,14 @@ function ToolbarButton({
     title?: string;
 }) {
     return (
-        <button
-            type="button"
+        <Toggle
+            size="sm"
             aria-label={label}
-            aria-pressed={active}
-            aria-disabled={disabled || undefined}
+            pressed={active}
+            disabled={disabled}
             title={title}
             onMouseDown={(event) => event.preventDefault()}
-            onClick={() => {
+            onPressedChange={() => {
                 if (disabled) {
                     return;
                 }
@@ -231,15 +232,11 @@ function ToolbarButton({
                 onClick();
             }}
             className={cn(
-                'focus-ring inline-flex h-7 min-w-7 items-center justify-center gap-1 rounded-md px-1.5 text-xs font-semibold text-ink-muted transition-colors',
-                active
-                    ? 'bg-brand-subtle text-brand'
-                    : 'hover:bg-surface hover:text-ink',
-                disabled &&
-                    'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-ink-muted',
+                'h-7 min-w-7 gap-1 px-1.5 text-xs font-semibold text-ink-muted',
+                'data-[state=on]:bg-brand-subtle data-[state=on]:text-brand',
             )}
         >
             {children}
-        </button>
+        </Toggle>
     );
 }

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { PlusIcon, RotateCcwIcon, StickyNoteIcon } from 'lucide-react';
-import { Button } from '@/shadcn-demo/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shadcn-demo/components/ui/sheet';
-import { Separator } from '@/shadcn-demo/components/ui/separator';
-import { Textarea } from '@/shadcn-demo/components/ui/textarea';
-import { ScrollArea } from '@/shadcn-demo/components/ui/scroll-area';
+import { Button } from '@/Components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/Components/ui/sheet';
+import { Separator } from '@/Components/ui/separator';
+import { Textarea } from '@/Components/ui/textarea';
+import { ScrollArea } from '@/Components/ui/scroll-area';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,7 +16,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/shadcn-demo/components/ui/alert-dialog';
+} from '@/Components/ui/alert-dialog';
 import { SAMPLE_NOTES, SAMPLE_SNAPSHOTS, type DemoNote } from '@/shadcn-demo/types';
 
 export function SidePanel({

@@ -1,4 +1,5 @@
 import AutocompleteInput from '@/Components/AutocompleteInput';
+import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { keywordsFor } from '@/lib/resume-analysis';
@@ -38,12 +39,12 @@ export function TargetRoleBar({
         >
             <div className="flex flex-col gap-2.5 sm:flex-row sm:items-end sm:gap-3">
                 <div className="min-w-0 flex-1">
-                    <label
+                    <Label
                         htmlFor="field-target-role-bar"
                         className="mb-1 block text-xs font-medium text-ink-muted"
                     >
                         Target role
-                    </label>
+                    </Label>
                     <AutocompleteInput
                         id="field-target-role-bar"
                         endpoint="job-roles"
@@ -84,15 +85,16 @@ export function TargetRoleBar({
                           : 'Tip: include design, engineer, data, product, or market.'}
                 </p>
                 {onOpenOptimize && (
-                    <button
+                    <Button
                         type="button"
+                        variant="link"
                         onClick={onOpenOptimize}
-                        className="focus-ring rounded-sm text-xs font-semibold text-brand hover:underline"
+                        className="h-auto p-0 text-xs font-semibold"
                     >
                         {hasJobDescription
                             ? 'Job description on Optimize →'
                             : 'Paste job description on Optimize →'}
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

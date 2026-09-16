@@ -24,6 +24,7 @@ import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Shell } from '@/Components/ui/shell';
+import { Skeleton } from '@/Components/ui/skeleton';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { type ChecklistFacts } from '@/lib/checklist-steps';
 import { scoreDotClass } from '@/lib/score-band';
@@ -450,14 +451,14 @@ function ResumeCard({
 function ResumeCardSkeleton() {
     return (
         <Shell innerClassName="overflow-hidden">
-            <div className="flex animate-pulse items-center gap-4 p-4">
-                <div className="size-12 shrink-0 rounded-full bg-surface" />
+            <div className="flex items-center gap-4 p-4">
+                <Skeleton className="size-12 shrink-0 rounded-full" />
                 <div className="min-w-0 flex-1">
-                    <div className="h-3.5 w-1/3 rounded-sm bg-surface" />
-                    <div className="mt-2 h-3 w-1/2 rounded-sm bg-surface/80" />
+                    <Skeleton className="h-3.5 w-1/3" />
+                    <Skeleton className="mt-2 h-3 w-1/2" />
                 </div>
-                <div className="hidden h-8 w-16 rounded-md bg-surface sm:block" />
-                <div className="hidden h-8 w-14 rounded-md bg-surface sm:block" />
+                <Skeleton className="hidden h-8 w-16 sm:block" />
+                <Skeleton className="hidden h-8 w-14 sm:block" />
             </div>
         </Shell>
     );

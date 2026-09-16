@@ -4,6 +4,7 @@ import { BrandMark } from '@/Components/BrandMark';
 import { ResumePreview } from '@/Components/resume/resume-preview';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import { Shell } from '@/Components/ui/shell';
 import { cn } from '@/lib/utils';
 import type { Resume } from '@/types';
@@ -135,12 +136,12 @@ function AccessGate({
 
                         {requireEmail && (
                             <>
-                                <label
+                                <Label
                                     htmlFor="share-gate-email"
-                                    className="mt-4 block text-xs font-medium text-ink"
+                                    className="mt-4 text-xs font-medium text-ink"
                                 >
                                     Email
-                                </label>
+                                </Label>
                                 <Input
                                     id="share-gate-email"
                                     type="email"
@@ -159,12 +160,12 @@ function AccessGate({
 
                         {requirePassword && (
                             <>
-                                <label
+                                <Label
                                     htmlFor="share-gate-password"
-                                    className="mt-4 block text-xs font-medium text-ink"
+                                    className="mt-4 text-xs font-medium text-ink"
                                 >
                                     Password
-                                </label>
+                                </Label>
                                 <Input
                                     id="share-gate-password"
                                     type="password"

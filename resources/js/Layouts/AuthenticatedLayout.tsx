@@ -1,5 +1,8 @@
 import { BrandMark } from '@/Components/BrandMark';
+import { CommandPalette } from '@/Components/command-palette';
+import { KeyboardShortcutsOverlay } from '@/Components/keyboard-shortcuts-overlay';
 import Dropdown from '@/Components/Dropdown';
+import { Toaster } from '@/Components/ui/sonner';
 import {
     Bars3Icon,
     ClipboardDocumentListIcon,
@@ -17,9 +20,9 @@ import {
     ReactNode,
     useEffect,
     useMemo,
-    useRef,
     useState,
 } from 'react';
+import { useFlashToasts } from '@/hooks/use-flash-toasts';
 import { cn } from '@/lib/utils';
 
 type NavItem = { label: string; href: string; active: boolean; icon: typeof HomeIcon };
@@ -43,6 +46,8 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const { user } = usePage().props.auth;
+    const { url } = usePage();
+    useFlashToasts();
     // Dark mode is incomplete across app surfaces (design-review Important #10).
     // Force light until Shell/inputs/tables have full dark coverage — hide the toggle.
     useEffect(() => {
@@ -55,8 +60,16 @@ export default function Authenticated({
     }, []);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [commandOpen, setCommandOpen] = useState(false);
-    const commandRef = useRef<HTMLDivElement>(null);
     const initials = useMemo(() => userInitials(user.name), [user.name]);
+
+    // Fade the page outlet on navigation only (keyed on the Inertia URL) — not
+    // wired to Workstation's internal autosave-driven re-renders.
+    const [outletVisible, setOutletVisible] = useState(true);
+    useEffect(() => {
+        setOutletVisible(false);
+        const timer = window.setTimeout(() => setOutletVisible(true), 20);
+        return () => window.clearTimeout(timer);
+    }, [url]);
 
     const nav: NavItem[] = [
         { label: 'Dashboard', href: route('dashboard'), active: route().current('dashboard'), icon: HomeIcon },
@@ -73,12 +86,7 @@ export default function Authenticated({
 
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
-            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-                event.preventDefault();
-                setCommandOpen((open) => !open);
-            }
             if (event.key === 'Escape') {
-                setCommandOpen(false);
                 setMobileOpen(false);
             }
         }
@@ -87,12 +95,6 @@ export default function Authenticated({
 
         return () => document.removeEventListener('keydown', onKeyDown);
     }, []);
-
-    function go(href: string) {
-        setCommandOpen(false);
-        setMobileOpen(false);
-        router.visit(href);
-    }
 
     function logOut() {
         router.post(route('logout'));
@@ -247,42 +249,18 @@ export default function Authenticated({
                 </div>
             </aside>
 
-            {commandOpen && (
-                <div
-                    className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 px-4 pt-24"
-                    onClick={() => setCommandOpen(false)}
-                >
-                    <div
-                        ref={commandRef}
-                        role="listbox"
-                        aria-label="Destinations"
-                        onClick={(event) => event.stopPropagation()}
-                        className="w-full max-w-sm overflow-hidden rounded-xl border border-surface-border bg-white py-1 shadow-ambient dark:border-gray-700 dark:bg-gray-800"
-                    >
-                        <p className="px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-ink-faint">
-                            Navigate
-                        </p>
-                        {nav.map((item) => (
-                            <button
-                                key={item.label}
-                                type="button"
-                                role="option"
-                                aria-selected={item.active}
-                                onClick={() => go(item.href)}
-                                className={cn(
-                                    'flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors duration-soft ease-soft motion-reduce:transition-none',
-                                    item.active
-                                        ? 'bg-brand-subtle font-semibold text-brand'
-                                        : 'text-ink hover:bg-surface',
-                                )}
-                            >
-                                <item.icon className="size-4 shrink-0 text-ink-faint" />
-                                {item.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
+            <CommandPalette
+                items={nav.map((item) => ({ label: item.label, href: item.href }))}
+                open={commandOpen}
+                onOpenChange={(value) => {
+                    setCommandOpen(value);
+                    if (value) {
+                        setMobileOpen(false);
+                    }
+                }}
+            />
+            <KeyboardShortcutsOverlay />
+            <Toaster position="bottom-center" />
 
             <main id="main-content" className="min-w-0 lg:pl-64" tabIndex={-1}>
                 {header ? (
@@ -296,7 +274,9 @@ export default function Authenticated({
                         <div className="mx-auto max-w-[1440px]">{header}</div>
                     </div>
                 ) : null}
-                {children}
+                <div className={outletVisible ? 'animate-in fade-in duration-150' : 'opacity-0'}>
+                    {children}
+                </div>
             </main>
         </div>
     );

@@ -15,6 +15,8 @@ import {
 } from '@heroicons/react/24/outline';
 import type { ReactNode } from 'react';
 import { buttonClassName } from '@/Components/ui/button';
+import { Select } from '@/Components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group';
 import {
     bulletStyles,
     skillLayouts,
@@ -143,9 +145,6 @@ function FormatField({
         </label>
     );
 }
-
-const selectClassName =
-    'mt-1 block w-full rounded-md border border-surface-border bg-white px-2 py-1.5 text-sm text-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50';
 
 export function WorkstationFormatToolbar({
     canUndo,
@@ -316,14 +315,14 @@ export function WorkstationFormatToolbar({
                             className="z-50 w-64 space-y-3 rounded-md border border-surface-border bg-white p-3 shadow-lg focus:outline-hidden"
                         >
                             <FormatField label="Font">
-                                <select
+                                <Select
                                     value={font}
                                     onChange={(event) =>
                                         onFontChange(
                                             event.target.value as ResumeFont,
                                         )
                                     }
-                                    className={selectClassName}
+                                    className="mt-1"
                                 >
                                     {fontKeys.map((key) => (
                                         <option key={key} value={key}>
@@ -333,11 +332,11 @@ export function WorkstationFormatToolbar({
                                                 : ''}
                                         </option>
                                     ))}
-                                </select>
+                                </Select>
                             </FormatField>
 
                             <FormatField label="Size & density">
-                                <select
+                                <Select
                                     value={density}
                                     onChange={(event) =>
                                         onDensityChange(
@@ -345,7 +344,7 @@ export function WorkstationFormatToolbar({
                                                 .value as ResumeDensity,
                                         )
                                     }
-                                    className={selectClassName}
+                                    className="mt-1"
                                 >
                                     {densityOptions.map((option) => {
                                         const optionPages = estimateResumePages(
@@ -364,14 +363,14 @@ export function WorkstationFormatToolbar({
                                             </option>
                                         );
                                     })}
-                                </select>
+                                </Select>
                                 <span className="mt-1 block text-xs text-ink-faint">
                                     {pageEstimate.hint}
                                 </span>
                             </FormatField>
 
                             <FormatField label="Bullet style">
-                                <select
+                                <Select
                                     value={bulletStyle}
                                     onChange={(event) =>
                                         onBulletStyleChange(
@@ -379,18 +378,18 @@ export function WorkstationFormatToolbar({
                                                 .value as ResumeBulletStyle,
                                         )
                                     }
-                                    className={selectClassName}
+                                    className="mt-1"
                                 >
                                     {bulletStyles.map((style) => (
                                         <option key={style} value={style}>
                                             {bulletStyleLabels[style]}
                                         </option>
                                     ))}
-                                </select>
+                                </Select>
                             </FormatField>
 
                             <FormatField label="Skills layout">
-                                <select
+                                <Select
                                     value={skillsLayout}
                                     onChange={(event) =>
                                         onSkillsLayoutChange(
@@ -398,14 +397,14 @@ export function WorkstationFormatToolbar({
                                                 .value as ResumeSkillsLayout,
                                         )
                                     }
-                                    className={selectClassName}
+                                    className="mt-1"
                                 >
                                     {skillLayouts.map((layout) => (
                                         <option key={layout} value={layout}>
                                             {skillsLayoutLabels[layout]}
                                         </option>
                                     ))}
-                                </select>
+                                </Select>
                             </FormatField>
                         </PopoverPanel>
                     </Popover>
@@ -424,37 +423,36 @@ export function WorkstationFormatToolbar({
             {reviewActive && onReviewPreviewModeChange && (
                 <>
                     <ToolbarDivider />
-                    <div
+                    <ToggleGroup
+                        type="single"
+                        value={reviewPreviewMode}
+                        onValueChange={(value) => {
+                            if (value === 'react' || value === 'pdf') {
+                                onReviewPreviewModeChange(value);
+                            }
+                        }}
                         className="inline-flex items-center gap-0.5"
-                        title="Preview mode"
+                        aria-label="Preview mode"
                     >
-                        <button
-                            type="button"
-                            onClick={() => onReviewPreviewModeChange('react')}
+                        <ToggleGroupItem
+                            value="react"
                             className={cn(
-                                'rounded-full px-2.5 text-xs font-medium',
+                                'rounded-full px-2.5 text-xs font-medium data-[state=on]:bg-brand-subtle data-[state=on]:text-brand',
                                 controlHeight,
-                                reviewPreviewMode === 'react'
-                                    ? 'bg-brand-subtle text-brand'
-                                    : 'text-ink-muted hover:bg-surface',
                             )}
                         >
                             Live
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => onReviewPreviewModeChange('pdf')}
+                        </ToggleGroupItem>
+                        <ToggleGroupItem
+                            value="pdf"
                             className={cn(
-                                'rounded-full px-2.5 text-xs font-medium',
+                                'rounded-full px-2.5 text-xs font-medium data-[state=on]:bg-brand-subtle data-[state=on]:text-brand',
                                 controlHeight,
-                                reviewPreviewMode === 'pdf'
-                                    ? 'bg-brand-subtle text-brand'
-                                    : 'text-ink-muted hover:bg-surface',
                             )}
                         >
                             PDF
-                        </button>
-                    </div>
+                        </ToggleGroupItem>
+                    </ToggleGroup>
 
                     <Menu as="div" className="relative">
                         <MenuButton

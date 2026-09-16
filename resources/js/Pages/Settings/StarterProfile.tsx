@@ -460,18 +460,18 @@ export default function StarterProfilePage({
                                                 name={`experience_snapshot[${index}][bullets][0]`}
                                                 placeholder="One line on what you did"
                                             />
-                                            <label className="flex items-center gap-2 text-sm">
+                                            <Label className="font-normal">
                                                 <Checkbox
                                                     checked={experience.is_current}
-                                                    onChange={(event) =>
+                                                    onCheckedChange={(checked) =>
                                                         updateExperience(index, {
                                                             is_current:
-                                                                event.target.checked,
+                                                                checked === true,
                                                         })
                                                     }
                                                 />
                                                 I currently work here
-                                            </label>
+                                            </Label>
                                             <input
                                                 type="hidden"
                                                 name={`experience_snapshot[${index}][is_current]`}

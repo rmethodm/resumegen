@@ -1,10 +1,18 @@
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import Modal from '@/Components/Modal';
-import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef, useState } from 'react';
 import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/Components/ui/alert-dialog';
 
 export default function DeleteUserForm({
     className = '',
@@ -67,57 +75,70 @@ export default function DeleteUserForm({
                 Delete Account
             </Button>
 
-            <Modal show={confirmingUserDeletion} onClose={closeModal}>
-                <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-base font-bold text-ink">
-                        Are you sure you want to delete your account?
-                    </h2>
+            <AlertDialog
+                open={confirmingUserDeletion}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        closeModal();
+                    }
+                }}
+            >
+                <AlertDialogContent>
+                    <form onSubmit={deleteUser}>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>
+                                Are you sure you want to delete your account?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Once your account is deleted, all of its
+                                resources and data will be permanently
+                                deleted. Please enter your password to confirm
+                                you would like to permanently delete your
+                                account.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
 
-                    <p className="mt-1 text-sm text-ink-muted">
-                        Once your account is deleted, all of its resources and
-                        data will be permanently deleted. Please enter your
-                        password to confirm you would like to permanently delete
-                        your account.
-                    </p>
+                        <div className="mt-4">
+                            <Label htmlFor="password" className="sr-only">
+                                Password
+                            </Label>
 
-                    <div className="mt-6">
-                        <InputLabel
-                            htmlFor="password"
-                            value="Password"
-                            className="sr-only"
-                        />
+                            <Input
+                                id="password"
+                                type="password"
+                                name="password"
+                                ref={passwordInput}
+                                value={data.password}
+                                onChange={(e) =>
+                                    setData('password', e.target.value)
+                                }
+                                className="w-3/4"
+                                autoFocus
+                                placeholder="Password"
+                            />
 
-                        <TextInput
-                            id="password"
-                            type="password"
-                            name="password"
-                            ref={passwordInput}
-                            value={data.password}
-                            onChange={(e) =>
-                                setData('password', e.target.value)
-                            }
-                            className="mt-1 block w-3/4"
-                            isFocused
-                            placeholder="Password"
-                        />
+                            <InputError
+                                message={errors.password}
+                                className="mt-2"
+                            />
+                        </div>
 
-                        <InputError
-                            message={errors.password}
-                            className="mt-2"
-                        />
-                    </div>
+                        <AlertDialogFooter className="mt-6">
+                            <AlertDialogCancel type="button">
+                                Cancel
+                            </AlertDialogCancel>
 
-                    <div className="mt-6 flex justify-end">
-                        <Button variant="outline" onClick={closeModal}>
-                            Cancel
-                        </Button>
-
-                        <Button variant="destructive" className="ms-3" disabled={processing}>
-                            Delete Account
-                        </Button>
-                    </div>
-                </form>
-            </Modal>
+                            <Button
+                                type="submit"
+                                variant="destructive"
+                                disabled={processing}
+                            >
+                                Delete Account
+                            </Button>
+                        </AlertDialogFooter>
+                    </form>
+                </AlertDialogContent>
+            </AlertDialog>
         </section>
     );
 }

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import { PlusIcon, TrashIcon } from 'lucide-react';
-import { Button } from '@/shadcn-demo/components/ui/button';
-import { Input } from '@/shadcn-demo/components/ui/input';
-import { Label } from '@/shadcn-demo/components/ui/label';
-import { Textarea } from '@/shadcn-demo/components/ui/textarea';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import { Textarea } from '@/Components/ui/textarea';
 import type { ResumeDraft, SectionKey } from '@/shadcn-demo/types';
 
 function uid() {

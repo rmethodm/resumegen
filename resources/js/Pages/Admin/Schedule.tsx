@@ -2,8 +2,9 @@ import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Checkbox } from '@/Components/ui/checkbox';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import { Shell } from '@/Components/ui/shell';
-import TextInput from '@/Components/TextInput';
 
 type ScheduledTask = {
     id: number;
@@ -44,17 +45,17 @@ export default function AdminSchedule({ tasks }: { tasks: ScheduledTask[] }) {
                                     <p className="text-sm font-bold text-ink">{task.command}</p>
                                     <p className="text-xs text-ink-muted">{task.explanation}</p>
                                 </div>
-                                <label className="flex items-center gap-2 text-xs font-semibold text-ink-muted">
+                                <Label className="text-xs font-semibold text-ink-muted">
                                     <Checkbox
                                         checked={task.enabled}
                                         disabled={processingId === task.id}
-                                        onChange={(e) => update(task, { enabled: e.target.checked })}
+                                        onCheckedChange={(checked) => update(task, { enabled: checked === true })}
                                     />
                                     Enabled
-                                </label>
+                                </Label>
                             </div>
                             <div className="mt-3 flex items-center gap-3">
-                                <TextInput
+                                <Input
                                     defaultValue={task.cron_expression}
                                     disabled={processingId === task.id}
                                     onBlur={(e) => {
