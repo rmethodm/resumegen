@@ -141,15 +141,39 @@ class AiService
     private const REVIEW_MODEL = 'gpt-4o';
 
     /**
-     * @param  array<string, mixed>  $resumeData
-     * @return array{suggestions: array<int, array<string, mixed>>, prompt_tokens: int, completion_tokens: int}
+     * @var array<string>
      */
-    public function reviewResume(User $user, array $resumeData, ?string $jd = null): array
+    private const REVIEW_PRESETS = ['general', 'tailor_jd', 'concise', 'leadership', 'quantify'];
+
+    /**
+     * @var array<string, string>
+     */
+    private const PRESET_INSTRUCTIONS = [
+        'general' => 'Give a broad, prioritized critique covering clarity, impact, and completeness.',
+        'tailor_jd' => 'Focus specifically on how well the resume matches the target job description below — flag every meaningful gap between the resume and what it asks for.',
+        'concise' => 'Focus on trimming wordiness — flag redundant phrases, filler words, and bullets that could say the same thing in fewer words.',
+        'leadership' => 'Focus on leadership and ownership — flag bullets that undersell initiative, decision-making, or team impact, and suggest how to reframe them.',
+        'quantify' => 'Focus on quantification — flag every bullet lacking a number, percentage, or measurable outcome, and suggest what metric could be added.',
+    ];
+
+    /**
+     * @param  array<string, mixed>  $resumeData
+     * @return array{suggestions: array<int, array<string, mixed>>, prompt_tokens: int, completion_tokens: int, ai_request_id: int}
+     */
+    public function reviewResume(User $user, array $resumeData, ?string $jd = null, string $preset = 'general'): array
     {
+        if (! in_array($preset, self::REVIEW_PRESETS, true)) {
+            throw new \InvalidArgumentException("Unknown review preset: {$preset}");
+        }
+
+        // 'general' means a broad pass regardless of a pasted JD; only
+        // 'tailor_jd' (and any future JD-aware preset) factors it in.
+        $effectiveJd = $preset === 'tailor_jd' ? $jd : null;
+
         $response = OpenAI::chat()->create([
             'model' => self::REVIEW_MODEL,
             'messages' => [
-                ['role' => 'user', 'content' => $this->buildReviewPrompt($resumeData, $jd)],
+                ['role' => 'user', 'content' => $this->buildReviewPrompt($resumeData, $effectiveJd, $preset)],
             ],
             'temperature' => 0.3,
             'response_format' => [
@@ -190,7 +214,7 @@ class AiService
         $promptTokens = $response->usage->promptTokens ?? 0;
         $completionTokens = $response->usage->completionTokens ?? 0;
 
-        $user->aiRequests()->create([
+        $aiRequest = $user->aiRequests()->create([
             'feature' => 'resume_review',
             'model' => self::REVIEW_MODEL,
             'prompt_tokens' => $promptTokens,
@@ -202,13 +226,14 @@ class AiService
             'suggestions' => $suggestions,
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
+            'ai_request_id' => $aiRequest->id,
         ];
     }
 
     /**
      * @param  array<string, mixed>  $resumeData
      */
-    private function buildReviewPrompt(array $resumeData, ?string $jd): string
+    private function buildReviewPrompt(array $resumeData, ?string $jd, string $preset): string
     {
         $resumeJson = json_encode($resumeData, JSON_PRETTY_PRINT);
         $prompt = 'You are a resume reviewer. Read the resume below and return a '
@@ -217,7 +242,8 @@ class AiService
             .'(high, medium, or low), a section it applies to (contact, summary, '
             .'experience, skills, or education), and a detail (one to two sentences '
             ."explaining why and how to fix it). Be specific, reference actual content \n"
-            ."from the resume, and do not invent facts.\n\nResume:\n{$resumeJson}";
+            ."from the resume, and do not invent facts.\n\n"
+            .self::PRESET_INSTRUCTIONS[$preset]."\n\nResume:\n{$resumeJson}";
 
         if ($jd !== null && trim($jd) !== '') {
             $prompt .= "\n\nTailor the review against this target job description — "
