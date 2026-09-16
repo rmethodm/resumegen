@@ -17,6 +17,7 @@
 
     let crossOriginFrameCount = 0;
     let detectedQuestionEls = [];
+    let detectedFileInputEls = [];
 
     chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         if (message.type === 'PING') {
@@ -60,6 +61,14 @@
         }
         if (message.type === 'INSERT_QA_DRAFT') {
             sendResponse(insertQaDraft(message.id, message.text || ''));
+            return;
+        }
+        if (message.type === 'DETECT_FILE_INPUTS') {
+            sendResponse(detectFileInputs());
+            return;
+        }
+        if (message.type === 'SET_FILE_INPUT') {
+            sendResponse(setFileInput(message.id, message.buffer, message.filename));
             return;
         }
     });
@@ -138,6 +147,79 @@
 
         setFieldValue(el, text, { overwrite: true });
         return { ok: true, message: 'Inserted the draft into the field.' };
+    }
+
+    function collectFileInputsDeep(root, depth = 0) {
+        const out = [];
+        if (!root || depth > 6) {
+            return out;
+        }
+
+        const nodes = root.querySelectorAll ? root.querySelectorAll('input[type="file"]') : [];
+        for (const el of nodes) {
+            if (el instanceof HTMLElement && isVisible(el)) {
+                out.push(el);
+            }
+        }
+
+        const all = root.querySelectorAll ? root.querySelectorAll('*') : [];
+        for (const host of all) {
+            if (host.shadowRoot) {
+                out.push(...collectFileInputsDeep(host.shadowRoot, depth + 1));
+            }
+        }
+
+        return out;
+    }
+
+    function detectFileInputs() {
+        const els = collectFileInputsDeep(document);
+        detectedFileInputEls = [];
+        const fields = [];
+
+        els.forEach((el) => {
+            const signals = H.buildSignals(extractRaw(el));
+            if (!H.detectFileInputCandidate(signals)) {
+                return;
+            }
+            const id = detectedFileInputEls.length;
+            detectedFileInputEls.push(el);
+            fields.push({
+                id,
+                label: signals.raw.label || signals.raw.ariaLabel || 'Resume upload',
+                hasFile: el.files && el.files.length > 0,
+            });
+        });
+
+        return { ok: true, fields };
+    }
+
+    function setFileInput(id, buffer, filename) {
+        const el = detectedFileInputEls[id];
+        if (!el || !el.isConnected) {
+            return {
+                ok: false,
+                reason: 'stale_field',
+                message: 'Re-scan the page and try again.',
+            };
+        }
+
+        try {
+            const file = new File([buffer], filename || 'resume.pdf', { type: 'application/pdf' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            el.files = dataTransfer.files;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            return { ok: true, message: 'Attached your resume PDF.' };
+        } catch (err) {
+            return {
+                ok: false,
+                reason: 'attach_failed',
+                error: String(err?.message || err),
+                message: 'This site rejected the automatic attach — download and upload it manually.',
+            };
+        }
     }
 
     function getFocusContext(profile) {
@@ -371,6 +453,7 @@
             autocomplete: el.getAttribute('autocomplete') || '',
             dataAutomationId: el.getAttribute('data-automation-id') || el.getAttribute('data-automationid') || '',
             dataTestId: el.getAttribute('data-testid') || el.getAttribute('data-test-id') || '',
+            dataQa: el.getAttribute('data-qa') || '',
             type: el instanceof HTMLInputElement ? (el.type || 'text') : '',
             tag: el.tagName.toLowerCase(),
             contentEditable: Boolean(el.isContentEditable),

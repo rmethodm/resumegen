@@ -80,11 +80,66 @@ class DashboardNextUpTest extends TestCase
     public function test_card_without_resume_appears_as_unattached(): void
     {
         $user = User::factory()->create();
-        JobApplication::factory()->for($user)->create(['status' => 'saved', 'resume_id' => null]);
+        JobApplication::factory()->for($user)->create(['status' => 'applied', 'resume_id' => null]);
 
         $items = $this->nextUp($user);
 
         $this->assertSame('unattached', $items[0]['kind']);
+    }
+
+    public function test_saved_jobs_offer_preparation_with_or_without_a_resume(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        JobApplication::factory()->for($user)->create(['status' => 'saved', 'resume_id' => $resume->id]);
+        $withoutResume = JobApplication::factory()->for($user)->create(['status' => 'saved', 'resume_id' => null]);
+
+        $items = $this->nextUp($user);
+
+        $this->assertCount(2, $items);
+        $this->assertSame(['prepare', 'prepare'], array_column($items, 'kind'));
+        $this->assertContains(route('resumes.workstation', $resume), array_column($items, 'href'));
+        $this->assertContains(route('job-applications.index', ['highlight' => $withoutResume->id]), array_column($items, 'href'));
+    }
+
+    public function test_interviewing_and_offer_follow_ups_appear_without_duplicate_prompts(): void
+    {
+        $user = User::factory()->create();
+        foreach (['saved', 'interviewing', 'offer'] as $status) {
+            JobApplication::factory()->for($user)->create([
+                'status' => $status, 'resume_id' => null, 'follow_up_at' => today(),
+            ]);
+        }
+
+        $items = $this->nextUp($user);
+
+        $this->assertCount(3, $items);
+        $this->assertSame(['follow_up', 'follow_up', 'follow_up'], array_column($items, 'kind'));
+        $this->assertSame(['Due today', 'Due today', 'Due today'], array_column($items, 'detail'));
+    }
+
+    public function test_future_preparation_closed_interviews_and_other_users_jobs_are_excluded(): void
+    {
+        $user = User::factory()->create();
+        JobApplication::factory()->for($user)->create(['status' => 'saved', 'follow_up_at' => today()->addDays(3)]);
+        $closed = JobApplication::factory()->for($user)->create(['status' => 'rejected']);
+        JobApplicationInterview::factory()->for($closed)->create(['scheduled_at' => now()->addDay()]);
+        $foreign = JobApplication::factory()->create(['status' => 'saved', 'follow_up_at' => today()]);
+        JobApplicationInterview::factory()->for($foreign)->create(['scheduled_at' => now()->addDay()]);
+
+        $this->assertSame([], $this->nextUp($user));
+    }
+
+    public function test_upcoming_interview_takes_priority_over_preparation(): void
+    {
+        $user = User::factory()->create();
+        $job = JobApplication::factory()->for($user)->create(['status' => 'saved']);
+        JobApplicationInterview::factory()->for($job)->create(['scheduled_at' => now()->addDay()]);
+
+        $items = $this->nextUp($user);
+
+        $this->assertCount(1, $items);
+        $this->assertSame('interview', $items[0]['kind']);
     }
 
     public function test_dashboard_passes_resume_options_and_wizard_preference(): void

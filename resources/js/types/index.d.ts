@@ -189,6 +189,7 @@ export interface JobApplication {
     status: JobStatus;
     resume_id: number | null;
     job_url: string | null;
+    job_description: string | null;
     notes: string | null;
     applied_at: string | null;
     follow_up_at: string | null;
@@ -210,9 +211,8 @@ export interface LinkedApplication {
 }
 
 export interface NextUpItem {
-    kind: 'follow_up' | 'interview' | 'unattached';
+    kind: 'follow_up' | 'interview' | 'prepare' | 'unattached';
     label: string;
     detail: string;
     href: string;
 }
-

@@ -740,6 +740,16 @@ export default function Workstation({
                     )}
                 >
                     <div className="mx-auto flex w-full max-w-[1944px] flex-col gap-4">
+                        {tab === 'Edit' && (
+                            <TargetRoleBar
+                                targetRole={draft.target_role}
+                                targetCompany={draft.target_company ?? ''}
+                                onChange={(target_role) => setDraft((current) => ({ ...current, target_role }))}
+                                onTargetCompanyChange={(target_company) => setDraft((current) => ({ ...current, target_company }))}
+                                hasJobDescription={Boolean(draft.target_job_description?.trim())}
+                                onOpenOptimize={() => setTab('Optimize')}
+                            />
+                        )}
                         <SectionPanel
                             resumeId={id}
                             analysis={liveAnalysis}
@@ -758,7 +768,6 @@ export default function Workstation({
                                     <OptimizePanel
                                         draft={draft}
                                         onChange={setDraft}
-                                        onAddKeyword={addKeyword}
                                     >
                                         <AtsPlainTextBlock
                                             plainText={plainText}

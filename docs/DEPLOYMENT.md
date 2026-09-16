@@ -127,16 +127,7 @@ APP_DEBUG=false
 APP_URL=https://yourdomain.com
 LOG_STACK=daily
 LOG_LEVEL=warning
-# Support admin (Inertia, not Filament). Must match DNS + TLS host below.
-APP_ADMIN_DOMAIN=admin.yourdomain.com
-# Destructive DB/backup mutations (restore, truncate, non-SELECT SQL, …).
-# Keep false in production; flip true only while you intentionally need them.
-ADMIN_DESTRUCTIVE_TOOLS=false
-# Idle timeout (minutes) for authenticated sessions on the admin host only.
-ADMIN_SESSION_LIFETIME=60
-# Leave null so product and admin each keep host-only session cookies.
-# Admins log in on the admin host. Do not set SESSION_DOMAIN unless you
-# intentionally want a shared cookie across subdomains (extra CSRF care).
+# Admin panel removed 2026-09-02 — APP_ADMIN_DOMAIN / ADMIN_* are dead config if present.
 SESSION_DOMAIN=null
 SESSION_SECURE_COOKIE=true
 
@@ -154,12 +145,22 @@ QUEUE_CONNECTION=sync          # simplest; see Part 9 for a background worker
 MAIL_MAILER=resend
 RESEND_API_KEY=re_...
 MAIL_FROM_ADDRESS="hello@yourdomain.com"
+
+# Cashier / Stripe ($9.95/mo + optional AI credit packs). See CLAUDE.md Billing.
+STRIPE_KEY=
+STRIPE_SECRET=
+STRIPE_PRICE_ID=
+# Keep STRIPE_CREDITS_PRICE_ID unset until a purchase grant webhook exists.
+STRIPE_CREDITS_PRICE_ID=
+STRIPE_WEBHOOK_SECRET=
+OPENAI_API_KEY=
+AI_STARTER_CREDITS=20
 ```
 
-> No billing env keys. `STRIPE_*` stays gone. Optional AI uses `AI_ENABLED` /
-> `OPENAI_API_KEY` only when you intentionally turn AI on (see `config/ai.php`).
-> If you see dead keys from old Filament/billing installs, delete them — but keep
-> **`APP_ADMIN_DOMAIN`** for the support admin.
+> Billing uses Cashier (`STRIPE_*` + `STRIPE_PRICE_ID`). Generative AI uses
+> `OPENAI_API_KEY` and the credit ledger (`AI_STARTER_CREDITS`); there is no
+> `AI_ENABLED` flag. Delete leftover `APP_ADMIN_DOMAIN` / `ADMIN_*` / `users.is_admin`
+> assumptions — the admin panel is gone (2026-09-02).
 
 Then:
 
@@ -170,15 +171,6 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 ```
-
-**Promote the first support admin** (after migrate — needs `users.is_admin`):
-
-```bash
-php artisan tinker --execute \
-  'App\Models\User::where("email", "you@yourdomain.com")->update(["is_admin" => true]);'
-```
-
-Never mass-assign `is_admin` from the product UI; tinker/seeder only.
 
 > ⚠️ After editing `.env` again later you MUST re-run `php artisan config:cache`
 > (or `config:clear`) — cached config ignores `.env` changes otherwise.
@@ -203,7 +195,7 @@ Laravel serves from `public/`, never the project root.
 ```apache
 <VirtualHost *:80>
     ServerName yourdomain.com
-    ServerAlias www.yourdomain.com admin.yourdomain.com
+    ServerAlias www.yourdomain.com
     DocumentRoot /var/www/resumegen/public
 
     <Directory /var/www/resumegen/public>
@@ -216,8 +208,8 @@ Laravel serves from `public/`, never the project root.
 </VirtualHost>
 ```
 
-Same `DocumentRoot` for apex and admin — Laravel picks admin routes by `Host`
-(`APP_ADMIN_DOMAIN`). No second codebase.
+Single `DocumentRoot` for the product app. The former `admin.*` ServerAlias is unused
+after the 2026-09-02 admin removal (safe to drop from existing vhosts/certs).
 
 ```bash
 sudo a2enmod rewrite
@@ -226,13 +218,11 @@ sudo a2dissite 000-default.conf
 sudo systemctl reload apache2
 ```
 
-**DNS:** A/AAAA (or CNAME) for `admin.yourdomain.com` → same box as apex.
-
-**HTTPS** (required — secure cookies). Include the admin host on the cert:
+**HTTPS** (required — secure cookies):
 
 ```bash
 sudo apt install -y certbot python3-certbot-apache
-sudo certbot --apache -d yourdomain.com -d www.yourdomain.com -d admin.yourdomain.com
+sudo certbot --apache -d yourdomain.com -d www.yourdomain.com
 ```
 
 After SSL, ensure `APP_URL` uses `https://` and re-run `php artisan config:cache`.
@@ -241,11 +231,10 @@ After SSL, ensure `APP_URL` uses `https://` and re-run `php artisan config:cache
 
 ## Part 9 — Scheduler & queue
 
-**Scheduler (currently optional)** — `routes/console.php` has no scheduled commands today;
-the old nudge commands (`resumes:nudge-stale`, `resumes:nudge-views`) were deleted with
-their feature but the schedule entries lingered until 2026-08-04. Set up cron anyway so
-future scheduled commands work without a separate ops step; check `routes/console.php` for
-the current list rather than this doc:
+**Scheduler (required for backups)** — `routes/console.php` schedules
+`backup:clean` / `backup:run` / `backup:monitor` plus a 90-day `resume_deletions` prune.
+Set up cron so those run; check `routes/console.php` for the current list rather than
+this doc:
 
 ```bash
 sudo crontab -e -u www-data
@@ -305,45 +294,11 @@ the free-plan substitute, per the comment in `.github/workflows/ci.yml`.) The
 secrets are used — the runner already lives on the box; only a `production`
 environment (for the manual-approval gate) is configured in GitHub repo settings.
 
-**Support admin subdomain (required for ops UI).** Filament is gone; a thin Inertia
-support admin lives on `APP_ADMIN_DOMAIN` (e.g. `admin.yourdomain.com`). After
-deploy:
-
-1. DNS + TLS for that host (Part 8).
-2. `.env` has `APP_ADMIN_DOMAIN=admin.yourdomain.com` then `php artisan config:cache`.
-3. Promote yourself: `users.is_admin = true` via tinker (Part 6).
-4. On the **main** site (`APP_URL/profile`), enable and confirm **two-factor
-   authentication** for that admin account (required — admin login rejects
-   password-only admins).
-5. Open `https://admin.yourdomain.com/login` and sign in **on that host**
-   (host-only sessions — apex login does not carry over), then complete the
-   TOTP challenge.
-
-Capabilities: search users, force-verify email, resend verification, disable/enable
-login (data kept), revoke Sanctum tokens, view action log, browse DB/backups.
-No resume edit, no impersonation, no taxonomy CMS, no billing.
-
-**Admin hardening (app-layer; no Cloudflare / VPN gate):**
-
-| Control | Env / behavior |
-|---|---|
-| Mandatory 2FA | Admins without confirmed 2FA cannot use the panel; they cannot disable 2FA while `is_admin`. |
-| Idle timeout | `ADMIN_SESSION_LIFETIME` (default 60 minutes) on the admin host only. |
-| Login throttle | 3 failed attempts / minute on the admin host (product stays at 5). |
-| Destructive tools | `ADMIN_DESTRUCTIVE_TOOLS=false` (default). Restore/delete backup, row/schema edits, truncate, role mutations, and non-SELECT SQL return 403 until flipped on. |
-
-**Destructive tools runbook** (rare schema/SQL/restore work):
-
-1. Set `ADMIN_DESTRUCTIVE_TOOLS=true` in server `.env`.
-2. `php artisan config:cache` (as `www-data`, never as root).
-3. Sign in on the admin host, confirm password when prompted (`/confirm-password`).
-4. Do the work; typed-name confirmations still apply where they already did.
-5. Set `ADMIN_DESTRUCTIVE_TOOLS=false`, `config:cache` again.
-
-Destructive actions also write `admin_action_logs` and a `admin.destructive_action`
-warning log line. Failed admin-host logins write `admin.login_failed` (warning).
-Review with Pail / daily logs, e.g. `php artisan pail --filter=admin.` or
-`grep admin.login_failed storage/logs/laravel-*.log`.
+**Support admin subdomain — removed 2026-09-02.** There is no Inertia/Filament admin
+panel, no `users.is_admin`, and no `APP_ADMIN_DOMAIN` routing. Leftover
+`admin.resumegen.app` DNS/TLS/`APP_ADMIN_DOMAIN` on the server is dead config and can
+be cleaned up. App backups remain CLI/schedule only (`spatie/laravel-backup`). Do not
+reintroduce an admin surface without asking (see `CLAUDE.md`).
 
 **Manual deploy (no CI):** `deploy.sh` is self-sufficient — it pulls `main`, installs
 Composer/npm dependencies, builds the frontend, migrates, re-caches, and fixes

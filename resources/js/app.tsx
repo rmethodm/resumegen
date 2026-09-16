@@ -24,11 +24,16 @@ if (import.meta.env.DEV) {
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
-    resolve: (name) =>
-        resolvePageComponent(
-            `./Pages/${name}.tsx`,
+    resolve: (name) => {
+        const path = `./Pages/${name}.tsx`;
+        if (import.meta.env.DEV) {
+            return import('./lib/development-pages').then(({ resolveDevelopmentPage }) => resolveDevelopmentPage(name).default);
+        }
+        return resolvePageComponent(
+            path,
             import.meta.glob<ResolvedComponent>('./Pages/**/*.tsx'),
-        ),
+        );
+    },
     setup({ el, App, props }) {
         if (!el) {
             throw new Error('Inertia mount element #app not found');

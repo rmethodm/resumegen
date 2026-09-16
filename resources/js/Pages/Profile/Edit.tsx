@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Card } from '@/Components/ui/card';
 import ApplyWizardPreferenceForm from './Partials/ApplyWizardPreferenceForm';
 import DeleteUserForm from './Partials/DeleteUserForm';
@@ -123,13 +123,13 @@ export default function Edit({
 }>) {
     return (
         <AuthenticatedLayout>
-            <Head title="Profile" />
+            <Head title="Account settings" />
 
             <div className="py-8">
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
 
                     <div className="mb-2">
-                        <h1 className="text-xl font-extrabold tracking-tight text-ink">Profile</h1>
+                        <h1 className="text-xl font-extrabold tracking-tight text-ink">Account settings</h1>
                         <p className="mt-1 text-sm text-ink-faint">Manage your account settings</p>
                     </div>
 
@@ -166,12 +166,13 @@ export default function Edit({
                     <Card className="p-6">
                         <section className="space-y-6">
                             <header>
-                                <h2 className="text-lg font-medium text-ink">Starter Profile</h2>
+                                <h2 className="text-lg font-medium text-ink">Contact and resume defaults</h2>
                                 <p className="mt-1 text-sm text-ink-muted">
-                                    Pre-fills the contact section and defaults on every new resume you create.
+                                    Manage contact defaults and resume preferences. For reusable experience and skills, open your starter profile.
                                 </p>
                             </header>
 
+                            <Link href={route('starter-profile.edit')} className="text-sm font-medium underline">Edit starter profile →</Link>
                             <PersonaForm profile={profile ?? {}} persona={persona} allowedTemplates={allowedTemplates} />
                         </section>
                     </Card>

@@ -91,6 +91,27 @@
       <button type="button" id="scan-questions-btn" class="btn-secondary full">Scan for questions</button>
       <p id="questions-helper" class="hint">Finds free-text questions on this page. You review every draft before it's inserted.</p>
       <div id="questions-list"></div>
+
+      <div class="section-label">Job description match</div>
+      <p class="hint">Select text on the page, right-click, and choose "Set as Resumegen job description" to update this resume's target JD. Then check the match:</p>
+      <button type="button" id="show-jd-badge-btn" class="btn-secondary full">Show match badge on page</button>
+
+      <div class="section-label">Track this application</div>
+      <button type="button" id="detect-job-btn" class="btn-secondary full">Save to tracker</button>
+      <div id="job-application-form" class="question-card hidden">
+        <label class="sr-only" for="job-company-input">Company</label>
+        <input type="text" id="job-company-input" class="select field-input" placeholder="Company">
+        <label class="sr-only" for="job-role-input">Role</label>
+        <input type="text" id="job-role-input" class="select field-input" placeholder="Role">
+        <div class="question-actions">
+          <button type="button" id="job-save-btn" class="btn-secondary">Save</button>
+          <button type="button" id="job-cancel-btn" class="btn-link">Cancel</button>
+        </div>
+      </div>
+
+      <div class="section-label">Attach resume</div>
+      <button type="button" id="scan-file-inputs-btn" class="btn-secondary full">Find resume upload</button>
+      <div id="file-inputs-list"></div>
     </section>
 
     <!-- Help -->

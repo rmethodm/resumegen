@@ -1,3 +1,4 @@
+import { markdownToPlainText } from '@/lib/bullet-markdown';
 import type { ResumeDraft } from '@/types';
 
 /**
@@ -129,6 +130,10 @@ const STOPWORDS = new Set([
     'good',
     'well',
     'etc',
+    'responsible', 'responsibilities', 'engineer', 'engineers',
+    'candidate', 'candidates', 'looking', 'seeking', 'need', 'join',
+    'opportunity', 'apply', 'qualification', 'qualifications',
+    'benefits', 'salary', 'equal', 'employer',
 ]);
 
 export type JdOverlap = {
@@ -140,12 +145,9 @@ export type JdOverlap = {
 };
 
 function tokenize(text: string): string[] {
-    const raw = text
-        .toLowerCase()
-        .replace(/[^a-z0-9+#./\s-]/g, ' ')
-        .split(/[\s,/|;]+/)
-        .map((token) => token.trim())
-        .filter((token) => token.length >= 3)
+    const raw = (text.normalize('NFKC').toLowerCase()
+        .match(/(?:\.[\p{L}]+|[\p{L}\p{N}]+)(?:[./][\p{L}\p{N}]+)*(?:\+\+|#)?/gu) ?? [])
+        .filter((token) => token.length >= 2 || token === 'r' || token === 'c')
         .filter((token) => !STOPWORDS.has(token))
         .filter((token) => !/^\d+$/.test(token));
 
@@ -164,26 +166,26 @@ function tokenize(text: string): string[] {
 }
 
 function resumeHaystack(draft: ResumeDraft): string {
+    const sections = new Set(draft.section_order);
     return [
         draft.headline,
-        draft.summary,
-        draft.target_role,
-        ...draft.experiences.flatMap((exp) => [
-            exp.title,
-            exp.company,
-            ...(exp.bullets ?? []),
-        ]),
-        ...draft.projects.flatMap((project) => [
-            project.name,
-            project.description,
-            ...(project.highlights ?? []),
-        ]),
-        ...draft.skills.map((skill) => skill.name),
-        ...draft.education.flatMap((edu) => [edu.school, edu.degree, edu.field]),
-        ...draft.certificates.flatMap((cert) => [cert.name, cert.issuer]),
-    ]
-        .join(' ')
-        .toLowerCase();
+        ...(sections.has('summary') ? [draft.summary] : []),
+        ...(sections.has('experience') ? draft.experiences.flatMap((exp) => [
+            exp.title, exp.company,
+            ...(exp.bullets ?? []).map(markdownToPlainText),
+        ]) : []),
+        ...(sections.has('project') ? draft.projects.flatMap((project) => [
+            project.name, project.description,
+            ...(project.highlights ?? []).map(markdownToPlainText),
+        ]) : []),
+        ...(sections.has('skills') ? draft.skills.map((skill) => skill.name) : []),
+        ...(sections.has('education') ? draft.education.flatMap((edu) => [
+            edu.school, edu.degree, edu.field,
+        ]) : []),
+        ...(sections.has('certificate') ? draft.certificates.flatMap((cert) => [
+            cert.name, cert.issuer,
+        ]) : []),
+    ].join(' ');
 }
 
 /** Compare a job description string against a resume draft. */
@@ -201,12 +203,12 @@ export function jdKeywordOverlap(
         return { score: 0, total: 0, matched: [], missing: [] };
     }
 
-    const haystack = resumeHaystack(draft);
+    const haystack = new Set(tokenize(resumeHaystack(draft)));
     const matched: string[] = [];
     const missing: string[] = [];
 
     for (const term of terms) {
-        if (haystack.includes(term)) {
+        if (haystack.has(term)) {
             matched.push(term);
         } else {
             missing.push(term);
@@ -218,7 +220,7 @@ export function jdKeywordOverlap(
     return {
         score,
         total: terms.length,
-        matched: matched.slice(0, 40),
-        missing: missing.slice(0, 40),
+        matched,
+        missing,
     };
 }

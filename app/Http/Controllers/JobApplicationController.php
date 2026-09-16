@@ -90,7 +90,7 @@ class JobApplicationController extends Controller
     }
 
     /**
-     * @return array{id: int, company: string, role: string, status: string, resume_id: ?int, job_url: ?string, notes: ?string, applied_at: ?string, follow_up_at: ?string, created_at: ?string, interviews: array<int, array{id: int, round: int, scheduled_at: ?string, type: ?string, notes: ?string}>}
+     * @return array{id: int, company: string, role: string, status: string, resume_id: ?int, job_url: ?string, job_description: ?string, notes: ?string, applied_at: ?string, follow_up_at: ?string, created_at: ?string, interviews: array<int, array{id: int, round: int, scheduled_at: ?string, type: ?string, notes: ?string}>}
      */
     private function present(JobApplication $job): array
     {
@@ -101,6 +101,7 @@ class JobApplicationController extends Controller
             'status' => $job->status,
             'resume_id' => $job->resume_id,
             'job_url' => $job->job_url,
+            'job_description' => $job->job_description,
             'notes' => $job->notes,
             'applied_at' => $job->applied_at?->toDateString(),
             'follow_up_at' => $job->follow_up_at?->toDateString(),

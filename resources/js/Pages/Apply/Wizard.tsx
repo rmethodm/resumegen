@@ -35,6 +35,8 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
     }
 
     function skipWizard() {
+        setProcessing(true);
+        setError(null);
         // Remember the choice, then hand the typed values to the Kanban modal.
         // base_resume_id is always sent, even as an empty string for an
         // explicit "None, track only" — the Kanban side distinguishes
@@ -44,8 +46,8 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
             route('apply-wizard.preference'),
             { prefers_apply_wizard: false },
             {
-                preserveState: false,
-                onFinish: () =>
+                preserveState: true,
+                onSuccess: () =>
                     router.get(route('job-applications.index'), {
                         add: 1,
                         company,
@@ -54,6 +56,8 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                         job_description: jobDescription,
                         base_resume_id: baseResumeId,
                     }),
+                onError: () => setError('Could not switch to the quick form. Your entries are still here; try again.'),
+                onFinish: () => setProcessing(false),
             },
         );
     }
@@ -186,17 +190,17 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                     )}
 
                     <div className="mt-6 flex items-center justify-between">
-                        <button type="button" onClick={skipWizard} className="text-xs font-medium text-ink-muted underline-offset-2 hover:underline">
+                        <button type="button" onClick={skipWizard} disabled={processing} className="text-xs font-medium text-ink-muted underline-offset-2 hover:underline">
                             Skip wizard
                         </button>
                         <div className="flex gap-2">
                             {index > 0 && (
-                                <Button type="button" variant="outline" onClick={back}>
+                                <Button type="button" variant="outline" onClick={back} disabled={processing}>
                                     Back
                                 </Button>
                             )}
                             {step !== 'Review' ? (
-                                <Button type="button" onClick={next} disabled={!canContinue}>
+                                <Button type="button" onClick={next} disabled={processing || !canContinue}>
                                     Continue
                                 </Button>
                             ) : (

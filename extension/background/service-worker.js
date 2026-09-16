@@ -10,6 +10,49 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
 });
 
+// Phase C (one-click connect): the app's /extension/connect page sends the
+// freshly-minted token here via chrome.runtime.sendMessage(extensionId, ...).
+// Manifest externally_connectable scopes which origins may reach this.
+chrome.runtime.onMessageExternal.addListener((message, _sender, sendResponse) => {
+    if (message?.type !== 'CONNECT_TOKEN' || !message.token) {
+        sendResponse({ ok: false, reason: 'unknown_message' });
+        return;
+    }
+    chrome.storage.sync.set({ token: message.token, appBase: message.appBase || DEFAULT_APP_BASE })
+        .then(() => sendResponse({ ok: true }))
+        .catch((err) => sendResponse({ ok: false, error: String(err?.message || err) }));
+    return true;
+});
+
+// Phase D: right-click a text selection to set it as the selected resume's
+// target job description. Created once on install/update.
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.contextMenus.removeAll(() => {
+        chrome.contextMenus.create({
+            id: 'resumegen-set-jd',
+            title: 'Set as Resumegen job description',
+            contexts: ['selection'],
+        });
+    });
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+    if (info.menuItemId !== 'resumegen-set-jd' || !info.selectionText) {
+        return;
+    }
+    const { selectedResumeId } = await chrome.storage.local.get(['selectedResumeId']);
+    if (!selectedResumeId) {
+        return;
+    }
+    const result = await updateTargetJobDescription(selectedResumeId, info.selectionText);
+    if (result.ok) {
+        await chrome.storage.local.set({ lastJdImportAt: Date.now() });
+        if (tab?.id) {
+            chrome.tabs.sendMessage(tab.id, { type: 'DETECT_JD_BADGE', profile: null }).catch(() => {});
+        }
+    }
+});
+
 async function handleMessage(message) {
     switch (message.type) {
         case 'GET_CONFIG':
@@ -36,6 +79,18 @@ async function handleMessage(message) {
             return insertQaDraft(message.tabId, message.id, message.text);
         case 'SAVE_QA_BANK_ENTRY':
             return saveQaBankEntry(message.question, message.answer);
+        case 'DETECT_JOB_POSTING':
+            return detectJobPosting(message.tabId);
+        case 'SAVE_JOB_APPLICATION':
+            return saveJobApplication(message.company, message.role, message.jobUrl);
+        case 'UPDATE_TARGET_JD':
+            return updateTargetJobDescription(message.resumeId, message.text);
+        case 'DETECT_JD_BADGE':
+            return detectJdBadge(message.tabId, message.profile);
+        case 'DETECT_FILE_INPUTS':
+            return detectFileInputs(message.tabId);
+        case 'ATTACH_RESUME_PDF':
+            return attachResumePdf(message.tabId, message.fieldId, message.resumeId);
         case 'OPEN_APP':
             return openApp(message.path || '/dashboard');
         case 'DISCONNECT':
@@ -85,6 +140,32 @@ async function apiFetch(path, options = {}) {
 
         const data = await res.json();
         return { ok: true, data, status: res.status };
+    } catch (err) {
+        return { ok: false, reason: 'network_error', error: err.message, status: 0 };
+    }
+}
+
+async function apiFetchBlob(path) {
+    const { token, apiBase } = await getConfig();
+    if (!token) {
+        return { ok: false, reason: 'no_token', status: 0 };
+    }
+
+    try {
+        const res = await fetch(`${apiBase}${path}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+            return { ok: false, reason: `http_${res.status}`, status: res.status };
+        }
+
+        const disposition = res.headers.get('content-disposition') || '';
+        const match = disposition.match(/filename="?([^";]+)"?/i);
+        const filename = match ? match[1] : 'resume.pdf';
+
+        const buffer = await res.arrayBuffer();
+        return { ok: true, buffer, filename, status: res.status };
     } catch (err) {
         return { ok: false, reason: 'network_error', error: err.message, status: 0 };
     }
@@ -282,6 +363,127 @@ async function saveQaBankEntry(question, answer) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question, answer }),
     });
+}
+
+async function detectJobPosting(tabId) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
+    }
+
+    try {
+        const [{ result: meta }] = await chrome.scripting.executeScript({
+            target: { tabId: id },
+            func: () => ({
+                title: document.title,
+                ogTitle: document.querySelector('meta[property="og:title"]')?.content || '',
+                ogSiteName: document.querySelector('meta[property="og:site_name"]')?.content || '',
+                url: location.href,
+            }),
+        });
+        return { ok: true, meta, url: meta.url };
+    } catch (err) {
+        return { ok: false, reason: 'detect_failed', error: err.message, message: 'Could not read this page.' };
+    }
+}
+
+async function saveJobApplication(company, role, jobUrl) {
+    return apiFetch('/extension/job-applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company, role, job_url: jobUrl }),
+    });
+}
+
+async function updateTargetJobDescription(resumeId, text) {
+    if (!resumeId) {
+        return { ok: false, reason: 'no_resume' };
+    }
+    return apiFetch(`/extension/resumes/${resumeId}/target-job-description`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_job_description: text }),
+    });
+}
+
+async function ensureJdBadgeScript(tabId) {
+    try {
+        await chrome.tabs.sendMessage(tabId, { type: 'PING' });
+        return true;
+    } catch {
+        const tab = await chrome.tabs.get(tabId);
+        if (!tab.url || !/^https?:\/\//.test(tab.url)) {
+            throw new Error('This page cannot show a badge.');
+        }
+        await chrome.scripting.executeScript({
+            target: { tabId },
+            files: ['shared/jd-keyword-overlap.js', 'content/jd-badge.js'],
+        });
+        return true;
+    }
+}
+
+async function detectJdBadge(tabId, profile) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
+    }
+
+    try {
+        await ensureJdBadgeScript(id);
+        const result = await chrome.tabs.sendMessage(id, { type: 'DETECT_JD_BADGE', profile });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return { ok: false, reason: 'badge_failed', error: err.message, message: 'Could not show a match badge on this page.' };
+    }
+}
+
+async function detectFileInputs(tabId) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
+    }
+
+    try {
+        await ensureContentScript(id);
+        const result = await chrome.tabs.sendMessage(id, { type: 'DETECT_FILE_INPUTS' });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return { ok: false, reason: 'detect_failed', error: err.message, message: 'Could not scan this page for a resume upload.' };
+    }
+}
+
+async function attachResumePdf(tabId, fieldId, resumeId) {
+    const id = tabId || (await activeTabId());
+    if (!id) {
+        return { ok: false, reason: 'no_tab' };
+    }
+    if (!resumeId) {
+        return { ok: false, reason: 'no_resume' };
+    }
+
+    const pdf = await apiFetchBlob(`/extension/resumes/${resumeId}/pdf`);
+    if (!pdf.ok) {
+        return pdf;
+    }
+
+    try {
+        await ensureContentScript(id);
+        const result = await chrome.tabs.sendMessage(id, {
+            type: 'SET_FILE_INPUT',
+            id: fieldId,
+            buffer: pdf.buffer,
+            filename: pdf.filename,
+        });
+        return { ok: true, ...(result || {}) };
+    } catch (err) {
+        return {
+            ok: false,
+            reason: 'attach_failed',
+            error: err.message,
+            message: 'This site rejected the automatic attach — download and upload it manually.',
+        };
+    }
 }
 
 async function activeTabId() {

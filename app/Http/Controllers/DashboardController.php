@@ -50,8 +50,8 @@ class DashboardController extends Controller
 
     /**
      * Actionable items for the "Next up" strip. Order: overdue follow-ups,
-     * upcoming interviews, cards with no resume. Each links straight to the
-     * card (Kanban ?highlight) so the user lands on the thing to do.
+     * upcoming interviews, saved applications to prepare, cards with no resume.
+     * Preparation opens the attached resume; other items highlight the card.
      *
      * @return list<array{kind: string, label: string, detail: string, href: string}>
      */
@@ -60,7 +60,7 @@ class DashboardController extends Controller
         $items = [];
 
         $followUps = $user->jobApplications()
-            ->whereIn('status', ['saved', 'applied'])
+            ->whereIn('status', ['saved', 'applied', 'interviewing', 'offer'])
             ->whereNotNull('follow_up_at')
             ->whereDate('follow_up_at', '<=', today())
             ->orderBy('follow_up_at')
@@ -77,7 +77,7 @@ class DashboardController extends Controller
         }
 
         $interviews = JobApplicationInterview::query()
-            ->whereHas('jobApplication', fn ($q) => $q->where('user_id', $user->id))
+            ->whereHas('jobApplication', fn ($q) => $q->where('user_id', $user->id)->where('status', '!=', 'rejected'))
             ->whereBetween('scheduled_at', [now(), now()->addDays(7)])
             ->with('jobApplication')
             ->orderBy('scheduled_at')
@@ -94,9 +94,34 @@ class DashboardController extends Controller
             ];
         }
 
+        $scheduledJobIds = $followUps->pluck('id')
+            ->merge($interviews->pluck('job_application_id'))->unique()->all();
+
+        $preparation = $user->jobApplications()
+            ->where('status', 'saved')
+            ->whereNotIn('id', $scheduledJobIds)
+            ->where(fn ($query) => $query->whereNull('follow_up_at')->orWhereDate('follow_up_at', '<=', today()))
+            ->oldest()
+            ->limit(5)
+            ->get();
+
+        foreach ($preparation as $job) {
+            $items[] = [
+                'kind' => 'prepare',
+                'label' => "Prepare application: {$job->company} – {$job->role}",
+                'detail' => $job->resume_id !== null
+                    ? 'Review your resume against the job, then apply'
+                    : 'Review the job details and choose a resume',
+                'href' => $job->resume_id !== null
+                    ? route('resumes.workstation', $job->resume_id)
+                    : route('job-applications.index', ['highlight' => $job->id]),
+            ];
+        }
+
         $unattached = $user->jobApplications()
             ->whereNull('resume_id')
-            ->whereIn('status', ['saved', 'applied', 'interviewing'])
+            ->whereIn('status', ['applied', 'interviewing', 'offer'])
+            ->whereNotIn('id', $scheduledJobIds)
             ->latest()
             ->limit(5)
             ->get();
@@ -105,7 +130,7 @@ class DashboardController extends Controller
             $items[] = [
                 'kind' => 'unattached',
                 'label' => "No resume attached: {$job->company} – {$job->role}",
-                'detail' => 'Attach or create a tailored version',
+                'detail' => 'Link the resume used for this application',
                 'href' => route('job-applications.index', ['highlight' => $job->id]),
             ];
         }
@@ -156,7 +181,8 @@ class DashboardController extends Controller
                     'group_id' => $representative->group_id,
                     // Seeders / WithoutModelEvents can leave group_id null; fall
                     // back to the resume title so the dashboard still renders.
-                    'title' => $representative->group?->title ?? $representative->title,
+                    'title' => $representative->title,
+                    'group_title' => $representative->group?->title ?? $representative->title,
                     'target_role' => $representative->target_role,
                     'updated_at' => $representative->updated_at?->diffForHumans(),
                     'score' => ResumeAnalysis::score($representative),

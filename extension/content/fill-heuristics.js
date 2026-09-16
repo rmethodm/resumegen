@@ -84,6 +84,7 @@
                 /\byour[_.\-\s]?name\b/i,
                 /\[name\]/i,
                 /_systemfield_name\b/i,
+                /resume\[name\]/i,
                 /\bname\b/i,
             ],
             label: [
@@ -113,6 +114,7 @@
                 /\bemail[_.\-\s]?address\b/i,
                 /\[email\]/i,
                 /_systemfield_email/i,
+                /resume\[email\]/i,
             ],
             label: [/\be-?mail\b/i, /\bemail\s*address\b/i],
             exclude: [/\bconfirm\b/i, /\bverify\b/i, /\bre-?enter\b/i, /\bsecondary\b/i],
@@ -128,6 +130,7 @@
                 /\[phone/i,
                 /_systemfield_phone/i,
                 /phonenumber/i,
+                /resume\[phone\]/i,
             ],
             label: [
                 /\bphone\b/i,
@@ -150,6 +153,7 @@
                 /\bli[_.\-\s]?url\b/i,
                 /\blinkedin[_.\-\s]?url\b/i,
                 /\blinkedin[_.\-\s]?profile\b/i,
+                /resume\[urls\]\[linkedin\]/i,
             ],
             label: [/\blinkedin\b/i, /\bli\s*profile\b/i],
             exclude: [],
@@ -275,6 +279,7 @@
                 /\bemployer\b/i,
                 /\borganization\b/i,
                 /\bcompany\b/i,
+                /resume\[org\]/i,
             ],
             label: [
                 /\bcurrent\s*(company|employer)\b/i,
@@ -336,16 +341,18 @@
         const label = String(raw.label || '');
         const dataAutomation = String(raw.dataAutomationId || raw['data-automation-id'] || '');
         const dataTestId = String(raw.dataTestId || raw['data-testid'] || '');
+        // Lever uses data-qa the way Workday uses data-automation-id.
+        const dataQa = String(raw.dataQa || raw['data-qa'] || '');
         const type = String(raw.type || 'text').toLowerCase().trim();
         const tag = String(raw.tag || 'input').toLowerCase().trim();
 
         const nameNorm = normalize(name);
         const idNorm = normalize(id);
         const labelNorm = normalize([label, ariaLabel, labelledBy, placeholder].filter(Boolean).join(' '));
-        const dataNorm = normalize([dataAutomation, dataTestId].filter(Boolean).join(' '));
+        const dataNorm = normalize([dataAutomation, dataTestId, dataQa].filter(Boolean).join(' '));
         // Do not fold autocomplete into blob — "given-name" would become "given name"
         // and falsely match full_name's /\bname\b/.
-        const blob = normalize([name, id, label, ariaLabel, labelledBy, placeholder, dataAutomation, dataTestId].join(' '));
+        const blob = normalize([name, id, label, ariaLabel, labelledBy, placeholder, dataAutomation, dataTestId, dataQa].join(' '));
 
         return {
             autocomplete,
@@ -662,10 +669,30 @@
         return true;
     }
 
+    /** Matches a resume/CV upload field, never a cover-letter upload. */
+    const RESUME_FILE_KEYWORDS = [/\bresume\b/i, /\bcv\b/i, /\bcurriculum\s*vitae\b/i];
+
+    /**
+     * A file input is a resume-attach candidate when its label/name/accept
+     * text says resume/CV and it isn't a cover-letter upload (same hard
+     * boundary as detectQuestionCandidate).
+     * @param {ReturnType<typeof buildSignals>} signals
+     */
+    function detectFileInputCandidate(signals) {
+        if (signals.tag !== 'input' || signals.type !== 'file') {
+            return false;
+        }
+        if (isCoverLetterField(signals)) {
+            return false;
+        }
+        return RESUME_FILE_KEYWORDS.some((re) => re.test(signals.blob));
+    }
+
     return {
         KEY_ORDER,
         RULES,
         COVER_LETTER_EXCLUDE,
+        RESUME_FILE_KEYWORDS,
         normalize,
         buildSignals,
         scoreField,
@@ -674,5 +701,6 @@
         bestOptionMatch,
         isCoverLetterField,
         detectQuestionCandidate,
+        detectFileInputCandidate,
     };
 }));

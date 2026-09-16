@@ -1,4 +1,3 @@
-import { PlusIcon } from '@heroicons/react/24/outline';
 import type { ReactNode } from 'react';
 import { jdKeywordOverlap } from '@/lib/jd-keyword-overlap';
 import { formatKeywordLabel } from '@/lib/resume-analysis';
@@ -9,18 +8,16 @@ import { Textarea } from '@/Components/ui/textarea';
 import type { ResumeDraft } from '@/types';
 
 /**
- * Optimize hub: paste JD → deterministic keyword match → add missing skills.
+ * Optimize hub: paste JD → wording overlap → review terms in context.
  * Plain-text ATS view stays below (passed as children).
  */
 export function OptimizePanel({
     draft,
     onChange,
-    onAddKeyword,
     children,
 }: {
     draft: ResumeDraft;
     onChange: (draft: ResumeDraft) => void;
-    onAddKeyword: (keyword: string) => void;
     children?: ReactNode;
 }) {
     const jd = draft.target_job_description ?? '';
@@ -34,8 +31,8 @@ export function OptimizePanel({
                         Optimize for a job
                     </h2>
                     <p className="text-xs text-ink-muted">
-                        Paste a job description. We score keyword overlap with
-                        no AI, then you decide what to add.
+                        Compare the wording in a job posting with your resume.
+                        This is a wording check, not an ATS score or hiring prediction.
                     </p>
                 </div>
 
@@ -64,36 +61,41 @@ export function OptimizePanel({
                     <div className="mt-4 rounded-md border border-surface-border bg-surface p-3">
                         <div className="mb-2 flex items-baseline justify-between">
                             <p className="text-xs font-semibold text-ink-muted">
-                                Match score
+                                Job wording overlap
                             </p>
                             <p className="text-2xl font-extrabold tabular-nums text-brand">
-                                {overlap.score}
+                                {overlap.total > 0 ? overlap.score : '—'}
                                 <span className="text-sm font-semibold text-ink-faint">
-                                    %
+                                    {overlap.total > 0 ? '%' : ''}
                                 </span>
                             </p>
                         </div>
                         <p className="mb-3 text-xs text-ink-muted">
-                            {overlap.matched.length} of {overlap.total} distinctive
-                            JD terms appear in your resume.
+                            {overlap.matched.length} of {overlap.total} posting terms appear in your included resume sections.
+                            Exact wording only; synonyms and relevance are not assessed.
                         </p>
+
+                        {overlap.total === 0 && (
+                            <p className="text-xs text-ink-muted">No usable terms found. Paste the job’s requirements to compare.</p>
+                        )}
 
                         {overlap.missing.length > 0 && (
                             <div className="mb-3">
                                 <p className="mb-1.5 text-xs font-semibold text-ink-faint">
-                                    Missing: click to add as skill
+                                    Not found — review in context
+                                </p>
+                                <p className="mb-2 text-xs text-ink-muted">
+                                    Check the posting, then describe relevant experience in your own words.
+                                    These terms are not verified skills.
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {overlap.missing.slice(0, 32).map((term) => (
-                                        <button
+                                        <span
                                             key={term}
-                                            type="button"
-                                            onClick={() => onAddKeyword(term)}
-                                            className="focus-ring inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-white px-2.5 py-1 text-xs font-medium text-warning-text hover:border-warning hover:bg-warning-subtle"
+                                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-white px-2.5 py-1 text-xs font-medium text-warning-text"
                                         >
-                                            <PlusIcon className="size-3" />
                                             {formatKeywordLabel(term)}
-                                        </button>
+                                        </span>
                                     ))}
                                 </div>
                             </div>
@@ -120,7 +122,7 @@ export function OptimizePanel({
                         {overlap.missing.length === 0 &&
                             overlap.total > 0 && (
                                 <p className="text-xs font-medium text-success-text">
-                                    All scanned JD terms are covered. Review
+                                    All scanned terms appear in the resume. Review
                                     bullets next for impact and weak openings.
                                 </p>
                             )}

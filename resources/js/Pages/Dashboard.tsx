@@ -215,7 +215,7 @@ function ResumeCard({
                         )}
                     </div>
                     <p className="mt-0.5 truncate text-xs text-ink-muted">
-                        {resume.target_role || 'No target role set'}
+                        Group: {resume.group_title} · {resume.target_role || 'No target role set'}
                         {resume.updated_at && ` · Updated ${resume.updated_at}`}
                     </p>
                     {!compact && (
@@ -317,7 +317,7 @@ function ResumeCard({
                                 <button
                                     type="button"
                                     onClick={() =>
-                                        setConfirmTarget({ kind: 'group', title: resume.title })
+                                        setConfirmTarget({ kind: 'group', title: resume.group_title })
                                     }
                                     className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-danger data-focus:bg-danger-subtle"
                                 >
@@ -595,7 +595,7 @@ export default function Dashboard({
                                             ? 'Loading your resumes…'
                                             : resumes.length === 0
                                               ? 'No resumes yet'
-                                              : `${resumes.length} resume${resumes.length === 1 ? '' : 's'}`}
+                                              : `${resumes.length} resume group${resumes.length === 1 ? '' : 's'}`}
                                     </h1>
                                     <p className="mt-1 text-sm text-ink-muted">
                                         {averageScore !== null

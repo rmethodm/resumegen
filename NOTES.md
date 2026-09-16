@@ -7,10 +7,14 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 ## Design decisions (locked)
 
-### Admin access = app-layer hardening on subdomain (locked 2026-08-25)
-- What: Keep Inertia admin on `APP_ADMIN_DOMAIN`. Require confirmed 2FA for `is_admin`, shorter admin-host idle sessions (`ADMIN_SESSION_LIFETIME`), tighter admin login throttle (3/min), and gate destructive DB/backup tools behind `ADMIN_DESTRUCTIVE_TOOLS` + password confirm. Log destructive `AdminActionLog` rows and failed admin-host logins.
-- Why: Separate subdomain + `is_admin` already scopes the UI; converting to public admin APIs for a local app relocates risk without removing it. Network gates (Cloudflare Access / Tailscale / IP allowlist) were considered and declined for now.
-- Rejected: Cloudflare Access (or any Cloudflare-fronted admin gate); rewriting admin into public APIs + a local web app; removing the Database section entirely.
+### Admin access = app-layer hardening on subdomain (locked 2026-08-25; superseded — panel removed 2026-09-02)
+- Historical only: the Inertia admin on `APP_ADMIN_DOMAIN` with admin 2FA / idle / destructive-tools gates was removed 2026-09-02 (`users.is_admin` and admin tables dropped). Do not reintroduce an admin surface without asking. See CLAUDE.md "Admin Panel — removed".
+
+### AI credits = $9.95 sub + ledger (locked 2026-09-10)
+- What: Cashier `default` subscription required to hold/buy/spend AI credits. Ledger + starter grant + `/billing/credits` stub remain. Workstation Rewrite/Generate UI and HTTP are removed/unrouted (2026-09-10). Optimize diagnose stays free.
+- Why: Meter generative AI without tier-gating PDF/DOCX/builder/share (infra kept for a future re-enable).
+- Rejected: Unlimited AI on subscribe alone; gating non-AI features; resurrecting JobPairing/$0 prepaid instrumentation.
+- Dead-end: Unmetered `resumes.ai-review` / `ai.rewrite-section` HTTP — unrouted; `AiService::reviewResume` / `rewriteSection` remain orphaned. Optimize Generate and Rewrite (`ai.generate-gap`, `ai.rewrite-bullet`, `ai.rewrite-summary`) removed from Workstation 2026-09-10.
 
 ### 2026-08-11 application surfaces
 - Application tracking remains on `/job-applications`; the redesign adds an operator summary above the existing Kanban board without changing its Inertia CRUD or drag/drop routes.
@@ -60,6 +64,9 @@ re-derive. Timeless reference + the reasoning behind decisions.
 ## Dead-ends (do not re-explore)
 - Iframe-driving employer apply pages → blocked by SOP / X-Frame-Options.
 - Old activity/thread extension API and popup → features removed; do not restore without product decision.
+- Hand-rolled Inertia admin panel → removed 2026-09-02; do not restore without asking.
+- Job Imports / job search boards → removed 2026-08-26; do not restore without asking.
+- Unmetered deep AI review HTTP (`resumes.ai-review`) → unrouted 2026-09-10; do not re-expose without credit debit.
 
 ---
 
@@ -96,4 +103,39 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 **Still open from this backlog:** none.
 
-**Constraints:** no AI, no billing; surgical Laravel/Inertia/React changes.
+**Constraints (at the time):** no AI, no billing; surgical Laravel/Inertia/React changes. Superseded 2026-09-10 — `$9.95/mo` Cashier subscription + AI credit ledger gate generative rewrite/generate; non-AI features stay ungated. See `CLAUDE.md` Billing/AI sections.
+
+## 2026-09-15 — Track-only job descriptions
+
+- Job applications now own a nullable `job_description` (10,000-character request limit). The shared creation action retains it with or without a base resume; the Kanban edit form exposes it.
+- Resume creation still seeds `target_job_description` from the submitted description. Later card edits do not automatically rewrite a resume version. No backfill invents previously discarded descriptions.
+- Verified with 39 focused tests (146 assertions), TypeScript/Vite build, Pint, and signed-in browser creation/edit/reload. Demo application “Description Test — Track Only” (id 11) remains for inspection.
+
+## 2026-09-15 — Job wording overlap (review item 2)
+
+- JD comparison counts whole normalized terms from included resume sections and the headline, excluding internal target role/company/JD and document title. Technical punctuation (C++, C#, .NET, Node.js, CI/CD) is retained; sentence punctuation and common posting filler are filtered. Full result arrays keep counts accurate beyond display caps.
+- Both JD panels label the result “Job wording overlap,” explain that it is not an ATS score, and present unmatched terms as review prompts without add-skill buttons. This is lexical comparison, not inferred skills or semantic qualification matching. The separate resume-strength formula remains unchanged.
+- Verification: 48 JavaScript tests passed across 11 files, TypeScript/Vite build passed with existing CSS/chunk warnings, signed-in demo Optimize displayed 0/7 terms and no arbitrary add-skill actions.
+
+## 2026-09-15 — Next up coverage (review item 3)
+
+- Saved jobs receive preparation prompts with or without a resume. Attached resumes open the workstation; otherwise the job card is highlighted. A future next-step date defers preparation. Oldest saved jobs are shown first, up to five.
+- Follow-ups now cover Saved, Applied, Interviewing, and Offer when due today or overdue. Upcoming interviews exclude rejected jobs. Jobs already shown for follow-ups/interviews do not also receive preparation or missing-resume prompts. Separate follow-up and interview events may both be shown.
+- Verification: 10 dashboard tests (199 assertions), full Laravel suite 469 tests (2,086 assertions), build and Pint passed. Signed-in dashboard showed the track-only demo preparation prompt. No test records changed during this item.
+
+## 2026-09-15 — Naming, targeting, and wizard stability (review items 4/5)
+
+- Dashboard link titles now use the actual representative version title; group_title is separate and used for group deletion confirmation. Counts say resume groups. Account Profile is labeled Account settings; the defaults panel links to the career starter profile.
+- Restored existing TargetRoleBar on Edit, using existing draft/autosave. Targeting metadata remains separate from printed headline.
+- Browser log at 2026-09-15 14:07:48 recorded null useState dispatcher in ApplyWizard with different Vite dependency hashes for React/renderer. Installed React/react-dom both 19.2.8. Added resolve.dedupe and explicit React runtime optimizeDeps includes. Module mismatch is an inference, not a proven root cause; wizard navigation through all four steps passed afterward.
+- Vite docs checked: resolve.dedupe resolves listed dependencies to the same root copy; see https://vite.dev/config/shared-options#resolve-dedupe.
+- Verification: 470 Laravel tests (2,110 assertions), 48 JS tests; build and Pint passed. Browser verified title/group, target-role persistence (demo restored to Product Designer), account labels, wizard entry through Review. No new application submitted.
+
+## 2026-09-15 — Wizard runtime reliability follow-up
+
+- Confirmed prior browser verification used built assets (public/hot absent). Started a temporary Herd-certified Vite server to test the actual development runtime.
+- Reproduced public/hot disappearing when Vitest exited with the Laravel Vite plugin active. Plugin source registers exit cleanup. Excluded that plugin under VITEST and verified the hot file stayed unchanged across the full JS suite while the wizard remained mounted.
+- HTML now bootstraps only app.tsx. Development resolves pages from a separate eagerly imported page module, preventing late navigation from fetching a newer page/runtime graph; production keeps lazy per-page chunks. React deduplication and explicit prebundling retained.
+- Rejected approach: eager and lazy globs in the same app module disrupted production chunk/manifest entries; server tests caught it. Separate dev-only module restored production Wizard manifest entry.
+- Skip navigation now runs only after successful preference save; errors retain inputs, and pending controls are disabled. Mounted React tests cover navigation, input preservation, and successful/failed skip.
+- Final checks: 471 Laravel tests (2,112 assertions), 51 JS tests, build/Pint passed; actual dev cold optimization + HMR preserved step/inputs; built wizard rendered from one app script. Original historic error cannot be replayed from logs alone; no invalid-hook error recurred in these checks. Temporary server stopped; original built-assets setup restored.

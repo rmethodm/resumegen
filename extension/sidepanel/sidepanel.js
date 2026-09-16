@@ -21,6 +21,8 @@ let state = {
     previewOpen: false,
     previousView: 'ready',
     questions: [],
+    jobPosting: null,
+    fileInputs: [],
 };
 
 // ── Views ─────────────────────────────────────────────────────────────────────
@@ -492,10 +494,123 @@ async function onSaveQuestion(id) {
     setBanner('Saved to your Q&A bank.', 'success');
 }
 
+// ── Job description match (Phase D) ─────────────────────────────────────────
+
+async function onShowJdBadge() {
+    if (!state.profile) {
+        setBanner('Select a resume first.', 'warn');
+        return;
+    }
+
+    const result = await send('DETECT_JD_BADGE', { profile: state.profile });
+    if (!result?.ok) {
+        setBanner(result?.message || 'Could not show a match badge on this page.', 'warn');
+        return;
+    }
+    if (result.total === 0) {
+        setBanner('This resume has no job description set yet — right-click selected text on the page to set one.', 'warn');
+        return;
+    }
+    setBanner(`Match badge shown: ${result.score}%`, 'success');
+}
+
+// ── Track this application (Phase B) ────────────────────────────────────────
+
+async function onDetectJobApplication() {
+    const result = await send('DETECT_JOB_POSTING');
+    if (!result?.ok) {
+        setBanner(result?.message || 'Could not read this page.', 'warn');
+        return;
+    }
+
+    state.jobPosting = { ...result.meta, url: result.url };
+    $('job-company-input').value = state.jobPosting.company || '';
+    $('job-role-input').value = state.jobPosting.role || '';
+    $('job-application-form').classList.remove('hidden');
+}
+
+async function onSaveJobApplication() {
+    const company = $('job-company-input').value.trim();
+    const role = $('job-role-input').value.trim();
+    if (!company || !role) {
+        setBanner('Company and role are required.', 'warn');
+        return;
+    }
+
+    const result = await send('SAVE_JOB_APPLICATION', {
+        company,
+        role,
+        jobUrl: state.jobPosting?.url || '',
+    });
+
+    if (!result?.ok) {
+        setBanner(result?.message || 'Could not save to your tracker.', 'warn');
+        return;
+    }
+
+    $('job-application-form').classList.add('hidden');
+    setBanner('Saved to your job tracker.', 'success');
+}
+
+// ── Attach resume PDF (Phase F) ─────────────────────────────────────────────
+
+async function onScanFileInputs() {
+    const result = await send('DETECT_FILE_INPUTS');
+    if (!result?.ok) {
+        setBanner(result?.message || 'Could not scan this page for a resume upload.', 'warn');
+        return;
+    }
+
+    state.fileInputs = result.fields || [];
+    renderFileInputs();
+
+    if (state.fileInputs.length === 0) {
+        setBanner('No resume upload field found on this page.', 'warn');
+    }
+}
+
+function renderFileInputs() {
+    const container = $('file-inputs-list');
+    container.innerHTML = '';
+
+    for (const field of state.fileInputs) {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+
+        const label = document.createElement('p');
+        label.className = 'question-text';
+        label.textContent = field.label;
+        card.appendChild(label);
+
+        const attachBtn = document.createElement('button');
+        attachBtn.type = 'button';
+        attachBtn.className = 'btn-secondary';
+        attachBtn.textContent = 'Attach resume PDF';
+        attachBtn.addEventListener('click', () => onAttachResumePdf(field.id));
+        card.appendChild(attachBtn);
+
+        container.appendChild(card);
+    }
+}
+
+async function onAttachResumePdf(fieldId) {
+    if (!state.selectedResumeId) {
+        setBanner('Select a resume first.', 'warn');
+        return;
+    }
+
+    const result = await send('ATTACH_RESUME_PDF', { fieldId, resumeId: state.selectedResumeId });
+    if (!result?.ok) {
+        setBanner(result?.message || "This site rejected the automatic attach — download and upload it manually.", 'warn');
+        return;
+    }
+    setBanner('Attached your resume PDF.', 'success');
+}
+
 // ── Events ────────────────────────────────────────────────────────────────────
 
 $('connect-btn').addEventListener('click', () => {
-    send('OPEN_APP', { path: '/profile' });
+    send('OPEN_APP', { path: '/extension/connect' });
 });
 
 $('open-options-setup').addEventListener('click', () => chrome.runtime.openOptionsPage());
@@ -503,6 +618,11 @@ $('create-resume-btn').addEventListener('click', () => send('OPEN_APP', { path: 
 $('refresh-empty-btn').addEventListener('click', () => loadResumes());
 $('fill-btn').addEventListener('click', onFill);
 $('scan-questions-btn').addEventListener('click', onScanQuestions);
+$('show-jd-badge-btn').addEventListener('click', onShowJdBadge);
+$('detect-job-btn').addEventListener('click', onDetectJobApplication);
+$('job-save-btn').addEventListener('click', onSaveJobApplication);
+$('job-cancel-btn').addEventListener('click', () => $('job-application-form').classList.add('hidden'));
+$('scan-file-inputs-btn').addEventListener('click', onScanFileInputs);
 $('footer-open').addEventListener('click', () => send('OPEN_APP', { path: '/dashboard' }));
 $('footer-help').addEventListener('click', () => {
     state.previousView = $('view-ready').classList.contains('hidden') ? 'setup' : 'ready';
@@ -587,6 +707,8 @@ $('menu').addEventListener('click', async (e) => {
                 previewOpen: false,
                 previousView: 'ready',
                 questions: [],
+                jobPosting: null,
+                fileInputs: [],
             };
             showView('setup');
         }

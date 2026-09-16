@@ -7,6 +7,7 @@ const ICON: Record<NextUpItem['kind'], typeof BellAlertIcon> = {
     follow_up: BellAlertIcon,
     interview: CalendarDaysIcon,
     unattached: DocumentPlusIcon,
+    prepare: DocumentPlusIcon,
 };
 
 export function NextUpStrip({ items }: { items: NextUpItem[] }) {
