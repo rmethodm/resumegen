@@ -284,6 +284,13 @@ export default function Workstation({
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    // Optimize tab checks/critique can only jump to a section once the Edit
+    // tab's markup (#section-{target}) is actually mounted.
+    function jumpFromOptimize(target: ResumeSectionKey) {
+        setTab('Edit');
+        scrollToSection(target);
+    }
+
     // Native HTML5 drag-and-drop — no library needed for a plain reorder.
     function handleDrop(target: ResumeSectionKey) {
         if (!draggedSection || draggedSection === target) {
@@ -724,7 +731,7 @@ export default function Workstation({
                                             onChange={setDraft}
                                             resumeId={id}
                                             aiCredits={page.props.aiCredits as AiCredits | null}
-                                            onJump={scrollToSection}
+                                            onJump={jumpFromOptimize}
                                         >
                                             <AtsPlainTextBlock
                                                 plainText={plainText}
