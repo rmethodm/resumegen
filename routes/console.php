@@ -15,13 +15,19 @@ Artisan::command('inspire', function () {
 // its migration with the exact prior backup:clean/run/monitor timing
 // (01:00/01:30/01:45) so this rewrite doesn't change production behavior.
 // Guarded by Schema::hasTable so `migrate` itself (which boots this file)
-// doesn't fail before the table exists.
-if (Schema::hasTable('scheduled_task_configs')) {
-    foreach (DB::table('scheduled_task_configs')->where('enabled', true)->get() as $task) {
-        Schedule::command($task->command)
-            ->cron($task->cron_expression)
-            ->withoutOverlapping();
+// doesn't fail before the table exists — but Schema::hasTable() itself
+// throws (not just returns false) when the DB isn't reachable at all, which
+// happens during `composer install`'s package:discover boot. Catch that too.
+try {
+    if (Schema::hasTable('scheduled_task_configs')) {
+        foreach (DB::table('scheduled_task_configs')->where('enabled', true)->get() as $task) {
+            Schedule::command($task->command)
+                ->cron($task->cron_expression)
+                ->withoutOverlapping();
+        }
     }
+} catch (\Throwable) {
+    // DB unreachable at boot (e.g. composer install before services are up).
 }
 
 // resume_deletions is a sync log, not history — it only exists so mobile
