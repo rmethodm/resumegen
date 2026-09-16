@@ -42,6 +42,7 @@ import {
 } from '@/lib/resume-sections';
 import { cn } from '@/lib/utils';
 import type {
+    AiCredits,
     LinkedApplication,
     ResumeDraft,
     ResumePageDocument,
@@ -721,6 +722,9 @@ export default function Workstation({
                                         <OptimizePanel
                                             draft={draft}
                                             onChange={setDraft}
+                                            resumeId={id}
+                                            aiCredits={page.props.aiCredits as AiCredits | null}
+                                            onJump={scrollToSection}
                                         >
                                             <AtsPlainTextBlock
                                                 plainText={plainText}

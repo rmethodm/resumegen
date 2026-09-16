@@ -5,7 +5,9 @@ import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import type { ResumeDraft } from '@/types';
+import { OptimizeChecklist } from '@/Components/workstation/optimize-checklist';
+import { AiCritiquePanel } from '@/Components/workstation/ai-critique-panel';
+import type { AiCredits, ResumeDraft, ResumeSectionKey } from '@/types';
 
 /**
  * Optimize hub: paste JD → wording overlap → review terms in context.
@@ -14,10 +16,16 @@ import type { ResumeDraft } from '@/types';
 export function OptimizePanel({
     draft,
     onChange,
+    resumeId,
+    aiCredits,
+    onJump,
     children,
 }: {
     draft: ResumeDraft;
     onChange: (draft: ResumeDraft) => void;
+    resumeId: number;
+    aiCredits: AiCredits | null;
+    onJump: (section: ResumeSectionKey) => void;
     children?: ReactNode;
 }) {
     const jd = draft.target_job_description ?? '';
@@ -118,6 +126,18 @@ export function OptimizePanel({
                     </div>
                 )}
             </Card>
+
+            <OptimizeChecklist draft={draft} onJump={onJump} />
+
+            <AiCritiquePanel
+                resumeId={resumeId}
+                jd={jd}
+                initialSuggestions={draft.ai_review ?? null}
+                initialGeneratedAt={draft.ai_review_generated_at ?? null}
+                initialPreset={draft.ai_review_preset ?? null}
+                credits={aiCredits}
+                onJump={onJump}
+            />
 
             {children}
         </div>
