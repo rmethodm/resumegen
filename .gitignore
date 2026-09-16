@@ -31,6 +31,7 @@ Homestead.yaml
 Thumbs.db
 .superpowers/
 .dual-graph/
+.dual-graph-pro/
 /storage/app/thumbnails
 .dual-graph-context/
 
