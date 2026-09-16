@@ -49,10 +49,10 @@ const PROVIDERS = [
 export function SocialLoginButtons() {
     return (
         <div>
-            <div className="flex items-center gap-3 text-xs font-semibold text-ink-faint">
-                <span className="h-px flex-1 bg-surface-border" />
+            <div className="flex items-center gap-3 text-xs font-semibold text-muted-foreground/70">
+                <span className="h-px flex-1 bg-border" />
                 or continue with
-                <span className="h-px flex-1 bg-surface-border" />
+                <span className="h-px flex-1 bg-border" />
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-3">
@@ -60,7 +60,7 @@ export function SocialLoginButtons() {
                     <a
                         key={provider.name}
                         href={route('oauth.redirect', provider.name)}
-                        className="flex items-center justify-center gap-2 rounded-md border border-surface-border bg-white py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-accent-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                        className="flex items-center justify-center gap-2 rounded-md border border-border bg-white py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     >
                         {provider.icon}
                         <span className="sr-only">{provider.label}</span>

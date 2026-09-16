@@ -37,10 +37,10 @@ export default function Login({
         <GuestLayout>
             <Head title="Log in" />
 
-            <h1 className="mb-1 text-center text-xl font-bold text-ink">
+            <h1 className="mb-1 text-center text-xl font-bold text-foreground">
                 Welcome back
             </h1>
-            <p className="mb-6 text-center text-sm text-ink-muted">
+            <p className="mb-6 text-center text-sm text-muted-foreground">
                 Log in to keep building your resume.
             </p>
 
@@ -98,7 +98,7 @@ export default function Login({
                                 setData('remember', (checked === true) as false)
                             }
                         />
-                        <span className="text-ink-muted">
+                        <span className="text-muted-foreground">
                             Remember me
                         </span>
                     </Label>
@@ -106,7 +106,7 @@ export default function Login({
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-ink-muted underline hover:text-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                            className="rounded-md text-sm text-muted-foreground underline hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                         >
                             Forgot your password?
                         </Link>
@@ -117,7 +117,7 @@ export default function Login({
                     Log in
                 </Button>
 
-                <p className="mt-4 text-center text-sm text-ink-muted">
+                <p className="mt-4 text-center text-sm text-muted-foreground">
                     No account yet?{' '}
                     <Link href={route('register')} className="font-bold">
                         Sign up

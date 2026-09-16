@@ -36,7 +36,7 @@ function CheckItem({ children }: { children: string }) {
             <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-success-subtle text-[10px] font-bold text-success-text">
                 ✓
             </span>
-            <span className="text-[15px] leading-relaxed text-ink-muted">{children}</span>
+            <span className="text-[15px] leading-relaxed text-muted-foreground">{children}</span>
         </li>
     );
 }
@@ -57,14 +57,14 @@ function StatCard({
     return (
         <div
             className={cn(
-                'rounded-3xl border border-surface-border bg-white p-6 shadow-ambient',
+                'rounded-3xl border border-border bg-white p-6 shadow-md',
                 className,
             )}
             aria-hidden
         >
-            <div className="text-xs font-semibold text-ink-faint">{label}</div>
+            <div className="text-xs font-semibold text-muted-foreground/70">{label}</div>
             <div className="mt-1.5 flex items-baseline gap-2.5">
-                <span className="text-3xl font-extrabold tracking-tight text-ink tabular">
+                <span className="text-3xl font-extrabold tracking-tight text-foreground tabular">
                     {value}
                 </span>
                 <span className="rounded-full bg-success-subtle px-2 py-0.5 text-[11px] font-bold text-success-text">
@@ -77,7 +77,7 @@ function StatCard({
                         key={index}
                         className={cn(
                             'flex-1 rounded-t-md',
-                            index === bars.length - 2 ? 'bg-brand' : 'bg-accent-100',
+                            index === bars.length - 2 ? 'bg-primary' : 'bg-accent-100',
                         )}
                         style={{ height: `${height}%` }}
                     />
@@ -91,23 +91,23 @@ export function MarketingFeatureRows() {
     return (
         <section id="features" className="px-4 pt-20 sm:px-6">
             <div className="mx-auto max-w-5xl">
-                <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-brand">
+                <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-primary">
                     Why Resumegen
                 </p>
-                <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+                <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
                     Easy, fast, and actually free
                 </h2>
                 <div className="mt-11 grid gap-5 sm:grid-cols-3">
                     {WHY_CARDS.map((card) => (
                         <div
                             key={card.title}
-                            className="rounded-3xl border border-surface-border bg-white p-7 shadow-card"
+                            className="rounded-3xl border border-border bg-white p-7 shadow-sm"
                         >
-                            <span className="flex size-11 items-center justify-center rounded-2xl bg-accent-50 text-xl">
+                            <span className="flex size-11 items-center justify-center rounded-2xl bg-accent text-xl">
                                 {card.icon}
                             </span>
-                            <h3 className="mt-4.5 text-lg font-bold text-ink">{card.title}</h3>
-                            <p className="mt-2.5 text-sm leading-relaxed text-ink-muted">
+                            <h3 className="mt-4.5 text-lg font-bold text-foreground">{card.title}</h3>
+                            <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
                                 {card.desc}
                             </p>
                         </div>
@@ -116,10 +116,10 @@ export function MarketingFeatureRows() {
 
                 <div className="mt-20 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                     <div>
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">
+                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
                             Beat the screeners
                         </p>
-                        <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink text-balance sm:text-4xl">
+                        <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground text-balance sm:text-4xl">
                             Match the job before you apply
                         </h2>
                         <ul className="mt-7 space-y-4">
@@ -145,10 +145,10 @@ export function MarketingFeatureRows() {
                         className="order-last lg:order-first"
                     />
                     <div>
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">
+                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
                             Know what happens next
                         </p>
-                        <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink text-balance sm:text-4xl">
+                        <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground text-balance sm:text-4xl">
                             See when recruiters actually look
                         </h2>
                         <ul className="mt-7 space-y-4">

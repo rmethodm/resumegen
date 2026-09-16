@@ -1,5 +1,12 @@
 import { Button } from '@/Components/ui/button';
-import Modal from '@/Components/Modal';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
 import type { ExportCheck } from '@/lib/export-checklist';
 import { cn } from '@/lib/utils';
 
@@ -25,33 +32,15 @@ export function ExportChecklistModal({
     const oks = checks.filter((check) => check.severity === 'ok');
 
     return (
-        <Modal
-            show={open}
-            onClose={onClose}
-            maxWidth="md"
-            title="Before you download"
-            description={`Quick check before exporting as ${format.toUpperCase()}.`}
-            footer={
-                <div className="flex flex-wrap justify-end gap-2">
-                    <Button type="button" variant="outline" onClick={onClose}>
-                        Keep editing
-                    </Button>
-                    <Button
-                        type="button"
-                        disabled={!canExport}
-                        onClick={onContinue}
-                        title={
-                            canExport
-                                ? undefined
-                                : 'Fix required items before export'
-                        }
-                    >
-                        Download {format.toUpperCase()}
-                    </Button>
-                </div>
-            }
-        >
-            <div className="px-5 py-4">
+        <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
+            <DialogContent className="flex max-h-[85dvh] w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-md">
+                <DialogHeader className="gap-1 border-b px-5 py-4 text-left">
+                    <DialogTitle className="text-sm font-bold">Before you download</DialogTitle>
+                    <DialogDescription className="text-xs">
+                        Quick check before exporting as {format.toUpperCase()}.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
                 <ul className="space-y-2">
                     {[...blockers, ...warnings, ...oks].map((check) => (
                         <li key={check.id}>
@@ -66,7 +55,7 @@ export function ExportChecklistModal({
                                 className={cn(
                                     'focus-ring flex w-full items-start gap-2 rounded-lg border px-3 py-2 text-left text-sm',
                                     check.severity === 'error' &&
-                                        'border-danger/30 bg-danger-subtle text-danger-text',
+                                        'border-destructive/30 bg-destructive/10 text-destructive',
                                     check.severity === 'warn' &&
                                         'border-warning/30 bg-warning-subtle text-warning-text',
                                     check.severity === 'ok' &&
@@ -90,7 +79,21 @@ export function ExportChecklistModal({
                         </li>
                     ))}
                 </ul>
-            </div>
-        </Modal>
+                </div>
+                <DialogFooter className="flex-wrap border-t px-5 py-3">
+                    <Button type="button" variant="outline" onClick={onClose}>
+                        Keep editing
+                    </Button>
+                    <Button
+                        type="button"
+                        disabled={!canExport}
+                        onClick={onContinue}
+                        title={canExport ? undefined : 'Fix required items before export'}
+                    >
+                        Download {format.toUpperCase()}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }

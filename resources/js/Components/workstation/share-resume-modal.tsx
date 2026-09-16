@@ -6,8 +6,16 @@ import {
 } from '@heroicons/react/24/outline';
 import { router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import Modal from '@/Components/Modal';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
+import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Input } from '@/Components/ui/input';
 import { Select } from '@/Components/ui/select';
 import { cn } from '@/lib/utils';
@@ -47,6 +55,7 @@ export function ShareResumeModal({
     const [passwordDraft, setPasswordDraft] = useState('');
     const [rotating, setRotating] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [confirmCancel, setConfirmCancel] = useState(false);
 
     const onError = () => setError('Something went wrong. Try again.');
 
@@ -198,11 +207,11 @@ export function ShareResumeModal({
             return;
         }
 
-        if (
-            !window.confirm(
-                'Cancel share? This deletes the link and view history. Anyone with the old link loses access immediately.',
-            )
-        ) {
+        setConfirmCancel(true);
+    }
+
+    function confirmCancelShare() {
+        if (!share) {
             return;
         }
 
@@ -210,6 +219,7 @@ export function ShareResumeModal({
             preserveScroll: true,
             onError,
         });
+        setConfirmCancel(false);
         close();
     }
 
@@ -219,38 +229,23 @@ export function ShareResumeModal({
     const viewCount = share?.view_count ?? 0;
 
     return (
-        <Modal
-            show={open}
-            onClose={close}
-            maxWidth="md"
-            overlayClassName="bg-ink/25"
-            title="Share with a recruiter"
-            description="They'll get a read-only, printable view."
-            footer={
-                <div className="flex justify-between">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        disabled={!share}
-                        onClick={cancelShare}
-                        title="Deletes the link and view history; old URLs stop working"
-                    >
-                        Cancel share
-                    </Button>
-                    <Button type="button" onClick={close}>
-                        Done
-                    </Button>
-                </div>
-            }
-        >
-            <div className="flex flex-col gap-4 px-5 py-4">
+        <>
+        <Dialog open={open} onOpenChange={(next) => !next && close()}>
+            <DialogContent className="flex max-h-[85dvh] w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-md">
+                <DialogHeader className="gap-1 border-b px-5 py-4 text-left">
+                    <DialogTitle className="text-sm font-bold">Share with a recruiter</DialogTitle>
+                    <DialogDescription className="text-xs">
+                        They'll get a read-only, printable view.
+                    </DialogDescription>
+                </DialogHeader>
+            <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-4 px-5 py-4">
                         {error && (
-                            <div className="rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-xs font-medium text-danger-text">
+                            <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">
                                 {error}
                             </div>
                         )}
                         <div className="flex gap-2">
-                            <div className="flex-1 truncate rounded-md border border-surface-border px-3 py-2 text-xs font-medium text-ink-muted">
+                            <div className="flex-1 truncate rounded-md border border-border px-3 py-2 text-xs font-medium text-muted-foreground">
                                 {share?.url ?? 'Generating link…'}
                             </div>
                             <Button
@@ -289,7 +284,7 @@ export function ShareResumeModal({
                                 onChange={() => toggle('require_password')}
                             />
                             {share?.require_password && (
-                                <div className="flex flex-col gap-2 rounded-md border border-surface-border bg-surface p-2.5">
+                                <div className="flex flex-col gap-2 rounded-md border border-border bg-muted p-2.5">
                                     <div className="flex gap-2">
                                         <Input
                                             value={passwordDraft}
@@ -322,7 +317,7 @@ export function ShareResumeModal({
                                             Rotate
                                         </Button>
                                     </div>
-                                    <p className="text-xs leading-snug text-ink-muted">
+                                    <p className="text-xs leading-snug text-muted-foreground">
                                         Changing or rotating the password immediately signs out
                                         anyone who already unlocked with the old one. They must
                                         enter the new password.
@@ -387,37 +382,37 @@ export function ShareResumeModal({
                             )}
                         </div>
 
-                        <div className="rounded-md border border-surface-border">
-                            <div className="flex items-center justify-between border-b border-surface-border px-3 py-2">
-                                <span className="text-xs font-medium text-ink">
+                        <div className="rounded-md border border-border">
+                            <div className="flex items-center justify-between border-b border-border px-3 py-2">
+                                <span className="text-xs font-medium text-foreground">
                                     View history
                                 </span>
-                                <span className="text-xs text-ink-faint">
+                                <span className="text-xs text-muted-foreground/70">
                                     {viewCount === 0
                                         ? 'No views yet'
                                         : `${viewCount} view${viewCount === 1 ? '' : 's'}`}
                                 </span>
                             </div>
                             {!share?.require_email ? (
-                                <p className="px-3 py-2.5 text-xs leading-snug text-ink-muted">
+                                <p className="px-3 py-2.5 text-xs leading-snug text-muted-foreground">
                                     Turn on &quot;Require email to view&quot; to log who opens the
                                     link.
                                 </p>
                             ) : views.length === 0 ? (
-                                <p className="px-3 py-2.5 text-xs leading-snug text-ink-muted">
+                                <p className="px-3 py-2.5 text-xs leading-snug text-muted-foreground">
                                     No one has entered an email yet.
                                 </p>
                             ) : (
-                                <ul className="max-h-36 overflow-y-auto divide-y divide-surface-border">
+                                <ul className="max-h-36 overflow-y-auto divide-y divide-border">
                                     {views.map((view) => (
                                         <li
                                             key={`${view.email}-${view.viewed_at}`}
                                             className="flex items-start justify-between gap-2 px-3 py-2"
                                         >
-                                            <span className="min-w-0 truncate text-xs font-medium text-ink">
+                                            <span className="min-w-0 truncate text-xs font-medium text-foreground">
                                                 {view.email}
                                             </span>
-                                            <span className="shrink-0 text-xs text-ink-faint">
+                                            <span className="shrink-0 text-xs text-muted-foreground/70">
                                                 {formatViewedAt(view.viewed_at)}
                                             </span>
                                         </li>
@@ -426,7 +421,31 @@ export function ShareResumeModal({
                             )}
                         </div>
             </div>
-        </Modal>
+                <DialogFooter className="flex-row justify-between border-t px-5 py-3">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        disabled={!share}
+                        onClick={cancelShare}
+                        title="Deletes the link and view history; old URLs stop working"
+                    >
+                        Cancel share
+                    </Button>
+                    <Button type="button" onClick={close}>
+                        Done
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+        <ConfirmDialog
+            open={confirmCancel}
+            title="Cancel share?"
+            description="This deletes the link and view history. Anyone with the old link loses access immediately."
+            confirmLabel="Cancel share"
+            onConfirm={confirmCancelShare}
+            onClose={() => setConfirmCancel(false)}
+        />
+        </>
     );
 }
 
@@ -481,7 +500,7 @@ function ShareToggleRow({
 }) {
     return (
         <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-ink">{label}</span>
+            <span className="text-xs font-medium text-foreground">{label}</span>
             <Switch
                 checked={enabled}
                 onChange={onChange}
@@ -489,7 +508,7 @@ function ShareToggleRow({
                 aria-label={label}
                 className={cn(
                     'relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50',
-                    enabled ? 'bg-brand' : 'bg-neutral-300',
+                    enabled ? 'bg-primary' : 'bg-neutral-300',
                 )}
             >
                 <span

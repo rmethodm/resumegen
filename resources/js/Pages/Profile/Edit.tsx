@@ -6,6 +6,7 @@ import { Card } from '@/Components/ui/card';
 import ApplyWizardPreferenceForm from './Partials/ApplyWizardPreferenceForm';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import ExtensionTokensForm from './Partials/ExtensionTokensForm';
+import ThemeForm from './Partials/ThemeForm';
 import TwoFactorForm from './Partials/TwoFactorForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
@@ -43,10 +44,10 @@ function PersonaForm({
 
     const field = (label: string, key: keyof typeof data, type = 'text') => (
         <div>
-            <label className="block text-sm font-medium text-ink-muted">{label}</label>
+            <label className="block text-sm font-medium text-muted-foreground">{label}</label>
             <input
                 type={type}
-                className="mt-1 block w-full rounded-md border-surface-border shadow-xs focus:border-brand focus:ring-brand sm:text-sm"
+                className="mt-1 block w-full rounded-md border-border shadow-xs focus:border-primary focus:ring-primary sm:text-sm"
                 value={data[key]}
                 onChange={e => setData(prev => ({ ...prev, [key]: e.target.value }))}
                 onBlur={save}
@@ -66,9 +67,9 @@ function PersonaForm({
             {field('Industry', 'industry')}
             {field('Years of Experience', 'years_experience', 'number')}
             <div>
-                <label className="block text-sm font-medium text-ink-muted">Preferred Template</label>
+                <label className="block text-sm font-medium text-muted-foreground">Preferred Template</label>
                 <select
-                    className="mt-1 block w-full rounded-md border-surface-border shadow-xs focus:border-brand focus:ring-brand sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-border shadow-xs focus:border-primary focus:ring-primary sm:text-sm"
                     value={data.preferred_template}
                     onChange={e => {
                         setData(prev => ({ ...prev, preferred_template: e.target.value }));
@@ -95,6 +96,7 @@ export default function Edit({
     extensionTokens,
     extensionTokenPlain,
     prefersApplyWizard,
+    theme,
 }: PageProps<{
     mustVerifyEmail: boolean;
     status?: string;
@@ -120,6 +122,7 @@ export default function Edit({
     }>;
     extensionTokenPlain: string | null;
     prefersApplyWizard: boolean;
+    theme: string | null;
 }>) {
     return (
         <AuthenticatedLayout>
@@ -129,8 +132,8 @@ export default function Edit({
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
 
                     <div className="mb-2">
-                        <h1 className="text-xl font-extrabold tracking-tight text-ink">Account settings</h1>
-                        <p className="mt-1 text-sm text-ink-faint">Manage your account settings</p>
+                        <h1 className="text-xl font-extrabold tracking-tight text-foreground">Account settings</h1>
+                        <p className="mt-1 text-sm text-muted-foreground/70">Manage your account settings</p>
                     </div>
 
                     <Card className="p-6">
@@ -164,10 +167,14 @@ export default function Edit({
                     </Card>
 
                     <Card className="p-6">
+                        <ThemeForm currentTheme={theme} />
+                    </Card>
+
+                    <Card className="p-6">
                         <section className="space-y-6">
                             <header>
-                                <h2 className="text-lg font-medium text-ink">Contact and resume defaults</h2>
-                                <p className="mt-1 text-sm text-ink-muted">
+                                <h2 className="text-lg font-medium text-foreground">Contact and resume defaults</h2>
+                                <p className="mt-1 text-sm text-muted-foreground">
                                     Manage contact defaults and resume preferences. For reusable experience and skills, open your starter profile.
                                 </p>
                             </header>
@@ -177,7 +184,7 @@ export default function Edit({
                         </section>
                     </Card>
 
-                    <Card className="border-danger-subtle p-6">
+                    <Card className="border-destructive/10 p-6">
                         <DeleteUserForm className="max-w-xl" />
                     </Card>
                 </div>

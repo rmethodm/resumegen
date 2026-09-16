@@ -116,13 +116,13 @@ const zoomViewLabels: Record<PreviewZoom, string> = {
 };
 
 function ToolbarDivider() {
-    return <div className="mx-0.5 hidden h-5 w-px shrink-0 bg-surface-border sm:block" aria-hidden />;
+    return <div className="mx-0.5 hidden h-5 w-px shrink-0 bg-border sm:block" aria-hidden />;
 }
 
 function MenuCheck({ on }: { on: boolean }) {
     return (
         <CheckIcon
-            className={cn('size-3.5 shrink-0', on ? 'text-brand' : 'text-transparent')}
+            className={cn('size-3.5 shrink-0', on ? 'text-primary' : 'text-transparent')}
         />
     );
 }
@@ -139,7 +139,7 @@ function FormatField({
     children: ReactNode;
 }) {
     return (
-        <label className="block text-xs font-medium text-ink-muted">
+        <label className="block text-xs font-medium text-muted-foreground">
             {label}
             {children}
         </label>
@@ -213,12 +213,12 @@ export function WorkstationFormatToolbar({
         <div
             role="toolbar"
             aria-label="Document formatting"
-            className="flex flex-wrap items-center gap-1 border-t border-surface-border/80 bg-surface/40 px-2 py-1.5 sm:px-3"
+            className="flex flex-wrap items-center gap-1 border-t border-border/80 bg-muted/40 px-2 py-1.5 sm:px-3"
         >
             <div
                 role="tablist"
                 aria-label="Workstation mode"
-                className="inline-flex items-center rounded-full border border-surface-border bg-surface p-0.5"
+                className="inline-flex items-center rounded-full border border-border bg-muted p-0.5"
             >
                 {WORKSTATION_TABS.map((tab) => (
                     <button
@@ -230,8 +230,8 @@ export function WorkstationFormatToolbar({
                         className={cn(
                             'rounded-full px-3.5 py-1 text-sm font-medium transition-colors',
                             tab === activeTab
-                                ? 'bg-brand font-semibold text-white shadow-xs'
-                                : 'text-ink-muted hover:text-ink',
+                                ? 'bg-primary font-semibold text-white shadow-xs'
+                                : 'text-muted-foreground hover:text-foreground',
                         )}
                     >
                         {tab}
@@ -286,13 +286,13 @@ export function WorkstationFormatToolbar({
                         aria-label="Template"
                         title="Choose resume template"
                     >
-                        <span className="hidden text-ink-faint sm:inline">
+                        <span className="hidden text-muted-foreground/70 sm:inline">
                             Template
                         </span>
                         <span className="min-w-0 truncate">
                             {templateLabels[template] ?? template}
                         </span>
-                        <ChevronDownIcon className="size-3.5 shrink-0 text-ink-faint" />
+                        <ChevronDownIcon className="size-3.5 shrink-0 text-muted-foreground/70" />
                     </button>
 
                     {/* Font, size/density, bullets, and skills layout in one
@@ -308,11 +308,11 @@ export function WorkstationFormatToolbar({
                             title="Font, size, bullets, and skills layout"
                         >
                             Format
-                            <ChevronDownIcon className="size-3.5 text-ink-faint" />
+                            <ChevronDownIcon className="size-3.5 text-muted-foreground/70" />
                         </PopoverButton>
                         <PopoverPanel
                             anchor="bottom start"
-                            className="z-50 w-64 space-y-3 rounded-md border border-surface-border bg-white p-3 shadow-lg focus:outline-hidden"
+                            className="z-50 w-64 space-y-3 rounded-md border border-border bg-white p-3 shadow-lg focus:outline-hidden"
                         >
                             <FormatField label="Font">
                                 <Select
@@ -364,7 +364,7 @@ export function WorkstationFormatToolbar({
                                         );
                                     })}
                                 </Select>
-                                <span className="mt-1 block text-xs text-ink-faint">
+                                <span className="mt-1 block text-xs text-muted-foreground/70">
                                     {pageEstimate.hint}
                                 </span>
                             </FormatField>
@@ -410,7 +410,7 @@ export function WorkstationFormatToolbar({
                     </Popover>
 
                     <span
-                        className="hidden max-w-44 truncate text-xs text-ink-faint sm:inline"
+                        className="hidden max-w-44 truncate text-xs text-muted-foreground/70 sm:inline"
                         title={pageEstimate.hint}
                     >
                         ≈{pageEstimate.pages} page
@@ -437,7 +437,7 @@ export function WorkstationFormatToolbar({
                         <ToggleGroupItem
                             value="react"
                             className={cn(
-                                'rounded-full px-2.5 text-xs font-medium data-[state=on]:bg-brand-subtle data-[state=on]:text-brand',
+                                'rounded-full px-2.5 text-xs font-medium data-[state=on]:bg-primary/10 data-[state=on]:text-primary',
                                 controlHeight,
                             )}
                         >
@@ -446,7 +446,7 @@ export function WorkstationFormatToolbar({
                         <ToggleGroupItem
                             value="pdf"
                             className={cn(
-                                'rounded-full px-2.5 text-xs font-medium data-[state=on]:bg-brand-subtle data-[state=on]:text-brand',
+                                'rounded-full px-2.5 text-xs font-medium data-[state=on]:bg-primary/10 data-[state=on]:text-primary',
                                 controlHeight,
                             )}
                         >
@@ -465,18 +465,18 @@ export function WorkstationFormatToolbar({
                             title="Preview zoom"
                         >
                             {Math.round(zoom * 100)}%
-                            <ChevronDownIcon className="size-3.5 text-ink-faint" />
+                            <ChevronDownIcon className="size-3.5 text-muted-foreground/70" />
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                            className="z-50 w-44 rounded-md border border-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1"
                         >
                             {PREVIEW_ZOOM_OPTIONS.map((level) => (
                                 <MenuItem key={level}>
                                     <button
                                         type="button"
                                         onClick={() => onZoomChange(level)}
-                                        className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                        className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
                                     >
                                         <MenuCheck on={level === zoom} />
                                         <span className="min-w-0 flex-1 truncate">

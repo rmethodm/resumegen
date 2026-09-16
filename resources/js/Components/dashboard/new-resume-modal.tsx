@@ -1,6 +1,12 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import Modal from '@/Components/Modal';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
 import { Textarea } from '@/Components/ui/textarea';
 import { cn } from '@/lib/utils';
@@ -79,14 +85,15 @@ export function NewResumeModal({
     }
 
     return (
-        <Modal
-            show={open}
-            onClose={resetAndClose}
-            maxWidth="lg"
-            title="New resume"
-            description="Start blank, use a role sample, or paste an existing resume."
-        >
-            <div className="p-5">
+        <Dialog open={open} onOpenChange={(next) => !next && resetAndClose()}>
+            <DialogContent className="flex max-h-[85dvh] w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+                <DialogHeader className="gap-1 border-b px-5 py-4 text-left">
+                    <DialogTitle className="text-sm font-bold">New resume</DialogTitle>
+                    <DialogDescription className="text-xs">
+                        Start blank, use a role sample, or paste an existing resume.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="min-h-0 flex-1 overflow-y-auto p-5">
                 {mode === 'choose' && (
                         <div className="mt-4 flex flex-col gap-2">
                             <ChoiceButton
@@ -122,7 +129,7 @@ export function NewResumeModal({
                         <div className="mt-4 flex flex-col gap-2">
                             <button
                                 type="button"
-                                className="focus-ring self-start rounded-sm text-[11px] font-semibold text-brand hover:underline"
+                                className="focus-ring self-start rounded-sm text-[11px] font-semibold text-primary hover:underline"
                                 onClick={() => setMode('choose')}
                             >
                                 ← Back
@@ -134,7 +141,7 @@ export function NewResumeModal({
                                     disabled={submitting}
                                     onClick={() => createSample(sample.id)}
                                     className={cn(
-                                        'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-brand hover:bg-brand-subtle/40',
+                                        'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-primary hover:bg-primary/10/40',
                                         submitting && 'opacity-60',
                                     )}
                                 >
@@ -153,7 +160,7 @@ export function NewResumeModal({
                         <div className="mt-4 flex flex-col gap-3">
                             <button
                                 type="button"
-                                className="focus-ring self-start rounded-sm text-[11px] font-semibold text-brand hover:underline"
+                                className="focus-ring self-start rounded-sm text-[11px] font-semibold text-primary hover:underline"
                                 onClick={() => setMode('choose')}
                             >
                                 ← Back
@@ -194,8 +201,9 @@ export function NewResumeModal({
                             </div>
                         </div>
                     )}
-            </div>
-        </Modal>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }
 
@@ -216,7 +224,7 @@ function ChoiceButton({
             disabled={disabled}
             onClick={onClick}
             className={cn(
-                'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-brand hover:bg-brand-subtle/40',
+                'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-primary hover:bg-primary/10/40',
                 disabled && 'opacity-60',
             )}
         >

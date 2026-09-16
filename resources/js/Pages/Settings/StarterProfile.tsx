@@ -91,12 +91,12 @@ function QaBankSection({ entries }: { entries: QaBankEntry[] }) {
     return (
         <div className="grid gap-3">
             <Label>Application Q&A bank</Label>
-            <p className="text-xs text-ink-muted">
+            <p className="text-xs text-muted-foreground">
                 Save answers to common application questions to reuse them when applying — the browser extension can autofill from these.
             </p>
             {entries.map((entry) => (
-                <div key={entry.id} className="grid gap-2 rounded-md border border-surface-border p-3">
-                    <p className="text-sm font-semibold text-ink">{entry.question}</p>
+                <div key={entry.id} className="grid gap-2 rounded-md border border-border p-3">
+                    <p className="text-sm font-semibold text-foreground">{entry.question}</p>
                     <textarea
                         aria-label={`Answer to: ${entry.question}`}
                         defaultValue={entry.answer ?? ''}
@@ -104,10 +104,10 @@ function QaBankSection({ entries }: { entries: QaBankEntry[] }) {
                         placeholder="Your answer"
                         rows={3}
                         disabled={processingId === entry.id}
-                        className="block w-full rounded-lg border-surface-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand"
+                        className="block w-full rounded-lg border-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-primary focus:ring-primary"
                     />
                     {drafts[entry.id] && (
-                        <p className="rounded-md bg-brand-subtle/50 p-2 text-xs text-ink">
+                        <p className="rounded-md bg-primary/10/50 p-2 text-xs text-foreground">
                             <span className="font-semibold">AI draft:</span> {drafts[entry.id]}
                         </p>
                     )}
@@ -206,7 +206,7 @@ export default function StarterProfilePage({
     return (
         <AuthenticatedLayout
             header={
-                <h1 className="text-xl font-semibold text-ink">
+                <h1 className="text-xl font-semibold text-foreground">
                     Starter profile
                 </h1>
             }
@@ -215,35 +215,35 @@ export default function StarterProfilePage({
 
             <div className="py-8">
                 <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
-                    <p className="text-sm text-ink-muted">
+                    <p className="text-sm text-muted-foreground">
                         Set this up once and every new resume starts pre-filled.
                         You can edit it anytime.
                     </p>
 
-                    <Card className="overflow-hidden border-brand-subtle bg-brand-subtle/60 p-0">
+                    <Card className="overflow-hidden border-primary/10 bg-primary/10/60 p-0">
                         <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:p-6">
-                            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-brand-subtle text-brand">
+                            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                                 <SparklesIcon className="size-5" />
                             </div>
                             <div className="min-w-0">
                                 <p className="text-base font-bold tracking-tight">
                                     Build your career source of truth
                                 </p>
-                                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ink-muted">
+                                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
                                     Add the details you want reused when
                                     creating new resumes.
                                 </p>
-                                <div className="mt-4 grid gap-2 text-xs text-ink-muted sm:grid-cols-3">
+                                <div className="mt-4 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-brand" />
+                                        <CheckCircleIcon className="size-3.5 text-primary" />
                                         Pre-filled resumes
                                     </span>
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-brand" />
+                                        <CheckCircleIcon className="size-3.5 text-primary" />
                                         Consistent contact details
                                     </span>
                                     <span className="flex items-center gap-2">
-                                        <CheckCircleIcon className="size-3.5 text-brand" />
+                                        <CheckCircleIcon className="size-3.5 text-primary" />
                                         Stronger role targeting
                                     </span>
                                 </div>
@@ -261,7 +261,7 @@ export default function StarterProfilePage({
                             <>
                                 <section className="space-y-3">
                                     <div className="flex items-center gap-2">
-                                        <BriefcaseIcon className="size-4 text-brand" />
+                                        <BriefcaseIcon className="size-4 text-primary" />
                                         <h2 className="text-sm font-bold">
                                             Your professional snapshot
                                         </h2>
@@ -394,7 +394,7 @@ export default function StarterProfilePage({
                                     {experiences.map((experience, index) => (
                                         <div
                                             key={index}
-                                            className="grid gap-2 rounded-md border border-surface-border p-3"
+                                            className="grid gap-2 rounded-md border border-border p-3"
                                         >
                                             <div className="grid gap-2 sm:grid-cols-2">
                                                 <Input
@@ -588,7 +588,7 @@ export default function StarterProfilePage({
                                         Save
                                     </Button>
                                     {recentlySuccessful && (
-                                        <p className="text-sm text-ink-muted">
+                                        <p className="text-sm text-muted-foreground">
                                             Saved.
                                         </p>
                                     )}

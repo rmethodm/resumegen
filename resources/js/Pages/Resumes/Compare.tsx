@@ -60,7 +60,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                 />
 
                 <div className="flex min-w-0 flex-1 flex-col">
-                    <div className="flex items-center justify-between border-b border-surface-border bg-white px-6 py-3">
+                    <div className="flex items-center justify-between border-b border-border bg-white px-6 py-3">
                         <div className="flex items-center gap-2">
                             <h1 className="text-[15px] font-bold">
                                 {group.title}
@@ -73,7 +73,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                                 onSwap={(id) => swap('left', id)}
                                 tone="neutral"
                             />
-                            <span className="text-xs text-ink-muted">
+                            <span className="text-xs text-muted-foreground">
                                 vs
                             </span>
                             <VersionChip
@@ -103,9 +103,9 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 border-b border-surface-border bg-white px-6 py-2 text-xs text-ink-muted">
+                    <div className="flex items-center gap-4 border-b border-border bg-white px-6 py-2 text-xs text-muted-foreground">
                         <Legend swatch="bg-success/30" label="Added" />
-                        <Legend swatch="bg-danger/30" label="Removed" />
+                        <Legend swatch="bg-destructive/30" label="Removed" />
                         <Legend swatch="bg-yellow-200" label="Changed" />
                         <span className="ml-auto">
                             Comparing bullets by position — reordered roles
@@ -113,7 +113,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                         </span>
                     </div>
 
-                    <div className="flex-1 bg-surface p-6">
+                    <div className="flex-1 bg-muted p-6">
                         <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2">
                             <CompareColumn
                                 side={left}
@@ -149,12 +149,12 @@ function CompareSidebar({
     onSelect: (id: number) => void;
 }) {
     return (
-        <aside className="flex w-[200px] shrink-0 flex-col gap-5 border-r border-surface-border bg-white p-4">
+        <aside className="flex w-[200px] shrink-0 flex-col gap-5 border-r border-border bg-white p-4">
             <div>
-                <p className="mb-2 text-xs font-bold tracking-wide text-ink-muted uppercase">
+                <p className="mb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
                     Sections
                 </p>
-                <div className="flex flex-col gap-0.5 text-xs font-semibold text-ink">
+                <div className="flex flex-col gap-0.5 text-xs font-semibold text-foreground">
                     <span className="rounded-md px-2 py-1.5">
                         {sectionLabels.summary}
                     </span>
@@ -165,7 +165,7 @@ function CompareSidebar({
             </div>
 
             <div>
-                <p className="mb-2 text-xs font-bold tracking-wide text-ink-muted uppercase">
+                <p className="mb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
                     Versions
                 </p>
                 <div className="flex flex-col gap-1.5">
@@ -178,13 +178,13 @@ function CompareSidebar({
                             className={cn(
                                 'focus-ring flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-left text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50',
                                 version.id === right.id
-                                    ? 'border-brand-subtle bg-brand-subtle text-brand'
-                                    : 'border-surface-border bg-transparent text-ink hover:bg-surface',
+                                    ? 'border-primary/10 bg-primary/10 text-primary'
+                                    : 'border-border bg-transparent text-foreground hover:bg-muted',
                             )}
                         >
                             <span>{version.title}</span>
                             {version.application_status && (
-                                <span className="ml-1.5 rounded-full bg-brand-subtle px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand">
+                                <span className="ml-1.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
                                     {version.application_status}
                                 </span>
                             )}
@@ -231,8 +231,8 @@ function VersionChip({
             className={cn(
                 'h-7 rounded-full border-0 px-3 text-xs font-semibold outline-hidden',
                 tone === 'brand'
-                    ? 'bg-brand-subtle text-brand'
-                    : 'bg-surface text-ink-muted',
+                    ? 'bg-primary/10 text-primary'
+                    : 'bg-muted text-muted-foreground',
             )}
         >
             <option value={value.id}>{value.title}</option>
@@ -287,7 +287,7 @@ function CompareColumn({
             <p
                 className={cn(
                     'mb-2 text-xs font-bold uppercase tracking-wide',
-                    tone === 'brand' ? 'text-brand' : 'text-ink-muted',
+                    tone === 'brand' ? 'text-primary' : 'text-muted-foreground',
                 )}
             >
                 {label}
@@ -297,7 +297,7 @@ function CompareColumn({
                 <div className="text-lg font-extrabold">
                     {side.document.full_name}
                 </div>
-                <div className="mb-3 text-xs text-ink-muted">
+                <div className="mb-3 text-xs text-muted-foreground">
                     {side.document.headline} · {side.document.email}
                 </div>
 
@@ -336,7 +336,7 @@ function CompareColumn({
                                                 'rounded-sm px-1 py-0.5',
                                                 part.added && 'bg-success/30',
                                                 part.removed &&
-                                                    'bg-danger/30 line-through',
+                                                    'bg-destructive/30 line-through',
                                             )}
                                         >
                                             {part.value}
@@ -348,15 +348,15 @@ function CompareColumn({
                     })}
                 </div>
 
-                <div className="mt-4 grid grid-cols-4 gap-2 border-t border-surface-border pt-3">
+                <div className="mt-4 grid grid-cols-4 gap-2 border-t border-border pt-3">
                     {side.breakdown.map((band) => (
                         <div key={band.label} className="space-y-1">
-                            <p className="text-xs font-semibold text-ink-muted uppercase">
+                            <p className="text-xs font-semibold text-muted-foreground uppercase">
                                 {band.label}
                             </p>
-                            <div className="h-1.5 rounded-full bg-surface">
+                            <div className="h-1.5 rounded-full bg-muted">
                                 <div
-                                    className="h-full rounded-full bg-brand"
+                                    className="h-full rounded-full bg-primary"
                                     style={{
                                         width: `${(band.score / 25) * 100}%`,
                                     }}

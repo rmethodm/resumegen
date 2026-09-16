@@ -24,17 +24,17 @@ function Funnel({ funnel }: { funnel: FunnelStage[] }) {
 
     return (
         <Shell innerClassName="p-5">
-            <h2 className="text-sm font-bold text-ink">Current pipeline</h2>
+            <h2 className="text-sm font-bold text-foreground">Current pipeline</h2>
             <div className="mt-4 space-y-3">
                 {funnel.map((stage) => (
                     <div key={stage.status}>
-                        <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
+                        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
                             <span>{STAGE_LABELS[stage.status] ?? stage.status}</span>
-                            <span className="tabular-nums text-ink">{stage.count}</span>
+                            <span className="tabular-nums text-foreground">{stage.count}</span>
                         </div>
-                        <div className="mt-1 h-2 w-full rounded-full bg-surface">
+                        <div className="mt-1 h-2 w-full rounded-full bg-muted">
                             <div
-                                className="h-2 rounded-full bg-brand transition-[width] duration-soft ease-soft"
+                                className="h-2 rounded-full bg-primary transition-[width] duration-soft ease-soft"
                                 style={{ width: `${(stage.count / max) * 100}%` }}
                             />
                         </div>
@@ -52,8 +52,8 @@ function TransitionFlow({ transitions }: { transitions: Transition[] }) {
     if (transitions.length === 0) {
         return (
             <Shell innerClassName="p-5">
-                <h2 className="text-sm font-bold text-ink">Status transitions</h2>
-                <p className="mt-3 text-xs text-ink-faint">No transitions logged yet.</p>
+                <h2 className="text-sm font-bold text-foreground">Status transitions</h2>
+                <p className="mt-3 text-xs text-muted-foreground/70">No transitions logged yet.</p>
             </Shell>
         );
     }
@@ -74,7 +74,7 @@ function TransitionFlow({ transitions }: { transitions: Transition[] }) {
 
     return (
         <Shell innerClassName="p-5">
-            <h2 className="text-sm font-bold text-ink">Status transitions</h2>
+            <h2 className="text-sm font-bold text-foreground">Status transitions</h2>
             <svg viewBox={`0 0 ${width} ${height}`} className="mt-3 w-full" style={{ height }}>
                 {transitions.map((t, i) => {
                     const y1 = yFor(sources, t.source);
@@ -85,7 +85,7 @@ function TransitionFlow({ transitions }: { transitions: Transition[] }) {
                             key={i}
                             d={`M ${nodeX.source} ${y1} C ${width / 2} ${y1}, ${width / 2} ${y2}, ${nodeX.target} ${y2}`}
                             fill="none"
-                            stroke="var(--color-brand)"
+                            stroke="var(--color-primary)"
                             strokeOpacity={0.35}
                             strokeWidth={strokeWidth}
                         />
@@ -93,28 +93,28 @@ function TransitionFlow({ transitions }: { transitions: Transition[] }) {
                 })}
                 {sources.map((key) => (
                     <g key={`source-${key}`}>
-                        <circle cx={nodeX.source} cy={yFor(sources, key)} r={4} fill="var(--color-brand)" />
-                        <text x={nodeX.source - 12} y={yFor(sources, key)} textAnchor="end" dominantBaseline="middle" className="fill-ink text-[11px] font-semibold">
+                        <circle cx={nodeX.source} cy={yFor(sources, key)} r={4} fill="var(--color-primary)" />
+                        <text x={nodeX.source - 12} y={yFor(sources, key)} textAnchor="end" dominantBaseline="middle" className="fill-foreground text-[11px] font-semibold">
                             {nodeLabel(key)}
                         </text>
                     </g>
                 ))}
                 {targets.map((key) => (
                     <g key={`target-${key}`}>
-                        <circle cx={nodeX.target} cy={yFor(targets, key)} r={4} fill="var(--color-brand)" />
-                        <text x={nodeX.target + 12} y={yFor(targets, key)} textAnchor="start" dominantBaseline="middle" className="fill-ink text-[11px] font-semibold">
+                        <circle cx={nodeX.target} cy={yFor(targets, key)} r={4} fill="var(--color-primary)" />
+                        <text x={nodeX.target + 12} y={yFor(targets, key)} textAnchor="start" dominantBaseline="middle" className="fill-foreground text-[11px] font-semibold">
                             {nodeLabel(key)}
                         </text>
                     </g>
                 ))}
             </svg>
-            <ul className="mt-3 space-y-1 text-xs text-ink-muted">
+            <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
                 {transitions.map((t, i) => (
                     <li key={i} className={cn('flex items-center justify-between')}>
                         <span>
                             {nodeLabel(t.source)} → {nodeLabel(t.target)}
                         </span>
-                        <span className="tabular-nums font-semibold text-ink">{t.value}</span>
+                        <span className="tabular-nums font-semibold text-foreground">{t.value}</span>
                     </li>
                 ))}
             </ul>
@@ -136,14 +136,14 @@ export default function JobApplicationStats({
             <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <Link
                     href={route('job-applications.index')}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-muted hover:text-ink"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground"
                 >
                     <ArrowLeftIcon className="size-4" />
                     Back to pipeline
                 </Link>
 
-                <h1 className="mt-3 text-2xl font-bold tracking-tight text-ink">Application stats</h1>
-                <p className="mt-1 text-sm text-ink-muted">All-time funnel and status transitions for your job search.</p>
+                <h1 className="mt-3 text-2xl font-bold tracking-tight text-foreground">Application stats</h1>
+                <p className="mt-1 text-sm text-muted-foreground">All-time funnel and status transitions for your job search.</p>
 
                 <div className="mt-6 grid gap-4 lg:grid-cols-2">
                     <Funnel funnel={funnel} />

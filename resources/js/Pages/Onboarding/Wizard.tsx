@@ -24,10 +24,10 @@ function StepDots({ step }: { step: Step }) {
                     key={s}
                     className={`h-2.5 w-2.5 rounded-full transition-colors ${
                         s === step
-                            ? 'bg-brand'
+                            ? 'bg-primary'
                             : s < step
-                              ? 'bg-brand/40'
-                              : 'bg-surface-border'
+                              ? 'bg-primary/40'
+                              : 'bg-border'
                     }`}
                 />
             ))}
@@ -73,10 +73,10 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
 
             <div className="w-full max-w-md">
                 <div className="mb-6 text-center">
-                    <h1 className="text-2xl font-extrabold tracking-tight text-ink">
+                    <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
                         {step === 1 ? 'What are you aiming for?' : step === 2 ? 'How should we reach you?' : 'Pick a starting template'}
                     </h1>
-                    <p className="mt-1 text-sm text-ink-muted">
+                    <p className="mt-1 text-sm text-muted-foreground">
                         {step === 1
                             ? "We'll use this to pre-fill your resumes and personalize your experience."
                             : step === 2
@@ -97,7 +97,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 value={data.target_role ?? ''}
                                 onChange={value => setData('target_role', value)}
                                 placeholder="e.g. Software Engineer"
-                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                className="mt-1 block w-full rounded-md border border-border px-3 py-2 text-sm shadow-xs focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-1"
                             />
                             <InputError message={errors.target_role} className="mt-1" />
                         </div>
@@ -239,15 +239,15 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                         }}
                                         aria-pressed={selected}
                                         title={TEMPLATE_LABELS[t] ?? t}
-                                        className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-brand ring-1 ring-brand' : 'border-surface-border hover:border-surface-border'} ${locked ? 'opacity-60' : ''}`}
+                                        className={`relative flex flex-col rounded-md border p-1 text-left transition-colors ${selected ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-border'} ${locked ? 'opacity-60' : ''}`}
                                     >
                                         <img
                                             src={`/images/templates/${t}.png`}
                                             loading="lazy"
                                             alt=""
-                                            className="mb-1 h-24 w-full rounded-sm border border-surface-border bg-white object-cover object-top"
+                                            className="mb-1 h-24 w-full rounded-sm border border-border bg-white object-cover object-top"
                                         />
-                                        <span className="truncate text-xs font-medium text-ink">
+                                        <span className="truncate text-xs font-medium text-foreground">
                                             {locked ? `🔒 ${TEMPLATE_LABELS[t]}` : (TEMPLATE_LABELS[t] ?? t)}
                                         </span>
                                     </button>

@@ -34,18 +34,18 @@ export default function AdminSchedule({ tasks }: { tasks: ScheduledTask[] }) {
             <Head title="Schedule" />
 
             <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-                <h1 className="text-2xl font-bold tracking-tight text-ink">Scheduled tasks</h1>
-                <p className="mt-1 text-sm text-ink-muted">Edit cron timing or disable a task without deploying code.</p>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">Scheduled tasks</h1>
+                <p className="mt-1 text-sm text-muted-foreground">Edit cron timing or disable a task without deploying code.</p>
 
-                <Shell className="mt-6" innerClassName="divide-y divide-surface-border">
+                <Shell className="mt-6" innerClassName="divide-y divide-border">
                     {tasks.map((task) => (
                         <div key={task.id} className="p-4">
                             <div className="flex items-center justify-between gap-3">
                                 <div>
-                                    <p className="text-sm font-bold text-ink">{task.command}</p>
-                                    <p className="text-xs text-ink-muted">{task.explanation}</p>
+                                    <p className="text-sm font-bold text-foreground">{task.command}</p>
+                                    <p className="text-xs text-muted-foreground">{task.explanation}</p>
                                 </div>
-                                <Label className="text-xs font-semibold text-ink-muted">
+                                <Label className="text-xs font-semibold text-muted-foreground">
                                     <Checkbox
                                         checked={task.enabled}
                                         disabled={processingId === task.id}
@@ -67,10 +67,10 @@ export default function AdminSchedule({ tasks }: { tasks: ScheduledTask[] }) {
                                     aria-label={`Cron expression for ${task.command}`}
                                 />
                                 {task.next_run_at && (
-                                    <span className="text-xs text-ink-faint">Next run: {new Date(task.next_run_at).toLocaleString()}</span>
+                                    <span className="text-xs text-muted-foreground/70">Next run: {new Date(task.next_run_at).toLocaleString()}</span>
                                 )}
                             </div>
-                            {errors[task.id] && <p className="mt-1 text-xs text-danger-text">{errors[task.id]}</p>}
+                            {errors[task.id] && <p className="mt-1 text-xs text-destructive">{errors[task.id]}</p>}
                         </div>
                     ))}
                 </Shell>

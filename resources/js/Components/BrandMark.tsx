@@ -43,7 +43,7 @@ export function BrandMark({
             {showWordmark && (
                 <span
                     className={cn(
-                        'font-extrabold tracking-tight text-ink dark:text-white',
+                        'font-extrabold tracking-tight text-foreground dark:text-white',
                         typeClass[size],
                     )}
                 >

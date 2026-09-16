@@ -24,12 +24,12 @@ export function ScoreChecklist({
     }
 
     return (
-        <div className="mt-4 border-t border-surface-border pt-4">
+        <div className="mt-4 border-t border-border pt-4">
             <div className="mb-2 flex items-baseline justify-between px-1">
-                <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                     Raise your score
                 </p>
-                <p className="text-xs tabular-nums text-ink-faint">
+                <p className="text-xs tabular-nums text-muted-foreground/70">
                     {doneCount}/{items.length}
                 </p>
             </div>
@@ -43,8 +43,8 @@ export function ScoreChecklist({
                             className={cn(
                                 'focus-ring flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs leading-snug transition-colors',
                                 item.done
-                                    ? 'cursor-default text-ink-faint'
-                                    : 'text-ink hover:bg-brand-subtle hover:text-brand',
+                                    ? 'cursor-default text-muted-foreground/70'
+                                    : 'text-foreground hover:bg-primary/10 hover:text-primary',
                             )}
                         >
                             <span
@@ -52,7 +52,7 @@ export function ScoreChecklist({
                                     'mt-0.5 flex size-3.5 shrink-0 items-center justify-center rounded-full border',
                                     item.done
                                         ? 'border-success bg-success text-white'
-                                        : 'border-surface-border bg-white',
+                                        : 'border-border bg-white',
                                 )}
                                 aria-hidden
                             >
@@ -68,7 +68,7 @@ export function ScoreChecklist({
                                 >
                                     {item.label}
                                 </span>
-                                <span className="mt-0.5 block text-xs font-medium tracking-wide text-ink-faint uppercase">
+                                <span className="mt-0.5 block text-xs font-medium tracking-wide text-muted-foreground/70 uppercase">
                                     {item.band}
                                 </span>
                             </span>
@@ -101,11 +101,11 @@ export function KeywordChips({
     }
 
     return (
-        <div className="mt-4 border-t border-surface-border pt-4">
-            <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+        <div className="mt-4 border-t border-border pt-4">
+            <p className="mb-1 px-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                 Role keywords
             </p>
-            <p className="mb-2 px-1 text-xs leading-snug text-ink-muted">
+            <p className="mb-2 px-1 text-xs leading-snug text-muted-foreground">
                 Click a missing term to add it as a skill. Only add skills you
                 actually have.
             </p>
@@ -117,7 +117,7 @@ export function KeywordChips({
                             type="button"
                             onClick={() => onAdd(keyword)}
                             title={`Add “${formatKeywordLabel(keyword)}” as a skill`}
-                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-brand/40 bg-brand-subtle/50 px-2 py-0.5 text-xs font-medium text-brand transition-colors hover:border-brand hover:bg-brand-subtle"
+                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-primary/40 bg-primary/10/50 px-2 py-0.5 text-xs font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10"
                         >
                             <PlusIcon className="size-3" />
                             {formatKeywordLabel(keyword)}

@@ -12,64 +12,11 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* DESIGN.md Social Proof-Focused — system UI stack + JetBrains Mono. */
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-display:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, ui-sans-serif, system-ui, sans-serif;
   --font-mono:
     'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
 
-  /* Neutrals — white / charcoal; never pure #000 (use #1A1A1A). */
-  --color-neutral-50: #ffffff;
-  --color-neutral-100: #f7f7f7;
-  --color-neutral-200: #ebebeb;
-  --color-neutral-300: #d6d6d6;
-  --color-neutral-400: #b0b0b0;
-  --color-neutral-500: #8a8a8a;
-  --color-neutral-600: #4a4a4a;
-  --color-neutral-700: #333333;
-  --color-neutral-800: #1a1a1a;
-  --color-neutral-900: #141414;
-  --color-neutral-950: #0f0f0f;
-
-  /* Accent ramp — tertiary CTA blue #0066FF (sat capped). */
-  --color-accent-50: #e5f0ff;
-  --color-accent-100: #cce0ff;
-  --color-accent-200: #99c2ff;
-  --color-accent-300: #66a3ff;
-  --color-accent-400: #3385ff;
-  --color-accent-500: #0066ff;
-  --color-accent-600: #005ce6;
-  --color-accent-700: #0047b3;
-  --color-accent-800: #003380;
-  --color-accent-900: #001f4d;
-  --color-accent-950: #001133;
-
-  --color-brand: rgb(var(--brand-rgb));
-  --color-brand-accent: rgb(var(--brand-accent-rgb));
-  --color-brand-light: rgb(var(--brand-accent-rgb));
-  --color-brand-subtle: rgb(var(--brand-subtle-rgb));
-  --color-brand-soft: rgb(var(--brand-soft-rgb));
-
-  --color-surface: rgb(var(--surface-rgb));
-  --color-surface-border: rgb(var(--surface-border-rgb));
-  --color-surface-dark: #1a1a1a;
-  --color-surface-dark-raised: #333333;
-  --color-surface-dark-border: #4a4a4a;
-
-  --color-ink: #1a1a1a;
-  --color-ink-muted: #4a4a4a;
-  --color-ink-faint: #8a8a8a;
-  --color-ink-dark: #f7f7f7;
-  --color-ink-dark-muted: #b0b0b0;
-  --color-ink-dark-faint: #8a8a8a;
-
-  /* Semantic status — danger stays readable red for form errors. */
+  /* Semantic status colors — used app-wide for badges/alerts, kept as-is. */
   --color-success: #1a7f4c;
   --color-success-subtle: #e8f6ef;
   --color-success-text: #145c38;
@@ -77,14 +24,6 @@
   --color-warning: #a16207;
   --color-warning-subtle: #fef6e7;
   --color-warning-text: #854d0e;
-
-  --color-danger: #c62828;
-  --color-danger-subtle: #fdecec;
-  --color-danger-text: #8e1b1b;
-
-  --color-info: #0066ff;
-  --color-info-subtle: #e5f0ff;
-  --color-info-text: #0047b3;
 
   --z-index-base: 0;
   --z-index-raised: 1;
@@ -94,20 +33,6 @@
   --z-index-modal: 50;
   --z-index-toast: 60;
   --z-index-tooltip: 70;
-
-  /* Cards: 0 2px 12px /0.06; hover lift stays subtle. */
-  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
-  --shadow-ambient: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-shell: inset 0 1px 1px rgba(255, 255, 255, 0.65);
-
-  /*
-   * Radius — base 8px (0.5rem) for buttons, cards, inputs.
-   * sm/md share 8px; lg steps up for larger panels.
-   */
-  --radius-sm: 0.5rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
 
   --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
 
@@ -142,7 +67,7 @@
 }
 
 @utility focus-ring {
-  @apply focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2;
+  @apply focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2;
 }
 
 @utility tabular {
@@ -151,27 +76,7 @@
 }
 
 @layer utilities {
-  /*
- * Brand tokens as RGB channels so Tailwind opacity modifiers
- * (bg-brand/25, ring-brand/30) keep working. DESIGN.md Social Proof-Focused:
- * CTA accent #0066FF; ink #1A1A1A; legacy data-brand-theme variants share
- * the same tokens.
- */
-  :root,
-  html[data-brand-theme='violet'],
-  html[data-brand-theme='navy'],
-  html[data-brand-theme='teal'],
-  html[data-brand-theme='copper'] {
-    --brand-rgb: 0 102 255; /* #0066FF — tertiary / CTA */
-    --brand-accent-rgb: 0 92 230; /* #005CE6 — ~8% darken hover */
-    --brand-subtle-rgb: 229 240 255; /* #E5F0FF */
-    --brand-soft-rgb: 0 71 179; /* #0047B3 — deep solid CTA */
-    --surface-rgb: 247 247 247; /* #F7F7F7 — muted page surface */
-    --surface-border-rgb: 235 235 235; /* #EBEBEB */
-  }
-
   html {
-    /* Light canvas — white page, charcoal ink via utilities. */
     color-scheme: light;
     background-color: #ffffff;
     scroll-behavior: smooth;

@@ -140,7 +140,7 @@ export function WorkstationHeader({
     return (
         <div
             className={cn(
-                'overflow-hidden rounded-xl border border-surface-border',
+                'overflow-hidden rounded-xl border border-border',
                 'bg-white shadow-xs',
             )}
         >
@@ -171,7 +171,7 @@ export function WorkstationHeader({
                         <span
                             onDoubleClick={() => setRenaming(true)}
                             title="Double-click to rename"
-                            className="truncate text-base font-bold text-ink"
+                            className="truncate text-base font-bold text-foreground"
                         >
                             {title || 'Untitled resume'}
                         </span>
@@ -189,7 +189,7 @@ export function WorkstationHeader({
                     {saveStatus === 'saving' && (
                         <Badge
                             variant="outline"
-                            className="border-transparent bg-surface text-ink-muted"
+                            className="border-transparent bg-muted text-muted-foreground"
                         >
                             <ArrowPathIcon className="size-3 animate-spin" />
                             Saving
@@ -234,7 +234,7 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                            className="z-50 w-44 rounded-md border border-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1"
                         >
                             <MenuItem>
                                 <button
@@ -250,7 +250,7 @@ export function WorkstationHeader({
                                                   '_blank',
                                               )
                                     }
-                                    className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
                                 >
                                     Download PDF
                                 </button>
@@ -269,7 +269,7 @@ export function WorkstationHeader({
                                                   '_blank',
                                               )
                                     }
-                                    className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
                                 >
                                     Download DOCX
                                 </button>
@@ -286,13 +286,13 @@ export function WorkstationHeader({
                         </MenuButton>
                         <MenuItems
                             anchor="bottom end"
-                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1"
+                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1"
                         >
                             <MenuItem>
                                 <button
                                     type="button"
                                     onClick={() => setRenaming(true)}
-                                    className="w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
                                 >
                                     Rename this version
                                 </button>
@@ -300,8 +300,8 @@ export function WorkstationHeader({
 
                             {versions.length > 0 && (
                                 <>
-                                    <div className="my-1 border-t border-surface-border" />
-                                    <div className="px-2 py-1 text-xs font-semibold text-ink-faint">
+                                    <div className="my-1 border-t border-border" />
+                                    <div className="px-2 py-1 text-xs font-semibold text-muted-foreground/70">
                                         Versions
                                     </div>
                                     {versions.map((version) => (
@@ -312,15 +312,15 @@ export function WorkstationHeader({
                                                     version.id,
                                                 )}
                                                 className={cn(
-                                                    'flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface',
+                                                    'flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted',
                                                     version.is_current &&
-                                                        'font-semibold text-brand',
+                                                        'font-semibold text-primary',
                                                 )}
                                             >
                                                 <span className="truncate">
                                                     {version.title}
                                                 </span>
-                                                <span className="ml-2 shrink-0 tabular-nums text-xs text-ink-faint">
+                                                <span className="ml-2 shrink-0 tabular-nums text-xs text-muted-foreground/70">
                                                     {version.score}
                                                 </span>
                                             </a>
@@ -329,7 +329,7 @@ export function WorkstationHeader({
                                 </>
                             )}
 
-                            <div className="my-1 border-t border-surface-border" />
+                            <div className="my-1 border-t border-border" />
                             <MenuItem>
                                 <button
                                     type="button"
@@ -342,7 +342,7 @@ export function WorkstationHeader({
                                             { onFinish: () => setDuplicating(false) },
                                         );
                                     }}
-                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface disabled:opacity-50"
+                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted disabled:opacity-50"
                                 >
                                     {duplicating ? (
                                         <ArrowPathIcon className="size-4 animate-spin" />
@@ -355,12 +355,12 @@ export function WorkstationHeader({
 
                             {onToggleSideTools && (
                                 <>
-                                    <div className="my-1 border-t border-surface-border" />
+                                    <div className="my-1 border-t border-border" />
                                     <MenuItem>
                                         <button
                                             type="button"
                                             onClick={onToggleSideTools}
-                                            className="w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                            className="w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
                                         >
                                             {sideToolsOpen
                                                 ? 'Hide notes & checkpoints'

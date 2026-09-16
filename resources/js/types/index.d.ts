@@ -7,6 +7,7 @@ export interface User {
     email_verified_at?: string;
     disabled_at?: string | null;
     two_factor_confirmed_at: string | null;
+    theme: string | null;
     profile: {
         full_name?: string;
         email?: string;

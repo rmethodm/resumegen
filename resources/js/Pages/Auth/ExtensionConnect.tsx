@@ -72,18 +72,18 @@ export default function ExtensionConnect({ extensionId }: { extensionId: string 
 
             <div className="text-center">
                 {status === 'connecting' && (
-                    <p className="text-sm text-ink-muted">Connecting to Resumegen Apply…</p>
+                    <p className="text-sm text-muted-foreground">Connecting to Resumegen Apply…</p>
                 )}
                 {status === 'connected' && (
                     <>
-                        <p className="text-sm font-semibold text-ink">Connected.</p>
-                        <p className="mt-1 text-sm text-ink-muted">You can close this tab.</p>
+                        <p className="text-sm font-semibold text-foreground">Connected.</p>
+                        <p className="mt-1 text-sm text-muted-foreground">You can close this tab.</p>
                     </>
                 )}
                 {(status === 'unsupported' || status === 'error') && (
                     <>
-                        <p className="text-sm font-semibold text-ink">Couldn't connect automatically.</p>
-                        <p className="mt-1 text-sm text-ink-muted">
+                        <p className="text-sm font-semibold text-foreground">Couldn't connect automatically.</p>
+                        <p className="mt-1 text-sm text-muted-foreground">
                             Generate a token on your Profile page instead, then paste it into the
                             extension's Settings.
                         </p>

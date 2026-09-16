@@ -21,14 +21,14 @@ export function FirstWeekChecklist({ facts, dismissed }: { facts: ChecklistFacts
         <Shell innerClassName="p-4 sm:p-5">
             <div className="flex items-start justify-between gap-3">
                 <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-faint">Your first week</p>
-                    <p className="mt-1 text-sm text-ink-muted">{doneCount} of {steps.length} done</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">Your first week</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{doneCount} of {steps.length} done</p>
                 </div>
                 <button
                     type="button"
                     onClick={dismiss}
                     aria-label="Dismiss checklist"
-                    className="rounded-md p-1 text-ink-faint hover:bg-surface hover:text-ink"
+                    className="rounded-md p-1 text-muted-foreground/70 hover:bg-muted hover:text-foreground"
                 >
                     <XMarkIcon className="size-4" />
                 </button>
@@ -39,14 +39,14 @@ export function FirstWeekChecklist({ facts, dismissed }: { facts: ChecklistFacts
                         <Link
                             href={route(step.route)}
                             className={cn(
-                                'flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-surface/60',
-                                step.done ? 'text-ink-faint line-through' : 'font-medium text-ink',
+                                'flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-muted/60',
+                                step.done ? 'text-muted-foreground/70 line-through' : 'font-medium text-foreground',
                             )}
                         >
                             {step.done ? (
                                 <CheckCircleSolid className="size-4 text-success" />
                             ) : (
-                                <CheckCircleIcon className="size-4 text-ink-faint" />
+                                <CheckCircleIcon className="size-4 text-muted-foreground/70" />
                             )}
                             {step.label}
                         </Link>

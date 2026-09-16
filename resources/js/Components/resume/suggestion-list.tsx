@@ -15,7 +15,7 @@ export function SuggestionList({
 }) {
     if (suggestions.length === 0) {
         return (
-            <p className="rounded-lg border border-surface-border bg-white p-3 text-xs leading-relaxed text-ink-muted">
+            <p className="rounded-lg border border-border bg-white p-3 text-xs leading-relaxed text-muted-foreground">
                 Nothing to flag. Every bullet leads with an action and carries a
                 number.
             </p>
@@ -31,26 +31,26 @@ export function SuggestionList({
                 >
                     <div className="flex flex-wrap items-center gap-1.5">
                         {suggestion.band && (
-                            <span className="rounded-full bg-brand-subtle px-2 py-0.5 text-xs font-semibold tracking-wide text-brand uppercase">
+                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold tracking-wide text-primary uppercase">
                                 {suggestion.band}
                             </span>
                         )}
                         {suggestion.category && (
-                            <span className="rounded-full bg-surface px-2 py-0.5 text-xs font-medium tracking-wide text-ink-muted uppercase">
+                            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 {suggestion.category}
                             </span>
                         )}
                     </div>
-                    <p className="text-xs leading-relaxed text-ink">
+                    <p className="text-xs leading-relaxed text-foreground">
                         {suggestion.message}
                     </p>
                     {suggestion.rewrite ? (
-                        <p className="border-l-2 border-brand pl-2 text-xs leading-relaxed font-medium text-brand">
+                        <p className="border-l-2 border-primary pl-2 text-xs leading-relaxed font-medium text-primary">
                             {suggestion.rewrite}
                         </p>
                     ) : (
                         suggestion.verbs.length > 0 && (
-                            <p className="text-xs leading-relaxed text-ink-muted">
+                            <p className="text-xs leading-relaxed text-muted-foreground">
                                 Consider: {suggestion.verbs.join(', ')}
                             </p>
                         )

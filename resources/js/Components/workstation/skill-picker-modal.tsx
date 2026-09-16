@@ -7,7 +7,14 @@ import {
 } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useMemo, useState } from 'react';
-import Modal from '@/Components/Modal';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { cn } from '@/lib/utils';
@@ -112,7 +119,7 @@ export function SkillPickerModal({
         return (
             <div className="flex flex-1 min-h-0">
                 {query.trim() === '' && (
-                    <div className="flex w-44 shrink-0 flex-col gap-0.5 overflow-y-auto border-r border-surface-border p-2.5">
+                    <div className="flex w-44 shrink-0 flex-col gap-0.5 overflow-y-auto border-r border-border p-2.5">
                         {groups.map((group) => (
                             <button
                                 key={group.category}
@@ -121,8 +128,8 @@ export function SkillPickerModal({
                                 className={cn(
                                     'rounded-lg px-2.5 py-2 text-left text-xs font-semibold',
                                     (activeCategory?.category ?? '') === group.category
-                                        ? 'bg-brand-subtle text-brand'
-                                        : 'text-ink-muted hover:bg-surface',
+                                        ? 'bg-primary/10 text-primary'
+                                        : 'text-muted-foreground hover:bg-muted',
                                 )}
                             >
                                 {group.category}
@@ -133,7 +140,7 @@ export function SkillPickerModal({
                 <div className="flex-1 overflow-y-auto p-4">
                     {visibleGroups.map((group) => (
                         <div key={group.category} className="mb-5 last:mb-0">
-                            <p className="mb-2 text-xs font-bold tracking-wide text-ink-faint uppercase">
+                            <p className="mb-2 text-xs font-bold tracking-wide text-muted-foreground/70 uppercase">
                                 {group.category} skills
                             </p>
                             <div className="flex flex-wrap gap-2">
@@ -151,10 +158,10 @@ export function SkillPickerModal({
                                             className={cn(
                                                 'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold',
                                                 added
-                                                    ? 'cursor-not-allowed border border-surface-border bg-surface text-ink-faint'
+                                                    ? 'cursor-not-allowed border border-border bg-muted text-muted-foreground/70'
                                                     : selected
-                                                      ? 'bg-brand text-white'
-                                                      : 'border border-surface-border text-ink hover:border-brand/40',
+                                                      ? 'bg-primary text-white'
+                                                      : 'border border-border text-foreground hover:border-primary/40',
                                             )}
                                         >
                                             {added ? '✓' : selected ? '✓' : '+'} {name}
@@ -165,7 +172,7 @@ export function SkillPickerModal({
                         </div>
                     ))}
                     {visibleGroups.length === 0 && (
-                        <p className="text-sm text-ink-muted">No skills match "{query}".</p>
+                        <p className="text-sm text-muted-foreground">No skills match "{query}".</p>
                     )}
                 </div>
             </div>
@@ -175,32 +182,18 @@ export function SkillPickerModal({
     const totalSkills = library.reduce((sum, group) => sum + group.skills.length, 0);
 
     return (
-        <Modal
-            show={open}
-            onClose={close}
-            maxWidth="3xl"
-            title="Add skills"
-            description={`${totalSkills} skills from Indeed's resume guide, organized by category`}
-            footer={
-                <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-ink-muted">
-                        {pending.size} skill{pending.size === 1 ? '' : 's'} added
-                    </span>
-                    <div className="flex gap-2.5">
-                        <Button variant="secondary" onClick={close}>
-                            Cancel
-                        </Button>
-                        <Button disabled={pending.size === 0} onClick={confirm}>
-                            Add to resume
-                        </Button>
-                    </div>
-                </div>
-            }
-        >
-            <div className="flex h-[560px] flex-col">
+        <Dialog open={open} onOpenChange={(next) => !next && close()}>
+            <DialogContent className="flex max-h-[85dvh] w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
+                <DialogHeader className="gap-1 border-b px-5 py-4 text-left">
+                    <DialogTitle className="text-sm font-bold">Add skills</DialogTitle>
+                    <DialogDescription className="text-xs">
+                        {totalSkills} skills from Indeed's resume guide, organized by category
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="flex h-[560px] min-h-0 flex-1 flex-col">
                 <div className="px-6 pt-3.5">
                     <div className="relative">
-                        <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-faint" />
+                        <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/70" />
                         <Input
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}
@@ -211,11 +204,11 @@ export function SkillPickerModal({
                 </div>
 
                 <TabGroup className="flex min-h-0 flex-1 flex-col">
-                    <TabList className="flex gap-4 border-b border-surface-border px-6 pt-3.5">
-                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-ink-muted outline-hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 data-selected:border-brand data-selected:text-brand">
+                    <TabList className="flex gap-4 border-b border-border px-6 pt-3.5">
+                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-muted-foreground outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 data-selected:border-primary data-selected:text-primary">
                             Soft skills
                         </Tab>
-                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-ink-muted outline-hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 data-selected:border-brand data-selected:text-brand">
+                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-muted-foreground outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 data-selected:border-primary data-selected:text-primary">
                             Hard skills
                         </Tab>
                     </TabList>
@@ -224,7 +217,21 @@ export function SkillPickerModal({
                         <TabPanel className="flex min-h-0 flex-1">{renderTab('hard')}</TabPanel>
                     </TabPanels>
                 </TabGroup>
-            </div>
-        </Modal>
+                </div>
+                <DialogFooter className="flex-row items-center justify-between border-t px-5 py-3">
+                    <span className="text-xs font-medium text-muted-foreground">
+                        {pending.size} skill{pending.size === 1 ? '' : 's'} added
+                    </span>
+                    <div className="flex gap-2.5">
+                        <Button variant="secondary" onClick={close}>
+                            Cancel
+                        </Button>
+                        <Button disabled={pending.size === 0} onClick={confirm}>
+                            Add to resume
+                        </Button>
+                    </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }

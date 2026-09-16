@@ -69,7 +69,7 @@ export default function BulletEditor({ bullets, onChange, onBlur }: Props) {
         <div className="flex flex-col gap-0.5">
             {rows.map((bullet, idx) => (
                 <div key={idx} className="flex items-start gap-1">
-                    <span className="mt-[7px] text-xs text-ink-faint select-none">•</span>
+                    <span className="mt-[7px] text-xs text-muted-foreground/70 select-none">•</span>
                     <textarea
                         ref={el => { refs.current[idx] = el; }}
                         value={bullet}
@@ -83,12 +83,12 @@ export default function BulletEditor({ bullets, onChange, onBlur }: Props) {
                         onKeyDown={e => handleKey(e, idx)}
                         onBlur={onBlur}
                         placeholder="Start with an action verb…"
-                        className="flex-1 resize-none overflow-hidden rounded-sm border-gray-200 bg-gray-50 text-sm shadow-none focus:border-brand focus:bg-white focus:ring-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
+                        className="flex-1 resize-none overflow-hidden rounded-sm border-gray-200 bg-gray-50 text-sm shadow-none focus:border-primary focus:bg-white focus:ring-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25"
                     />
                     <button
                         type="button"
                         onClick={() => deleteBullet(idx)}
-                        className="mt-[6px] text-ink-faint hover:text-danger transition-colors"
+                        className="mt-[6px] text-muted-foreground/70 hover:text-destructive transition-colors"
                         tabIndex={-1}
                         aria-label="Delete bullet"
                     >

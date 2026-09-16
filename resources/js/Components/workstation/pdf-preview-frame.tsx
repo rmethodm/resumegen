@@ -14,7 +14,7 @@ export function PdfPreviewFrame({ src }: { src: string }) {
             {!loaded && (
                 <p
                     role="status"
-                    className="absolute inset-0 flex items-center justify-center text-sm text-ink-faint"
+                    className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground/70"
                 >
                     Rendering PDF…
                 </p>
@@ -24,7 +24,7 @@ export function PdfPreviewFrame({ src }: { src: string }) {
                 src={src}
                 onLoad={() => setLoaded(true)}
                 className={cn(
-                    'h-[80dvh] w-full bg-surface transition-opacity duration-soft ease-soft motion-reduce:transition-none',
+                    'h-[80dvh] w-full bg-muted transition-opacity duration-soft ease-soft motion-reduce:transition-none',
                     loaded ? 'opacity-100' : 'opacity-0',
                 )}
             />

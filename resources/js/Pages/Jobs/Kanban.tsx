@@ -7,7 +7,12 @@ import {
 } from '@heroicons/react/24/outline';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import Modal from '@/Components/Modal';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
 import { Alert, AlertDescription } from '@/Components/ui/alert';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
@@ -31,11 +36,11 @@ const COLUMNS: { status: JobStatus; label: string }[] = [
 ];
 
 const STATUS_CHIP: Record<JobStatus, string> = {
-    saved: 'bg-surface text-ink-muted',
-    applied: 'bg-brand-subtle text-brand',
-    interviewing: 'bg-brand-subtle text-brand-accent',
+    saved: 'bg-muted text-muted-foreground',
+    applied: 'bg-primary/10 text-primary',
+    interviewing: 'bg-primary/10 text-primary',
     offer: 'bg-success-subtle text-success-text',
-    rejected: 'bg-surface text-ink-faint',
+    rejected: 'bg-muted text-muted-foreground/70',
 };
 
 type FormState = {
@@ -63,33 +68,33 @@ function JobCard({ job, resume, highlighted }: { job: JobApplication; resume: Re
                     : undefined
             }
             className={cn(
-                'cursor-grab rounded-lg border border-surface-border/80 bg-white p-3 shadow-card',
+                'cursor-grab rounded-lg border border-border/80 bg-white p-3 shadow-sm',
                 'transition-[box-shadow,opacity,transform] duration-soft ease-soft',
-                'hover:border-surface-border hover:shadow-ambient',
+                'hover:border-border hover:shadow-md',
                 'active:cursor-grabbing motion-reduce:transition-none',
-                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1',
-                isDragging && 'scale-[1.03] opacity-95 shadow-ambient ring-1 ring-brand/20',
-                highlighted && 'ring-2 ring-brand',
+                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1',
+                isDragging && 'scale-[1.03] opacity-95 shadow-md ring-1 ring-primary/20',
+                highlighted && 'ring-2 ring-primary',
             )}
         >
-            <div className="text-sm font-bold text-ink">{job.role}</div>
-            <div className="text-xs font-medium text-ink-muted">{job.company}</div>
+            <div className="text-sm font-bold text-foreground">{job.role}</div>
+            <div className="text-xs font-medium text-muted-foreground">{job.company}</div>
             {resume && (
                 <div className="mt-1.5 flex items-center justify-between gap-2 text-xs">
-                    <span className="truncate font-medium text-ink-faint">
+                    <span className="truncate font-medium text-muted-foreground/70">
                         {resume.title} · {resume.score}/100
                     </span>
                     <Link
                         href={route('resumes.workstation', resume.id)}
                         onPointerDown={(e) => e.stopPropagation()}
-                        className="shrink-0 font-semibold text-brand underline-offset-2 hover:underline"
+                        className="shrink-0 font-semibold text-primary underline-offset-2 hover:underline"
                     >
                         Open resume
                     </Link>
                 </div>
             )}
             {job.follow_up_at && (
-                <div className="mt-1.5 text-xs font-semibold text-brand">
+                <div className="mt-1.5 text-xs font-semibold text-primary">
                     Next step: {job.follow_up_at}
                 </div>
             )}
@@ -116,22 +121,22 @@ function Column({
         <Shell
             className={cn(
                 'w-72 flex-none transition-shadow duration-soft ease-soft',
-                isOver && 'ring-2 ring-brand/25 shadow-lg',
+                isOver && 'ring-2 ring-primary/25 shadow-lg',
             )}
             innerClassName={cn(
                 'flex min-h-48 flex-col gap-2 p-2.5 transition-colors duration-soft ease-soft',
-                isOver && 'bg-brand-subtle/30',
+                isOver && 'bg-primary/10/30',
             )}
         >
             <div ref={setNodeRef} className="flex min-h-40 flex-1 flex-col gap-2">
                 <div className="flex items-center gap-2 px-1 pb-1">
-                    <span className="text-xs font-bold text-ink">{label}</span>
+                    <span className="text-xs font-bold text-foreground">{label}</span>
                     <Badge className={cn('rounded-full font-bold', STATUS_CHIP[status])}>
                         {jobs.length}
                     </Badge>
                 </div>
                 {jobs.length === 0 ? (
-                    <p className="px-1 py-6 text-center text-xs text-ink-faint">Drop here</p>
+                    <p className="px-1 py-6 text-center text-xs text-muted-foreground/70">Drop here</p>
                 ) : (
                     jobs.map((job) => (
                         <JobCard
@@ -188,13 +193,13 @@ function InterviewsEditor({ jobApplicationId, interviews }: { jobApplicationId: 
                 </Button>
             </div>
             {interviews.length === 0 ? (
-                <p className="mt-2 text-xs text-ink-faint">No interview rounds logged yet.</p>
+                <p className="mt-2 text-xs text-muted-foreground/70">No interview rounds logged yet.</p>
             ) : (
                 <div className="mt-2 space-y-2">
                     {interviews.map((interview) => (
-                        <div key={interview.id} className="rounded-lg border border-surface-border/80 p-2.5">
+                        <div key={interview.id} className="rounded-lg border border-border/80 p-2.5">
                             <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-ink">Round {interview.round}</span>
+                                <span className="text-xs font-bold text-foreground">Round {interview.round}</span>
                                 <Select
                                     defaultValue={interview.type ?? ''}
                                     onBlur={(e) => updateInterview(interview, { type: e.target.value || null })}
@@ -220,7 +225,7 @@ function InterviewsEditor({ jobApplicationId, interviews }: { jobApplicationId: 
                                     size="icon"
                                     onClick={() => deleteInterview(interview)}
                                     disabled={processingId === interview.id}
-                                    className="size-7 text-ink-faint hover:text-danger"
+                                    className="size-7 text-muted-foreground/70 hover:text-destructive"
                                     aria-label={`Delete round ${interview.round}`}
                                     title={`Delete round ${interview.round}`}
                                 >
@@ -420,11 +425,11 @@ export default function JobApplicationKanban({
             <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-6 lg:px-8">
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
                     <div>
-                        <p className="text-sm font-medium text-brand">Application desk</p>
-                        <h1 className="mt-1 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+                        <p className="text-sm font-medium text-primary">Application desk</p>
+                        <h1 className="mt-1 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                             Keep the next move visible.
                         </h1>
-                        <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-muted">
+                        <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
                             Track each role from saved to offer, then open the resume that matches the opportunity.
                         </p>
                     </div>
@@ -440,39 +445,39 @@ export default function JobApplicationKanban({
                 </div>
 
                 <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                    <Card className="gap-0 border-brand/20 bg-brand-subtle/50 py-4 shadow-card">
+                    <Card className="gap-0 border-primary/20 bg-primary/10/50 py-4 shadow-sm">
                         <CardContent>
-                            <p className="text-xs font-medium text-brand">Active pipeline</p>
-                            <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-ink">{activeApplications.length}</p>
-                            <p className="mt-1 text-xs text-ink-muted">of {localApplications.length} tracked roles</p>
+                            <p className="text-xs font-medium text-primary">Active pipeline</p>
+                            <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-foreground">{activeApplications.length}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">of {localApplications.length} tracked roles</p>
                         </CardContent>
                     </Card>
-                    <Card className="gap-0 border-surface-border bg-white py-4 shadow-card">
+                    <Card className="gap-0 border-border bg-white py-4 shadow-sm">
                         <CardContent>
-                            <p className="text-xs font-medium text-ink-muted">Interviews</p>
-                            <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-ink">{interviewing.length}</p>
-                            <p className="mt-1 text-xs text-ink-faint">needs preparation</p>
+                            <p className="text-xs font-medium text-muted-foreground">Interviews</p>
+                            <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-foreground">{interviewing.length}</p>
+                            <p className="mt-1 text-xs text-muted-foreground/70">needs preparation</p>
                         </CardContent>
                     </Card>
-                    <Card className="gap-0 border-surface-border bg-white py-4 shadow-card">
+                    <Card className="gap-0 border-border bg-white py-4 shadow-sm">
                         <CardContent>
-                            <p className="text-xs font-medium text-ink-muted">Offers</p>
-                            <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-ink">{offers.length}</p>
-                            <p className="mt-1 text-xs text-ink-faint">in the pipeline</p>
+                            <p className="text-xs font-medium text-muted-foreground">Offers</p>
+                            <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-foreground">{offers.length}</p>
+                            <p className="mt-1 text-xs text-muted-foreground/70">in the pipeline</p>
                         </CardContent>
                     </Card>
-                    <Card className="gap-0 border-surface-border bg-white py-4 shadow-card">
+                    <Card className="gap-0 border-border bg-white py-4 shadow-sm">
                         <CardContent>
-                            <p className="text-xs font-medium text-ink-muted">Next follow-up</p>
-                            <p className="mt-2 truncate text-2xl font-bold tracking-tight text-ink">{followUps[0]?.follow_up_at ?? 'None'}</p>
-                            <p className="mt-1 text-xs text-ink-faint">set a date on an application</p>
+                            <p className="text-xs font-medium text-muted-foreground">Next follow-up</p>
+                            <p className="mt-2 truncate text-2xl font-bold tracking-tight text-foreground">{followUps[0]?.follow_up_at ?? 'None'}</p>
+                            <p className="mt-1 text-xs text-muted-foreground/70">set a date on an application</p>
                         </CardContent>
                     </Card>
                 </div>
 
                 <div className="mb-5">
-                    <h2 className="text-base font-bold text-ink">Your pipeline</h2>
-                    <p className="mt-1 text-xs text-ink-muted">Drag a role to update its status.</p>
+                    <h2 className="text-base font-bold text-foreground">Your pipeline</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">Drag a role to update its status.</p>
                     {dragError && (
                         <Alert variant="destructive" className="mt-2">
                             <AlertDescription>{dragError}</AlertDescription>
@@ -482,11 +487,11 @@ export default function JobApplicationKanban({
 
                 {localApplications.length === 0 ? (
                     <Shell innerClassName="px-6 py-14 text-center sm:px-10">
-                        <BriefcaseIcon className="mx-auto size-8 text-brand" />
-                        <h3 className="mt-4 text-lg font-bold tracking-tight text-ink">
+                        <BriefcaseIcon className="mx-auto size-8 text-primary" />
+                        <h3 className="mt-4 text-lg font-bold tracking-tight text-foreground">
                             No applications yet
                         </h3>
-                        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ink-muted">
+                        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
                             Track roles from Saved through Offer. Add your first application, then
                             drag cards across columns as you move through the process.
                         </p>
@@ -521,9 +526,13 @@ export default function JobApplicationKanban({
 
             <AddJobModal open={addOpen} onClose={() => setAddOpen(false)} resumes={resumes ?? []} initial={addInitial} />
 
-            <Modal show={form !== null} onClose={closeForm} maxWidth="lg" title="Edit application">
+            <Dialog open={form !== null} onOpenChange={(next) => !next && closeForm()}>
+                <DialogContent className="flex max-h-[85dvh] w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+                    <DialogHeader className="border-b px-5 py-4 text-left">
+                        <DialogTitle className="text-sm font-bold">Edit application</DialogTitle>
+                    </DialogHeader>
                 {form && (
-                    <form onSubmit={submitForm} className="p-6">
+                    <form onSubmit={submitForm} className="min-h-0 flex-1 overflow-y-auto p-6">
                         {formError && (
                             <Alert variant="destructive" className="mb-4">
                                 <AlertDescription>{formError}</AlertDescription>
@@ -614,7 +623,7 @@ export default function JobApplicationKanban({
                         </div>
 
                         {form.id && (
-                            <div className="mt-6 border-t border-surface-border/80 pt-4">
+                            <div className="mt-6 border-t border-border/80 pt-4">
                                 <InterviewsEditor
                                     jobApplicationId={form.id}
                                     interviews={localApplications.find((job) => job.id === form.id)?.interviews ?? []}
@@ -646,7 +655,8 @@ export default function JobApplicationKanban({
                         </div>
                     </form>
                 )}
-            </Modal>
+                </DialogContent>
+            </Dialog>
 
             <ConfirmDialog
                 open={deleteTarget !== null}

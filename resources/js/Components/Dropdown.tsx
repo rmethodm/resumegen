@@ -104,14 +104,14 @@ const Content = ({
         >
             <div
                 className={cn(
-                    'absolute z-toast mt-2 rounded-md shadow-ambient',
+                    'absolute z-toast mt-2 rounded-md shadow-md',
                     alignmentClasses,
                     width === '48' && 'w-48',
                 )}
             >
                 <div
                     className={cn(
-                        'rounded-md border border-surface-border ring-1 ring-ink/5',
+                        'rounded-md border border-border ring-1 ring-foreground/5',
                         contentClasses,
                     )}
                 >
@@ -140,8 +140,8 @@ const DropdownLink = ({
                 }
             }}
             className={cn(
-                'block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft',
-                'hover:bg-surface focus:outline-hidden focus-visible:bg-surface',
+                'block w-full px-4 py-2 text-start text-sm leading-5 text-foreground transition-colors duration-soft ease-soft',
+                'hover:bg-muted focus:outline-hidden focus-visible:bg-muted',
                 className,
             )}
         >

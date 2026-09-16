@@ -57,7 +57,7 @@ export function BulletsField({
                     autolink: true,
                     defaultProtocol: 'https',
                     HTMLAttributes: {
-                        class: 'text-brand underline',
+                        class: 'text-primary underline',
                     },
                 },
             }),
@@ -70,15 +70,15 @@ export function BulletsField({
             attributes: {
                 ...(idPrefix ? { id: `${idPrefix}-editor` } : {}),
                 class: cn(
-                    'min-h-28 max-w-none px-3 py-2 text-sm text-ink outline-hidden',
+                    'min-h-28 max-w-none px-3 py-2 text-sm text-foreground outline-hidden',
                     '[&_ul]:my-0 [&_ul]:list-disc [&_ul]:pl-5',
                     '[&_li]:my-1 [&_li]:pl-0.5',
                     '[&_p]:my-0',
-                    '[&_a]:text-brand [&_a]:underline',
+                    '[&_a]:text-primary [&_a]:underline',
                     '[&_.is-editor-empty:first-child::before]:pointer-events-none',
                     '[&_.is-editor-empty:first-child::before]:float-left',
                     '[&_.is-editor-empty:first-child::before]:h-0',
-                    '[&_.is-editor-empty:first-child::before]:text-ink-faint',
+                    '[&_.is-editor-empty:first-child::before]:text-muted-foreground/70',
                     '[&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]',
                 ),
             },
@@ -144,15 +144,15 @@ export function BulletsField({
         <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between gap-2">
                 <Label className="text-xs">{label}</Label>
-                <p className="text-xs text-ink-faint">
+                <p className="text-xs text-muted-foreground/70">
                     {value.length}/{max} bullets · Markdown saved
                 </p>
             </div>
-            <div className="overflow-hidden rounded-md border border-surface-border bg-white shadow-xs focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30">
+            <div className="overflow-hidden rounded-md border border-border bg-white shadow-xs focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30">
                 <div
                     role="toolbar"
                     aria-label={`${label} formatting`}
-                    className="flex flex-wrap items-center gap-0.5 border-b border-surface-border/80 bg-surface/40 px-1.5 py-1"
+                    className="flex flex-wrap items-center gap-0.5 border-b border-border/80 bg-muted/40 px-1.5 py-1"
                 >
                     <ToolbarButton
                         label="Bold"
@@ -179,7 +179,7 @@ export function BulletsField({
                     >
                         <LinkIcon className="size-3.5" />
                     </ToolbarButton>
-                    <span className="mx-1 h-4 w-px bg-surface-border" aria-hidden />
+                    <span className="mx-1 h-4 w-px bg-border" aria-hidden />
                     <ToolbarButton
                         label="Bullet list"
                         active={editor.isActive('bulletList')}
@@ -193,7 +193,7 @@ export function BulletsField({
                 <EditorContent editor={editor} />
             </div>
             {value.length >= max && (
-                <p className="text-xs text-ink-muted">
+                <p className="text-xs text-muted-foreground">
                     Limit reached ({max}).
                 </p>
             )}
@@ -232,8 +232,8 @@ function ToolbarButton({
                 onClick();
             }}
             className={cn(
-                'h-7 min-w-7 gap-1 px-1.5 text-xs font-semibold text-ink-muted',
-                'data-[state=on]:bg-brand-subtle data-[state=on]:text-brand',
+                'h-7 min-w-7 gap-1 px-1.5 text-xs font-semibold text-muted-foreground',
+                'data-[state=on]:bg-primary/10 data-[state=on]:text-primary',
             )}
         >
             {children}

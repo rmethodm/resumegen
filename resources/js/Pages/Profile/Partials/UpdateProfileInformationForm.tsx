@@ -32,11 +32,11 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-sm font-bold text-ink">
+                <h2 className="text-sm font-bold text-foreground">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-sm text-ink-faint">
+                <p className="mt-1 text-sm text-muted-foreground/70">
                     Update your account's profile information and email address.
                 </p>
             </header>
@@ -74,13 +74,13 @@ export default function UpdateProfileInformation({
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
-                        <p className="mt-2 text-sm text-ink-muted">
+                        <p className="mt-2 text-sm text-muted-foreground">
                             Your email address is unverified.
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="rounded-md text-sm text-ink-muted underline hover:text-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                                className="rounded-md text-sm text-muted-foreground underline hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                             >
                                 Click here to re-send the verification email.
                             </Link>
@@ -105,7 +105,7 @@ export default function UpdateProfileInformation({
                         leave="motion-safe:transition motion-safe:ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-ink-muted">
+                        <p className="text-sm text-muted-foreground">
                             Saved.
                         </p>
                     </Transition>

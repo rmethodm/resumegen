@@ -64,13 +64,13 @@ export default function ResumesIndex({
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col gap-5">
                         <Shell innerClassName="p-5 sm:p-6">
-                            <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-faint">
+                            <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">
                                 Resumes
                             </p>
-                            <h1 className="mt-1 text-lg font-bold tracking-tight text-ink">
+                            <h1 className="mt-1 text-lg font-bold tracking-tight text-foreground">
                                 Available resume types
                             </h1>
-                            <p className="mt-1 max-w-2xl text-sm text-ink-muted">
+                            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
                                 Pick a template to start a new resume. Your existing resumes stay on
                                 the Dashboard; you can change the template later in the editor.
                             </p>
@@ -88,7 +88,7 @@ export default function ResumesIndex({
                                         innerClassName="flex h-full flex-col p-3"
                                     >
                                         <div
-                                            className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-surface-border bg-white shadow-xs"
+                                            className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-border bg-white shadow-xs"
                                             style={{
                                                 borderLeft: style.pageAccent
                                                     ? `3px solid ${style.pageAccent}`
@@ -104,10 +104,10 @@ export default function ResumesIndex({
                                         </div>
                                         <div className="mt-3 flex flex-1 flex-col gap-2">
                                             <div>
-                                                <h2 className="text-sm font-bold text-ink">
+                                                <h2 className="text-sm font-bold text-foreground">
                                                     {templateLabels[key]}
                                                 </h2>
-                                                <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+                                                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                                                     {templateDescriptions[key]}
                                                 </p>
                                             </div>
@@ -127,7 +127,7 @@ export default function ResumesIndex({
 
                         {comingSoon.length > 0 && (
                             <div className="flex flex-col gap-3">
-                                <h2 className="text-sm font-bold text-ink">More formats</h2>
+                                <h2 className="text-sm font-bold text-foreground">More formats</h2>
                                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                                     {comingSoon.map((format) => (
                                         <Shell
@@ -135,7 +135,7 @@ export default function ResumesIndex({
                                             className="flex flex-col"
                                             innerClassName="flex h-full flex-col p-3"
                                         >
-                                            <div className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-surface-border bg-white shadow-xs">
+                                            <div className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-border bg-white shadow-xs">
                                                 <img
                                                     src={format.url}
                                                     alt=""

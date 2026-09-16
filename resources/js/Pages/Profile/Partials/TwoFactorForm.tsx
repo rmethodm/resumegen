@@ -64,8 +64,8 @@ export default function TwoFactorForm({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-ink">Two-Factor Authentication</h2>
-                <p className="mt-1 text-sm text-ink-muted">
+                <h2 className="text-lg font-medium text-foreground">Two-Factor Authentication</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
                     Add extra security to your account using a time-based one-time password.
                 </p>
             </header>
@@ -88,11 +88,11 @@ export default function TwoFactorForm({
             {/* State 2: Pending confirmation */}
             {pending && qrCodeSvg && (
                 <div className="mt-6 space-y-4">
-                    <p className="text-sm text-ink-muted">
+                    <p className="text-sm text-muted-foreground">
                         Scan this QR code with your authenticator app, then enter the 6-digit code below to confirm.
                     </p>
                     <div
-                        className="inline-block rounded-sm border border-surface-border p-2"
+                        className="inline-block rounded-sm border border-border p-2"
                         dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
                     />
                     <form onSubmit={handleConfirm} className="space-y-4">
@@ -133,17 +133,17 @@ export default function TwoFactorForm({
 
                     {recoveryCodes && recoveryCodes.length > 0 && (
                         <div className="space-y-2">
-                            <p className="text-sm font-medium text-ink-muted">Recovery Codes</p>
+                            <p className="text-sm font-medium text-muted-foreground">Recovery Codes</p>
                             <p className="rounded-sm border border-warning/30 bg-warning-subtle p-2 text-sm text-amber-700">
                                 Save these somewhere safe — they won't be shown again.
                             </p>
-                            <pre className="rounded-sm bg-surface p-4 text-sm font-mono leading-relaxed">
+                            <pre className="rounded-sm bg-muted p-4 text-sm font-mono leading-relaxed">
                                 {recoveryCodes.join('\n')}
                             </pre>
                             <Button
                                 type="button"
                                 variant="link"
-                                className="h-auto p-0 text-sm text-brand hover:text-brand-accent"
+                                className="h-auto p-0 text-sm text-primary hover:text-primary"
                                 onClick={copyAll}
                             >
                                 {copied ? 'Copied!' : 'Copy all'}
@@ -156,7 +156,7 @@ export default function TwoFactorForm({
                             <Button
                                 type="submit"
                                 variant="link"
-                                className="h-auto p-0 text-sm text-ink-muted hover:text-ink"
+                                className="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
                                 disabled={regenForm.processing}
                             >
                                 Regenerate recovery codes

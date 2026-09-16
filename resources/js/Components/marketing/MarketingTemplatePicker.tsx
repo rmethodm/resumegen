@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import Modal from '@/Components/Modal';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 type Template = (typeof TEMPLATES)[number];
@@ -17,17 +23,17 @@ export function MarketingTemplatePicker() {
     return (
         <section className="px-4 pt-20 sm:px-6">
             <div className="mx-auto max-w-5xl text-center">
-                <h2 className="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+                <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
                     Pick a look. Change it anytime.
                 </h2>
-                <p className="mx-auto mt-3.5 max-w-md text-base leading-relaxed text-ink-muted">
+                <p className="mx-auto mt-3.5 max-w-md text-base leading-relaxed text-muted-foreground">
                     Four ATS-tuned templates. Switch with one click — your content reflows
                     instantly.
                 </p>
-                <div className="mx-auto mt-11 max-w-4xl rounded-3xl border border-surface-border bg-accent-50/60 p-4 shadow-[0_16px_44px_rgba(0,0,0,0.08)] sm:p-7">
+                <div className="mx-auto mt-11 max-w-4xl rounded-3xl border border-border bg-accent/60 p-4 shadow-[0_16px_44px_rgba(0,0,0,0.08)] sm:p-7">
                     <div className="flex items-center justify-between px-1 pb-4">
-                        <span className="text-sm font-bold text-ink">Choose a template</span>
-                        <span className="text-xs text-ink-faint">Your content stays put</span>
+                        <span className="text-sm font-bold text-foreground">Choose a template</span>
+                        <span className="text-xs text-muted-foreground/70">Your content stays put</span>
                     </div>
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
                         {TEMPLATES.map((template) => (
@@ -39,10 +45,10 @@ export function MarketingTemplatePicker() {
                                 className={cn(
                                     'cursor-zoom-in rounded-2xl bg-white p-2 text-left transition-transform duration-soft ease-soft',
                                     'hover:-translate-y-0.5 motion-reduce:hover:translate-y-0',
-                                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2',
+                                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                                     template.selected
-                                        ? 'border-[3px] border-brand shadow-[0_8px_20px_rgba(0,0,0,0.14)]'
-                                        : 'border border-surface-border',
+                                        ? 'border-[3px] border-primary shadow-[0_8px_20px_rgba(0,0,0,0.14)]'
+                                        : 'border border-border',
                                 )}
                             >
                                 <img
@@ -57,14 +63,14 @@ export function MarketingTemplatePicker() {
                                         className={cn(
                                             'text-xs',
                                             template.selected
-                                                ? 'font-bold text-ink'
+                                                ? 'font-bold text-foreground'
                                                 : 'font-semibold text-neutral-700',
                                         )}
                                     >
                                         {template.name}
                                     </span>
                                     {template.selected && (
-                                        <span className="inline-flex size-4.5 items-center justify-center rounded-full bg-brand text-[10px] text-white">
+                                        <span className="inline-flex size-4.5 items-center justify-center rounded-full bg-primary text-[10px] text-white">
                                             ✓
                                         </span>
                                     )}
@@ -75,21 +81,25 @@ export function MarketingTemplatePicker() {
                 </div>
             </div>
 
-            <Modal
-                show={viewing !== null}
-                maxWidth="xl"
-                onClose={() => setViewing(null)}
-                title={viewing?.name}
-                description="Full template preview"
-            >
-                {viewing && (
-                    <img
-                        src={viewing.src}
-                        alt={`${viewing.name} template — full preview`}
-                        className="block w-full"
-                    />
-                )}
-            </Modal>
+            <Dialog open={viewing !== null} onOpenChange={(next) => !next && setViewing(null)}>
+                <DialogContent className="flex max-h-[85dvh] w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-xl">
+                    <DialogHeader className="gap-1 border-b px-5 py-4 text-left">
+                        <DialogTitle className="text-sm font-bold">{viewing?.name}</DialogTitle>
+                        <DialogDescription className="text-xs">
+                            Full template preview
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="min-h-0 flex-1 overflow-y-auto">
+                        {viewing && (
+                            <img
+                                src={viewing.src}
+                                alt={`${viewing.name} template — full preview`}
+                                className="block w-full"
+                            />
+                        )}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </section>
     );
 }

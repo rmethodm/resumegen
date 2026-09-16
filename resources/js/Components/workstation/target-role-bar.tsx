@@ -1,30 +1,21 @@
 import AutocompleteInput from '@/Components/AutocompleteInput';
-import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { keywordsFor } from '@/lib/resume-analysis';
 import { cn } from '@/lib/utils';
 
-/**
- * Thin Edit-tab target controls. Job description paste lives on Optimize only
- * so the same JD field is not entered twice.
- */
+/** Thin target-role/company controls, shown on the Optimize tab above the JD paste field. */
 export function TargetRoleBar({
     targetRole,
     onChange,
     targetCompany,
     onTargetCompanyChange,
-    hasJobDescription = false,
-    onOpenOptimize,
     className,
 }: {
     targetRole: string;
     onChange: (targetRole: string) => void;
     targetCompany: string;
     onTargetCompanyChange: (targetCompany: string) => void;
-    /** True when a JD is already saved — show a jump chip to Optimize. */
-    hasJobDescription?: boolean;
-    onOpenOptimize?: () => void;
     className?: string;
 }) {
     const familyKeywords = keywordsFor(targetRole);
@@ -33,7 +24,7 @@ export function TargetRoleBar({
     return (
         <div
             className={cn(
-                'rounded-xl border border-surface-border border-l-[3px] border-l-brand bg-white px-3 py-2.5 sm:px-4',
+                'rounded-xl border border-border border-l-[3px] border-l-primary bg-white px-3 py-2.5 sm:px-4',
                 className,
             )}
         >
@@ -41,7 +32,7 @@ export function TargetRoleBar({
                 <div className="min-w-0 flex-1">
                     <Label
                         htmlFor="field-target-role-bar"
-                        className="mb-1 block text-xs font-medium text-ink-muted"
+                        className="mb-1 block text-xs font-medium text-muted-foreground"
                     >
                         Target role
                     </Label>
@@ -51,14 +42,14 @@ export function TargetRoleBar({
                         value={targetRole}
                         allowCreate={false}
                         placeholder="e.g. Senior Software Engineer"
-                        className="h-9 w-full rounded-md border border-surface-border bg-white px-3 text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus-visible:border-brand focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-brand"
+                        className="h-9 w-full rounded-md border border-border bg-white px-3 text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus-visible:border-primary focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
                         onChange={onChange}
                     />
                 </div>
                 <div className="min-w-0 sm:w-52">
                     <Label
                         htmlFor="field-target-company"
-                        className="mb-1 block text-xs font-medium text-ink-muted"
+                        className="mb-1 block text-xs font-medium text-muted-foreground"
                     >
                         Target company
                     </Label>
@@ -77,25 +68,13 @@ export function TargetRoleBar({
             </div>
 
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-                <p className="text-xs leading-snug text-ink-muted">
+                <p className="text-xs leading-snug text-muted-foreground">
                     {targetRole.trim() === ''
                         ? 'Sets the Keywords score band. Not printed on the resume.'
                         : recognized
-                          ? 'Role family recognized — keyword chips update in the score strip.'
+                          ? 'Role family recognized — keyword chips update below.'
                           : 'Tip: include design, engineer, data, product, or market.'}
                 </p>
-                {onOpenOptimize && (
-                    <Button
-                        type="button"
-                        variant="link"
-                        onClick={onOpenOptimize}
-                        className="h-auto p-0 text-xs font-semibold"
-                    >
-                        {hasJobDescription
-                            ? 'Job description on Optimize →'
-                            : 'Paste job description on Optimize →'}
-                    </Button>
-                )}
             </div>
         </div>
     );

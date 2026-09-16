@@ -10,7 +10,6 @@ import {
     HomeIcon,
     MagnifyingGlassIcon,
     ShareIcon,
-    SparklesIcon,
     UserCircleIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -23,6 +22,7 @@ import {
     useState,
 } from 'react';
 import { useFlashToasts } from '@/hooks/use-flash-toasts';
+import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/lib/utils';
 
 type NavItem = { label: string; href: string; active: boolean; icon: typeof HomeIcon };
@@ -48,6 +48,7 @@ export default function Authenticated({
     const { user } = usePage().props.auth;
     const { url } = usePage();
     useFlashToasts();
+    useTheme();
     // Dark mode is incomplete across app surfaces (design-review Important #10).
     // Force light until Shell/inputs/tables have full dark coverage — hide the toggle.
     useEffect(() => {
@@ -101,10 +102,10 @@ export default function Authenticated({
     }
 
     return (
-        <div className="min-h-dvh bg-surface dark:bg-gray-900">
+        <div className="min-h-dvh bg-muted dark:bg-gray-900">
             <a
                 href="#main-content"
-                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink focus:shadow-ambient"
+                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-foreground focus:shadow-md"
             >
                 Skip to content
             </a>
@@ -113,7 +114,7 @@ export default function Authenticated({
                 nav itself lives only in the sidebar/drawer below (lg:hidden here). */}
             <div
                 className={cn(
-                    'sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-surface-border/80',
+                    'sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border/80',
                     'bg-white/90 px-3 backdrop-blur-xl lg:hidden',
                     'pt-[max(0px,env(safe-area-inset-top))]',
                     'pl-[max(0.75rem,env(safe-area-inset-left))]',
@@ -127,7 +128,7 @@ export default function Authenticated({
                         type="button"
                         onClick={() => setCommandOpen(true)}
                         aria-label="Open navigation search"
-                        className="rounded-lg p-2 text-ink-muted transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        className="rounded-lg p-2 text-muted-foreground transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-muted hover:text-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
                         <MagnifyingGlassIcon className="h-5 w-5" />
                     </button>
@@ -136,7 +137,7 @@ export default function Authenticated({
                         aria-label="Toggle navigation"
                         aria-expanded={mobileOpen}
                         onClick={() => setMobileOpen((v) => !v)}
-                        className="rounded-lg p-2 text-ink-muted transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        className="rounded-lg p-2 text-muted-foreground transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-muted hover:text-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
                         {mobileOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
                     </button>
@@ -154,8 +155,8 @@ export default function Authenticated({
             {/* Vertical nav — persistent sidebar at lg+, off-canvas drawer below it. */}
             <aside
                 className={cn(
-                    'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-surface-border/80',
-                    'bg-white/95 shadow-ambient backdrop-blur-xl',
+                    'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-border/80',
+                    'bg-white/95 shadow-md backdrop-blur-xl',
                     'transition-transform duration-soft ease-soft motion-reduce:transition-none',
                     'pl-[env(safe-area-inset-left)]',
                     mobileOpen ? 'translate-x-0' : '-translate-x-full',
@@ -174,16 +175,16 @@ export default function Authenticated({
                         aria-haspopup="dialog"
                         aria-label="Open navigation search"
                         className={cn(
-                            'flex w-full items-center gap-2 rounded-full border border-surface-border bg-surface px-3 py-2 text-left text-sm',
-                            'text-ink-faint transition-[border-color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
-                            'hover:border-brand/30 hover:bg-white',
-                            'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25',
+                            'flex w-full items-center gap-2 rounded-full border border-border bg-muted px-3 py-2 text-left text-sm',
+                            'text-muted-foreground/70 transition-[border-color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
+                            'hover:border-primary/30 hover:bg-white',
+                            'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25',
                             'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400',
                         )}
                     >
                         <MagnifyingGlassIcon className="h-4 w-4 shrink-0" />
                         <span className="flex-1 truncate">Go to…</span>
-                        <span className="rounded-md border border-surface-border bg-white px-1.5 py-0.5 text-xs font-semibold text-ink-faint dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">
+                        <span className="rounded-md border border-border bg-white px-1.5 py-0.5 text-xs font-semibold text-muted-foreground/70 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">
                             ⌘K
                         </span>
                     </button>
@@ -198,37 +199,28 @@ export default function Authenticated({
                             className={cn(
                                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium',
                                 'transition-[color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
-                                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2',
+                                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2',
                                 item.active
-                                    ? 'bg-brand-subtle text-brand shadow-shell dark:bg-gray-700 dark:text-white'
-                                    : 'text-ink-muted hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
+                                    ? 'bg-primary/10 text-primary shadow-sm dark:bg-gray-700 dark:text-white'
+                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
                             )}
                         >
                             <item.icon className="size-5 shrink-0" />
                             {item.label}
                         </Link>
                     ))}
-
-                    {/* Plain page load — /shadcn is a standalone HTML page, not an Inertia route. */}
-                    <a
-                        href={route('shadcn.demo')}
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink-muted transition-[color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                        <SparklesIcon className="size-5 shrink-0" />
-                        Shadcn
-                    </a>
                 </nav>
 
-                <div className="shrink-0 border-t border-surface-border/80 p-3 dark:border-gray-700/80">
+                <div className="shrink-0 border-t border-border/80 p-3 dark:border-gray-700/80">
                     <Dropdown>
                         <Dropdown.Trigger>
                             <button
                                 type="button"
-                                className="flex min-h-11 w-full items-center gap-2 rounded-lg py-1.5 pl-1 pr-2 text-sm font-medium text-ink-muted transition-[color,background-color] duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
+                                className="flex min-h-11 w-full items-center gap-2 rounded-lg py-1.5 pl-1 pr-2 text-sm font-medium text-muted-foreground transition-[color,background-color] duration-soft ease-soft motion-reduce:transition-none hover:bg-muted hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25"
                             >
                                 <span
                                     aria-hidden="true"
-                                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-subtle text-xs font-bold tracking-wide text-brand"
+                                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold tracking-wide text-primary"
                                 >
                                     {initials}
                                 </span>
@@ -240,7 +232,7 @@ export default function Authenticated({
                             <button
                                 type="button"
                                 onClick={logOut}
-                                className="block w-full px-4 py-2 text-start text-sm leading-5 text-ink transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-surface focus:bg-surface focus:outline-hidden"
+                                className="block w-full px-4 py-2 text-start text-sm leading-5 text-foreground transition-colors duration-soft ease-soft motion-reduce:transition-none hover:bg-muted focus:bg-muted focus:outline-hidden"
                             >
                                 Log out
                             </button>

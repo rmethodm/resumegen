@@ -17,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 // 2FA fields are deliberately absent: every write is a direct property
 // assignment + save() from app code, never from request-controlled input, so
 // they should never be mass-assignable.
-#[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'profile', 'stale_nudge_sent_at', 'view_nudge_sent_at', 'preferred_template', 'target_role', 'industry', 'years_experience', 'registration_ip', 'oauth_provider', 'oauth_provider_id', 'prefers_apply_wizard', 'dismissed_checklist_at'])]
+#[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'profile', 'stale_nudge_sent_at', 'view_nudge_sent_at', 'preferred_template', 'target_role', 'industry', 'years_experience', 'registration_ip', 'oauth_provider', 'oauth_provider_id', 'prefers_apply_wizard', 'dismissed_checklist_at', 'theme'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {

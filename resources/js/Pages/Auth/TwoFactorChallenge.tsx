@@ -20,7 +20,7 @@ export default function TwoFactorChallenge() {
         <GuestLayout>
             <Head title="Two-Factor Authentication" />
 
-            <div className="mb-4 text-sm text-ink-muted">
+            <div className="mb-4 text-sm text-muted-foreground">
                 {mode === 'recovery'
                     ? 'Enter one of your emergency recovery codes.'
                     : 'Enter the 6-digit code from your authenticator app.'}
@@ -67,7 +67,7 @@ export default function TwoFactorChallenge() {
                     <Button
                         type="button"
                         variant="link"
-                        className="h-auto p-0 text-ink-muted"
+                        className="h-auto p-0 text-muted-foreground"
                         onClick={() => setMode('recovery')}
                     >
                         Use a recovery code instead
@@ -77,7 +77,7 @@ export default function TwoFactorChallenge() {
                     <Button
                         type="button"
                         variant="link"
-                        className="h-auto p-0 text-ink-muted"
+                        className="h-auto p-0 text-muted-foreground"
                         onClick={() => setMode('totp')}
                     >
                         Use authenticator app instead
@@ -90,7 +90,7 @@ export default function TwoFactorChallenge() {
                             e.preventDefault();
                             router.post(route('logout'));
                         }}
-                        className="focus-ring rounded-sm text-ink-muted underline hover:text-ink"
+                        className="focus-ring rounded-sm text-muted-foreground underline hover:text-foreground"
                     >
                         Sign out
                     </a>

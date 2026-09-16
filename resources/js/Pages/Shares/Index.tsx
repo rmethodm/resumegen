@@ -1,4 +1,4 @@
-import Modal from '@/Components/Modal';
+import { Dialog, DialogContent, DialogTitle } from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
@@ -48,7 +48,7 @@ function Sparkline({ values }: { values: number[] }) {
         .join(' ');
 
     return (
-        <svg viewBox="0 0 100 28" preserveAspectRatio="none" className="h-7 w-24 text-brand" aria-hidden="true">
+        <svg viewBox="0 0 100 28" preserveAspectRatio="none" className="h-7 w-24 text-primary" aria-hidden="true">
             <polyline
                 points={points}
                 fill="none"
@@ -124,8 +124,8 @@ export default function SharesIndex() {
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h1 className="text-xl font-extrabold tracking-tight text-ink">Shares</h1>
-                            <p className="mt-1 text-sm text-ink-muted">
+                            <h1 className="text-xl font-extrabold tracking-tight text-foreground">Shares</h1>
+                            <p className="mt-1 text-sm text-muted-foreground">
                                 Every link you've shared, and who has looked at it
                             </p>
                         </div>
@@ -138,11 +138,11 @@ export default function SharesIndex() {
 
                     {links.length === 0 ? (
                         <Shell innerClassName="flex flex-col items-center justify-center px-6 py-16 text-center">
-                            <div className="mb-4 inline-flex items-center justify-center rounded-lg bg-brand-subtle p-4">
-                                <LinkIcon className="h-8 w-8 text-brand" />
+                            <div className="mb-4 inline-flex items-center justify-center rounded-lg bg-primary/10 p-4">
+                                <LinkIcon className="h-8 w-8 text-primary" />
                             </div>
-                            <p className="text-sm font-semibold text-ink">No share links yet</p>
-                            <p className="mt-1 max-w-sm text-sm text-ink-muted">
+                            <p className="text-sm font-semibold text-foreground">No share links yet</p>
+                            <p className="mt-1 max-w-sm text-sm text-muted-foreground">
                                 Create a link to send a resume to an employer and track who opens it.
                             </p>
                             {resumes.length > 0 && (
@@ -166,23 +166,23 @@ export default function SharesIndex() {
                                     {links.map((link) => (
                                         <TableRow key={link.id} className={cn(!link.is_active && 'opacity-60')}>
                                             <TableCell>
-                                                <p className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+                                                <p className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                                                     <span className="truncate" title={link.resume_name}>{link.resume_name}</span>
                                                     {link.has_password && (
                                                         <LockClosedIcon
-                                                            className="h-3.5 w-3.5 shrink-0 text-ink-faint"
+                                                            className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70"
                                                             aria-label="Password protected"
                                                         />
                                                     )}
                                                 </p>
-                                                <p className="mt-0.5 text-xs text-ink-muted">{link.expires_human}</p>
+                                                <p className="mt-0.5 text-xs text-muted-foreground">{link.expires_human}</p>
                                             </TableCell>
                                             <TableCell>
                                                 <Sparkline values={link.trend} />
                                             </TableCell>
                                             <TableCell className="tabular-nums">
-                                                <span className="block text-sm font-medium text-ink">{link.views}</span>
-                                                <span className="text-xs text-ink-muted">
+                                                <span className="block text-sm font-medium text-foreground">{link.views}</span>
+                                                <span className="text-xs text-muted-foreground">
                                                     {link.visitors} {link.visitors === 1 ? 'visitor' : 'visitors'}
                                                 </span>
                                             </TableCell>
@@ -216,13 +216,14 @@ export default function SharesIndex() {
                 </div>
             </div>
 
-            <Modal show={creating} onClose={() => setCreating(false)} maxWidth="md">
-                <form onSubmit={submitCreate} className="p-6">
-                    <h2 className="text-lg font-semibold text-ink">New share link</h2>
-                    <p className="mt-1 text-xs text-ink-muted">Each resume gets one link.</p>
+            <Dialog open={creating} onOpenChange={setCreating}>
+                <DialogContent className="sm:max-w-md">
+                <form onSubmit={submitCreate}>
+                    <DialogTitle className="text-lg font-semibold text-foreground">New share link</DialogTitle>
+                    <p className="mt-1 text-xs text-muted-foreground">Each resume gets one link.</p>
 
                     <div className="mt-4">
-                        <Label htmlFor="share-create-resume" className="text-xs font-medium text-ink-muted">
+                        <Label htmlFor="share-create-resume" className="text-xs font-medium text-muted-foreground">
                             Resume
                         </Label>
                         <Select
@@ -238,7 +239,7 @@ export default function SharesIndex() {
                             ))}
                         </Select>
                         {createForm.errors.resume_id && (
-                            <span className="mt-1 block text-xs text-danger" role="alert">
+                            <span className="mt-1 block text-xs text-destructive" role="alert">
                                 {createForm.errors.resume_id}
                             </span>
                         )}
@@ -253,17 +254,19 @@ export default function SharesIndex() {
                         </Button>
                     </div>
                 </form>
-            </Modal>
+                </DialogContent>
+            </Dialog>
 
-            <Modal show={!!detailFor} onClose={() => setDetailId(null)} maxWidth="2xl">
+            <Dialog open={!!detailFor} onOpenChange={(next) => !next && setDetailId(null)}>
+                <DialogContent className="max-h-[85dvh] w-full overflow-y-auto sm:max-w-2xl">
                 {detailFor && (
-                    <div className="p-6">
-                        <h2 className="text-lg font-semibold text-ink">{detailFor.resume_name}</h2>
+                    <div>
+                        <DialogTitle className="text-lg font-semibold text-foreground">{detailFor.resume_name}</DialogTitle>
                         <Button
                             type="button"
                             variant="ghost"
                             onClick={() => copy(detailFor)}
-                            className="mb-5 mt-1 h-auto min-h-11 max-w-full justify-start px-0 text-left text-xs font-normal text-ink-muted hover:bg-transparent hover:text-brand"
+                            className="mb-5 mt-1 h-auto min-h-11 max-w-full justify-start px-0 text-left text-xs font-normal text-muted-foreground hover:bg-transparent hover:text-primary"
                         >
                             <span className="truncate">{detailFor.url}</span>
                             <span className="shrink-0 font-medium">
@@ -271,19 +274,19 @@ export default function SharesIndex() {
                             </span>
                         </Button>
 
-                        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-faint">
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground/70">
                             Recent visits
                         </p>
                         {detailFor.visits.length === 0 ? (
-                            <p className="py-6 text-center text-sm text-ink-muted">No visits yet.</p>
+                            <p className="py-6 text-center text-sm text-muted-foreground">No visits yet.</p>
                         ) : (
-                            <ul className="divide-y divide-surface-border text-sm">
+                            <ul className="divide-y divide-border text-sm">
                                 {detailFor.visits.map((v) => (
                                     <li key={v.id} className="flex items-center justify-between gap-4 py-2">
-                                        <span className={cn('truncate', v.email ? 'text-ink' : 'text-ink-muted')}>
+                                        <span className={cn('truncate', v.email ? 'text-foreground' : 'text-muted-foreground')}>
                                             {v.email ?? 'Anonymous visitor'}
                                         </span>
-                                        <span className="shrink-0 text-xs text-ink-muted" title={v.when_exact}>
+                                        <span className="shrink-0 text-xs text-muted-foreground" title={v.when_exact}>
                                             {v.when}
                                         </span>
                                     </li>
@@ -291,17 +294,17 @@ export default function SharesIndex() {
                             </ul>
                         )}
 
-                        <div className="mt-6 border-t border-surface-border pt-4">
+                        <div className="mt-6 border-t border-border pt-4">
                             <div className="mb-3 flex items-center justify-between">
-                                <p className="text-xs font-semibold uppercase tracking-wide text-ink-faint">Link settings</p>
-                                <span className="text-xs text-ink-muted" aria-live="polite">
-                                    {saving ? 'Saving…' : saveError ? <span className="text-danger">{saveError}</span> : ''}
+                                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground/70">Link settings</p>
+                                <span className="text-xs text-muted-foreground" aria-live="polite">
+                                    {saving ? 'Saving…' : saveError ? <span className="text-destructive">{saveError}</span> : ''}
                                 </span>
                             </div>
                             <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
                                 {resumes.length > 0 && (
                                     <div>
-                                        <Label htmlFor="share-detail-resume" className="text-xs font-medium text-ink-muted">
+                                        <Label htmlFor="share-detail-resume" className="text-xs font-medium text-muted-foreground">
                                             Resume
                                         </Label>
                                         <Select
@@ -322,7 +325,7 @@ export default function SharesIndex() {
                                 )}
 
                                 <div>
-                                    <Label htmlFor="share-detail-expires" className="text-xs font-medium text-ink-muted">
+                                    <Label htmlFor="share-detail-expires" className="text-xs font-medium text-muted-foreground">
                                         Expires
                                     </Label>
                                     <Input
@@ -341,7 +344,7 @@ export default function SharesIndex() {
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="share-detail-password" className="text-xs font-medium text-ink-muted">
+                                    <Label htmlFor="share-detail-password" className="text-xs font-medium text-muted-foreground">
                                         <LockClosedIcon className="h-3.5 w-3.5" />
                                         Password {detailFor.has_password && '(set)'}
                                     </Label>
@@ -369,7 +372,7 @@ export default function SharesIndex() {
                                 {detailFor.has_password &&
                                     (confirmRemovePassword ? (
                                         <span className="flex items-center gap-2">
-                                            <span className="text-xs text-ink-muted">Anyone with the link can open it.</span>
+                                            <span className="text-xs text-muted-foreground">Anyone with the link can open it.</span>
                                             <Button
                                                 type="button"
                                                 variant="destructive"
@@ -407,7 +410,7 @@ export default function SharesIndex() {
                                 {detailFor.is_active &&
                                     (confirmExpire ? (
                                         <span className="flex items-center gap-2 sm:ml-auto">
-                                            <span className="text-xs text-ink-muted">Expire this link now?</span>
+                                            <span className="text-xs text-muted-foreground">Expire this link now?</span>
                                             <Button
                                                 type="button"
                                                 variant="destructive"
@@ -436,7 +439,7 @@ export default function SharesIndex() {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="min-h-11 border-danger/30 text-danger hover:bg-danger-subtle sm:ml-auto"
+                                            className="min-h-11 border-destructive/30 text-destructive hover:bg-destructive/10 sm:ml-auto"
                                             onClick={() => setConfirmExpire(true)}
                                         >
                                             Expire link
@@ -446,7 +449,8 @@ export default function SharesIndex() {
                         </div>
                     </div>
                 )}
-            </Modal>
+                </DialogContent>
+            </Dialog>
         </AuthenticatedLayout>
     );
 }

@@ -1,5 +1,12 @@
 import { CheckIcon } from '@heroicons/react/24/outline';
-import Modal from '@/Components/Modal';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
 import { templateKeys, templateLabels } from '@/lib/resume-templates';
 import { templateThumbStyles } from '@/lib/template-thumb-styles';
@@ -34,21 +41,15 @@ export function TemplatePickerModal({
         previewHeadline.trim() !== '' ? previewHeadline.trim() : 'Professional headline';
 
     return (
-        <Modal
-            show={open}
-            onClose={() => onOpenChange(false)}
-            maxWidth="3xl"
-            title="Choose a template"
-            description="Thumbnails use your current name and headline."
-            footer={
-                <div className="flex justify-end">
-                    <Button type="button" onClick={() => onOpenChange(false)}>
-                        Done
-                    </Button>
-                </div>
-            }
-        >
-            <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3 md:grid-cols-4">
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="flex max-h-[85dvh] w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
+                <DialogHeader className="gap-1 border-b px-5 py-4 text-left">
+                    <DialogTitle className="text-sm font-bold">Choose a template</DialogTitle>
+                    <DialogDescription className="text-xs">
+                        Thumbnails use your current name and headline.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="grid min-h-0 flex-1 grid-cols-2 gap-3 overflow-y-auto p-4 sm:grid-cols-3 md:grid-cols-4">
                         {sortedKeys.map((key) => {
                             const selected = key === template;
                             const style = templateThumbStyles[key];
@@ -64,12 +65,12 @@ export function TemplatePickerModal({
                                     className={cn(
                                         'focus-ring flex flex-col gap-1.5 rounded-lg border p-2 text-left transition-colors',
                                         selected
-                                            ? 'border-brand ring-2 ring-brand/30'
-                                            : 'border-surface-border hover:border-surface-border',
+                                            ? 'border-primary ring-2 ring-primary/30'
+                                            : 'border-border hover:border-border',
                                     )}
                                 >
                                     <div
-                                        className="relative aspect-8.5/11 w-full overflow-hidden rounded-sm border border-surface-border bg-white shadow-xs"
+                                        className="relative aspect-8.5/11 w-full overflow-hidden rounded-sm border border-border bg-white shadow-xs"
                                         style={{
                                             borderLeft: style.pageAccent
                                                 ? `3px solid ${style.pageAccent}`
@@ -122,31 +123,37 @@ export function TemplatePickerModal({
                                                         key={i}
                                                         className={
                                                             style.entryStyle === 'cards'
-                                                                ? 'rounded-sm border border-surface-border bg-surface p-0.5'
+                                                                ? 'rounded-sm border border-border bg-muted p-0.5'
                                                                 : style.entryStyle === 'ruled'
-                                                                  ? 'border-b border-surface-border pb-0.5'
+                                                                  ? 'border-b border-border pb-0.5'
                                                                   : ''
                                                         }
                                                     >
                                                         <div className="h-0.5 w-[80%] rounded-sm bg-neutral-300" />
-                                                        <div className="mt-0.5 h-0.5 w-full rounded-sm bg-surface" />
+                                                        <div className="mt-0.5 h-0.5 w-full rounded-sm bg-muted" />
                                                     </div>
                                                 ))}
                                             </div>
                                         </div>
                                         {selected && (
-                                            <span className="absolute top-1 right-1 rounded-full bg-brand p-0.5 text-white">
+                                            <span className="absolute top-1 right-1 rounded-full bg-primary p-0.5 text-white">
                                                 <CheckIcon className="size-2.5" />
                                             </span>
                                         )}
                                     </div>
-                                    <span className="truncate text-xs font-medium text-ink">
+                                    <span className="truncate text-xs font-medium text-foreground">
                                         {templateLabels[key]}
                                     </span>
                                 </button>
                             );
                         })}
-            </div>
-        </Modal>
+                </div>
+                <DialogFooter className="border-t px-5 py-3">
+                    <Button type="button" onClick={() => onOpenChange(false)}>
+                        Done
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }

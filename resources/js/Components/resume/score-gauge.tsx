@@ -75,13 +75,13 @@ export function ScoreGauge({
                     }}
                 />
                 <span
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center text-3xl font-extrabold tabular-nums text-ink"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center text-3xl font-extrabold tabular-nums text-foreground"
                     style={{ fontSize: size * 0.17 }}
                 >
                     {score ?? '—'}
                 </span>
             </div>
-            <span className="mt-1 text-xs font-medium text-ink-muted">
+            <span className="mt-1 text-xs font-medium text-muted-foreground">
                 {scoreLabel(score)}
             </span>
         </div>

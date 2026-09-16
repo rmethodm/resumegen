@@ -1,6 +1,11 @@
 import { Link, router } from '@inertiajs/react';
 import { FormEvent, useEffect, useState } from 'react';
-import Modal from '@/Components/Modal';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
 import { Alert, AlertDescription } from '@/Components/ui/alert';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -89,8 +94,12 @@ export function AddJobModal({
     }
 
     return (
-        <Modal show={open} onClose={onClose} maxWidth="lg" title="Add job">
-            <form onSubmit={submit} className="p-6">
+        <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
+            <DialogContent className="flex max-h-[85dvh] w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+                <DialogHeader className="border-b px-5 py-4 text-left">
+                    <DialogTitle className="text-sm font-bold">Add job</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={submit} className="min-h-0 flex-1 overflow-y-auto p-6">
                 {error && (
                     <Alert variant="destructive" className="mb-4">
                         <AlertDescription>{error}</AlertDescription>
@@ -152,7 +161,7 @@ export function AddJobModal({
                                 </option>
                             ))}
                         </Select>
-                        <p className="mt-1 text-xs text-ink-faint">
+                        <p className="mt-1 text-xs text-muted-foreground/70">
                             The copy is a new version in the same group. Your original is not changed.
                         </p>
                     </div>
@@ -162,7 +171,7 @@ export function AddJobModal({
                     {showWizardLink ? (
                         <Link
                             href={route('apply.wizard')}
-                            className="text-xs font-medium text-brand underline-offset-2 hover:underline"
+                            className="text-xs font-medium text-primary underline-offset-2 hover:underline"
                         >
                             Use the step-by-step wizard
                         </Link>
@@ -178,7 +187,8 @@ export function AddJobModal({
                         </Button>
                     </div>
                 </div>
-            </form>
-        </Modal>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 }

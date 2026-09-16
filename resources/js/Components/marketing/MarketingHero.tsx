@@ -19,32 +19,32 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
     return (
         <section className="relative overflow-hidden bg-white px-4 pb-0 pt-16 sm:px-6 sm:pt-20">
             <div
-                className="pointer-events-none absolute -right-40 -top-56 size-[480px] rounded-full border-[80px] border-accent-50"
+                className="pointer-events-none absolute -right-40 -top-56 size-[480px] rounded-full border-[80px] border-accent"
                 aria-hidden
             />
             <div
-                className="pointer-events-none absolute -bottom-24 -left-40 size-[420px] rounded-full border-[70px] border-accent-50"
+                className="pointer-events-none absolute -bottom-24 -left-40 size-[420px] rounded-full border-[70px] border-accent"
                 aria-hidden
             />
             <div
-                className="pointer-events-none absolute left-1/2 top-0 h-125 w-200 -translate-x-1/2 rounded-full bg-brand/10 blur-[120px]"
+                className="pointer-events-none absolute left-1/2 top-0 h-125 w-200 -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]"
                 aria-hidden
             />
 
             <div className="relative mx-auto max-w-3xl text-center">
-                <span className="inline-flex items-center gap-2 rounded-full border border-surface-border bg-accent-50 px-4 py-1.5 text-xs font-bold text-accent-700">
+                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-4 py-1.5 text-xs font-bold text-accent-700">
                     ✓ Free forever — really
                 </span>
-                <h1 className="mt-6 text-4xl font-extrabold leading-[1.06] tracking-tighter text-ink text-balance sm:text-5xl lg:text-[4.25rem]">
+                <h1 className="mt-6 text-4xl font-extrabold leading-[1.06] tracking-tighter text-foreground text-balance sm:text-5xl lg:text-[4.25rem]">
                     Make a resume.
                     <br />
                     Skip the{' '}
-                    <span className="inline-block -rotate-[1.5deg] rounded-2xl bg-brand px-4 pb-1.5 text-white">
+                    <span className="inline-block -rotate-[1.5deg] rounded-2xl bg-primary px-4 pb-1.5 text-white">
                         paywall
                     </span>
                     .
                 </h1>
-                <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-ink-muted sm:text-[19px]">
+                <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-[19px]">
                     Templates, exports, share links, application tracking: all of it, unlimited,
                     without ever seeing an upgrade button.
                 </p>
@@ -52,10 +52,10 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                     <Link
                         href={ctaHref}
                         className={cn(
-                            'group inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-base font-bold text-white',
+                            'group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-base font-bold text-white',
                             'shadow-[0_12px_28px_rgba(0,0,0,0.18)] transition-[background-color,transform] duration-soft ease-soft',
                             'hover:bg-accent-600 active:scale-[0.98] motion-reduce:active:scale-100',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white',
                         )}
                     >
                         Start building. It&apos;s free
@@ -66,9 +66,9 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                     <a
                         href="#how-it-works"
                         className={cn(
-                            'inline-flex items-center rounded-full border border-surface-border bg-white px-6 py-3.5 text-base font-semibold text-ink',
-                            'transition-colors duration-soft ease-soft hover:bg-accent-50',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white',
+                            'inline-flex items-center rounded-full border border-border bg-white px-6 py-3.5 text-base font-semibold text-foreground',
+                            'transition-colors duration-soft ease-soft hover:bg-accent',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white',
                         )}
                     >
                         See how it works
@@ -78,7 +78,7 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                     {CHIPS.map((chip) => (
                         <span
                             key={chip.label}
-                            className="rounded-full border border-surface-border bg-accent-50/60 px-4 py-2 text-[13px] font-semibold text-ink-muted"
+                            className="rounded-full border border-border bg-accent/60 px-4 py-2 text-[13px] font-semibold text-muted-foreground"
                         >
                             {chip.icon} {chip.label}
                         </span>
@@ -88,12 +88,12 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
 
             {/* Product frame — stylized Workstation (editor fields + live template preview) */}
             <div className="relative mx-auto mt-14 max-w-4xl" aria-hidden>
-                <div className="overflow-hidden rounded-t-3xl border border-b-0 border-surface-border bg-white shadow-[0_-20px_80px_rgba(0,0,0,0.08)]">
-                    <div className="flex items-center gap-2 border-b border-surface-border px-5 py-3">
+                <div className="overflow-hidden rounded-t-3xl border border-b-0 border-border bg-white shadow-[0_-20px_80px_rgba(0,0,0,0.08)]">
+                    <div className="flex items-center gap-2 border-b border-border px-5 py-3">
                         <span className="size-2.5 rounded-full bg-neutral-200" />
                         <span className="size-2.5 rounded-full bg-neutral-200" />
                         <span className="size-2.5 rounded-full bg-neutral-200" />
-                        <span className="ml-3 hidden rounded-md bg-accent-50 px-3 py-1 text-[11px] text-ink-faint sm:block">
+                        <span className="ml-3 hidden rounded-md bg-accent px-3 py-1 text-[11px] text-muted-foreground/70 sm:block">
                             resumegen.app — Workstation
                         </span>
                         <span className="ml-auto rounded-full bg-success-subtle px-2.5 py-0.5 text-[10px] font-bold text-success-text">
@@ -104,12 +104,12 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                         <div className="space-y-4">
                             {FRAME_FIELDS.map((field) => (
                                 <div key={field.label}>
-                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-ink-faint">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/70">
                                         {field.label}
                                     </div>
                                     <div
                                         className={cn(
-                                            'mt-1.5 h-7 rounded-lg bg-accent-50',
+                                            'mt-1.5 h-7 rounded-lg bg-accent',
                                             field.width,
                                         )}
                                     />
@@ -127,10 +127,10 @@ export function MarketingHero({ ctaHref }: { ctaHref: string }) {
                                 loading="lazy"
                                 decoding="async"
                             />
-                            <span className="absolute -left-3 top-6 rounded-full bg-white px-3 py-1.5 text-[11px] font-bold text-ink shadow-ambient">
+                            <span className="absolute -left-3 top-6 rounded-full bg-white px-3 py-1.5 text-[11px] font-bold text-foreground shadow-md">
                                 ATS check ✓
                             </span>
-                            <span className="absolute -right-2 bottom-8 rounded-full bg-brand px-3 py-1.5 text-[11px] font-bold text-white shadow-ambient">
+                            <span className="absolute -right-2 bottom-8 rounded-full bg-primary px-3 py-1.5 text-[11px] font-bold text-white shadow-md">
                                 PDF ready
                             </span>
                         </div>

@@ -55,8 +55,6 @@ Route::post('/r/{token}/unlock', [PublicResumeShareController::class, 'unlock'])
     ->name('share.unlock');
 
 Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function () {
-    Route::view('/shadcn', 'shadcn-demo')->name('shadcn.demo');
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -89,6 +87,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
     Route::patch('/user/checklist/dismiss', [UserPreferenceController::class, 'dismissChecklist'])->name('checklist.dismiss');
     Route::patch('/user/apply-wizard-preference', [UserPreferenceController::class, 'setApplyWizardPreference'])->name('apply-wizard.preference');
+    Route::patch('/user/theme', [UserPreferenceController::class, 'setTheme'])->name('theme.update');
 
     Route::get('/settings/starter-profile', [StarterProfileController::class, 'edit'])->name('starter-profile.edit');
     Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');

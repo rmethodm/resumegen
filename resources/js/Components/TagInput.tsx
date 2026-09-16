@@ -126,13 +126,13 @@ export default function TagInput({
     return (
         <div ref={containerRef} className="relative">
             <div
-                className="flex flex-wrap gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 shadow-xs focus-within:border-brand focus-within:ring-1 focus-within:ring-brand cursor-text"
+                className="flex flex-wrap gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 shadow-xs focus-within:border-primary focus-within:ring-1 focus-within:ring-primary cursor-text"
                 onClick={() => inputRef.current?.focus()}
             >
                 {tags.map((tag, i) => (
                     <span
                         key={i}
-                        className="flex items-center gap-1 rounded-full bg-brand-subtle px-2 py-0.5 text-xs text-brand-accent"
+                        className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary"
                     >
                         {tag}
                         <button
@@ -141,7 +141,7 @@ export default function TagInput({
                                 e.stopPropagation();
                                 removeTag(i);
                             }}
-                            className="text-brand hover:text-brand-accent leading-none"
+                            className="text-primary hover:text-primary leading-none"
                         >
                             ×
                         </button>
@@ -163,7 +163,7 @@ export default function TagInput({
                     }}
                     placeholder={tags.length ? '' : placeholder}
                     maxLength={60}
-                    className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-sm outline-hidden focus:ring-0 focus-visible:ring-2 focus-visible:ring-brand/25"
+                    className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-sm outline-hidden focus:ring-0 focus-visible:ring-2 focus-visible:ring-primary/25"
                     autoComplete="off"
                 />
             </div>
@@ -178,7 +178,7 @@ export default function TagInput({
                             }}
                             className={`cursor-pointer px-3 py-2 text-sm ${
                                 i === activeIndex
-                                    ? 'bg-brand-subtle text-brand-accent'
+                                    ? 'bg-primary/10 text-primary'
                                     : 'text-gray-900 hover:bg-gray-50'
                             }`}
                         >

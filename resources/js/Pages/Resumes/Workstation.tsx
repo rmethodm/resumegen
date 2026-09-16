@@ -11,7 +11,6 @@ import { SectionFields } from '@/Components/workstation/inspector';
 import { ResumePreview } from '@/Components/resume/resume-preview';
 import { ExportChecklistModal } from '@/Components/workstation/export-checklist-modal';
 import { NotesPanel, type WorkstationNote } from '@/Components/workstation/notes-panel';
-import { SectionPanel } from '@/Components/workstation/section-panel';
 import {
     SnapshotsPanel,
     type WorkstationSnapshot,
@@ -21,6 +20,7 @@ import {
     OptimizePanel,
 } from '@/Components/workstation/optimize-panel';
 import { PdfPreviewFrame } from '@/Components/workstation/pdf-preview-frame';
+import { ScoreRingTrio } from '@/Components/workstation/score-ring-trio';
 import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
@@ -31,11 +31,6 @@ import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useValidContact } from '@/hooks/use-valid-contact';
-import {
-    addKeywordAsSkill,
-    analyzeResume,
-    type ScoreChecklistItem,
-} from '@/lib/resume-analysis';
 import { exportChecklist, type ExportCheck } from '@/lib/export-checklist';
 import { resumeFormattingKey } from '@/lib/resume-formatting';
 import { applyTemplatePreset } from '@/lib/template-presets';
@@ -58,9 +53,9 @@ import type {
 
 function focusAndFlash(element: HTMLElement): void {
     element.focus();
-    element.classList.add('ring-2', 'ring-brand', 'ring-offset-1');
+    element.classList.add('ring-2', 'ring-primary', 'ring-offset-1');
     window.setTimeout(() => {
-        element.classList.remove('ring-2', 'ring-brand', 'ring-offset-1');
+        element.classList.remove('ring-2', 'ring-primary', 'ring-offset-1');
     }, 1500);
 }
 
@@ -117,8 +112,6 @@ export default function Workstation({
     const [exportOpen, setExportOpen] = useState(false);
     const [exportFormat, setExportFormat] = useState<'pdf' | 'docx'>('pdf');
     const [showSideTools, setShowSideTools] = useState(false);
-    // Live score from the draft (B7) — same rules as PHP ResumeAnalysis.
-    const liveAnalysis = useMemo(() => analyzeResume(draft), [draft]);
     const plainText = useMemo(() => resumeToPlainText(draft), [draft]);
     const exportGate = useMemo(() => exportChecklist(draft), [draft]);
     const formattingKey = useMemo(() => resumeFormattingKey(draft), [draft]);
@@ -290,39 +283,6 @@ export default function Workstation({
             ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function addKeyword(keyword: string) {
-        setDraft((current) => addKeywordAsSkill(current, keyword));
-    }
-
-    function jumpChecklist(item: ScoreChecklistItem) {
-        setTab('Edit');
-
-        // Target-role checklist item focuses the sticky bar, not Contact fields.
-        if (item.id === 'target-role' || item.fieldId === 'field-target-role') {
-            window.setTimeout(() => {
-                const element = document.getElementById('field-target-role-bar');
-
-                if (element instanceof HTMLElement) {
-                    focusAndFlash(element);
-                }
-            }, 50);
-
-            return;
-        }
-
-        scrollToSection(item.section);
-
-        if (item.fieldId) {
-            window.setTimeout(() => {
-                const element = document.getElementById(item.fieldId!);
-
-                if (element instanceof HTMLElement) {
-                    focusAndFlash(element);
-                }
-            }, 300);
-        }
-    }
-
     // Native HTML5 drag-and-drop — no library needed for a plain reorder.
     function handleDrop(target: ResumeSectionKey) {
         if (!draggedSection || draggedSection === target) {
@@ -456,7 +416,7 @@ export default function Workstation({
                             onDrop={() => handleDrop(sectionKey)}
                             onDragEnd={() => setDraggedSection(null)}
                             className={cn(
-                                'gap-0 overflow-hidden border-surface-border py-0',
+                                'gap-0 overflow-hidden border-border py-0',
                                 'transition-opacity duration-soft ease-soft',
                                 draggedSection === sectionKey && 'opacity-50',
                             )}
@@ -474,13 +434,13 @@ export default function Workstation({
                                     toggleSectionCollapsed(sectionKey);
                                 }}
                                 className={cn(
-                                    'flex cursor-default select-none items-center gap-2 bg-surface/50 px-4 py-2.5',
-                                    !collapsed && 'border-b border-surface-border/80',
+                                    'flex cursor-default select-none items-center gap-2 bg-muted/50 px-4 py-2.5',
+                                    !collapsed && 'border-b border-border/80',
                                 )}
                             >
                                 <Bars3Icon
                                     className={cn(
-                                        'size-4 shrink-0 text-ink-faint',
+                                        'size-4 shrink-0 text-muted-foreground/70',
                                         isMobile ? 'hidden' : 'cursor-grab',
                                     )}
                                 />
@@ -492,18 +452,18 @@ export default function Workstation({
                                     onClick={() =>
                                         toggleSectionCollapsed(sectionKey)
                                     }
-                                    className="h-auto gap-1 rounded-sm p-0 text-sm font-semibold text-ink hover:bg-transparent"
+                                    className="h-auto gap-1 rounded-sm p-0 text-sm font-semibold text-foreground hover:bg-transparent"
                                 >
                                     <ChevronDownIcon
                                         className={cn(
-                                            'size-3 shrink-0 text-ink-faint transition-transform duration-soft ease-soft',
+                                            'size-3 shrink-0 text-muted-foreground/70 transition-transform duration-soft ease-soft',
                                             collapsed && '-rotate-90',
                                         )}
                                     />
                                     {sectionLabels[sectionKey]}
                                 </Button>
                                 {collapsed && (
-                                    <span className="text-xs font-medium tracking-normal text-ink-faint normal-case">
+                                    <span className="text-xs font-medium tracking-normal text-muted-foreground/70 normal-case">
                                         Collapsed
                                     </span>
                                 )}
@@ -513,7 +473,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 px-2 text-xs text-ink-faint hover:text-danger"
+                                            className="h-8 px-2 text-xs text-muted-foreground/70 hover:text-destructive"
                                             onClick={() =>
                                                 hideSection(sectionKey)
                                             }
@@ -601,7 +561,7 @@ export default function Workstation({
         <AuthenticatedLayout>
             <Head title={draft.title} />
 
-            <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-surface">
+            <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-muted">
                 {(offline || saveStatus === 'error') && (
                     <Alert
                         variant={
@@ -744,39 +704,29 @@ export default function Workstation({
                     )}
                 >
                     <div className="mx-auto flex w-full max-w-[1944px] flex-col gap-4">
-                        {tab === 'Edit' && (
-                            <TargetRoleBar
-                                targetRole={draft.target_role}
-                                targetCompany={draft.target_company ?? ''}
-                                onChange={(target_role) => setDraft((current) => ({ ...current, target_role }))}
-                                onTargetCompanyChange={(target_company) => setDraft((current) => ({ ...current, target_company }))}
-                                hasJobDescription={Boolean(draft.target_job_description?.trim())}
-                                onOpenOptimize={() => setTab('Optimize')}
-                            />
-                        )}
-                        <SectionPanel
-                            resumeId={id}
-                            analysis={liveAnalysis}
-                            resume={draft}
-                            selected={section}
-                            onSelect={scrollToSection}
-                            onAddSection={addSection}
-                            onAddKeyword={addKeyword}
-                            onJumpChecklist={jumpChecklist}
-                            onOpenOptimize={() => setTab('Optimize')}
-                        />
-
                         <div className="flex flex-col gap-6">
                             <div className="flex min-w-0 flex-1 flex-col gap-5">
                                 {tab === 'Optimize' && (
-                                    <OptimizePanel
-                                        draft={draft}
-                                        onChange={setDraft}
-                                    >
-                                        <AtsPlainTextBlock
-                                            plainText={plainText}
+                                    <>
+                                        <ScoreRingTrio
+                                            resume={draft}
+                                            jd={draft.target_job_description ?? ''}
                                         />
-                                    </OptimizePanel>
+                                        <TargetRoleBar
+                                            targetRole={draft.target_role}
+                                            targetCompany={draft.target_company ?? ''}
+                                            onChange={(target_role) => setDraft((current) => ({ ...current, target_role }))}
+                                            onTargetCompanyChange={(target_company) => setDraft((current) => ({ ...current, target_company }))}
+                                        />
+                                        <OptimizePanel
+                                            draft={draft}
+                                            onChange={setDraft}
+                                        >
+                                            <AtsPlainTextBlock
+                                                plainText={plainText}
+                                            />
+                                        </OptimizePanel>
+                                    </>
                                 )}
 
                                 {tab === 'Edit' && (

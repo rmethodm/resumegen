@@ -28,10 +28,10 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
 
-            <h1 className="mb-1 text-center text-xl font-bold text-ink">
+            <h1 className="mb-1 text-center text-xl font-bold text-foreground">
                 Create your account
             </h1>
-            <p className="mb-6 text-center text-sm text-ink-muted">
+            <p className="mb-6 text-center text-sm text-muted-foreground">
                 Start building a resume that gets noticed.
             </p>
 
@@ -111,13 +111,13 @@ export default function Register() {
                     />
                 </div>
 
-                <Label className="mt-4 items-start gap-2 text-xs font-normal text-ink-muted">
+                <Label className="mt-4 items-start gap-2 text-xs font-normal text-muted-foreground">
                     <Checkbox className="mt-0.5" required />
                     <span>
                         I agree to the{' '}
                         <Link
                             href={route('legal.terms')}
-                            className="focus-ring rounded-sm font-semibold text-brand hover:underline"
+                            className="focus-ring rounded-sm font-semibold text-primary hover:underline"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -126,7 +126,7 @@ export default function Register() {
                         and{' '}
                         <Link
                             href={route('legal.privacy')}
-                            className="focus-ring rounded-sm font-semibold text-brand hover:underline"
+                            className="focus-ring rounded-sm font-semibold text-primary hover:underline"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -139,7 +139,7 @@ export default function Register() {
                     Create account
                 </Button>
 
-                <p className="mt-4 text-center text-sm text-ink-muted">
+                <p className="mt-4 text-center text-sm text-muted-foreground">
                     Already have an account?{' '}
                     <Link href={route('login')} className="font-bold">
                         Log in

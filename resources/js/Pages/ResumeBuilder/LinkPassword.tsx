@@ -10,12 +10,12 @@ export default function LinkPassword({ token, label }: { token: string; label: s
     return (
         <PublicLayout>
             <Head title="Password required" />
-            <div className="flex min-h-screen items-center justify-center bg-surface">
+            <div className="flex min-h-screen items-center justify-center bg-muted">
                 <div className="w-full max-w-sm px-6 text-center">
-                    <LockClosedIcon className="mx-auto mb-6 size-10 text-ink-faint" />
+                    <LockClosedIcon className="mx-auto mb-6 size-10 text-muted-foreground/70" />
 
-                    <h1 className="mb-3 text-2xl font-semibold text-ink">This resume is password protected</h1>
-                    <p className="mb-6 text-sm leading-relaxed text-ink-muted">
+                    <h1 className="mb-3 text-2xl font-semibold text-foreground">This resume is password protected</h1>
+                    <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
                         {label
                             ? `Enter the password you were given for "${label}".`
                             : 'Enter the password you were given to view it.'}
@@ -37,7 +37,7 @@ export default function LinkPassword({ token, label }: { token: string; label: s
                             placeholder="Password"
                         />
                         {form.errors.password && (
-                            <p className="mt-2 text-xs text-danger">{form.errors.password}</p>
+                            <p className="mt-2 text-xs text-destructive">{form.errors.password}</p>
                         )}
                         <Button
                             type="submit"

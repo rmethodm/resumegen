@@ -41,7 +41,7 @@ function Bar({ w, dark = false }: { w: string; dark?: boolean }) {
         <span
             className={cn(
                 'h-1.5 rounded-full',
-                dark ? 'bg-ink/70' : 'bg-brand/30',
+                dark ? 'bg-foreground/70' : 'bg-primary/30',
             )}
             style={{ width: w }}
         />
@@ -49,7 +49,7 @@ function Bar({ w, dark = false }: { w: string; dark?: boolean }) {
 }
 
 function Dot() {
-    return <span className="size-1 shrink-0 rounded-full bg-ink/60" />;
+    return <span className="size-1 shrink-0 rounded-full bg-foreground/60" />;
 }
 
 /** A wordless sketch of how the layout arranges skills on the page. */
@@ -124,7 +124,7 @@ export function BulletStyleThumb({ style }: { style: ResumeBulletStyle }) {
                 <div className="flex flex-col gap-1.5">
                     {['70%', '55%'].map((w, index) => (
                         <span key={w} className="flex items-center gap-1.5">
-                            <span className="text-[9px] font-semibold text-ink-muted">
+                            <span className="text-[9px] font-semibold text-muted-foreground">
                                 {index + 1}.
                             </span>
                             <Bar w={w} />
@@ -198,7 +198,7 @@ export function Field({
                 <p
                     id={messageId}
                     role="alert"
-                    className="text-xs text-danger"
+                    className="text-xs text-destructive"
                 >
                     {error}
                 </p>
@@ -288,7 +288,7 @@ export function MonthYearField({
                 />
             </div>
             {unparsed !== '' && (
-                <p className="text-xs text-ink-muted">
+                <p className="text-xs text-muted-foreground">
                     Currently “{unparsed}”. Picking a month or year replaces it.
                 </p>
             )}
@@ -414,7 +414,7 @@ export function UrlField({
                 }
             />
             {checking && (
-                <p id={messageId} className="text-xs text-ink-muted">
+                <p id={messageId} className="text-xs text-muted-foreground">
                     Checking if this site is online…
                 </p>
             )}
@@ -422,7 +422,7 @@ export function UrlField({
                 <p
                     id={messageId}
                     role="alert"
-                    className="text-xs text-danger"
+                    className="text-xs text-destructive"
                 >
                     {reachabilityError}
                 </p>
@@ -551,7 +551,7 @@ export function EntryCard({
         <div
             onDragOver={dragHandle?.onDragOver}
             className={cn(
-                'flex flex-col rounded-lg border border-surface-border bg-white',
+                'flex flex-col rounded-lg border border-border bg-white',
                 'transition-opacity duration-soft ease-soft',
                 dragHandle?.dragging && 'opacity-50',
             )}
@@ -559,7 +559,7 @@ export function EntryCard({
             <div
                 className={cn(
                     'flex items-center gap-1.5 px-3 py-2.5',
-                    expanded && 'border-b border-surface-border/80',
+                    expanded && 'border-b border-border/80',
                 )}
             >
                 {dragHandle && (
@@ -583,7 +583,7 @@ export function EntryCard({
                                 );
                             }
                         }}
-                        className="size-7 shrink-0 cursor-grab self-start p-0.5 text-ink-faint hover:bg-transparent active:cursor-grabbing"
+                        className="size-7 shrink-0 cursor-grab self-start p-0.5 text-muted-foreground/70 hover:bg-transparent active:cursor-grabbing"
                         aria-label={`Reorder ${title} — drag, or Alt+Arrow keys`}
                     >
                         <Bars3Icon className="size-3.5" />
@@ -598,16 +598,16 @@ export function EntryCard({
                 >
                     <ChevronDownIcon
                         className={cn(
-                            'mt-0.5 size-3.5 shrink-0 text-ink-faint transition-transform duration-soft ease-soft',
+                            'mt-0.5 size-3.5 shrink-0 text-muted-foreground/70 transition-transform duration-soft ease-soft',
                             !expanded && '-rotate-90',
                         )}
                     />
                     <span className="min-w-0">
-                        <span className="block text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase">
+                        <span className="block text-xs font-semibold tracking-[0.06em] text-muted-foreground/70 uppercase">
                             {title}
                         </span>
                         {!expanded && summary ? (
-                            <span className="mt-0.5 block truncate text-xs font-normal tracking-normal text-ink-muted normal-case">
+                            <span className="mt-0.5 block truncate text-xs font-normal tracking-normal text-muted-foreground normal-case">
                                 {summary}
                             </span>
                         ) : null}
@@ -618,7 +618,7 @@ export function EntryCard({
                     size="icon"
                     aria-label={`Remove ${title}`}
                     onClick={onRemove}
-                    className="size-7 shrink-0 text-ink-faint hover:text-danger"
+                    className="size-7 shrink-0 text-muted-foreground/70 hover:text-destructive"
                 >
                     <TrashIcon className="size-3.5" />
                 </Button>
@@ -651,12 +651,12 @@ export function AddButton({
                 size="sm"
                 onClick={onClick}
                 disabled={disabled}
-                className="self-start border-dashed border-surface-border text-ink-muted hover:border-brand hover:text-brand"
+                className="self-start border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary"
             >
                 <PlusIcon className="size-3.5" /> {label}
             </Button>
             {disabled && disabledReason && (
-                <p className="text-xs text-ink-faint">{disabledReason}</p>
+                <p className="text-xs text-muted-foreground/70">{disabledReason}</p>
             )}
         </div>
     );

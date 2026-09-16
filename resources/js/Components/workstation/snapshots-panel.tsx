@@ -63,10 +63,10 @@ export function SnapshotsPanel({
 
     return (
         <Card className="gap-0 p-4">
-            <h3 className="mb-1 text-xs font-semibold text-ink-muted">
+            <h3 className="mb-1 text-xs font-semibold text-muted-foreground">
                 Checkpoints
             </h3>
-            <p className="mb-3 text-xs text-ink-muted">
+            <p className="mb-3 text-xs text-muted-foreground">
                 Manual snapshots of this version. Restore rewrites the live
                 document.
             </p>
@@ -90,19 +90,19 @@ export function SnapshotsPanel({
             </div>
 
             {snapshots.length === 0 ? (
-                <p className="text-xs text-ink-muted">No checkpoints yet.</p>
+                <p className="text-xs text-muted-foreground">No checkpoints yet.</p>
             ) : (
                 <ul className="space-y-2">
                     {snapshots.map((snapshot) => (
                         <li
                             key={snapshot.id}
-                            className="flex items-center gap-2 rounded-md border border-surface-border px-2 py-1.5"
+                            className="flex items-center gap-2 rounded-md border border-border px-2 py-1.5"
                         >
                             <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium text-ink">
+                                <p className="truncate text-sm font-medium text-foreground">
                                     {snapshot.label || 'Untitled checkpoint'}
                                 </p>
-                                <p className="text-xs text-ink-faint">
+                                <p className="text-xs text-muted-foreground/70">
                                     {snapshot.created_at_human}
                                 </p>
                             </div>
@@ -131,7 +131,7 @@ export function SnapshotsPanel({
                                         label: snapshot.label || 'Untitled checkpoint',
                                     })
                                 }
-                                className="h-auto p-0 text-xs text-ink-faint hover:bg-transparent hover:text-danger"
+                                className="h-auto p-0 text-xs text-muted-foreground/70 hover:bg-transparent hover:text-destructive"
                             >
                                 Delete
                             </Button>

@@ -42,7 +42,7 @@ function joinSummary(...parts: Array<string | null | undefined>): string {
 }
 
 const autocompleteFieldClass =
-    'flex h-10 w-full min-w-0 rounded-md border border-surface-border bg-white px-3 py-1 text-sm shadow-xs outline-hidden transition-colors placeholder:text-ink-faint focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30';
+    'flex h-10 w-full min-w-0 rounded-md border border-border bg-white px-3 py-1 text-sm shadow-xs outline-hidden transition-colors placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30';
 
 type RepeatedKey = 'experiences' | 'projects' | 'education' | 'certificates';
 
@@ -171,7 +171,7 @@ export function SummaryFields({
                     onChange({ ...resume, summary: event.target.value })
                 }
             />
-            <p className="text-xs text-ink-muted">
+            <p className="text-xs text-muted-foreground">
                 {summary.length} / 2000 characters
             </p>
         </div>
@@ -597,7 +597,7 @@ export function SkillsFields({
             <div
                 id="field-skills"
                 tabIndex={-1}
-                className="flex flex-col gap-2 rounded-md outline-hidden focus:ring-2 focus:ring-brand/50 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2"
+                className="flex flex-col gap-2 rounded-md outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
             >
                 <div className="flex items-center justify-between gap-2">
                     <Label className="text-xs">Skills</Label>
@@ -615,7 +615,7 @@ export function SkillsFields({
                 </div>
 
                 {atCap && (
-                    <p className="text-xs text-ink-muted">
+                    <p className="text-xs text-muted-foreground">
                         Limit reached ({MAX_SKILLS}).
                     </p>
                 )}

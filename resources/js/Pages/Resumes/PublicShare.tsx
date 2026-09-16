@@ -39,7 +39,7 @@ export default function PublicShare({
     }
 
     return (
-        <div className="flex min-h-dvh flex-col bg-surface">
+        <div className="flex min-h-dvh flex-col bg-muted">
             <Head title={`${resume.full_name}'s resume`} />
 
             <div
@@ -51,12 +51,12 @@ export default function PublicShare({
                 <header
                     className={cn(
                         'mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3',
-                        'rounded-2xl border border-surface-border/80 bg-white/90 px-4 py-3 shadow-ambient backdrop-blur-xl',
+                        'rounded-2xl border border-border/80 bg-white/90 px-4 py-3 shadow-md backdrop-blur-xl',
                     )}
                 >
                     <div className="flex min-w-0 items-center gap-3">
                         <BrandMark href="/" size="sm" />
-                        <span className="truncate text-sm font-medium text-ink-muted">
+                        <span className="truncate text-sm font-medium text-muted-foreground">
                             Shared by {resume.full_name}
                         </span>
                     </div>
@@ -89,7 +89,7 @@ export default function PublicShare({
                     className="w-full max-w-[8.5in]"
                     innerClassName="overflow-hidden bg-white p-3 sm:p-5"
                 >
-                    <div className="rounded-md bg-white shadow-card ring-1 ring-ink/5">
+                    <div className="rounded-md bg-white shadow-sm ring-1 ring-foreground/5">
                         <ResumePreview resume={resume} />
                     </div>
                 </Shell>
@@ -117,7 +117,7 @@ function AccessGate({
     };
 
     return (
-        <div className="flex min-h-dvh flex-col bg-surface">
+        <div className="flex min-h-dvh flex-col bg-muted">
             <Head title="Enter your details to view this resume" />
 
             <div className="flex flex-1 flex-col items-center justify-center px-4 py-10">
@@ -127,10 +127,10 @@ function AccessGate({
 
                 <Shell className="w-full max-w-sm" innerClassName="p-6">
                     <form onSubmit={submit}>
-                        <h1 className="text-sm font-bold text-ink">
+                        <h1 className="text-sm font-bold text-foreground">
                             Enter your details to view this resume
                         </h1>
-                        <p className="mt-1 text-xs text-ink-muted">
+                        <p className="mt-1 text-xs text-muted-foreground">
                             The sender has restricted who can view this link.
                         </p>
 
@@ -138,7 +138,7 @@ function AccessGate({
                             <>
                                 <Label
                                     htmlFor="share-gate-email"
-                                    className="mt-4 text-xs font-medium text-ink"
+                                    className="mt-4 text-xs font-medium text-foreground"
                                 >
                                     Email
                                 </Label>
@@ -153,7 +153,7 @@ function AccessGate({
                                     placeholder="you@example.com"
                                 />
                                 {errors.email && (
-                                    <p className="mt-1 text-xs text-danger">{errors.email}</p>
+                                    <p className="mt-1 text-xs text-destructive">{errors.email}</p>
                                 )}
                             </>
                         )}
@@ -162,7 +162,7 @@ function AccessGate({
                             <>
                                 <Label
                                     htmlFor="share-gate-password"
-                                    className="mt-4 text-xs font-medium text-ink"
+                                    className="mt-4 text-xs font-medium text-foreground"
                                 >
                                     Password
                                 </Label>
@@ -178,7 +178,7 @@ function AccessGate({
                                     placeholder="Password"
                                 />
                                 {errors.password && (
-                                    <p className="mt-1 text-xs text-danger">{errors.password}</p>
+                                    <p className="mt-1 text-xs text-destructive">{errors.password}</p>
                                 )}
                             </>
                         )}
@@ -198,16 +198,16 @@ function AccessGate({
 function BrandFooter() {
     return (
         <footer className="px-4 py-4 text-center">
-            <p className="text-xs text-ink-faint">
+            <p className="text-xs text-muted-foreground/70">
                 Shared with{' '}
                 <a
                     href="/"
-                    className="focus-ring rounded-sm font-medium text-ink-muted underline-offset-2 transition-colors duration-soft ease-soft hover:text-ink hover:underline"
+                    className="focus-ring rounded-sm font-medium text-muted-foreground underline-offset-2 transition-colors duration-soft ease-soft hover:text-foreground hover:underline"
                 >
                     Resumegen
                 </a>
                 {' · '}
-                <a href={route('legal.privacy')} className="focus-ring rounded-sm hover:text-ink hover:underline">
+                <a href={route('legal.privacy')} className="focus-ring rounded-sm hover:text-foreground hover:underline">
                     Privacy
                 </a>
             </p>

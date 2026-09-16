@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 /**
  * Card container. Matches the top nav bar's corners and border
- * (rounded-lg, 1px border-surface-border/80) for a consistent chrome.
+ * (rounded-lg, 1px border-border/80) for a consistent chrome.
  */
 export function Shell({
     className,
@@ -14,7 +14,7 @@ export function Shell({
     return (
         <div
             className={cn(
-                'rounded-lg border border-surface-border/80 bg-white shadow-ambient dark:border-gray-700/80 dark:bg-gray-800/90',
+                'rounded-lg border border-border/80 bg-white shadow-md dark:border-gray-700/80 dark:bg-gray-800/90',
                 className,
             )}
             {...props}

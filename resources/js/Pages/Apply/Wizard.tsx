@@ -101,7 +101,7 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                             key={s}
                             className={cn(
                                 'rounded-full px-3 py-1',
-                                i === index ? 'bg-brand text-white' : i < index ? 'bg-brand-subtle text-brand' : 'bg-surface text-ink-faint',
+                                i === index ? 'bg-primary text-white' : i < index ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground/70',
                             )}
                         >
                             {i + 1}. {s}
@@ -118,7 +118,7 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
 
                     {step === 'Job' && (
                         <div className="space-y-4">
-                            <h1 className="text-lg font-bold text-ink">Which job?</h1>
+                            <h1 className="text-lg font-bold text-foreground">Which job?</h1>
                             <div>
                                 <Label>Company</Label>
                                 <Input value={company} onChange={(e) => setCompany(e.target.value)} className="mt-1 block w-full" required />
@@ -136,14 +136,14 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
 
                     {step === 'Resume' && (
                         <div className="space-y-4">
-                            <h1 className="text-lg font-bold text-ink">Start from which resume?</h1>
-                            <p className="text-sm text-ink-muted">
+                            <h1 className="text-lg font-bold text-foreground">Start from which resume?</h1>
+                            <p className="text-sm text-muted-foreground">
                                 We make a copy tailored to this job. Your original stays as it is.
                             </p>
                             {resumeOptions.length === 0 ? (
-                                <p className="rounded-md bg-surface p-3 text-sm text-ink-muted">
+                                <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
                                     You have no resumes yet.{' '}
-                                    <Link href={route('resumes.index')} className="font-medium text-brand underline-offset-2 hover:underline">
+                                    <Link href={route('resumes.index')} className="font-medium text-primary underline-offset-2 hover:underline">
                                         Build one first
                                     </Link>{' '}
                                     or continue to track this job only.
@@ -163,8 +163,8 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
 
                     {step === 'Tailor' && (
                         <div className="space-y-4">
-                            <h1 className="text-lg font-bold text-ink">Paste the job description</h1>
-                            <p className="text-sm text-ink-muted">
+                            <h1 className="text-lg font-bold text-foreground">Paste the job description</h1>
+                            <p className="text-sm text-muted-foreground">
                                 The Optimize panel scores keyword overlap and lists what is missing so you can tailor by hand.
                             </p>
                             <Textarea
@@ -179,14 +179,14 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
 
                     {step === 'Review' && (
                         <div className="space-y-3 text-sm">
-                            <h1 className="text-lg font-bold text-ink">Ready?</h1>
+                            <h1 className="text-lg font-bold text-foreground">Ready?</h1>
                             <dl className="grid grid-cols-3 gap-y-2">
-                                <dt className="text-ink-muted">Job</dt>
-                                <dd className="col-span-2 font-medium text-ink">{company} – {role}</dd>
-                                <dt className="text-ink-muted">Resume</dt>
-                                <dd className="col-span-2 font-medium text-ink">{base ? `Tailored copy of “${base.title}”` : 'Track only'}</dd>
-                                <dt className="text-ink-muted">Description</dt>
-                                <dd className="col-span-2 font-medium text-ink">{jobDescription ? `${jobDescription.length} characters` : 'None'}</dd>
+                                <dt className="text-muted-foreground">Job</dt>
+                                <dd className="col-span-2 font-medium text-foreground">{company} – {role}</dd>
+                                <dt className="text-muted-foreground">Resume</dt>
+                                <dd className="col-span-2 font-medium text-foreground">{base ? `Tailored copy of “${base.title}”` : 'Track only'}</dd>
+                                <dt className="text-muted-foreground">Description</dt>
+                                <dd className="col-span-2 font-medium text-foreground">{jobDescription ? `${jobDescription.length} characters` : 'None'}</dd>
                             </dl>
                         </div>
                     )}
@@ -214,7 +214,7 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                     </div>
                 </Shell>
 
-                <p className="mt-4 text-center text-xs text-ink-faint">
+                <p className="mt-4 text-center text-xs text-muted-foreground/70">
                     <Link href={route('dashboard')} className={buttonClassName('ghost', 'sm')}>Cancel</Link>
                 </p>
             </div>

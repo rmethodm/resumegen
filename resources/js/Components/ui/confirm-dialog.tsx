@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import Modal from '@/Components/Modal';
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/Components/ui/alert-dialog';
 import { Button } from '@/Components/ui/button';
 
 /**
@@ -42,17 +49,23 @@ export function ConfirmDialog({
     }
 
     return (
-        <Modal
-            show={open}
-            maxWidth="sm"
-            onClose={() => {
-                setConfirming(false);
-                onClose();
+        <AlertDialog
+            open={open}
+            onOpenChange={(next) => {
+                if (!next) {
+                    setConfirming(false);
+                    onClose();
+                }
             }}
-            title={title}
-            description={description}
-            footer={
-                <div className="flex justify-end gap-2">
+        >
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>{title}</AlertDialogTitle>
+                    {description && (
+                        <AlertDialogDescription>{description}</AlertDialogDescription>
+                    )}
+                </AlertDialogHeader>
+                <AlertDialogFooter>
                     <Button
                         type="button"
                         variant="outline"
@@ -71,8 +84,8 @@ export function ConfirmDialog({
                     >
                         {confirmLabel}
                     </Button>
-                </div>
-            }
-        />
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 }

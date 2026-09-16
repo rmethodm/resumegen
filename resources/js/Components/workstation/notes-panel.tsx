@@ -69,10 +69,10 @@ export function NotesPanel({
     return (
         <Card className="gap-0 p-4">
             <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-xs font-semibold text-ink-muted">
+                <h3 className="text-xs font-semibold text-muted-foreground">
                     Private notes
                 </h3>
-                <span className="text-xs text-ink-faint">
+                <span className="text-xs text-muted-foreground/70">
                     Not on the resume
                 </span>
             </div>
@@ -106,7 +106,7 @@ export function NotesPanel({
             </div>
 
             {notes.length === 0 ? (
-                <p className="text-xs text-ink-muted">
+                <p className="text-xs text-muted-foreground">
                     No notes yet. Use these for private reminders while editing.
                 </p>
             ) : (
@@ -127,7 +127,7 @@ export function NotesPanel({
                                 }}
                             />
                             <div className="mt-1 flex items-center justify-between">
-                                <span className="text-xs text-ink-faint">
+                                <span className="text-xs text-muted-foreground/70">
                                     {note.created_at}
                                 </span>
                                 <Button
@@ -136,7 +136,7 @@ export function NotesPanel({
                                     size="icon"
                                     aria-label="Delete note"
                                     onClick={() => deleteNote(note.id)}
-                                    className="size-6 text-ink-faint hover:bg-white hover:text-danger"
+                                    className="size-6 text-muted-foreground/70 hover:bg-white hover:text-destructive"
                                 >
                                     <TrashIcon className="size-3.5" />
                                 </Button>

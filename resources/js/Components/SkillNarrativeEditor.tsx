@@ -36,12 +36,12 @@ export default function SkillNarrativeEditor({ narratives, onChange, onBlur }: P
                             onChange={(e) => updateName(idx, e.target.value)}
                             onBlur={onBlur}
                             placeholder="Skill name (e.g. Proactive Communication)"
-                            className="flex-1 rounded-sm border border-gray-300 bg-white px-2 py-1 text-xs font-semibold focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25"
+                            className="flex-1 rounded-sm border border-gray-300 bg-white px-2 py-1 text-xs font-semibold focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25"
                         />
                         <button
                             type="button"
                             onClick={() => remove(idx)}
-                            className="-m-2 shrink-0 p-2.5 text-xs leading-none text-ink-faint hover:text-danger"
+                            className="-m-2 shrink-0 p-2.5 text-xs leading-none text-muted-foreground/70 hover:text-destructive"
                         >
                             ✕
                         </button>
@@ -52,15 +52,15 @@ export default function SkillNarrativeEditor({ narratives, onChange, onBlur }: P
                         onBlur={onBlur}
                         rows={3}
                         placeholder={'One bullet per line\nDemonstrated ability to…\nProficient in…'}
-                        className="w-full rounded-sm border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 resize-none"
+                        className="w-full rounded-sm border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25 resize-none"
                     />
-                    <p className="mt-0.5 text-[10px] text-ink-faint">One bullet point per line</p>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground/70">One bullet point per line</p>
                 </div>
             ))}
             <button
                 type="button"
                 onClick={add}
-                className="rounded-md border border-dashed border-brand py-1.5 text-xs text-brand hover:border-brand hover:bg-brand-subtle"
+                className="rounded-md border border-dashed border-primary py-1.5 text-xs text-primary hover:border-primary hover:bg-primary/10"
             >
                 + Add skill
             </button>

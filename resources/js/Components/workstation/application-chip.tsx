@@ -33,22 +33,22 @@ export function ApplicationChip({ application }: { application: LinkedApplicatio
     }
 
     return (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-surface-border bg-surface px-2.5 py-0.5 text-xs">
-            <BriefcaseIcon className="size-3 text-brand" />
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs">
+            <BriefcaseIcon className="size-3 text-primary" />
             <Link
                 href={route('job-applications.index', { highlight: application.id })}
-                className="max-w-48 truncate font-medium text-ink underline-offset-2 hover:underline"
+                className="max-w-48 truncate font-medium text-foreground underline-offset-2 hover:underline"
                 title="Open application"
             >
                 {application.company} – {application.role}
             </Link>
-            <span aria-hidden="true" className="text-ink-faint">·</span>
+            <span aria-hidden="true" className="text-muted-foreground/70">·</span>
             <select
                 aria-label="Application status"
                 value={status}
                 disabled={saving}
                 onChange={(e) => changeStatus(e.target.value as JobStatus)}
-                className="border-0 bg-transparent p-0 pr-5 text-xs font-medium text-brand focus:ring-0"
+                className="border-0 bg-transparent p-0 pr-5 text-xs font-medium text-primary focus:ring-0"
             >
                 {STATUSES.map((s) => (
                     <option key={s.value} value={s.value}>

@@ -27,10 +27,10 @@ export function OptimizePanel({
         <div className="flex flex-col gap-4">
             <Card className="gap-0 p-4">
                 <div className="mb-3">
-                    <h2 className="text-sm font-bold text-ink">
+                    <h2 className="text-sm font-bold text-foreground">
                         Optimize for a job
                     </h2>
-                    <p className="text-xs text-ink-muted">
+                    <p className="text-xs text-muted-foreground">
                         Compare the wording in a job posting with your resume.
                         This is a wording check, not an ATS score or hiring prediction.
                     </p>
@@ -52,39 +52,28 @@ export function OptimizePanel({
                             })
                         }
                     />
-                    <p className="text-xs text-ink-muted">
+                    <p className="text-xs text-muted-foreground">
                         <span className="tabular-nums">{jd.length} / 10000</span> characters
                     </p>
                 </div>
 
                 {jd.trim() !== '' && (
-                    <div className="mt-4 rounded-md border border-surface-border bg-surface p-3">
-                        <div className="mb-2 flex items-baseline justify-between">
-                            <p className="text-xs font-semibold text-ink-muted">
-                                Job wording overlap
-                            </p>
-                            <p className="text-2xl font-extrabold tabular-nums text-brand">
-                                {overlap.total > 0 ? overlap.score : '—'}
-                                <span className="text-sm font-semibold text-ink-faint">
-                                    {overlap.total > 0 ? '%' : ''}
-                                </span>
-                            </p>
-                        </div>
-                        <p className="mb-3 text-xs text-ink-muted">
+                    <div className="mt-4 rounded-md border border-border bg-muted p-3">
+                        <p className="mb-3 text-xs text-muted-foreground">
                             {overlap.matched.length} of {overlap.total} posting terms appear in your included resume sections.
                             Exact wording only; synonyms and relevance are not assessed.
                         </p>
 
                         {overlap.total === 0 && (
-                            <p className="text-xs text-ink-muted">No usable terms found. Paste the job’s requirements to compare.</p>
+                            <p className="text-xs text-muted-foreground">No usable terms found. Paste the job’s requirements to compare.</p>
                         )}
 
                         {overlap.missing.length > 0 && (
                             <div className="mb-3">
-                                <p className="mb-1.5 text-xs font-semibold text-ink-faint">
+                                <p className="mb-1.5 text-xs font-semibold text-muted-foreground/70">
                                     Not found — review in context
                                 </p>
-                                <p className="mb-2 text-xs text-ink-muted">
+                                <p className="mb-2 text-xs text-muted-foreground">
                                     Check the posting, then describe relevant experience in your own words.
                                     These terms are not verified skills.
                                 </p>
@@ -103,7 +92,7 @@ export function OptimizePanel({
 
                         {overlap.matched.length > 0 && (
                             <div>
-                                <p className="mb-1.5 text-xs font-semibold text-ink-faint">
+                                <p className="mb-1.5 text-xs font-semibold text-muted-foreground/70">
                                     Present
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
@@ -145,10 +134,10 @@ export function AtsPlainTextBlock({
         <Card className="gap-0 p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div>
-                    <h2 className="text-sm font-bold text-ink">
+                    <h2 className="text-sm font-bold text-foreground">
                         ATS plain text
                     </h2>
-                    <p className="text-xs text-ink-muted">
+                    <p className="text-xs text-muted-foreground">
                         What a simple text parser would see — single column, no
                         layout chrome.
                     </p>
@@ -164,7 +153,7 @@ export function AtsPlainTextBlock({
                     Copy all
                 </Button>
             </div>
-            <pre className="max-h-[50dvh] overflow-auto rounded-md border border-surface-border bg-surface p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-ink">
+            <pre className="max-h-[50dvh] overflow-auto rounded-md border border-border bg-muted p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-foreground">
                 {plainText}
             </pre>
         </Card>

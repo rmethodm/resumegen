@@ -46,7 +46,7 @@ function ShareStatus({
         return (
             <span
                 className={cn(
-                    'inline-flex items-center gap-1 text-ink-faint',
+                    'inline-flex items-center gap-1 text-muted-foreground/70',
                     compact ? 'text-xs' : 'text-xs',
                 )}
             >
@@ -98,29 +98,29 @@ function ShareStatus({
     return (
         <span
             className={cn(
-                'inline-flex min-w-0 items-center gap-1.5 text-ink-muted',
+                'inline-flex min-w-0 items-center gap-1.5 text-muted-foreground',
                 compact ? 'text-xs' : 'text-xs',
             )}
         >
-            <ShareIcon className={cn('shrink-0 text-brand', compact ? 'size-3' : 'size-3.5')} />
+            <ShareIcon className={cn('shrink-0 text-primary', compact ? 'size-3' : 'size-3.5')} />
             <button
                 type="button"
                 onClick={onOpenShare}
-                className="focus-ring truncate rounded-sm font-medium text-ink underline-offset-2 hover:text-brand hover:underline"
+                className="focus-ring truncate rounded-sm font-medium text-foreground underline-offset-2 hover:text-primary hover:underline"
             >
                 Shared
             </button>
-            <span className="truncate text-ink-muted">· {viewsLabel}</span>
+            <span className="truncate text-muted-foreground">· {viewsLabel}</span>
             {share.require_password && (
                 <LockClosedIcon
-                    className={cn('shrink-0 text-ink-faint', compact ? 'size-3' : 'size-3.5')}
+                    className={cn('shrink-0 text-muted-foreground/70', compact ? 'size-3' : 'size-3.5')}
                     title="Password protected"
                     aria-label="Password protected"
                 />
             )}
             {share.require_email && (
                 <EnvelopeIcon
-                    className={cn('shrink-0 text-ink-faint', compact ? 'size-3' : 'size-3.5')}
+                    className={cn('shrink-0 text-muted-foreground/70', compact ? 'size-3' : 'size-3.5')}
                     title="Email required"
                     aria-label="Email required"
                 />
@@ -128,7 +128,7 @@ function ShareStatus({
             <button
                 type="button"
                 onClick={copyLink}
-                className="focus-ring inline-flex shrink-0 items-center gap-0.5 rounded-sm px-1 py-0.5 font-medium text-brand hover:bg-brand/5"
+                className="focus-ring inline-flex shrink-0 items-center gap-0.5 rounded-sm px-1 py-0.5 font-medium text-primary hover:bg-primary/5"
                 title="Copy share link"
             >
                 <ClipboardDocumentIcon className={compact ? 'size-3' : 'size-3.5'} />
@@ -196,7 +196,7 @@ function ResumeCard({
                         <Link
                             href={route('resumes.workstation', resume.id)}
                             className={cn(
-                                'truncate font-semibold text-ink hover:text-brand',
+                                'truncate font-semibold text-foreground hover:text-primary',
                                 compact ? 'text-[13px]' : 'text-sm',
                             )}
                         >
@@ -208,14 +208,14 @@ function ResumeCard({
                                     'rounded-full px-1.5 py-0.5 text-xs font-semibold',
                                     resume.share.is_expired
                                         ? 'bg-warning-subtle text-warning-text'
-                                        : 'bg-brand-subtle text-brand',
+                                        : 'bg-primary/10 text-primary',
                                 )}
                             >
                                 {resume.share.is_expired ? 'Expired link' : 'Shared'}
                             </span>
                         )}
                     </div>
-                    <p className="mt-0.5 truncate text-xs text-ink-muted">
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
                         Group: {resume.group_title} · {resume.target_role || 'No target role set'}
                         {resume.updated_at && ` · Updated ${resume.updated_at}`}
                     </p>
@@ -244,12 +244,12 @@ function ResumeCard({
                     </MenuButton>
                     <MenuItems
                         anchor="bottom end"
-                        className="z-50 w-44 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden"
+                        className="z-50 w-44 rounded-md border border-border bg-white p-1 shadow-lg focus:outline-hidden"
                     >
                         <MenuItem>
                             <a
                                 href={route('resumes.download', resume.id)}
-                                className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
                             >
                                 Download PDF
                             </a>
@@ -257,7 +257,7 @@ function ResumeCard({
                         <MenuItem>
                             <a
                                 href={route('resumes.download-docx', resume.id)}
-                                className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
                             >
                                 Download DOCX
                             </a>
@@ -273,13 +273,13 @@ function ResumeCard({
                 <Menu as="div" className="relative">
                     <MenuButton
                         aria-label={`Actions for ${resume.title}`}
-                        className="p-1 text-ink-muted hover:text-ink"
+                        className="p-1 text-muted-foreground hover:text-foreground"
                     >
                         <EllipsisVerticalIcon className="size-5" />
                     </MenuButton>
                     <MenuItems
                         anchor="bottom end"
-                        className="z-50 w-56 rounded-md border border-surface-border bg-white p-1 shadow-lg focus:outline-hidden"
+                        className="z-50 w-56 rounded-md border border-border bg-white p-1 shadow-lg focus:outline-hidden"
                     >
                         <MenuItem>
                             <button
@@ -291,7 +291,7 @@ function ResumeCard({
                                         ? 'This resume already has a share link'
                                         : 'Create a share link'
                                 }
-                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
+                                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted disabled:cursor-not-allowed disabled:opacity-40 data-focus:disabled:bg-transparent"
                             >
                                 <ShareIcon className="size-4" />
                                 Share
@@ -306,7 +306,7 @@ function ResumeCard({
                                             route('resume-groups.compare', resume.group_id),
                                         )
                                     }
-                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-surface"
+                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
                                 >
                                     <ArrowsRightLeftIcon className="size-4" />
                                     Compare versions
@@ -320,16 +320,16 @@ function ResumeCard({
                                     onClick={() =>
                                         setConfirmTarget({ kind: 'group', title: resume.group_title })
                                     }
-                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-danger data-focus:bg-danger-subtle"
+                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-destructive data-focus:bg-destructive/10"
                                 >
                                     <TrashIcon className="size-4" />
                                     Delete resume
                                 </button>
                             </MenuItem>
                         )}
-                        <div className="my-1 border-t border-surface-border" />
+                        <div className="my-1 border-t border-border" />
                         <div className="px-2 py-1.5">
-                            <p className="mb-1 text-xs font-semibold text-ink-muted uppercase">
+                            <p className="mb-1 text-xs font-semibold text-muted-foreground uppercase">
                                 Rename
                             </p>
                             <input
@@ -342,7 +342,7 @@ function ResumeCard({
                                         event.currentTarget.blur();
                                     }
                                 }}
-                                className="w-full rounded-sm border border-surface-border px-2 py-1 text-xs"
+                                className="w-full rounded-sm border border-border px-2 py-1 text-xs"
                             />
                         </div>
                     </MenuItems>
@@ -350,11 +350,11 @@ function ResumeCard({
             </div>
 
             {hasVersions && (
-                <div className="border-t border-surface-border/80">
+                <div className="border-t border-border/80">
                     <button
                         type="button"
                         onClick={() => setExpanded(!expanded)}
-                        className="w-full px-4 py-1.5 text-left text-xs font-medium text-ink-muted hover:text-ink"
+                        className="w-full px-4 py-1.5 text-left text-xs font-medium text-muted-foreground hover:text-foreground"
                     >
                         {expanded ? 'Hide' : 'Show'} {resume.versions.length} versions
                     </button>
@@ -363,7 +363,7 @@ function ResumeCard({
                             {resume.versions.map((version) => (
                                 <div
                                     key={version.id}
-                                    className="flex items-center gap-2.5 px-4 py-2 pl-10 hover:bg-surface/60"
+                                    className="flex items-center gap-2.5 px-4 py-2 pl-10 hover:bg-muted/60"
                                 >
                                     <span
                                         aria-hidden="true"
@@ -376,7 +376,7 @@ function ResumeCard({
                                         <span className="block truncate text-[12px] font-semibold">
                                             {version.title}
                                             {version.target_company && (
-                                                <span className="ml-1.5 font-normal text-ink-muted">
+                                                <span className="ml-1.5 font-normal text-muted-foreground">
                                                     — {version.target_company}
                                                 </span>
                                             )}
@@ -391,7 +391,7 @@ function ResumeCard({
                                             />
                                         </div>
                                     </div>
-                                    <span className="text-xs tabular-nums text-ink-muted">
+                                    <span className="text-xs tabular-nums text-muted-foreground">
                                         {version.score}/100
                                     </span>
                                     <Link
@@ -419,7 +419,7 @@ function ResumeCard({
                                         className={buttonClassName(
                                             'ghost',
                                             'icon',
-                                            'size-11 shrink-0 text-ink-faint hover:text-danger disabled:cursor-not-allowed disabled:opacity-40 sm:size-8',
+                                            'size-11 shrink-0 text-muted-foreground/70 hover:text-destructive disabled:cursor-not-allowed disabled:opacity-40 sm:size-8',
                                         )}
                                     >
                                         <TrashIcon className="size-4" />
@@ -467,13 +467,13 @@ function ResumeCardSkeleton() {
 function EmptyResumes({ onCreate }: { onCreate: () => void }) {
     return (
         <Shell innerClassName="px-6 py-12 text-center sm:px-10">
-            <span className="inline-flex items-center rounded-full bg-brand-subtle px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                 Get started
             </span>
-            <h3 className="mt-4 text-lg font-bold tracking-tight text-ink">
+            <h3 className="mt-4 text-lg font-bold tracking-tight text-foreground">
                 Your first resume starts here
             </h3>
-            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink-muted">
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
                 Create a blank resume from your starter profile, pick a role sample, or paste what you already have.
             </p>
             <Button
@@ -588,17 +588,17 @@ export default function Dashboard({
                             <Shell className="md:col-span-3" innerClassName="flex items-center gap-4 p-5 sm:p-6">
                                 <ScoreDial score={averageScore} size={64} />
                                 <div className="min-w-0 flex-1">
-                                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-faint">
+                                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">
                                         Dashboard
                                     </p>
-                                    <h1 className="mt-1 text-lg font-bold tracking-tight text-ink">
+                                    <h1 className="mt-1 text-lg font-bold tracking-tight text-foreground">
                                         {resumes === undefined
                                             ? 'Loading your resumes…'
                                             : resumes.length === 0
                                               ? 'No resumes yet'
                                               : `${resumes.length} resume group${resumes.length === 1 ? '' : 's'}`}
                                     </h1>
-                                    <p className="mt-1 text-sm text-ink-muted">
+                                    <p className="mt-1 text-sm text-muted-foreground">
                                         {averageScore !== null
                                             ? `Average strength score ${averageScore}/100`
                                             : resumes === undefined
@@ -609,7 +609,7 @@ export default function Dashboard({
                             </Shell>
 
                             <Shell className="md:col-span-2" innerClassName="flex flex-col gap-2 p-4 sm:p-5">
-                                <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-faint">
+                                <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">
                                     Quick start
                                 </p>
                                 <Button
@@ -664,17 +664,17 @@ export default function Dashboard({
                                         <UserCircleIcon className="size-4" />
                                         {hasStarterProfile ? 'Edit starter profile' : 'Set up starter profile'}
                                     </span>
-                                    <span className="text-ink-faint">→</span>
+                                    <span className="text-muted-foreground/70">→</span>
                                 </Link>
                             </Shell>
                         </div>
 
                         {!hasStarterProfile && (
-                            <div className="rounded-lg border border-brand/20 bg-brand-subtle/40 p-4 sm:px-5">
-                                <p className="text-sm font-bold text-ink">
+                            <div className="rounded-lg border border-primary/20 bg-primary/10/40 p-4 sm:px-5">
+                                <p className="text-sm font-bold text-foreground">
                                     Tip: fill your starter profile once
                                 </p>
-                                <p className="mt-1 text-sm text-ink-muted">
+                                <p className="mt-1 text-sm text-muted-foreground">
                                     Every new resume can pre-fill from it — contact, summary, and more.
                                 </p>
                             </div>
@@ -687,7 +687,7 @@ export default function Dashboard({
                         </Deferred>
 
                         <div className="flex items-end justify-between gap-4">
-                            <p className="text-xs font-bold tracking-[0.12em] text-ink-faint uppercase">
+                            <p className="text-xs font-bold tracking-[0.12em] text-muted-foreground/70 uppercase">
                                 Your resumes
                             </p>
                         </div>
