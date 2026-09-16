@@ -8,7 +8,12 @@ function Select({
     ...props
 }: React.ComponentProps<'select'>) {
     return (
-        <div className="relative">
+        // Layout/sizing utilities (flex-1, min-w-0, w-16, h-9, …) are meant
+        // for whatever grid/flex row this control sits in, so they must also
+        // land on this wrapper — not just the inner <select> — or callers
+        // that size/flex this component (e.g. MonthYearField's Start/End
+        // pair, the share-modal expiry row) silently lose their layout.
+        <div className={cn('relative', className)}>
             <select
                 data-slot="select"
                 className={cn(

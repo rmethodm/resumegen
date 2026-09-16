@@ -612,7 +612,7 @@ export default function Workstation({
                                   : 'destructive'
                         }
                         className={cn(
-                            'flex flex-wrap items-center justify-between gap-2 rounded-none border-x-0 border-t-0',
+                            'flex flex-wrap items-center justify-between gap-2 rounded-none border-x-0 border-t-0 py-2',
                         )}
                     >
                         <AlertDescription className="text-sm">
