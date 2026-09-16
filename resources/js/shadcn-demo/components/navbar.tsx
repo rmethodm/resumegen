@@ -1,5 +1,15 @@
-import { FileTextIcon, HomeIcon, LayoutDashboardIcon, ShareIcon } from 'lucide-react';
+import { FileTextIcon, HomeIcon, LayoutDashboardIcon, LogOutIcon, SearchIcon, SettingsIcon, ShareIcon, UserIcon } from 'lucide-react';
 import { cn } from '@/shadcn-demo/lib/utils';
+import { Button } from '@/shadcn-demo/components/ui/button';
+import { Avatar, AvatarFallback } from '@/shadcn-demo/components/ui/avatar';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/shadcn-demo/components/ui/dropdown-menu';
 
 const links = [
     { label: 'Dashboard', icon: LayoutDashboardIcon, active: false },
@@ -7,7 +17,7 @@ const links = [
     { label: 'Shares', icon: ShareIcon, active: false },
 ];
 
-export function Navbar() {
+export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
     return (
         <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
             <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-6 px-4">
@@ -34,9 +44,40 @@ export function Navbar() {
                 </nav>
 
                 <div className="ml-auto flex items-center gap-2">
-                    <span className="flex size-8 items-center justify-center rounded-full bg-accent text-xs font-bold">
-                        JR
-                    </span>
+                    <Button variant="outline" size="sm" className="text-muted-foreground" onClick={onOpenCommand}>
+                        <SearchIcon />
+                        Quick actions
+                        <kbd className="ml-1 rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">
+                            &#8984;K
+                        </kbd>
+                    </Button>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button type="button" className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
+                                <Avatar>
+                                    <AvatarFallback>JR</AvatarFallback>
+                                </Avatar>
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Jordan Rivera</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                                <UserIcon />
+                                Profile
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <SettingsIcon />
+                                Settings
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                                <LogOutIcon />
+                                Log out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
         </header>
