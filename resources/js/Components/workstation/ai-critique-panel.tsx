@@ -30,6 +30,7 @@ export function AiCritiquePanel({
     initialPreset,
     credits,
     onJump,
+    onResult,
 }: {
     resumeId: number;
     jd: string;
@@ -38,6 +39,11 @@ export function AiCritiquePanel({
     initialPreset: AiReviewPreset | null;
     credits: AiCredits | null;
     onJump: (section: ResumeSectionKey) => void;
+    onResult?: (result: {
+        suggestions: AiReviewSuggestion[];
+        generatedAt: string;
+        preset: AiReviewPreset;
+    }) => void;
 }) {
     const [preset, setPreset] = useState<AiReviewPreset>(initialPreset ?? 'general');
     const [suggestions, setSuggestions] = useState(initialSuggestions);
@@ -46,7 +52,9 @@ export function AiCritiquePanel({
     const [error, setError] = useState<string | null>(null);
 
     const jdPasted = jd.trim() !== '';
-    const locked = credits === null || !credits.subscribed || credits.balance < CRITIQUE_COST;
+    const notSubscribed = credits === null || !credits.subscribed;
+    const outOfCredits = credits !== null && credits.subscribed && credits.balance < CRITIQUE_COST;
+    const locked = notSubscribed || outOfCredits;
 
     async function runCritique() {
         setLoading(true);
@@ -77,6 +85,11 @@ export function AiCritiquePanel({
 
             setSuggestions(data.suggestions);
             setGeneratedAt(data.generated_at);
+            onResult?.({
+                suggestions: data.suggestions,
+                generatedAt: data.generated_at,
+                preset,
+            });
         } catch {
             setError('AI review failed. Try again.');
         } finally {
@@ -88,12 +101,25 @@ export function AiCritiquePanel({
         return (
             <Card className="gap-2 border-dashed p-4">
                 <h2 className="text-sm font-bold text-foreground">AI resume critique</h2>
-                <p className="text-xs text-muted-foreground">
-                    Unlock a full AI critique of your resume ({CRITIQUE_COST} credits per run).
-                </p>
-                <Button asChild size="sm" className="w-fit">
-                    <a href="/billing/checkout">Subscribe</a>
-                </Button>
+                {outOfCredits ? (
+                    <>
+                        <p className="text-xs text-muted-foreground">
+                            You&rsquo;re out of AI credits. Buy more to run a critique.
+                        </p>
+                        <Button asChild size="sm" className="w-fit">
+                            <a href="/billing/credits">Buy credits</a>
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <p className="text-xs text-muted-foreground">
+                            Unlock a full AI critique of your resume ({CRITIQUE_COST} credits per run).
+                        </p>
+                        <Button asChild size="sm" className="w-fit">
+                            <a href="/billing/checkout">Subscribe</a>
+                        </Button>
+                    </>
+                )}
             </Card>
         );
     }

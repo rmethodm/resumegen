@@ -137,6 +137,14 @@ export function OptimizePanel({
                 initialPreset={draft.ai_review_preset ?? null}
                 credits={aiCredits}
                 onJump={onJump}
+                onResult={({ suggestions, generatedAt, preset }) =>
+                    onChange({
+                        ...draft,
+                        ai_review: suggestions,
+                        ai_review_generated_at: generatedAt,
+                        ai_review_preset: preset,
+                    })
+                }
             />
 
             {children}
