@@ -1,12 +1,13 @@
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { SocialLoginButtons } from '@/Components/auth/SocialLoginButtons';
 import { Button } from '@/Components/ui/button';
 import { Checkbox } from '@/Components/ui/checkbox';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
 
 export default function Login({
     status,
@@ -44,28 +45,28 @@ export default function Login({
             </p>
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-success">
-                    {status}
-                </div>
+                <Alert className="mb-4">
+                    <AlertDescription>{status}</AlertDescription>
+                </Alert>
             )}
             {flash?.error && (
-                <div className="mb-4 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-sm font-medium text-danger-text">
-                    {flash.error}
-                </div>
+                <Alert variant="destructive" className="mb-4">
+                    <AlertDescription>{flash.error}</AlertDescription>
+                </Alert>
             )}
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <Label htmlFor="email">Email</Label>
 
-                    <TextInput
+                    <Input
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
                         className="mt-1 block w-full"
                         autoComplete="username"
-                        isFocused={true}
+                        autoFocus
                         onChange={(e) => setData('email', e.target.value)}
                     />
 
@@ -73,9 +74,9 @@ export default function Login({
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <Label htmlFor="password">Password</Label>
 
-                    <TextInput
+                    <Input
                         id="password"
                         type="password"
                         name="password"
@@ -89,7 +90,7 @@ export default function Login({
                 </div>
 
                 <div className="mt-4 flex items-center justify-between">
-                    <label className="flex items-center">
+                    <Label className="cursor-pointer">
                         <Checkbox
                             name="remember"
                             checked={data.remember}
@@ -100,10 +101,10 @@ export default function Login({
                                 )
                             }
                         />
-                        <span className="ms-2 text-sm text-ink-muted">
+                        <span className="text-ink-muted">
                             Remember me
                         </span>
-                    </label>
+                    </Label>
 
                     {canResetPassword && (
                         <Link

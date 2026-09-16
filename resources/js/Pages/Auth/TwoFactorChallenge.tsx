@@ -1,9 +1,9 @@
 import InputError from '@/Components/InputError';
-import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 
 type Mode = 'totp' | 'recovery';
 
@@ -28,19 +28,19 @@ export default function TwoFactorChallenge() {
 
             <form onSubmit={submit}>
                 {mode === 'recovery' ? (
-                    <TextInput
+                    <Input
                         id="code"
                         type="text"
                         name="code"
                         value={data.code}
                         className="mt-1 block w-full"
                         autoComplete="off"
-                        isFocused
+                        autoFocus
                         onChange={(e) => setData('code', e.target.value)}
                         placeholder="XXXXX-XXXXX"
                     />
                 ) : (
-                    <TextInput
+                    <Input
                         id="code"
                         type="text"
                         inputMode="numeric"
@@ -48,7 +48,7 @@ export default function TwoFactorChallenge() {
                         value={data.code}
                         className="mt-1 block w-full tracking-widest text-center text-xl"
                         autoComplete="one-time-code"
-                        isFocused
+                        autoFocus
                         maxLength={6}
                         onChange={(e) => setData('code', e.target.value)}
                         placeholder="000000"
