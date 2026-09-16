@@ -7,6 +7,7 @@ import {
     HomeIcon,
     MagnifyingGlassIcon,
     ShareIcon,
+    SparklesIcon,
     UserCircleIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -205,6 +206,15 @@ export default function Authenticated({
                             {item.label}
                         </Link>
                     ))}
+
+                    {/* Plain page load — /shadcn is a standalone HTML page, not an Inertia route. */}
+                    <a
+                        href={route('shadcn.demo')}
+                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink-muted transition-[color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none hover:bg-surface hover:text-ink dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        <SparklesIcon className="size-5 shrink-0" />
+                        Shadcn
+                    </a>
                 </nav>
 
                 <div className="shrink-0 border-t border-surface-border/80 p-3 dark:border-gray-700/80">
