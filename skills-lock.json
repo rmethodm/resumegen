@@ -7,11 +7,23 @@
       "skillPath": "skills/daisyui/SKILL.md",
       "computedHash": "a7379c5c8ca1f4bb6c1dfbaccf42d0b1ce86e8a4a8d541a74902081931027476"
     },
+    "migrate-radix-to-base": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "skillPath": "skills/migrate-radix-to-base/SKILL.md",
+      "computedHash": "e1f2030ee5059be3dff0812ca0e4b995ee9fa3132176f049ebe6c90346a6755e"
+    },
     "pr-review": {
       "source": "saadeghi/daisyui",
       "sourceType": "github",
       "skillPath": ".agents/skills/pr-review/SKILL.md",
       "computedHash": "0f7ede6c78814e7ccaa8053d3a2a93157d6ae006fdfe4847490c9716ee3a4805"
+    },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "f615de216e085a84e31593ad0fa9062232adc40cd87b7c7ab2b8e49abf6500be"
     },
     "ss-a11y": {
       "source": "bitjaru/styleseed",
