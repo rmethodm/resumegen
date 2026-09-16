@@ -1,5 +1,9 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import AutocompleteInput from '@/Components/AutocompleteInput';
+import InputError from '@/Components/InputError';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 
@@ -86,12 +90,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                 {step === 1 && (
                     <form onSubmit={next} className="space-y-4">
                         <div>
-                            <label
-                                htmlFor="target_role"
-                                className="block text-sm font-medium text-ink"
-                            >
-                                Target role
-                            </label>
+                            <Label htmlFor="target_role">Target role</Label>
                             <AutocompleteInput
                                 endpoint="job-roles"
                                 id="target_role"
@@ -100,37 +99,25 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 placeholder="e.g. Software Engineer"
                                 className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
                             />
-                            {errors.target_role && (
-                                <p className="mt-1 text-xs text-danger">{errors.target_role}</p>
-                            )}
+                            <InputError message={errors.target_role} className="mt-1" />
                         </div>
 
                         <div>
-                            <label
-                                htmlFor="industry"
-                                className="block text-sm font-medium text-ink"
-                            >
-                                Industry
-                            </label>
-                            <input
+                            <Label htmlFor="industry">Industry</Label>
+                            <Input
                                 id="industry"
                                 type="text"
                                 value={data.industry}
                                 onChange={(e) => setData('industry', e.target.value)}
                                 placeholder="e.g. Tech, Finance, Healthcare"
                                 maxLength={100}
-                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                className="mt-1 block w-full"
                             />
                         </div>
 
                         <div>
-                            <label
-                                htmlFor="years_experience"
-                                className="block text-sm font-medium text-ink"
-                            >
-                                Years of experience
-                            </label>
-                            <input
+                            <Label htmlFor="years_experience">Years of experience</Label>
+                            <Input
                                 id="years_experience"
                                 type="number"
                                 min={0}
@@ -143,27 +130,18 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                     )
                                 }
                                 placeholder="0"
-                                className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                className="mt-1 block w-full"
                             />
-                            {errors.years_experience && (
-                                <p className="mt-1 text-xs text-danger">{errors.years_experience}</p>
-                            )}
+                            <InputError message={errors.years_experience} className="mt-1" />
                         </div>
 
                         <div className="flex items-center justify-between pt-2">
-                            <button
-                                type="button"
-                                onClick={handleSkip}
-                                className="text-sm text-ink-muted hover:text-ink"
-                            >
+                            <Button type="button" variant="ghost" onClick={handleSkip}>
                                 Skip for now
-                            </button>
-                            <button
-                                type="submit"
-                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-brand-accent focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2"
-                            >
+                            </Button>
+                            <Button type="submit">
                                 Next →
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 )}
@@ -172,116 +150,76 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                     <form onSubmit={continueToStep3} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="col-span-2">
-                                <label
-                                    htmlFor="full_name"
-                                    className="block text-sm font-medium text-ink"
-                                >
-                                    Full name
-                                </label>
-                                <input
+                                <Label htmlFor="full_name">Full name</Label>
+                                <Input
                                     id="full_name"
                                     type="text"
                                     value={data.full_name}
                                     onChange={(e) => setData('full_name', e.target.value)}
                                     placeholder="Jane Smith"
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full"
                                 />
                             </div>
                             <div>
-                                <label
-                                    htmlFor="phone"
-                                    className="block text-sm font-medium text-ink"
-                                >
-                                    Phone
-                                </label>
-                                <input
+                                <Label htmlFor="phone">Phone</Label>
+                                <Input
                                     id="phone"
                                     type="text"
                                     value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
                                     placeholder="+1 555 000 0000"
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full"
                                 />
                             </div>
                             <div>
-                                <label
-                                    htmlFor="location"
-                                    className="block text-sm font-medium text-ink"
-                                >
-                                    Location
-                                </label>
-                                <input
+                                <Label htmlFor="location">Location</Label>
+                                <Input
                                     id="location"
                                     type="text"
                                     value={data.location}
                                     onChange={(e) => setData('location', e.target.value)}
                                     placeholder="New York, NY"
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full"
                                 />
                             </div>
                             <div className="col-span-2">
-                                <label
-                                    htmlFor="linkedin_url"
-                                    className="block text-sm font-medium text-ink"
-                                >
-                                    LinkedIn URL
-                                </label>
-                                <input
+                                <Label htmlFor="linkedin_url">LinkedIn URL</Label>
+                                <Input
                                     id="linkedin_url"
                                     type="url"
                                     value={data.linkedin_url}
                                     onChange={(e) => setData('linkedin_url', e.target.value)}
                                     placeholder="https://linkedin.com/in/..."
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full"
                                 />
-                                {errors.linkedin_url && (
-                                    <p className="mt-1 text-xs text-danger">{errors.linkedin_url}</p>
-                                )}
+                                <InputError message={errors.linkedin_url} className="mt-1" />
                             </div>
                             <div className="col-span-2">
-                                <label
-                                    htmlFor="website"
-                                    className="block text-sm font-medium text-ink"
-                                >
-                                    Website
-                                </label>
-                                <input
+                                <Label htmlFor="website">Website</Label>
+                                <Input
                                     id="website"
                                     type="url"
                                     value={data.website}
                                     onChange={(e) => setData('website', e.target.value)}
                                     placeholder="https://yoursite.com"
-                                    className="mt-1 block w-full rounded-md border border-surface-border px-3 py-2 text-sm shadow-xs focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-1"
+                                    className="mt-1 block w-full"
                                 />
-                                {errors.website && (
-                                    <p className="mt-1 text-xs text-danger">{errors.website}</p>
-                                )}
+                                <InputError message={errors.website} className="mt-1" />
                             </div>
                         </div>
 
                         <div className="flex items-center justify-between pt-2">
                             <div className="flex items-center gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setStep(1)}
-                                    className="text-sm text-ink-muted hover:text-ink"
-                                >
+                                <Button type="button" variant="ghost" onClick={() => setStep(1)}>
                                     ← Back
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleSkip}
-                                    className="text-sm text-ink-muted hover:text-ink"
-                                >
+                                </Button>
+                                <Button type="button" variant="ghost" onClick={handleSkip}>
                                     Skip for now
-                                </button>
+                                </Button>
                             </div>
-                            <button
-                                type="submit"
-                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-brand-accent focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2"
-                            >
+                            <Button type="submit">
                                 Continue →
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 )}
@@ -319,28 +257,16 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
 
                         <div className="flex items-center justify-between pt-2">
                             <div className="flex items-center gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setStep(2)}
-                                    className="text-sm text-ink-muted hover:text-ink"
-                                >
+                                <Button type="button" variant="ghost" onClick={() => setStep(2)}>
                                     ← Back
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleSkip}
-                                    className="text-sm text-ink-muted hover:text-ink"
-                                >
+                                </Button>
+                                <Button type="button" variant="ghost" onClick={handleSkip}>
                                     Skip for now
-                                </button>
+                                </Button>
                             </div>
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="min-h-11 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-brand-accent focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:ring-offset-2 disabled:opacity-60"
-                            >
+                            <Button type="submit" disabled={processing}>
                                 Finish →
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 )}
