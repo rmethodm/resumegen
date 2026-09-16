@@ -5,5 +5,6 @@ return [
 
     'costs' => [
         'qa_bank_draft' => 1,
+        'resume_review' => 3,
     ],
 ];

@@ -10,6 +10,9 @@ use App\Models\LibrarySkill;
 use App\Models\Resume;
 use App\Models\ResumeNote;
 use App\Models\StarterProfile;
+use App\Services\AiCreditService;
+use App\Services\AiService;
+use App\Services\AiUsageLimiter;
 use App\Support\DocxExport;
 use App\Support\PdfFonts;
 use App\Support\PlainTextResumeParser;
@@ -18,12 +21,14 @@ use App\Support\ResumeDocument;
 use App\Support\ResumeExport;
 use App\Support\RoleSamples;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Throwable;
 
 class ResumeController extends Controller
 {
@@ -302,6 +307,52 @@ class ResumeController extends Controller
         ]);
     }
 
+    public function aiReview(Request $request, Resume $resume, AiService $ai, AiUsageLimiter $limiter, AiCreditService $credits): JsonResponse
+    {
+        $user = $request->user();
+
+        abort_unless($resume->user_id === $user->id, 404);
+
+        $validated = $request->validate([
+            'preset' => 'required|string|in:general,tailor_jd,concise,leadership,quantify',
+        ]);
+        $preset = $validated['preset'];
+
+        if ($preset === 'tailor_jd' && trim((string) $resume->target_job_description) === '') {
+            return response()->json(['message' => 'Paste a job description first.'], 422);
+        }
+
+        $cost = (int) config('ai.costs.resume_review');
+
+        if ($status = $limiter->refusalStatus($user, $cost)) {
+            $message = $status === 429 ? 'AI access is blocked.' : 'Subscription or AI credits required.';
+
+            return response()->json(['message' => $message], $status);
+        }
+
+        try {
+            $result = $ai->reviewResume($user, ResumeDocument::toArray($resume), $resume->target_job_description, $preset);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'AI review failed.'], 500);
+        }
+
+        $credits->spend($user, $cost, 'resume_review', $result['ai_request_id']);
+
+        $resume->ai_review = $result['suggestions'];
+        $resume->ai_review_generated_at = now();
+        $resume->ai_review_preset = $preset;
+        $resume->save();
+
+        return response()->json([
+            'suggestions' => $result['suggestions'],
+            'generated_at' => $resume->ai_review_generated_at->toIso8601String(),
+            'preset' => $preset,
+            'credits_remaining' => $credits->balance($user),
+        ]);
+    }
+
     private function render(Request $request, Resume $resume, string $component): Response
     {
         abort_unless($resume->user_id === $request->user()->id, 404);
@@ -324,6 +375,7 @@ class ResumeController extends Controller
         // Cached AI review — Workstation-only, not part of the public share document.
         $document['ai_review'] = $resume->ai_review;
         $document['ai_review_generated_at'] = $resume->ai_review_generated_at?->toIso8601String();
+        $document['ai_review_preset'] = $resume->ai_review_preset;
 
         // Newest linked Kanban card, if any. One resume can be attached to
         // several cards from the Kanban's edit form; the chip shows one.

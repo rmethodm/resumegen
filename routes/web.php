@@ -121,6 +121,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::put('/resumes/{resume}', [ResumeController::class, 'update'])->name('resumes.update');
     Route::get('/resumes/{resume}/export', [ResumeController::class, 'download'])->name('resumes.download');
     Route::get('/resumes/{resume}/export-docx', [ResumeController::class, 'downloadDocx'])->name('resumes.download-docx');
+    Route::post('/resumes/{resume}/ai-review', [ResumeController::class, 'aiReview'])
+        ->middleware('throttle:20,1')
+        ->name('resumes.ai-review');
     Route::get('/resumes/{resume}/preview', [ResumeController::class, 'preview'])->name('resumes.preview');
     Route::post('/resumes/{resume}/duplicate', [ResumeController::class, 'duplicate'])->name('resumes.duplicate');
     Route::patch('/resumes/{resume}/rename', [ResumeController::class, 'rename'])->name('resumes.rename');
@@ -182,8 +185,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/billing/credits', [BillingController::class, 'credits'])->name('billing.credits');
 
     // Generative Workstation AI HTTP is intentionally unregistered for v1:
-    // ai.rewrite-bullet, ai.rewrite-summary, ai.generate-gap, resumes.ai-review,
-    // ai.rewrite-section (Rewrite/Generate UI removed; review/section stay deferred).
+    // ai.rewrite-bullet, ai.rewrite-summary, ai.generate-gap,
+    // ai.rewrite-section (Rewrite/Generate UI removed; section stays deferred).
+    // resumes.ai-review is now registered above (Optimize tab AI critique).
 
     // Autocomplete lookup
     Route::middleware('throttle:60,1')->group(function () {
