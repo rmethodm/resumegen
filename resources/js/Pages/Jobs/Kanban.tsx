@@ -221,8 +221,9 @@ function InterviewsEditor({ jobApplicationId, interviews }: { jobApplicationId: 
                                     type="button"
                                     onClick={() => deleteInterview(interview)}
                                     disabled={processingId === interview.id}
-                                    className="text-ink-faint hover:text-danger"
+                                    className="rounded p-1.5 text-ink-faint hover:text-danger"
                                     aria-label={`Delete round ${interview.round}`}
+                                    title={`Delete round ${interview.round}`}
                                 >
                                     <TrashIcon className="size-4" />
                                 </button>
@@ -254,6 +255,7 @@ export default function JobApplicationKanban({
     const [formError, setFormError] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<{ id: number } | null>(null);
+    const [dragError, setDragError] = useState<string | null>(null);
     const params = new URLSearchParams(window.location.search);
     const [addOpen, setAddOpen] = useState(params.get('add') === '1');
     const addInitial = useMemo(
@@ -390,7 +392,11 @@ export default function JobApplicationKanban({
                 preserveScroll: true,
                 // The move already happened on screen — put the card back
                 // only if the server actually rejected it.
-                onError: () => setLocalApplications(previous),
+                onError: () => {
+                    setLocalApplications(previous);
+                    setDragError('Could not update status. Card moved back.');
+                    setTimeout(() => setDragError(null), 4000);
+                },
             },
         );
     };
@@ -460,6 +466,11 @@ export default function JobApplicationKanban({
                 <div className="mb-5">
                     <h2 className="text-base font-bold text-ink">Your pipeline</h2>
                     <p className="mt-1 text-xs text-ink-muted">Drag a role to update its status.</p>
+                    {dragError && (
+                        <p className="mt-2 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-xs text-danger-text">
+                            {dragError}
+                        </p>
+                    )}
                 </div>
 
                 {localApplications.length === 0 ? (

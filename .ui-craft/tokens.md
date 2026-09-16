@@ -1,12 +1,27 @@
 # Design Tokens
 
-Source of truth: `resources/css/app.css` (Tailwind v4 CSS-first `@theme` — no `tailwind.config.js`). Colors are sRGB hex/rgb throughout; OKLCH migration was considered and deliberately not forced (consistent sRGB beats a half-converted ramp).
+Source of truth: `resources/css/app.css` (Tailwind v4 CSS-first `@theme` — no `tailwind.config.js`). Visual tokens follow root `DESIGN.md` (**Flat Design Corporativo**): corporate blue accent, dark-grey ink, light-grey page surface, Lato type, 4/8/12px radius. Colors are sRGB hex/rgb throughout.
 
 ## Layers
 
-- **Primitives**: `--color-neutral-50…950`, `--color-accent-50…950` ramps.
-- **Semantics**: `--color-ink / ink-muted / ink-faint` (text), `--color-surface / surface-border` (canvas), `--color-brand / brand-accent / brand-subtle / brand-soft` (grayscale accent; `html[data-brand-theme]` variants all resolve to the same black/gray tokens), status trios `success / warning / danger` (grayscale base + `-subtle` + `-text`).
-- **Component tokens**: none — deferred on purpose until a specific component needs one. Do not add speculatively.
+- **Primitives**: `--color-neutral-50…950` (Bootstrap-adjacent greys; `#343a40` ink, never `#000`), `--color-accent-50…950` (corporate blue around `#007bff`).
+- **Semantics**: `--color-ink / ink-muted / ink-faint`, `--color-surface / surface-border` (page `#f8f9fa`, borders `#dee2e6`), `--color-brand*` (blue CTA), chromatic `success` / `warning` / `danger` / `info`.
+- **Component tokens**: shared radius + shadows; primary button uses `rounded-sm` (4px) per DESIGN.md.
+
+## Accent (from DESIGN.md)
+
+| Role | Token | Value |
+|---|---|---|
+| Brand / CTA | `--brand-rgb` / `accent-500` | `#007BFF` |
+| Hover (~8% darken) | `--brand-accent-rgb` / `accent-600` | `#0071EB` |
+| Tint fill | `--brand-subtle-rgb` | `#E7F1FF` |
+| Deep solid | `--brand-soft-rgb` / `accent-700` | `#0056B3` |
+| Ink | `--color-ink` | `#343A40` |
+| Page surface | `--surface-rgb` | `#F8F9FA` |
+| Card / light surface | white (`#FFFFFF`) via utilities | |
+| Success / Warning / Danger / Info | semantic tokens | `#28A745` / `#FFC107` / `#DC3545` / `#17A2B8` |
+
+**Budget:** one brand accent for CTA, focus, active chrome, links. Success/warning/danger are semantic only — not decorative.
 
 ## Categories
 
@@ -14,17 +29,17 @@ Source of truth: `resources/css/app.css` (Tailwind v4 CSS-first `@theme` — no 
 |---|---|
 | Color | ramps + semantics above |
 | Spacing | Tailwind v4 default `--spacing` scale (unmodified — intentional) |
-| Radius | `--radius-sm` chips/small controls · `--radius-md` buttons/inputs/list items · `--radius-lg` cards/panels/modals · `--radius-xl` large surfaces · `rounded-full` pills |
-| Shadow | `--shadow-card` (resting), `--shadow-ambient` (2-layer paper/elevated), `--shadow-shell` (inset highlight) |
-| Typography | `--font-sans` IBM Plex Sans (body/UI), `--font-display` Source Serif 4 (display) |
-| Motion | `--ease-soft`, `--transition-duration-soft` 320ms; global `prefers-reduced-motion` collapse in `app.css` |
-| Z-index | `--z-index-base/raised/dropdown/sticky/modal-backdrop/modal/toast/tooltip` |
+| Radius | `--radius-sm` 4px · `--radius-md` 8px · `--radius-lg` 12px · `--radius-xl` 16px · `rounded-full` pills |
+| Shadow | `--shadow-card` `0 2px 12px /0.06` · `--shadow-ambient` `0 2px 8px /0.08` · `--shadow-shell` inset |
+| Typography | `--font-sans` / `--font-display` Lato; `--font-mono` JetBrains Mono |
+| Motion | `--ease-soft`, `--transition-duration-soft` 320ms; `prefers-reduced-motion` collapse |
+| Z-index | Existing product ladder left unchanged (avoids stacking regressions) |
 
 ## Mode decision: light-only
 
-The app is **light-only by decision** (declared via `color-scheme: light` on `html`). The `--color-surface-dark*` / `--color-ink-dark*` primitives are reserved for dark chrome accents inside light pages, not an app dark mode. If dark mode ever becomes a product decision, author it as a real reinterpretation (tinted near-black canvas, reduced accent chroma, border rings over shadows) — not an inversion — and revisit this file.
+DESIGN.md: Light ✓ / Dark ✗. Product chrome stays `color-scheme: light`.
 
 ## Utilities
 
-- `focus-ring` — shared keyboard focus ring (`focus-visible` only). Use on any plain interactive element not covered by `ui/button`.
+- `focus-ring` — shared keyboard focus ring (`focus-visible` only).
 - `tabular` — `tabular-nums` for scores/counts/currency columns.

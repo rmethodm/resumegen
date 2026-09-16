@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import {
     ChevronDownIcon,
@@ -79,6 +79,7 @@ import {
     type ResumeDraft,
     type SectionKey,
 } from '@/shadcn-demo/types';
+import { THEMES, type ThemeId } from '@/shadcn-demo/themes';
 
 export default function App() {
     const [history, setHistory] = useState<ResumeDraft[]>([SAMPLE_RESUME]);
@@ -95,6 +96,14 @@ export default function App() {
     const [autoSave, setAutoSave] = useState(true);
     const [pageSize, setPageSize] = useState<'letter' | 'a4'>('letter');
     const [previewLoading, setPreviewLoading] = useState(true);
+    const [theme, setTheme] = useState<ThemeId>('neutral');
+
+    const themeStyle = useMemo(() => {
+        const vars = THEMES.find((t) => t.id === theme)?.vars ?? THEMES[0].vars;
+        return Object.fromEntries(
+            Object.entries(vars).map(([key, value]) => [`--${key}`, value]),
+        ) as CSSProperties;
+    }, [theme]);
 
     useEffect(() => {
         const timer = window.setTimeout(() => setPreviewLoading(false), 600);
@@ -174,7 +183,7 @@ export default function App() {
     );
 
     return (
-        <div className="min-h-dvh bg-background">
+        <div className="min-h-dvh bg-background" style={themeStyle}>
             <Toaster position="bottom-center" />
             <Navbar onOpenCommand={() => setCommandOpen(true)} />
 
@@ -425,6 +434,16 @@ export default function App() {
                                 <ToggleGroupItem value="letter">Letter</ToggleGroupItem>
                                 <ToggleGroupItem value="a4">A4</ToggleGroupItem>
                             </ToggleGroup>
+                        </FormatField>
+
+                        <FormatField label="Theme">
+                            <Select value={theme} onChange={(e) => setTheme(e.target.value as ThemeId)}>
+                                {THEMES.map((t) => (
+                                    <option key={t.id} value={t.id}>
+                                        {t.label}
+                                    </option>
+                                ))}
+                            </Select>
                         </FormatField>
 
                         <FormatField label={`Zoom — ${Math.round(zoom * 100)}%`} className="ml-auto w-40">
