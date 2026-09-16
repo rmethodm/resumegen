@@ -257,52 +257,6 @@ Hostinger VPS (`srv1861900`), Apache, PostgreSQL, self-hosted GitHub runner. App
 
 Last updated: 2026-09-10
 
-<!-- dgc-policy-v11 -->
-# Dual-Graph Context Policy
-
-This project uses a local dual-graph MCP server (graperoot-pro) for efficient,
-budget-aware context retrieval. Always prefer it over native file exploration.
-
-## MANDATORY: Always follow this order
-
-1. **Call `graph_continue` first** -- before any file exploration, grep, or code reading.
-
-2. **If `graph_continue` returns `needs_project=true`**: call `graph_scan` with the
-   current project directory (`pwd`). Do NOT ask the user.
-
-3. **If `graph_continue` returns `skip=true`**: project is too small for the graph to
-   help. Skip all graph tools and explore normally.
-
-4. **Read `recommended_files`** using `graph_read` -- one call per file.
-   - `recommended_files` may contain `file::symbol` entries (e.g. `src/auth.ts::handleLogin`).
-     Pass them verbatim to `graph_read(file: "src/auth.ts::handleLogin")` -- it reads only
-     that symbol's lines, not the full file.
-
-5. **Check `confidence` and obey the caps strictly:**
-   - `confidence=high` -> Stop. Do NOT grep or explore further.
-   - `confidence=medium` -> If recommended files are insufficient, call `fallback_rg`
-     at most `max_supplementary_greps` time(s) with specific terms, then `graph_read`
-     at most `max_supplementary_files` additional file(s). Then stop.
-   - `confidence=low` -> Call `fallback_rg` at most `max_supplementary_greps` time(s),
-     then `graph_read` at most `max_supplementary_files` file(s). Then stop.
-
-## Exhaustive enumeration tasks
-
-Some tasks require scanning **every file** -- e.g. "find all dead exports", "list every
-.find() without a limit", "audit all test files". Use these tools first:
-
-- **`graph_dead_exports()`** -- pre-computed at scan time. Use for any dead-export task.
-- **`graph_grep_all(pattern, file_glob?, max_hits?)`** -- exhaustive grep, no call cap.
-
-## Rules
-
-- Do NOT use `rg`, `grep`, or bash file exploration before calling `graph_continue`.
-- Do NOT do broad/recursive exploration at any confidence level.
-- After edits, call `graph_register_edit(files: ["path/to/file"])`. The parameter is
-  `files` (plural, always an array). Use `file::symbol` notation when the edit targets
-  a specific function, class, or hook.
-<!-- /dgc-policy-v1 -->
-
 ## Verification Policy
 
 Do not report a feature, fix, integration, or deploy as done based on configuration being in place, a clean build, passing tests, or an internal function call. Prove it with a real run:
@@ -314,43 +268,6 @@ Do not report a feature, fix, integration, or deploy as done based on configurat
 
 If the live run does nothing where you expected it to work, that is the real bug report — find the actual root cause instead of defending the earlier "done" claim.
 
-<!-- grapelaravel:policy:start -->
-# GrapeLaravel Context Policy
-
-This project uses the GrapeLaravel MCP server for graph-based context
-retrieval. Always prefer it over native file exploration.
-
-## MANDATORY: Always follow this order
-
-1. Call `graph_continue` first — before any file exploration, grep, or code
-   reading. Describe your task as the query.
-2. If it returns `needs_scan=true`, tell the user to run the printed
-   `graph:scan` command.
-3. Read the `recommended_files` using `graph_read` — one call per file.
-   Entries support `file::symbol` notation for partial reads.
-4. Obey the confidence caps strictly:
-   - `confidence=high` -> Stop. Do NOT grep or explore further.
-   - `confidence=medium`/`low` -> at most `max_supplementary_greps`
-     `fallback_rg` call(s) and `max_supplementary_files` extra
-     `graph_read` call(s). Then stop.
-
-## Token-saving helpers (prefer before opening many files)
-
-- `graph_neighbors` — inbound/outbound edges for a file
-- `graph_impact` — 1-hop blast radius for changed files
-- `graph_action_summary` — recent reads/edits + stored notes
-- `graph_add_memory` / `graph_add_decision` — store short notes for later
-- `graph_dead_exports` / `graph_find_cycles` — capped audits only when asked
-
-## Rules
-
-- Do NOT use rg, grep, cat, find, or shell exploration — prefer graph tools
-  (`graph_continue`, `graph_read`, `fallback_rg`, `graph_neighbors`,
-  `graph_impact`, `graph_action_summary`) over shell exploration.
-- After editing files, call `graph_register_edit` with the changed paths
-  (relative, `files` is always an array).
-<!-- grapelaravel:policy:end -->
-
 <!-- unforget:begin — maintained by the unforget skill; do not hand-edit inside these markers -->
 ## Deferred Work Index
 
@@ -360,22 +277,3 @@ retrieval. Always prefer it over native file exploration.
 
 Read the ledgers when the user asks "what's deferred?" / "backlog?" / "prioritize," and before suggesting a release (check 🔴 THIS rows). Log new deferrals via the deferral gate — an item lives in exactly ONE ledger; siblings get a pointer row, not a copy.
 <!-- unforget:end -->
-
-## Skill routing
-
-When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.
-
-Key routing rules:
-- Product ideas/brainstorming → invoke /office-hours
-- Strategy/scope → invoke /plan-ceo-review
-- Architecture → invoke /plan-eng-review
-- Design system/plan review → invoke /design-consultation or /plan-design-review
-- Full review pipeline → invoke /autoplan
-- Bugs/errors → invoke /investigate
-- QA/testing site behavior → invoke /qa or /qa-only
-- Code review/diff check → invoke /review
-- Visual polish → invoke /design-review
-- Ship/deploy/PR → invoke /ship or /land-and-deploy
-- Save progress → invoke /context-save
-- Resume context → invoke /context-restore
-- Author a backlog-ready spec/issue → invoke /spec
