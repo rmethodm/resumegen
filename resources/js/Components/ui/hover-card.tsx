@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { HoverCard as HoverCardPrimitive } from 'radix-ui';
-import { cn } from '@/shadcn-demo/lib/utils';
+import { cn } from '@/lib/utils';
 
 const HoverCard = HoverCardPrimitive.Root;
 const HoverCardTrigger = HoverCardPrimitive.Trigger;

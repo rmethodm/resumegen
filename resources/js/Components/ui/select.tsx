@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ChevronDownIcon } from 'lucide-react';
-import { cn } from '@/shadcn-demo/lib/utils';
+import { cn } from '@/lib/utils';
 
 function Select({
     className,

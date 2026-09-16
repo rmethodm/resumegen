@@ -1,7 +1,7 @@
 import { FileTextIcon, HomeIcon, LayoutDashboardIcon, LogOutIcon, SearchIcon, SettingsIcon, ShareIcon, UserIcon } from 'lucide-react';
 import { cn } from '@/shadcn-demo/lib/utils';
-import { Button } from '@/shadcn-demo/components/ui/button';
-import { Avatar, AvatarFallback } from '@/shadcn-demo/components/ui/avatar';
+import { Button } from '@/Components/ui/button';
+import { Avatar, AvatarFallback } from '@/Components/ui/avatar';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,7 +9,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from '@/shadcn-demo/components/ui/dropdown-menu';
+} from '@/Components/ui/dropdown-menu';
 
 const links = [
     { label: 'Dashboard', icon: LayoutDashboardIcon, active: false },
