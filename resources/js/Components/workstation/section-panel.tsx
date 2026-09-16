@@ -407,7 +407,6 @@ export function SectionPanel({
 
                                     <JdMatchPanel
                                         draft={resume}
-                                        onAddKeyword={onAddKeyword}
                                         onOpenOptimize={onOpenOptimize}
                                     />
                                 </div>

@@ -398,6 +398,7 @@ class ExtensionApiTest extends ApiTestCase
                 'company' => 'Acme Corp',
                 'role' => 'Senior Engineer',
                 'job_url' => 'https://example.com/jobs/1',
+                'job_description' => 'Build reliable services.',
             ])
             ->assertCreated()
             ->assertJsonPath('company', 'Acme Corp')
@@ -407,6 +408,7 @@ class ExtensionApiTest extends ApiTestCase
             'user_id' => $user->id,
             'company' => 'Acme Corp',
             'status' => 'saved',
+            'job_description' => 'Build reliable services.',
         ]);
         $this->assertDatabaseHas('job_application_status_events', [
             'from_status' => null,

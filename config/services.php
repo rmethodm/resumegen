@@ -53,4 +53,11 @@ return [
         'redirect' => env('MICROSOFT_REDIRECT_URI'),
     ],
 
+    // Chrome extension id for the /extension/connect one-click handshake
+    // (see App\Http\Controllers\ExtensionConnectController). Null hides the
+    // "Connect automatically" button and leaves paste-token as the only path.
+    'resumegen_extension' => [
+        'id' => env('RESUMEGEN_EXTENSION_ID'),
+    ],
+
 ];

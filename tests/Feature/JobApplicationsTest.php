@@ -74,6 +74,28 @@ class JobApplicationsTest extends TestCase
         $this->assertSame('2026-08-14', $application->follow_up_at->toDateString());
     }
 
+    public function test_description_can_be_edited_preserved_by_status_updates_and_cleared(): void
+    {
+        $user = User::factory()->create();
+        $application = JobApplication::factory()->for($user)->create(['job_description' => 'Original']);
+
+        $this->actingAs($user)->patch(route('job-applications.update', $application), [
+            'job_description' => 'Updated description',
+        ])->assertRedirect();
+        $this->assertSame('Updated description', $application->fresh()->job_description);
+
+        $this->patch(route('job-applications.update', $application), ['status' => 'applied'])->assertRedirect();
+        $this->assertSame('Updated description', $application->fresh()->job_description);
+
+        $this->patch(route('job-applications.update', $application), [
+            'job_description' => str_repeat('x', 10001),
+        ])->assertSessionHasErrors('job_description');
+        $this->assertSame('Updated description', $application->fresh()->job_description);
+
+        $this->patch(route('job-applications.update', $application), ['job_description' => null])->assertRedirect();
+        $this->assertNull($application->fresh()->job_description);
+    }
+
     public function test_update_rejects_another_users_application(): void
     {
         $owner = User::factory()->create();

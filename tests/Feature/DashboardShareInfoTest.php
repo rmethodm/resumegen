@@ -12,6 +12,23 @@ class DashboardShareInfoTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_dashboard_link_title_matches_the_version_it_opens(): void
+    {
+        $user = User::factory()->create();
+        $base = Resume::factory()->for($user)->create(['title' => 'General resume']);
+        $version = Resume::factory()->for($user)->create([
+            'group_id' => $base->group_id, 'title' => 'Acme designer',
+            'updated_at' => now()->addMinute(),
+        ]);
+
+        $this->actingAs($user)->get(route('dashboard'))->assertInertia(fn ($page) => $page
+            ->reloadOnly('resumes', fn ($reloaded) => $reloaded
+                ->where('resumes.0.id', $version->id)
+                ->where('resumes.0.title', 'Acme designer')
+                ->where('resumes.0.group_title', $base->group->title)
+                ->where('resumes.0.version_count', 2)));
+    }
+
     public function test_dashboard_includes_lean_share_badges_without_preview(): void
     {
         $user = User::factory()->create();

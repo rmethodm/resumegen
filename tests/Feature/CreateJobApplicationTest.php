@@ -23,7 +23,29 @@ class CreateJobApplicationTest extends TestCase
 
         $application = $user->jobApplications()->sole();
         $this->assertNull($application->resume_id);
+        $this->assertNull($application->job_description);
         $this->assertSame(0, $user->resumes()->count());
+    }
+
+    public function test_track_only_preserves_the_description_for_reopening_the_card(): void
+    {
+        $user = User::factory()->create();
+        $description = "Own the roadmap.\nSQL and Figma.";
+
+        $this->actingAs($user)->post(route('job-applications.store'), [
+            'company' => 'Linear',
+            'role' => 'Product Manager',
+            'base_resume_id' => null,
+            'job_description' => $description,
+        ])->assertRedirect(route('job-applications.index'));
+
+        $application = $user->jobApplications()->sole();
+        $this->assertSame($description, $application->job_description);
+        $this->assertNull($application->resume_id);
+        $this->assertSame(0, $user->resumes()->count());
+
+        $this->get(route('job-applications.index'))->assertInertia(fn ($page) => $page
+            ->where('applications.0.job_description', $description));
     }
 
     public function test_store_with_base_resume_creates_a_tailored_sibling_version_and_links_it(): void
@@ -41,6 +63,7 @@ class CreateJobApplicationTest extends TestCase
 
         $application = $user->jobApplications()->sole();
         $version = $application->resume;
+        $this->assertSame('Own roadmap. SQL. Figma.', $application->job_description);
 
         $this->assertNotNull($version);
         $this->assertNotSame($base->id, $version->id);

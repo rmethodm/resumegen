@@ -41,6 +41,7 @@ type FormState = {
     company: string;
     role: string;
     job_url: string;
+    job_description: string;
     resume_id: string;
     status: JobStatus;
     follow_up_at: string;
@@ -292,6 +293,7 @@ export default function JobApplicationKanban({
             company: job.company,
             role: job.role,
             job_url: job.job_url ?? '',
+            job_description: job.job_description ?? '',
             resume_id: job.resume_id ? String(job.resume_id) : '',
             status: job.status,
             follow_up_at: job.follow_up_at ?? '',
@@ -312,6 +314,7 @@ export default function JobApplicationKanban({
             company: form.company,
             role: form.role,
             job_url: form.job_url || null,
+            job_description: form.job_description || null,
             resume_id: form.resume_id || null,
             status: form.status,
             follow_up_at: form.follow_up_at || null,
@@ -535,6 +538,17 @@ export default function JobApplicationKanban({
                                     onChange={(e) => setForm({ ...form, job_url: e.target.value })}
                                     className="mt-1 block w-full"
                                     placeholder="https://…"
+                                />
+                            </div>
+                            <div>
+                                <InputLabel htmlFor="edit-job-description" value="Job description" />
+                                <textarea
+                                    id="edit-job-description"
+                                    value={form.job_description}
+                                    onChange={(e) => setForm({ ...form, job_description: e.target.value })}
+                                    className={selectClassName}
+                                    rows={6}
+                                    maxLength={10000}
                                 />
                             </div>
                             <div className="flex gap-3">

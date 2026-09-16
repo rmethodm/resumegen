@@ -1,12 +1,14 @@
 # AI reintroduction map — Resumegen (2026-08)
 
-> Advisory for everything below Tier 1. **Bullet rewrite and summary generate/tailor (both
-> marked ★ Tier 1 below) shipped 2026-08-04** as `ResumeAiController` + `OpenAiResumeAssistant`,
-> disabled by default via `AI_ENABLED`/`OPENAI_API_KEY` in `config/ai.php` — see CLAUDE.md's
-> "AI" section. Everything else on this map (import, JD keyword match/gap-fix, multi-section
-> tailor) is still unbuilt.
-> Product rule: do **not** implement AI beyond the shipped Tier-1 slice without explicit
-> product approval (see CLAUDE.md). The app is free — no paid tiers, no metering-for-payment.
+> **Status (2026-09-10):** Historical advisory only. Live product model is **$9.95/mo Cashier
+> subscription + AI credit ledger** — see `CLAUDE.md` “Billing — subscription + AI credits” and
+> “AI — subscription credit gates”. No live generative Workstation HTTP: rewrite/generate/
+> review/section are unrouted. Optimize diagnose stays free. Coach/chat/translation stay
+> removed. Do not treat the Tier map below or `AI_ENABLED` / `ResumeAiController` wording as
+> current wiring.
+>
+> Original 2026-08 note (superseded): Tier-1 bullet/summary work had shipped behind flags; the
+> app is no longer “free with no metering.”
 
 ---
 

@@ -5,11 +5,26 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
-- **Active:** User-directed. Admin hardening phases 1–4 shipped 2026-08-25 (mandatory admin 2FA, destructive-tools gate, admin session idle + login throttle, observability + DEPLOYMENT/NOTES). UI redesign ladder P0–P2 shipped earlier; remaining UI items parked in `docs/plans/ui-redesign-remaining.md`. Auto-apply research parked 2026-08-13 in `docs/plans/auto-apply-research.md` — do not implement until reopened.
-- **Last updated:** 2026-08-25
-- **Next action:** User-directed. Production: set `ADMIN_DESTRUCTIVE_TOOLS=false`, confirm admin 2FA on the main site, then use admin host. Otherwise: extension connect polish / Workday QA; Job Imports gap analysis/cover letters remain stubs.
+- **Active:** User-directed. Branch `ShadEditor` — Workstation AI credits infra remains; **Rewrite and Generate credit UI removed** (bullet/summary rewrite + Optimize Generate; matching routes unrouted). Optimize diagnose stays. Admin panel removed 2026-09-02; Job Imports removed 2026-08-26. UI redesign ladder P0–P2 shipped earlier; remaining UI items parked in `docs/plans/ui-redesign-remaining.md`. Auto-apply research parked 2026-08-13 in `docs/plans/auto-apply-research.md` — do not implement until reopened.
+- **Wizard reliability follow-up:** Single HTML app entry; dev-only eager page resolver; Vitest excludes Laravel plugin to preserve public/hot; failed Skip retains inputs. 471 Laravel tests (2,112 assertions), 51 JS tests, build/Pint passed. Temporary Vite server stopped and built-assets setup restored.
+- **Latest completed:** 2026-09-15 — Review items 4/5: version/group naming and account labels clarified, target-role bar restored, Vite React deduplication/pre-bundling added after historic invalid-hook evidence. Full tests: 470 Laravel (2,110 assertions), 48 JavaScript; build/Pint passed. Browser verified naming, target-role autosave, account labels, and wizard through Review without submitting.
+- **Earlier completed:** 2026-09-15 — Review item 3: Next up now includes saved preparation and Interviewing/Offer follow-ups; duplicate lower-priority prompts suppressed; rejected interviews excluded. 469 Laravel tests (2,086 assertions), build, Pint, and signed-in dashboard verification passed.
+- **Earlier completed:** 2026-09-15 — Review item 2: whole-term job-wording overlap excludes internal metadata and omitted sections; cleaned punctuation/filler; counts remain complete; unmatched terms are review prompts. All 48 JavaScript tests and build passed; signed-in Optimize verified.
+- **Previous completed:** 2026-09-15 — Apply-flow review item 1: store job descriptions on applications even without a resume; reopen/edit them in the Kanban. Local migration applied; 39 focused tests (146 assertions), build, Pint, and signed-in create/edit/reload checks passed. Existing apply-flow Part 1 is already shipped; older context describing it as unstarted is stale.
+- **Last updated:** 2026-09-15
+- **Full-suite verification:** User-requested run passed: 465 Laravel tests (2,012 assertions) and 41 JavaScript tests across 11 files.
+- **Next action:** User-directed. Keep `ShadEditor` as-is unless asked to PR/merge/commit. Deferred from credits work: check-then-spend race; do not set `STRIPE_CREDITS_PRICE_ID` until a purchase grant webhook exists. Otherwise: extension connect polish / Workday QA.
 
 ---
+
+## Apply-flow review
+
+- [x] Preserve and edit job descriptions for track-only applications (review item 1).
+- [x] Correct job-wording overlap and replace arbitrary add-skill suggestions with review prompts (review item 2).
+- [x] Next up coverage for saved preparation and later-stage follow-ups (review item 3).
+- [x] Clarify version titles, group labels, and account/starter-profile navigation (review item 4).
+- [x] Restore target-role/company controls and investigate/mitigate wizard React runtime mismatch (review item 5).
+- Next: user-directed. Wizard reliability follow-up verified in both built and development assets, including cold optimizer startup, HMR, and unit-test execution.
 
 ## Conventions
 - Keep README.md in sync with what's actually live.
@@ -32,11 +47,11 @@ Live at **<url>** · Repo: **<repo>**
 - [x] Stronger ATS heuristics (scored matching + Greenhouse/Workday/Ashby patterns + unit tests)
 - [ ] Manual QA on real multi-step Workday forms
 
-## Phase 3 — Job Imports (Adzuna/USAJOBS search)
-- [x] Design preview shell (no backend)
-- [x] Real search wired (`JobImportSearch`, `AdzunaClient`, `UsaJobsClient`; `imported_jobs` table)
-- [x] Resume match/tailoring — `ResumeAiController::matchJob` (score + missing skills), gated by `AI_ENABLED` (2026-08-11)
-- [ ] Gap analysis / cover letters (deliberately out of scope, see CLAUDE.md Removed Features)
+## Phase 3 — Job Imports (Adzuna/USAJOBS search)  ← REMOVED 2026-08-26
+- [x] Design preview shell (no backend) — historical
+- [x] Real search wired — removed with `/jobs-imports` and related tables
+- [x] Resume match/tailoring — removed with Job Imports AI surface
+- Gap analysis / cover letters stayed out of scope; do not rebuild Job Imports without asking
 
 ## Future / if needed
 - **Job radar** — while browsing, detect job cards and softly surface resume matches (side panel / badge; no spam toasts). Feasible; not started. Prefer allowlisted hosts + keyword score first.
@@ -45,7 +60,7 @@ Live at **<url>** · Repo: **<repo>**
 - Site-specific ATS maps — only with real usage data
 - Auto PDF attach — fragile host permissions
 - **Auto-apply (A assist / B approve / C autopilot + receipt)** — research only, parked. See `docs/plans/auto-apply-research.md`. Do not implement until the user reopens it and answers the open questions.
-- **Pricing economics sketch** — pack-vs-subscription conversion-band modeling, per `docs/pricing-recommendations-2026-08.md` next steps #2. Gated behind a product pick (Pro+quotas vs scan-led) and explicit approval before any billing code (CLAUDE.md). Not started.
+- **Credit-pack purchase grant** — `/billing/credits` Checkout stubs until `STRIPE_CREDITS_PRICE_ID` is set; do not enable the price without a webhook that grants ledger credits. See `CLAUDE.md` Billing + `docs/UNFORGET.md`.
 
 ---
 

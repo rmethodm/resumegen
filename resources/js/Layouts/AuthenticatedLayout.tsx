@@ -67,7 +67,7 @@ export default function Authenticated({
             active: Boolean(route().current('job-applications.*')),
             icon: ClipboardDocumentListIcon,
         },
-        { label: 'Profile', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
+        { label: 'Account settings', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
     ];
 
     useEffect(() => {
@@ -224,7 +224,7 @@ export default function Authenticated({
                             </button>
                         </Dropdown.Trigger>
                         <Dropdown.Content>
-                            <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
+                            <Dropdown.Link href={route('profile.edit')}>Account settings</Dropdown.Link>
                             <button
                                 type="button"
                                 onClick={logOut}

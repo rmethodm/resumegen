@@ -98,6 +98,42 @@ describe('Ashby system fields', () => {
     });
 });
 
+describe('Lever bracket-notation names', () => {
+    it('resume[name]', () => {
+        assert.equal(bestKey({ name: 'resume[name]' }), 'full_name');
+    });
+    it('resume[email]', () => {
+        assert.equal(bestKey({ name: 'resume[email]', type: 'email' }), 'email');
+    });
+    it('resume[phone]', () => {
+        assert.equal(bestKey({ name: 'resume[phone]' }), 'phone');
+    });
+    it('resume[org] is current company', () => {
+        assert.equal(bestKey({ name: 'resume[org]' }), 'current_company');
+    });
+    it('resume[urls][LinkedIn]', () => {
+        assert.equal(bestKey({ name: 'resume[urls][LinkedIn]' }), 'linkedin');
+    });
+    it('data-qa is read the way Workday data-automation-id is', () => {
+        assert.equal(bestKey({ dataQa: 'name-input', label: 'Full name' }), 'full_name');
+    });
+});
+
+describe('iCIMS / Taleo — id-only fields fall back to label', () => {
+    it('iCIMS long compound field id, label-driven', () => {
+        assert.equal(
+            bestKey({ id: 'field-formField1', label: 'Email address' }),
+            'email',
+        );
+    });
+    it('Taleo ffId_* name, label-driven', () => {
+        assert.equal(
+            bestKey({ name: 'ffId_10021', label: 'Phone' }),
+            'phone',
+        );
+    });
+});
+
 describe('labels', () => {
     it('LinkedIn Profile URL', () => {
         assert.equal(bestKey({ label: 'LinkedIn Profile URL' }), 'linkedin');

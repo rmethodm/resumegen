@@ -48,7 +48,7 @@
         <!-- Scripts -->
         @routes(null, Illuminate\Support\Facades\Vite::cspNonce())
         @viteReactRefresh
-        @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
+        @vite('resources/js/app.tsx')
         @inertiaHead
     </head>
     <body class="font-sans antialiased">

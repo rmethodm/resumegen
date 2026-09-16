@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Vite;
 use Tests\TestCase;
 
 class ApplyWizardTest extends TestCase
@@ -45,6 +46,18 @@ class ApplyWizardTest extends TestCase
             ->patch(route('apply-wizard.preference'), ['prefers_apply_wizard' => true])
             ->assertRedirect();
         $this->assertTrue($user->fresh()->prefers_apply_wizard);
+    }
+
+    public function test_wizard_bootstraps_only_the_application_entry_point(): void
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get(route('apply.wizard'))->assertOk();
+
+        preg_match_all('/<script[^>]*type="module"[^>]*src="([^"]+)"[^>]*>/', $response->getContent(), $scripts);
+
+        $this->assertSame([
+            Vite::asset('resources/js/app.tsx'),
+        ], $scripts[1]);
     }
 
     public function test_preference_endpoint_requires_boolean(): void

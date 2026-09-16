@@ -187,6 +187,7 @@ export type DashboardShareInfo = DashboardShareBadge;
 
 /** A dashboard row: enough to list, rank, and open the share modal. */
 export type ResumeSummary = {
+    group_title: string;
     id: number;
     group_id: number;
     title: string;
