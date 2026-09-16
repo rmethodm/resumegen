@@ -276,9 +276,9 @@ export function ExperienceFields({
                     <label className="flex items-center gap-2 text-sm">
                         <Checkbox
                             checked={experience.is_current}
-                            onChange={(event) =>
+                            onCheckedChange={(checked) =>
                                 patch(resume, onChange, 'experiences', index, {
-                                    is_current: event.target.checked,
+                                    is_current: checked === true,
                                 })
                             }
                         />

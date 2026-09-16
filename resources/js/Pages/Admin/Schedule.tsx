@@ -48,7 +48,7 @@ export default function AdminSchedule({ tasks }: { tasks: ScheduledTask[] }) {
                                     <Checkbox
                                         checked={task.enabled}
                                         disabled={processingId === task.id}
-                                        onChange={(e) => update(task, { enabled: e.target.checked })}
+                                        onCheckedChange={(checked) => update(task, { enabled: checked === true })}
                                     />
                                     Enabled
                                 </label>
