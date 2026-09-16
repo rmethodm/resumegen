@@ -7,12 +7,17 @@ import {
 } from '@heroicons/react/24/outline';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import TextInput from '@/Components/TextInput';
-import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
-import { Button, buttonClassName } from '@/Components/ui/button';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
+import { Badge } from '@/Components/ui/badge';
+import { Button } from '@/Components/ui/button';
+import { Card, CardContent } from '@/Components/ui/card';
 import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import { Select } from '@/Components/ui/select';
 import { Shell } from '@/Components/ui/shell';
+import { Textarea } from '@/Components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { AddJobModal } from '@/Components/jobs/add-job-modal';
 import type { JobApplication, JobApplicationInterview, JobStatus, ResumeOption } from '@/types';
@@ -32,9 +37,6 @@ const STATUS_CHIP: Record<JobStatus, string> = {
     offer: 'bg-success-subtle text-success-text',
     rejected: 'bg-surface text-ink-faint',
 };
-
-const selectClassName =
-    'mt-1 block w-full rounded-lg border-surface-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand';
 
 type FormState = {
     id: number | null;
@@ -124,14 +126,9 @@ function Column({
             <div ref={setNodeRef} className="flex min-h-40 flex-1 flex-col gap-2">
                 <div className="flex items-center gap-2 px-1 pb-1">
                     <span className="text-xs font-bold text-ink">{label}</span>
-                    <span
-                        className={cn(
-                            'rounded-full px-2 py-0.5 text-xs font-bold',
-                            STATUS_CHIP[status],
-                        )}
-                    >
+                    <Badge className={cn('rounded-full font-bold', STATUS_CHIP[status])}>
                         {jobs.length}
-                    </span>
+                    </Badge>
                 </div>
                 {jobs.length === 0 ? (
                     <p className="px-1 py-6 text-center text-xs text-ink-faint">Drop here</p>
@@ -184,7 +181,7 @@ function InterviewsEditor({ jobApplicationId, interviews }: { jobApplicationId: 
     return (
         <div>
             <div className="flex items-center justify-between">
-                <InputLabel value="Interviews" />
+                <Label>Interviews</Label>
                 <Button type="button" variant="outline" size="sm" onClick={addRound} disabled={processingId !== null}>
                     <PlusIcon className="size-3.5" />
                     Add round
@@ -198,10 +195,10 @@ function InterviewsEditor({ jobApplicationId, interviews }: { jobApplicationId: 
                         <div key={interview.id} className="rounded-lg border border-surface-border/80 p-2.5">
                             <div className="flex items-center gap-2">
                                 <span className="text-xs font-bold text-ink">Round {interview.round}</span>
-                                <select
+                                <Select
                                     defaultValue={interview.type ?? ''}
                                     onBlur={(e) => updateInterview(interview, { type: e.target.value || null })}
-                                    className={cn(selectClassName, 'mt-0 flex-1')}
+                                    className="flex-1"
                                     disabled={processingId === interview.id}
                                 >
                                     {INTERVIEW_TYPES.map((type) => (
@@ -209,32 +206,34 @@ function InterviewsEditor({ jobApplicationId, interviews }: { jobApplicationId: 
                                             {type}
                                         </option>
                                     ))}
-                                </select>
-                                <TextInput
+                                </Select>
+                                <Input
                                     type="datetime-local"
                                     defaultValue={interview.scheduled_at ? interview.scheduled_at.slice(0, 16) : ''}
                                     onBlur={(e) => updateInterview(interview, { scheduled_at: e.target.value || null })}
-                                    className="mt-0"
                                     disabled={processingId === interview.id}
+                                    className="w-44 shrink-0"
                                 />
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => deleteInterview(interview)}
                                     disabled={processingId === interview.id}
-                                    className="rounded p-1.5 text-ink-faint hover:text-danger"
+                                    className="size-7 text-ink-faint hover:text-danger"
                                     aria-label={`Delete round ${interview.round}`}
                                     title={`Delete round ${interview.round}`}
                                 >
                                     <TrashIcon className="size-4" />
-                                </button>
+                                </Button>
                             </div>
-                            <textarea
+                            <Textarea
                                 defaultValue={interview.notes ?? ''}
                                 onBlur={(e) => updateInterview(interview, { notes: e.target.value || null })}
                                 placeholder="Notes"
                                 rows={2}
                                 disabled={processingId === interview.id}
-                                className="mt-2 block w-full rounded-lg border-surface-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand"
+                                className="mt-2"
                             />
                         </div>
                     ))}
@@ -430,9 +429,9 @@ export default function JobApplicationKanban({
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <Link href={route('job-applications.stats')} className={buttonClassName('outline', 'default', 'rounded-md')}>
-                            View stats
-                        </Link>
+                        <Button asChild variant="outline" className="rounded-md">
+                            <Link href={route('job-applications.stats')}>View stats</Link>
+                        </Button>
                         <Button type="button" onClick={openCreate} className="rounded-md">
                             <PlusIcon className="size-4" />
                             New application
@@ -441,35 +440,43 @@ export default function JobApplicationKanban({
                 </div>
 
                 <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                    <div className="rounded-lg border border-brand/20 bg-brand-subtle/50 p-4 shadow-card">
-                        <p className="text-xs font-medium text-brand">Active pipeline</p>
-                        <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-ink">{activeApplications.length}</p>
-                        <p className="mt-1 text-xs text-ink-muted">of {localApplications.length} tracked roles</p>
-                    </div>
-                    <div className="rounded-lg border border-surface-border bg-white p-4 shadow-card">
-                        <p className="text-xs font-medium text-ink-muted">Interviews</p>
-                        <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-ink">{interviewing.length}</p>
-                        <p className="mt-1 text-xs text-ink-faint">needs preparation</p>
-                    </div>
-                    <div className="rounded-lg border border-surface-border bg-white p-4 shadow-card">
-                        <p className="text-xs font-medium text-ink-muted">Offers</p>
-                        <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-ink">{offers.length}</p>
-                        <p className="mt-1 text-xs text-ink-faint">in the pipeline</p>
-                    </div>
-                    <div className="rounded-lg border border-surface-border bg-white p-4 shadow-card">
-                        <p className="text-xs font-medium text-ink-muted">Next follow-up</p>
-                        <p className="mt-2 truncate text-2xl font-bold tracking-tight text-ink">{followUps[0]?.follow_up_at ?? 'None'}</p>
-                        <p className="mt-1 text-xs text-ink-faint">set a date on an application</p>
-                    </div>
+                    <Card className="gap-0 border-brand/20 bg-brand-subtle/50 py-4 shadow-card">
+                        <CardContent>
+                            <p className="text-xs font-medium text-brand">Active pipeline</p>
+                            <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-ink">{activeApplications.length}</p>
+                            <p className="mt-1 text-xs text-ink-muted">of {localApplications.length} tracked roles</p>
+                        </CardContent>
+                    </Card>
+                    <Card className="gap-0 border-surface-border bg-white py-4 shadow-card">
+                        <CardContent>
+                            <p className="text-xs font-medium text-ink-muted">Interviews</p>
+                            <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-ink">{interviewing.length}</p>
+                            <p className="mt-1 text-xs text-ink-faint">needs preparation</p>
+                        </CardContent>
+                    </Card>
+                    <Card className="gap-0 border-surface-border bg-white py-4 shadow-card">
+                        <CardContent>
+                            <p className="text-xs font-medium text-ink-muted">Offers</p>
+                            <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-ink">{offers.length}</p>
+                            <p className="mt-1 text-xs text-ink-faint">in the pipeline</p>
+                        </CardContent>
+                    </Card>
+                    <Card className="gap-0 border-surface-border bg-white py-4 shadow-card">
+                        <CardContent>
+                            <p className="text-xs font-medium text-ink-muted">Next follow-up</p>
+                            <p className="mt-2 truncate text-2xl font-bold tracking-tight text-ink">{followUps[0]?.follow_up_at ?? 'None'}</p>
+                            <p className="mt-1 text-xs text-ink-faint">set a date on an application</p>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 <div className="mb-5">
                     <h2 className="text-base font-bold text-ink">Your pipeline</h2>
                     <p className="mt-1 text-xs text-ink-muted">Drag a role to update its status.</p>
                     {dragError && (
-                        <p className="mt-2 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-xs text-danger-text">
-                            {dragError}
-                        </p>
+                        <Alert variant="destructive" className="mt-2">
+                            <AlertDescription>{dragError}</AlertDescription>
+                        </Alert>
                     )}
                 </div>
 
@@ -518,14 +525,14 @@ export default function JobApplicationKanban({
                 {form && (
                     <form onSubmit={submitForm} className="p-6">
                         {formError && (
-                            <p className="mb-4 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-sm text-danger-text">
-                                {formError}
-                            </p>
+                            <Alert variant="destructive" className="mb-4">
+                                <AlertDescription>{formError}</AlertDescription>
+                            </Alert>
                         )}
                         <div className="space-y-4">
                             <div>
-                                <InputLabel value="Company" />
-                                <TextInput
+                                <Label>Company</Label>
+                                <Input
                                     value={form.company}
                                     onChange={(e) => setForm({ ...form, company: e.target.value })}
                                     className="mt-1 block w-full"
@@ -533,8 +540,8 @@ export default function JobApplicationKanban({
                                 />
                             </div>
                             <div>
-                                <InputLabel value="Role" />
-                                <TextInput
+                                <Label>Role</Label>
+                                <Input
                                     value={form.role}
                                     onChange={(e) => setForm({ ...form, role: e.target.value })}
                                     className="mt-1 block w-full"
@@ -542,8 +549,8 @@ export default function JobApplicationKanban({
                                 />
                             </div>
                             <div>
-                                <InputLabel value="Job posting URL" />
-                                <TextInput
+                                <Label>Job posting URL</Label>
+                                <Input
                                     type="url"
                                     value={form.job_url}
                                     onChange={(e) => setForm({ ...form, job_url: e.target.value })}
@@ -552,23 +559,23 @@ export default function JobApplicationKanban({
                                 />
                             </div>
                             <div>
-                                <InputLabel htmlFor="edit-job-description" value="Job description" />
-                                <textarea
+                                <Label htmlFor="edit-job-description">Job description</Label>
+                                <Textarea
                                     id="edit-job-description"
                                     value={form.job_description}
                                     onChange={(e) => setForm({ ...form, job_description: e.target.value })}
-                                    className={selectClassName}
+                                    className="mt-1"
                                     rows={6}
                                     maxLength={10000}
                                 />
                             </div>
                             <div className="flex gap-3">
                                 <div className="flex-1">
-                                    <InputLabel value="Resume used" />
-                                    <select
+                                    <Label>Resume used</Label>
+                                    <Select
                                         value={form.resume_id}
                                         onChange={(e) => setForm({ ...form, resume_id: e.target.value })}
-                                        className={selectClassName}
+                                        className="mt-1"
                                     >
                                         <option value="">None</option>
                                         {(resumes ?? []).map((resume) => (
@@ -576,28 +583,28 @@ export default function JobApplicationKanban({
                                                 {resume.title}
                                             </option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </div>
                                 <div className="flex-1">
-                                    <InputLabel value="Status" />
-                                    <select
+                                    <Label>Status</Label>
+                                    <Select
                                         value={form.status}
                                         onChange={(e) =>
                                             setForm({ ...form, status: e.target.value as JobStatus })
                                         }
-                                        className={selectClassName}
+                                        className="mt-1"
                                     >
                                         {COLUMNS.map((column) => (
                                             <option key={column.status} value={column.status}>
                                                 {column.label}
                                             </option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </div>
                             </div>
                             <div>
-                                <InputLabel value="Next step date" />
-                                <TextInput
+                                <Label>Next step date</Label>
+                                <Input
                                     type="date"
                                     value={form.follow_up_at}
                                     onChange={(e) => setForm({ ...form, follow_up_at: e.target.value })}

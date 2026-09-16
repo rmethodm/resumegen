@@ -120,8 +120,10 @@ export function SnapshotsPanel({
                             >
                                 Restore
                             </Button>
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
+                                size="sm"
                                 onClick={() =>
                                     setConfirmAction({
                                         kind: 'delete',
@@ -129,10 +131,10 @@ export function SnapshotsPanel({
                                         label: snapshot.label || 'Untitled checkpoint',
                                     })
                                 }
-                                className="focus-ring rounded-sm text-xs text-ink-faint hover:text-danger"
+                                className="h-auto p-0 text-xs text-ink-faint hover:bg-transparent hover:text-danger"
                             >
                                 Delete
-                            </button>
+                            </Button>
                         </li>
                     ))}
                 </ul>

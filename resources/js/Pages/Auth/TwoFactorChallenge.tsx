@@ -1,9 +1,9 @@
 import InputError from '@/Components/InputError';
-import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 
 type Mode = 'totp' | 'recovery';
 
@@ -28,19 +28,19 @@ export default function TwoFactorChallenge() {
 
             <form onSubmit={submit}>
                 {mode === 'recovery' ? (
-                    <TextInput
+                    <Input
                         id="code"
                         type="text"
                         name="code"
                         value={data.code}
                         className="mt-1 block w-full"
                         autoComplete="off"
-                        isFocused
+                        autoFocus
                         onChange={(e) => setData('code', e.target.value)}
                         placeholder="XXXXX-XXXXX"
                     />
                 ) : (
-                    <TextInput
+                    <Input
                         id="code"
                         type="text"
                         inputMode="numeric"
@@ -48,7 +48,7 @@ export default function TwoFactorChallenge() {
                         value={data.code}
                         className="mt-1 block w-full tracking-widest text-center text-xl"
                         autoComplete="one-time-code"
-                        isFocused
+                        autoFocus
                         maxLength={6}
                         onChange={(e) => setData('code', e.target.value)}
                         placeholder="000000"
@@ -64,22 +64,24 @@ export default function TwoFactorChallenge() {
 
             <div className="mt-4 space-y-2 text-center text-sm">
                 {mode !== 'recovery' && (
-                    <button
+                    <Button
                         type="button"
-                        className="focus-ring rounded-sm text-ink-muted underline hover:text-ink"
+                        variant="link"
+                        className="h-auto p-0 text-ink-muted"
                         onClick={() => setMode('recovery')}
                     >
                         Use a recovery code instead
-                    </button>
+                    </Button>
                 )}
                 {mode === 'recovery' && (
-                    <button
+                    <Button
                         type="button"
-                        className="focus-ring rounded-sm text-ink-muted underline hover:text-ink"
+                        variant="link"
+                        className="h-auto p-0 text-ink-muted"
                         onClick={() => setMode('totp')}
                     >
                         Use authenticator app instead
-                    </button>
+                    </Button>
                 )}
                 <div>
                     <a

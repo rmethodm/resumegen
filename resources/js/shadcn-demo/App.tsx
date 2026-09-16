@@ -19,17 +19,17 @@ import { SectionFields } from '@/shadcn-demo/components/section-fields';
 import { ResumePreview } from '@/shadcn-demo/components/resume-preview';
 import { OptimizePanel } from '@/shadcn-demo/components/optimize-panel';
 import { SidePanel } from '@/shadcn-demo/components/side-panel';
-import { Button } from '@/shadcn-demo/components/ui/button';
-import { Badge } from '@/shadcn-demo/components/ui/badge';
-import { Card } from '@/shadcn-demo/components/ui/card';
-import { Input } from '@/shadcn-demo/components/ui/input';
-import { Select } from '@/shadcn-demo/components/ui/select';
-import { Slider } from '@/shadcn-demo/components/ui/slider';
-import { Switch } from '@/shadcn-demo/components/ui/switch';
-import { Skeleton } from '@/shadcn-demo/components/ui/skeleton';
-import { Toaster } from '@/shadcn-demo/components/ui/sonner';
-import { ToggleGroup, ToggleGroupItem } from '@/shadcn-demo/components/ui/toggle-group';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shadcn-demo/components/ui/tabs';
+import { Button } from '@/Components/ui/button';
+import { Badge } from '@/Components/ui/badge';
+import { Card } from '@/Components/ui/card';
+import { Input } from '@/Components/ui/input';
+import { Select } from '@/Components/ui/select';
+import { Slider } from '@/Components/ui/slider';
+import { Switch } from '@/Components/ui/switch';
+import { Skeleton } from '@/Components/ui/skeleton';
+import { Toaster } from '@/Components/ui/sonner';
+import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -37,10 +37,10 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
-} from '@/shadcn-demo/components/ui/breadcrumb';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/shadcn-demo/components/ui/tooltip';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/shadcn-demo/components/ui/hover-card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn-demo/components/ui/popover';
+} from '@/Components/ui/breadcrumb';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/Components/ui/hover-card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
 import {
     Dialog,
     DialogContent,
@@ -49,7 +49,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/shadcn-demo/components/ui/dialog';
+} from '@/Components/ui/dialog';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -60,7 +60,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/shadcn-demo/components/ui/alert-dialog';
+} from '@/Components/ui/alert-dialog';
 import {
     CommandDialog,
     CommandEmpty,
@@ -69,8 +69,8 @@ import {
     CommandList,
     CommandInput,
     CommandSeparator,
-} from '@/shadcn-demo/components/ui/command';
-import { Alert, AlertDescription, AlertTitle } from '@/shadcn-demo/components/ui/alert';
+} from '@/Components/ui/command';
+import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
 import { cn } from '@/shadcn-demo/lib/utils';
 import {
     OPTIONAL_SECTIONS,

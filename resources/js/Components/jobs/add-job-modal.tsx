@@ -1,13 +1,13 @@
 import { Link, router } from '@inertiajs/react';
 import { FormEvent, useEffect, useState } from 'react';
-import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
-import TextInput from '@/Components/TextInput';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
 import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import { Select } from '@/Components/ui/select';
+import { Textarea } from '@/Components/ui/textarea';
 import type { ResumeOption } from '@/types';
-
-const selectClassName =
-    'mt-1 block w-full rounded-lg border-surface-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-brand focus:ring-brand';
 
 export type AddJobInitial = {
     company?: string;
@@ -92,15 +92,15 @@ export function AddJobModal({
         <Modal show={open} onClose={onClose} maxWidth="lg" title="Add job">
             <form onSubmit={submit} className="p-6">
                 {error && (
-                    <p className="mb-4 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-sm text-danger-text">
-                        {error}
-                    </p>
+                    <Alert variant="destructive" className="mb-4">
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
                 )}
                 <div className="space-y-4">
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <InputLabel value="Company" />
-                            <TextInput
+                            <Label>Company</Label>
+                            <Input
                                 value={company}
                                 onChange={(e) => setCompany(e.target.value)}
                                 className="mt-1 block w-full"
@@ -108,8 +108,8 @@ export function AddJobModal({
                             />
                         </div>
                         <div>
-                            <InputLabel value="Role" />
-                            <TextInput
+                            <Label>Role</Label>
+                            <Input
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
                                 className="mt-1 block w-full"
@@ -118,8 +118,8 @@ export function AddJobModal({
                         </div>
                     </div>
                     <div>
-                        <InputLabel value="Job posting URL" />
-                        <TextInput
+                        <Label>Job posting URL</Label>
+                        <Input
                             type="url"
                             value={jobUrl}
                             onChange={(e) => setJobUrl(e.target.value)}
@@ -128,22 +128,22 @@ export function AddJobModal({
                         />
                     </div>
                     <div>
-                        <InputLabel value="Job description" />
-                        <textarea
+                        <Label>Job description</Label>
+                        <Textarea
                             value={jobDescription}
                             onChange={(e) => setJobDescription(e.target.value)}
                             maxLength={10000}
                             rows={6}
-                            className={selectClassName}
+                            className="mt-1"
                             placeholder="Paste the posting. Used to score keyword match in the Optimize panel."
                         />
                     </div>
                     <div>
-                        <InputLabel value="Create a tailored copy of" />
-                        <select
+                        <Label>Create a tailored copy of</Label>
+                        <Select
                             value={baseResumeId}
                             onChange={(e) => setBaseResumeId(e.target.value)}
-                            className={selectClassName}
+                            className="mt-1"
                         >
                             <option value="">None, track only</option>
                             {resumes.map((resume) => (
@@ -151,7 +151,7 @@ export function AddJobModal({
                                     {resume.title} · {resume.score}/100
                                 </option>
                             ))}
-                        </select>
+                        </Select>
                         <p className="mt-1 text-xs text-ink-faint">
                             The copy is a new version in the same group. Your original is not changed.
                         </p>

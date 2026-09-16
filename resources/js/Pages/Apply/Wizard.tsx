@@ -1,18 +1,18 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import InputLabel from '@/Components/InputLabel';
-import TextInput from '@/Components/TextInput';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
 import { Button, buttonClassName } from '@/Components/ui/button';
+import { Label } from '@/Components/ui/label';
+import { Input } from '@/Components/ui/input';
+import { Select } from '@/Components/ui/select';
 import { Shell } from '@/Components/ui/shell';
+import { Textarea } from '@/Components/ui/textarea';
 import { cn } from '@/lib/utils';
 import type { ResumeOption } from '@/types';
 
 const STEPS = ['Job', 'Resume', 'Tailor', 'Review'] as const;
 type Step = (typeof STEPS)[number];
-
-const fieldClassName =
-    'mt-1 block w-full rounded-lg border-surface-border text-sm shadow-xs focus:border-brand focus:ring-brand';
 
 export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOption[] }) {
     const [step, setStep] = useState<Step>('Job');
@@ -111,23 +111,25 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
 
                 <Shell innerClassName="p-6">
                     {error && (
-                        <p className="mb-4 rounded-md border border-danger/30 bg-danger-subtle px-3 py-2 text-sm text-danger-text">{error}</p>
+                        <Alert variant="destructive" className="mb-4">
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
                     )}
 
                     {step === 'Job' && (
                         <div className="space-y-4">
                             <h1 className="text-lg font-bold text-ink">Which job?</h1>
                             <div>
-                                <InputLabel value="Company" />
-                                <TextInput value={company} onChange={(e) => setCompany(e.target.value)} className="mt-1 block w-full" required />
+                                <Label>Company</Label>
+                                <Input value={company} onChange={(e) => setCompany(e.target.value)} className="mt-1 block w-full" required />
                             </div>
                             <div>
-                                <InputLabel value="Role" />
-                                <TextInput value={role} onChange={(e) => setRole(e.target.value)} className="mt-1 block w-full" required />
+                                <Label>Role</Label>
+                                <Input value={role} onChange={(e) => setRole(e.target.value)} className="mt-1 block w-full" required />
                             </div>
                             <div>
-                                <InputLabel value="Job posting URL (optional)" />
-                                <TextInput type="url" value={jobUrl} onChange={(e) => setJobUrl(e.target.value)} className="mt-1 block w-full" placeholder="https://…" />
+                                <Label>Job posting URL (optional)</Label>
+                                <Input type="url" value={jobUrl} onChange={(e) => setJobUrl(e.target.value)} className="mt-1 block w-full" placeholder="https://…" />
                             </div>
                         </div>
                     )}
@@ -147,14 +149,14 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                                     or continue to track this job only.
                                 </p>
                             ) : (
-                                <select value={baseResumeId} onChange={(e) => setBaseResumeId(e.target.value)} className={fieldClassName}>
+                                <Select value={baseResumeId} onChange={(e) => setBaseResumeId(e.target.value)} className="mt-1">
                                     <option value="">None, track only</option>
                                     {resumeOptions.map((r) => (
                                         <option key={r.id} value={r.id}>
                                             {r.title} · {r.score}/100
                                         </option>
                                     ))}
-                                </select>
+                                </Select>
                             )}
                         </div>
                     )}
@@ -165,12 +167,12 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                             <p className="text-sm text-ink-muted">
                                 The Optimize panel scores keyword overlap and lists what is missing so you can tailor by hand.
                             </p>
-                            <textarea
+                            <Textarea
                                 value={jobDescription}
                                 onChange={(e) => setJobDescription(e.target.value)}
                                 maxLength={10000}
                                 rows={10}
-                                className={fieldClassName}
+                                className="mt-1"
                             />
                         </div>
                     )}
@@ -190,9 +192,9 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                     )}
 
                     <div className="mt-6 flex items-center justify-between">
-                        <button type="button" onClick={skipWizard} disabled={processing} className="text-xs font-medium text-ink-muted underline-offset-2 hover:underline">
+                        <Button type="button" variant="ghost" size="sm" onClick={skipWizard} disabled={processing}>
                             Skip wizard
-                        </button>
+                        </Button>
                         <div className="flex gap-2">
                             {index > 0 && (
                                 <Button type="button" variant="outline" onClick={back} disabled={processing}>
