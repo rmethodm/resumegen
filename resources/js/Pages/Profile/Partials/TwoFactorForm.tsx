@@ -1,9 +1,10 @@
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import { Switch } from '@/Components/ui/switch';
 
 interface Props {
     enabled: boolean;
@@ -26,9 +27,10 @@ export default function TwoFactorForm({
     const regenForm = useForm({});
     const [copied, setCopied] = useState(false);
 
-    const handleEnable: FormEventHandler = (e) => {
-        e.preventDefault();
-        enableForm.post(route('two-factor.enable'), { preserveScroll: true });
+    const handleEnableToggle = (checked: boolean) => {
+        if (checked) {
+            enableForm.post(route('two-factor.enable'), { preserveScroll: true });
+        }
     };
 
     const handleConfirm: FormEventHandler = (e) => {
@@ -36,9 +38,10 @@ export default function TwoFactorForm({
         confirmForm.post(route('two-factor.confirm'), { preserveScroll: true });
     };
 
-    const handleDisable: FormEventHandler = (e) => {
-        e.preventDefault();
-        disableForm.delete(route('two-factor.disable'), { preserveScroll: true });
+    const handleDisableToggle = (checked: boolean) => {
+        if (!checked) {
+            disableForm.delete(route('two-factor.disable'), { preserveScroll: true });
+        }
     };
 
     const handleRegen: FormEventHandler = (e) => {
@@ -69,11 +72,17 @@ export default function TwoFactorForm({
 
             {/* State 1: Disabled */}
             {!enabled && !pending && (
-                <form onSubmit={handleEnable} className="mt-6">
-                    <Button disabled={enableForm.processing}>
+                <div className="mt-6 flex items-center gap-3">
+                    <Switch
+                        id="two-factor-toggle"
+                        checked={false}
+                        disabled={enableForm.processing}
+                        onCheckedChange={handleEnableToggle}
+                    />
+                    <Label htmlFor="two-factor-toggle">
                         Enable Two-Factor Authentication
-                    </Button>
-                </form>
+                    </Label>
+                </div>
             )}
 
             {/* State 2: Pending confirmation */}
@@ -87,15 +96,15 @@ export default function TwoFactorForm({
                         dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
                     />
                     <form onSubmit={handleConfirm} className="space-y-4">
-                        <div>
-                            <InputLabel htmlFor="confirm_code" value="Confirmation Code" />
-                            <TextInput
+                        <div className="grid gap-2">
+                            <Label htmlFor="confirm_code">Confirmation Code</Label>
+                            <Input
                                 id="confirm_code"
                                 type="text"
                                 inputMode="numeric"
                                 value={confirmForm.data.code}
                                 onChange={(e) => confirmForm.setData('code', e.target.value)}
-                                className="mt-1 block w-40 tracking-widest text-center text-xl"
+                                className="w-40 tracking-widest text-center text-xl"
                                 maxLength={6}
                                 placeholder="000000"
                                 autoComplete="one-time-code"
@@ -110,11 +119,16 @@ export default function TwoFactorForm({
             {/* State 3: Enabled */}
             {enabled && (
                 <div className="mt-6 space-y-6">
-                    <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center rounded-full bg-success-subtle px-3 py-0.5 text-sm font-medium text-success-text">
-                            Enabled
-                        </span>
-                        <span className="text-sm text-ink-muted">Two-factor authentication is active.</span>
+                    <div className="flex items-center gap-3">
+                        <Switch
+                            id="two-factor-toggle-enabled"
+                            checked={true}
+                            disabled={disableForm.processing}
+                            onCheckedChange={handleDisableToggle}
+                        />
+                        <Label htmlFor="two-factor-toggle-enabled">
+                            Two-factor authentication is enabled
+                        </Label>
                     </div>
 
                     {recoveryCodes && recoveryCodes.length > 0 && (
@@ -126,35 +140,27 @@ export default function TwoFactorForm({
                             <pre className="rounded-sm bg-surface p-4 text-sm font-mono leading-relaxed">
                                 {recoveryCodes.join('\n')}
                             </pre>
-                            <button
+                            <Button
                                 type="button"
+                                variant="link"
+                                className="h-auto p-0 text-sm text-brand hover:text-brand-accent"
                                 onClick={copyAll}
-                                className="focus-ring rounded-sm text-sm text-brand underline hover:text-brand-accent"
                             >
                                 {copied ? 'Copied!' : 'Copy all'}
-                            </button>
+                            </Button>
                         </div>
                     )}
 
                     <div className="flex flex-wrap items-center gap-4">
                         <form onSubmit={handleRegen}>
-                            <button
+                            <Button
                                 type="submit"
-                                className="focus-ring rounded-sm text-sm text-ink-muted underline hover:text-ink"
+                                variant="link"
+                                className="h-auto p-0 text-sm text-ink-muted hover:text-ink"
                                 disabled={regenForm.processing}
                             >
                                 Regenerate recovery codes
-                            </button>
-                        </form>
-
-                        <form onSubmit={handleDisable}>
-                            <button
-                                type="submit"
-                                className="focus-ring rounded-sm text-sm text-danger underline hover:text-danger-text"
-                                disabled={disableForm.processing}
-                            >
-                                Disable 2FA
-                            </button>
+                            </Button>
                         </form>
                     </div>
                 </div>
