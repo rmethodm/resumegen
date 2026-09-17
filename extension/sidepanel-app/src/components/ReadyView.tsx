@@ -5,6 +5,8 @@ import { FillPanel } from '@/components/FillPanel';
 import { InsertChips } from '@/components/InsertChips';
 import { ScreeningQuestions } from '@/components/ScreeningQuestions';
 import { JdMatchBadge } from '@/components/JdMatchBadge';
+import { TrackApplication } from '@/components/TrackApplication';
+import { AttachResume } from '@/components/AttachResume';
 import { useResumes } from '@/hooks/useResumes';
 
 interface ReadyViewProps {
@@ -41,7 +43,8 @@ export function ReadyView({ resumes }: ReadyViewProps) {
                 </TabsContent>
 
                 <TabsContent value="track" className="flex flex-col gap-4">
-                    <div data-testid="track-tab-stub" />
+                    <TrackApplication />
+                    <AttachResume resumeId={resumes.selectedResumeId} />
                 </TabsContent>
 
                 <TabsContent value="help">
