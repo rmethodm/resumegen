@@ -3,6 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FillPanel } from '@/components/FillPanel';
 import { InsertChips } from '@/components/InsertChips';
+import { ScreeningQuestions } from '@/components/ScreeningQuestions';
+import { JdMatchBadge } from '@/components/JdMatchBadge';
 import { useResumes } from '@/hooks/useResumes';
 
 interface ReadyViewProps {
@@ -34,6 +36,8 @@ export function ReadyView({ resumes }: ReadyViewProps) {
                 <TabsContent value="fill" className="flex flex-col gap-4">
                     <FillPanel resumes={resumes} />
                     <InsertChips profile={resumes.profile} />
+                    <ScreeningQuestions profile={resumes.profile} resumeId={resumes.selectedResumeId} />
+                    <JdMatchBadge profile={resumes.profile} />
                 </TabsContent>
 
                 <TabsContent value="track" className="flex flex-col gap-4">
