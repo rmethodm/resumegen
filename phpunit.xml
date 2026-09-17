@@ -40,5 +40,6 @@
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
         <env name="OPENAI_API_KEY" value="test-fake-key"/>
+        <env name="AI_FAKE_MODE" value="false"/>
     </php>
 </phpunit>

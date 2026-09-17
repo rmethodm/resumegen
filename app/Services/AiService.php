@@ -2,15 +2,17 @@
 
 namespace App\Services;
 
+use App\Models\FakeAiResponse;
 use App\Models\StarterProfile;
 use App\Models\User;
 use OpenAI\Laravel\Facades\OpenAI;
 use RuntimeException;
 
 /**
- * Thin wrapper around the OpenAI chat completions API for orphaned resume AI
- * helpers (`reviewResume`, `rewriteSection`). No live HTTP entry points in v1 —
- * this class does not enforce credit limits itself.
+ * Thin wrapper around the OpenAI chat completions API for the resume AI
+ * helpers. Does not enforce credit limits itself — callers gate and debit.
+ * When `config('ai.fake_mode')` is on, real requests are skipped in favor of
+ * a random `fake_ai_responses` row, so testing never spends real tokens.
  */
 class AiService
 {
@@ -105,22 +107,28 @@ class AiService
             ."Question: {$question}\n\n"
             .'Return only the answer text.';
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.5,
-        ]);
+        if (config('ai.fake_mode')) {
+            $answer = $this->fakePayload('qa_bank_draft')['text'] ?? '';
+            $promptTokens = 0;
+            $completionTokens = 0;
+        } else {
+            $response = OpenAI::chat()->create([
+                'model' => self::MODEL,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt],
+                ],
+                'temperature' => 0.5,
+            ]);
 
-        $answer = trim($response->choices[0]->message->content ?? '');
+            $answer = trim($response->choices[0]->message->content ?? '');
+
+            $promptTokens = $response->usage->promptTokens ?? 0;
+            $completionTokens = $response->usage->completionTokens ?? 0;
+        }
 
         if ($answer === '') {
             throw new RuntimeException('Invalid Q&A draft response.');
         }
-
-        $promptTokens = $response->usage->promptTokens ?? 0;
-        $completionTokens = $response->usage->completionTokens ?? 0;
 
         $aiRequest = $user->aiRequests()->create([
             'feature' => 'qa_bank_draft',
@@ -170,49 +178,55 @@ class AiService
         // 'tailor_jd' (and any future JD-aware preset) factors it in.
         $effectiveJd = $preset === 'tailor_jd' ? $jd : null;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::REVIEW_MODEL,
-            'messages' => [
-                ['role' => 'user', 'content' => $this->buildReviewPrompt($resumeData, $effectiveJd, $preset)],
-            ],
-            'temperature' => 0.3,
-            'response_format' => [
-                'type' => 'json_schema',
-                'json_schema' => [
-                    'name' => 'resume_review',
-                    'strict' => true,
-                    'schema' => [
-                        'type' => 'object',
-                        'properties' => [
-                            'suggestions' => [
-                                'type' => 'array',
-                                'items' => [
-                                    'type' => 'object',
-                                    'properties' => [
-                                        'id' => ['type' => 'string'],
-                                        'label' => ['type' => 'string'],
-                                        'severity' => ['type' => 'string', 'enum' => ['high', 'medium', 'low']],
-                                        'section' => ['type' => 'string', 'enum' => ['contact', 'summary', 'experience', 'skills', 'education']],
-                                        'detail' => ['type' => 'string'],
+        if (config('ai.fake_mode')) {
+            $suggestions = $this->fakePayload('resume_review', $preset)['suggestions'] ?? [];
+            $promptTokens = 0;
+            $completionTokens = 0;
+        } else {
+            $response = OpenAI::chat()->create([
+                'model' => self::REVIEW_MODEL,
+                'messages' => [
+                    ['role' => 'user', 'content' => $this->buildReviewPrompt($resumeData, $effectiveJd, $preset)],
+                ],
+                'temperature' => 0.3,
+                'response_format' => [
+                    'type' => 'json_schema',
+                    'json_schema' => [
+                        'name' => 'resume_review',
+                        'strict' => true,
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'suggestions' => [
+                                    'type' => 'array',
+                                    'items' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'id' => ['type' => 'string'],
+                                            'label' => ['type' => 'string'],
+                                            'severity' => ['type' => 'string', 'enum' => ['high', 'medium', 'low']],
+                                            'section' => ['type' => 'string', 'enum' => ['contact', 'summary', 'experience', 'skills', 'education']],
+                                            'detail' => ['type' => 'string'],
+                                        ],
+                                        'required' => ['id', 'label', 'severity', 'section', 'detail'],
+                                        'additionalProperties' => false,
                                     ],
-                                    'required' => ['id', 'label', 'severity', 'section', 'detail'],
-                                    'additionalProperties' => false,
                                 ],
                             ],
+                            'required' => ['suggestions'],
+                            'additionalProperties' => false,
                         ],
-                        'required' => ['suggestions'],
-                        'additionalProperties' => false,
                     ],
                 ],
-            ],
-        ]);
+            ]);
 
-        $content = $response->choices[0]->message->content ?? '{"suggestions":[]}';
-        $decoded = json_decode($content, true);
-        $suggestions = is_array($decoded['suggestions'] ?? null) ? $decoded['suggestions'] : [];
+            $content = $response->choices[0]->message->content ?? '{"suggestions":[]}';
+            $decoded = json_decode($content, true);
+            $suggestions = is_array($decoded['suggestions'] ?? null) ? $decoded['suggestions'] : [];
 
-        $promptTokens = $response->usage->promptTokens ?? 0;
-        $completionTokens = $response->usage->completionTokens ?? 0;
+            $promptTokens = $response->usage->promptTokens ?? 0;
+            $completionTokens = $response->usage->completionTokens ?? 0;
+        }
 
         $aiRequest = $user->aiRequests()->create([
             'feature' => 'resume_review',
@@ -228,6 +242,26 @@ class AiService
             'completion_tokens' => $completionTokens,
             'ai_request_id' => $aiRequest->id,
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function fakePayload(string $feature, ?string $preset = null): array
+    {
+        $query = FakeAiResponse::where('feature', $feature);
+
+        if ($preset !== null) {
+            $query->where('preset', $preset);
+        }
+
+        $response = $query->inRandomOrder()->first();
+
+        if ($response === null) {
+            throw new RuntimeException("No fake AI response seeded for feature '{$feature}'".($preset !== null ? " preset '{$preset}'" : '').'. Run the FakeAiResponseSeeder.');
+        }
+
+        return $response->payload;
     }
 
     /**
