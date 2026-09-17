@@ -13,6 +13,7 @@ use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobApplicationInterviewController;
 use App\Http\Controllers\JobApplicationStatsController;
 use App\Http\Controllers\JobListingController;
+use App\Http\Controllers\JobPoolController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\MobileTokenController;
 use App\Http\Controllers\OnboardingController;
@@ -117,6 +118,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::get('/job-applications/stats', [JobApplicationStatsController::class, 'index'])->name('job-applications.stats');
 
     Route::get('/jobs/browse', [JobListingController::class, 'index'])->name('jobs.browse');
+    Route::get('/jobs/pool', [JobPoolController::class, 'index'])->name('jobs.pool');
+    Route::post('/jobs/pool', [JobPoolController::class, 'store'])->name('job-pool.store');
+    Route::delete('/jobs/pool/{jobPoolEntry}', [JobPoolController::class, 'destroy'])->name('job-pool.destroy');
 
     Route::get('/apply/new', [ApplyWizardController::class, 'show'])->name('apply.wizard');
 
