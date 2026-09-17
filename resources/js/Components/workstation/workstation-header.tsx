@@ -35,6 +35,7 @@ import type {
     ResumeSkillsLayout,
     ResumeTemplateKey,
     SaveStatus,
+    WorkstationLayoutMode,
 } from '@/types';
 
 export type { WorkstationTab } from '@/Components/workstation/workstation-format-toolbar';
@@ -83,6 +84,9 @@ export function WorkstationHeader({
     sideToolsOpen = false,
     onToggleSideTools,
     application = null,
+    layoutMode,
+    onLayoutModeChange,
+    onOpenOptimize,
 }: {
     resumeId: number;
     title: string;
@@ -131,6 +135,9 @@ export function WorkstationHeader({
     sideToolsOpen?: boolean;
     onToggleSideTools?: () => void;
     application?: LinkedApplication | null;
+    layoutMode: WorkstationLayoutMode;
+    onLayoutModeChange: (mode: WorkstationLayoutMode) => void;
+    onOpenOptimize?: () => void;
 }) {
     const [renaming, setRenaming] = useState(false);
     const [duplicating, setDuplicating] = useState(false);
@@ -392,11 +399,14 @@ export function WorkstationHeader({
                 pageEstimateDraft={pageEstimateDraft}
                 zoom={zoom}
                 onZoomChange={onZoomChange}
-                reviewActive={activeTab === 'Edit'}
+                reviewActive={layoutMode !== 'tabs' || activeTab === 'Edit'}
                 activeTab={activeTab}
                 onTabChange={onTabChange}
                 reviewPreviewMode={reviewPreviewMode}
                 onReviewPreviewModeChange={onReviewPreviewModeChange}
+                layoutMode={layoutMode}
+                onLayoutModeChange={onLayoutModeChange}
+                onOpenOptimize={onOpenOptimize}
             />
 
             <TemplatePickerModal

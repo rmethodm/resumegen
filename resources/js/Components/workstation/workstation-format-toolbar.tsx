@@ -31,6 +31,7 @@ import type {
     ResumeFont,
     ResumeSkillsLayout,
     ResumeTemplateKey,
+    WorkstationLayoutMode,
 } from '@/types';
 
 const bulletStyleLabels: Record<ResumeBulletStyle, string> = {
@@ -45,6 +46,13 @@ const skillsLayoutLabels: Record<ResumeSkillsLayout, string> = {
     grouped: 'Grouped',
     columns: 'Columns',
     narrative: 'Narrative',
+};
+
+const layoutModeLabels: Record<WorkstationLayoutMode, string> = {
+    tabs: 'Tabs (classic)',
+    overlay: 'Overlay panel',
+    inline: 'Inline',
+    hybrid: 'Hybrid rail',
 };
 
 export const WORKSTATION_TABS = ['Edit', 'Optimize'] as const;
@@ -169,6 +177,9 @@ export function WorkstationFormatToolbar({
     onTabChange,
     reviewPreviewMode = 'react',
     onReviewPreviewModeChange,
+    layoutMode,
+    onLayoutModeChange,
+    onOpenOptimize,
 }: {
     canUndo: boolean;
     canRedo: boolean;
@@ -202,6 +213,10 @@ export function WorkstationFormatToolbar({
     onTabChange: (tab: WorkstationTab) => void;
     reviewPreviewMode?: 'react' | 'pdf';
     onReviewPreviewModeChange?: (mode: 'react' | 'pdf') => void;
+    layoutMode: WorkstationLayoutMode;
+    onLayoutModeChange: (mode: WorkstationLayoutMode) => void;
+    /** Only rendered when layoutMode === 'overlay'. */
+    onOpenOptimize?: () => void;
 }) {
     // Never throw — a bad estimate used to unmount the whole workstation header.
     const pageEstimate = estimateResumePages(
@@ -215,32 +230,35 @@ export function WorkstationFormatToolbar({
             aria-label="Document formatting"
             className="flex flex-wrap items-center gap-1 border-t border-border/80 bg-muted/40 px-2 py-1.5 sm:px-3"
         >
-            <div
-                role="tablist"
-                aria-label="Workstation mode"
-                className="inline-flex items-center rounded-full border border-border bg-muted p-0.5"
-            >
-                {WORKSTATION_TABS.map((tab) => (
-                    <button
-                        key={tab}
-                        type="button"
-                        role="tab"
-                        aria-selected={tab === activeTab}
-                        onClick={() => onTabChange(tab)}
-                        className={cn(
-                            'rounded-full px-3.5 py-1 text-sm font-medium transition-colors',
-                            tab === activeTab
-                                ? 'bg-primary font-semibold text-white shadow-xs'
-                                : 'text-muted-foreground hover:text-foreground',
-                        )}
-                    >
-                        {tab}
-                    </button>
-                ))}
-            </div>
+            {layoutMode === 'tabs' && (
+                <div
+                    role="tablist"
+                    aria-label="Workstation mode"
+                    className="inline-flex items-center rounded-full border border-border bg-muted p-0.5"
+                >
+                    {WORKSTATION_TABS.map((tab) => (
+                        <button
+                            key={tab}
+                            type="button"
+                            role="tab"
+                            aria-selected={tab === activeTab}
+                            onClick={() => onTabChange(tab)}
+                            className={cn(
+                                'rounded-full px-3.5 py-1 text-sm font-medium transition-colors',
+                                tab === activeTab
+                                    ? 'bg-primary font-semibold text-white shadow-xs'
+                                    : 'text-muted-foreground hover:text-foreground',
+                            )}
+                        >
+                            {tab}
+                        </button>
+                    ))}
+                </div>
+            )}
 
-            {/* Document tools on Edit only — Optimize stays lean. */}
-            {activeTab !== 'Optimize' && (
+            {/* Document tools hidden only on the classic Optimize tab — every
+                other mode keeps the form visible, so tools stay visible too. */}
+            {(layoutMode !== 'tabs' || activeTab !== 'Optimize') && (
                 <>
                     <ToolbarDivider />
 
@@ -489,6 +507,37 @@ export function WorkstationFormatToolbar({
                         </MenuItems>
                     </Menu>
                 </>
+            )}
+
+            <ToolbarDivider />
+
+            <Select
+                aria-label="Workstation layout"
+                value={layoutMode}
+                onChange={(event) =>
+                    onLayoutModeChange(event.target.value as WorkstationLayoutMode)
+                }
+                className={cn(controlHeight, 'w-auto max-w-40')}
+            >
+                {(Object.keys(layoutModeLabels) as WorkstationLayoutMode[]).map((mode) => (
+                    <option key={mode} value={mode}>
+                        {layoutModeLabels[mode]}
+                    </option>
+                ))}
+            </Select>
+
+            {layoutMode === 'overlay' && onOpenOptimize && (
+                <button
+                    type="button"
+                    onClick={onOpenOptimize}
+                    className={buttonClassName(
+                        'outline',
+                        'sm',
+                        cn(controlHeight, 'gap-1 px-2.5 font-medium'),
+                    )}
+                >
+                    Optimize
+                </button>
             )}
         </div>
     );
