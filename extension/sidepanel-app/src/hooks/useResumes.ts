@@ -48,8 +48,8 @@ export function useResumes() {
             return;
         }
 
-        if (!result.ok) {
-            if (result.reason === 'unauthorized') {
+        if (!result?.ok) {
+            if (result?.reason === 'unauthorized') {
                 setState((s) => ({ ...s, status: 'auth_error' }));
                 return;
             }
@@ -69,38 +69,46 @@ export function useResumes() {
     const load = useCallback(async () => {
         setState((s) => ({ ...s, status: 'loading', errorMessage: '' }));
 
-        const result = await sendMessage<{ data: { groups: ResumeGroup[]; user: ExtensionUser | null } }>('FETCH_RESUMES');
+        try {
+            const result = await sendMessage<{ data: { groups: ResumeGroup[]; user: ExtensionUser | null } }>('FETCH_RESUMES');
 
-        if (!result.ok) {
-            if (result.reason === 'no_token' || result.reason === 'unauthorized') {
-                setState((s) => ({ ...s, status: 'auth_error' }));
+            if (!result?.ok) {
+                if (result?.reason === 'no_token' || result?.reason === 'unauthorized') {
+                    setState((s) => ({ ...s, status: 'auth_error' }));
+                    return;
+                }
+                setState((s) => ({
+                    ...s,
+                    status: 'error',
+                    errorMessage: "Couldn't load resume data. Check your connection and try again.",
+                }));
                 return;
             }
+
+            const groups = result.data.groups || [];
+            const user = result.data.user || null;
+
+            if (groups.length === 0) {
+                setState((s) => ({ ...s, status: 'empty', groups, user }));
+                return;
+            }
+
+            const stored = await chrome.storage.local.get(['selectedGroupId', 'selectedResumeId']);
+            const group = groups.find((g) => groupKey(g.id) === groupKey(stored.selectedGroupId)) || groups[0];
+            const version = group.versions.find((v) => String(v.id) === String(stored.selectedResumeId)) || group.versions[0];
+            const selectedGroupId = group.id;
+            const selectedResumeId = version?.id ?? null;
+
+            await chrome.storage.local.set({ selectedGroupId, selectedResumeId });
+            setState((s) => ({ ...s, status: 'ready', groups, user, selectedGroupId, selectedResumeId }));
+            await loadProfile(selectedResumeId);
+        } catch {
             setState((s) => ({
                 ...s,
                 status: 'error',
                 errorMessage: "Couldn't load resume data. Check your connection and try again.",
             }));
-            return;
         }
-
-        const groups = result.data.groups || [];
-        const user = result.data.user || null;
-
-        if (groups.length === 0) {
-            setState((s) => ({ ...s, status: 'empty', groups, user }));
-            return;
-        }
-
-        const stored = await chrome.storage.local.get(['selectedGroupId', 'selectedResumeId']);
-        const group = groups.find((g) => groupKey(g.id) === groupKey(stored.selectedGroupId)) || groups[0];
-        const version = group.versions.find((v) => String(v.id) === String(stored.selectedResumeId)) || group.versions[0];
-        const selectedGroupId = group.id;
-        const selectedResumeId = version?.id ?? null;
-
-        await chrome.storage.local.set({ selectedGroupId, selectedResumeId });
-        setState((s) => ({ ...s, status: 'ready', groups, user, selectedGroupId, selectedResumeId }));
-        await loadProfile(selectedResumeId);
     }, [loadProfile]);
 
     const selectGroup = useCallback(async (groupId: number | null) => {

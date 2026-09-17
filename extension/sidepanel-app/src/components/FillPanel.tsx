@@ -26,8 +26,8 @@ export function FillPanel({ resumes }: FillPanelProps) {
         const result = await sendMessage<{ filled?: number; message?: string }>('FILL_COMMON_FIELDS', { profile: resumes.profile });
         setFilling(false);
 
-        if (!result.ok) {
-            toast.warning(result.message || 'No fillable fields found on this page');
+        if (!result?.ok) {
+            toast.warning(result?.message || 'No fillable fields found on this page');
             setHelper('Open the application form, then try again. Or use Insert below.');
             return;
         }
@@ -68,7 +68,7 @@ export function FillPanel({ resumes }: FillPanelProps) {
 
             {resumes.profile && (
                 <div className="text-xs text-muted-foreground">
-                    <div>{[resumes.profile.contact?.full_name, resumes.profile.target_role].filter(Boolean).join(' · ')}</div>
+                    <div>{[resumes.profile.contact?.full_name, resumes.profile.target_role || resumes.profile.latest_role?.title || ''].filter(Boolean).join(' · ')}</div>
                     <div>{[resumes.profile.contact?.email, resumes.profile.contact?.phone, resumes.profile.contact?.location].filter(Boolean).join(' · ')}</div>
                 </div>
             )}
@@ -99,6 +99,9 @@ export function FillPanel({ resumes }: FillPanelProps) {
                         {(resumes.profile.latest_role?.bullets || []).slice(0, 3).map((b, i) => (
                             <span key={i}><br />• {b}</span>
                         ))}
+                        {(resumes.profile.latest_role?.bullets || []).length > 3 && (
+                            <span><br />+{(resumes.profile.latest_role?.bullets || []).length - 3} more</span>
+                        )}
                     </p>
                     <h3 className="font-semibold">Skills</h3>
                     <p>{resumes.profile.skills_csv || '—'}</p>

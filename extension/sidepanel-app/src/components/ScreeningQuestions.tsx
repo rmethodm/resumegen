@@ -46,6 +46,9 @@ export function ScreeningQuestions({ profile, resumeId }: ScreeningQuestionsProp
         if (!result.ok) {
             if (result.status === 402) {
                 toast.warning('Not enough AI credits for a draft.');
+                if (confirm('Buy more AI credits now?')) {
+                    sendMessage('OPEN_APP', { path: '/billing/credits' });
+                }
             } else if (result.status === 429) {
                 toast.error('AI drafting is currently blocked on your account.');
             } else {

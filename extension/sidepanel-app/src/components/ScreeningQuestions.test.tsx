@@ -19,6 +19,7 @@ describe('ScreeningQuestions', () => {
     });
 
     it('shows a warning toast and keeps drafting=false when drafting returns 402', async () => {
+        window.confirm = vi.fn(() => false);
         vi.mocked(chrome.runtime.sendMessage)
             .mockResolvedValueOnce({ ok: true, questions: [{ id: 'q1', question: 'Why do you want this role?' }] })
             .mockResolvedValueOnce({ ok: false, status: 402 });
@@ -28,6 +29,10 @@ describe('ScreeningQuestions', () => {
         await waitFor(() => screen.getByText('Draft'));
         fireEvent.click(screen.getByText('Draft'));
 
-        await waitFor(() => expect(screen.getByText('Draft')).toBeInTheDocument());
+        await waitFor(() => {
+            const draftButton = screen.getByText('Draft');
+            expect(draftButton).toBeInTheDocument();
+            expect(draftButton).not.toBeDisabled();
+        });
     });
 });

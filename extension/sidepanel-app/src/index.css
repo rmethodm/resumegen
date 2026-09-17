@@ -49,7 +49,8 @@
 
 body {
   @apply bg-background text-foreground;
-  width: 380px;
+  width: 100%;
+  min-width: 320px;
   min-height: 100vh;
   margin: 0;
 }
