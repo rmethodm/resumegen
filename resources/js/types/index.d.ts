@@ -1,5 +1,7 @@
 export type * from './resume';
 
+export type WorkstationLayoutMode = 'tabs' | 'overlay' | 'inline' | 'hybrid';
+
 export interface User {
     id: number;
     name: string;
@@ -8,6 +10,7 @@ export interface User {
     disabled_at?: string | null;
     two_factor_confirmed_at: string | null;
     theme: string | null;
+    workstation_layout: WorkstationLayoutMode;
     profile: {
         full_name?: string;
         email?: string;
