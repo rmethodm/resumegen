@@ -7,6 +7,7 @@ import { Header } from '@/components/Header';
 import { SetupView } from '@/components/SetupView';
 import { LoadingView } from '@/components/LoadingView';
 import { EmptyView } from '@/components/EmptyView';
+import { ReadyView } from '@/components/ReadyView';
 
 type View = 'setup' | 'loading' | 'empty' | 'ready' | 'help';
 
@@ -69,7 +70,7 @@ export function App() {
                 {view === 'setup' && <SetupView />}
                 {view === 'loading' && <LoadingView />}
                 {view === 'empty' && <EmptyView email={resumes.user?.email} onRefresh={() => resumes.load()} />}
-                {view === 'ready' && <div data-testid="ready-view-stub">ready</div>}
+                {view === 'ready' && <ReadyView resumes={resumes} />}
                 {view === 'help' && <div data-testid="help-view-stub">help</div>}
             </main>
             <footer className="flex items-center justify-between border-t p-2 text-sm">

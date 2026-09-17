@@ -4,6 +4,7 @@ import { cleanup } from '@testing-library/react';
 
 afterEach(() => {
     cleanup();
+    vi.clearAllMocks();
 });
 
 // happy-dom has no chrome.* global — every hook/component that talks to the
