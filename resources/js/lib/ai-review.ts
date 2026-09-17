@@ -1,4 +1,4 @@
-import type { AiReviewSuggestion } from '@/types';
+import type { AiReviewSuggestion, ResumeSectionKey } from '@/types';
 
 const SEVERITY_ORDER: Record<AiReviewSuggestion['severity'], number> = {
     high: 0,
@@ -13,4 +13,17 @@ export function sortBySeverity(
     return [...suggestions].sort(
         (a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity],
     );
+}
+
+/** Severity-sorted suggestions for one section — used by the Inline layout
+ *  mode to attach AI feedback directly under the section it critiques. */
+export function suggestionsForSection(
+    suggestions: AiReviewSuggestion[] | null | undefined,
+    section: ResumeSectionKey,
+): AiReviewSuggestion[] {
+    if (!suggestions) {
+        return [];
+    }
+
+    return sortBySeverity(suggestions.filter((s) => s.section === section));
 }
