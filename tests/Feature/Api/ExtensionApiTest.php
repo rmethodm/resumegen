@@ -4,6 +4,8 @@ namespace Tests\Feature\Api;
 
 use App\Models\Education;
 use App\Models\Experience;
+use App\Models\JobListing;
+use App\Models\JobPoolEntry;
 use App\Models\QaBankEntry;
 use App\Models\Resume;
 use App\Models\ResumeGroup;
@@ -537,6 +539,60 @@ class ExtensionApiTest extends ApiTestCase
 
         $this->withToken($token)
             ->getJson('/api/extension/me')
+            ->assertForbidden();
+    }
+
+    public function test_job_pool_returns_the_users_pool_entries(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $listing = JobListing::factory()->create();
+        JobPoolEntry::factory()->create([
+            'user_id' => $user->id,
+            'job_listing_id' => $listing->id,
+            'resume_id' => $resume->id,
+        ]);
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $response = $this->withToken($token)->getJson('/api/extension/job-pool');
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'entries');
+        $response->assertJsonFragment(['title' => $listing->title]);
+    }
+
+    public function test_job_pool_does_not_leak_other_users_entries(): void
+    {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        $otherResume = Resume::factory()->for($other)->create();
+        $listing = JobListing::factory()->create();
+        JobPoolEntry::factory()->create([
+            'user_id' => $other->id,
+            'job_listing_id' => $listing->id,
+            'resume_id' => $otherResume->id,
+        ]);
+        $token = $user->createToken(
+            ResumeFillProfile::TOKEN_NAME,
+            [ResumeFillProfile::TOKEN_ABILITY]
+        )->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson('/api/extension/job-pool')
+            ->assertOk()
+            ->assertJsonCount(0, 'entries');
+    }
+
+    public function test_job_pool_requires_extension_ability(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('limited', ['some-other-ability'])->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson('/api/extension/job-pool')
             ->assertForbidden();
     }
 }

@@ -200,6 +200,32 @@ class ExtensionController extends Controller
         ], 201);
     }
 
+    public function jobPool(Request $request): JsonResponse
+    {
+        $this->ensureExtensionToken($request);
+
+        $user = $request->user();
+
+        if ($user->disabled_at !== null) {
+            return response()->json(['message' => 'Account disabled.'], 403);
+        }
+
+        $entries = $user->jobPoolEntries()
+            ->with(['jobListing', 'resume'])
+            ->latest('id')
+            ->get()
+            ->map(fn ($entry) => [
+                'id' => $entry->id,
+                'title' => $entry->jobListing->title,
+                'company' => $entry->jobListing->company,
+                'job_url' => $entry->jobListing->job_url,
+                'resume_id' => $entry->resume_id,
+                'resume_title' => $entry->resume->title,
+            ]);
+
+        return response()->json(['entries' => $entries]);
+    }
+
     public function updateTargetJobDescription(Request $request, Resume $resume): JsonResponse
     {
         $this->ensureExtensionToken($request);

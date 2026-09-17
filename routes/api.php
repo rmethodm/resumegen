@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->prefix('extension')->group
     Route::get('/qa-bank/match', [ExtensionController::class, 'qaBankMatch'])->name('api.extension.qa-bank.match');
     Route::post('/qa-bank/draft', [ExtensionController::class, 'qaBankDraft'])->name('api.extension.qa-bank.draft');
     Route::post('/job-applications', [ExtensionController::class, 'jobApplicationStore'])->name('api.extension.job-applications.store');
+    Route::get('/job-pool', [ExtensionController::class, 'jobPool'])->name('api.extension.job-pool');
     Route::patch('/resumes/{resume}/target-job-description', [ExtensionController::class, 'updateTargetJobDescription'])
         ->name('api.extension.resumes.target-job-description');
     Route::get('/resumes/{resume}/pdf', [ExtensionController::class, 'pdf'])->name('api.extension.resumes.pdf');
