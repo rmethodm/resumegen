@@ -58,7 +58,7 @@ export function JdMatchCard({
                     </p>
 
                     {overlap.total === 0 && (
-                        <p className="text-xs text-muted-foreground">No usable terms found. Paste the job's requirements to compare.</p>
+                        <p className="text-xs text-muted-foreground">No usable terms found. Paste the job’s requirements to compare.</p>
                     )}
 
                     {overlap.missing.length > 0 && (
