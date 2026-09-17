@@ -5,11 +5,13 @@ import Dropdown from '@/Components/Dropdown';
 import { Toaster } from '@/Components/ui/sonner';
 import {
     Bars3Icon,
+    BriefcaseIcon,
     ClipboardDocumentListIcon,
     DocumentTextIcon,
     HomeIcon,
     MagnifyingGlassIcon,
     ShareIcon,
+    SwatchIcon,
     UserCircleIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -25,7 +27,7 @@ import { useFlashToasts } from '@/hooks/use-flash-toasts';
 import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/lib/utils';
 
-type NavItem = { label: string; href: string; active: boolean; icon: typeof HomeIcon };
+type NavItem = { label: string; href: string; active: boolean; icon: typeof HomeIcon; external?: boolean };
 
 function userInitials(name: string): string {
     const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -81,6 +83,19 @@ export default function Authenticated({
             href: route('job-applications.index'),
             active: Boolean(route().current('job-applications.*')),
             icon: ClipboardDocumentListIcon,
+        },
+        {
+            label: 'Browse Jobs',
+            href: route('jobs.browse'),
+            active: Boolean(route().current('jobs.*')),
+            icon: BriefcaseIcon,
+        },
+        {
+            label: 'shadcn demo',
+            href: route('shadcn.demo'),
+            active: route().current('shadcn.demo'),
+            icon: SwatchIcon,
+            external: true, // plain Blade view, not an Inertia page — needs a full page load
         },
         { label: 'Account settings', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
     ];
@@ -191,24 +206,42 @@ export default function Authenticated({
                 </div>
 
                 <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-1">
-                    {nav.map((item) => (
-                        <Link
-                            key={item.label}
-                            href={item.href}
-                            onClick={() => setMobileOpen(false)}
-                            className={cn(
-                                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium',
-                                'transition-[color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
-                                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2',
-                                item.active
-                                    ? 'bg-primary/10 text-primary shadow-sm dark:bg-gray-700 dark:text-white'
-                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
-                            )}
-                        >
-                            <item.icon className="size-5 shrink-0" />
-                            {item.label}
-                        </Link>
-                    ))}
+                    {nav.map((item) => {
+                        const itemClassName = cn(
+                            'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium',
+                            'transition-[color,background-color,box-shadow] duration-soft ease-soft motion-reduce:transition-none',
+                            'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2',
+                            item.active
+                                ? 'bg-primary/10 text-primary shadow-sm dark:bg-gray-700 dark:text-white'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
+                        );
+
+                        if (item.external) {
+                            return (
+                                <a
+                                    key={item.label}
+                                    href={item.href}
+                                    onClick={() => setMobileOpen(false)}
+                                    className={itemClassName}
+                                >
+                                    <item.icon className="size-5 shrink-0" />
+                                    {item.label}
+                                </a>
+                            );
+                        }
+
+                        return (
+                            <Link
+                                key={item.label}
+                                href={item.href}
+                                onClick={() => setMobileOpen(false)}
+                                className={itemClassName}
+                            >
+                                <item.icon className="size-5 shrink-0" />
+                                {item.label}
+                            </Link>
+                        );
+                    })}
                 </nav>
 
                 <div className="shrink-0 border-t border-border/80 p-3 dark:border-gray-700/80">
