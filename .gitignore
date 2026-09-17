@@ -18,6 +18,7 @@ ad_local_*.md
 /.zed
 /auth.json
 /node_modules
+/extension/sidepanel-app/node_modules
 /public/build
 /public/fonts-manifest.dev.json
 /public/hot

@@ -33,7 +33,8 @@ comment listing the specific challenges it's built to exercise.
 |------|------|
 | `manifest.json` | MV3 + side panel |
 | `background/service-worker.js` | API + inject fill script |
-| `sidepanel/` | Main UI (wireframe states) |
+| `sidepanel-app/` | React 19 + Vite + TypeScript + shadcn source for the side panel UI (`npm run build` from inside this directory) |
+| `sidepanel/dist/` | Built output the manifest's `side_panel.default_path` points at (committed, not hand-edited) |
 | `content/fill-heuristics.js` | ATS field scoring (Greenhouse, Workday, Ashby, …) |
 | `content/fill.js` | DOM walk + empty-only fill / insert |
 | `options/` | Token + app URL |
