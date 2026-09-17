@@ -55,6 +55,6 @@ describe('OptimizeRail', () => {
             />,
         );
         fireEvent.click(screen.getByRole('button', { name: 'Target job' }));
-        expect(screen.getByPlaceholderText(/Paste the full job posting/)).toBeInTheDocument();
+        expect(screen.getByLabelText('Job description')).toBeInTheDocument();
     });
 });

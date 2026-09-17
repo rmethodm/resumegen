@@ -28,6 +28,7 @@ import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
 import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
 import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
 import { Alert, AlertDescription } from '@/Components/ui/alert';
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { useAutosave } from '@/hooks/use-autosave';
@@ -445,6 +446,13 @@ export default function Workstation({
 
                 {draft.section_order.map((sectionKey) => {
                     const collapsed = collapsedSections.includes(sectionKey);
+                    const hiddenSuggestionCount =
+                        layoutMode === 'inline'
+                            ? suggestionsForSection(
+                                  draft.ai_review,
+                                  sectionKey,
+                              ).length
+                            : 0;
 
                     return (
                         <Card
@@ -506,6 +514,14 @@ export default function Workstation({
                                     <span className="text-xs font-medium tracking-normal text-muted-foreground/70 normal-case">
                                         Collapsed
                                     </span>
+                                )}
+                                {collapsed && hiddenSuggestionCount > 0 && (
+                                    <Badge variant="warning">
+                                        {hiddenSuggestionCount} suggestion
+                                        {hiddenSuggestionCount === 1
+                                            ? ''
+                                            : 's'}
+                                    </Badge>
                                 )}
                                 <div className="ml-auto flex items-center gap-0.5">
                                     {isOptionalSection(sectionKey) && (

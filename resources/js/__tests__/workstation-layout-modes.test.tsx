@@ -1,6 +1,6 @@
 /** @vitest-environment happy-dom */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 const { routerPatch, autosaveState } = vi.hoisted(() => ({
     routerPatch: vi.fn(),
@@ -96,5 +96,19 @@ describe('Workstation Inline layout mode', () => {
         expect(
             screen.getByText('Tighten the summary opener'),
         ).toBeInTheDocument();
+    });
+
+    it('shows a suggestion-count badge when a section with hidden AI feedback is collapsed', () => {
+        render(
+            <Workstation resume={baseResume()} skillLibrary={[]} share={null} />,
+        );
+
+        expect(screen.queryByText('1 suggestion')).not.toBeInTheDocument();
+
+        fireEvent.click(
+            screen.getByRole('button', { name: 'Professional Summary' }),
+        );
+
+        expect(screen.getByText('1 suggestion')).toBeInTheDocument();
     });
 });

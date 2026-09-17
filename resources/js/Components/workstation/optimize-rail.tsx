@@ -42,6 +42,7 @@ export function OptimizeRail({
                                 rows={8}
                                 value={jd}
                                 placeholder="Paste the full job posting or key requirements…"
+                                aria-label="Job description"
                                 onChange={(event) =>
                                     onChange({
                                         ...draft,
@@ -49,6 +50,9 @@ export function OptimizeRail({
                                     })
                                 }
                             />
+                            <p className="text-xs text-muted-foreground">
+                                <span className="tabular-nums">{jd.length} / 10000</span> characters
+                            </p>
                         </PopoverContent>
                     </Popover>
                 </div>
