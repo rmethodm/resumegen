@@ -88,6 +88,7 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::patch('/user/checklist/dismiss', [UserPreferenceController::class, 'dismissChecklist'])->name('checklist.dismiss');
     Route::patch('/user/apply-wizard-preference', [UserPreferenceController::class, 'setApplyWizardPreference'])->name('apply-wizard.preference');
     Route::patch('/user/theme', [UserPreferenceController::class, 'setTheme'])->name('theme.update');
+    Route::patch('/user/workstation-layout', [UserPreferenceController::class, 'setWorkstationLayout'])->name('workstation-layout.update');
 
     Route::get('/settings/starter-profile', [StarterProfileController::class, 'edit'])->name('starter-profile.edit');
     Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');

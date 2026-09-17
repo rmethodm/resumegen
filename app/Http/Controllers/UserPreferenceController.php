@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Support\AppThemes;
+use App\Support\WorkstationLayouts;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,17 @@ class UserPreferenceController extends Controller
         ]);
 
         $request->user()->update(['theme' => $validated['theme'] ?? null]);
+
+        return back();
+    }
+
+    public function setWorkstationLayout(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'workstation_layout' => ['required', 'string', Rule::in(WorkstationLayouts::IDS)],
+        ]);
+
+        $request->user()->update(['workstation_layout' => $validated['workstation_layout']]);
 
         return back();
     }
