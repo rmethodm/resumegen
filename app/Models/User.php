@@ -52,6 +52,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * @return HasMany<JobPoolEntry, $this>
+     */
+    public function jobPoolEntries(): HasMany
+    {
+        return $this->hasMany(JobPoolEntry::class);
+    }
+
+    /**
      * @return HasMany<AiRequest, $this>
      */
     public function aiRequests(): HasMany

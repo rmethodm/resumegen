@@ -142,6 +142,14 @@ class Resume extends Model
     }
 
     /**
+     * @return HasMany<JobPoolEntry, $this>
+     */
+    public function jobPoolEntries(): HasMany
+    {
+        return $this->hasMany(JobPoolEntry::class);
+    }
+
+    /**
      * @return HasMany<Skill, $this>
      */
     public function skills(): HasMany
