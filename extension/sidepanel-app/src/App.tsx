@@ -8,6 +8,7 @@ import { SetupView } from '@/components/SetupView';
 import { LoadingView } from '@/components/LoadingView';
 import { EmptyView } from '@/components/EmptyView';
 import { ReadyView } from '@/components/ReadyView';
+import { HelpView } from '@/components/HelpView';
 
 type View = 'setup' | 'loading' | 'empty' | 'ready' | 'help';
 
@@ -71,7 +72,7 @@ export function App() {
                 {view === 'loading' && <LoadingView />}
                 {view === 'empty' && <EmptyView email={resumes.user?.email} onRefresh={() => resumes.load()} />}
                 {view === 'ready' && <ReadyView resumes={resumes} />}
-                {view === 'help' && <div data-testid="help-view-stub">help</div>}
+                {view === 'help' && <HelpView onBack={closeHelp} />}
             </main>
             <footer className="flex items-center justify-between border-t p-2 text-sm">
                 <button

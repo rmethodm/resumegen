@@ -8,6 +8,7 @@ import { JdMatchBadge } from '@/components/JdMatchBadge';
 import { TrackApplication } from '@/components/TrackApplication';
 import { AttachResume } from '@/components/AttachResume';
 import { useResumes } from '@/hooks/useResumes';
+import { HelpPanel } from '@/components/HelpPanel';
 
 interface ReadyViewProps {
     resumes: ReturnType<typeof useResumes>;
@@ -48,7 +49,7 @@ export function ReadyView({ resumes }: ReadyViewProps) {
                 </TabsContent>
 
                 <TabsContent value="help">
-                    <div data-testid="help-tab-stub" />
+                    <HelpPanel />
                 </TabsContent>
             </Tabs>
         </div>
