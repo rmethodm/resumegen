@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { sendMessage } from '@/lib/chrome-messaging';
 import type { ExtensionUser, FillProfile, ResumeGroup } from '@/lib/types';
 
@@ -30,14 +30,23 @@ function groupKey(id: number | null): string {
 
 export function useResumes() {
     const [state, setState] = useState<State>(initialState);
+    const requestIdRef = useRef(0);
 
     const loadProfile = useCallback(async (resumeId: number | null) => {
+        const requestId = ++requestIdRef.current;
+
         if (!resumeId) {
-            setState((s) => ({ ...s, profile: null }));
+            if (requestId === requestIdRef.current) {
+                setState((s) => ({ ...s, profile: null }));
+            }
             return;
         }
 
         const result = await sendMessage<{ data: FillProfile }>('FETCH_FILL_PROFILE', { resumeId });
+
+        if (requestId !== requestIdRef.current) {
+            return;
+        }
 
         if (!result.ok) {
             if (result.reason === 'unauthorized') {

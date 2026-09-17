@@ -48,4 +48,64 @@ describe('useResumes', () => {
 
         expect(result.current.status).toBe('auth_error');
     });
+
+    it('discards a stale loadProfile response when a newer selection supersedes it', async () => {
+        const group = {
+            id: 1,
+            title: 'SWE',
+            versions: [
+                { id: 10, version_label: 'v1', updated_at: '2026-09-01T00:00:00Z' },
+                { id: 11, version_label: 'v2', updated_at: '2026-09-02T00:00:00Z' },
+            ],
+        };
+        let resolveFirst: (v: unknown) => void;
+        const firstProfilePromise = new Promise((resolve) => {
+            resolveFirst = resolve;
+        });
+
+        vi.mocked(chrome.runtime.sendMessage)
+            .mockResolvedValueOnce({ ok: true, data: { groups: [group], user: null } })
+            .mockImplementationOnce(() => firstProfilePromise)
+            .mockResolvedValueOnce({
+                ok: true,
+                data: {
+                    resume_id: 11,
+                    target_role: '',
+                    contact: { full_name: '', email: '', phone: '', location: '', linkedin: '' },
+                    summary: '',
+                    skills_csv: '',
+                    latest_role: { title: '', one_liner: '', bullets: [] },
+                    inserts: {},
+                },
+            });
+
+        const { result } = renderHook(() => useResumes());
+        await act(async () => {
+            result.current.load();
+        });
+        await waitFor(() => expect(result.current.status).toBe('ready'));
+
+        await act(async () => {
+            await result.current.selectResume(11);
+        });
+        expect(result.current.selectedResumeId).toBe(11);
+
+        await act(async () => {
+            resolveFirst({
+                ok: true,
+                data: {
+                    resume_id: 10,
+                    target_role: '',
+                    contact: { full_name: '', email: '', phone: '', location: '', linkedin: '' },
+                    summary: '',
+                    skills_csv: '',
+                    latest_role: { title: '', one_liner: '', bullets: [] },
+                    inserts: {},
+                },
+            });
+            await Promise.resolve();
+        });
+
+        expect(result.current.selectedResumeId).toBe(11);
+    });
 });
