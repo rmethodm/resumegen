@@ -12,6 +12,7 @@ use App\Http\Controllers\ExtensionTokenController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobApplicationInterviewController;
 use App\Http\Controllers\JobApplicationStatsController;
+use App\Http\Controllers\JobListingController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\MobileTokenController;
 use App\Http\Controllers\OnboardingController;
@@ -35,6 +36,8 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', WelcomeController::class);
+
+Route::view('/shadcn', 'shadcn-demo')->name('shadcn.demo');
 
 Route::get('/privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/terms', [LegalController::class, 'terms'])->name('legal.terms');
@@ -112,6 +115,8 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::delete('/job-applications/{jobApplication}/interviews/{interview}', [JobApplicationInterviewController::class, 'destroy'])->name('job-application-interviews.destroy');
 
     Route::get('/job-applications/stats', [JobApplicationStatsController::class, 'index'])->name('job-applications.stats');
+
+    Route::get('/jobs/browse', [JobListingController::class, 'index'])->name('jobs.browse');
 
     Route::get('/apply/new', [ApplyWizardController::class, 'show'])->name('apply.wizard');
 
