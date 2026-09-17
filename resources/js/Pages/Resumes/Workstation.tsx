@@ -19,6 +19,9 @@ import {
     AtsPlainTextBlock,
     OptimizePanel,
 } from '@/Components/workstation/optimize-panel';
+import { JdMatchCard } from '@/Components/workstation/jd-match-card';
+import { OptimizeRail } from '@/Components/workstation/optimize-rail';
+import { OptimizeSheet } from '@/Components/workstation/optimize-sheet';
 import { PdfPreviewFrame } from '@/Components/workstation/pdf-preview-frame';
 import { ScoreRingTrio } from '@/Components/workstation/score-ring-trio';
 import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
@@ -31,6 +34,8 @@ import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useValidContact } from '@/hooks/use-valid-contact';
+import { useWorkstationLayout } from '@/hooks/use-workstation-layout';
+import { suggestionsForSection } from '@/lib/ai-review';
 import { exportChecklist, type ExportCheck } from '@/lib/export-checklist';
 import { resumeFormattingKey } from '@/lib/resume-formatting';
 import { applyTemplatePreset } from '@/lib/template-presets';
@@ -90,6 +95,8 @@ export default function Workstation({
         canRedo,
     } = useHistory<ResumeDraft>(initial);
     const isMobile = useIsMobile();
+    const [layoutMode, onLayoutModeChange] = useWorkstationLayout();
+    const [optimizeSheetOpen, setOptimizeSheetOpen] = useState(false);
     const [tab, setTab] = useState<WorkstationTab>('Edit');
     const [section, setSection] = useState<ResumeSectionKey>('contact');
     const [previewZoom, setPreviewZoom] = useState<PreviewZoom>(1);
@@ -411,6 +418,31 @@ export default function Workstation({
                 aria-label="Section form"
                 className="flex min-w-0 flex-col gap-3"
             >
+                {layoutMode === 'inline' && (
+                    <div className="flex flex-col gap-4">
+                        <ScoreRingTrio
+                            resume={draft}
+                            jd={draft.target_job_description ?? ''}
+                        />
+                        <TargetRoleBar
+                            targetRole={draft.target_role}
+                            targetCompany={draft.target_company ?? ''}
+                            onChange={(target_role) =>
+                                setDraft((current) => ({
+                                    ...current,
+                                    target_role,
+                                }))
+                            }
+                            onTargetCompanyChange={(target_company) =>
+                                setDraft((current) => ({
+                                    ...current,
+                                    target_company,
+                                }))
+                            }
+                        />
+                    </div>
+                )}
+
                 {draft.section_order.map((sectionKey) => {
                     const collapsed = collapsedSections.includes(sectionKey);
 
@@ -495,6 +527,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="icon"
+                                            className="size-11"
                                             aria-label={`Move ${sectionLabels[sectionKey]} up`}
                                             disabled={
                                                 draft.section_order.indexOf(
@@ -514,6 +547,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="icon"
+                                            className="size-11"
                                             aria-label={`Move ${sectionLabels[sectionKey]} down`}
                                             disabled={
                                                 draft.section_order.indexOf(
@@ -555,6 +589,35 @@ export default function Workstation({
                                             contactErrors={errors}
                                             onChange={setDraft}
                                         />
+
+                                        {layoutMode === 'inline' &&
+                                            suggestionsForSection(
+                                                draft.ai_review,
+                                                sectionKey,
+                                            ).map((suggestion) => (
+                                                <Alert
+                                                    key={suggestion.id}
+                                                    variant={
+                                                        suggestion.severity ===
+                                                        'high'
+                                                            ? 'destructive'
+                                                            : suggestion.severity ===
+                                                                'medium'
+                                                              ? 'warning'
+                                                              : 'default'
+                                                    }
+                                                    className="mt-3"
+                                                >
+                                                    <AlertDescription>
+                                                        <span className="font-medium text-foreground">
+                                                            {suggestion.label}
+                                                        </span>
+                                                        <span className="block text-xs">
+                                                            {suggestion.detail}
+                                                        </span>
+                                                    </AlertDescription>
+                                                </Alert>
+                                            ))}
                                     </div>
                                 </div>
                             </div>
@@ -700,6 +763,13 @@ export default function Workstation({
                                     return next;
                                 });
                             }}
+                            layoutMode={layoutMode}
+                            onLayoutModeChange={onLayoutModeChange}
+                            onOpenOptimize={
+                                layoutMode === 'overlay'
+                                    ? () => setOptimizeSheetOpen(true)
+                                    : undefined
+                            }
                         />
                     </div>
                 </div>
@@ -714,7 +784,7 @@ export default function Workstation({
                     <div className="mx-auto flex w-full max-w-[1944px] flex-col gap-4">
                         <div className="flex flex-col gap-6">
                             <div className="flex min-w-0 flex-1 flex-col gap-5">
-                                {tab === 'Optimize' && (
+                                {layoutMode === 'tabs' && tab === 'Optimize' && (
                                     <>
                                         <ScoreRingTrio
                                             resume={draft}
@@ -740,13 +810,43 @@ export default function Workstation({
                                     </>
                                 )}
 
-                                {tab === 'Edit' && (
+                                {(layoutMode !== 'tabs' || tab === 'Edit') && (
                                     <div className="grid min-w-0 gap-4 lg:grid-cols-2">
                                         {renderFormSections()}
                                         <div className="min-w-0 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
+                                            {layoutMode === 'hybrid' && (
+                                                <div className="mb-4">
+                                                    <OptimizeRail
+                                                        draft={draft}
+                                                        onChange={setDraft}
+                                                        resumeId={id}
+                                                        aiCredits={
+                                                            page.props
+                                                                .aiCredits as AiCredits | null
+                                                        }
+                                                        onJump={jumpFromOptimize}
+                                                    />
+                                                </div>
+                                            )}
                                             {renderPreview()}
                                         </div>
                                     </div>
+                                )}
+
+                                {layoutMode === 'overlay' && (
+                                    <OptimizeSheet
+                                        open={optimizeSheetOpen}
+                                        onOpenChange={setOptimizeSheetOpen}
+                                        draft={draft}
+                                        onChange={setDraft}
+                                        resumeId={id}
+                                        aiCredits={
+                                            page.props
+                                                .aiCredits as AiCredits | null
+                                        }
+                                        onJump={jumpFromOptimize}
+                                        plainText={plainText}
+                                    />
                                 )}
 
                                 {showSideTools && (
@@ -762,6 +862,17 @@ export default function Workstation({
                                             resumeId={id}
                                             snapshots={snapshots}
                                         />
+                                        {layoutMode === 'inline' && (
+                                            <>
+                                                <JdMatchCard
+                                                    draft={draft}
+                                                    onChange={setDraft}
+                                                />
+                                                <AtsPlainTextBlock
+                                                    plainText={plainText}
+                                                />
+                                            </>
+                                        )}
                                     </div>
                                 )}
                             </div>
