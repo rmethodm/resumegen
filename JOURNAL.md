@@ -5,6 +5,20 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Six more workstation concepts
+
+Added a second linked preview round with six distinct job-matching and potential premium workflows, preserving the original five. Verified the source-based matching logic with five focused tests; TypeScript and the two-entry Vite build pass. Browser checks cover each layout, version isolation, add-job flow, evidence matrix/filtering, edit acceptance and rollback, stage changes, preparation, checklist invalidation, text review, export, and mobile overflow. PLAN/NOTES/README updated; no checkboxes changed.
+
+**Q1 — Least confident:** Which added capabilities users would pay for. The concepts demonstrate value hypotheses, not validated conversion improvements; interviews and a small pricing/feature-choice study would resolve that. Exact-phrase matching also intentionally misses synonyms.
+
+**Q2 — Assumptions:** Used fictional jobs and resume fixtures, a text brief export, and session-local behavior; no integration or purchase flow was requested.
+
+**Q3 — Biggest missing piece:** Real job-feed quality, eligibility/location constraints, data freshness, and the operational cost of any future assisted tailoring service.
+
+**Q4 — What could improve the session:** Evaluate the six directions with the same applicant task and measure clarity/time, rather than selecting on appearance alone.
+
+**Q5 — Suggested improvement:** Pick one navigation model and one recurring paid benefit before production integration. Preserve evidence transparency and independent versions. Remote push remains blocked by the earlier review of unrelated queued commits.
+
 ## 2026-09-18 — Five workstation concepts
 
 Inspected current workstation, header, resume model/controller/types, and live UI. Built five isolated shadcn layouts with an interactive selector and independent version fixtures. TypeScript and isolated build pass; browser checks covered all directions, version copy/edit isolation, checkpoint restore, guided navigation, filtering, review/keyword modes and mobile behavior. No PLAN checkboxes changed. README and NOTES updated.

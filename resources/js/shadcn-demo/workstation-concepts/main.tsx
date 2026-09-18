@@ -619,8 +619,14 @@ function App() {
         <div className="min-h-screen bg-background text-foreground">
             <div className="border-b bg-muted/40 px-4 py-3">
                 <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                         <Badge variant="outline">Design preview</Badge>
+                        <Button variant="ghost" size="sm" asChild>
+                            <a href="./round-two.html">
+                                Six new concepts
+                                <ArrowRight />
+                            </a>
+                        </Button>
                         <span className="text-xs text-muted-foreground">
                             Sample content · changes stay in this session
                         </span>

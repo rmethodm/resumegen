@@ -8,6 +8,12 @@ export default defineConfig({
     plugins: [react(), tailwindcss()],
     resolve: { alias: { "@": path.resolve(import.meta.dirname, "../..") } },
     build: {
+        rollupOptions: {
+            input: {
+                original: path.resolve(import.meta.dirname, "index.html"),
+                roundTwo: path.resolve(import.meta.dirname, "round-two.html"),
+            },
+        },
         outDir: path.resolve(
             import.meta.dirname,
             "../../../../public/workstation-concepts",

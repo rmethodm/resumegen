@@ -5,6 +5,7 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
+- **Workstation round two (2026-09-18):** Six additional isolated shadcn concepts at `/workstation-concepts/round-two.html`, linked to the original five. Explores explained job matching, cross-version comparisons, application preparation, source-backed editing, a job board, and submission review. Five focused tests, TypeScript, isolated build, desktop/mobile browser checks passed. Next: user selects a direction and paid-value hypothesis to develop. No live editor, billing, AI service, or job-feed integration.
 - **Workstation concepts (2026-09-18):** Five isolated shadcn mockups at `/workstation-concepts/index.html`: version rail, quiet workspace, guided editor, comparison, and version library. Session-only fictional data; switch/copy/edit/checkpoint restore and desktop/mobile layouts checked. Next: user chooses a direction; no live editor integration. TypeScript and isolated Vite build pass. Existing staged work is outside this task.
 - **Demo navbar removed (2026-09-18):** Removed the top brand/navigation/quick-actions bar as requested. Mobile sidebar trigger remains in the content area; keyboard quick actions remain available. Next: visual review.
 - **Flush workspace frame (2026-09-18):** Removed the cream theme’s rounded outer content frame, margin, border and shadow so the main area meets the standard sidebar directly. Next: visual review.
