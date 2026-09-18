@@ -127,16 +127,6 @@
     box-shadow: var(--demo-shadow);
 }
 
-@media (min-width: 1024px) {
-    [data-demo-theme="cream"] [data-slot="sidebar-inset"] {
-        margin: 12px 12px 12px 0;
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        overflow: clip;
-        box-shadow: 0 4px 24px rgb(43 37 28 / 3%);
-    }
-}
-
 [data-demo-theme="cream"] [data-sidebar="menu-button"][data-active="false"]:not(:hover) {
     background: transparent;
     font-weight: 400;

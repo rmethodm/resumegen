@@ -5,6 +5,14 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Flush workspace frame
+
+Removed the desktop-only cream frame rule that inset and rounded the main content beside the sidebar. PLAN and NOTES updated; no checkbox changes and no README change required.
+
+**Q1 — Least confident:** Remaining visual preferences require user review; this change targets only the reported outer curve.
+
+**Q5 — Suggested improvement:** Keep the app shell flush and reserve rounded surfaces for internal cards. Push remains pending prior approval.
+
 ## 2026-09-18 — Standard shadcn sidebar
 
 Removed custom reference sidebar styling and composed standard shadcn groups, submenu, separators, rail and account footer. Checked settings, navigation dialog, desktop collapse and mobile menu. Build passed. Updated PLAN, NOTES and README; no checkboxes changed. Push remains pending approval for unrelated main commits.

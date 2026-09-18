@@ -149,3 +149,5 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 ### Standard sidebar (2026-09-18; supersedes reference styling)
 - User requested standard shadcn navigation. Removed the screenshot-specific CSS, timeline and width override; retained labels and demo dialogs. Use SidebarGroup, SidebarMenuSub and standard account/footer composition.
+
+- Shadcn demo workspace frame is flush against the sidebar (2026-09-18 user feedback); internal cards retain their existing corners.
