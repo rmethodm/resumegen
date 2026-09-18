@@ -5,6 +5,15 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Reference sidebar
+
+Replaced standalone demo navigation with profile, primary links, expanded Settings timeline, Payments highlight, Help Center and collapse control. Build passed; browser checks covered settings toggle, Payments dialog, collapse/expand and mobile menu without page errors. Documentation updated; no PLAN checkbox changes. Push remains blocked by the earlier automatic review because main contains unrelated commits.
+
+**Q1 — Least confident:** The source portrait is represented by initials; visual review can determine whether a separately supplied portrait is needed.
+
+**Q5 — Suggested improvement:** Connect navigation to real destinations only when those features are defined; current dialogs clearly identify demo scope.
+
+
 ## 2026-09-18 — Warm Cream shadcn demo
 
 Applied the light screenshot reference to the standalone demo using semantic tokens and scoped component styling. Preserved existing unrelated working changes. Build passed; browser checks verified cream/midnight switching, white dialog surface, no page errors, and no document overflow at mobile width. PLAN status, NOTES, and README updated; no checkboxes changed.

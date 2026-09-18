@@ -5,6 +5,7 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
+- **Reference sidebar (2026-09-18):** Replaced `/shadcn` navigation with the supplied profile/settings/help design. Desktop and mobile interactions checked. Next: visual review; remote push remains blocked pending approval for unrelated commits already on main.
 - **Warm Cream demo (2026-09-18):** Applied the supplied light reference theme to `/shadcn`; default Warm Cream preset, warm sidebar, white panels, rounded controls, and consistent portal colors. Build and desktop/mobile browser checks passed. Next: user visual review. Current task follows AGENTS commit/push instructions; older uncommitted-work guidance below is historical.
 - **Active:** User-directed. Branch `ShadEditor` — Workstation AI credits infra remains; **Rewrite and Generate credit UI removed** (bullet/summary rewrite + Optimize Generate; matching routes unrouted). Optimize diagnose stays. Admin panel removed 2026-09-02; Job Imports removed 2026-08-26. UI redesign ladder P0–P2 shipped earlier; remaining UI items parked in `docs/plans/ui-redesign-remaining.md`. Auto-apply research parked 2026-08-13 in `docs/plans/auto-apply-research.md` — do not implement until reopened.
 - **Wizard reliability follow-up:** Single HTML app entry; dev-only eager page resolver; Vitest excludes Laravel plugin to preserve public/hot; failed Skip retains inputs. 471 Laravel tests (2,112 assertions), 51 JS tests, build/Pint passed. Temporary Vite server stopped and built-assets setup restored.

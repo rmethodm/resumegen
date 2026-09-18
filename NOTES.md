@@ -143,3 +143,6 @@ re-derive. Timeless reference + the reasoning behind decisions.
 ### Shadcn Warm Cream theme (2026-09-18)
 - `/shadcn` defaults to Warm Cream, derived visually from the light background interface in the supplied screenshot. Exact source font/color values were not supplied.
 - CSS stays in the demo stylesheet. Selected theme tokens also reach the document root so portaled dialogs and menus match; effect cleanup restores previous values. Existing theme options remain available.
+
+### Reference profile sidebar (2026-09-18)
+- Standalone shadcn navigation now follows the supplied Kate Russell reference. KR initials replace the portrait. Settings expands, Payments is selected initially, and unmatched destinations explicitly show demo dialogs. Collapse/mobile behavior uses the existing Sidebar provider.
