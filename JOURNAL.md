@@ -5,6 +5,14 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Remove demo navbar
+
+Removed the top navbar and retained a mobile sidebar trigger in the content area. PLAN and NOTES updated; no checkbox or README changes.
+
+**Q1 — Least confident:** None beyond user visual preference for the remaining breadcrumb.
+
+**Q5 — Suggested improvement:** Keep primary navigation in the sidebar. Remote push remains blocked pending earlier approval.
+
 ## 2026-09-18 — Flush workspace frame
 
 Removed the desktop-only cream frame rule that inset and rounded the main content beside the sidebar. PLAN and NOTES updated; no checkbox changes and no README change required.

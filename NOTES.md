@@ -151,3 +151,5 @@ re-derive. Timeless reference + the reasoning behind decisions.
 - User requested standard shadcn navigation. Removed the screenshot-specific CSS, timeline and width override; retained labels and demo dialogs. Use SidebarGroup, SidebarMenuSub and standard account/footer composition.
 
 - Shadcn demo workspace frame is flush against the sidebar (2026-09-18 user feedback); internal cards retain their existing corners.
+
+- Removed the standalone demo top navbar per screenshot request (2026-09-18). Mobile navigation remains accessible through a content-area sidebar trigger; Cmd/Ctrl K still opens quick actions.

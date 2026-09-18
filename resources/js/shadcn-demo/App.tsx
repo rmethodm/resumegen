@@ -14,7 +14,7 @@ import {
     Share2Icon,
     UndoIcon,
 } from 'lucide-react';
-import { Navbar } from '@/shadcn-demo/components/navbar';
+import { SidebarTrigger } from '@/shadcn-demo/components/ui/sidebar';
 import { SectionFields } from '@/shadcn-demo/components/section-fields';
 import { ResumePreview } from '@/shadcn-demo/components/resume-preview';
 import { OptimizePanel } from '@/shadcn-demo/components/optimize-panel';
@@ -198,7 +198,6 @@ export default function App() {
     return (
         <div className="min-h-dvh bg-background" style={themeStyle}>
             <Toaster position="bottom-center" />
-            <Navbar onOpenCommand={() => setCommandOpen(true)} />
 
             <CommandDialog open={commandOpen} onOpenChange={setCommandOpen} title="Quick actions">
                 <CommandInput placeholder="Type a command…" />
@@ -234,6 +233,7 @@ export default function App() {
             </CommandDialog>
 
             <main className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-6">
+                <SidebarTrigger className="md:hidden" />
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>

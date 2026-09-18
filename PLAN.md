@@ -5,6 +5,7 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
+- **Demo navbar removed (2026-09-18):** Removed the top brand/navigation/quick-actions bar as requested. Mobile sidebar trigger remains in the content area; keyboard quick actions remain available. Next: visual review.
 - **Flush workspace frame (2026-09-18):** Removed the cream theme’s rounded outer content frame, margin, border and shadow so the main area meets the standard sidebar directly. Next: visual review.
 - **Standard sidebar (2026-09-18):** Replaced custom reference styling with standard shadcn groups, submenu, workspace header, and account footer. Next: user visual review. Earlier reference-sidebar styling is superseded; push approval remains pending.
 - **Reference sidebar (2026-09-18):** Replaced `/shadcn` navigation with the supplied profile/settings/help design. Desktop and mobile interactions checked. Next: visual review; remote push remains blocked pending approval for unrelated commits already on main.
