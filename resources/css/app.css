@@ -12,6 +12,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --font-sans:
+    'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
   --font-mono:
     'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
@@ -59,7 +62,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--canvas);
+    @apply text-foreground;
   }
   html {
     @apply font-sans;
@@ -78,7 +82,7 @@
 @layer utilities {
   html {
     color-scheme: light;
-    background-color: #ffffff;
+    background-color: var(--canvas);
     scroll-behavior: smooth;
   }
 
@@ -218,6 +222,8 @@
 }
 
 :root {
+  --canvas:
+    #eeece8;
   --background:
     #ffffff;
   --foreground:
@@ -285,6 +291,8 @@
 }
 
 .dark {
+  --canvas:
+    oklch(0.145 0 0);
   --background:
     oklch(0.145 0 0);
   --foreground:
