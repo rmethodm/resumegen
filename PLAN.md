@@ -5,6 +5,7 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
+- **Standard sidebar (2026-09-18):** Replaced custom reference styling with standard shadcn groups, submenu, workspace header, and account footer. Next: user visual review. Earlier reference-sidebar styling is superseded; push approval remains pending.
 - **Reference sidebar (2026-09-18):** Replaced `/shadcn` navigation with the supplied profile/settings/help design. Desktop and mobile interactions checked. Next: visual review; remote push remains blocked pending approval for unrelated commits already on main.
 - **Warm Cream demo (2026-09-18):** Applied the supplied light reference theme to `/shadcn`; default Warm Cream preset, warm sidebar, white panels, rounded controls, and consistent portal colors. Build and desktop/mobile browser checks passed. Next: user visual review. Current task follows AGENTS commit/push instructions; older uncommitted-work guidance below is historical.
 - **Active:** User-directed. Branch `ShadEditor` — Workstation AI credits infra remains; **Rewrite and Generate credit UI removed** (bullet/summary rewrite + Optimize Generate; matching routes unrouted). Optimize diagnose stays. Admin panel removed 2026-09-02; Job Imports removed 2026-08-26. UI redesign ladder P0–P2 shipped earlier; remaining UI items parked in `docs/plans/ui-redesign-remaining.md`. Auto-apply research parked 2026-08-13 in `docs/plans/auto-apply-research.md` — do not implement until reopened.

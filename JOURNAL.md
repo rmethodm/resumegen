@@ -5,6 +5,14 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Standard shadcn sidebar
+
+Removed custom reference sidebar styling and composed standard shadcn groups, submenu, separators, rail and account footer. Checked settings, navigation dialog, desktop collapse and mobile menu. Build passed. Updated PLAN, NOTES and README; no checkboxes changed. Push remains pending approval for unrelated main commits.
+
+**Q1 — Least confident:** Visual preference for the retained warm palette; user review can resolve this.
+
+**Q5 — Suggested improvement:** Keep sidebar styling in the standard component system to avoid custom CSS drift.
+
 ## 2026-09-18 — Reference sidebar
 
 Replaced standalone demo navigation with profile, primary links, expanded Settings timeline, Payments highlight, Help Center and collapse control. Build passed; browser checks covered settings toggle, Payments dialog, collapse/expand and mobile menu without page errors. Documentation updated; no PLAN checkbox changes. Push remains blocked by the earlier automatic review because main contains unrelated commits.

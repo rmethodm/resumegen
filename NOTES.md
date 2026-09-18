@@ -146,3 +146,6 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 ### Reference profile sidebar (2026-09-18)
 - Standalone shadcn navigation now follows the supplied Kate Russell reference. KR initials replace the portrait. Settings expands, Payments is selected initially, and unmatched destinations explicitly show demo dialogs. Collapse/mobile behavior uses the existing Sidebar provider.
+
+### Standard sidebar (2026-09-18; supersedes reference styling)
+- User requested standard shadcn navigation. Removed the screenshot-specific CSS, timeline and width override; retained labels and demo dialogs. Use SidebarGroup, SidebarMenuSub and standard account/footer composition.

@@ -101,20 +101,6 @@
     min-width: 0;
 }
 
-[data-demo-theme="cream"] [data-slot="sidebar-header"] {
-    padding: 16px 12px;
-}
-
-[data-demo-theme="cream"] [data-slot="sidebar-header"] [data-slot="sidebar-menu-button"] {
-    background: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: var(--demo-shadow);
-}
-
-[data-demo-theme="cream"] [data-slot="sidebar-menu-button"] {
-    border-radius: 10px;
-}
-
 [data-demo-theme="cream"] [data-slot="card"] {
     box-shadow: 0 1px 2px rgb(43 37 28 / 3%);
 }
@@ -155,50 +141,3 @@
     background: transparent;
     font-weight: 400;
 }
-
-/* Profile navigation reference, confined to the standalone demo sidebar. */
-[data-slot="sidebar-wrapper"]:has(:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile))) { --sidebar-width: 300px !important; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) {
-    --sidebar: #fff;
-    --sidebar-foreground: #122342;
-    --sidebar-accent: #f4f5f8;
-    --sidebar-accent-foreground: #122342;
-    --reference-muted: #858ba3;
-    --reference-blue: #347cff;
-    --reference-line: #d9dce6;
-}
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-inner"] { border: 1px solid #e5e6ec; border-radius: 26px; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-header"] { padding: 18px 18px 20px; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-content"] { padding: 0 18px; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-footer"] { padding: 22px 18px 26px; gap: 22px; }
-.reference-profile, .reference-help { display: flex; align-items: center; gap: 16px; width: 100%; padding: 16px; border: 1px solid #e5e6ec; border-radius: 20px; text-align: left; background: #fff; }
-.reference-avatar { width: 44px; height: 44px; }
-.reference-avatar [data-slot="avatar-fallback"] { background: #f58f96; color: #532632; font-size: 15px; }
-.reference-profile-copy { display: flex; flex: 1; flex-direction: column; gap: 5px; white-space: nowrap; }
-.reference-profile-copy strong { font-size: 17px; font-weight: 650; letter-spacing: -.025em; }
-.reference-profile-copy > span { font-size: 15px; color: var(--reference-muted); }
-.reference-chevron { width: 18px; height: 18px; flex-shrink: 0; margin-left: auto; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-menu"] { gap: 7px; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-menu-button"] { height: 44px; padding: 10px 18px; gap: 14px; font-size: 16px; font-weight: 500; border-radius: 14px; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-menu-button"] > svg { width: 20px; height: 20px; color: #293143; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-menu-button"][data-active="false"]:not(:hover) { background: transparent; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-menu-button"].reference-settings { height: 48px; border: 1px solid #e5e6ec; box-shadow: 0 7px 22px #19243b08; background: #fff; font-weight: 600; }
-.reference-settings[aria-expanded="false"] .reference-chevron { transform: rotate(-90deg); }
-.reference-settings-list { margin: 12px 0 17px 28px; padding: 0; list-style: none; }
-.reference-settings-list li { position: relative; border-left: 1px solid var(--reference-line); }
-.reference-settings-list li:last-child { border-color: transparent; }
-.reference-settings-list button { position: relative; display: block; padding: 12px 0 12px 23px; width: 100%; text-align: left; font-size: 16px; color: #535c74; }
-.reference-settings-list button::before { content: ''; position: absolute; left: -5px; top: 20px; width: 9px; height: 9px; border-radius: 50%; background: var(--reference-line); box-shadow: 0 0 0 4px white; }
-.reference-settings-list button.is-selected { color: var(--reference-blue); font-weight: 600; }
-.reference-settings-list button.is-selected::before { background: var(--reference-blue); }
-.reference-settings-list button:hover { color: var(--reference-blue); }
-.reference-help { background: #f5f6f9; padding: 14px 12px; gap: 12px; }
-.reference-help-icon { display: grid; place-items: center; width: 50px; height: 50px; flex-shrink: 0; border-radius: 50%; background: white; color: var(--reference-blue); box-shadow: 0 6px 14px #172c5305; }
-.reference-help-icon svg { width: 25px; height: 25px; }
-.reference-help .reference-chevron { color: var(--reference-muted); }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) .reference-collapse { color: #747b92; }
-[data-state="collapsed"] :is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) [data-slot="sidebar-inner"] { border-radius: 14px; }
-[data-state="collapsed"] :is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) :is([data-slot="sidebar-header"], [data-slot="sidebar-content"], [data-slot="sidebar-footer"]) { padding: 8px; }
-[data-state="collapsed"] :is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) :is(.reference-profile, .reference-help) { padding: 0; border: 0; background: transparent; }
-[data-state="collapsed"] :is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) :is(.reference-avatar, .reference-help-icon) { width: 30px; height: 30px; }
-:is(.reference-sidebar, [data-mobile="true"]:has(.reference-profile)) button:focus-visible { outline: 2px solid var(--reference-blue); outline-offset: 3px; }
