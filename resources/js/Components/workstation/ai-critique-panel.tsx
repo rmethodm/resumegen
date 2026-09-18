@@ -24,6 +24,7 @@ function severityBadgeVariant(severity: AiReviewSuggestion['severity']) {
 
 export function AiCritiquePanel({
     resumeId,
+    saveReady = true,
     jd,
     initialSuggestions,
     initialGeneratedAt,
@@ -33,6 +34,7 @@ export function AiCritiquePanel({
     onResult,
 }: {
     resumeId: number;
+    saveReady?: boolean;
     jd: string;
     initialSuggestions: AiReviewSuggestion[] | null;
     initialGeneratedAt: string | null;
@@ -152,7 +154,7 @@ export function AiCritiquePanel({
                         </option>
                     ))}
                 </Select>
-                <Button size="sm" disabled={loading} onClick={runCritique}>
+                <Button size="sm" disabled={loading || !saveReady} onClick={runCritique}>
                     {loading
                         ? 'Running…'
                         : suggestions
@@ -161,6 +163,7 @@ export function AiCritiquePanel({
                 </Button>
             </div>
 
+            {!saveReady && <p role="status" className="text-xs text-muted-foreground">Wait for your resume to save before requesting a critique.</p>}
             {error && <p className="text-xs text-destructive">{error}</p>}
 
             {suggestions && suggestions.length > 0 && (

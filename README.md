@@ -1,5 +1,7 @@
 # Resumegen
 
+The live workstation now follows **Edit resume → Job fit → Review & apply**. Version switching, appearance controls, notes/checkpoints, PDF/DOCX export, and the employer-site/tracker handoff are grouped around application preparation. AI currently offers critique; automated edit proposals and submitted-document snapshots are not yet integrated.
+
 The connected job-first walkthrough is at `/workstation-concepts/application-flow.html` after the preview build below. Try choosing a job and base resume, manual editing or sample AI review-and-apply, then confirming submission and tracking it in Applications. It is an isolated, session-only prototype; no real AI credits, employer submission, importer, or extension integration.
 
 Five interactive workstation design concepts are available locally at `/workstation-concepts/index.html` after running `npx vite build --config resources/js/shadcn-demo/workstation-concepts/vite.config.ts`. They use fictional, session-only data and existing shadcn components. Switch layouts using the top tabs; try version copying and checkpoint restoration. This isolated preview does not replace the live editor.

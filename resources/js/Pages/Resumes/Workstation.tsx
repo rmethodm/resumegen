@@ -1,4 +1,4 @@
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     ArrowDownIcon,
     ArrowUpIcon,
@@ -10,33 +10,39 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { SectionFields } from '@/Components/workstation/inspector';
 import { ResumePreview } from '@/Components/resume/resume-preview';
 import { ExportChecklistModal } from '@/Components/workstation/export-checklist-modal';
-import { NotesPanel, type WorkstationNote } from '@/Components/workstation/notes-panel';
-import {
-    SnapshotsPanel,
-    type WorkstationSnapshot,
-} from '@/Components/workstation/snapshots-panel';
+import { type WorkstationNote } from '@/Components/workstation/notes-panel';
+import { NotesSheet } from '@/Components/workstation/notes-sheet';
+import { type WorkstationSnapshot } from '@/Components/workstation/snapshots-panel';
 import {
     AtsPlainTextBlock,
     OptimizePanel,
 } from '@/Components/workstation/optimize-panel';
-import { JdMatchCard } from '@/Components/workstation/jd-match-card';
-import { OptimizeRail } from '@/Components/workstation/optimize-rail';
-import { OptimizeSheet } from '@/Components/workstation/optimize-sheet';
 import { PdfPreviewFrame } from '@/Components/workstation/pdf-preview-frame';
-import { ScoreRingTrio } from '@/Components/workstation/score-ring-trio';
-import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
-import { WorkstationHeader, type WorkstationTab } from '@/Components/workstation/workstation-header';
-import { type PreviewZoom } from '@/Components/workstation/workstation-format-toolbar';
-import { Alert, AlertDescription } from '@/Components/ui/alert';
+import { ApplicationReview } from '@/Components/workstation/application-review';
+import { ArrowRight, BriefcaseBusiness, FileText, ListChecks } from 'lucide-react';
 import { Badge } from '@/Components/ui/badge';
+import { Select } from '@/Components/ui/select';
+import { TargetRoleBar } from '@/Components/workstation/target-role-bar';
+import { WorkstationHeader } from '@/Components/workstation/workstation-header';
+import {
+    type PreviewZoom,
+} from '@/Components/workstation/workstation-format-toolbar';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/Components/ui/breadcrumb';
 import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { useAutosave } from '@/hooks/use-autosave';
 import { useHistory } from '@/hooks/use-history';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useValidContact } from '@/hooks/use-valid-contact';
-import { useWorkstationLayout } from '@/hooks/use-workstation-layout';
-import { suggestionsForSection } from '@/lib/ai-review';
 import { exportChecklist, type ExportCheck } from '@/lib/export-checklist';
 import { resumeFormattingKey } from '@/lib/resume-formatting';
 import { applyTemplatePreset } from '@/lib/template-presets';
@@ -96,9 +102,7 @@ export default function Workstation({
         canRedo,
     } = useHistory<ResumeDraft>(initial);
     const isMobile = useIsMobile();
-    const [layoutMode, onLayoutModeChange] = useWorkstationLayout();
-    const [optimizeSheetOpen, setOptimizeSheetOpen] = useState(false);
-    const [tab, setTab] = useState<WorkstationTab>('Edit');
+    const [tab, setTab] = useState<'Edit' | 'Fit' | 'Review'>('Edit');
     const [section, setSection] = useState<ResumeSectionKey>('contact');
     const [previewZoom, setPreviewZoom] = useState<PreviewZoom>(1);
     const [reviewPreviewMode, setReviewPreviewMode] = useState<'react' | 'pdf'>(
@@ -125,7 +129,7 @@ export default function Workstation({
     const exportGate = useMemo(() => exportChecklist(draft), [draft]);
     const formattingKey = useMemo(() => resumeFormattingKey(draft), [draft]);
     const formattingKeyRef = useRef(formattingKey);
-    const pdfPreviewActive = tab === 'Edit' && reviewPreviewMode === 'pdf';
+    const pdfPreviewActive = reviewPreviewMode === 'pdf';
 
     // A badly formatted contact field is held back from the payload rather
     // than failing the whole save — see use-valid-contact.ts.
@@ -165,6 +169,8 @@ export default function Workstation({
             setPdfRevision(Date.now());
         }
     });
+
+    const canUseSavedResume = saveStatus === 'saved' && !offline && !errors.email && !errors.phone;
 
     // Bust cached PDF when opening the PDF preview.
     useEffect(() => {
@@ -213,11 +219,16 @@ export default function Workstation({
     }, [saveStatus]);
 
     function requestDownload(format: 'pdf' | 'docx') {
+        if (!canUseSavedResume) return;
         setExportFormat(format);
         setExportOpen(true);
     }
 
     function confirmDownload() {
+        if (!canUseSavedResume) {
+            setExportOpen(false);
+            return;
+        }
         setExportOpen(false);
         const href =
             exportFormat === 'pdf'
@@ -287,9 +298,9 @@ export default function Workstation({
                 ? current.filter((key) => key !== target)
                 : current,
         );
-        document
-            .getElementById(`section-${target}`)
-            ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.requestAnimationFrame(() => {
+            document.getElementById(`section-${target}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     }
 
     // Optimize tab checks/critique can only jump to a section once the Edit
@@ -415,44 +426,12 @@ export default function Workstation({
 
     function renderFormSections() {
         return (
-            <main
+            <section
                 aria-label="Section form"
                 className="flex min-w-0 flex-col gap-3"
             >
-                {layoutMode === 'inline' && (
-                    <div className="flex flex-col gap-4">
-                        <ScoreRingTrio
-                            resume={draft}
-                            jd={draft.target_job_description ?? ''}
-                        />
-                        <TargetRoleBar
-                            targetRole={draft.target_role}
-                            targetCompany={draft.target_company ?? ''}
-                            onChange={(target_role) =>
-                                setDraft((current) => ({
-                                    ...current,
-                                    target_role,
-                                }))
-                            }
-                            onTargetCompanyChange={(target_company) =>
-                                setDraft((current) => ({
-                                    ...current,
-                                    target_company,
-                                }))
-                            }
-                        />
-                    </div>
-                )}
-
                 {draft.section_order.map((sectionKey) => {
                     const collapsed = collapsedSections.includes(sectionKey);
-                    const hiddenSuggestionCount =
-                        layoutMode === 'inline'
-                            ? suggestionsForSection(
-                                  draft.ai_review,
-                                  sectionKey,
-                              ).length
-                            : 0;
 
                     return (
                         <Card
@@ -464,7 +443,7 @@ export default function Workstation({
                             onDrop={() => handleDrop(sectionKey)}
                             onDragEnd={() => setDraggedSection(null)}
                             className={cn(
-                                'gap-0 overflow-hidden border-border py-0',
+                                'scroll-mt-24 gap-0 overflow-hidden border-border py-0 shadow-none',
                                 'transition-opacity duration-soft ease-soft',
                                 draggedSection === sectionKey && 'opacity-50',
                             )}
@@ -482,7 +461,7 @@ export default function Workstation({
                                     toggleSectionCollapsed(sectionKey);
                                 }}
                                 className={cn(
-                                    'flex cursor-default select-none items-center gap-2 bg-muted/50 px-4 py-2.5',
+                                    'flex cursor-default select-none items-center gap-2 bg-muted/50 px-4 py-2',
                                     !collapsed && 'border-b border-border/80',
                                 )}
                             >
@@ -515,14 +494,6 @@ export default function Workstation({
                                         Collapsed
                                     </span>
                                 )}
-                                {collapsed && hiddenSuggestionCount > 0 && (
-                                    <Badge variant="warning">
-                                        {hiddenSuggestionCount} suggestion
-                                        {hiddenSuggestionCount === 1
-                                            ? ''
-                                            : 's'}
-                                    </Badge>
-                                )}
                                 <div className="ml-auto flex items-center gap-0.5">
                                     {isOptionalSection(sectionKey) && (
                                         <Button
@@ -543,7 +514,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="icon"
-                                            className="size-11"
+                                            className="size-8"
                                             aria-label={`Move ${sectionLabels[sectionKey]} up`}
                                             disabled={
                                                 draft.section_order.indexOf(
@@ -563,7 +534,7 @@ export default function Workstation({
                                             type="button"
                                             variant="ghost"
                                             size="icon"
-                                            className="size-11"
+                                            className="size-8"
                                             aria-label={`Move ${sectionLabels[sectionKey]} down`}
                                             disabled={
                                                 draft.section_order.indexOf(
@@ -605,42 +576,13 @@ export default function Workstation({
                                             contactErrors={errors}
                                             onChange={setDraft}
                                         />
-
-                                        {layoutMode === 'inline' &&
-                                            suggestionsForSection(
-                                                draft.ai_review,
-                                                sectionKey,
-                                            ).map((suggestion) => (
-                                                <Alert
-                                                    key={suggestion.id}
-                                                    variant={
-                                                        suggestion.severity ===
-                                                        'high'
-                                                            ? 'destructive'
-                                                            : suggestion.severity ===
-                                                                'medium'
-                                                              ? 'warning'
-                                                              : 'default'
-                                                    }
-                                                    className="mt-3"
-                                                >
-                                                    <AlertDescription>
-                                                        <span className="font-medium text-foreground">
-                                                            {suggestion.label}
-                                                        </span>
-                                                        <span className="block text-xs">
-                                                            {suggestion.detail}
-                                                        </span>
-                                                    </AlertDescription>
-                                                </Alert>
-                                            ))}
                                     </div>
                                 </div>
                             </div>
                         </Card>
                     );
                 })}
-            </main>
+            </section>
         );
     }
 
@@ -648,7 +590,7 @@ export default function Workstation({
         <AuthenticatedLayout>
             <Head title={draft.title} />
 
-            <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-muted">
+            <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-background">
                 {(offline || saveStatus === 'error') && (
                     <Alert
                         variant={
@@ -700,15 +642,26 @@ export default function Workstation({
                     </Alert>
                 )}
 
-                {/* Resume chrome — same width / gutters as the main top nav island */}
-                <div
-                    className={cn(
-                        'px-3 pb-3 sm:px-4',
-                        'pl-[max(0.75rem,env(safe-area-inset-left))]',
-                        'pr-[max(0.75rem,env(safe-area-inset-right))]',
-                    )}
-                >
-                    <div className="mx-auto max-w-6xl">
+                <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem><BreadcrumbLink asChild><Link href={route('jobs.browse')}>Jobs</Link></BreadcrumbLink></BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem><BreadcrumbLink asChild><Link href={route('resumes.index')}>Resumes</Link></BreadcrumbLink></BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem><BreadcrumbPage>{application ? 'Prepare application' : 'Resume workspace'}</BreadcrumbPage></BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div className="min-w-0">
+                            <div className="mb-3 flex flex-wrap items-center gap-2"><Badge variant="outline">{application ? 'Job-specific resume' : 'Resume workspace'}</Badge>{application && <Badge variant="secondary">{application.status === 'saved' ? 'In preparation' : application.status.charAt(0).toUpperCase() + application.status.slice(1)}</Badge>}</div>
+                            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{application?.role || draft.target_role || 'Build your next opportunity.'}</h1>
+                            <p className="mt-2 text-sm text-muted-foreground">{application ? `${application.company} · Make your relevant experience easy to see.` : 'Keep your experience ready. Choose a job when you want to create a tailored copy.'}</p>
+                        </div>
+                        <Button onClick={() => setTab(tab === 'Edit' ? 'Fit' : tab === 'Fit' ? 'Review' : 'Edit')}>
+                            {tab === 'Edit' ? 'Check job fit' : tab === 'Fit' ? 'Review & apply' : 'Back to editing'}<ArrowRight data-icon="inline-end" />
+                        </Button>
+                    </div>
                         <WorkstationHeader
                             resumeId={id}
                             application={application}
@@ -723,8 +676,6 @@ export default function Workstation({
                                 setTab('Edit');
                                 scrollToSection('contact');
                             }}
-                            activeTab={tab}
-                            onTabChange={setTab}
                             template={draft.template}
                             onTemplateChange={(template) =>
                                 setDraft(applyTemplatePreset(draft, template))
@@ -760,154 +711,69 @@ export default function Workstation({
                             reviewPreviewMode={reviewPreviewMode}
                             onReviewPreviewModeChange={setReviewPreviewMode}
                             sideToolsOpen={showSideTools}
-                            onToggleSideTools={() => {
-                                setShowSideTools((open) => {
-                                    const next = !open;
-                                    if (next) {
-                                        window.setTimeout(() => {
-                                            document
-                                                .getElementById(
-                                                    'workstation-side-tools',
-                                                )
-                                                ?.scrollIntoView({
-                                                    behavior: 'smooth',
-                                                    block: 'start',
-                                                });
-                                        }, 50);
-                                    }
-
-                                    return next;
-                                });
-                            }}
-                            layoutMode={layoutMode}
-                            onLayoutModeChange={onLayoutModeChange}
-                            onOpenOptimize={
-                                layoutMode === 'overlay'
-                                    ? () => setOptimizeSheetOpen(true)
-                                    : undefined
+                            onToggleSideTools={() =>
+                                setShowSideTools((open) => !open)
                             }
                         />
-                    </div>
-                </div>
-
-                <div
-                    className={cn(
-                        'px-3 pb-6 sm:px-4',
-                        'pl-[max(0.75rem,env(safe-area-inset-left))]',
-                        'pr-[max(0.75rem,env(safe-area-inset-right))]',
-                    )}
-                >
-                    <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
-                        <div className="flex flex-col gap-6">
-                            <div className="flex min-w-0 flex-1 flex-col gap-5">
-                                {layoutMode === 'tabs' && tab === 'Optimize' && (
-                                    <>
-                                        <ScoreRingTrio
-                                            resume={draft}
-                                            jd={draft.target_job_description ?? ''}
-                                        />
-                                        <TargetRoleBar
-                                            targetRole={draft.target_role}
-                                            targetCompany={draft.target_company ?? ''}
-                                            onChange={(target_role) => setDraft((current) => ({ ...current, target_role }))}
-                                            onTargetCompanyChange={(target_company) => setDraft((current) => ({ ...current, target_company }))}
-                                        />
-                                        <OptimizePanel
-                                            draft={draft}
-                                            onChange={setDraft}
-                                            resumeId={id}
-                                            aiCredits={page.props.aiCredits as AiCredits | null}
-                                            onJump={jumpFromOptimize}
-                                        >
-                                            <AtsPlainTextBlock
-                                                plainText={plainText}
-                                            />
-                                        </OptimizePanel>
-                                    </>
-                                )}
-
-                                {(layoutMode !== 'tabs' || tab === 'Edit') && (
-                                    <div className="grid min-w-0 gap-4 lg:grid-cols-2">
-                                        {renderFormSections()}
-                                        <div className="min-w-0 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
-                                            {layoutMode === 'hybrid' && (
-                                                <div className="mb-4">
-                                                    <OptimizeRail
-                                                        draft={draft}
-                                                        onChange={setDraft}
-                                                        resumeId={id}
-                                                        aiCredits={
-                                                            page.props
-                                                                .aiCredits as AiCredits | null
-                                                        }
-                                                        onJump={jumpFromOptimize}
-                                                    />
-                                                </div>
-                                            )}
-                                            {renderPreview()}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {layoutMode === 'overlay' && (
-                                    <OptimizeSheet
-                                        open={optimizeSheetOpen}
-                                        onOpenChange={setOptimizeSheetOpen}
-                                        draft={draft}
-                                        onChange={setDraft}
-                                        resumeId={id}
-                                        aiCredits={
-                                            page.props
-                                                .aiCredits as AiCredits | null
-                                        }
-                                        onJump={jumpFromOptimize}
-                                        plainText={plainText}
-                                    />
-                                )}
-
-                                {showSideTools && (
-                                    <div
-                                        id="workstation-side-tools"
-                                        className="grid gap-4 md:grid-cols-2"
-                                    >
-                                        <NotesPanel
-                                            resumeId={id}
-                                            notes={notes}
-                                        />
-                                        <SnapshotsPanel
-                                            resumeId={id}
-                                            snapshots={snapshots}
-                                        />
-                                        {layoutMode === 'inline' && (
-                                            <>
-                                                <JdMatchCard
-                                                    draft={draft}
-                                                    onChange={setDraft}
-                                                />
-                                                <AtsPlainTextBlock
-                                                    plainText={plainText}
-                                                />
-                                            </>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                    <Tabs value={tab} onValueChange={value => setTab(value as 'Edit' | 'Fit' | 'Review')} className="min-w-0">
+                        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                            <TabsList className="h-auto flex-wrap">
+                                <TabsTrigger value="Edit"><FileText data-icon="inline-start" />Edit resume</TabsTrigger>
+                                <TabsTrigger value="Fit"><BriefcaseBusiness data-icon="inline-start" />Job fit</TabsTrigger>
+                                <TabsTrigger value="Review"><ListChecks data-icon="inline-start" />Review & apply</TabsTrigger>
+                            </TabsList>
+                            <span className="text-xs text-muted-foreground">{tab === 'Edit' ? '1 / 3 · Shape your experience' : tab === 'Fit' ? '2 / 3 · Make it relevant' : '3 / 3 · Send with confidence'}</span>
                         </div>
-                    </div>
+                        <TabsContent value="Edit">
+                            <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(340px,0.9fr)_minmax(0,1.1fr)]">
+                                <div className="flex min-w-0 flex-col gap-4">
+                                    <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-sm font-semibold">Your experience</h2><Select aria-label="Jump to resume section" value={section} onChange={event => scrollToSection(event.target.value as ResumeSectionKey)} className="w-48">{draft.section_order.map(key => <option key={key} value={key}>{sectionLabels[key]}</option>)}</Select></div>
+                                    {renderFormSections()}
+                                </div>
+                                <aside aria-label="Live resume preview" className="min-w-0 rounded-xl border bg-muted/40 p-3 sm:p-5 lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
+                                    <div className="mb-4 flex items-center justify-between"><h2 className="text-xs font-medium text-muted-foreground">{reviewPreviewMode === 'pdf' ? 'Saved PDF preview' : 'Live preview'}</h2><Button variant="ghost" size="sm" onClick={() => setTab('Review')}>Final review<ArrowRight data-icon="inline-end" /></Button></div>
+                                    {renderPreview()}
+                                </aside>
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="Fit">
+                            <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(340px,0.9fr)_minmax(0,1.1fr)]">
+                                <div className="flex min-w-0 flex-col gap-5">
+                                    <div><h2 className="text-lg font-semibold">Bring the right experience forward.</h2><p className="mt-1 text-sm leading-6 text-muted-foreground">Compare the role with your resume. Edit manually at any time; AI critique is optional.</p></div>
+                                    <TargetRoleBar targetRole={draft.target_role} targetCompany={draft.target_company ?? ''} onChange={target_role => setDraft(current => ({ ...current, target_role }))} onTargetCompanyChange={target_company => setDraft(current => ({ ...current, target_company }))} />
+                                    {application?.job_description && application.job_description !== draft.target_job_description && <Alert><AlertDescription>This application has a saved job description.<Button variant="link" className="h-auto p-0" onClick={() => setDraft(current => ({ ...current, target_job_description: application.job_description ?? '' }))}>Use the application’s description</Button></AlertDescription></Alert>}
+                                    <OptimizePanel draft={draft} onChange={setDraft} resumeId={id} aiCredits={page.props.aiCredits as AiCredits | null} onJump={jumpFromOptimize} saveReady={canUseSavedResume} />
+                                </div>
+                                <aside aria-label="Resume comparison preview" className="min-w-0 rounded-xl border bg-muted/40 p-3 sm:p-5 lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">{renderPreview()}</aside>
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="Review">
+                            <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+                                <div className="flex min-w-0 flex-col gap-5"><div className="rounded-xl border bg-muted/40 p-3 sm:p-8">{renderPreview()}</div><AtsPlainTextBlock plainText={plainText} /></div>
+                                <aside className="min-w-0 lg:sticky lg:top-20"><ApplicationReview application={application} checks={exportGate.checks} saved={canUseSavedResume} onDownload={requestDownload} onFix={jumpExportCheck} /></aside>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
+
+            <NotesSheet
+                open={showSideTools}
+                onOpenChange={setShowSideTools}
+                resumeId={id}
+                notes={notes}
+                snapshots={snapshots}
+            />
 
             <ExportChecklistModal
                 open={exportOpen}
                 checks={exportGate.checks}
-                canExport={exportGate.canExport}
+                canExport={exportGate.canExport && canUseSavedResume}
                 format={exportFormat}
                 onClose={() => setExportOpen(false)}
                 onContinue={confirmDownload}
                 onJump={jumpExportCheck}
             />
-
-            {/* Dev-only comparison tool — never ships to users. */}
         </AuthenticatedLayout>
     );
 }

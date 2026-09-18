@@ -1,7 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import {
-    ArrowDownTrayIcon,
-    ArrowPathIcon,
     CheckIcon,
     ChevronDownIcon,
     DocumentDuplicateIcon,
@@ -9,22 +6,28 @@ import {
     ExclamationTriangleIcon,
     ShareIcon,
 } from '@heroicons/react/24/outline';
-import { router, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
-import { buttonClassName } from '@/Components/ui/button';
+import { Card } from '@/Components/ui/card';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu';
 import { Input } from '@/Components/ui/input';
-import { ApplicationChip } from '@/Components/workstation/application-chip';
+import { FileText, History, SlidersHorizontal } from 'lucide-react';
+import { Collapsible, CollapsibleContent } from '@/Components/ui/collapsible';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { TemplatePickerModal } from '@/Components/workstation/template-picker-modal';
 import {
     type PreviewZoom,
-    WorkstationFormatToolbar,
-    type WorkstationTab,
 } from '@/Components/workstation/workstation-format-toolbar';
+import { ApplicationAppearanceToolbar } from './application-appearance-toolbar';
 import type { ContactErrors } from '@/hooks/use-valid-contact';
-import { cn } from '@/lib/utils';
 import type {
     LinkedApplication,
     ResumeBulletStyle,
@@ -35,10 +38,7 @@ import type {
     ResumeSkillsLayout,
     ResumeTemplateKey,
     SaveStatus,
-    WorkstationLayoutMode,
 } from '@/types';
-
-export type { WorkstationTab } from '@/Components/workstation/workstation-format-toolbar';
 
 export type HeaderVersion = {
     id: number;
@@ -55,8 +55,6 @@ export function WorkstationHeader({
     showSaved,
     contactErrors,
     onFixContact,
-    activeTab,
-    onTabChange,
     template,
     onTemplateChange,
     previewName,
@@ -84,9 +82,6 @@ export function WorkstationHeader({
     sideToolsOpen = false,
     onToggleSideTools,
     application = null,
-    layoutMode,
-    onLayoutModeChange,
-    onOpenOptimize,
 }: {
     resumeId: number;
     title: string;
@@ -111,8 +106,6 @@ export function WorkstationHeader({
     showSaved: boolean;
     contactErrors: ContactErrors;
     onFixContact: () => void;
-    activeTab: WorkstationTab;
-    onTabChange: (tab: WorkstationTab) => void;
     share: ResumeShareLink | null;
     canUndo: boolean;
     canRedo: boolean;
@@ -135,279 +128,61 @@ export function WorkstationHeader({
     sideToolsOpen?: boolean;
     onToggleSideTools?: () => void;
     application?: LinkedApplication | null;
-    layoutMode: WorkstationLayoutMode;
-    onLayoutModeChange: (mode: WorkstationLayoutMode) => void;
-    onOpenOptimize?: () => void;
 }) {
     const [renaming, setRenaming] = useState(false);
     const [duplicating, setDuplicating] = useState(false);
     const [sharing, setSharing] = useState(false);
     const [pickingTemplate, setPickingTemplate] = useState(false);
+    const [formatOpen, setFormatOpen] = useState(false);
+    const saved = saveStatus === 'saved' && !contactErrors.email && !contactErrors.phone;
 
     return (
-        <div
-            className={cn(
-                'overflow-hidden rounded-xl border border-border',
-                'bg-white shadow-xs',
-            )}
-        >
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5 sm:px-4">
-                {/* Left: title · status */}
-                <div className="flex min-w-0 flex-1 items-center gap-2">
-                    {renaming ? (
-                        <Input
-                            autoFocus
-                            defaultValue={title}
-                            aria-label="Resume title"
-                            maxLength={255}
-                            className="h-8 w-48 text-base font-bold sm:w-56"
-                            onKeyDown={(event) => {
-                                if (event.key === 'Enter') {
-                                    event.currentTarget.blur();
-                                }
-                                if (event.key === 'Escape') {
-                                    setRenaming(false);
-                                }
-                            }}
-                            onBlur={(event) => {
-                                onTitleChange(event.currentTarget.value);
-                                setRenaming(false);
-                            }}
-                        />
-                    ) : (
-                        <span
-                            onDoubleClick={() => setRenaming(true)}
-                            title="Double-click to rename"
-                            className="truncate text-base font-bold text-foreground"
-                        >
-                            {title || 'Untitled resume'}
-                        </span>
-                    )}
-
-                    {showSaved && saveStatus === 'saved' && (
-                        <Badge
-                            variant="outline"
-                            className="border-transparent bg-success-subtle text-success"
-                        >
-                            <CheckIcon className="size-3" />
-                            Saved
-                        </Badge>
-                    )}
-                    {saveStatus === 'saving' && (
-                        <Badge
-                            variant="outline"
-                            className="border-transparent bg-muted text-muted-foreground"
-                        >
-                            <ArrowPathIcon className="size-3 animate-spin" />
-                            Saving
-                        </Badge>
-                    )}
-                    {application && <ApplicationChip application={application} />}
-                    {(contactErrors.email !== null || contactErrors.phone !== null) && (
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={onFixContact}
-                            className="h-auto gap-1 rounded-full bg-warning-subtle px-2.5 py-0.5 text-xs font-medium text-warning hover:bg-warning-subtle hover:underline"
-                        >
-                            <ExclamationTriangleIcon className="size-3" />
-                            {contactErrors.email !== null && contactErrors.phone !== null
-                                ? 'Email and phone not saving'
-                                : contactErrors.email !== null
-                                  ? 'Email not saving'
-                                  : 'Phone not saving'}
-                        </Button>
-                    )}
+        <Card className="gap-0 overflow-hidden py-0 shadow-none">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                    {renaming ? <Input autoFocus defaultValue={title} aria-label="Resume title" maxLength={255} className="w-64" onKeyDown={event => {
+                        if (event.key === 'Enter') event.currentTarget.blur();
+                        if (event.key === 'Escape') setRenaming(false);
+                    }} onBlur={event => { onTitleChange(event.currentTarget.value); setRenaming(false); }} /> : <DropdownMenu>
+                        <DropdownMenuTrigger asChild><Button variant="outline" className="max-w-full" disabled={!saved} aria-label="Resume versions"><FileText data-icon="inline-start" /><span className="max-w-52 truncate">{title || 'Untitled resume'}</span><ChevronDownIcon data-icon="inline-end" /></Button></DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="max-h-80 w-72 overflow-y-auto">
+                            <DropdownMenuLabel>Resume versions</DropdownMenuLabel>
+                            {versions.map(version => <DropdownMenuItem key={version.id} onSelect={() => { if (!version.is_current) router.visit(route('resumes.workstation', version.id)); }}><span className="min-w-0 flex-1 truncate">{version.title}</span>{version.is_current && <CheckIcon />}</DropdownMenuItem>)}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem disabled={duplicating || !saved} onSelect={() => { setDuplicating(true); router.post(route('resumes.duplicate', resumeId), undefined, { onFinish: () => setDuplicating(false) }); }}><DocumentDuplicateIcon />{duplicating ? 'Creating copy…' : 'Create a new version'}</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>}
+                    <span role="status" className="text-xs text-muted-foreground">{saveStatus === 'saving' ? 'Saving…' : saveStatus === 'dirty' ? 'Unsaved changes' : saveStatus === 'error' ? 'Save needs attention' : showSaved ? 'All changes saved' : 'Autosave on'}</span>
+                    {(contactErrors.email || contactErrors.phone) && <Button variant="ghost" size="sm" onClick={onFixContact}><ExclamationTriangleIcon data-icon="inline-start" />Fix contact details</Button>}
                 </div>
-
-                {/* Right: share · download · more (version/template demoted) */}
-                <div className="flex flex-1 flex-wrap items-center justify-end gap-2">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setSharing(true)}
-                        className="h-9 rounded-full"
-                    >
-                        <ShareIcon className="size-4" />
-                        Share
-                    </Button>
-
-                    <Menu as="div" className="relative">
-                        <MenuButton className={buttonClassName('default', 'default', 'h-9 rounded-full')}>
-                            <ArrowDownTrayIcon className="size-4" />
-                            Download
-                            <ChevronDownIcon className="size-3.5 opacity-90" />
-                        </MenuButton>
-                        <MenuItems
-                            anchor="bottom end"
-                            className="z-50 w-44 rounded-md border border-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1"
-                        >
-                            <MenuItem>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        onRequestDownload
-                                            ? onRequestDownload('pdf')
-                                            : window.open(
-                                                  route(
-                                                      'resumes.download',
-                                                      resumeId,
-                                                  ),
-                                                  '_blank',
-                                              )
-                                    }
-                                    className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
-                                >
-                                    Download PDF
-                                </button>
-                            </MenuItem>
-                            <MenuItem>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        onRequestDownload
-                                            ? onRequestDownload('docx')
-                                            : window.open(
-                                                  route(
-                                                      'resumes.download-docx',
-                                                      resumeId,
-                                                  ),
-                                                  '_blank',
-                                              )
-                                    }
-                                    className="block w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
-                                >
-                                    Download DOCX
-                                </button>
-                            </MenuItem>
-                        </MenuItems>
-                    </Menu>
-
-                    <Menu as="div" className="relative">
-                        <MenuButton
-                            className={buttonClassName('outline', 'icon', 'rounded-full')}
-                            aria-label="More actions"
-                        >
-                            <EllipsisVerticalIcon className="size-4" />
-                        </MenuButton>
-                        <MenuItems
-                            anchor="bottom end"
-                            className="z-50 max-h-80 w-64 overflow-y-auto rounded-md border border-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1"
-                        >
-                            <MenuItem>
-                                <button
-                                    type="button"
-                                    onClick={() => setRenaming(true)}
-                                    className="w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
-                                >
-                                    Rename this version
-                                </button>
-                            </MenuItem>
-
-                            {versions.length > 0 && (
-                                <>
-                                    <div className="my-1 border-t border-border" />
-                                    <div className="px-2 py-1 text-xs font-semibold text-muted-foreground/70">
-                                        Versions
-                                    </div>
-                                    {versions.map((version) => (
-                                        <MenuItem key={version.id}>
-                                            <a
-                                                href={route(
-                                                    'resumes.workstation',
-                                                    version.id,
-                                                )}
-                                                className={cn(
-                                                    'flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted',
-                                                    version.is_current &&
-                                                        'font-semibold text-primary',
-                                                )}
-                                            >
-                                                <span className="truncate">
-                                                    {version.title}
-                                                </span>
-                                                <span className="ml-2 shrink-0 tabular-nums text-xs text-muted-foreground/70">
-                                                    {version.score}
-                                                </span>
-                                            </a>
-                                        </MenuItem>
-                                    ))}
-                                </>
-                            )}
-
-                            <div className="my-1 border-t border-border" />
-                            <MenuItem>
-                                <button
-                                    type="button"
-                                    disabled={duplicating}
-                                    onClick={() => {
-                                        setDuplicating(true);
-                                        router.post(
-                                            route('resumes.duplicate', resumeId),
-                                            undefined,
-                                            { onFinish: () => setDuplicating(false) },
-                                        );
-                                    }}
-                                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted disabled:opacity-50"
-                                >
-                                    {duplicating ? (
-                                        <ArrowPathIcon className="size-4 animate-spin" />
-                                    ) : (
-                                        <DocumentDuplicateIcon className="size-4" />
-                                    )}
-                                    New version
-                                </button>
-                            </MenuItem>
-
-                            {onToggleSideTools && (
-                                <>
-                                    <div className="my-1 border-t border-border" />
-                                    <MenuItem>
-                                        <button
-                                            type="button"
-                                            onClick={onToggleSideTools}
-                                            className="w-full rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
-                                        >
-                                            {sideToolsOpen
-                                                ? 'Hide notes & checkpoints'
-                                                : 'Notes & checkpoints'}
-                                        </button>
-                                    </MenuItem>
-                                </>
-                            )}
-                        </MenuItems>
-                    </Menu>
+                <div className="flex flex-wrap items-center gap-2">
+                    <Button variant="ghost" size="sm" aria-expanded={formatOpen} aria-controls="resume-appearance" onClick={() => setFormatOpen(open => !open)}><SlidersHorizontal data-icon="inline-start" />Appearance</Button>
+                    {onToggleSideTools && <Button variant="ghost" size="sm" aria-expanded={sideToolsOpen} onClick={onToggleSideTools}><History data-icon="inline-start" />Notes & history</Button>}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="More resume actions"><EllipsisVerticalIcon /></Button></DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onSelect={() => setRenaming(true)}>Rename this version</DropdownMenuItem>
+                            <DropdownMenuItem disabled={!saved} onSelect={() => setSharing(true)}><ShareIcon />Share resume</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem disabled={!saved} onSelect={() => onRequestDownload?.('pdf')}>Download PDF</DropdownMenuItem>
+                            <DropdownMenuItem disabled={!saved} onSelect={() => onRequestDownload?.('docx')}>Download DOCX</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
-
-            <WorkstationFormatToolbar
-                canUndo={canUndo}
-                canRedo={canRedo}
-                onUndo={onUndo}
-                onRedo={onRedo}
-                template={template}
-                onTemplateClick={() => setPickingTemplate(true)}
-                font={font}
-                onFontChange={onFontChange}
-                density={density}
-                onDensityChange={onDensityChange}
-                bulletStyle={bulletStyle}
-                onBulletStyleChange={onBulletStyleChange}
-                skillsLayout={skillsLayout}
-                onSkillsLayoutChange={onSkillsLayoutChange}
-                pageEstimateDraft={pageEstimateDraft}
-                zoom={zoom}
-                onZoomChange={onZoomChange}
-                reviewActive={layoutMode !== 'tabs' || activeTab === 'Edit'}
-                activeTab={activeTab}
-                onTabChange={onTabChange}
-                reviewPreviewMode={reviewPreviewMode}
-                onReviewPreviewModeChange={onReviewPreviewModeChange}
-                layoutMode={layoutMode}
-                onLayoutModeChange={onLayoutModeChange}
-                onOpenOptimize={onOpenOptimize}
-            />
+            <Collapsible open={formatOpen} onOpenChange={setFormatOpen}>
+                <CollapsibleContent id="resume-appearance">
+                    <ApplicationAppearanceToolbar
+                        canUndo={canUndo} canRedo={canRedo} onUndo={onUndo} onRedo={onRedo}
+                        template={template} onTemplateClick={() => setPickingTemplate(true)}
+                        font={font} onFontChange={onFontChange} density={density} onDensityChange={onDensityChange}
+                        bulletStyle={bulletStyle} onBulletStyleChange={onBulletStyleChange}
+                        skillsLayout={skillsLayout} onSkillsLayoutChange={onSkillsLayoutChange}
+                        pageEstimateDraft={pageEstimateDraft} zoom={zoom} onZoomChange={onZoomChange}
+                        reviewPreviewMode={reviewPreviewMode} onReviewPreviewModeChange={onReviewPreviewModeChange}
+                    />
+                </CollapsibleContent>
+            </Collapsible>
 
             <TemplatePickerModal
                 open={pickingTemplate}
@@ -424,6 +199,6 @@ export function WorkstationHeader({
                 resumeId={resumeId}
                 share={share}
             />
-        </div>
+        </Card>
     );
 }

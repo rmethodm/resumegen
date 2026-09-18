@@ -392,6 +392,8 @@ class ResumeController extends Controller
                 'company' => $application->company,
                 'role' => $application->role,
                 'status' => $application->status,
+                'job_url' => $application->job_url,
+                'job_description' => $application->job_description,
             ],
             'analysis' => [
                 'score' => ResumeAnalysis::score($resume),

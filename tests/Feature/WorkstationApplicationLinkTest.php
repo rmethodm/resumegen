@@ -21,6 +21,8 @@ class WorkstationApplicationLinkTest extends TestCase
             'company' => 'Linear',
             'role' => 'PM',
             'status' => 'applied',
+            'job_url' => 'https://example.com/jobs/pm',
+            'job_description' => 'Own the product roadmap.',
         ]);
 
         $this->actingAs($user)
@@ -30,7 +32,9 @@ class WorkstationApplicationLinkTest extends TestCase
                 ->where('application.id', $application->id)
                 ->where('application.company', 'Linear')
                 ->where('application.role', 'PM')
-                ->where('application.status', 'applied'));
+                ->where('application.status', 'applied')
+                ->where('application.job_url', 'https://example.com/jobs/pm')
+                ->where('application.job_description', 'Own the product roadmap.'));
     }
 
     public function test_workstation_application_is_null_when_unlinked(): void

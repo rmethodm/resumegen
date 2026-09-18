@@ -42,6 +42,15 @@ describe('AiCritiquePanel', () => {
         expect(screen.getByRole('button', { name: /run critique/i })).toBeInTheDocument();
     });
 
+    it('does not spend credits on a stale saved document', () => {
+        const fetchSpy = vi.spyOn(globalThis, 'fetch');
+        render(<AiCritiquePanel {...baseProps} saveReady={false} credits={{ balance: 3, subscribed: true, canPurchase: true }} />);
+        const button = screen.getByRole('button', { name: /run critique/i });
+        expect(button).toBeDisabled();
+        fireEvent.click(button);
+        expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
     it('runs a critique and renders results grouped by severity', async () => {
         globalThis.fetch = vi.fn().mockResolvedValue({
             ok: true,

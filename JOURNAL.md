@@ -5,6 +5,20 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Live workstation redesign
+
+User confirmed applying the job-first direction to the actual editor. Replaced the offset layout and dominant document chrome with contextual heading, visible versions, three stages, collapsible appearance, and a review/export/handoff panel. Retained existing save and editing mechanics. Nine JS tests, eight PHP tests (84 assertions), production build and Pint pass; browser checked the existing Picard resume on desktop/mobile without changing data.
+
+**Q1 — Least confident:** Long resumes on mobile still require substantial scrolling. Task-based user testing should establish whether a section-at-a-time mobile editor improves completion time.
+
+**Q2 — Assumptions:** Redesign authorizes the workstation surface, not implementation of a new AI editing service or automatic submission tracking. Those limitations are explicit.
+
+**Q3 — Biggest missing piece:** Production review-and-apply proposals and immutable submitted-resume records remain necessary to complete the broader agreed workflow.
+
+**Q4 — Session improvement:** Inspecting the actual desktop viewport caught the stacked-preview breakpoint issue; it was corrected before handoff.
+
+**Q5 — Suggested improvement:** Validate the new preparation flow with a real job, then implement structured AI proposals and submission snapshots as separately tested backend changes.
+
 ## 2026-09-18 — Connected application walkthrough
 
 Built the approved job-first flow as an isolated shadcn prototype, retaining all earlier concepts. Four targeted logic tests, TypeScript and Vite pass; desktop/mobile browser checks cover the complete preparation-to-tracking journey. No PLAN checkboxes changed.

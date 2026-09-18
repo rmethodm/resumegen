@@ -17,6 +17,7 @@ export function OptimizePanel({
     aiCredits,
     onJump,
     children,
+    saveReady = true,
 }: {
     draft: ResumeDraft;
     onChange: (draft: ResumeDraft) => void;
@@ -24,6 +25,7 @@ export function OptimizePanel({
     aiCredits: AiCredits | null;
     onJump: (section: ResumeSectionKey) => void;
     children?: ReactNode;
+    saveReady?: boolean;
 }) {
     const jd = draft.target_job_description ?? '';
 
@@ -34,6 +36,7 @@ export function OptimizePanel({
             <OptimizeChecklist draft={draft} onJump={onJump} />
 
             <AiCritiquePanel
+                saveReady={saveReady}
                 resumeId={resumeId}
                 jd={jd}
                 initialSuggestions={draft.ai_review ?? null}

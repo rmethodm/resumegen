@@ -208,6 +208,8 @@ export interface ResumeOption {
 }
 
 export interface LinkedApplication {
+    job_url?: string | null;
+    job_description?: string | null;
     id: number;
     company: string;
     role: string;
