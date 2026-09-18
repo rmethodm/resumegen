@@ -621,6 +621,7 @@ function App() {
                 <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-3">
                         <Badge variant="outline">Design preview</Badge>
+                        <Button variant="outline" size="sm" asChild><a href="./application-flow.html">Job-first walkthrough<ArrowRight /></a></Button>
                         <Button variant="ghost" size="sm" asChild>
                             <a href="./round-two.html">
                                 Six new concepts

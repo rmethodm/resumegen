@@ -5,6 +5,20 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Connected application walkthrough
+
+Built the approved job-first flow as an isolated shadcn prototype, retaining all earlier concepts. Four targeted logic tests, TypeScript and Vite pass; desktop/mobile browser checks cover the complete preparation-to-tracking journey. No PLAN checkboxes changed.
+
+**Q1 — Least confident:** Whether requirements should remain beside the editor or move into a collapsible panel at intermediate widths. A timed prepare-and-submit usability exercise would resolve this.
+
+**Q2 — Assumptions:** Continue means refine the mockup direction, not deploy backend changes. Used session-only state and fictional AI proposals, with an explicit simulated employer handoff for sample jobs.
+
+**Q3 — Biggest missing piece:** Production import identity/deduplication, actual credit cost/reservation, and extension association with the correct tailored document still need integration work.
+
+**Q4 — Session improvement:** A single connected walkthrough now makes the decisions easier to evaluate than another unrelated layout set.
+
+**Q5 — Suggested improvement:** Test one manual and one assisted application with users before integrating. Preserve job snapshots, independent bases, stale-proposal guards, and explicit submission confirmation.
+
 ## 2026-09-18 — Six more workstation concepts
 
 Added a second linked preview round with six distinct job-matching and potential premium workflows, preserving the original five. Verified the source-based matching logic with five focused tests; TypeScript and the two-entry Vite build pass. Browser checks cover each layout, version isolation, add-job flow, evidence matrix/filtering, edit acceptance and rollback, stage changes, preparation, checklist invalidation, text review, export, and mobile overflow. PLAN/NOTES/README updated; no checkboxes changed.

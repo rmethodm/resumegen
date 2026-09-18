@@ -1,8 +1,10 @@
 # Resumegen
 
+The connected job-first walkthrough is at `/workstation-concepts/application-flow.html` after the preview build below. Try choosing a job and base resume, manual editing or sample AI review-and-apply, then confirming submission and tracking it in Applications. It is an isolated, session-only prototype; no real AI credits, employer submission, importer, or extension integration.
+
 Five interactive workstation design concepts are available locally at `/workstation-concepts/index.html` after running `npx vite build --config resources/js/shadcn-demo/workstation-concepts/vite.config.ts`. They use fictional, session-only data and existing shadcn components. Switch layouts using the top tabs; try version copying and checkpoint restoration. This isolated preview does not replace the live editor.
 
-A second round adds six concepts at `/workstation-concepts/round-two.html` for job matching and possible membership value: an opportunity desk, match matrix, application room, tailoring review, opportunity board, and submission studio. The same build command generates both rounds. Matching uses sample requirement phrases and shows resume evidence; proposed edits, saved jobs, notes, and checkpoints stay in the preview session. Export downloads a text application brief. No job feed, AI service, billing, or production data is connected.
+A second round adds six concepts at `/workstation-concepts/round-two.html` for job matching and possible membership value: an opportunity desk, match matrix, application room, tailoring review, opportunity board, and submission studio. The same build command generates both rounds and the connected walkthrough. Matching uses sample requirement phrases and shows resume evidence; proposed edits, saved jobs, notes, and checkpoints stay in the preview session. Export downloads a text application brief. No job feed, AI service, billing, or production data is connected.
 
 The standalone `/shadcn` editor demo defaults to a Warm Cream theme with white panels, a cream sidebar, and soft rounded controls. Other palettes remain available in its Theme selector. Its standard shadcn sidebar groups workspace and settings navigation, with an account footer; navigation destinations are demo dialogs.
 

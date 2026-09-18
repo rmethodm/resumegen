@@ -782,6 +782,7 @@ function App() {
                             Fictional jobs · session-only preview
                         </span>
                     </div>
+                    <Button variant="outline" size="sm" asChild><a href="./application-flow.html">Job-first walkthrough<ArrowRight /></a></Button>
                     <Button variant="ghost" size="sm" asChild>
                         <a href="./index.html">
                             <ArrowLeft />

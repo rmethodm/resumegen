@@ -12,6 +12,7 @@ export default defineConfig({
             input: {
                 original: path.resolve(import.meta.dirname, "index.html"),
                 roundTwo: path.resolve(import.meta.dirname, "round-two.html"),
+                applicationFlow: path.resolve(import.meta.dirname, "application-flow.html"),
             },
         },
         outDir: path.resolve(
