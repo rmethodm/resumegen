@@ -708,7 +708,7 @@ export default function Workstation({
                         'pr-[max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
-                    <div className="mx-auto max-w-[1944px]">
+                    <div className="mx-auto max-w-6xl">
                         <WorkstationHeader
                             resumeId={id}
                             application={application}
@@ -797,7 +797,7 @@ export default function Workstation({
                         'pr-[max(0.75rem,env(safe-area-inset-right))]',
                     )}
                 >
-                    <div className="mx-auto flex w-full max-w-[1944px] flex-col gap-4">
+                    <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
                         <div className="flex flex-col gap-6">
                             <div className="flex min-w-0 flex-1 flex-col gap-5">
                                 {layoutMode === 'tabs' && tab === 'Optimize' && (
