@@ -139,3 +139,7 @@ re-derive. Timeless reference + the reasoning behind decisions.
 - Rejected approach: eager and lazy globs in the same app module disrupted production chunk/manifest entries; server tests caught it. Separate dev-only module restored production Wizard manifest entry.
 - Skip navigation now runs only after successful preference save; errors retain inputs, and pending controls are disabled. Mounted React tests cover navigation, input preservation, and successful/failed skip.
 - Final checks: 471 Laravel tests (2,112 assertions), 51 JS tests, build/Pint passed; actual dev cold optimization + HMR preserved step/inputs; built wizard rendered from one app script. Original historic error cannot be replayed from logs alone; no invalid-hook error recurred in these checks. Temporary server stopped; original built-assets setup restored.
+
+### Shadcn Warm Cream theme (2026-09-18)
+- `/shadcn` defaults to Warm Cream, derived visually from the light background interface in the supplied screenshot. Exact source font/color values were not supplied.
+- CSS stays in the demo stylesheet. Selected theme tokens also reach the document root so portaled dialogs and menus match; effect cleanup restores previous values. Existing theme options remain available.

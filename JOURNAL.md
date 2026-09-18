@@ -5,6 +5,16 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Warm Cream shadcn demo
+
+Applied the light screenshot reference to the standalone demo using semantic tokens and scoped component styling. Preserved existing unrelated working changes. Build passed; browser checks verified cream/midnight switching, white dialog surface, no page errors, and no document overflow at mobile width. PLAN status, NOTES, and README updated; no checkboxes changed.
+
+**Q1 — Least confident:** Exact source colors and typeface are approximate; side-by-side user review would resolve those visual preferences.
+
+**Q5 — Suggested improvement:** Keep Warm Cream as a reusable theme preset so future demo components inherit consistent surfaces.
+
+Commit and push: to be attempted as the final shutdown step, staging only this task’s changes.
+
 ## 2026-09-15 — Wizard runtime verification
 
 **Did:** Tested actual Vite development assets, reproduced and fixed Vitest deleting public/hot, made the HTML use a single app entry with a development-only eager resolver, and fixed failed Skip navigation. Full suite: 471 Laravel (2,112 assertions), 51 JS; build/Pint passed. Cold development startup, hot reload and test execution preserved wizard state. Restored built-assets mode and stopped the temporary server.

@@ -1,5 +1,7 @@
 # Resumegen
 
+The standalone `/shadcn` editor demo defaults to a Warm Cream theme with white panels, a cream sidebar, and soft rounded controls. Other palettes remain available in its Theme selector.
+
 Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create and share resumes. The app also includes a Sanctum API used by the browser extension and the iPhone/iPad apps.
 
 ## Current Status

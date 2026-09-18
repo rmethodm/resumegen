@@ -96,7 +96,7 @@ export default function App() {
     const [autoSave, setAutoSave] = useState(true);
     const [pageSize, setPageSize] = useState<'letter' | 'a4'>('letter');
     const [previewLoading, setPreviewLoading] = useState(true);
-    const [theme, setTheme] = useState<ThemeId>('neutral');
+    const [theme, setTheme] = useState<ThemeId>('cream');
 
     const themeStyle = useMemo(() => {
         const vars = THEMES.find((t) => t.id === theme)?.vars ?? THEMES[0].vars;
@@ -104,6 +104,19 @@ export default function App() {
             Object.entries(vars).map(([key, value]) => [`--${key}`, value]),
         ) as CSSProperties;
     }, [theme]);
+
+    useEffect(() => {
+        const root = document.documentElement;
+        const previousTheme = root.dataset.demoTheme;
+        const previous = Object.keys(themeStyle).map((key) => [key, root.style.getPropertyValue(key)]);
+        root.dataset.demoTheme = theme;
+        Object.entries(themeStyle).forEach(([key, value]) => root.style.setProperty(key, String(value)));
+        return () => {
+            previous.forEach(([key, value]) => value ? root.style.setProperty(key, value) : root.style.removeProperty(key));
+            if (previousTheme) root.dataset.demoTheme = previousTheme;
+            else delete root.dataset.demoTheme;
+        };
+    }, [theme, themeStyle]);
 
     useEffect(() => {
         const timer = window.setTimeout(() => setPreviewLoading(false), 600);

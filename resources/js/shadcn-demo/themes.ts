@@ -1,4 +1,5 @@
 export type ThemeId =
+    | 'cream'
     | 'neutral'
     | 'slate'
     | 'zinc'
@@ -82,6 +83,23 @@ function lightTheme({
 }
 
 export const THEMES: { id: ThemeId; label: string; vars: ThemeVars }[] = [
+    {
+        id: 'cream',
+        label: 'Warm Cream',
+        vars: {
+            ...lightTheme({ primary: '#20201f', accent: '#eeece8' }),
+            background: '#ffffff',
+            foreground: '#292826',
+            'card-foreground': '#292826',
+            'popover-foreground': '#292826',
+            secondary: '#f3f2ef',
+            muted: '#f7f6f3',
+            'muted-foreground': '#73716c',
+            border: '#e7e5e0',
+            input: '#e3e1dc',
+            ring: '#8b8880',
+        },
+    },
     {
         id: 'neutral',
         label: 'Neutral',
