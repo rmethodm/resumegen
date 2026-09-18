@@ -5,6 +5,14 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Five workstation concepts
+
+Inspected current workstation, header, resume model/controller/types, and live UI. Built five isolated shadcn layouts with an interactive selector and independent version fixtures. TypeScript and isolated build pass; browser checks covered all directions, version copy/edit isolation, checkpoint restore, guided navigation, filtering, review/keyword modes and mobile behavior. No PLAN checkboxes changed. README and NOTES updated.
+
+**Q1 — Least confident:** Which navigation model feels easiest in daily use. User selection and testing with a larger version group would resolve this. These are mockups, not backend-integrated replacements.
+
+**Q5 — Suggested improvement:** Choose the navigation model first, then integrate the existing autosave, real versions and PDF/DOCX export into that one direction. Earlier automatic approval review still blocks pushing unrelated local commits without user approval.
+
 ## 2026-09-18 — Remove demo navbar
 
 Removed the top navbar and retained a mobile sidebar trigger in the content area. PLAN and NOTES updated; no checkbox or README changes.

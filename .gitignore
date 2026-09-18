@@ -58,3 +58,6 @@ docs/UNFORGET-archive-*.md
 .unforget.json
 docs/.unforget.json
 .worktrees/
+
+# Generated isolated workstation mockups
+/public/workstation-concepts/

@@ -1,5 +1,7 @@
 # Resumegen
 
+Five interactive workstation design concepts are available locally at `/workstation-concepts/index.html` after running `npx vite build --config resources/js/shadcn-demo/workstation-concepts/vite.config.ts`. They use fictional, session-only data and existing shadcn components. Switch layouts using the top tabs; try version copying and checkpoint restoration. This isolated preview does not replace the live editor.
+
 The standalone `/shadcn` editor demo defaults to a Warm Cream theme with white panels, a cream sidebar, and soft rounded controls. Other palettes remain available in its Theme selector. Its standard shadcn sidebar groups workspace and settings navigation, with an account footer; navigation destinations are demo dialogs.
 
 Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps users create and share resumes. The app also includes a Sanctum API used by the browser extension and the iPhone/iPad apps.

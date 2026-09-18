@@ -153,3 +153,12 @@ re-derive. Timeless reference + the reasoning behind decisions.
 - Shadcn demo workspace frame is flush against the sidebar (2026-09-18 user feedback); internal cards retain their existing corners.
 
 - Removed the standalone demo top navbar per screenshot request (2026-09-18). Mobile navigation remains accessible through a content-area sidebar trigger; Cmd/Ctrl K still opens quick actions.
+
+### Workstation design exploration (2026-09-18)
+- Five isolated mockups use existing shadcn components and fictional fixtures; no production data or API mutations. Source: `resources/js/shadcn-demo/workstation-concepts`. Generated output is ignored.
+- Current controller models versions as sibling resumes within a group; checkpoints are per-version snapshots. Concepts expose those as separate actions.
+- Research: official shadcn sidebar registry (file-tree/sidebar-11, sticky-header/sidebar-16), Command, and Sheet docs; community shadcn.io file-tree search result considered. No external blocks or dependencies installed.
+- Independent build: `npx vite build --config resources/js/shadcn-demo/workstation-concepts/vite.config.ts`. Shared CSS explicitly scans installed UI components so isolated builds include their styles.
+- Mock export is plain text; Share describes the proposed scope without publishing. Checkpoints and edits reset on reload. Comparison marks changed summary/experience blocks, not word-level diffs.
+- Validation: TypeScript and isolated Vite build passed; browser checked all layouts, copy isolation, checkpoint restore, guided section navigation, library filter/switch, keyword display, review mode, mobile sidebar dismissal and comparison overflow. No browser warnings/errors observed.
+- Historical PLAN/context claims that apply flow is unstarted are stale relative to the current controller/workstation. No unrelated staged changes included.

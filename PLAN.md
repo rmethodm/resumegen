@@ -5,6 +5,7 @@ Live at **<url>** · Repo: **<repo>**
 ---
 
 ## Status
+- **Workstation concepts (2026-09-18):** Five isolated shadcn mockups at `/workstation-concepts/index.html`: version rail, quiet workspace, guided editor, comparison, and version library. Session-only fictional data; switch/copy/edit/checkpoint restore and desktop/mobile layouts checked. Next: user chooses a direction; no live editor integration. TypeScript and isolated Vite build pass. Existing staged work is outside this task.
 - **Demo navbar removed (2026-09-18):** Removed the top brand/navigation/quick-actions bar as requested. Mobile sidebar trigger remains in the content area; keyboard quick actions remain available. Next: visual review.
 - **Flush workspace frame (2026-09-18):** Removed the cream theme’s rounded outer content frame, margin, border and shadow so the main area meets the standard sidebar directly. Next: visual review.
 - **Standard sidebar (2026-09-18):** Replaced custom reference styling with standard shadcn groups, submenu, workspace header, and account footer. Next: user visual review. Earlier reference-sidebar styling is superseded; push approval remains pending.
