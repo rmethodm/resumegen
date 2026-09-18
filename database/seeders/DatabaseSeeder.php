@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(ScifiCharacterResumeSeeder::class);
+        $this->call(StarTrekJobsSeeder::class);
         $this->call(SampleSharesSeeder::class);
         $this->call(TestAnalyticsDataSeeder::class);
         $this->call(FakeAiResponseSeeder::class);
