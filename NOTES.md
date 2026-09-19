@@ -7,6 +7,11 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 ## Design decisions (locked)
 
+### Editing workspace exploration (2026-09-18)
+- User requested mockups replacing the form-side preview with useful job guidance and reducing the sidebar gap. Three isolated layouts use existing shadcn controls, a 16px content inset, and fictional session-only data. Live workstation unchanged.
+- Sample AI rewrites are prewritten, not model output. Base and tailored versions maintain independent state. No credits or application submissions occur.
+- Earlier editor-design skill requirements for a mandatory Edit preview are superseded by this explicit user request.
+
 ### Admin access = app-layer hardening on subdomain (locked 2026-08-25; superseded — panel removed 2026-09-02)
 - Historical only: the Inertia admin on `APP_ADMIN_DOMAIN` with admin 2FA / idle / destructive-tools gates was removed 2026-09-02 (`users.is_admin` and admin tables dropped). Do not reintroduce an admin surface without asking. See CLAUDE.md "Admin Panel — removed".
 

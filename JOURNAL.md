@@ -5,6 +5,16 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-18 — Editing workspace mockups
+
+Built three isolated shadcn layouts to replace the form-side preview with actionable job context. Verified desktop variants, sample acceptance reflected in Review, mobile drawer, TypeScript, and isolated build.
+
+**Q1 — Least confident:** Whether users prefer scanning the complete form or one section at a time. Compare completion time on the same tailoring task.
+**Q2 — Assumptions:** Used fictional product-design content and three directions for comparison.
+**Q3 — Missing:** Contextual AI still needs production implementation; this is a visual exploration.
+**Q4 — Improve process:** Keep layout experiments isolated while other work changes the application.
+**Q5 — Recommendation:** Pick a layout, then validate with a real job and resume before integrating.
+
 ## 2026-09-18 — Live workstation redesign
 
 User confirmed applying the job-first direction to the actual editor. Replaced the offset layout and dominant document chrome with contextual heading, visible versions, three stages, collapsible appearance, and a review/export/handoff panel. Retained existing save and editing mechanics. Nine JS tests, eight PHP tests (84 assertions), production build and Pint pass; browser checked the existing Picard resume on desktop/mobile without changing data.

@@ -10,6 +10,7 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
+                guidance: path.resolve(import.meta.dirname, "guidance.html"),
                 original: path.resolve(import.meta.dirname, "index.html"),
                 roundTwo: path.resolve(import.meta.dirname, "round-two.html"),
                 applicationFlow: path.resolve(import.meta.dirname, "application-flow.html"),
