@@ -1,5 +1,7 @@
 # Resumegen
 
+Five interactive dashboard directions are at `/workstation-concepts/dashboards.html` after the workstation-concepts Vite build: Today’s desk, Opportunity explorer, Command center, Weekly planner, and One next step. Switch with the top tabs and try sample job search, notes, bookmarks, and manual entry. The live dashboard is unchanged.
+
 Three editing-workspace mockups are at `/workstation-concepts/guidance.html` after the workstation-concepts Vite build. Compare contextual guidance, requirement-led editing, and a section-at-a-time editor. They use fictional session-only data and leave the actual workstation unchanged.
 
 The live workstation now follows **Edit resume → Job fit → Review & apply**. Version switching, appearance controls, notes/checkpoints, PDF/DOCX export, and the employer-site/tracker handoff are grouped around application preparation. AI currently offers critique; automated edit proposals and submitted-document snapshots are not yet integrated.

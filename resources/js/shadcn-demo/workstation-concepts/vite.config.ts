@@ -10,6 +10,7 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
+                dashboards: path.resolve(import.meta.dirname, "dashboards.html"),
                 guidance: path.resolve(import.meta.dirname, "guidance.html"),
                 original: path.resolve(import.meta.dirname, "index.html"),
                 roundTwo: path.resolve(import.meta.dirname, "round-two.html"),

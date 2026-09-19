@@ -7,6 +7,10 @@ re-derive. Timeless reference + the reasoning behind decisions.
 
 ## Design decisions (locked)
 
+### Dashboard mockups (2026-09-19)
+- Five distinct information hierarchies explore action-first, discovery-first, pipeline-first, calendar-first, and single-next-step dashboards. Existing shadcn primitives and the isolated preview build are reused.
+- Data, salaries, requirements, and dates are fictional fixtures. Sample explanations are not computed job-match scores. Search, notes, bookmarks, and sample job creation affect this page session only. No new dependencies or live dashboard changes.
+
 ### Editing workspace exploration (2026-09-18)
 - User requested mockups replacing the form-side preview with useful job guidance and reducing the sidebar gap. Three isolated layouts use existing shadcn controls, a 16px content inset, and fictional session-only data. Live workstation unchanged.
 - Sample AI rewrites are prewritten, not model output. Base and tailored versions maintain independent state. No credits or application submissions occur.

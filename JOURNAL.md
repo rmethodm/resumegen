@@ -5,6 +5,16 @@ not current state. One entry per session: the shutdown debrief.
 
 ---
 
+## 2026-09-19 — Five dashboard directions
+
+Built five isolated shadcn dashboard mockups around the approved job-first flow. Verified all layouts visually, search/bookmark behavior, planner notes flowing into opportunity details, manual job creation in Saved, and mobile document widths. TypeScript and isolated build passed; browser console clean.
+
+**Q1 — Least confident:** Which information hierarchy suits users across search stages. Test an early search and an interview-heavy search with the preferred layout.
+**Q2 — Assumptions:** Fictional product-design roles and a fixed September sample week keep comparisons consistent.
+**Q3 — Missing:** Real feed ranking and scheduling integrations are outside these mockups.
+**Q4 — Improve process:** Compare whole layouts before integrating isolated widgets.
+**Q5 — Recommendation:** Select a primary dashboard direction and validate the first three actions users expect to take.
+
 ## 2026-09-18 — Editing workspace mockups
 
 Built three isolated shadcn layouts to replace the form-side preview with actionable job context. Verified desktop variants, sample acceptance reflected in Review, mobile drawer, TypeScript, and isolated build.
