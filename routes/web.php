@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\TwoFactorRecoveryCodesController;
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DevResetController;
 use App\Http\Controllers\ExtensionConnectController;
 use App\Http\Controllers\ExtensionTokenController;
 use App\Http\Controllers\JobApplicationController;
@@ -38,6 +39,12 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', WelcomeController::class);
+
+// Destructive: wipes every row except the test account's login. Never
+// registered outside local development.
+if (app()->isLocal()) {
+    Route::get('/reset', DevResetController::class)->name('dev.reset');
+}
 
 Route::view('/shadcn', 'shadcn-demo')->name('shadcn.demo');
 
