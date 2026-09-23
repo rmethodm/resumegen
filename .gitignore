@@ -61,3 +61,7 @@ docs/.unforget.json
 
 # Generated isolated workstation mockups
 /public/workstation-concepts/
+
+# dependency-auditor skill fixtures: intentionally vulnerable manifests (trip Dependabot)
+/.claude/skills/dependency-auditor/test-project/
+/.claude/skills/dependency-auditor/assets/sample_requirements.txt
