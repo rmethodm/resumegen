@@ -1,95 +1,23 @@
-<!-- dgc-policy-v1 -->
-# Dual-Graph Context Policy
-
-This project uses a local dual-graph MCP server (graperoot-pro) for efficient,
-budget-aware context retrieval. Always prefer it over native file exploration.
-
-## MANDATORY: Always follow this order
-
-1. **Call `graph_continue` first** -- before any file exploration, grep, or code reading.
-
-2. **If `graph_continue` returns `needs_project=true`**: call `graph_scan` with the
-   current project directory (`pwd`). Do NOT ask the user.
-
-3. **If `graph_continue` returns `skip=true`**: project is too small for the graph to
-   help. Skip all graph tools and explore normally.
-
-4. **Read `recommended_files`** using `graph_read` -- one call per file.
-   - `recommended_files` may contain `file::symbol` entries (e.g. `src/auth.ts::handleLogin`).
-     Pass them verbatim to `graph_read(file: "src/auth.ts::handleLogin")` -- it reads only
-     that symbol's lines, not the full file.
-
-5. **Check `confidence` and obey the caps strictly:**
-   - `confidence=high` -> Stop. Do NOT grep or explore further.
-   - `confidence=medium` -> If recommended files are insufficient, call `fallback_rg`
-     at most `max_supplementary_greps` time(s) with specific terms, then `graph_read`
-     at most `max_supplementary_files` additional file(s). Then stop.
-   - `confidence=low` -> Call `fallback_rg` at most `max_supplementary_greps` time(s),
-     then `graph_read` at most `max_supplementary_files` file(s). Then stop.
-
-## Exhaustive enumeration tasks
-
-Some tasks require scanning **every file** -- e.g. "find all dead exports", "list every
-.find() without a limit", "audit all test files". Use these tools first:
-
-- **`graph_dead_exports()`** -- pre-computed at scan time. Use for any dead-export task.
-- **`graph_grep_all(pattern, file_glob?, max_hits?)`** -- exhaustive grep, no call cap.
-
-## Rules
-
-- Do NOT use `rg`, `grep`, or bash file exploration before calling `graph_continue`.
-- Do NOT do broad/recursive exploration at any confidence level.
-- After edits, call `graph_register_edit(files: ["path/to/file"])`. The parameter is
-  `files` (plural, always an array). Use `file::symbol` notation when the edit targets
-  a specific function, class, or hook.
-<!-- /dgc-policy-v1 -->
-
----
-
 # CLAUDE.md
+
+Dual-graph (graperoot-pro) context policy is inherited from the parent `Herd/CLAUDE.md` — not repeated here.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 These rules apply to every task in this project unless explicitly overridden.
 Bias: caution over speed on non-trivial work.
 
-## Rule 1 — Think Before Coding
-State assumptions explicitly. Ask rather than guess.
-Push back when a simpler approach exists. Stop when confused.
-If something is unclear, ask before writing a single line. Never 
-make silent assumptions about intent, architecture, or requirements.
-
-## Rule 2 — Simplicity First
-Minimum code that solves the problem. Nothing speculative.
-No abstractions for single-use code. Simplest solution first. 
-Always implement the simplest thing that could work. Do not 
-add abstractions or flexibility that weren't explicitly requested.
-
-## Rule 3 — Surgical Changes
-Touch only what you must. Don't improve adjacent code.
-Match existing style. Don't refactor what isn't broken.
-Don't touch unrelated code. If a file or function is 
-not directly part of the current task, do not modify it, 
-even if you think it could be improved.
-
-## Rule 4 — Goal-Driven Execution
-Define success criteria. Loop until verified.
-Strong success criteria let Claude loop independently.
-Flag uncertainty explicitly. If you are not confident 
-about an approach or technical detail, say so before 
-proceeding. Confidence without certainty causes more 
-damage than admitting a gap.
+## Rules 1–4 — Think first, keep it simple, stay surgical, verify
+Follow sections 1–4 of the global `~/.claude/CLAUDE.md` (think before coding, simplicity first, surgical changes, goal-driven execution). Ask when intent, architecture, or requirements are genuinely unclear; when the request and the code make the answer clear, act. Flag uncertainty about an approach before proceeding.
 
 ## Rule 5 — Use the model only for judgment calls
 Use for: classification, drafting, summarization, extraction.
 Do NOT use for: routing, retries, deterministic transforms.
 If code can answer, code answers.
 
-## Rule 6 — Token budgets are not advisory
-Per-task: 4,000 tokens. Per-session: 30,000 tokens.
-Budgets are soft targets, not hard stops — cutting off mid-task leaves things broken.
-At ~80% of a budget, surface it once and ask whether to finish the current step then summarize, or continue.
-Do not silently overrun.
+## Rule 6 — Token budgets
+Per-task: ~4,000 tokens. Per-session: ~30,000 tokens. These are soft targets — cutting off mid-task leaves things broken.
+At ~80% of a budget, mention it once and ask whether to finish the current step and summarize, or continue.
 
 ## Rule 7 — Surface conflicts, don't average them
 If two patterns contradict, pick one (more recent / more tested).
@@ -311,8 +239,7 @@ Last updated: 2026-09-18
 
 Do not report a feature, fix, integration, or deploy as done based on configuration being in place, a clean build, passing tests, or an internal function call. Prove it with a real run:
 
-- **UI features**: launch the actual app (e.g. `npm run tauri dev`) and drive the real UI yourself — click, drag, dispatch. Not the test suite, not an `import` of an internal function with a `console.log`.
-- **UI/layout changes**: open the affected page live in the browser (use the connected Chrome session when the user offers one) and look at the rendered result — never sign off a visual change from code alone. If the user attached a screenshot or reference image, compare the rendered page against it region by region until it matches, and explicitly check desktop widths for alignment drift (desktop top-right misalignment has slipped through before). After styling changes, run Pint on the touched files before the browser check.
+- **UI/layout changes**: the user verifies the live UI themselves — do not drive Chrome or other browser automation for visual checks. Hand off with the exact page/route and what to look at (including desktop widths for alignment drift — desktop top-right misalignment has slipped through before; and, if the user attached a reference image, which regions to compare). Report the change as unverified in the browser until the user confirms. After styling changes, run Pint on the touched files.
 - **Fixes**: after a full kill-and-restart of the app/dev server, re-confirm the fix still holds — not just in the session where it was applied.
 - **Integrations and deploys**: perform the real action (send an actual test email, run an actual deploy) rather than reporting that configuration is correct.
 
