@@ -26,7 +26,7 @@ class StarTrekJobsSeeder extends Seeder
             ...$this->expand(
                 company: 'Klingon Defense Force',
                 urlHost: 'qonos.empire.kli',
-                requirement: "A record of honorable combat, fluency in tlhIngan Hol, and House sponsorship are required; cowardice is grounds for immediate discommendation.",
+                requirement: 'A record of honorable combat, fluency in tlhIngan Hol, and House sponsorship are required; cowardice is grounds for immediate discommendation.',
                 locations: $this->klingonLocations(),
                 roles: $this->klingonRoles(),
             ),
@@ -194,7 +194,7 @@ class StarTrekJobsSeeder extends Seeder
             ['title' => "Nagus's Financial Advisor", 'blurb' => 'Interprets the Rules of Acquisition for the Grand Nagus in real time and structures deals that technically remain within Ferengi law.'],
             ['title' => 'Latinum Auditor', 'blurb' => 'Verifies the purity of gold-pressed latinum reserves and investigates counterfeit slips of strip-mined worthless gold.'],
             ['title' => 'Trade Negotiator', 'blurb' => 'Closes contracts across quadrant borders, exploiting loophole clauses in Federation and Klingon trade law alike.'],
-            ['title' => 'Dabo Floor Manager', 'blurb' => "Oversees dabo tables and holosuite revenue, ensures the house percentage stays favorable, and settles disputes over rigged wheels."],
+            ['title' => 'Dabo Floor Manager', 'blurb' => 'Oversees dabo tables and holosuite revenue, ensures the house percentage stays favorable, and settles disputes over rigged wheels.'],
             ['title' => 'Concessions Manager', 'blurb' => 'Runs bar and lodging concessions on a leased station, balancing rent to the Nagus against margin on every drink and room.'],
             ['title' => 'Acquisitions Broker', 'blurb' => 'Sources rare technology, salvage, and intelligence for resale, operating comfortably in gray markets across three quadrants.'],
         ];
