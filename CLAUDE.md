@@ -1,6 +1,52 @@
-# CLAUDE.md
+<!-- dgc-policy-v1 -->
+# Dual-Graph Context Policy
 
-Dual-graph (graperoot-pro) context policy is inherited from the parent `Herd/CLAUDE.md` — not repeated here.
+This project uses a local dual-graph MCP server (graperoot-pro) for efficient,
+budget-aware context retrieval. Always prefer it over native file exploration.
+
+## MANDATORY: Always follow this order
+
+1. **Call `graph_continue` first** -- before any file exploration, grep, or code reading.
+
+2. **If `graph_continue` returns `needs_project=true`**: call `graph_scan` with the
+   current project directory (`pwd`). Do NOT ask the user.
+
+3. **If `graph_continue` returns `skip=true`**: project is too small for the graph to
+   help. Skip all graph tools and explore normally.
+
+4. **Read `recommended_files`** using `graph_read` -- one call per file.
+   - `recommended_files` may contain `file::symbol` entries (e.g. `src/auth.ts::handleLogin`).
+     Pass them verbatim to `graph_read(file: "src/auth.ts::handleLogin")` -- it reads only
+     that symbol's lines, not the full file.
+
+5. **Check `confidence` and obey the caps strictly:**
+   - `confidence=high` -> Stop. Do NOT grep or explore further.
+   - `confidence=medium` -> If recommended files are insufficient, call `fallback_rg`
+     at most `max_supplementary_greps` time(s) with specific terms, then `graph_read`
+     at most `max_supplementary_files` additional file(s). Then stop.
+   - `confidence=low` -> Call `fallback_rg` at most `max_supplementary_greps` time(s),
+     then `graph_read` at most `max_supplementary_files` file(s). Then stop.
+
+## Exhaustive enumeration tasks
+
+Some tasks require scanning **every file** -- e.g. "find all dead exports", "list every
+.find() without a limit", "audit all test files". Use these tools first:
+
+- **`graph_dead_exports()`** -- pre-computed at scan time. Use for any dead-export task.
+- **`graph_grep_all(pattern, file_glob?, max_hits?)`** -- exhaustive grep, no call cap.
+
+## Rules
+
+- Do NOT use `rg`, `grep`, or bash file exploration before calling `graph_continue`.
+- Do NOT do broad/recursive exploration at any confidence level.
+- After edits, call `graph_register_edit(files: ["path/to/file"])`. The parameter is
+  `files` (plural, always an array). Use `file::symbol` notation when the edit targets
+  a specific function, class, or hook.
+<!-- /dgc-policy-v1 -->
+
+---
+
+# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -15,9 +61,8 @@ Use for: classification, drafting, summarization, extraction.
 Do NOT use for: routing, retries, deterministic transforms.
 If code can answer, code answers.
 
-## Rule 6 — Token budgets
-Per-task: ~4,000 tokens. Per-session: ~30,000 tokens. These are soft targets — cutting off mid-task leaves things broken.
-At ~80% of a budget, mention it once and ask whether to finish the current step and summarize, or continue.
+## Rule 6 — Keep effort proportional
+Match exploration and output to what the task needs. When a task will clearly run long (multi-file work, full audits, large sweeps), say so before starting and ask whether to proceed — never cut off mid-task, which leaves things broken.
 
 ## Rule 7 — Surface conflicts, don't average them
 If two patterns contradict, pick one (more recent / more tested).
@@ -175,7 +220,7 @@ Deleted on 2026-07-14 — code, routes, models, migrations, and tests:
 - **All billing** (see above). Here the create-migrations were kept and a drop migration (`2026_07_14_120000_drop_billing_tables_and_columns`) removes the tables and columns, so both fresh and existing databases converge.
 - **Referral rewards** — `ReferralRewardService` / `ReferralEvent` were already gone before this; the reward was a Stripe credit and has no meaning now.
 - **Job applications tracker** (removed in `93c1c14`) — since **reintroduced** as the Kanban at `/job-applications` (`JobApplicationController` + `JobApplication` model). `application_contacts` and `interview_notes` stayed dropped and are deliberately out of scope. `AnalyticsController` still queries `job_applications` via `DB::table()` for the dashboard's `active_applications` count.
-- **Cover letters** — removed outright on 2026-08-18 (`dd93ee34`): routes, `CoverLetter` model/queries, and the `cover-letters.ai.draft` endpoint. The `cover_letter` key in `AiPrompts` is the only leftover. The "cover letters" on Job Imports are frontend stubs.
+- **Cover letters** — removed outright on 2026-08-18 (`dd93ee34`): routes, `CoverLetter` model/queries, and the `cover-letters.ai.draft` endpoint. The "cover letters" on Job Imports are frontend stubs.
 - **System events** — the `system_events` mail-log table, its `MessageSent` listener, and the Ops dashboard surface are gone; `AppServiceProvider::boot()` now only configures production `URL::forceScheme('https')`, Vite prefetch, and the `share-unlock` rate limiter.
 
 ## Migrations are forward-only — rollback is not supported
@@ -201,7 +246,7 @@ Making rollback work would mean editing seven already-shipped migrations to no b
 - editing `resources/js/**/*.tsx|jsx` → activate `inertia-react-development`
 - editing `app/**/*.php` → activate `laravel-best-practices`
 
-**Why a hook and not a sentence.** A transcript audit on 2026-07-19 counted 83 `Skill` invocations across 122 sessions: `superpowers:*` process skills accounted for ~69%, and **all five project skills had fired exactly zero times** since being added on 2026-07-07 — despite good `description:` frontmatter and despite the Boost block below explicitly saying "IMPORTANT: Activate `inertia-react-development`". Passive description-matching loses against a crowded skill listing and four SessionStart hooks. Same lesson as `block-migrate-rollback.sh` one section up: prose that has already failed once does not get a second chance, it gets teeth.
+**Why a hook and not a sentence.** Description-matching alone never fired these skills in practice — they lose against a crowded skill listing and several SessionStart hooks, even with the Boost block's explicit "Activate" lines. Same approach as `block-migrate-rollback.sh`: a rule that prose has already failed to carry gets enforcement instead.
 
 The hook **nudges, it does not block** — it emits `additionalContext` with `permissionDecision: "defer"`, so the edit is neither blocked nor auto-approved and the normal permission flow is untouched. It fires **once per skill per session** (a `/tmp` marker keyed on `session_id`); re-injecting the same sentence on all 40 edits of a page is how injected context gets tuned out.
 
