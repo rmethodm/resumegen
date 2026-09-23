@@ -1,0 +1,266 @@
+- generic [ref=f2e3]:
+  - link "Skip to content" [ref=f2e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f2e6]:
+    - generic [ref=f2e7]:
+      - link "Resumegen" [ref=f2e8] [cursor=pointer]:
+        - /url: https://resumegen.test/dashboard
+      - navigation [ref=f2e11]:
+        - link "Dashboard" [ref=f2e12] [cursor=pointer]:
+          - /url: https://resumegen.test/dashboard
+        - link "Resumes" [ref=f2e13] [cursor=pointer]:
+          - /url: https://resumegen.test/resumes
+        - link "Shares" [ref=f2e14] [cursor=pointer]:
+          - /url: https://resumegen.test/shares
+        - link "Applications" [ref=f2e15] [cursor=pointer]:
+          - /url: https://resumegen.test/job-applications
+        - link "Profile" [ref=f2e16] [cursor=pointer]:
+          - /url: https://resumegen.test/profile
+      - generic [ref=f2e17]:
+        - button "Open navigation menu" [ref=f2e18]:
+          - generic [ref=f2e19]: Go to…
+        - generic: ⌘K
+      - button "AI Credits Browser" [ref=f2e23]:
+        - generic [aria-hidden] [ref=f2e24]: AC
+  - main [ref=f2e26]:
+    - generic [ref=f2e27]:
+      - generic [ref=f2e30]:
+        - generic [ref=f2e31]:
+          - generic [ref=f2e32]: AI Credits Browser Resume
+          - generic [ref=f2e34]:
+            - button "Share" [ref=f2e35]
+            - button "Download" [ref=f2e39]
+            - button "More actions" [ref=f2e45]
+        - toolbar "Document formatting" [ref=f2e48]:
+          - tablist "Workstation mode" [ref=f2e49]:
+            - tab "Edit" [ref=f2e50]
+            - tab "Review" [ref=f2e51]
+            - tab "Optimize" [selected] [ref=f2e52]
+      - generic [ref=f2e66]:
+        - region "Resume score" [ref=f2e67]:
+          - generic [ref=f2e68]:
+            - generic [ref=f2e69]:
+              - generic "Updates as you edit" [ref=f2e70]:
+                - generic [ref=f2e71]: "41"
+                - generic [ref=f2e72]: /100
+                - generic [ref=f2e73]: Resume score
+              - generic [ref=f2e74]:
+                - button "Profile 20/25" [ref=f2e75]:
+                  - generic [ref=f2e76]:
+                    - generic [ref=f2e77]: Profile
+                    - generic [ref=f2e78]: 20/25
+                - button "Experience 13/25" [ref=f2e1128]:
+                  - generic [ref=f2e82]:
+                    - generic [ref=f2e83]: Experience
+                    - generic [ref=f2e84]: 13/25
+                - button "Impact 0/25" [ref=f2e87]:
+                  - generic [ref=f2e88]:
+                    - generic [ref=f2e89]: Impact
+                    - generic [ref=f2e92]: 0/25
+                - button "Keywords 8/25" [ref=f2e1129]:
+                  - generic [ref=f2e95]:
+                    - generic [ref=f2e96]: Keywords
+                    - generic [ref=f2e97]: 8/25
+              - button "2/8 steps done" [ref=f2e100]
+            - generic [ref=f2e103]:
+              - 'button "Next gap: Write a summary (80+ characters)" [ref=f2e104]':
+                - generic [ref=f2e107]:
+                  - generic [ref=f2e108]: "Next gap:"
+                  - text: Write a summary (80+ characters)
+              - navigation "Resume sections" [ref=f2e109]:
+                - button "Contact Complete" [ref=f2e110]:
+                  - text: Contact
+                  - generic [ref=f2e111]: Complete
+                - button "Professional Summary Incomplete" [ref=f2e112]:
+                  - text: Professional Summary
+                  - generic [ref=f2e113]: Incomplete
+                - button "Experience 1/1" [ref=f2e114]:
+                  - text: Experience
+                  - generic [ref=f2e115]: 1/1
+                - button "Project Not started" [ref=f2e116]:
+                  - text: Project
+                  - generic [ref=f2e117]: Not started
+                - button "Education Not started" [ref=f2e118]:
+                  - text: Education
+                  - generic [ref=f2e119]: Not started
+                - button "Skills Not started" [ref=f2e120]:
+                  - text: Skills
+                  - generic [ref=f2e121]: Not started
+                - button "Certificate Not started" [ref=f2e122]:
+                  - text: Certificate
+                  - generic [ref=f2e123]: Not started
+              - generic:
+                - generic:
+                  - generic [ref=f2e125]:
+                    - generic [ref=f2e126]:
+                      - paragraph [ref=f2e127]: Raise your score
+                      - paragraph [ref=f2e128]: 2/8
+                    - list [ref=f2e129]:
+                      - listitem [ref=f2e130]:
+                        - button "Set a target role (unlocks keyword scoring) Keywords" [disabled] [ref=f2e131]:
+                          - generic [ref=f2e135]:
+                            - text: Set a target role (unlocks keyword scoring)
+                            - generic [ref=f2e136]: Keywords
+                      - listitem [ref=f2e137]:
+                        - button "Name, headline, email, and location Profile" [disabled] [ref=f2e138]:
+                          - generic [ref=f2e142]:
+                            - text: Name, headline, email, and location
+                            - generic [ref=f2e143]: Profile
+                      - listitem [ref=f2e144]:
+                        - button "Write a summary (80+ characters) Profile" [ref=f2e145]:
+                          - generic [ref=f2e147]:
+                            - text: Write a summary (80+ characters)
+                            - generic [ref=f2e148]: Profile
+                      - listitem [ref=f2e149]:
+                        - button "Add two jobs with title and company Experience" [ref=f2e150]:
+                          - generic [ref=f2e152]:
+                            - text: Add two jobs with title and company
+                            - generic [ref=f2e153]: Experience
+                      - listitem [ref=f2e154]:
+                        - button "Add at least six experience bullets Experience" [ref=f2e155]:
+                          - generic [ref=f2e157]:
+                            - text: Add at least six experience bullets
+                            - generic [ref=f2e158]: Experience
+                      - listitem [ref=f2e159]:
+                        - button "Put a number in at least half of your bullets Impact" [ref=f2e160]:
+                          - generic [ref=f2e162]:
+                            - text: Put a number in at least half of your bullets
+                            - generic [ref=f2e163]: Impact
+                      - listitem [ref=f2e164]:
+                        - button "List at least five skills Keywords" [ref=f2e165]:
+                          - generic [ref=f2e167]:
+                            - text: List at least five skills
+                            - generic [ref=f2e168]: Keywords
+                      - listitem [ref=f2e169]:
+                        - button "Cover role keywords (use chips below) Keywords" [ref=f2e170]:
+                          - generic [ref=f2e172]:
+                            - text: Cover role keywords (use chips below)
+                            - generic [ref=f2e173]: Keywords
+                  - generic [ref=f2e174]:
+                    - generic [ref=f2e175]:
+                      - paragraph [ref=f2e176]: Role keywords
+                      - paragraph [ref=f2e177]: Click a missing term to add it as a skill. Only add skills you actually have.
+                      - generic [ref=f2e178]:
+                        - button "TypeScript" [ref=f2e179]
+                        - button "React" [ref=f2e182]
+                        - button "Testing" [ref=f2e185]
+                        - button "CI/CD" [ref=f2e188]
+                      - generic [ref=f2e194]:
+                        - generic [ref=f2e195]: API
+                        - generic [ref=f2e1130]: Performance
+                    - generic [ref=f2e198]:
+                      - generic [ref=f2e199]:
+                        - paragraph [ref=f2e200]: Job match
+                        - paragraph [ref=f2e201]: 33%
+                      - paragraph [ref=f2e202]: 7 of 21 JD terms found in your resume (deterministic tokens).
+                      - paragraph [ref=f2e203]: Missing from resume
+                      - generic [ref=f2e204]:
+                        - button "need" [ref=f2e205]
+                        - button "postgresql" [ref=f2e208]
+                        - button "aws" [ref=f2e214]
+                        - button "design" [ref=f2e217]
+                        - button "experience." [ref=f2e220]
+                        - button "lead" [ref=f2e223]
+                        - button "migrations" [ref=f2e226]
+                        - button "cut" [ref=f2e229]
+                        - button "mentor" [ref=f2e235]
+                        - button "teammates." [ref=f2e238]
+                        - button "keywords" [ref=f2e241]
+                        - button "graphql" [ref=f2e244]
+                        - button "observability" [ref=f2e247]
+                        - button "kubernetes." [ref=f2e250]
+                      - paragraph [ref=f2e253]: Only add skills you actually have.
+                      - paragraph [ref=f2e254]: Present
+                      - generic [ref=f2e255]:
+                        - generic [ref=f2e256]: senior
+                        - generic [ref=f2e257]: backend
+                        - generic [ref=f2e258]: engineer
+                        - generic [ref=f2e259]: laravel
+                        - generic [ref=f2e1133]: redis
+                        - generic [ref=f2e260]: api
+                        - generic [ref=f2e1134]: latency
+                      - button "Edit job description →" [ref=f2e261]
+        - generic [ref=f2e970]:
+          - generic [ref=f2e971]:
+            - generic [ref=f2e972]:
+              - heading "Optimize for a job" [level=2] [ref=f2e973]
+              - paragraph [ref=f2e974]: Paste a job description. We score keyword overlap with no AI, then you decide what to add.
+            - generic [ref=f2e975]:
+              - generic [ref=f2e976]: Job description
+              - textbox "Job description" [ref=f2e977]:
+                - /placeholder: Paste the full job posting or key requirements…
+                - text: "We need a Senior Backend Engineer with strong Laravel, PostgreSQL, Redis, AWS, and API design experience. Must lead migrations, cut latency, and mentor teammates. Keywords: Laravel, PostgreSQL, Redis, AWS, GraphQL, observability, Kubernetes."
+              - paragraph [ref=f2e978]:
+                - generic [ref=f2e979]: 241 / 10000
+                - text: characters
+            - generic [ref=f2e980]:
+              - generic [ref=f2e981]:
+                - paragraph [ref=f2e982]: Match score
+                - paragraph [ref=f2e983]: 33%
+              - paragraph [ref=f2e984]: 7 of 21 distinctive JD terms appear in your resume.
+              - generic [ref=f2e985]:
+                - paragraph [ref=f2e986]: "Missing: click to add as skill"
+                - generic [ref=f2e988]:
+                  - generic [ref=f2e989]: Add generated bullet to
+                  - combobox "Add generated bullet to" [ref=f2e990]:
+                    - option "Software Engineer at Northwind Labs" [selected]
+                - generic [ref=f2e991]:
+                  - generic [ref=f2e992]:
+                    - button "Need" [ref=f2e993]
+                    - button "Generate · 1 credit" [ref=f2e996]
+                  - generic [ref=f2e999]:
+                    - button "Postgresql" [ref=f2e1000]
+                    - button "Generate · 1 credit" [ref=f2e1003]
+                  - generic [ref=f2e1013]:
+                    - button "Aws" [ref=f2e1014]
+                    - button "Generate · 1 credit" [ref=f2e1017]
+                  - generic [ref=f2e1020]:
+                    - button "Design" [ref=f2e1021]
+                    - button "Generate · 1 credit" [ref=f2e1024]
+                  - generic [ref=f2e1027]:
+                    - button "Experience." [ref=f2e1028]
+                    - button "Generate · 1 credit" [ref=f2e1031]
+                  - generic [ref=f2e1034]:
+                    - button "Lead" [ref=f2e1035]
+                    - button "Generate · 1 credit" [ref=f2e1038]
+                  - generic [ref=f2e1041]:
+                    - button "Migrations" [ref=f2e1042]
+                    - button "Generate · 1 credit" [ref=f2e1045]
+                  - generic [ref=f2e1048]:
+                    - button "Cut" [ref=f2e1049]
+                    - button "Generate · 1 credit" [ref=f2e1052]
+                  - generic [ref=f2e1062]:
+                    - button "Mentor" [ref=f2e1063]
+                    - button "Generate · 1 credit" [ref=f2e1066]
+                  - generic [ref=f2e1069]:
+                    - button "Teammates." [ref=f2e1070]
+                    - button "Generate · 1 credit" [ref=f2e1073]
+                  - generic [ref=f2e1076]:
+                    - button "Keywords" [ref=f2e1077]
+                    - button "Generate · 1 credit" [ref=f2e1080]
+                  - generic [ref=f2e1083]:
+                    - button "Graphql" [ref=f2e1084]
+                    - button "Generate · 1 credit" [ref=f2e1087]
+                  - generic [ref=f2e1090]:
+                    - button "Observability" [ref=f2e1091]
+                    - button "Generate · 1 credit" [ref=f2e1094]
+                  - generic [ref=f2e1097]:
+                    - button "Kubernetes." [ref=f2e1098]
+                    - button "Generate · 1 credit" [ref=f2e1101]
+              - generic [ref=f2e1104]:
+                - paragraph [ref=f2e1105]: Present
+                - generic [ref=f2e1106]:
+                  - generic [ref=f2e1107]: Senior
+                  - generic [ref=f2e1108]: Backend
+                  - generic [ref=f2e1109]: Engineer
+                  - generic [ref=f2e1110]: Laravel
+                  - generic [ref=f2e1135]: Redis
+                  - generic [ref=f2e1111]: API
+                  - generic [ref=f2e1136]: Latency
+          - generic [ref=f2e1112]:
+            - generic [ref=f2e1113]:
+              - generic [ref=f2e1114]:
+                - heading "ATS plain text" [level=2] [ref=f2e1115]
+                - paragraph [ref=f2e1116]: What a simple text parser would see — single column, no layout chrome.
+              - button "Copy all" [ref=f2e1117]
+            - generic [ref=f2e1118]: ALEX RIVERA Backend Engineer elias.baumbach@example.com | Kundestad, TX SUMMARY Backend engineer focused on Laravel and Postgres. EXPERIENCE Software Engineer — Northwind Labs 2022 – Present • Engineered scalable internal APIs that improved the order processing system, resulting in faster transaction times. • Improved deploy reliability for weekly releases • Led the migration of legacy systems to Redis for improved data caching, which reduced latency and increased overall application performance.

@@ -41,9 +41,6 @@ function joinSummary(...parts: Array<string | null | undefined>): string {
         .join(' · ');
 }
 
-const autocompleteFieldClass =
-    'flex h-10 w-full min-w-0 rounded-md border border-border bg-white px-3 py-1 text-sm shadow-xs outline-hidden transition-colors placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30';
-
 type RepeatedKey = 'experiences' | 'projects' | 'education' | 'certificates';
 
 /** Replace one entry in a repeated section. */
@@ -99,7 +96,6 @@ export function ContactFields({
                     value={resume.headline}
                     allowCreate={false}
                     placeholder="e.g. Product Designer"
-                    className={autocompleteFieldClass}
                     maxLength={255}
                     onChange={(headline) => onChange({ ...resume, headline })}
                 />
@@ -228,7 +224,6 @@ export function ExperienceFields({
                             value={experience.title}
                             allowCreate={false}
                             placeholder="e.g. Software Engineer"
-                            className={autocompleteFieldClass}
                             maxLength={255}
                             onChange={(title) =>
                                 patch(resume, onChange, 'experiences', index, {

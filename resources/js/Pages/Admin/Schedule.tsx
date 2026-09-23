@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 
 type ScheduledTask = {
     id: number;
@@ -37,7 +37,7 @@ export default function AdminSchedule({ tasks }: { tasks: ScheduledTask[] }) {
                 <h1 className="text-2xl font-bold tracking-tight text-foreground">Scheduled tasks</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Edit cron timing or disable a task without deploying code.</p>
 
-                <Shell className="mt-6" innerClassName="divide-y divide-border">
+                <Card className="mt-6 gap-0 divide-y divide-border py-0">
                     {tasks.map((task) => (
                         <div key={task.id} className="p-4">
                             <div className="flex items-center justify-between gap-3">
@@ -73,7 +73,7 @@ export default function AdminSchedule({ tasks }: { tasks: ScheduledTask[] }) {
                             {errors[task.id] && <p className="mt-1 text-xs text-destructive">{errors[task.id]}</p>}
                         </div>
                     ))}
-                </Shell>
+                </Card>
             </div>
         </AuthenticatedLayout>
     );

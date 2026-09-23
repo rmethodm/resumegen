@@ -1,20 +1,18 @@
 import {
-    Popover,
-    PopoverButton,
-    PopoverPanel,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-} from '@headlessui/react';
-import {
     ArrowUturnLeftIcon,
     ArrowUturnRightIcon,
     CheckIcon,
     ChevronDownIcon,
 } from '@heroicons/react/24/outline';
 import type { ReactNode } from 'react';
-import { buttonClassName } from '@/Components/ui/button';
+import { Button, buttonClassName } from '@/Components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
 import { Select } from '@/Components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group';
 import {
@@ -31,7 +29,6 @@ import type {
     ResumeFont,
     ResumeSkillsLayout,
     ResumeTemplateKey,
-    WorkstationLayoutMode,
 } from '@/types';
 
 const bulletStyleLabels: Record<ResumeBulletStyle, string> = {
@@ -46,13 +43,6 @@ const skillsLayoutLabels: Record<ResumeSkillsLayout, string> = {
     grouped: 'Grouped',
     columns: 'Columns',
     narrative: 'Narrative',
-};
-
-const layoutModeLabels: Record<WorkstationLayoutMode, string> = {
-    tabs: 'Tabs (classic)',
-    overlay: 'Overlay panel',
-    inline: 'Inline',
-    hybrid: 'Hybrid rail',
 };
 
 export const WORKSTATION_TABS = ['Edit', 'Optimize'] as const;
@@ -172,14 +162,8 @@ export function WorkstationFormatToolbar({
     pageEstimateDraft,
     zoom,
     onZoomChange,
-    reviewActive,
-    activeTab,
-    onTabChange,
     reviewPreviewMode = 'react',
     onReviewPreviewModeChange,
-    layoutMode,
-    onLayoutModeChange,
-    onOpenOptimize,
 }: {
     canUndo: boolean;
     canRedo: boolean;
@@ -208,15 +192,8 @@ export function WorkstationFormatToolbar({
     >;
     zoom: PreviewZoom;
     onZoomChange: (zoom: PreviewZoom) => void;
-    reviewActive: boolean;
-    activeTab: WorkstationTab;
-    onTabChange: (tab: WorkstationTab) => void;
     reviewPreviewMode?: 'react' | 'pdf';
     onReviewPreviewModeChange?: (mode: 'react' | 'pdf') => void;
-    layoutMode: WorkstationLayoutMode;
-    onLayoutModeChange: (mode: WorkstationLayoutMode) => void;
-    /** Only rendered when layoutMode === 'overlay'. */
-    onOpenOptimize?: () => void;
 }) {
     // Never throw — a bad estimate used to unmount the whole workstation header.
     const pageEstimate = estimateResumePages(
@@ -230,77 +207,40 @@ export function WorkstationFormatToolbar({
             aria-label="Document formatting"
             className="flex flex-wrap items-center gap-1 border-t border-border/80 bg-muted/40 px-2 py-1.5 sm:px-3"
         >
-            {layoutMode === 'tabs' && (
-                <div
-                    role="tablist"
-                    aria-label="Workstation mode"
-                    className="inline-flex items-center rounded-full border border-border bg-muted p-0.5"
-                >
-                    {WORKSTATION_TABS.map((tab) => (
-                        <button
-                            key={tab}
-                            type="button"
-                            role="tab"
-                            aria-selected={tab === activeTab}
-                            onClick={() => onTabChange(tab)}
-                            className={cn(
-                                'rounded-full px-3.5 py-1 text-sm font-medium transition-colors',
-                                tab === activeTab
-                                    ? 'bg-primary font-semibold text-white shadow-xs'
-                                    : 'text-muted-foreground hover:text-foreground',
-                            )}
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-            )}
-
-            {/* Document tools hidden only on the classic Optimize tab — every
-                other mode keeps the form visible, so tools stay visible too. */}
-            {(layoutMode !== 'tabs' || activeTab !== 'Optimize') && (
-                <>
-                    <ToolbarDivider />
-
-                    <button
+            <>
+                    <Button
                         type="button"
+                        variant="ghost"
+                        size="icon"
                         aria-label="Undo"
                         title="Undo (Cmd/Ctrl+Z)"
                         disabled={!canUndo}
                         onClick={onUndo}
-                        className={buttonClassName(
-                            'ghost',
-                            'icon',
-                            cn(iconButtonSize, 'disabled:opacity-40'),
-                        )}
+                        className={cn(iconButtonSize, 'disabled:opacity-40')}
                     >
                         <ArrowUturnLeftIcon className="size-4" />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
+                        size="icon"
                         aria-label="Redo"
                         title="Redo (Cmd/Ctrl+Shift+Z)"
                         disabled={!canRedo}
                         onClick={onRedo}
-                        className={buttonClassName(
-                            'ghost',
-                            'icon',
-                            cn(iconButtonSize, 'disabled:opacity-40'),
-                        )}
+                        className={cn(iconButtonSize, 'disabled:opacity-40')}
                     >
                         <ArrowUturnRightIcon className="size-4" />
-                    </button>
+                    </Button>
 
                     <ToolbarDivider />
 
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={onTemplateClick}
-                        className={buttonClassName(
-                            'ghost',
-                            'sm',
-                            cn(controlHeight, 'max-w-44 gap-1 px-2 font-medium'),
-                        )}
+                        className={cn(controlHeight, 'max-w-44 gap-1 px-2 font-medium')}
                         aria-label="Template"
                         title="Choose resume template"
                     >
@@ -311,12 +251,12 @@ export function WorkstationFormatToolbar({
                             {templateLabels[template] ?? template}
                         </span>
                         <ChevronDownIcon className="size-3.5 shrink-0 text-muted-foreground/70" />
-                    </button>
+                    </Button>
 
                     {/* Font, size/density, bullets, and skills layout in one
                         control — Hick's Law + Tesler's Law. */}
-                    <Popover className="relative">
-                        <PopoverButton
+                    <Popover>
+                        <PopoverTrigger
                             className={buttonClassName(
                                 'ghost',
                                 'sm',
@@ -327,11 +267,8 @@ export function WorkstationFormatToolbar({
                         >
                             Format
                             <ChevronDownIcon className="size-3.5 text-muted-foreground/70" />
-                        </PopoverButton>
-                        <PopoverPanel
-                            anchor="bottom start"
-                            className="z-50 w-64 space-y-3 rounded-md border border-border bg-white p-3 shadow-lg focus:outline-hidden"
-                        >
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="w-64 space-y-3 p-3">
                             <FormatField label="Font">
                                 <Select
                                     value={font}
@@ -424,7 +361,7 @@ export function WorkstationFormatToolbar({
                                     ))}
                                 </Select>
                             </FormatField>
-                        </PopoverPanel>
+                        </PopoverContent>
                     </Popover>
 
                     <span
@@ -434,11 +371,10 @@ export function WorkstationFormatToolbar({
                         ≈{pageEstimate.pages} page
                         {pageEstimate.pages === 1 ? '' : 's'}
                     </span>
-                </>
-            )}
+            </>
 
-            {/* Preview chrome on Edit — never show disabled Live/PDF/Zoom. */}
-            {reviewActive && onReviewPreviewModeChange && (
+            {/* Never show a disabled Live/PDF/Zoom control. */}
+            {onReviewPreviewModeChange && (
                 <>
                     <ToolbarDivider />
                     <ToggleGroup
@@ -472,8 +408,8 @@ export function WorkstationFormatToolbar({
                         </ToggleGroupItem>
                     </ToggleGroup>
 
-                    <Menu as="div" className="relative">
-                        <MenuButton
+                    <DropdownMenu>
+                        <DropdownMenuTrigger
                             className={buttonClassName(
                                 'ghost',
                                 'sm',
@@ -484,60 +420,23 @@ export function WorkstationFormatToolbar({
                         >
                             {Math.round(zoom * 100)}%
                             <ChevronDownIcon className="size-3.5 text-muted-foreground/70" />
-                        </MenuButton>
-                        <MenuItems
-                            anchor="bottom end"
-                            className="z-50 w-44 rounded-md border border-border bg-white p-1 shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1"
-                        >
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-44">
                             {PREVIEW_ZOOM_OPTIONS.map((level) => (
-                                <MenuItem key={level}>
-                                    <button
-                                        type="button"
-                                        onClick={() => onZoomChange(level)}
-                                        className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm data-focus:bg-muted"
-                                    >
-                                        <MenuCheck on={level === zoom} />
-                                        <span className="min-w-0 flex-1 truncate">
-                                            {Math.round(level * 100)}% ·{' '}
-                                            {zoomViewLabels[level]}
-                                        </span>
-                                    </button>
-                                </MenuItem>
+                                <DropdownMenuItem
+                                    key={level}
+                                    onClick={() => onZoomChange(level)}
+                                >
+                                    <MenuCheck on={level === zoom} />
+                                    <span className="min-w-0 flex-1 truncate">
+                                        {Math.round(level * 100)}% ·{' '}
+                                        {zoomViewLabels[level]}
+                                    </span>
+                                </DropdownMenuItem>
                             ))}
-                        </MenuItems>
-                    </Menu>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </>
-            )}
-
-            <ToolbarDivider />
-
-            <Select
-                aria-label="Workstation layout"
-                value={layoutMode}
-                onChange={(event) =>
-                    onLayoutModeChange(event.target.value as WorkstationLayoutMode)
-                }
-                className={cn(controlHeight, 'w-auto max-w-40')}
-            >
-                {(Object.keys(layoutModeLabels) as WorkstationLayoutMode[]).map((mode) => (
-                    <option key={mode} value={mode}>
-                        {layoutModeLabels[mode]}
-                    </option>
-                ))}
-            </Select>
-
-            {layoutMode === 'overlay' && onOpenOptimize && (
-                <button
-                    type="button"
-                    onClick={onOpenOptimize}
-                    className={buttonClassName(
-                        'outline',
-                        'sm',
-                        cn(controlHeight, 'gap-1 px-2.5 font-medium'),
-                    )}
-                >
-                    Optimize
-                </button>
             )}
         </div>
     );

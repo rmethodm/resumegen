@@ -6,7 +6,6 @@ import { Card } from '@/Components/ui/card';
 import ApplyWizardPreferenceForm from './Partials/ApplyWizardPreferenceForm';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import ExtensionTokensForm from './Partials/ExtensionTokensForm';
-import ThemeForm from './Partials/ThemeForm';
 import TwoFactorForm from './Partials/TwoFactorForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
@@ -96,7 +95,6 @@ export default function Edit({
     extensionTokens,
     extensionTokenPlain,
     prefersApplyWizard,
-    theme,
 }: PageProps<{
     mustVerifyEmail: boolean;
     status?: string;
@@ -122,7 +120,6 @@ export default function Edit({
     }>;
     extensionTokenPlain: string | null;
     prefersApplyWizard: boolean;
-    theme: string | null;
 }>) {
     return (
         <AuthenticatedLayout>
@@ -164,10 +161,6 @@ export default function Edit({
 
                     <Card className="p-6">
                         <ApplyWizardPreferenceForm prefersApplyWizard={prefersApplyWizard} />
-                    </Card>
-
-                    <Card className="p-6">
-                        <ThemeForm currentTheme={theme} />
                     </Card>
 
                     <Card className="p-6">

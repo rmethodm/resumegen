@@ -7,9 +7,6 @@ import { cn } from '@/lib/utils';
 import type { ResumeDraft } from '@/types';
 
 const RING_SIZE = 120;
-const RADIUS = 50;
-const STROKE = 11;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 /** ≥70 reads as on-track, 40-69 needs attention, <40 is weak. */
 function ringColor(value: number): string {
@@ -24,6 +21,8 @@ function ringColor(value: number): string {
     return 'var(--color-destructive)';
 }
 
+/** Horizontal bar, not a ring: length encodes magnitude more accurately
+ *  than the angle/arc of a radial gauge (Cleveland-McGill). */
 function RingGauge({
     value,
     max = 100,
@@ -34,46 +33,25 @@ function RingGauge({
     suffix: string;
 }) {
     const filled = Math.max(0, Math.min(1, max === 0 ? 0 : value / max));
-    const offset = CIRCUMFERENCE * (1 - filled);
 
     return (
-        <div
-            className="relative mx-auto"
-            style={{ width: RING_SIZE, height: RING_SIZE }}
-        >
-            <svg
-                width={RING_SIZE}
-                height={RING_SIZE}
-                viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-                style={{ transform: 'rotate(-90deg)' }}
-            >
-                <circle
-                    cx={RING_SIZE / 2}
-                    cy={RING_SIZE / 2}
-                    r={RADIUS}
-                    fill="none"
-                    stroke="var(--color-border)"
-                    strokeWidth={STROKE}
-                />
-                <circle
-                    cx={RING_SIZE / 2}
-                    cy={RING_SIZE / 2}
-                    r={RADIUS}
-                    fill="none"
-                    stroke={ringColor((value / max) * 100)}
-                    strokeWidth={STROKE}
-                    strokeLinecap="round"
-                    strokeDasharray={CIRCUMFERENCE}
-                    strokeDashoffset={offset}
-                />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
+        <div className="mx-auto w-full max-w-40">
+            <div className="mb-2 text-center">
                 <span className="text-2xl leading-none font-extrabold tabular-nums text-foreground">
                     {value}
                     <span className="text-sm font-semibold text-muted-foreground/70">
                         {suffix}
                     </span>
                 </span>
+            </div>
+            <div className="h-2.5 w-full overflow-hidden rounded-full bg-border">
+                <div
+                    className="h-full rounded-full transition-[width] duration-soft ease-soft motion-reduce:transition-none"
+                    style={{
+                        width: `${filled * 100}%`,
+                        backgroundColor: ringColor((value / max) * 100),
+                    }}
+                />
             </div>
         </div>
     );

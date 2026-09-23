@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 import { cn } from '@/lib/utils';
 
 type FunnelStage = { status: string; count: number };
@@ -23,7 +23,7 @@ function Funnel({ funnel }: { funnel: FunnelStage[] }) {
     const max = Math.max(1, ...funnel.map((stage) => stage.count));
 
     return (
-        <Shell innerClassName="p-5">
+        <Card className="gap-0 p-5">
             <h2 className="text-sm font-bold text-foreground">Current pipeline</h2>
             <div className="mt-4 space-y-3">
                 {funnel.map((stage) => (
@@ -41,7 +41,7 @@ function Funnel({ funnel }: { funnel: FunnelStage[] }) {
                     </div>
                 ))}
             </div>
-        </Shell>
+        </Card>
     );
 }
 
@@ -51,10 +51,10 @@ function Funnel({ funnel }: { funnel: FunnelStage[] }) {
 function TransitionFlow({ transitions }: { transitions: Transition[] }) {
     if (transitions.length === 0) {
         return (
-            <Shell innerClassName="p-5">
+            <Card className="gap-0 p-5">
                 <h2 className="text-sm font-bold text-foreground">Status transitions</h2>
                 <p className="mt-3 text-xs text-muted-foreground/70">No transitions logged yet.</p>
-            </Shell>
+            </Card>
         );
     }
 
@@ -73,7 +73,7 @@ function TransitionFlow({ transitions }: { transitions: Transition[] }) {
     };
 
     return (
-        <Shell innerClassName="p-5">
+        <Card className="gap-0 p-5">
             <h2 className="text-sm font-bold text-foreground">Status transitions</h2>
             <svg viewBox={`0 0 ${width} ${height}`} className="mt-3 w-full" style={{ height }}>
                 {transitions.map((t, i) => {
@@ -118,7 +118,7 @@ function TransitionFlow({ transitions }: { transitions: Transition[] }) {
                     </li>
                 ))}
             </ul>
-        </Shell>
+        </Card>
     );
 }
 

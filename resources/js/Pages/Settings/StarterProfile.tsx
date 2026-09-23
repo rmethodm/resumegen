@@ -107,7 +107,7 @@ function QaBankSection({ entries }: { entries: QaBankEntry[] }) {
                         className="block w-full rounded-lg border-border text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus:border-primary focus:ring-primary"
                     />
                     {drafts[entry.id] && (
-                        <p className="rounded-md bg-primary/10/50 p-2 text-xs text-foreground">
+                        <p className="rounded-md bg-primary/5 p-2 text-xs text-foreground">
                             <span className="font-semibold">AI draft:</span> {drafts[entry.id]}
                         </p>
                     )}
@@ -220,7 +220,7 @@ export default function StarterProfilePage({
                         You can edit it anytime.
                     </p>
 
-                    <Card className="overflow-hidden border-primary/10 bg-primary/10/60 p-0">
+                    <Card className="overflow-hidden border-primary/10 bg-primary/5 p-0">
                         <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:p-6">
                             <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                                 <SparklesIcon className="size-5" />

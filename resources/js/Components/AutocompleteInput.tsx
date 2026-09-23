@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { Input } from '@/Components/ui/input';
+import { cn } from '@/lib/utils';
 
 type Endpoint = 'job-roles' | 'job-titles' | 'job-skills';
 
@@ -172,7 +174,7 @@ export default function AutocompleteInput({
 
     return (
         <div ref={containerRef} className="relative">
-            <input
+            <Input
                 type="text"
                 name={name}
                 id={id}
@@ -189,16 +191,17 @@ export default function AutocompleteInput({
                 onBlur={handleBlur}
             />
             {open && suggestions.length > 0 && (
-                <ul className="absolute z-50 top-full left-0 right-0 mt-1 max-h-52 overflow-y-auto rounded-lg border border-border bg-white py-1 shadow-md">
+                <ul className="absolute top-full left-0 right-0 z-50 mt-1 max-h-52 overflow-y-auto rounded-lg border border-border bg-popover py-1 shadow-md">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
                             onMouseDown={() => select(s.label)}
-                            className={`px-3 py-2 text-sm cursor-pointer ${
+                            className={cn(
+                                'cursor-pointer px-3 py-2 text-sm',
                                 i === activeIndex
-                                    ? 'bg-[#eef2ff] text-[#4f46e5]'
-                                    : 'text-[#23232d] hover:bg-[#f5f5fb]'
-                            }`}
+                                    ? 'bg-accent text-accent-foreground'
+                                    : 'text-popover-foreground hover:bg-accent hover:text-accent-foreground',
+                            )}
                         >
                             {s.label}
                         </li>

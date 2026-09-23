@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { BellAlertIcon, CalendarDaysIcon, DocumentPlusIcon } from '@heroicons/react/24/outline';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 import type { NextUpItem } from '@/types';
 
 const ICON: Record<NextUpItem['kind'], typeof BellAlertIcon> = {
@@ -16,7 +16,7 @@ export function NextUpStrip({ items }: { items: NextUpItem[] }) {
     }
 
     return (
-        <Shell innerClassName="p-4 sm:p-5">
+        <Card className="gap-0 p-4 py-0 sm:p-5">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">Next up</p>
             <ul className="mt-3 divide-y divide-border/80">
                 {items.map((item, index) => {
@@ -38,6 +38,6 @@ export function NextUpStrip({ items }: { items: NextUpItem[] }) {
                     );
                 })}
             </ul>
-        </Shell>
+        </Card>
     );
 }

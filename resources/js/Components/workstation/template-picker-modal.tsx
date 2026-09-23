@@ -55,22 +55,23 @@ export function TemplatePickerModal({
                             const style = templateThumbStyles[key];
 
                             return (
-                                <button
+                                <Button
                                     key={key}
                                     type="button"
+                                    variant="outline"
                                     onClick={() => {
                                         onTemplateChange(key);
                                         onOpenChange(false);
                                     }}
                                     className={cn(
-                                        'focus-ring flex flex-col gap-1.5 rounded-lg border p-2 text-left transition-colors',
+                                        'h-auto flex-col items-start gap-1.5 whitespace-normal rounded-lg p-2 text-left font-normal',
                                         selected
                                             ? 'border-primary ring-2 ring-primary/30'
-                                            : 'border-border hover:border-border',
+                                            : 'border-border',
                                     )}
                                 >
                                     <div
-                                        className="relative aspect-8.5/11 w-full overflow-hidden rounded-sm border border-border bg-white shadow-xs"
+                                        className="relative aspect-8.5/11 w-full overflow-hidden rounded-sm border border-border bg-card shadow-xs"
                                         style={{
                                             borderLeft: style.pageAccent
                                                 ? `3px solid ${style.pageAccent}`
@@ -129,14 +130,14 @@ export function TemplatePickerModal({
                                                                   : ''
                                                         }
                                                     >
-                                                        <div className="h-0.5 w-[80%] rounded-sm bg-neutral-300" />
+                                                        <div className="h-0.5 w-[80%] rounded-sm bg-muted-foreground/40" />
                                                         <div className="mt-0.5 h-0.5 w-full rounded-sm bg-muted" />
                                                     </div>
                                                 ))}
                                             </div>
                                         </div>
                                         {selected && (
-                                            <span className="absolute top-1 right-1 rounded-full bg-primary p-0.5 text-white">
+                                            <span className="absolute top-1 right-1 rounded-full bg-primary p-0.5 text-primary-foreground">
                                                 <CheckIcon className="size-2.5" />
                                             </span>
                                         )}
@@ -144,7 +145,7 @@ export function TemplatePickerModal({
                                     <span className="truncate text-xs font-medium text-foreground">
                                         {templateLabels[key]}
                                     </span>
-                                </button>
+                                </Button>
                             );
                         })}
                 </div>

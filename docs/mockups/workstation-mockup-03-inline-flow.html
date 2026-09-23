@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Workstation mockup 03 — Inline Flow</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=ibm-plex-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
+<style>
+:root { --brand:#5952d2; --brand-accent:#3c3695; --brand-subtle:#e1e5ff; --surface:#f2f6f9; --surface-border:#d2d8dd; --ink:#171b1f; --ink-muted:#50565a; --ink-faint:#6d7277; --page:#f5f5fb; --white:#fff; --gray-100:#f3f4f6; --gray-200:#e5e7eb; --gray-300:#d1d5db; --gray-400:#9ca3af; --amber:#b45309; --amber-bg:#fffbeb; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif; background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased; }
+.search-bar { border-bottom:1px solid var(--surface-border); background:var(--white); padding:10px 16px 10px 32px; }
+.search-wrap { position:relative; max-width:36rem; }
+.search-wrap input { width:100%; border:1px solid var(--surface-border); background:var(--surface); border-radius:.5rem; padding:.5rem 3.5rem .5rem 2.25rem; font:inherit; font-size:.875rem; color:var(--ink); }
+.search-kbd { position:absolute; right:.625rem; top:50%; transform:translateY(-50%); border:1px solid var(--surface-border); background:var(--white); border-radius:.375rem; padding:.125rem .375rem; font-size:10px; font-weight:600; color:var(--gray-400); }
+.topnav { display:flex; align-items:center; gap:1.5rem; height:52px; padding:0 1rem; border-bottom:1px solid var(--surface-border); background:var(--white); }
+.logo { display:flex; align-items:center; gap:.625rem; font-weight:800; }
+.logo-mark { width:30px; height:30px; border-radius:.5rem; background:linear-gradient(to bottom right,var(--brand),var(--brand-accent)); }
+.nav-links { display:flex; gap:.25rem; }
+.nav-link { border-radius:.5rem; padding:.375rem .75rem; font-size:.875rem; font-weight:500; color:var(--ink-muted); }
+.nav-link.active { background:var(--brand-subtle); color:var(--brand); }
+.topnav-right { margin-left:auto; display:flex; align-items:center; gap:.5rem; color:var(--ink-muted); font-size:.875rem; }
+.avatar { width:1.75rem; height:1.75rem; border-radius:9999px; background:linear-gradient(to bottom right,var(--brand),var(--brand-accent)); }
+.page { padding:1.25rem; }
+.shell { max-width:1400px; margin:0 auto; display:flex; flex-direction:column; gap:1rem; }
+.header { border:1px solid var(--gray-200); border-radius:.75rem; background:var(--white); }
+.toolbar { display:flex; align-items:center; gap:.75rem; padding:.75rem .875rem; border-bottom:1px solid var(--gray-100); }
+.title-cluster { display:flex; align-items:center; gap:.5rem; flex:1; min-width:0; }
+.chip { border:1px solid var(--gray-300); border-radius:.4rem; padding:.25rem .5rem; font-size:.75rem; font-weight:600; color:var(--brand); }
+.title { font-weight:700; font-size:1rem; }
+.saved { font-size:.75rem; color:var(--ink-faint); }
+.btn { border:1px solid var(--gray-300); background:var(--white); border-radius:.45rem; height:2rem; padding:0 .625rem; font-size:.8rem; font-weight:600; color:var(--ink-muted); }
+.btn.primary { background:var(--brand); border-color:var(--brand); color:#fff; }
+.format-bar { display:flex; align-items:center; gap:.5rem; padding:.5rem .875rem; flex-wrap:wrap; }
+.select { height:2rem; border:1px solid var(--gray-300); border-radius:.45rem; background:var(--white); padding:0 .5rem; font:inherit; font-size:.8rem; color:var(--ink-muted); }
+.layout-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,620px); gap:1rem; align-items:start; }
+.form-col, .preview-col { display:flex; flex-direction:column; gap:.75rem; }
+.strip { border:1px solid var(--gray-200); border-radius:.75rem; background:var(--white); padding:.85rem; display:grid; grid-template-columns:auto 1fr; gap:.9rem; align-items:center; }
+.mini-rings { display:flex; gap:.6rem; }
+.mini-ring { width:52px; height:52px; border-radius:9999px; border:6px solid var(--brand-subtle); border-top-color:var(--brand); display:grid; place-items:center; font-weight:800; font-size:.9rem; }
+.target-role { font-size:.95rem; font-weight:700; }
+.target-meta { font-size:.8rem; color:var(--ink-muted); }
+.card { border:1px solid var(--gray-200); border-radius:.75rem; background:var(--white); overflow:hidden; }
+.card-head { display:flex; align-items:center; gap:.5rem; border-bottom:1px solid var(--gray-100); padding:.65rem .85rem; }
+.section-label { font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--brand); }
+.card-body { padding:1rem .85rem; display:grid; gap:.75rem; }
+.field-label { font-size:.72rem; font-weight:600; color:var(--ink-muted); margin-bottom:.2rem; }
+.field { height:2.25rem; border:1px solid var(--gray-300); border-radius:.4rem; background:var(--white); }
+.field.area { height:4rem; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+.inline-alert { border:1px solid #fcd34d; background:var(--amber-bg); border-radius:.55rem; padding:.7rem .75rem; display:grid; gap:.2rem; }
+.inline-alert strong { color:var(--amber); font-size:.78rem; }
+.inline-alert span { color:var(--ink-muted); font-size:.74rem; line-height:1.4; }
+.preview { border:1px solid var(--gray-200); border-radius:.75rem; background:var(--white); padding:1.25rem; min-height:560px; position:sticky; top:1rem; }
+.preview-page { max-width:440px; margin:0 auto; border:1px solid var(--gray-100); border-radius:.5rem; padding:1.5rem; box-shadow:0 10px 30px rgb(0 0 0 / .05); }
+.preview-name { font-size:1.5rem; font-weight:800; }
+.preview-role { color:var(--ink-muted); font-size:.95rem; }
+.preview-rule { height:1px; background:var(--gray-200); margin:1rem 0; }
+.preview-section-title { font-size:.75rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--brand); margin:.85rem 0 .35rem; }
+.preview-text { font-size:.78rem; color:var(--ink-muted); line-height:1.5; }
+.caption { margin:1rem auto 0; max-width:1400px; border:1px dashed var(--surface-border); background:var(--white); border-radius:.6rem; padding:.75rem .9rem; font-size:.8rem; color:var(--ink-muted); line-height:1.45; }
+.caption strong { color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="search-bar"><div class="search-wrap"><input readonly placeholder="Search or type command..." /><span class="search-kbd">⌘K</span></div></div>
+<header class="topnav"><div class="logo"><div class="logo-mark"></div>Resumegen</div><nav class="nav-links"><span class="nav-link">Dashboard</span><span class="nav-link active">Resumes</span><span class="nav-link">Profile</span></nav><div class="topnav-right"><div class="avatar"></div>Maya Chen</div></header>
+<main class="page"><div class="shell">
+  <div class="header">
+    <div class="toolbar"><div class="title-cluster"><span class="chip">v2</span><span class="title">Product Manager — Acme</span><span class="saved">✓ Saved</span></div><button class="btn">Share</button><button class="btn primary">Download ▾</button><button class="btn">⋮</button></div>
+    <div class="format-bar"><select class="select"><option>Layout: Inline</option></select><button class="btn">↶</button><button class="btn">↷</button><button class="btn">Notes</button><button class="btn">Snapshots</button></div>
+  </div>
+  <div class="layout-grid">
+    <div class="form-col">
+      <div class="strip">
+        <div class="mini-rings"><div class="mini-ring">82</div><div class="mini-ring">74</div><div class="mini-ring">90</div></div>
+        <div><div class="target-role">Product Manager</div><div class="target-meta">Targeting Acme · 4 suggestions ready</div></div>
+      </div>
+      <div class="card"><div class="card-head"><span class="section-label">Contact</span></div><div class="card-body"><div class="field-row"><div><div class="field-label">Full name</div><div class="field"></div></div><div><div class="field-label">Headline</div><div class="field"></div></div></div><div class="field-row"><div><div class="field-label">Email</div><div class="field"></div></div><div><div class="field-label">Phone</div><div class="field"></div></div></div></div></div>
+      <div class="card"><div class="card-head"><span class="section-label">Summary</span></div><div class="card-body"><div class="field-label">Professional summary</div><div class="field area"></div><div class="inline-alert"><strong>Add measurable outcomes</strong><span>Your summary is descriptive but does not preview a concrete result.</span></div></div></div>
+      <div class="card"><div class="card-head"><span class="section-label">Experience</span></div><div class="card-body"><div class="field-row"><div><div class="field-label">Role</div><div class="field"></div></div><div><div class="field-label">Company</div><div class="field"></div></div></div><div class="field-label">Impact bullet</div><div class="field"></div><div class="inline-alert"><strong>Quantify ownership</strong><span>The bullet describes scope but not the size, timeline, or outcome.</span></div></div></div>
+      <div class="card"><div class="card-head"><span class="section-label">Skills</span></div><div class="card-body"><div class="field-row"><div><div class="field-label">Hard skills</div><div class="field"></div></div><div><div class="field-label">Tools</div><div class="field"></div></div></div></div></div>
+    </div>
+    <div class="preview-col"><div class="preview"><div class="preview-page"><div class="preview-name">Maya Chen</div><div class="preview-role">Product Manager</div><div class="preview-rule"></div><div class="preview-section-title">Summary</div><div class="preview-text">Product manager with 8 years of experience shipping B2B SaaS products.</div><div class="preview-section-title">Experience</div><div class="preview-text">Acme — Senior Product Manager<br/>Owned roadmap for a $12M product line.</div><div class="preview-section-title">Skills</div><div class="preview-text">Roadmapping, SQL, A/B testing, stakeholder management, Figma.</div></div></div></div>
+  </div>
+  <p class="caption"><strong>03 — Inline Flow.</strong> A single continuous editing column with a condensed score strip pinned at the top. AI suggestions appear directly below the section they relate to, so the user can edit and improve without leaving the form.</p>
+</div></main>
+</body>
+</html>

@@ -5,7 +5,7 @@ import { ResumePreview } from '@/Components/resume/resume-preview';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 import { cn } from '@/lib/utils';
 import type { Resume } from '@/types';
 
@@ -51,7 +51,7 @@ export default function PublicShare({
                 <header
                     className={cn(
                         'mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3',
-                        'rounded-2xl border border-border/80 bg-white/90 px-4 py-3 shadow-md backdrop-blur-xl',
+                        'rounded-2xl border border-border/80 bg-card/90 px-4 py-3 shadow-md backdrop-blur-xl',
                     )}
                 >
                     <div className="flex min-w-0 items-center gap-3">
@@ -85,14 +85,11 @@ export default function PublicShare({
             </div>
 
             <main className="flex flex-1 justify-center px-3 py-6 sm:px-6 sm:py-10">
-                <Shell
-                    className="w-full max-w-[8.5in]"
-                    innerClassName="overflow-hidden bg-white p-3 sm:p-5"
-                >
-                    <div className="rounded-md bg-white shadow-sm ring-1 ring-foreground/5">
+                <Card className="w-full max-w-[8.5in] gap-0 overflow-hidden bg-card p-3 py-0 sm:p-5">
+                    <div className="rounded-md bg-card shadow-sm ring-1 ring-foreground/5">
                         <ResumePreview resume={resume} />
                     </div>
-                </Shell>
+                </Card>
             </main>
 
             <BrandFooter />
@@ -125,7 +122,7 @@ function AccessGate({
                     <BrandMark href="/" size="md" />
                 </div>
 
-                <Shell className="w-full max-w-sm" innerClassName="p-6">
+                <Card className="w-full max-w-sm gap-0 p-6 py-0">
                     <form onSubmit={submit}>
                         <h1 className="text-sm font-bold text-foreground">
                             Enter your details to view this resume
@@ -187,7 +184,7 @@ function AccessGate({
                             Continue
                         </Button>
                     </form>
-                </Shell>
+                </Card>
             </div>
 
             <BrandFooter />

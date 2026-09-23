@@ -10,6 +10,8 @@ export default defineConfig({
         !process.env.VITEST && laravel({
             input: [
                 'resources/js/app.tsx',
+                'resources/css/shadcn-demo.css',
+                'resources/js/shadcn-demo/main.tsx',
             ],
             refresh: true,
         }),

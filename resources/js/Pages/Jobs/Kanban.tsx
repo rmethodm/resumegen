@@ -21,7 +21,6 @@ import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Select } from '@/Components/ui/select';
-import { Shell } from '@/Components/ui/shell';
 import { Textarea } from '@/Components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { AddJobModal } from '@/Components/jobs/add-job-modal';
@@ -68,7 +67,7 @@ function JobCard({ job, resume, highlighted }: { job: JobApplication; resume: Re
                     : undefined
             }
             className={cn(
-                'cursor-grab rounded-lg border border-border/80 bg-white p-3 shadow-sm',
+                'cursor-grab rounded-lg border border-border/80 bg-card p-3 shadow-sm',
                 'transition-[box-shadow,opacity,transform] duration-soft ease-soft',
                 'hover:border-border hover:shadow-md',
                 'active:cursor-grabbing motion-reduce:transition-none',
@@ -118,14 +117,10 @@ function Column({
     const { setNodeRef, isOver } = useDroppable({ id: status });
 
     return (
-        <Shell
+        <Card
             className={cn(
-                'w-72 flex-none transition-shadow duration-soft ease-soft',
-                isOver && 'ring-2 ring-primary/25 shadow-lg',
-            )}
-            innerClassName={cn(
-                'flex min-h-48 flex-col gap-2 p-2.5 transition-colors duration-soft ease-soft',
-                isOver && 'bg-primary/10/30',
+                'w-72 flex-none gap-2 py-2.5 flex min-h-48 flex-col p-2.5 transition-[box-shadow,background-color,border-color] duration-soft ease-soft',
+                isOver && 'bg-primary/10 shadow-lg ring-2 ring-primary/25',
             )}
         >
             <div ref={setNodeRef} className="flex min-h-40 flex-1 flex-col gap-2">
@@ -148,7 +143,7 @@ function Column({
                     ))
                 )}
             </div>
-        </Shell>
+        </Card>
     );
 }
 
@@ -445,28 +440,28 @@ export default function JobApplicationKanban({
                 </div>
 
                 <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                    <Card className="gap-0 border-primary/20 bg-primary/10/50 py-4 shadow-sm">
+                    <Card className="gap-0 border-primary/20 bg-primary/5 py-4 shadow-sm">
                         <CardContent>
                             <p className="text-xs font-medium text-primary">Active pipeline</p>
                             <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-foreground">{activeApplications.length}</p>
                             <p className="mt-1 text-xs text-muted-foreground">of {localApplications.length} tracked roles</p>
                         </CardContent>
                     </Card>
-                    <Card className="gap-0 border-border bg-white py-4 shadow-sm">
+                    <Card className="gap-0 py-4 shadow-sm">
                         <CardContent>
                             <p className="text-xs font-medium text-muted-foreground">Interviews</p>
                             <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-foreground">{interviewing.length}</p>
                             <p className="mt-1 text-xs text-muted-foreground/70">needs preparation</p>
                         </CardContent>
                     </Card>
-                    <Card className="gap-0 border-border bg-white py-4 shadow-sm">
+                    <Card className="gap-0 py-4 shadow-sm">
                         <CardContent>
                             <p className="text-xs font-medium text-muted-foreground">Offers</p>
                             <p className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-foreground">{offers.length}</p>
                             <p className="mt-1 text-xs text-muted-foreground/70">in the pipeline</p>
                         </CardContent>
                     </Card>
-                    <Card className="gap-0 border-border bg-white py-4 shadow-sm">
+                    <Card className="gap-0 py-4 shadow-sm">
                         <CardContent>
                             <p className="text-xs font-medium text-muted-foreground">Next follow-up</p>
                             <p className="mt-2 truncate text-2xl font-bold tracking-tight text-foreground">{followUps[0]?.follow_up_at ?? 'None'}</p>
@@ -486,7 +481,7 @@ export default function JobApplicationKanban({
                 </div>
 
                 {localApplications.length === 0 ? (
-                    <Shell innerClassName="px-6 py-14 text-center sm:px-10">
+                    <Card className="gap-0 px-6 py-14 text-center sm:px-10">
                         <BriefcaseIcon className="mx-auto size-8 text-primary" />
                         <h3 className="mt-4 text-lg font-bold tracking-tight text-foreground">
                             No applications yet
@@ -505,7 +500,7 @@ export default function JobApplicationKanban({
                                 +
                             </span>
                         </Button>
-                    </Shell>
+                    </Card>
                 ) : (
                     <DndContext onDragEnd={onDragEnd}>
                         <div className="flex gap-3 overflow-x-auto pb-4">

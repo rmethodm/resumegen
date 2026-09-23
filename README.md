@@ -26,6 +26,8 @@ Resumegen is a Laravel/Inertia resume-building app for job seekers. It helps use
 - Login supports email/password (Fortify, opt-in 2FA) plus "continue with Google/GitHub/Microsoft" (Socialite) — auto-links to an existing account only when the provider confirms the email is verified.
 - Deployment notes live in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
+Standalone reference demos are available after sign-in at `/projects/issues` (list) and `/projects/issues/kanban` (board). They use sample data; edits reset when leaving or reloading the page.
+
 ## Main Product Areas
 
 - Resume Workstation (`/resumes/{id}/workstation`, the only editing surface) with templates, section reordering, autosave, inline-markdown bullets, live client-side preview plus an in-editor DomPDF preview frame, snapshots, notes, version groups with compare, duplication, and PDF/DOCX export.

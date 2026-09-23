@@ -141,7 +141,7 @@ export function NewResumeModal({
                                     disabled={submitting}
                                     onClick={() => createSample(sample.id)}
                                     className={cn(
-                                        'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-primary hover:bg-primary/10/40',
+                                        'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-primary hover:bg-primary/10',
                                         submitting && 'opacity-60',
                                     )}
                                 >
@@ -224,7 +224,7 @@ function ChoiceButton({
             disabled={disabled}
             onClick={onClick}
             className={cn(
-                'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-primary hover:bg-primary/10/40',
+                'rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-primary hover:bg-primary/10',
                 disabled && 'opacity-60',
             )}
         >

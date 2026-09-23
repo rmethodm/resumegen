@@ -74,7 +74,7 @@ export function JdMatchCard({
                                 {overlap.missing.slice(0, 32).map((term) => (
                                     <span
                                         key={term}
-                                        className="inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-white px-2.5 py-1 text-xs font-medium text-warning-text"
+                                        className="inline-flex items-center gap-1 rounded-full border border-dashed border-warning/40 bg-card px-2.5 py-1 text-xs font-medium text-warning-text"
                                     >
                                         {formatKeywordLabel(term)}
                                     </span>

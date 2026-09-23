@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font-size",
+        "value": "7px",
+        "createdAt": "2026-09-08T09:42:10.885Z",
+        "reason": "Agent: template-picker miniature resume thumb — 7px name label scales the preview, not product UI type (DESIGN.md ramp is landing/body)"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "5px",
+        "createdAt": "2026-09-08T09:42:10.910Z",
+        "reason": "Agent: template-picker miniature resume thumb — 5px headline/section labels scale the preview, not product UI type (DESIGN.md ramp is landing/body)"
+      }
+    ]
+  }
+}

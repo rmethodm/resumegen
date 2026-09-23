@@ -1,7 +1,7 @@
 import { Link, router } from '@inertiajs/react';
 import { CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 import { checklistSteps, type ChecklistFacts } from '@/lib/checklist-steps';
 import { cn } from '@/lib/utils';
 
@@ -18,7 +18,7 @@ export function FirstWeekChecklist({ facts, dismissed }: { facts: ChecklistFacts
     }
 
     return (
-        <Shell innerClassName="p-4 sm:p-5">
+        <Card className="gap-0 p-4 py-0 sm:p-5">
             <div className="flex items-start justify-between gap-3">
                 <div>
                     <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">Your first week</p>
@@ -53,6 +53,6 @@ export function FirstWeekChecklist({ facts, dismissed }: { facts: ChecklistFacts
                     </li>
                 ))}
             </ol>
-        </Shell>
+        </Card>
     );
 }

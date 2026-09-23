@@ -1,6 +1,7 @@
 import { Link, router } from '@inertiajs/react';
 import { BriefcaseIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import { Select } from '@/Components/ui/select';
 import type { JobStatus, LinkedApplication } from '@/types';
 
 const STATUSES: { value: JobStatus; label: string }[] = [
@@ -43,19 +44,19 @@ export function ApplicationChip({ application }: { application: LinkedApplicatio
                 {application.company} – {application.role}
             </Link>
             <span aria-hidden="true" className="text-muted-foreground/70">·</span>
-            <select
+            <Select
                 aria-label="Application status"
                 value={status}
                 disabled={saving}
                 onChange={(e) => changeStatus(e.target.value as JobStatus)}
-                className="border-0 bg-transparent p-0 pr-5 text-xs font-medium text-primary focus:ring-0"
+                className="h-auto w-auto shrink-0 border-0 bg-transparent p-0 pr-4 text-xs font-medium text-primary shadow-none focus-visible:ring-0"
             >
                 {STATUSES.map((s) => (
                     <option key={s.value} value={s.value}>
                         {s.label}
                     </option>
                 ))}
-            </select>
+            </Select>
         </span>
     );
 }

@@ -1,0 +1,201 @@
+- generic [ref=e53]:
+  - link "Skip to content" [ref=e54] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e56]:
+    - generic [ref=e57]:
+      - link "Resumegen" [ref=e58] [cursor=pointer]:
+        - /url: https://resumegen.test/dashboard
+      - navigation [ref=e61]:
+        - link "Dashboard" [ref=e62] [cursor=pointer]:
+          - /url: https://resumegen.test/dashboard
+        - link "Resumes" [ref=e63] [cursor=pointer]:
+          - /url: https://resumegen.test/resumes
+        - link "Shares" [ref=e64] [cursor=pointer]:
+          - /url: https://resumegen.test/shares
+        - link "Applications" [ref=e65] [cursor=pointer]:
+          - /url: https://resumegen.test/job-applications
+        - link "Profile" [ref=e66] [cursor=pointer]:
+          - /url: https://resumegen.test/profile
+      - generic [ref=e67]:
+        - button "Open navigation menu" [ref=e68]:
+          - generic [ref=e69]: Go to…
+        - generic: ⌘K
+      - button "Richard Method" [ref=e73]:
+        - generic [aria-hidden] [ref=e74]: RM
+  - main [ref=e76]:
+    - generic [ref=e79]:
+      - generic [ref=e80]:
+        - generic [ref=e82]:
+          - img "Match score 69 of 100" [ref=e83]:
+            - generic [ref=e84]: "69"
+          - generic [ref=e85]:
+            - paragraph [ref=e86]: Dashboard
+            - heading "12 resumes" [level=1] [ref=e87]
+            - paragraph [ref=e88]: Average strength score 69/100
+        - generic [ref=e90]:
+          - paragraph [ref=e91]: Quick start
+          - button "New resume" [ref=e92]
+          - link "Set up starter profile →" [ref=e99] [cursor=pointer]:
+            - /url: https://resumegen.test/settings/starter-profile
+            - generic [ref=e100]: Set up starter profile
+            - generic [ref=e103]: →
+      - generic [ref=e104]:
+        - paragraph [ref=e105]: "Tip: fill your starter profile once"
+        - paragraph [ref=e106]: Every new resume can pre-fill from it — contact, summary, and more.
+      - paragraph [ref=e108]: Your resumes
+      - generic [ref=e109]:
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - img "Match score 67 of 100" [ref=e113]:
+              - generic [ref=e114]: "67"
+            - generic [ref=e115]:
+              - generic [ref=e116]:
+                - link "Jean-Luc Picard — Fleet Command & Diplomacy" [ref=e117] [cursor=pointer]:
+                  - /url: https://resumegen.test/resumes/13/workstation
+                - generic [ref=e118]: Shared
+              - paragraph [ref=e119]: Senior Diplomatic Operations Lead · Updated 7 hours ago
+              - generic [ref=e121]:
+                - button "Shared" [ref=e124]
+                - generic [ref=e125]: · 12 views
+                - button "Copy" [ref=e128]
+            - button "Download" [ref=e132]
+            - link "Open" [ref=e135] [cursor=pointer]:
+              - /url: https://resumegen.test/resumes/13/workstation
+            - button "Actions for Jean-Luc Picard — Fleet Command & Diplomacy" [ref=e137]
+          - button "Show 2 versions" [ref=e141]
+        - generic [ref=e144]:
+          - img "Match score 25 of 100" [ref=e145]:
+            - generic [ref=e146]: "25"
+          - generic [ref=e147]:
+            - link "Luke Skywalker - Jedi" [ref=e149] [cursor=pointer]:
+              - /url: https://resumegen.test/resumes/36/workstation
+            - paragraph [ref=e150]: Death Star - Star Wars · Updated 9 hours ago
+          - button "Download" [ref=e152]
+          - link "Open" [ref=e155] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/36/workstation
+          - button "Actions for Luke Skywalker - Jedi" [ref=e157]
+        - generic [ref=e162]:
+          - img "Match score 76 of 100" [ref=e163]:
+            - generic [ref=e164]: "76"
+          - generic [ref=e165]:
+            - generic [ref=e166]:
+              - link "Sample — Backend Engineer" [ref=e167] [cursor=pointer]:
+                - /url: https://resumegen.test/resumes/6/workstation
+              - generic [ref=e168]: Expired link
+            - paragraph [ref=e169]: Sample — Backend Engineer · Updated 2 weeks ago
+            - button "Link expired" [ref=e174]
+          - button "Download" [ref=e176]
+          - link "Open" [ref=e179] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/6/workstation
+          - button "Actions for Sample — Backend Engineer" [ref=e181]
+        - generic [ref=e186]:
+          - img "Match score 90 of 100" [ref=e187]:
+            - generic [ref=e188]: "90"
+          - generic [ref=e189]:
+            - generic [ref=e190]:
+              - link "Sample — ICU Nurse" [ref=e191] [cursor=pointer]:
+                - /url: https://resumegen.test/resumes/7/workstation
+              - generic [ref=e192]: Expired link
+            - paragraph [ref=e193]: Sample — ICU Nurse · Updated 2 weeks ago
+            - button "Link expired" [ref=e198]
+          - button "Download" [ref=e200]
+          - link "Open" [ref=e203] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/7/workstation
+          - button "Actions for Sample — ICU Nurse" [ref=e205]
+        - generic [ref=e210]:
+          - img "Match score 76 of 100" [ref=e211]:
+            - generic [ref=e212]: "76"
+          - generic [ref=e213]:
+            - link "Sample — Recent Grad, Data Analyst" [ref=e215] [cursor=pointer]:
+              - /url: https://resumegen.test/resumes/9/workstation
+            - paragraph [ref=e216]: Sample — Recent Grad, Data Analyst · Updated 2 weeks ago
+          - button "Download" [ref=e218]
+          - link "Open" [ref=e221] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/9/workstation
+          - button "Actions for Sample — Recent Grad, Data Analyst" [ref=e223]
+        - generic [ref=e228]:
+          - img "Match score 79 of 100" [ref=e229]:
+            - generic [ref=e230]: "79"
+          - generic [ref=e231]:
+            - generic [ref=e232]:
+              - link "Backend Engineer — Go" [ref=e233] [cursor=pointer]:
+                - /url: https://resumegen.test/resumes/10/workstation
+              - generic [ref=e234]: Expired link
+            - paragraph [ref=e235]: Backend Engineer — Go · Updated 2 weeks ago
+            - button "Link expired" [ref=e240]
+          - button "Download" [ref=e242]
+          - link "Open" [ref=e245] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/10/workstation
+          - button "Actions for Backend Engineer — Go" [ref=e247]
+        - generic [ref=e252]:
+          - img "Match score 82 of 100" [ref=e253]:
+            - generic [ref=e254]: "82"
+          - generic [ref=e255]:
+            - generic [ref=e256]:
+              - link "Clinical Psychologist" [ref=e257] [cursor=pointer]:
+                - /url: https://resumegen.test/resumes/11/workstation
+              - generic [ref=e258]: Expired link
+            - paragraph [ref=e259]: Clinical Psychologist · Updated 2 weeks ago
+            - button "Link expired" [ref=e264]
+          - button "Download" [ref=e266]
+          - link "Open" [ref=e269] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/11/workstation
+          - button "Actions for Clinical Psychologist" [ref=e271]
+        - generic [ref=e276]:
+          - img "Match score 83 of 100" [ref=e277]:
+            - generic [ref=e278]: "83"
+          - generic [ref=e279]:
+            - generic [ref=e280]:
+              - link "Sample — Marketing Manager" [ref=e281] [cursor=pointer]:
+                - /url: https://resumegen.test/resumes/8/workstation
+              - generic [ref=e282]: Expired link
+            - paragraph [ref=e283]: Sample — Marketing Manager · Updated 2 weeks ago
+            - button "Link expired" [ref=e288]
+          - button "Download" [ref=e290]
+          - link "Open" [ref=e293] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/8/workstation
+          - button "Actions for Sample — Marketing Manager" [ref=e295]
+        - generic [ref=e300]:
+          - img "Match score 65 of 100" [ref=e301]:
+            - generic [ref=e302]: "65"
+          - generic [ref=e303]:
+            - link "Dana Scully — Forensic Science & Medical Investigation" [ref=e305] [cursor=pointer]:
+              - /url: https://resumegen.test/resumes/4/workstation
+            - paragraph [ref=e306]: Senior Medical Investigator / Forensic Pathologist · Updated 2 weeks ago
+          - button "Download" [ref=e308]
+          - link "Open" [ref=e311] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/4/workstation
+          - button "Actions for Dana Scully — Forensic Science & Medical Investigation" [ref=e313]
+        - generic [ref=e318]:
+          - img "Match score 65 of 100" [ref=e319]:
+            - generic [ref=e320]: "65"
+          - generic [ref=e321]:
+            - link "Leia Organa — Alliance Strategy & Public Leadership" [ref=e323] [cursor=pointer]:
+              - /url: https://resumegen.test/resumes/5/workstation
+            - paragraph [ref=e324]: VP of Public Affairs / Strategic Alliances · Updated 2 weeks ago
+          - button "Download" [ref=e326]
+          - link "Open" [ref=e329] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/5/workstation
+          - button "Actions for Leia Organa — Alliance Strategy & Public Leadership" [ref=e331]
+        - generic [ref=e336]:
+          - img "Match score 52 of 100" [ref=e337]:
+            - generic [ref=e338]: "52"
+          - generic [ref=e339]:
+            - link "Ellen Ripley — Crisis Ops & Safety Leadership" [ref=e341] [cursor=pointer]:
+              - /url: https://resumegen.test/resumes/2/workstation
+            - paragraph [ref=e342]: Director of Crisis Operations / Safety Engineering · Updated 2 weeks ago
+          - button "Download" [ref=e344]
+          - link "Open" [ref=e347] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/2/workstation
+          - button "Actions for Ellen Ripley — Crisis Ops & Safety Leadership" [ref=e349]
+        - generic [ref=e354]:
+          - img "Match score 65 of 100" [ref=e355]:
+            - generic [ref=e356]: "65"
+          - generic [ref=e357]:
+            - link "Paul Atreides — Strategy & Planetary Governance" [ref=e359] [cursor=pointer]:
+              - /url: https://resumegen.test/resumes/3/workstation
+            - paragraph [ref=e360]: Chief Strategy Officer / Resource Governance Lead · Updated 2 weeks ago
+          - button "Download" [ref=e362]
+          - link "Open" [ref=e365] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/3/workstation
+          - button "Actions for Paul Atreides — Strategy & Planetary Governance" [ref=e367]

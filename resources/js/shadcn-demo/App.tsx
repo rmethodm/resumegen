@@ -9,12 +9,13 @@ import {
     LayoutDashboardIcon,
     NotebookPenIcon,
     RedoIcon,
-    RefreshCwIcon,
     RotateCcwIcon,
     Share2Icon,
     UndoIcon,
 } from 'lucide-react';
 import { SidebarTrigger } from '@/shadcn-demo/components/ui/sidebar';
+import { AppSidebar } from '@/shadcn-demo/components/app-sidebar';
+import { SidebarInset, SidebarProvider } from '@/shadcn-demo/components/ui/sidebar';
 import { SectionFields } from '@/shadcn-demo/components/section-fields';
 import { ResumePreview } from '@/shadcn-demo/components/resume-preview';
 import { OptimizePanel } from '@/shadcn-demo/components/optimize-panel';
@@ -71,6 +72,13 @@ import {
     CommandSeparator,
 } from '@/shadcn-demo/components/ui/command';
 import { Alert, AlertDescription, AlertTitle } from '@/shadcn-demo/components/ui/alert';
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton,
+    InputGroupInput,
+} from '@/shadcn-demo/components/ui/input-group';
+import { Spinner } from '@/shadcn-demo/components/ui/spinner';
 import { cn } from '@/shadcn-demo/lib/utils';
 import {
     OPTIONAL_SECTIONS,
@@ -196,7 +204,18 @@ export default function App() {
     );
 
     return (
-        <div className="min-h-dvh bg-background" style={themeStyle}>
+        <SidebarProvider className="bg-background" style={themeStyle}>
+            <AppSidebar
+                tab={tab}
+                setTab={setTab}
+                draft={draft}
+                collapsed={collapsed}
+                toggleCollapsed={toggleCollapsed}
+                download={download}
+                setSideOpen={setSideOpen}
+                setCommandOpen={setCommandOpen}
+            />
+            <SidebarInset>
             <Toaster position="bottom-center" />
 
             <CommandDialog open={commandOpen} onOpenChange={setCommandOpen} title="Quick actions">
@@ -324,19 +343,19 @@ export default function App() {
                                 </PopoverTrigger>
                                 <PopoverContent className="flex flex-col gap-2">
                                     <p className="text-sm font-medium">Public share link</p>
-                                    <div className="flex items-center gap-2">
-                                        <Input readOnly value="resumegen.app/r/demo-a1b2c3" className="text-xs" />
-                                        <Button
-                                            size="icon"
-                                            variant="outline"
-                                            onClick={() => {
-                                                navigator.clipboard?.writeText('resumegen.app/r/demo-a1b2c3');
-                                                toast.success('Link copied');
-                                            }}
-                                        >
-                                            <CopyIcon />
-                                        </Button>
-                                    </div>
+                                    <InputGroup>
+                                        <InputGroupInput readOnly value="resumegen.app/r/demo-a1b2c3" className="text-xs" />
+                                        <InputGroupAddon align="inline-end">
+                                            <InputGroupButton
+                                                onClick={() => {
+                                                    navigator.clipboard?.writeText('resumegen.app/r/demo-a1b2c3');
+                                                    toast.success('Link copied');
+                                                }}
+                                            >
+                                                <CopyIcon />
+                                            </InputGroupButton>
+                                        </InputGroupAddon>
+                                    </InputGroup>
                                     <p className="text-xs text-muted-foreground">
                                         Demo link — copying it won't lead anywhere.
                                     </p>
@@ -588,7 +607,8 @@ export default function App() {
             </main>
 
             <SidePanel open={sideOpen} onOpenChange={setSideOpen} />
-        </div>
+            </SidebarInset>
+        </SidebarProvider>
     );
 }
 
@@ -613,7 +633,7 @@ function PreviewSkeleton() {
     return (
         <div className="flex flex-col gap-3 rounded-lg border bg-muted/40 p-6">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <RefreshCwIcon className="size-3.5 animate-spin" />
+                <Spinner className="size-3.5" />
                 Rendering preview…
             </div>
             <Skeleton className="h-8 w-1/2" />

@@ -1,4 +1,7 @@
 import { useId, useRef, useState } from 'react';
+import { XIcon } from 'lucide-react';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 import TagInput from '@/Components/TagInput';
 import type { SkillGroup } from '@/types';
 
@@ -53,24 +56,26 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
     return (
         <div className="flex flex-col gap-3">
             {groups.map((group, idx) => (
-                <div key={`${uid}-${idx}`} className="rounded-md border border-gray-200 bg-gray-50 p-3">
+                <div key={`${uid}-${idx}`} className="rounded-md border border-border bg-muted p-3">
                     <div className="mb-2 flex items-center gap-2">
-                        <input
+                        <Input
                             type="text"
                             value={group.category}
                             onChange={(e) => updateCategory(idx, e.target.value)}
                             onBlur={onBlur}
                             placeholder="Category (e.g. Frontend)"
                             maxLength={60}
-                            className="flex-1 rounded-sm border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25"
+                            className="h-auto flex-1 px-2 py-1 text-xs font-medium"
                         />
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={() => removeGroup(idx)}
-                            className="-m-2 shrink-0 p-2.5 text-xs leading-none text-muted-foreground/70 hover:text-destructive"
+                            className="size-7 shrink-0 text-muted-foreground/70 hover:text-destructive"
                         >
-                            ✕
-                        </button>
+                            <XIcon />
+                        </Button>
                     </div>
                     <TagInput
                         tags={group.items}
@@ -82,23 +87,25 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                 </div>
             ))}
             {drafts.map((draft) => (
-                <div key={`${uid}-draft-${draft.id}`} className="rounded-md border border-gray-200 bg-gray-50 p-3">
+                <div key={`${uid}-draft-${draft.id}`} className="rounded-md border border-border bg-muted p-3">
                     <div className="mb-2 flex items-center gap-2">
-                        <input
+                        <Input
                             type="text"
                             value={draft.category}
                             onChange={(e) => updateDraftCategory(draft.id, e.target.value)}
                             placeholder="Category (e.g. Frontend)"
                             maxLength={60}
-                            className="flex-1 rounded-sm border border-gray-300 bg-white px-2 py-1 text-xs font-medium focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25"
+                            className="h-auto flex-1 px-2 py-1 text-xs font-medium"
                         />
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={() => removeDraft(draft.id)}
-                            className="-m-2 shrink-0 p-2.5 text-xs leading-none text-muted-foreground/70 hover:text-destructive"
+                            className="size-7 shrink-0 text-muted-foreground/70 hover:text-destructive"
                         >
-                            ✕
-                        </button>
+                            <XIcon />
+                        </Button>
                     </div>
                     <TagInput
                         tags={[]}
@@ -108,13 +115,14 @@ export default function SkillGroupEditor({ groups, onChange, onBlur }: Props) {
                     />
                 </div>
             ))}
-            <button
+            <Button
                 type="button"
+                variant="outline"
                 onClick={addGroup}
-                className="rounded-md border border-dashed border-primary py-1.5 text-xs text-primary hover:border-primary hover:bg-primary/10"
+                className="border-dashed border-primary py-1.5 text-xs text-primary hover:bg-primary/10 hover:text-primary"
             >
                 + Add category
-            </button>
+            </Button>
         </div>
     );
 }

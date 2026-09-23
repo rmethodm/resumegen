@@ -136,7 +136,7 @@ export function NotesPanel({
                                     size="icon"
                                     aria-label="Delete note"
                                     onClick={() => deleteNote(note.id)}
-                                    className="size-6 text-muted-foreground/70 hover:bg-white hover:text-destructive"
+                                    className="size-6 text-muted-foreground/70 hover:bg-accent hover:text-destructive"
                                 >
                                     <TrashIcon className="size-3.5" />
                                 </Button>

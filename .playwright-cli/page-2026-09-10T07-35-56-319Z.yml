@@ -1,0 +1,521 @@
+- generic [ref=f2e3]:
+  - link "Skip to content" [ref=f2e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f2e6]:
+    - generic [ref=f2e7]:
+      - link "Resumegen" [ref=f2e8] [cursor=pointer]:
+        - /url: https://resumegen.test/dashboard
+      - navigation [ref=f2e11]:
+        - link "Dashboard" [ref=f2e12] [cursor=pointer]:
+          - /url: https://resumegen.test/dashboard
+        - link "Resumes" [ref=f2e13] [cursor=pointer]:
+          - /url: https://resumegen.test/resumes
+        - link "Shares" [ref=f2e14] [cursor=pointer]:
+          - /url: https://resumegen.test/shares
+        - link "Applications" [ref=f2e15] [cursor=pointer]:
+          - /url: https://resumegen.test/job-applications
+        - link "Profile" [ref=f2e16] [cursor=pointer]:
+          - /url: https://resumegen.test/profile
+      - generic [ref=f2e17]:
+        - button "Open navigation menu" [ref=f2e18]:
+          - generic [ref=f2e19]: Go to…
+        - generic: ⌘K
+      - button "AI Credits Browser" [ref=f2e23]:
+        - generic [aria-hidden] [ref=f2e24]: AC
+  - main [ref=f2e26]:
+    - generic [ref=f2e27]:
+      - generic [ref=f2e30]:
+        - generic [ref=f2e31]:
+          - generic [ref=f2e32]: AI Credits Browser Resume
+          - generic [ref=f2e34]:
+            - button "Share" [ref=f2e35]
+            - button "Download" [ref=f2e39]
+            - button "More actions" [ref=f2e45]
+        - toolbar "Document formatting" [ref=f2e48]:
+          - tablist "Workstation mode" [ref=f2e49]:
+            - tab "Edit" [selected] [ref=f2e50]
+            - tab "Review" [ref=f2e51]
+            - tab "Optimize" [ref=f2e52]
+          - button "Undo" [ref=f2e685]
+          - button "Redo" [disabled]
+          - button "Template" [ref=f2e689]:
+            - generic [ref=f2e691]: ATS Plain
+          - button "Text format" [ref=f2e695]: Format
+          - generic "Likely fits on one page" [ref=f2e698]: ≈1 page
+      - generic [ref=f2e66]:
+        - region "Resume score" [ref=f2e67]:
+          - generic [ref=f2e68]:
+            - generic [ref=f2e69]:
+              - generic "Updates as you edit" [ref=f2e70]:
+                - generic [ref=f2e71]: "34"
+                - generic [ref=f2e72]: /100
+                - generic [ref=f2e73]: Resume score
+              - generic [ref=f2e74]:
+                - button "Profile 20/25" [ref=f2e75]:
+                  - generic [ref=f2e76]:
+                    - generic [ref=f2e77]: Profile
+                    - generic [ref=f2e78]: 20/25
+                - button "Experience 10/25" [ref=f2e81]:
+                  - generic [ref=f2e82]:
+                    - generic [ref=f2e83]: Experience
+                    - generic [ref=f2e84]: 10/25
+                - button "Impact 0/25" [ref=f2e87]:
+                  - generic [ref=f2e88]:
+                    - generic [ref=f2e89]: Impact
+                    - generic [ref=f2e92]: 0/25
+                - button "Keywords 4/25" [ref=f2e94]:
+                  - generic [ref=f2e95]:
+                    - generic [ref=f2e96]: Keywords
+                    - generic [ref=f2e97]: 4/25
+              - button "2/8 steps done" [ref=f2e100]
+            - generic [ref=f2e103]:
+              - 'button "Next gap: Write a summary (80+ characters)" [ref=f2e104]':
+                - generic [ref=f2e107]:
+                  - generic [ref=f2e108]: "Next gap:"
+                  - text: Write a summary (80+ characters)
+              - navigation "Resume sections" [ref=f2e109]:
+                - button "Contact Complete" [ref=f2e110]:
+                  - text: Contact
+                  - generic [ref=f2e111]: Complete
+                - button "Professional Summary Incomplete" [ref=f2e112]:
+                  - text: Professional Summary
+                  - generic [ref=f2e113]: Incomplete
+                - button "Experience 1/1" [ref=f2e114]:
+                  - text: Experience
+                  - generic [ref=f2e115]: 1/1
+                - button "Project Not started" [ref=f2e116]:
+                  - text: Project
+                  - generic [ref=f2e117]: Not started
+                - button "Education Not started" [ref=f2e118]:
+                  - text: Education
+                  - generic [ref=f2e119]: Not started
+                - button "Skills Not started" [ref=f2e120]:
+                  - text: Skills
+                  - generic [ref=f2e121]: Not started
+                - button "Certificate Not started" [ref=f2e122]:
+                  - text: Certificate
+                  - generic [ref=f2e123]: Not started
+              - generic:
+                - generic:
+                  - generic [ref=f2e125]:
+                    - generic [ref=f2e126]:
+                      - paragraph [ref=f2e127]: Raise your score
+                      - paragraph [ref=f2e128]: 2/8
+                    - list [ref=f2e129]:
+                      - listitem [ref=f2e130]:
+                        - button "Set a target role (unlocks keyword scoring) Keywords" [disabled] [ref=f2e131]:
+                          - generic [ref=f2e135]:
+                            - text: Set a target role (unlocks keyword scoring)
+                            - generic [ref=f2e136]: Keywords
+                      - listitem [ref=f2e137]:
+                        - button "Name, headline, email, and location Profile" [disabled] [ref=f2e138]:
+                          - generic [ref=f2e142]:
+                            - text: Name, headline, email, and location
+                            - generic [ref=f2e143]: Profile
+                      - listitem [ref=f2e144]:
+                        - button "Write a summary (80+ characters) Profile" [ref=f2e145]:
+                          - generic [ref=f2e147]:
+                            - text: Write a summary (80+ characters)
+                            - generic [ref=f2e148]: Profile
+                      - listitem [ref=f2e149]:
+                        - button "Add two jobs with title and company Experience" [ref=f2e150]:
+                          - generic [ref=f2e152]:
+                            - text: Add two jobs with title and company
+                            - generic [ref=f2e153]: Experience
+                      - listitem [ref=f2e154]:
+                        - button "Add at least six experience bullets Experience" [ref=f2e155]:
+                          - generic [ref=f2e157]:
+                            - text: Add at least six experience bullets
+                            - generic [ref=f2e158]: Experience
+                      - listitem [ref=f2e159]:
+                        - button "Put a number in at least half of your bullets Impact" [ref=f2e160]:
+                          - generic [ref=f2e162]:
+                            - text: Put a number in at least half of your bullets
+                            - generic [ref=f2e163]: Impact
+                      - listitem [ref=f2e164]:
+                        - button "List at least five skills Keywords" [ref=f2e165]:
+                          - generic [ref=f2e167]:
+                            - text: List at least five skills
+                            - generic [ref=f2e168]: Keywords
+                      - listitem [ref=f2e169]:
+                        - button "Cover role keywords (use chips below) Keywords" [ref=f2e170]:
+                          - generic [ref=f2e172]:
+                            - text: Cover role keywords (use chips below)
+                            - generic [ref=f2e173]: Keywords
+                  - generic [ref=f2e174]:
+                    - generic [ref=f2e175]:
+                      - paragraph [ref=f2e176]: Role keywords
+                      - paragraph [ref=f2e177]: Click a missing term to add it as a skill. Only add skills you actually have.
+                      - generic [ref=f2e178]:
+                        - button "TypeScript" [ref=f2e179]
+                        - button "React" [ref=f2e182]
+                        - button "Testing" [ref=f2e185]
+                        - button "CI/CD" [ref=f2e188]
+                        - button "Performance" [ref=f2e191]
+                      - generic [ref=f2e194]: API
+                    - generic [ref=f2e198]:
+                      - generic [ref=f2e199]:
+                        - paragraph [ref=f2e200]: Job match
+                        - paragraph [ref=f2e201]: 24%
+                      - paragraph [ref=f2e202]: 5 of 21 JD terms found in your resume (deterministic tokens).
+                      - paragraph [ref=f2e203]: Missing from resume
+                      - generic [ref=f2e204]:
+                        - button "need" [ref=f2e205]
+                        - button "postgresql" [ref=f2e208]
+                        - button "redis" [ref=f2e211]
+                        - button "aws" [ref=f2e214]
+                        - button "design" [ref=f2e217]
+                        - button "experience." [ref=f2e220]
+                        - button "lead" [ref=f2e223]
+                        - button "migrations" [ref=f2e226]
+                        - button "cut" [ref=f2e229]
+                        - button "latency" [ref=f2e232]
+                        - button "mentor" [ref=f2e235]
+                        - button "teammates." [ref=f2e238]
+                        - button "keywords" [ref=f2e241]
+                        - button "graphql" [ref=f2e244]
+                        - button "observability" [ref=f2e247]
+                        - button "kubernetes." [ref=f2e250]
+                      - paragraph [ref=f2e253]: Only add skills you actually have.
+                      - paragraph [ref=f2e254]: Present
+                      - generic [ref=f2e255]:
+                        - generic [ref=f2e256]: senior
+                        - generic [ref=f2e257]: backend
+                        - generic [ref=f2e258]: engineer
+                        - generic [ref=f2e259]: laravel
+                        - generic [ref=f2e260]: api
+                      - button "Edit job description →" [ref=f2e261]
+        - main "Section form" [ref=f2e699]:
+          - generic [ref=f2e700]:
+            - generic "Double-click to collapse or expand" [ref=f2e701]:
+              - button "Contact" [expanded] [ref=f2e704]
+              - generic [ref=f2e708]:
+                - button "Move Contact up" [disabled]
+                - button "Move Contact down" [ref=f2e709]
+            - generic [ref=f2e715]:
+              - generic [ref=f2e716]:
+                - generic [ref=f2e717]: Full name
+                - textbox [ref=f2e718]: Alex Rivera
+              - generic [ref=f2e719]:
+                - generic [ref=f2e720]: Headline
+                - textbox "e.g. Product Designer" [ref=f2e722]: Backend Engineer
+              - generic [ref=f2e723]:
+                - generic [ref=f2e724]: Email
+                - textbox [ref=f2e725]: elias.baumbach@example.com
+              - generic [ref=f2e726]:
+                - generic [ref=f2e727]:
+                  - generic [ref=f2e728]: Phone
+                  - textbox "(123) 456-7890" [ref=f2e729]
+                - generic [ref=f2e730]:
+                  - generic [ref=f2e731]: Location
+                  - textbox [ref=f2e732]: Kundestad, TX
+              - generic [ref=f2e733]:
+                - generic [ref=f2e734]: LinkedIn
+                - textbox "https://linkedin.com/in/you" [ref=f2e735]
+              - generic [ref=f2e736]:
+                - generic [ref=f2e737]: Website
+                - textbox "https://example.com" [ref=f2e738]
+          - generic [ref=f2e739]:
+            - generic "Double-click to collapse or expand" [ref=f2e740]:
+              - button "Professional Summary" [expanded] [ref=f2e743]
+              - generic [ref=f2e747]:
+                - button "Move Professional Summary up" [ref=f2e748]
+                - button "Move Professional Summary down" [ref=f2e751]
+            - generic [ref=f2e758]:
+              - generic [ref=f2e759]:
+                - generic [ref=f2e760]: Summary
+                - button "Rewrite · 1 credit" [ref=f2e761]
+              - textbox "Summary" [ref=f2e764]: Backend engineer focused on Laravel and Postgres.
+              - paragraph [ref=f2e765]: 49 / 2000 characters
+          - generic [ref=f2e766]:
+            - generic "Double-click to collapse or expand" [ref=f2e767]:
+              - button "Experience" [expanded] [ref=f2e770]
+              - generic [ref=f2e774]:
+                - button "Move Experience up" [ref=f2e775]
+                - button "Move Experience down" [ref=f2e778]
+            - generic [ref=f2e784]:
+              - generic [ref=f2e785]:
+                - generic [ref=f2e786]:
+                  - button "Reorder Software Engineer — drag, or Alt+Arrow keys" [ref=f2e787]
+                  - button "Software Engineer" [expanded] [ref=f2e790]
+                  - button "Remove Software Engineer" [ref=f2e795]
+                - generic [ref=f2e798]:
+                  - generic [ref=f2e799]:
+                    - generic [ref=f2e800]: Job title
+                    - textbox "e.g. Software Engineer" [ref=f2e802]: Software Engineer
+                  - generic [ref=f2e811]:
+                    - generic [ref=f2e812]: Company
+                    - textbox [ref=f2e813]: Northwind Labs
+                  - generic [ref=f2e814]:
+                    - generic [ref=f2e815]:
+                      - generic [ref=f2e816]: Start date
+                      - generic [ref=f2e817]:
+                        - combobox [ref=f2e818]:
+                          - option "Month" [selected]
+                          - option "Jan"
+                          - option "Feb"
+                          - option "Mar"
+                          - option "Apr"
+                          - option "May"
+                          - option "Jun"
+                          - option "Jul"
+                          - option "Aug"
+                          - option "Sep"
+                          - option "Oct"
+                          - option "Nov"
+                          - option "Dec"
+                        - combobox [ref=f2e819]:
+                          - option "Year"
+                          - option "1965"
+                          - option "1966"
+                          - option "1967"
+                          - option "1968"
+                          - option "1969"
+                          - option "1970"
+                          - option "1971"
+                          - option "1972"
+                          - option "1973"
+                          - option "1974"
+                          - option "1975"
+                          - option "1976"
+                          - option "1977"
+                          - option "1978"
+                          - option "1979"
+                          - option "1980"
+                          - option "1981"
+                          - option "1982"
+                          - option "1983"
+                          - option "1984"
+                          - option "1985"
+                          - option "1986"
+                          - option "1987"
+                          - option "1988"
+                          - option "1989"
+                          - option "1990"
+                          - option "1991"
+                          - option "1992"
+                          - option "1993"
+                          - option "1994"
+                          - option "1995"
+                          - option "1996"
+                          - option "1997"
+                          - option "1998"
+                          - option "1999"
+                          - option "2000"
+                          - option "2001"
+                          - option "2002"
+                          - option "2003"
+                          - option "2004"
+                          - option "2005"
+                          - option "2006"
+                          - option "2007"
+                          - option "2008"
+                          - option "2009"
+                          - option "2010"
+                          - option "2011"
+                          - option "2012"
+                          - option "2013"
+                          - option "2014"
+                          - option "2015"
+                          - option "2016"
+                          - option "2017"
+                          - option "2018"
+                          - option "2019"
+                          - option "2020"
+                          - option "2021"
+                          - option "2022" [selected]
+                          - option "2023"
+                          - option "2024"
+                          - option "2025"
+                          - option "2026"
+                          - option "2027"
+                          - option "2028"
+                          - option "2029"
+                          - option "2030"
+                          - option "2031"
+                          - option "2032"
+                          - option "2033"
+                          - option "2034"
+                          - option "2035"
+                          - option "2036"
+                          - option "2037"
+                          - option "2038"
+                          - option "2039"
+                          - option "2040"
+                          - option "2041"
+                          - option "2042"
+                          - option "2043"
+                          - option "2044"
+                          - option "2045"
+                          - option "2046"
+                          - option "2047"
+                          - option "2048"
+                          - option "2049"
+                          - option "2050"
+                    - generic [ref=f2e820]:
+                      - generic [ref=f2e821]: End date
+                      - generic [ref=f2e822]:
+                        - combobox [disabled] [ref=f2e823]:
+                          - option "Present" [selected]
+                          - option "Jan"
+                          - option "Feb"
+                          - option "Mar"
+                          - option "Apr"
+                          - option "May"
+                          - option "Jun"
+                          - option "Jul"
+                          - option "Aug"
+                          - option "Sep"
+                          - option "Oct"
+                          - option "Nov"
+                          - option "Dec"
+                        - combobox [disabled] [ref=f2e824]:
+                          - option [selected]
+                          - option "1965"
+                          - option "1966"
+                          - option "1967"
+                          - option "1968"
+                          - option "1969"
+                          - option "1970"
+                          - option "1971"
+                          - option "1972"
+                          - option "1973"
+                          - option "1974"
+                          - option "1975"
+                          - option "1976"
+                          - option "1977"
+                          - option "1978"
+                          - option "1979"
+                          - option "1980"
+                          - option "1981"
+                          - option "1982"
+                          - option "1983"
+                          - option "1984"
+                          - option "1985"
+                          - option "1986"
+                          - option "1987"
+                          - option "1988"
+                          - option "1989"
+                          - option "1990"
+                          - option "1991"
+                          - option "1992"
+                          - option "1993"
+                          - option "1994"
+                          - option "1995"
+                          - option "1996"
+                          - option "1997"
+                          - option "1998"
+                          - option "1999"
+                          - option "2000"
+                          - option "2001"
+                          - option "2002"
+                          - option "2003"
+                          - option "2004"
+                          - option "2005"
+                          - option "2006"
+                          - option "2007"
+                          - option "2008"
+                          - option "2009"
+                          - option "2010"
+                          - option "2011"
+                          - option "2012"
+                          - option "2013"
+                          - option "2014"
+                          - option "2015"
+                          - option "2016"
+                          - option "2017"
+                          - option "2018"
+                          - option "2019"
+                          - option "2020"
+                          - option "2021"
+                          - option "2022"
+                          - option "2023"
+                          - option "2024"
+                          - option "2025"
+                          - option "2026"
+                          - option "2027"
+                          - option "2028"
+                          - option "2029"
+                          - option "2030"
+                          - option "2031"
+                          - option "2032"
+                          - option "2033"
+                          - option "2034"
+                          - option "2035"
+                          - option "2036"
+                          - option "2037"
+                          - option "2038"
+                          - option "2039"
+                          - option "2040"
+                          - option "2041"
+                          - option "2042"
+                          - option "2043"
+                          - option "2044"
+                          - option "2045"
+                          - option "2046"
+                          - option "2047"
+                          - option "2048"
+                          - option "2049"
+                          - option "2050"
+                  - generic [ref=f2e825]:
+                    - checkbox "I currently work here" [checked] [ref=f2e826]
+                    - text: I currently work here
+                  - generic [ref=f2e827]:
+                    - generic [ref=f2e828]:
+                      - generic [ref=f2e829]: Bullets
+                      - paragraph [ref=f2e830]: 2/12 bullets · Markdown saved
+                    - generic [ref=f2e831]:
+                      - toolbar "Bullets formatting" [ref=f2e832]:
+                        - button "Bold" [ref=f2e833]:
+                          - generic [ref=f2e834]: B
+                        - button "Italic" [ref=f2e835]:
+                          - generic [ref=f2e836]: I
+                        - button "Link" [ref=f2e837]
+                        - button "Rewrite · 1 credit" [ref=f2e840]
+                        - button "Bullet list" [pressed] [ref=f2e845]: List
+                      - generic [active] [ref=f2e847]:
+                        - list [ref=f2e848]:
+                          - listitem [ref=f2e849]:
+                            - paragraph [ref=f2e850]: Built internal APIs for order processing
+                          - listitem [ref=f2e851]:
+                            - paragraph [ref=f2e852]: Improved deploy reliability for weekly releases
+                        - paragraph [ref=f2e954]
+              - button "Add experience" [ref=f2e854]
+          - generic [ref=f2e857]:
+            - generic "Double-click to collapse or expand" [ref=f2e858]:
+              - button "Project" [expanded] [ref=f2e861]
+              - generic [ref=f2e864]:
+                - button "Hide" [ref=f2e865]
+                - generic [ref=f2e866]:
+                  - button "Move Project up" [ref=f2e867]
+                  - button "Move Project down" [ref=f2e870]
+            - button "Add project" [ref=f2e878]
+          - generic [ref=f2e881]:
+            - generic "Double-click to collapse or expand" [ref=f2e882]:
+              - button "Education" [expanded] [ref=f2e885]
+              - generic [ref=f2e888]:
+                - button "Hide" [ref=f2e889]
+                - generic [ref=f2e890]:
+                  - button "Move Education up" [ref=f2e891]
+                  - button "Move Education down" [ref=f2e894]
+            - button "Add education" [ref=f2e902]
+          - generic [ref=f2e905]:
+            - generic "Double-click to collapse or expand" [ref=f2e906]:
+              - button "Skills" [expanded] [ref=f2e909]
+              - generic [ref=f2e913]:
+                - button "Move Skills up" [ref=f2e914]
+                - button "Move Skills down" [ref=f2e917]
+            - generic [ref=f2e924]:
+              - generic [ref=f2e925]:
+                - generic [ref=f2e926]: Skills
+                - button "Add skills" [ref=f2e927]
+              - textbox "Add skill…" [ref=f2e932]
+          - generic [ref=f2e933]:
+            - generic "Double-click to collapse or expand" [ref=f2e934]:
+              - button "Certificate" [expanded] [ref=f2e937]
+              - generic [ref=f2e940]:
+                - button "Hide" [ref=f2e941]
+                - generic [ref=f2e942]:
+                  - button "Move Certificate up" [ref=f2e943]
+                  - button "Move Certificate down" [disabled]
+            - button "Add certificate" [ref=f2e951]

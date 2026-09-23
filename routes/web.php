@@ -18,6 +18,7 @@ use App\Http\Controllers\LegalController;
 use App\Http\Controllers\MobileTokenController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectIssueController;
 use App\Http\Controllers\PublicResumeShareController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeCompareController;
@@ -91,8 +92,6 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 
     Route::patch('/user/checklist/dismiss', [UserPreferenceController::class, 'dismissChecklist'])->name('checklist.dismiss');
     Route::patch('/user/apply-wizard-preference', [UserPreferenceController::class, 'setApplyWizardPreference'])->name('apply-wizard.preference');
-    Route::patch('/user/theme', [UserPreferenceController::class, 'setTheme'])->name('theme.update');
-    Route::patch('/user/workstation-layout', [UserPreferenceController::class, 'setWorkstationLayout'])->name('workstation-layout.update');
 
     Route::get('/settings/starter-profile', [StarterProfileController::class, 'edit'])->name('starter-profile.edit');
     Route::patch('/settings/starter-profile', [StarterProfileController::class, 'update'])->name('starter-profile.update');
@@ -190,6 +189,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
     Route::get('/shares', [ShareController::class, 'index'])->name('shares.index');
 
+    // Project Management demo pages
+    Route::get('/projects/issues', [ProjectIssueController::class, 'index'])->name('projects.issues.index');
+    Route::get('/projects/issues/kanban', [ProjectIssueController::class, 'kanban'])->name('projects.issues.kanban');
     Route::get('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
     Route::get('/billing/credits', [BillingController::class, 'credits'])->name('billing.credits');
@@ -219,7 +221,16 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
 if (app()->environment('local')) {
     Route::get('/dev/job-fixtures', fn () => view('dev.job-fixtures.index'))->name('dev.job-fixtures.index');
     Route::get('/dev/job-fixtures/{page}', function (string $page) {
-        abort_unless(in_array($page, ['workday', 'greenhouse', 'lever', 'icims', 'custom'], true), 404);
+        abort_unless(in_array($page, [
+            'workday', 'greenhouse', 'lever', 'icims', 'custom',
+            'taleo', 'ashby', 'smartrecruiters',
+            'generic-autocomplete', 'generic-placeholder-only', 'generic-bracketed-indexed',
+            'generic-confirm-traps', 'generic-hidden-wizard', 'generic-shadow-nested',
+            'qa-open-ended', 'qa-cover-letter-exclude', 'qa-short-label-exclude',
+            'qa-profile-match-exclude', 'qa-resume-file-vs-coverletter-file',
+            'jd-jsonld-jobposting', 'jd-plain-html', 'apply-landing', 'apply-landing-form',
+            'jd-multi-page-application',
+        ], true), 404);
 
         return view("dev.job-fixtures.{$page}");
     })->name('dev.job-fixtures.show');

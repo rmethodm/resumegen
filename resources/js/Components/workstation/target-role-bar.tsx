@@ -24,7 +24,7 @@ export function TargetRoleBar({
     return (
         <div
             className={cn(
-                'rounded-xl border border-border border-l-[3px] border-l-primary bg-white px-3 py-2.5 sm:px-4',
+                'rounded-xl border border-border border-l-[3px] border-l-primary bg-card px-3 py-2.5 sm:px-4',
                 className,
             )}
         >
@@ -42,7 +42,7 @@ export function TargetRoleBar({
                         value={targetRole}
                         allowCreate={false}
                         placeholder="e.g. Senior Software Engineer"
-                        className="h-9 w-full rounded-md border border-border bg-white px-3 text-sm shadow-xs transition-[border-color,box-shadow] duration-soft ease-soft focus-visible:border-primary focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+                        className="h-9"
                         onChange={onChange}
                     />
                 </div>

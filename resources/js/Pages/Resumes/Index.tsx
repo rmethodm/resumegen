@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button } from '@/Components/ui/button';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 import { templateLabels } from '@/lib/resume-templates';
 import { templateThumbStyles } from '@/lib/template-thumb-styles';
 import { cn } from '@/lib/utils';
@@ -63,7 +63,7 @@ export default function ResumesIndex({
             <div className="py-6 sm:py-8">
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col gap-5">
-                        <Shell innerClassName="p-5 sm:p-6">
+                        <Card className="gap-0 p-5 sm:p-6">
                             <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">
                                 Resumes
                             </p>
@@ -74,7 +74,7 @@ export default function ResumesIndex({
                                 Pick a template to start a new resume. Your existing resumes stay on
                                 the Dashboard; you can change the template later in the editor.
                             </p>
-                        </Shell>
+                        </Card>
 
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                             {sorted.map((key) => {
@@ -82,13 +82,12 @@ export default function ResumesIndex({
                                 const busy = creating === key;
 
                                 return (
-                                    <Shell
+                                    <Card
                                         key={key}
-                                        className="flex flex-col"
-                                        innerClassName="flex h-full flex-col p-3"
+                                        className="gap-0 flex h-full flex-col p-3"
                                     >
                                         <div
-                                            className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-border bg-white shadow-xs"
+                                            className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-border bg-card shadow-xs"
                                             style={{
                                                 borderLeft: style.pageAccent
                                                     ? `3px solid ${style.pageAccent}`
@@ -120,7 +119,7 @@ export default function ResumesIndex({
                                                 {busy ? 'Creating…' : 'Use this template'}
                                             </Button>
                                         </div>
-                                    </Shell>
+                                    </Card>
                                 );
                             })}
                         </div>
@@ -130,12 +129,11 @@ export default function ResumesIndex({
                                 <h2 className="text-sm font-bold text-foreground">More formats</h2>
                                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                                     {comingSoon.map((format) => (
-                                        <Shell
+                                        <Card
                                             key={format.name}
-                                            className="flex flex-col"
-                                            innerClassName="flex h-full flex-col p-3"
+                                            className="gap-0 flex h-full flex-col p-3"
                                         >
-                                            <div className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-border bg-white shadow-xs">
+                                            <div className="relative aspect-8.5/11 w-full overflow-hidden rounded-md border border-border bg-card shadow-xs">
                                                 <img
                                                     src={format.url}
                                                     alt=""
@@ -152,7 +150,7 @@ export default function ResumesIndex({
                                                     Coming Soon
                                                 </Button>
                                             </div>
-                                        </Shell>
+                                        </Card>
                                     ))}
                                 </div>
                             </div>

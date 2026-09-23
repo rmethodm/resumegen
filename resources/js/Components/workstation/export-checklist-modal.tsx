@@ -44,8 +44,9 @@ export function ExportChecklistModal({
                 <ul className="space-y-2">
                     {[...blockers, ...warnings, ...oks].map((check) => (
                         <li key={check.id}>
-                            <button
+                            <Button
                                 type="button"
+                                variant="outline"
                                 disabled={
                                     check.severity === 'ok' ||
                                     (check.section === undefined &&
@@ -53,13 +54,13 @@ export function ExportChecklistModal({
                                 }
                                 onClick={() => onJump(check)}
                                 className={cn(
-                                    'focus-ring flex w-full items-start gap-2 rounded-lg border px-3 py-2 text-left text-sm',
+                                    'h-auto w-full items-start justify-start gap-2 whitespace-normal rounded-lg px-3 py-2 text-left text-sm font-normal',
                                     check.severity === 'error' &&
-                                        'border-destructive/30 bg-destructive/10 text-destructive',
+                                        'border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/10',
                                     check.severity === 'warn' &&
-                                        'border-warning/30 bg-warning-subtle text-warning-text',
+                                        'border-warning/30 bg-warning-subtle text-warning-text hover:bg-warning-subtle',
                                     check.severity === 'ok' &&
-                                        'border-success/30 bg-success-subtle text-success-text',
+                                        'border-success/30 bg-success-subtle text-success-text hover:bg-success-subtle',
                                     check.severity !== 'ok' &&
                                         check.section &&
                                         'cursor-pointer hover:opacity-90',
@@ -75,7 +76,7 @@ export function ExportChecklistModal({
                                 <span className="min-w-0 flex-1 leading-snug">
                                     {check.label}
                                 </span>
-                            </button>
+                            </Button>
                         </li>
                     ))}
                 </ul>

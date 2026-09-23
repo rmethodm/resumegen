@@ -1,10 +1,3 @@
-import {
-    Tab,
-    TabGroup,
-    TabList,
-    TabPanel,
-    TabPanels,
-} from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useMemo, useState } from 'react';
 import {
@@ -17,6 +10,7 @@ import {
 } from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
 import { cn } from '@/lib/utils';
 import type { ResumeSkill, SkillLibraryGroup } from '@/types';
 
@@ -45,6 +39,7 @@ export function SkillPickerModal({
     const [query, setQuery] = useState('');
     const [category, setCategory] = useState<string | null>(null);
     const [pending, setPending] = useState<Set<string>>(new Set());
+    const [kind, setKind] = useState<'soft' | 'hard'>('soft');
 
     const already = useMemo(
         () => new Set(skills.map((skill) => skillKey(skill.category, skill.name))),
@@ -55,6 +50,7 @@ export function SkillPickerModal({
         setQuery('');
         setCategory(null);
         setPending(new Set());
+        setKind('soft');
     }
 
     function close() {
@@ -121,19 +117,20 @@ export function SkillPickerModal({
                 {query.trim() === '' && (
                     <div className="flex w-44 shrink-0 flex-col gap-0.5 overflow-y-auto border-r border-border p-2.5">
                         {groups.map((group) => (
-                            <button
+                            <Button
                                 key={group.category}
                                 type="button"
+                                variant="ghost"
                                 onClick={() => setCategory(group.category)}
                                 className={cn(
-                                    'rounded-lg px-2.5 py-2 text-left text-xs font-semibold',
+                                    'justify-start rounded-lg px-2.5 py-2 text-left text-xs font-semibold',
                                     (activeCategory?.category ?? '') === group.category
-                                        ? 'bg-primary/10 text-primary'
-                                        : 'text-muted-foreground hover:bg-muted',
+                                        ? 'bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary'
+                                        : 'text-muted-foreground',
                                 )}
                             >
                                 {group.category}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 )}
@@ -150,22 +147,20 @@ export function SkillPickerModal({
                                     const selected = pending.has(key);
 
                                     return (
-                                        <button
+                                        <Button
                                             key={name}
                                             type="button"
+                                            variant={selected && !added ? 'default' : 'outline'}
+                                            size="sm"
                                             disabled={added}
                                             onClick={() => toggle(group.category, name)}
                                             className={cn(
-                                                'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold',
-                                                added
-                                                    ? 'cursor-not-allowed border border-border bg-muted text-muted-foreground/70'
-                                                    : selected
-                                                      ? 'bg-primary text-white'
-                                                      : 'border border-border text-foreground hover:border-primary/40',
+                                                'rounded-full font-semibold',
+                                                added && 'cursor-not-allowed bg-muted text-muted-foreground/70',
                                             )}
                                         >
                                             {added ? '✓' : selected ? '✓' : '+'} {name}
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>
@@ -203,20 +198,18 @@ export function SkillPickerModal({
                     </div>
                 </div>
 
-                <TabGroup className="flex min-h-0 flex-1 flex-col">
-                    <TabList className="flex gap-4 border-b border-border px-6 pt-3.5">
-                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-muted-foreground outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 data-selected:border-primary data-selected:text-primary">
-                            Soft skills
-                        </Tab>
-                        <Tab className="border-b-2 border-transparent pb-2.5 text-xs font-bold text-muted-foreground outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 data-selected:border-primary data-selected:text-primary">
-                            Hard skills
-                        </Tab>
-                    </TabList>
-                    <TabPanels className="flex min-h-0 flex-1">
-                        <TabPanel className="flex min-h-0 flex-1">{renderTab('soft')}</TabPanel>
-                        <TabPanel className="flex min-h-0 flex-1">{renderTab('hard')}</TabPanel>
-                    </TabPanels>
-                </TabGroup>
+                <Tabs
+                    value={kind}
+                    onValueChange={(value) => setKind(value as 'soft' | 'hard')}
+                    className="flex min-h-0 flex-1 flex-col gap-0"
+                >
+                    <TabsList className="mx-6 mt-3.5 w-fit">
+                        <TabsTrigger value="soft">Soft skills</TabsTrigger>
+                        <TabsTrigger value="hard">Hard skills</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="soft" className="flex min-h-0">{renderTab('soft')}</TabsContent>
+                    <TabsContent value="hard" className="flex min-h-0">{renderTab('hard')}</TabsContent>
+                </Tabs>
                 </div>
                 <DialogFooter className="flex-row items-center justify-between border-t px-5 py-3">
                     <span className="text-xs font-medium text-muted-foreground">

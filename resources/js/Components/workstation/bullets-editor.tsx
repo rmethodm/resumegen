@@ -148,7 +148,7 @@ export function BulletsField({
                     {value.length}/{max} bullets · Markdown saved
                 </p>
             </div>
-            <div className="overflow-hidden rounded-md border border-border bg-white shadow-xs focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30">
+            <div className="overflow-hidden rounded-md border border-border bg-card shadow-xs focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30">
                 <div
                     role="toolbar"
                     aria-label={`${label} formatting`}

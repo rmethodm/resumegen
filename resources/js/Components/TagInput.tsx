@@ -1,4 +1,7 @@
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { XIcon } from 'lucide-react';
+import { Badge } from '@/Components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface Props {
     tags: string[];
@@ -126,14 +129,11 @@ export default function TagInput({
     return (
         <div ref={containerRef} className="relative">
             <div
-                className="flex flex-wrap gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 shadow-xs focus-within:border-primary focus-within:ring-1 focus-within:ring-primary cursor-text"
+                className="flex flex-wrap gap-1.5 rounded-md border border-input bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50 cursor-text"
                 onClick={() => inputRef.current?.focus()}
             >
                 {tags.map((tag, i) => (
-                    <span
-                        key={i}
-                        className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary"
-                    >
+                    <Badge key={i} variant="secondary" className="gap-1 rounded-full bg-primary/10 text-primary">
                         {tag}
                         <button
                             type="button"
@@ -141,11 +141,12 @@ export default function TagInput({
                                 e.stopPropagation();
                                 removeTag(i);
                             }}
-                            className="text-primary hover:text-primary leading-none"
+                            className="leading-none"
+                            aria-label={`Remove ${tag}`}
                         >
-                            ×
+                            <XIcon className="size-3" />
                         </button>
-                    </span>
+                    </Badge>
                 ))}
                 <input
                     ref={inputRef}
@@ -163,12 +164,12 @@ export default function TagInput({
                     }}
                     placeholder={tags.length ? '' : placeholder}
                     maxLength={60}
-                    className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-sm outline-hidden focus:ring-0 focus-visible:ring-2 focus-visible:ring-primary/25"
+                    className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-sm outline-hidden focus:ring-0"
                     autoComplete="off"
                 />
             </div>
             {open && suggestions.length > 0 && (
-                <ul className="absolute z-50 top-full left-0 right-0 mt-1 max-h-52 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                <ul className="absolute z-50 top-full left-0 right-0 mt-1 max-h-52 overflow-y-auto rounded-lg border border-border bg-popover py-1 shadow-lg">
                     {suggestions.map((s, i) => (
                         <li
                             key={s.id}
@@ -176,11 +177,12 @@ export default function TagInput({
                                 e.preventDefault();
                                 addTag(s.name);
                             }}
-                            className={`cursor-pointer px-3 py-2 text-sm ${
+                            className={cn(
+                                'cursor-pointer px-3 py-2 text-sm',
                                 i === activeIndex
-                                    ? 'bg-primary/10 text-primary'
-                                    : 'text-gray-900 hover:bg-gray-50'
-                            }`}
+                                    ? 'bg-accent text-accent-foreground'
+                                    : 'text-popover-foreground hover:bg-accent hover:text-accent-foreground',
+                            )}
                         >
                             {s.name}
                         </li>

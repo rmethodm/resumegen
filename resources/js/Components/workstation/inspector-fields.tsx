@@ -551,7 +551,7 @@ export function EntryCard({
         <div
             onDragOver={dragHandle?.onDragOver}
             className={cn(
-                'flex flex-col rounded-lg border border-border bg-white',
+                'flex flex-col rounded-lg border border-border bg-card',
                 'transition-opacity duration-soft ease-soft',
                 dragHandle?.dragging && 'opacity-50',
             )}
@@ -589,12 +589,13 @@ export function EntryCard({
                         <Bars3Icon className="size-3.5" />
                     </Button>
                 )}
-                <button
+                <Button
                     type="button"
+                    variant="ghost"
                     aria-expanded={expanded}
                     aria-controls={contentId}
                     onClick={onToggleExpand}
-                    className="focus-ring flex min-w-0 flex-1 items-start gap-1.5 rounded-sm text-left"
+                    className="h-auto min-w-0 flex-1 items-start justify-start gap-1.5 whitespace-normal rounded-sm px-1 py-0.5 text-left font-normal hover:bg-transparent"
                 >
                     <ChevronDownIcon
                         className={cn(
@@ -612,7 +613,7 @@ export function EntryCard({
                             </span>
                         ) : null}
                     </span>
-                </button>
+                </Button>
                 <Button
                     variant="ghost"
                     size="icon"

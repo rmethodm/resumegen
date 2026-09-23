@@ -67,7 +67,6 @@ class ProfileController extends Controller
             'mobileTokens' => $mobileTokens,
             'mobileTokenPlain' => session('mobile_token_plain'),
             'prefersApplyWizard' => (bool) $user->prefers_apply_wizard,
-            'theme' => $user->theme,
         ]);
     }
 

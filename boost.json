@@ -9,16 +9,18 @@
     "mcp": true,
     "nightwatch": false,
     "packages": [
-        "spatie/laravel-medialibrary",
         "barryvdh/laravel-debugbar"
     ],
     "sail": false,
     "skills": [
+        "infer-conventions",
+        "cashier-stripe-development",
         "fortify-development",
         "laravel-best-practices",
+        "testing-best-practices",
+        "socialite-development",
         "inertia-react-development",
         "tailwindcss-development",
-        "medialibrary-development",
         "debug-using-debugbar"
     ]
 }

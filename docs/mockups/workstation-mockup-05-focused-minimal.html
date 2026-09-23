@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Workstation mockup 05 — Focused Minimal</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=ibm-plex-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
+<style>
+:root { --brand:#5952d2; --brand-accent:#3c3695; --brand-subtle:#e1e5ff; --surface:#fbfbfc; --surface-border:#e4e4e7; --ink:#171b1f; --ink-muted:#5c6065; --ink-faint:#7b8085; --page:#ffffff; --white:#fff; --gray-100:#f7f7f8; --gray-200:#ececee; --gray-300:#dedee2; --gray-400:#b8b8bf; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif; background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased; }
+.topnav { display:flex; align-items:center; gap:1.25rem; height:56px; padding:0 1.5rem; border-bottom:1px solid var(--gray-200); background:rgba(255,255,255,.88); backdrop-filter:blur(12px); position:sticky; top:0; z-index:5; }
+.logo { display:flex; align-items:center; gap:.55rem; font-weight:800; }
+.logo-mark { width:28px; height:28px; border-radius:.55rem; background:linear-gradient(to bottom right,var(--brand),var(--brand-accent)); }
+.nav-links { display:flex; gap:.15rem; }
+.nav-link { border-radius:.5rem; padding:.35rem .7rem; font-size:.85rem; font-weight:500; color:var(--ink-muted); }
+.nav-link.active { background:var(--gray-100); color:var(--ink); }
+.topnav-right { margin-left:auto; display:flex; align-items:center; gap:.5rem; color:var(--ink-muted); font-size:.85rem; }
+.avatar { width:1.7rem; height:1.7rem; border-radius:9999px; background:linear-gradient(to bottom right,var(--brand),var(--brand-accent)); }
+.page { max-width:900px; margin:0 auto; padding:2rem 1.25rem 3rem; }
+.document-head { display:flex; align-items:flex-start; gap:1rem; margin-bottom:1.25rem; }
+.title-block { flex:1; }
+.doc-title { font-size:1.6rem; font-weight:800; letter-spacing:-.02em; }
+.doc-meta { font-size:.85rem; color:var(--ink-faint); margin-top:.15rem; }
+.primary-actions { display:flex; gap:.5rem; align-items:center; }
+.btn { border:1px solid var(--gray-300); background:var(--white); border-radius:.5rem; height:2.25rem; padding:0 .75rem; font-size:.85rem; font-weight:600; color:var(--ink-muted); }
+.btn.primary { background:var(--brand); border-color:var(--brand); color:#fff; }
+.section { margin-bottom:1.5rem; }
+.section-title { font-size:.8rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:.55rem; }
+.field { width:100%; min-height:2.5rem; border:0; border-bottom:1px solid var(--gray-300); background:transparent; padding:.45rem 0; font:inherit; font-size:1rem; color:var(--ink); }
+.field:focus { outline:none; border-color:var(--brand); }
+.textarea { width:100%; min-height:5.5rem; border:0; border-bottom:1px solid var(--gray-300); background:transparent; padding:.45rem 0; font:inherit; font-size:1rem; line-height:1.6; color:var(--ink); resize:vertical; }
+.textarea:focus { outline:none; border-color:var(--brand); }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.hint { font-size:.75rem; color:var(--ink-faint); margin-top:.35rem; }
+.divider { height:1px; background:var(--gray-200); margin:2rem 0; }
+.mini-toolbar { position:fixed; right:1.25rem; bottom:1.25rem; display:flex; align-items:center; gap:.4rem; padding:.35rem; border:1px solid var(--gray-200); border-radius:.8rem; background:rgba(255,255,255,.9); box-shadow:0 12px 30px rgb(0 0 0 / .12); backdrop-filter:blur(12px); }
+.mini-btn { width:2.1rem; height:2.1rem; border:0; background:transparent; border-radius:.55rem; color:var(--ink-muted); font-weight:800; }
+.mini-btn:hover { background:var(--gray-100); color:var(--ink); }
+.optimize-pop { position:fixed; right:1.25rem; bottom:5rem; width:320px; border:1px solid var(--gray-200); border-radius:1rem; background:var(--white); box-shadow:0 18px 50px rgb(0 0 0 / .16); padding:.9rem; display:flex; flex-direction:column; gap:.75rem; }
+.pop-title { font-weight:800; font-size:.9rem; }
+.pop-score { display:flex; gap:.6rem; }
+.pop-ring { width:48px; height:48px; border-radius:9999px; border:5px solid var(--brand-subtle); border-top-color:var(--brand); display:grid; place-items:center; font-weight:800; font-size:.8rem; }
+.pop-text { font-size:.75rem; color:var(--ink-muted); line-height:1.45; }
+.caption { max-width:900px; margin:1.5rem auto 0; border:1px dashed var(--gray-300); background:var(--gray-100); border-radius:.7rem; padding:.8rem .95rem; font-size:.8rem; color:var(--ink-muted); line-height:1.45; }
+.caption strong { color:var(--ink); }
+</style>
+</head>
+<body>
+<header class="topnav"><div class="logo"><div class="logo-mark"></div>Resumegen</div><nav class="nav-links"><span class="nav-link">Dashboard</span><span class="nav-link active">Resumes</span><span class="nav-link">Profile</span></nav><div class="topnav-right"><div class="avatar"></div>Maya Chen</div></header>
+<main class="page">
+  <div class="document-head">
+    <div class="title-block"><div class="doc-title">Product Manager — Acme</div><div class="doc-meta">v2 · Saved just now</div></div>
+    <div class="primary-actions"><button class="btn">Share</button><button class="btn primary">Download</button></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Contact</div>
+    <div class="field-row"><div><div class="field">Maya Chen</div><div class="hint">Full name</div></div><div><div class="field">Product Manager</div><div class="hint">Headline</div></div></div>
+    <div class="field-row"><div><div class="field">maya@example.com</div><div class="hint">Email</div></div><div><div class="field">+1 555 0100</div><div class="hint">Phone</div></div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Summary</div>
+    <div class="textarea">Product manager with 8 years of experience shipping B2B SaaS products and leading cross-functional teams.</div>
+    <div class="hint">Write a short, specific summary of what you do and the outcome you create.</div>
+  </div>
+  <div class="section">
+    <div class="section-title">Experience</div>
+    <div class="field">Senior Product Manager</div>
+    <div class="hint">Role</div>
+    <div class="field">Acme</div>
+    <div class="hint">Company</div>
+    <div class="textarea">Owned roadmap for a $12M product line and improved activation by 18%.</div>
+    <div class="hint">Impact bullet</div>
+  </div>
+  <div class="divider"></div>
+  <div class="section">
+    <div class="section-title">Skills</div>
+    <div class="field">Roadmapping, SQL, A/B testing, stakeholder management, Figma</div>
+    <div class="hint">Add skills separated by commas.</div>
+  </div>
+</main>
+<div class="optimize-pop">
+  <div class="pop-title">Optimize</div>
+  <div class="pop-score"><div class="pop-ring">82</div><div class="pop-ring">74</div><div class="pop-ring">90</div></div>
+  <div class="pop-text">One high-impact suggestion: add a measurable outcome to the first experience bullet. One medium suggestion: match the target job title to “Senior Product Manager.”</div>
+</div>
+<div class="mini-toolbar"><button class="mini-btn">↶</button><button class="mini-btn">↷</button><button class="mini-btn">✦</button></div>
+<p class="caption"><strong>05 — Focused Minimal.</strong> A writing-first layout with only the document title, primary actions, and minimal section fields. Formatting is tucked into a floating bottom toolbar, and optimization appears only when requested as a compact popover.</p>
+</body>
+</html>

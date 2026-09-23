@@ -60,7 +60,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                 />
 
                 <div className="flex min-w-0 flex-1 flex-col">
-                    <div className="flex items-center justify-between border-b border-border bg-white px-6 py-3">
+                    <div className="flex items-center justify-between border-b border-border bg-card px-6 py-3">
                         <div className="flex items-center gap-2">
                             <h1 className="text-[15px] font-bold">
                                 {group.title}
@@ -103,7 +103,7 @@ export default function ResumeCompare({ group, versions, left, right }: Props) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 border-b border-border bg-white px-6 py-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-4 border-b border-border bg-card px-6 py-2 text-xs text-muted-foreground">
                         <Legend swatch="bg-success/30" label="Added" />
                         <Legend swatch="bg-destructive/30" label="Removed" />
                         <Legend swatch="bg-yellow-200" label="Changed" />
@@ -149,7 +149,7 @@ function CompareSidebar({
     onSelect: (id: number) => void;
 }) {
     return (
-        <aside className="flex w-[200px] shrink-0 flex-col gap-5 border-r border-border bg-white p-4">
+        <aside className="flex w-[200px] shrink-0 flex-col gap-5 border-r border-border bg-card p-4">
             <div>
                 <p className="mb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
                     Sections

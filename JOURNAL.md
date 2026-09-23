@@ -107,7 +107,6 @@ Replaced standalone demo navigation with profile, primary links, expanded Settin
 
 **Q5 — Suggested improvement:** Connect navigation to real destinations only when those features are defined; current dialogs clearly identify demo scope.
 
-
 ## 2026-09-18 — Warm Cream shadcn demo
 
 Applied the light screenshot reference to the standalone demo using semantic tokens and scoped component styling. Preserved existing unrelated working changes. Build passed; browser checks verified cream/midnight switching, white dialog surface, no page errors, and no document overflow at mobile width. PLAN status, NOTES, and README updated; no checkboxes changed.
@@ -117,6 +116,14 @@ Applied the light screenshot reference to the standalone demo using semantic tok
 **Q5 — Suggested improvement:** Keep Warm Cream as a reusable theme preset so future demo components inherit consistent surfaces.
 
 Commit and push: to be attempted as the final shutdown step, staging only this task’s changes.
+
+## 2026-09-17 — Regenerated issue demos
+
+Rebuilt both reference pages with a shared shadcn sidebar, compact toolbar, full-width grouped list, and horizontally scrolling board. Added page-local creation/editing, status moves, archive, search and filters. TypeScript/Vite build passed. Headless browser verified list, search, creation, navigation, eighteen board cards, status filter and mobile overflow with no JavaScript page errors. Screenshots visually inspected at desktop and mobile widths.
+
+**Q1 — Least confident:** Pixel-exact typography and portraits differ from the supplied references; avatars deliberately use deterministic initials. Side-by-side user review can settle the remaining visual preferences.
+
+**Q5 — Improve:** Keep one shared issue view implementation so the list and board cannot drift. No backend persistence was added. Existing PLAN directs leaving work uncommitted; commit/push not performed. No existing plan checkboxes changed.
 
 ## 2026-09-15 — Wizard runtime verification
 

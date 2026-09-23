@@ -173,16 +173,17 @@ export function AiCritiquePanel({
                             <Badge variant={severityBadgeVariant(s.severity)}>
                                 {s.severity}
                             </Badge>
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
                                 onClick={() => onJump(s.section)}
-                                className="text-left text-sm text-foreground hover:underline"
+                                className="h-auto flex-col items-start justify-start whitespace-normal px-1 py-0.5 text-left text-sm font-normal text-foreground hover:bg-transparent hover:underline"
                             >
                                 {s.label}
-                                <span className="block text-xs text-muted-foreground">
+                                <span className="block text-xs font-normal text-muted-foreground no-underline">
                                     {s.detail}
                                 </span>
-                            </button>
+                            </Button>
                         </li>
                     ))}
                 </ul>

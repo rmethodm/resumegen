@@ -7,6 +7,7 @@ import {
     type OptimizeCheck,
 } from '@/lib/optimize-checks';
 import { Badge } from '@/Components/ui/badge';
+import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import {
     Dialog,
@@ -37,19 +38,20 @@ function CheckRow({
 }) {
     return (
         <div className="flex items-center justify-between gap-3 py-2">
-            <button
+            <Button
                 type="button"
+                variant="ghost"
                 disabled={check.severity === 'ok' || !check.section}
                 onClick={() => check.section && onJump(check.section)}
                 className={cn(
-                    'text-left text-sm',
+                    'h-auto justify-start whitespace-normal px-1 py-0.5 text-left text-sm font-normal hover:bg-transparent',
                     check.severity !== 'ok' && check.section
                         ? 'text-foreground hover:underline'
                         : 'text-foreground',
                 )}
             >
                 {check.label}
-            </button>
+            </Button>
             <div className="flex items-center gap-2">
                 {severityBadge(check.severity)}
                 <Dialog>

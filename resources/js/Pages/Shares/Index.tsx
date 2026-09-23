@@ -3,7 +3,7 @@ import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Select } from '@/Components/ui/select';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { cn } from '@/lib/utils';
@@ -137,7 +137,7 @@ export default function SharesIndex() {
                     </div>
 
                     {links.length === 0 ? (
-                        <Shell innerClassName="flex flex-col items-center justify-center px-6 py-16 text-center">
+                        <Card className="gap-0 flex flex-col items-center justify-center px-6 py-16 text-center">
                             <div className="mb-4 inline-flex items-center justify-center rounded-lg bg-primary/10 p-4">
                                 <LinkIcon className="h-8 w-8 text-primary" />
                             </div>
@@ -150,9 +150,9 @@ export default function SharesIndex() {
                                     Create your first link
                                 </Button>
                             )}
-                        </Shell>
+                        </Card>
                     ) : (
-                        <Shell innerClassName="overflow-hidden">
+                        <Card className="gap-0 overflow-hidden py-0">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -211,7 +211,7 @@ export default function SharesIndex() {
                                     ))}
                                 </TableBody>
                             </Table>
-                        </Shell>
+                        </Card>
                     )}
                 </div>
             </div>

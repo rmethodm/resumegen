@@ -117,7 +117,7 @@ export function KeywordChips({
                             type="button"
                             onClick={() => onAdd(keyword)}
                             title={`Add “${formatKeywordLabel(keyword)}” as a skill`}
-                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-primary/40 bg-primary/10/50 px-2 py-0.5 text-xs font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10"
+                            className="inline-flex items-center gap-1 rounded-full border border-dashed border-primary/40 bg-primary/5 px-2 py-0.5 text-xs font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10"
                         >
                             <PlusIcon className="size-3" />
                             {formatKeywordLabel(keyword)}

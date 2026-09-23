@@ -97,7 +97,7 @@ export default function Wizard({ allowedTemplates, allTemplates }: { allowedTemp
                                 value={data.target_role ?? ''}
                                 onChange={value => setData('target_role', value)}
                                 placeholder="e.g. Software Engineer"
-                                className="mt-1 block w-full rounded-md border border-border px-3 py-2 text-sm shadow-xs focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-1"
+                                className="mt-1"
                             />
                             <InputError message={errors.target_role} className="mt-1" />
                         </div>

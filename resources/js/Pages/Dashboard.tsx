@@ -23,7 +23,7 @@ import { FirstWeekChecklist } from '@/Components/dashboard/first-week-checklist'
 import { ScoreDial } from '@/Components/resume/score-dial';
 import { Button, buttonClassName } from '@/Components/ui/button';
 import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 import { Skeleton } from '@/Components/ui/skeleton';
 import { ShareResumeModal } from '@/Components/workstation/share-resume-modal';
 import { type ChecklistFacts } from '@/lib/checklist-steps';
@@ -183,7 +183,7 @@ function ResumeCard({
     }
 
     return (
-        <Shell innerClassName="overflow-hidden">
+        <Card className="gap-0 overflow-hidden py-0">
             <div
                 className={cn(
                     'flex items-center gap-3 sm:gap-4',
@@ -444,13 +444,13 @@ function ResumeCard({
                     }
                 }}
             />
-        </Shell>
+        </Card>
     );
 }
 
 function ResumeCardSkeleton() {
     return (
-        <Shell innerClassName="overflow-hidden">
+        <Card className="gap-0 overflow-hidden py-0">
             <div className="flex items-center gap-4 p-4">
                 <Skeleton className="size-12 shrink-0 rounded-full" />
                 <div className="min-w-0 flex-1">
@@ -460,13 +460,13 @@ function ResumeCardSkeleton() {
                 <Skeleton className="hidden h-8 w-16 sm:block" />
                 <Skeleton className="hidden h-8 w-14 sm:block" />
             </div>
-        </Shell>
+        </Card>
     );
 }
 
 function EmptyResumes({ onCreate }: { onCreate: () => void }) {
     return (
-        <Shell innerClassName="px-6 py-12 text-center sm:px-10">
+        <Card className="gap-0 px-6 py-12 text-center sm:px-10">
             <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                 Get started
             </span>
@@ -486,7 +486,7 @@ function EmptyResumes({ onCreate }: { onCreate: () => void }) {
                     <PlusIcon className="size-3.5" />
                 </span>
             </Button>
-        </Shell>
+        </Card>
     );
 }
 
@@ -585,7 +585,7 @@ export default function Dashboard({
                     <div className="flex flex-col gap-5">
                         {/* Bento header: score snapshot + quick start */}
                         <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
-                            <Shell className="md:col-span-3" innerClassName="flex items-center gap-4 p-5 sm:p-6">
+                            <Card className="gap-0 py-0 md:col-span-3 flex items-center gap-4 p-5 sm:p-6">
                                 <ScoreDial score={averageScore} size={64} />
                                 <div className="min-w-0 flex-1">
                                     <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">
@@ -606,9 +606,9 @@ export default function Dashboard({
                                               : 'Create a resume to see your average score.'}
                                     </p>
                                 </div>
-                            </Shell>
+                            </Card>
 
-                            <Shell className="md:col-span-2" innerClassName="flex flex-col gap-2 p-4 sm:p-5">
+                            <Card className="gap-2 py-0 md:col-span-2 flex flex-col p-4 sm:p-5">
                                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground/70">
                                     Quick start
                                 </p>
@@ -666,11 +666,11 @@ export default function Dashboard({
                                     </span>
                                     <span className="text-muted-foreground/70">→</span>
                                 </Link>
-                            </Shell>
+                            </Card>
                         </div>
 
                         {!hasStarterProfile && (
-                            <div className="rounded-lg border border-primary/20 bg-primary/10/40 p-4 sm:px-5">
+                            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 sm:px-5">
                                 <p className="text-sm font-bold text-foreground">
                                     Tip: fill your starter profile once
                                 </p>

@@ -149,6 +149,11 @@ re-derive. Timeless reference + the reasoning behind decisions.
 - Skip navigation now runs only after successful preference save; errors retain inputs, and pending controls are disabled. Mounted React tests cover navigation, input preservation, and successful/failed skip.
 - Final checks: 471 Laravel tests (2,112 assertions), 51 JS tests, build/Pint passed; actual dev cold optimization + HMR preserved step/inputs; built wizard rendered from one app script. Original historic error cannot be replayed from logs alone; no invalid-hook error recurred in these checks. Temporary server stopped; original built-assets setup restored.
 
+## 2026-09-17 — Standalone issue reference pages
+
+- `/projects/issues` and `/projects/issues/kanban` share a scoped project shell and fixture model. These are signed-in visual demos, not a project-management backend. Issue edits are page-local and reset on navigation/reload.
+- Reuse existing shadcn sidebar, cards, badges, dialogs, menus, and collapsibles. Scope reference palette and layout to `.project-demo` in app.css. Reference list has eight sample issues; board has eighteen including the Done column.
+
 ### Shadcn Warm Cream theme (2026-09-18)
 - `/shadcn` defaults to Warm Cream, derived visually from the light background interface in the supplied screenshot. Exact source font/color values were not supplied.
 - CSS stays in the demo stylesheet. Selected theme tokens also reach the document root so portaled dialogs and menus match; effect cleanup restores previous values. Existing theme options remain available.

@@ -41,10 +41,6 @@
         <link rel="icon" type="image/svg+xml" href="/r-monogram.svg">
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts: system UI stack for sans; JetBrains Mono for code (DESIGN.md) -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=jetbrains-mono:400,500,600&display=swap" rel="stylesheet" />
-
         <!-- Scripts -->
         @routes(null, Illuminate\Support\Facades\Vite::cspNonce())
         @viteReactRefresh

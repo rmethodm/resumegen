@@ -1,0 +1,57 @@
+- generic [ref=e53]:
+  - link "Skip to content" [ref=e54] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e56]:
+    - generic [ref=e57]:
+      - link "Resumegen" [ref=e58] [cursor=pointer]:
+        - /url: https://resumegen.test/dashboard
+      - navigation [ref=e61]:
+        - link "Dashboard" [ref=e62] [cursor=pointer]:
+          - /url: https://resumegen.test/dashboard
+        - link "Resumes" [ref=e63] [cursor=pointer]:
+          - /url: https://resumegen.test/resumes
+        - link "Shares" [ref=e64] [cursor=pointer]:
+          - /url: https://resumegen.test/shares
+        - link "Applications" [ref=e65] [cursor=pointer]:
+          - /url: https://resumegen.test/job-applications
+        - link "Profile" [ref=e66] [cursor=pointer]:
+          - /url: https://resumegen.test/profile
+      - generic [ref=e67]:
+        - button "Open navigation menu" [ref=e68]:
+          - generic [ref=e69]: Go to…
+        - generic: ⌘K
+      - button "AI Credits Browser" [ref=e73]:
+        - generic [aria-hidden] [ref=e74]: AC
+  - main [ref=e76]:
+    - generic [ref=e79]:
+      - generic [ref=e80]:
+        - generic [ref=e82]:
+          - img "Match score 34 of 100" [ref=e83]:
+            - generic [ref=e84]: "34"
+          - generic [ref=e85]:
+            - paragraph [ref=e86]: Dashboard
+            - heading "1 resume" [level=1] [ref=e87]
+            - paragraph [ref=e88]: Average strength score 34/100
+        - generic [ref=e90]:
+          - paragraph [ref=e91]: Quick start
+          - button "New resume" [ref=e92]
+          - link "Set up starter profile →" [ref=e99] [cursor=pointer]:
+            - /url: https://resumegen.test/settings/starter-profile
+            - generic [ref=e100]: Set up starter profile
+            - generic [ref=e103]: →
+      - generic [ref=e104]:
+        - paragraph [ref=e105]: "Tip: fill your starter profile once"
+        - paragraph [ref=e106]: Every new resume can pre-fill from it — contact, summary, and more.
+      - paragraph [ref=e108]: Your resumes
+      - generic [ref=e112]:
+        - img "Match score 34 of 100" [ref=e113]:
+          - generic [ref=e114]: "34"
+        - generic [ref=e115]:
+          - link "AI Credits Browser Resume" [ref=e117] [cursor=pointer]:
+            - /url: https://resumegen.test/resumes/39/workstation
+          - paragraph [ref=e118]: Senior Backend Engineer · Updated 2 minutes ago
+          - generic [ref=e119]: Not shared
+        - button "Download" [ref=e124]
+        - link "Open" [ref=e127] [cursor=pointer]:
+          - /url: https://resumegen.test/resumes/39/workstation
+        - button "Actions for AI Credits Browser Resume" [ref=e129]

@@ -1,24 +1,24 @@
 import { PropsWithChildren } from 'react';
 import { BrandMark } from '@/Components/BrandMark';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 
 export default function Guest({ children }: PropsWithChildren) {
     return (
         <div className="flex min-h-dvh flex-col items-center bg-muted px-4 pt-10 sm:justify-center sm:pt-0">
             <a
                 href="#main-content"
-                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-foreground focus:shadow-md"
+                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-foreground focus:shadow-md"
             >
                 Skip to content
             </a>
             <div className="mb-6">
                 <BrandMark href="/" size="lg" />
             </div>
-            <Shell className="w-full sm:max-w-md" innerClassName="px-8 py-7">
+            <Card className="w-full gap-0 px-8 py-7 sm:max-w-md">
                 <div id="main-content" tabIndex={-1}>
                     {children}
                 </div>
-            </Shell>
+            </Card>
         </div>
     );
 }

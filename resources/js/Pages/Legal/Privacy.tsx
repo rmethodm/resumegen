@@ -6,7 +6,7 @@ export default function Privacy() {
         <div className="min-h-dvh bg-muted text-foreground">
             <Head title="Privacy Policy" />
 
-            <header className="border-b border-border/80 bg-white">
+            <header className="border-b border-border/80 bg-card">
                 <div className="mx-auto flex max-w-3xl items-center px-4 py-4 sm:px-6">
                     <BrandMark href="/" size="md" />
                 </div>

@@ -6,7 +6,7 @@ import { Button, buttonClassName } from '@/Components/ui/button';
 import { Label } from '@/Components/ui/label';
 import { Input } from '@/Components/ui/input';
 import { Select } from '@/Components/ui/select';
-import { Shell } from '@/Components/ui/shell';
+import { Card } from '@/Components/ui/card';
 import { Textarea } from '@/Components/ui/textarea';
 import { cn } from '@/lib/utils';
 import type { ResumeOption } from '@/types';
@@ -109,7 +109,7 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                     ))}
                 </ol>
 
-                <Shell innerClassName="p-6">
+                <Card className="gap-0 p-6 py-0">
                     {error && (
                         <Alert variant="destructive" className="mb-4">
                             <AlertDescription>{error}</AlertDescription>
@@ -212,7 +212,7 @@ export default function ApplyWizard({ resumeOptions }: { resumeOptions: ResumeOp
                             )}
                         </div>
                     </div>
-                </Shell>
+                </Card>
 
                 <p className="mt-4 text-center text-xs text-muted-foreground/70">
                     <Link href={route('dashboard')} className={buttonClassName('ghost', 'sm')}>Cancel</Link>

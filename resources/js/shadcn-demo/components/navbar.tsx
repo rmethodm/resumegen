@@ -1,15 +1,8 @@
-import { FileTextIcon, HomeIcon, LayoutDashboardIcon, LogOutIcon, SearchIcon, SettingsIcon, ShareIcon, UserIcon } from 'lucide-react';
+import { FileTextIcon, HomeIcon, LayoutDashboardIcon, SearchIcon, ShareIcon } from 'lucide-react';
 import { cn } from '@/shadcn-demo/lib/utils';
 import { Button } from '@/shadcn-demo/components/ui/button';
-import { Avatar, AvatarFallback } from '@/shadcn-demo/components/ui/avatar';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/shadcn-demo/components/ui/dropdown-menu';
+import { Separator } from '@/shadcn-demo/components/ui/separator';
+import { SidebarTrigger } from '@/shadcn-demo/components/ui/sidebar';
 
 const links = [
     { label: 'Dashboard', icon: LayoutDashboardIcon, active: false },
@@ -21,6 +14,11 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
     return (
         <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
             <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-6 px-4">
+                <div className="flex items-center gap-3">
+                    <SidebarTrigger />
+                    <Separator orientation="vertical" className="h-5" />
+                </div>
+
                 <a href="/" className="flex items-center gap-2 font-semibold">
                     <HomeIcon className="size-4" />
                     shadcn demo
@@ -51,33 +49,6 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
                             &#8984;K
                         </kbd>
                     </Button>
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button type="button" className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
-                                <Avatar>
-                                    <AvatarFallback>JR</AvatarFallback>
-                                </Avatar>
-                            </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Jordan Rivera</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <UserIcon />
-                                Profile
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <SettingsIcon />
-                                Settings
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <LogOutIcon />
-                                Log out
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                 </div>
             </div>
         </header>

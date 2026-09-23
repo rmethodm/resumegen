@@ -1,4 +1,3 @@
-import { Switch } from '@headlessui/react';
 import {
     ArrowPathIcon,
     CheckIcon,
@@ -18,6 +17,7 @@ import { Button } from '@/Components/ui/button';
 import { ConfirmDialog } from '@/Components/ui/confirm-dialog';
 import { Input } from '@/Components/ui/input';
 import { Select } from '@/Components/ui/select';
+import { Switch } from '@/Components/ui/switch';
 import { cn } from '@/lib/utils';
 import type { ResumeShareLink } from '@/types';
 
@@ -298,7 +298,6 @@ export function ShareResumeModal({
                                                 setPasswordDraft(e.target.value.slice(0, 8))
                                             }
                                             onBlur={savePassword}
-                                            className="bg-white"
                                         />
                                         <Button
                                             type="button"
@@ -503,21 +502,10 @@ function ShareToggleRow({
             <span className="text-xs font-medium text-foreground">{label}</span>
             <Switch
                 checked={enabled}
-                onChange={onChange}
+                onCheckedChange={onChange}
                 disabled={disabled}
                 aria-label={label}
-                className={cn(
-                    'relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50',
-                    enabled ? 'bg-primary' : 'bg-neutral-300',
-                )}
-            >
-                <span
-                    className={cn(
-                        'inline-block size-3.5 transform rounded-full bg-white transition-transform',
-                        enabled ? 'translate-x-4.5' : 'translate-x-1',
-                    )}
-                />
-            </Switch>
+            />
         </div>
     );
 }
