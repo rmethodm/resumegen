@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -36,27 +38,15 @@ class TwoFactorChallengeController extends Controller
 
         // Recovery code path (longer than 6 chars)
         if (strlen($code) > 6) {
-            $codes = $user->two_factor_recovery_codes ?? [];
-            $matched = null;
+            $remaining = $this->consumeRecoveryCode($user->id, $code);
 
-            foreach ($codes as $index => $hashed) {
-                if (Hash::check($code, $hashed)) {
-                    $matched = $index;
-                    break;
-                }
-            }
-
-            if ($matched === null) {
+            if ($remaining === null) {
                 throw ValidationException::withMessages(['code' => 'The provided code was invalid.']);
             }
 
-            unset($codes[$matched]);
-            $user->two_factor_recovery_codes = array_values($codes);
-            $user->save();
-
             $this->completeChallenge($request);
 
-            if (count($user->two_factor_recovery_codes) < 2) {
+            if ($remaining < 2) {
                 return $this->redirectAfterTwoFactor($request)
                     ->with('error', 'You have fewer than 2 recovery codes left — regenerate them in your profile.');
             }
@@ -85,6 +75,32 @@ class TwoFactorChallengeController extends Controller
         $this->completeChallenge($request);
 
         return $this->redirectAfterTwoFactor($request);
+    }
+
+    /**
+     * Burn a matching recovery code and return how many remain, or null if
+     * none matched. The row lock makes this single-use under concurrency:
+     * two requests racing the same code cannot both read it before either
+     * removes it.
+     */
+    private function consumeRecoveryCode(int $userId, string $code): ?int
+    {
+        return DB::transaction(function () use ($userId, $code): ?int {
+            $user = User::query()->lockForUpdate()->findOrFail($userId);
+            $codes = $user->two_factor_recovery_codes ?? [];
+
+            foreach ($codes as $index => $hashed) {
+                if (Hash::check($code, $hashed)) {
+                    unset($codes[$index]);
+                    $user->two_factor_recovery_codes = array_values($codes);
+                    $user->save();
+
+                    return count($codes);
+                }
+            }
+
+            return null;
+        });
     }
 
     /**

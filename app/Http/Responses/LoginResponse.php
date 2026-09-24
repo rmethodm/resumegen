@@ -12,9 +12,9 @@ class LoginResponse implements LoginResponseContract
     {
         $user = Auth::user();
 
+        // The pending flag itself is set by RequireTwoFactorChallengeOnLogin
+        // on the Login event; this only routes straight to the challenge.
         if ($user->hasTwoFactorEnabled()) {
-            $request->session()->put('two_factor_auth_pending', true);
-
             return redirect()->route('two-factor.challenge');
         }
 

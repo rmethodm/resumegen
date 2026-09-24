@@ -73,9 +73,9 @@ class FortifyServiceProvider extends ServiceProvider
 
     private static function dummyHash(): string
     {
-        static $hash = null;
-
-        return $hash ??= Hash::make('fortify-auth-timing-dummy');
+        // once(), not a function static: it is flushed between tests, so a
+        // test that mocks Hash cannot leak its fake hash into later tests.
+        return once(fn () => Hash::make('fortify-auth-timing-dummy'));
     }
 
     private function configureViews(): void
@@ -108,11 +108,24 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
-            return Limit::perMinute(5)->by($throttleKey);
+            // The per-IP cap stops one address spraying many emails
+            // (credential stuffing), which the email|IP key alone allows.
+            return [
+                Limit::perMinute(5)->by($throttleKey),
+                Limit::perMinute(30)->by($request->ip()),
+            ];
         });
 
-        // Fortify's own routes.php has no config hook to throttle password.email
-        // (unlike login), so the route is hardened here after Fortify registers it.
-        Route::getRoutes()->getByName('password.email')?->middleware('throttle:6,1');
+        // Fortify has no limiter config for these two. Must run after boot with
+        // the name index refreshed: Fortify names routes after adding them, and
+        // a boot-time getByName() used to return null and skip this silently.
+        $this->app->booted(function (): void {
+            $routes = Route::getRoutes();
+            $routes->refreshNameLookups();
+
+            foreach (['password.email', 'password.confirm.store'] as $name) {
+                $routes->getByName($name)->middleware('throttle:6,1');
+            }
+        });
     }
 }

@@ -93,16 +93,14 @@ class SocialiteController extends Controller
 
         $ip = $request->ip();
 
-        RegistrationIpLimiter::assertNotThrottled($ip);
-
-        $user = User::create([
+        $user = RegistrationIpLimiter::create($ip, fn (): User => User::create([
             'name' => $socialUser->getName() ?: $socialUser->getNickname() ?: $socialUser->getEmail(),
             'email' => $socialUser->getEmail(),
             'password' => Hash::make(Str::random(40)),
             'registration_ip' => $ip,
             'oauth_provider' => $provider,
             'oauth_provider_id' => $socialUser->getId(),
-        ]);
+        ]));
 
         // Only skip the normal email-verification flow if the provider
         // actually confirmed this address; otherwise it behaves exactly

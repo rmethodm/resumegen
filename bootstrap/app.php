@@ -12,6 +12,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
@@ -40,6 +41,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // collapses to the proxy's IP.
         $middleware->web(append: [
             SecurityHeaders::class,
+            // Logs out other sessions once the password hash changes.
+            AuthenticateSession::class,
             // Global, not per-route: a pending-2FA session is fully
             // authenticated, so any route that forgot the alias would be a
             // 2FA bypass. The middleware allowlists the challenge routes.

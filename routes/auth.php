@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     // lookup, which silently pointed route('password.update') at /reset-password
     // instead of this route.
     Route::put('password', [PasswordController::class, 'update'])
+        ->middleware('throttle:6,1')
         ->name('password.change');
 
     Route::get('two-factor-challenge', [TwoFactorChallengeController::class, 'create'])

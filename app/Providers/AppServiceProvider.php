@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 use Laravel\Cashier\Events\WebhookReceived;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use SocialiteProviders\Microsoft\MicrosoftExtendSocialite;
@@ -38,6 +39,12 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Vite::prefetch(concurrency: 3);
+
+        // Production also rejects passwords found in known breaches
+        // (HaveIBeenPwned k-anonymity lookup); elsewhere skip the network call.
+        Password::defaults(fn () => $this->app->isProduction()
+            ? Password::min(8)->uncompromised()
+            : Password::min(8));
 
         RateLimiter::for('share-unlock', function (Request $request) {
             return Limit::perMinute(10)->by($request->route('token').'|'.$request->ip());
