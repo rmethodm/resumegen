@@ -6,9 +6,10 @@ use App\Models\JobApplicationInterview;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Models\User;
-use App\Support\ResumeAnalysis;
 use App\Support\ResumeFillProfile;
 use App\Support\RoleSamples;
+use App\Support\ScoredResumes;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,16 +21,42 @@ class DashboardController extends Controller
         $user = $request->user();
         $hasStarterProfile = $user->starterProfile()->exists();
 
+        // Both deferred resume props resolve in the same partial reload; load
+        // and score the resumes once for the two of them.
+        $scored = null;
+        $scoredResumes = function () use ($user, &$scored): array {
+            if ($scored === null) {
+                $resumes = ScoredResumes::load($user, [
+                    'group',
+                    'shareLink' => fn ($query) => $query->withCount('views'),
+                ]);
+                $scored = [$resumes, ScoredResumes::scores($resumes)];
+            }
+
+            return $scored;
+        };
+
+        // One conditional aggregate instead of two counts; CASE works on
+        // SQLite and PostgreSQL alike.
+        $jobCounts = $user->jobApplications()
+            ->toBase()
+            ->selectRaw('count(*) as total')
+            ->selectRaw(
+                'sum(case when status in (?, ?, ?, ?) then 1 else 0 end) as applied',
+                ['applied', 'interviewing', 'offer', 'rejected'],
+            )
+            ->first();
+
         return Inertia::render('Dashboard', [
             // Deferred: scores every version server-side and scales with the
             // user's resume count. Payload is intentionally lean — badge-level
             // share only, no full document preview (unused on this page). Full
             // share modal data is loaded on demand via resumes.share.show.
-            'resumes' => Inertia::defer(fn () => $this->resumesForDashboard($request)),
+            'resumes' => Inertia::defer(fn () => $this->resumesForDashboard(...$scoredResumes())),
             'nextUp' => Inertia::defer(fn () => $this->nextUp($user)),
             // Deferred: same scoring cost as `resumes` above, but this only
             // feeds a <select> inside a modal that starts closed.
-            'resumeOptions' => Inertia::defer(fn () => $this->resumeOptions($user)),
+            'resumeOptions' => Inertia::defer(fn () => ScoredResumes::options(...$scoredResumes())),
             'prefersApplyWizard' => (bool) $user->prefers_apply_wizard,
             'hasStarterProfile' => $hasStarterProfile,
             'roleSamples' => RoleSamples::catalogue(),
@@ -41,8 +68,8 @@ class DashboardController extends Controller
                     'extension_connected' => $user->tokens()
                         ->where('abilities', 'like', '%'.ResumeFillProfile::TOKEN_ABILITY.'%')
                         ->exists(),
-                    'job_count' => $user->jobApplications()->count(),
-                    'applied_count' => $user->jobApplications()->whereIn('status', ['applied', 'interviewing', 'offer', 'rejected'])->count(),
+                    'job_count' => (int) $jobCounts->total,
+                    'applied_count' => (int) $jobCounts->applied,
                 ],
             ],
         ]);
@@ -139,39 +166,15 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return list<array{id: int, title: string, score: int}>
-     */
-    private function resumeOptions(User $user): array
-    {
-        return $user->resumes()
-            ->with(['experiences', 'skills'])
-            ->latest('updated_at')
-            ->get()
-            ->map(fn (Resume $resume): array => [
-                'id' => $resume->id,
-                'title' => $resume->title,
-                'score' => ResumeAnalysis::score($resume),
-            ])->all();
-    }
-
-    /**
+     * @param  Collection<int, Resume>  $resumes  newest first
+     * @param  array<int, int>  $scores  keyed by resume id
      * @return list<array<string, mixed>>
      */
-    private function resumesForDashboard(Request $request): array
+    private function resumesForDashboard(Collection $resumes, array $scores): array
     {
-        // Score only needs experiences + skills (plus scalars on the resume row).
-        // projects / education / certificates are not scored and are not rendered here.
-        return $request->user()->resumes()
-            ->with([
-                'experiences',
-                'skills',
-                'group',
-                'shareLink' => fn ($query) => $query->withCount('views'),
-            ])
-            ->latest('updated_at')
-            ->get()
+        return $resumes
             ->groupBy('group_id')
-            ->map(function ($versions): array {
+            ->map(function ($versions) use ($scores): array {
                 /** @var Resume $representative */
                 $representative = $versions->first(); // newest — the query is latest-first
                 $baseId = $versions->min('id');
@@ -179,13 +182,11 @@ class DashboardController extends Controller
                 return [
                     'id' => $representative->id,
                     'group_id' => $representative->group_id,
-                    // Seeders / WithoutModelEvents can leave group_id null; fall
-                    // back to the resume title so the dashboard still renders.
                     'title' => $representative->title,
                     'group_title' => $representative->group?->title ?? $representative->title,
                     'target_role' => $representative->target_role,
                     'updated_at' => $representative->updated_at?->diffForHumans(),
-                    'score' => ResumeAnalysis::score($representative),
+                    'score' => $scores[$representative->id],
                     'version_count' => $versions->count(),
                     'share' => $this->shareBadge($representative->shareLink),
                     'versions' => $versions
@@ -193,7 +194,7 @@ class DashboardController extends Controller
                             'id' => $version->id,
                             'title' => $version->title,
                             'target_company' => $version->target_company,
-                            'score' => ResumeAnalysis::score($version),
+                            'score' => $scores[$version->id],
                             'is_base' => $version->id === $baseId,
                             'share' => $this->shareBadge($version->shareLink),
                         ])

@@ -21,7 +21,18 @@ class GrantAiStarterCredits implements ShouldBeDiscovered
 
     public function handle(WebhookReceived $event): void
     {
-        if (($event->payload['type'] ?? null) !== 'customer.subscription.created') {
+        $type = $event->payload['type'] ?? null;
+
+        if (! in_array($type, ['customer.subscription.created', 'customer.subscription.updated'], true)) {
+            return;
+        }
+
+        // An `incomplete` subscription (payment not yet confirmed) must not
+        // burn the one-time grant; it arrives later as an `updated` event once
+        // it turns active. grantStarterIfNeeded() keeps delivery idempotent.
+        $status = $event->payload['data']['object']['status'] ?? null;
+
+        if (! in_array($status, ['active', 'trialing'], true)) {
             return;
         }
 

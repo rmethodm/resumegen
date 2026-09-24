@@ -14,6 +14,7 @@ use BaconQrCode\Writer;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
@@ -94,13 +95,13 @@ class ProfileController extends Controller
      */
     public function updatePersona(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'full_name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
-            'linkedin_url' => ['nullable', 'url', 'max:255'],
-            'website' => ['nullable', 'url', 'max:255'],
+            'linkedin_url' => ['nullable', 'url:http,https', 'max:255'],
+            'website' => ['nullable', 'url:http,https', 'max:255'],
             'target_role' => ['nullable', 'string', 'max:100'],
             'industry' => ['nullable', 'string', 'max:100'],
             'years_experience' => ['nullable', 'integer', 'min:0', 'max:40'],
@@ -110,7 +111,7 @@ class ProfileController extends Controller
         $user = $request->user();
 
         $contactFields = array_filter(
-            $request->only(['full_name', 'email', 'phone', 'location', 'linkedin_url', 'website']),
+            Arr::only($validated, ['full_name', 'email', 'phone', 'location', 'linkedin_url', 'website']),
             fn ($v) => $v !== null,
         );
 
@@ -119,7 +120,7 @@ class ProfileController extends Controller
         }
 
         $personaFields = array_filter(
-            $request->only(['target_role', 'industry', 'years_experience', 'preferred_template']),
+            Arr::only($validated, ['target_role', 'industry', 'years_experience', 'preferred_template']),
             fn ($v) => $v !== null && $v !== '',
         );
 

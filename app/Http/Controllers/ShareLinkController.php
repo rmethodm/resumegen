@@ -2,26 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreShareLinkRequest;
+use App\Http\Requests\UpdateShareLinkRequest;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 /**
- * Legacy share-link mutations used by Shares/Index. Ownership is checked
- * inline (this app has no ResumePolicy). Only columns that exist on
- * resume_share_links are written.
+ * Share-link mutations used by Shares/Index. Ownership 404s (in the form
+ * requests for store/update), matching the rest of the app. Only columns
+ * that exist on resume_share_links are written.
  */
 class ShareLinkController extends Controller
 {
-    public function store(Request $request, Resume $resume): RedirectResponse
+    public function store(StoreShareLinkRequest $request, Resume $resume): RedirectResponse
     {
-        abort_unless($resume->user_id === $request->user()->id, 403);
-
-        $request->validate([
-            'label' => ['nullable', 'string', 'max:100'],
-        ]);
-
         // label is accepted for UI compatibility but not stored — the column
         // was dropped with the shares schema rebuild. firstOrCreate because
         // resume_share_links.resume_id carries a DB unique index.
@@ -30,26 +26,13 @@ class ShareLinkController extends Controller
         return back()->with('newToken', $link->token);
     }
 
-    public function update(Request $request, Resume $resume, ResumeShareLink $link): RedirectResponse
+    public function update(UpdateShareLinkRequest $request, Resume $resume, ResumeShareLink $link): RedirectResponse
     {
-        abort_unless($resume->user_id === $request->user()->id, 403);
-        abort_if($link->resume_id !== $resume->id, 403);
-
-        $validated = $request->validate([
-            'expires_at' => ['sometimes', 'nullable', 'date'],
-            'resume_id' => ['sometimes', 'integer', 'exists:resumes,id'],
-            'password' => ['sometimes', 'nullable', 'string', 'min:4', 'max:100'],
-            'require_password' => ['sometimes', 'boolean'],
-            'allow_download' => ['sometimes', 'boolean'],
-            'require_email' => ['sometimes', 'boolean'],
-            // Accepted no-ops for the Shares UI still posting them:
-            'label' => ['sometimes', 'nullable', 'string', 'max:100'],
-            'is_active' => ['sometimes', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         if (isset($validated['resume_id']) && (int) $validated['resume_id'] !== $link->resume_id) {
             $target = Resume::query()->findOrFail($validated['resume_id']);
-            abort_unless($target->user_id === $request->user()->id, 403);
+            abort_unless($target->user_id === $request->user()->id, 404);
 
             if (ResumeShareLink::query()->where('resume_id', $target->id)->exists()) {
                 return back()->withErrors(['resume_id' => 'That resume already has a share link.']);
@@ -90,8 +73,9 @@ class ShareLinkController extends Controller
 
     public function destroy(Request $request, Resume $resume, ResumeShareLink $link): RedirectResponse
     {
-        abort_unless($resume->user_id === $request->user()->id, 403);
-        abort_if($link->resume_id !== $resume->id, 403);
+        abort_unless($resume->user_id === $request->user()->id, 404);
+        abort_unless($link->resume_id === $resume->id, 404);
+
         $link->delete();
 
         return back();

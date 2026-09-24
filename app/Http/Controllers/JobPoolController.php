@@ -14,7 +14,8 @@ class JobPoolController extends Controller
     public function index(Request $request): Response
     {
         $entries = $request->user()->jobPoolEntries()
-            ->with(['jobListing', 'resume'])
+            // Only the columns the payload below reads; description can be large.
+            ->with(['jobListing:id,title,company,location,job_url', 'resume:id,title'])
             ->latest('id')
             ->get()
             ->map(fn (JobPoolEntry $entry) => [

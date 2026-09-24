@@ -27,10 +27,10 @@ class SampleSharesSeeder extends Seeder
     {
         // Runs on a freshly wiped database too, so the owning account may not exist yet.
         $user = User::firstOrCreate(
-            ['email' => 'rmethodm@outlook.com'],
+            ['email' => config('seeding.user_email')],
             [
                 'name' => 'Richard Method',
-                'password' => Hash::make('password'),
+                'password' => Hash::make(config('seeding.user_password')),
                 'email_verified_at' => now(),
             ]
         );

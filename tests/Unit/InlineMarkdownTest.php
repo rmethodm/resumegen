@@ -19,6 +19,20 @@ class InlineMarkdownTest extends TestCase
         $this->assertStringContainsString('>Acme</a>', $html);
     }
 
+    /**
+     * Bullets feed the DomPDF blade: an <img> there would make the server
+     * fetch an arbitrary URL at render time, and it is outside the
+     * strong/em/a vocabulary the client preview allows.
+     */
+    public function test_to_html_drops_markdown_images(): void
+    {
+        $html = InlineMarkdown::toHtml('Led ![x](http://a/b.png) **launch**');
+
+        $this->assertStringNotContainsString('<img', $html);
+        $this->assertStringNotContainsString('http://a/b.png', $html);
+        $this->assertStringContainsString('<strong>launch</strong>', $html);
+    }
+
     public function test_to_plain_strips_markers(): void
     {
         $this->assertSame(

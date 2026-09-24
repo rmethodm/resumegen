@@ -46,13 +46,15 @@ if (app()->isLocal()) {
     Route::get('/reset', DevResetController::class)->name('dev.reset');
 }
 
-Route::view('/shadcn', 'shadcn-demo')->name('shadcn.demo');
+if (app()->isLocal()) {
+    Route::view('/shadcn', 'shadcn-demo')->name('shadcn.demo');
+}
 
 Route::get('/privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/terms', [LegalController::class, 'terms'])->name('legal.terms');
 
 Route::get('/dashboard', DashboardController::class)
-    ->middleware(['auth', 'verified', 'two_factor_challenge'])
+    ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
 // Public, token-authenticated — the recipient of a shared link has no
@@ -66,7 +68,7 @@ Route::post('/r/{token}/unlock', [PublicResumeShareController::class, 'unlock'])
     ->middleware('throttle:share-unlock')
     ->name('share.unlock');
 
-Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -107,7 +109,9 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::post('/settings/starter-profile/qa-bank', [QaBankEntryController::class, 'store'])->name('qa-bank-entries.store');
     Route::patch('/settings/starter-profile/qa-bank/{entry}', [QaBankEntryController::class, 'update'])->name('qa-bank-entries.update');
     Route::delete('/settings/starter-profile/qa-bank/{entry}', [QaBankEntryController::class, 'destroy'])->name('qa-bank-entries.destroy');
-    Route::post('/settings/starter-profile/qa-bank/{entry}/draft', [QaBankEntryController::class, 'draft'])->name('qa-bank-entries.draft');
+    Route::post('/settings/starter-profile/qa-bank/{entry}/draft', [QaBankEntryController::class, 'draft'])
+        ->middleware('throttle:20,1')
+        ->name('qa-bank-entries.draft');
 
     // Job Application Kanban: tracks applications through Saved/Applied/
     // Interviewing/Offer/Rejected, plus a per-round interview log. Contact
@@ -176,17 +180,15 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
         ->middleware('password.confirm')
         ->name('two-factor.disable');
     Route::post('/user/two-factor-recovery-codes', [TwoFactorRecoveryCodesController::class, 'store'])
+        ->middleware('password.confirm')
         ->name('two-factor.recovery-codes');
 
     Route::get('/builder', [ResumeBuilderController::class, 'index'])->name('builder.index');
     Route::get('/builder/create', [ResumeBuilderController::class, 'create'])->name('builder.create');
     Route::get('/builder/{resume}', [ResumeBuilderController::class, 'edit'])->name('builder.edit');
-    Route::put('/builder/{resume}', [ResumeBuilderController::class, 'update'])->name('builder.update');
-    Route::delete('/builder/{resume}', [ResumeBuilderController::class, 'destroy'])->name('builder.destroy');
     Route::get('/builder/{resume}/pdf', [ResumeBuilderController::class, 'downloadPdf'])->name('builder.pdf');
     Route::get('/builder/{resume}/preview', [ResumeBuilderController::class, 'previewPdf'])->name('builder.preview');
     Route::get('/builder/{resume}/html-preview', [ResumeBuilderController::class, 'htmlPreview'])->name('builder.html-preview');
-    Route::post('/builder/{resume}/beacon', [ResumeBuilderController::class, 'beacon'])->name('builder.beacon');
     Route::get('/builder/{resume}/share-url', [ResumeBuilderController::class, 'shareUrl'])->name('builder.share-url');
 
     Route::get('/search', SearchController::class)->name('search')->middleware('throttle:30,1');
@@ -196,9 +198,12 @@ Route::middleware(['auth', 'verified', 'two_factor_challenge'])->group(function 
     Route::delete('/builder/{resume}/share/{link}', [ShareLinkController::class, 'destroy'])->name('share.destroy');
     Route::get('/shares', [ShareController::class, 'index'])->name('shares.index');
 
-    // Project Management demo pages
-    Route::get('/projects/issues', [ProjectIssueController::class, 'index'])->name('projects.issues.index');
-    Route::get('/projects/issues/kanban', [ProjectIssueController::class, 'kanban'])->name('projects.issues.kanban');
+    // Project Management demo pages — local only, never registered in production.
+    if (app()->isLocal()) {
+        Route::get('/projects/issues', [ProjectIssueController::class, 'index'])->name('projects.issues.index');
+        Route::get('/projects/issues/kanban', [ProjectIssueController::class, 'kanban'])->name('projects.issues.kanban');
+    }
+
     Route::get('/billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
     Route::get('/billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
     Route::get('/billing/credits', [BillingController::class, 'credits'])->name('billing.credits');

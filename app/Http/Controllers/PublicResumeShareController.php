@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ResumeShareLink;
 use App\Support\DocxExport;
-use App\Support\PdfFonts;
+use App\Support\PdfExport;
 use App\Support\ResumeDocument;
 use App\Support\ResumeExport;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -88,16 +87,7 @@ class PublicResumeShareController extends Controller
 
         $this->logView($request, $link);
 
-        $doc = ResumeDocument::toArray($link->resume);
-        $filename = ResumeExport::filename($doc);
-        $pdfFont = PdfFonts::resolve($link->resume->font);
-        PdfFonts::ensureInstalled($pdfFont);
-
-        return Pdf::loadView('resumes.export.pdf', [
-            'view' => ResumeExport::build($doc),
-            'fontStack' => $pdfFont['stack'],
-            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
-        ])->setPaper('letter')->download("{$filename}.pdf");
+        return PdfExport::for($link->resume)->download();
     }
 
     public function docx(Request $request, string $token): HttpResponse

@@ -15,6 +15,15 @@ class Project extends Model
     /** @use HasFactory<ProjectFactory> */
     use HasFactory;
 
+    /**
+     * Keep the parent's updated_at (the mobile sync/409 token) current on
+     * direct child writes. ResumeDocument::save bulk-inserts and touches the
+     * resume itself, so this adds no extra write there.
+     *
+     * @var list<string>
+     */
+    protected $touches = ['resume'];
+
     protected $fillable = [
         'position',
         'name',

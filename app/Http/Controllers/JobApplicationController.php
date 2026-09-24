@@ -6,8 +6,7 @@ use App\Actions\CreateJobApplication;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\UpdateJobApplicationRequest;
 use App\Models\JobApplication;
-use App\Models\Resume;
-use App\Support\ResumeAnalysis;
+use App\Support\ScoredResumes;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +30,7 @@ class JobApplicationController extends Controller
             // Deferred: scores every resume server-side, same cost as the
             // Dashboard's `resumeOptions`. Only feeds a <select> in a modal
             // that starts closed (and score text on already-attached cards).
-            'resumes' => Inertia::defer(fn () => $this->resumeOptions($request)),
+            'resumes' => Inertia::defer(fn () => ScoredResumes::options(ScoredResumes::load($request->user()))),
         ]);
     }
 
@@ -71,22 +70,6 @@ class JobApplicationController extends Controller
         $jobApplication->delete();
 
         return back();
-    }
-
-    /**
-     * @return list<array{id: int, title: string, score: int}>
-     */
-    private function resumeOptions(Request $request): array
-    {
-        return $request->user()->resumes()
-            ->with(['experiences', 'skills'])
-            ->latest('updated_at')
-            ->get()
-            ->map(fn (Resume $resume) => [
-                'id' => $resume->id,
-                'title' => $resume->title,
-                'score' => ResumeAnalysis::score($resume),
-            ])->all();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Actions\Fortify\RegistrationIpLimiter;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -139,7 +140,17 @@ class SocialiteController extends Controller
 
     private function githubVerifiedEmail(SocialiteUser $socialUser): ?string
     {
-        $response = Http::withToken($socialUser->token)->get('https://api.github.com/user/emails');
+        // Bounded so a slow GitHub can't pin a PHP worker; any failure falls
+        // through to "not verified", which never auto-links an account.
+        try {
+            $response = Http::withToken($socialUser->token)
+                ->timeout(5)
+                ->connectTimeout(3)
+                ->retry(2, 200, throw: false)
+                ->get('https://api.github.com/user/emails');
+        } catch (ConnectionException) {
+            return null;
+        }
 
         if (! $response->ok()) {
             return null;

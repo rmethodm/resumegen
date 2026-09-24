@@ -46,6 +46,34 @@ class ResumeShareLinkControllerTest extends TestCase
                     === ['hiring@company.com', 'recruiter@example.com']));
     }
 
+    /**
+     * Recent-views lists only email rows but is capped at 50. If anonymous views
+     * filled the window first, the owner would lose every named visitor.
+     */
+    public function test_anonymous_views_do_not_crowd_email_views_out_of_the_share_payload(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create(['require_email' => true]);
+        $link->views()->create(['email' => 'recruiter@example.com']);
+        for ($i = 0; $i < 60; $i++) {
+            $link->views()->create(['email' => null]);
+        }
+
+        $this->actingAs($user)
+            ->getJson(route('resumes.share.show', $resume))
+            ->assertOk()
+            ->assertJsonPath('share.view_count', 61)
+            ->assertJsonPath('share.views.0.email', 'recruiter@example.com');
+
+        $this->actingAs($user)
+            ->get(route('resumes.workstation', $resume))
+            ->assertInertia(fn ($page) => $page
+                ->where('share.view_count', 61)
+                ->has('share.views', 1)
+                ->where('share.views.0.email', 'recruiter@example.com'));
+    }
+
     public function test_rotating_password_persists_new_value(): void
     {
         $user = User::factory()->create();

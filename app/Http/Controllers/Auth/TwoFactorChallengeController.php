@@ -54,7 +54,7 @@ class TwoFactorChallengeController extends Controller
             $user->two_factor_recovery_codes = array_values($codes);
             $user->save();
 
-            $request->session()->forget('two_factor_auth_pending');
+            $this->completeChallenge($request);
 
             if (count($user->two_factor_recovery_codes) < 2) {
                 return $this->redirectAfterTwoFactor($request)
@@ -67,17 +67,34 @@ class TwoFactorChallengeController extends Controller
         // TOTP path
         $google2fa = new Google2FA;
         $lastTimestampKey = '2fa_totp_last_ts_'.$user->id;
-        $valid = $google2fa->verifyKeyNewer($user->two_factor_secret, $code, Cache::get($lastTimestampKey));
+        // Never pass null as the old timestamp: Google2FA then returns `true`
+        // instead of the matched timestep, and the replay guard below would
+        // key on (and cache) `true`, protecting nothing.
+        $valid = $google2fa->verifyKeyNewer($user->two_factor_secret, $code, Cache::get($lastTimestampKey) ?? 0);
 
-        if ($valid === false) {
+        // Cache::add is atomic: of two concurrent requests replaying the same
+        // code, only one can claim its timestep. The get-then-put on the
+        // last-timestamp key alone leaves a race window between them.
+        if ($valid === false
+            || ! Cache::add('2fa_totp_used_'.$user->id.'_'.$valid, true, now()->addMinutes(2))) {
             throw ValidationException::withMessages(['code' => 'The provided code was invalid.']);
         }
 
         Cache::put($lastTimestampKey, $valid, now()->addMinutes(2));
 
-        $request->session()->forget('two_factor_auth_pending');
+        $this->completeChallenge($request);
 
         return $this->redirectAfterTwoFactor($request);
+    }
+
+    /**
+     * Passing 2FA is a privilege step-up, so rotate the session ID: one
+     * captured while only the password was proven must not carry over.
+     */
+    private function completeChallenge(Request $request): void
+    {
+        $request->session()->forget('two_factor_auth_pending');
+        $request->session()->regenerate();
     }
 
     private function redirectAfterTwoFactor(Request $request): RedirectResponse

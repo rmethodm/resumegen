@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Schema;
 
@@ -10,24 +11,42 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// DB-backed schedule (scheduled_task_configs, editable at /admin/schedule)
-// instead of hardcoded Schedule::command(...)->dailyAt(...) calls. Seeded by
-// its migration with the exact prior backup:clean/run/monitor timing
-// (01:00/01:30/01:45) so this rewrite doesn't change production behavior.
-// Guarded by Schema::hasTable so `migrate` itself (which boots this file)
-// doesn't fail before the table exists — but Schema::hasTable() itself
-// throws (not just returns false) when the DB isn't reachable at all, which
-// happens during `composer install`'s package:discover boot. Catch that too.
+// Backups are code defaults that ALWAYS schedule. scheduled_task_configs rows
+// (editable at /admin/schedule) may only override the cron expression or the
+// enabled flag of a command listed here — an empty or unreadable table must
+// never silently drop backups. Unknown commands in the table are ignored.
+$scheduledTasks = [
+    'backup:clean' => ['cron_expression' => '0 1 * * *', 'enabled' => true],
+    'backup:run' => ['cron_expression' => '30 1 * * *', 'enabled' => true],
+    'backup:monitor' => ['cron_expression' => '45 1 * * *', 'enabled' => true],
+];
+
+// Schema::hasTable() throws (not just returns false) when the DB is
+// unreachable — e.g. `composer install`'s package:discover boot or a fresh
+// clone without a DB — so a failure here falls back to the defaults.
 try {
     if (Schema::hasTable('scheduled_task_configs')) {
-        foreach (DB::table('scheduled_task_configs')->where('enabled', true)->get() as $task) {
-            Schedule::command($task->command)
-                ->cron($task->cron_expression)
-                ->withoutOverlapping();
+        $overrides = DB::table('scheduled_task_configs')
+            ->whereIn('command', array_keys($scheduledTasks))
+            ->get();
+
+        foreach ($overrides as $override) {
+            $scheduledTasks[$override->command] = [
+                'cron_expression' => $override->cron_expression,
+                'enabled' => (bool) $override->enabled,
+            ];
         }
     }
-} catch (Throwable) {
-    // DB unreachable at boot (e.g. composer install before services are up).
+} catch (Throwable $e) {
+    Log::warning('Schedule overrides unavailable; using code defaults.', ['exception' => $e->getMessage()]);
+}
+
+foreach ($scheduledTasks as $command => $task) {
+    if ($task['enabled']) {
+        Schedule::command($command)
+            ->cron($task['cron_expression'])
+            ->withoutOverlapping();
+    }
 }
 
 // resume_deletions is a sync log, not history — it only exists so mobile

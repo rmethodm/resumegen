@@ -26,7 +26,14 @@ class MobileAuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if ($user === null || ! Hash::check($credentials['password'], $user->password)) {
+        // Always pay for one hash check, even for an unknown email, so
+        // response time doesn't reveal which addresses have accounts.
+        $passwordMatches = Hash::check(
+            $credentials['password'],
+            $user?->password ?? self::dummyHash(),
+        );
+
+        if ($user === null || ! $passwordMatches) {
             throw ValidationException::withMessages([
                 'email' => [__('auth.failed')],
             ]);
@@ -61,6 +68,17 @@ class MobileAuthController extends Controller
             ->delete();
 
         return response()->json(['token' => $token->plainTextToken], 201);
+    }
+
+    /**
+     * A hash made with the app's current hasher settings, so checking against
+     * it costs the same as checking against a real user's password.
+     */
+    private static function dummyHash(): string
+    {
+        static $hash = null;
+
+        return $hash ??= Hash::make('mobile-auth-timing-dummy');
     }
 
     public function destroy(Request $request): JsonResponse

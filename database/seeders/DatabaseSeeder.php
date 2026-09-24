@@ -28,10 +28,10 @@ class DatabaseSeeder extends Seeder
         // Created up front so the fixture seeders below (each of which firstOrCreate's
         // this same address) attach their resumes here and never reset the password.
         User::updateOrCreate(
-            ['email' => 'rmethodm@outlook.com'],
+            ['email' => config('seeding.user_email')],
             [
                 'name' => 'Richard Method',
-                'password' => Hash::make('up7run2011'),
+                'password' => Hash::make(config('seeding.user_password')),
                 'email_verified_at' => now(),
             ]
         );

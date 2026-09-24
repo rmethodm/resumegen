@@ -4,21 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Actions\CreateJobApplication;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MatchQaBankQuestionRequest;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\StoreQaBankEntryRequest;
+use App\Http\Requests\UpdateResumeTargetJobDescriptionRequest;
 use App\Models\Resume;
 use App\Services\AiCreditService;
 use App\Services\AiService;
 use App\Services\AiUsageLimiter;
-use App\Support\PdfFonts;
+use App\Support\PdfExport;
 use App\Support\QaBankMatcher;
-use App\Support\ResumeDocument;
-use App\Support\ResumeExport;
 use App\Support\ResumeFillProfile;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Context;
 use Throwable;
 
 /**
@@ -32,10 +32,6 @@ class ExtensionController extends Controller
 
         $user = $request->user();
 
-        if ($user->disabled_at !== null) {
-            return response()->json(['message' => 'Account disabled.'], 403);
-        }
-
         return response()->json([
             'name' => $user->name,
             'email' => $user->email,
@@ -47,10 +43,6 @@ class ExtensionController extends Controller
         $this->ensureExtensionToken($request);
 
         $user = $request->user();
-
-        if ($user->disabled_at !== null) {
-            return response()->json(['message' => 'Account disabled.'], 403);
-        }
 
         return response()->json([
             'user' => [
@@ -66,10 +58,6 @@ class ExtensionController extends Controller
         $this->ensureExtensionToken($request);
 
         $user = $request->user();
-
-        if ($user->disabled_at !== null) {
-            return response()->json(['message' => 'Account disabled.'], 403);
-        }
 
         abort_unless($resume->user_id === $user->id, 404);
 
@@ -91,11 +79,9 @@ class ExtensionController extends Controller
         ]);
     }
 
-    public function qaBankMatch(Request $request): JsonResponse
+    public function qaBankMatch(MatchQaBankQuestionRequest $request): JsonResponse
     {
         $this->ensureExtensionToken($request);
-
-        $request->validate(['question' => ['required', 'string', 'max:2000']]);
 
         $entries = $request->user()->starterProfile?->qaBankEntries ?? collect();
 
@@ -161,21 +147,25 @@ class ExtensionController extends Controller
 
         $cost = (int) config('ai.costs.qa_bank_draft');
 
-        if ($status = $limiter->refusalStatus($user, $cost)) {
-            $message = $status === 429 ? 'AI access is blocked.' : 'Subscription or AI credits required.';
+        $debit = $limiter->reserve($user, $cost, 'qa_bank_draft');
 
-            return response()->json(['message' => $message], $status);
+        if (is_int($debit)) {
+            $message = $debit === 429 ? 'AI access is blocked.' : 'Subscription or AI credits required.';
+
+            return response()->json(['message' => $message], $debit);
         }
 
         try {
             $result = $ai->draftQaAnswer($user, $question, $profile);
         } catch (Throwable $e) {
+            $credits->refund($debit);
+            Context::add(['ai_feature' => 'qa_bank_draft', 'ai_user_id' => $user->id]);
             report($e);
 
-            return response()->json(['message' => 'AI draft failed.'], 500);
+            return response()->json(['message' => 'AI draft failed.'], 502);
         }
 
-        $credits->spend($user, $cost, 'qa_bank_draft', $result['ai_request_id']);
+        $credits->attachRequest($debit, $result['ai_request_id']);
 
         return response()->json([
             'answer' => $result['text'],
@@ -206,10 +196,6 @@ class ExtensionController extends Controller
 
         $user = $request->user();
 
-        if ($user->disabled_at !== null) {
-            return response()->json(['message' => 'Account disabled.'], 403);
-        }
-
         $entries = $user->jobPoolEntries()
             ->with(['jobListing', 'resume'])
             ->latest('id')
@@ -226,15 +212,9 @@ class ExtensionController extends Controller
         return response()->json(['entries' => $entries]);
     }
 
-    public function updateTargetJobDescription(Request $request, Resume $resume): JsonResponse
+    public function updateTargetJobDescription(UpdateResumeTargetJobDescriptionRequest $request, Resume $resume): JsonResponse
     {
         $this->ensureExtensionToken($request);
-
-        abort_unless($resume->user_id === $request->user()->id, 404);
-
-        $request->validate([
-            'target_job_description' => ['nullable', 'string', 'max:10000'],
-        ]);
 
         $resume->update(['target_job_description' => $request->input('target_job_description', '')]);
 
@@ -248,16 +228,7 @@ class ExtensionController extends Controller
         $user = $request->user();
         abort_unless($resume->user_id === $user->id, 404);
 
-        $doc = ResumeDocument::toArray($resume);
-        $filename = ResumeExport::filename($doc);
-        $pdfFont = PdfFonts::resolve($resume->font);
-        PdfFonts::ensureInstalled($pdfFont);
-
-        return Pdf::loadView('resumes.export.pdf', [
-            'view' => ResumeExport::build($doc),
-            'fontStack' => $pdfFont['stack'],
-            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
-        ])->setPaper('letter')->stream("{$filename}.pdf");
+        return PdfExport::for($resume)->stream();
     }
 
     private function ensureExtensionToken(Request $request): void

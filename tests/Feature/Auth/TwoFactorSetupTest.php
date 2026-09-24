@@ -147,10 +147,30 @@ class TwoFactorSetupTest extends TestCase
         ]);
 
         $this->actingAs($user)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->post(route('two-factor.recovery-codes'))
             ->assertRedirect(route('profile.edit'));
 
         $user->refresh();
         $this->assertCount(8, $user->two_factor_recovery_codes);
+    }
+
+    /**
+     * Regenerating invalidates the old codes — a hijacked session must not be
+     * able to swap them out without re-proving the password.
+     */
+    public function test_regenerate_recovery_codes_requires_password_confirmation(): void
+    {
+        $oldCodes = [bcrypt('old-code')];
+        $user = User::factory()->create([
+            'two_factor_confirmed_at' => now(),
+            'two_factor_recovery_codes' => $oldCodes,
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('two-factor.recovery-codes'))
+            ->assertRedirect(route('password.confirm'));
+
+        $this->assertSame($oldCodes, $user->fresh()->two_factor_recovery_codes);
     }
 }

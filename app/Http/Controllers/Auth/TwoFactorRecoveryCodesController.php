@@ -11,9 +11,13 @@ class TwoFactorRecoveryCodesController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {
-        $codes = RecoveryCodeGenerator::generate();
-
         $user = $request->user();
+
+        // Recovery codes only mean something once 2FA is confirmed; minting
+        // them for a non-2FA account would just store dead secrets.
+        abort_unless($user->hasTwoFactorEnabled(), 404);
+
+        $codes = RecoveryCodeGenerator::generate();
         $user->two_factor_recovery_codes = $codes['hashed'];
         $user->save();
 

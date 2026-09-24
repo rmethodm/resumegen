@@ -41,7 +41,8 @@ return [
             'table' => env('DB_QUEUE_TABLE', 'jobs'),
             'queue' => env('DB_QUEUE', 'default'),
             'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),
-            'after_commit' => false,
+            // Jobs queued inside a transaction must not run before it commits.
+            'after_commit' => true,
         ],
 
         'beanstalkd' => [

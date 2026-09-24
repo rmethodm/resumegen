@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\UpdateShareLink;
 use App\Concerns\GuardsMobileTokens;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ResumeShareLinkController;
@@ -50,36 +51,16 @@ class ShareLinkController extends Controller
         );
     }
 
-    public function update(UpdateResumeShareLinkRequest $request, ResumeShareLink $resumeShareLink): JsonResponse
+    public function update(UpdateResumeShareLinkRequest $request, ResumeShareLink $resumeShareLink, UpdateShareLink $updateShareLink): JsonResponse
     {
         $this->ensureMobileToken($request);
         $this->ensureNotDisabled($request);
 
-        $data = $request->validated();
+        $refusal = $updateShareLink->handle($resumeShareLink, $request->validated());
 
-        // Same guard as the web modal: enabling password protection with no
-        // password stored and none sent would lock every visitor out.
-        if (($data['require_password'] ?? false)
-            && blank($data['password'] ?? null)
-            && $resumeShareLink->password === null) {
-            return response()->json(
-                ['errors' => ['password' => ['Provide a password to enable protection.']]],
-                422
-            );
+        if ($refusal !== null) {
+            return response()->json(['errors' => ['password' => [$refusal]]], 422);
         }
-
-        // Clearing the stored password while the gate stays on would leave a
-        // link nothing can unlock — the hash is gone, so no password matches.
-        if (array_key_exists('password', $data)
-            && $data['password'] === null
-            && ($data['require_password'] ?? $resumeShareLink->require_password)) {
-            return response()->json(
-                ['errors' => ['password' => ['Disable password protection instead of clearing the password.']]],
-                422
-            );
-        }
-
-        $resumeShareLink->update($data);
 
         return response()->json([
             'share' => $this->payload($resumeShareLink->fresh()->loadCount('views')),

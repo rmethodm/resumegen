@@ -33,8 +33,15 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            // An explicit shape, not the whole model: every column added to
+            // users would otherwise land in every page's JSON by default.
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() === null ? null : [
+                    'id' => $request->user()->id,
+                    'name' => $request->user()->name,
+                    'email' => $request->user()->email,
+                    'email_verified_at' => $request->user()->email_verified_at?->toJSON(),
+                ],
             ],
             'flash' => [
                 'success' => session('success'),

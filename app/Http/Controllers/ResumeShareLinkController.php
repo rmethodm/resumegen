@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\UpdateShareLink;
 use App\Http\Requests\UpdateResumeShareLinkRequest;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
@@ -25,7 +26,9 @@ class ResumeShareLinkController extends Controller
 
         $link = $resume->shareLink()
             ->withCount('views')
-            ->with(['views' => fn ($query) => $query->latest('id')->limit(50)])
+            // Filter in SQL: anonymous views would otherwise crowd email rows
+            // out of the 50-row window.
+            ->with(['views' => fn ($query) => $query->whereNotNull('email')->latest('id')->limit(50)])
             ->first();
 
         return response()->json([
@@ -46,29 +49,13 @@ class ResumeShareLinkController extends Controller
         return back();
     }
 
-    public function update(UpdateResumeShareLinkRequest $request, ResumeShareLink $resumeShareLink): RedirectResponse
+    public function update(UpdateResumeShareLinkRequest $request, ResumeShareLink $resumeShareLink, UpdateShareLink $updateShareLink): RedirectResponse
     {
-        $data = $request->validated();
+        $refusal = $updateShareLink->handle($resumeShareLink, $request->validated());
 
-        // Passwords are hashed, so the server can never show one — the modal
-        // generates client-side and sends the plaintext along when enabling.
-        // Enabling with nothing stored and nothing sent would silently lock
-        // every visitor out behind a password nobody knows.
-        if (($data['require_password'] ?? false)
-            && blank($data['password'] ?? null)
-            && $resumeShareLink->password === null) {
-            return back()->withErrors(['password' => 'Provide a password to enable protection.']);
+        if ($refusal !== null) {
+            return back()->withErrors(['password' => $refusal]);
         }
-
-        // Clearing the stored password while the gate stays on would leave a
-        // link nothing can unlock — the hash is gone, so no password matches.
-        if (array_key_exists('password', $data)
-            && $data['password'] === null
-            && ($data['require_password'] ?? $resumeShareLink->require_password)) {
-            return back()->withErrors(['password' => 'Disable password protection instead of clearing the password.']);
-        }
-
-        $resumeShareLink->update($data);
 
         return back();
     }
@@ -110,8 +97,6 @@ class ResumeShareLinkController extends Controller
             // Email-gate unlocks only; anonymous ungated views count toward
             // view_count but have no identity to list.
             'views' => $link->views
-                ->whereNotNull('email')
-                ->values()
                 ->map(fn ($view): array => [
                     'email' => $view->email,
                     'viewed_at' => $view->created_at?->toIso8601String() ?? '',

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\QueuedResetPassword;
+use App\Notifications\QueuedVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -18,7 +20,21 @@ use Laravel\Sanctum\HasApiTokens;
 // assignment + save() from app code, never from request-controlled input, so
 // they should never be mass-assignable.
 #[Fillable(['name', 'email', 'password', 'has_completed_onboarding', 'profile', 'stale_nudge_sent_at', 'view_nudge_sent_at', 'preferred_template', 'target_role', 'industry', 'years_experience', 'registration_ip', 'oauth_provider', 'oauth_provider_id', 'prefers_apply_wizard', 'dismissed_checklist_at'])]
-#[Hidden(['password', 'remember_token'])]
+// Hidden is the backstop for any place a whole User gets serialized (Inertia
+// props, JSON responses): 2FA secrets, billing identifiers, and the signup IP
+// must never reach a client.
+#[Hidden([
+    'password',
+    'remember_token',
+    'two_factor_secret',
+    'two_factor_recovery_codes',
+    'stripe_id',
+    'pm_type',
+    'pm_last_four',
+    'trial_ends_at',
+    'registration_ip',
+    'oauth_provider_id',
+])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
@@ -96,6 +112,25 @@ class User extends Authenticatable implements MustVerifyEmail
             'prefers_apply_wizard' => 'boolean',
             'dismissed_checklist_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Queued so a slow mail provider never holds up registration or the
+     * resend-verification request.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new QueuedVerifyEmail);
+    }
+
+    /**
+     * Queued so a slow mail provider never holds up the forgot-password request.
+     *
+     * @param  string  $token
+     */
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $this->notify(new QueuedResetPassword($token));
     }
 
     public function hasTwoFactorEnabled(): bool

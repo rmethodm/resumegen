@@ -104,13 +104,17 @@ export default function Authenticated({
             active: Boolean(route().current('jobs.*')),
             icon: BriefcaseIcon,
         },
-        {
-            label: 'shadcn demo',
-            href: route('shadcn.demo'),
-            active: route().current('shadcn.demo'),
-            icon: SwatchBookIcon,
-            external: true, // plain Blade view, not an Inertia page — needs a full page load
-        },
+        ...(route().has('shadcn.demo')
+            ? [
+                  {
+                      label: 'shadcn demo',
+                      href: route('shadcn.demo'),
+                      active: route().current('shadcn.demo'),
+                      icon: SwatchBookIcon,
+                      external: true, // plain Blade view, not an Inertia page — needs a full page load
+                  },
+              ]
+            : []),
         ...(route().has('dev.job-fixtures.index')
             ? [
                   {
@@ -122,12 +126,16 @@ export default function Authenticated({
                   },
               ]
             : []),
-        {
-            label: 'Project Management',
-            href: route('projects.issues.index'),
-            active: Boolean(route().current('projects.issues.*')),
-            icon: FolderIcon,
-        },
+        ...(route().has('projects.issues.index')
+            ? [
+                  {
+                      label: 'Project Management',
+                      href: route('projects.issues.index'),
+                      active: Boolean(route().current('projects.issues.*')),
+                      icon: FolderIcon,
+                  },
+              ]
+            : []),
         { label: 'Account settings', href: route('profile.edit'), active: route().current('profile.edit'), icon: UserCircleIcon },
     ];
 

@@ -170,6 +170,9 @@ class DashboardNextUpTest extends TestCase
         $user = User::factory()->create();
         Resume::factory()->for($user)->create();
         JobApplication::factory()->for($user)->create(['status' => 'applied']);
+        // A saved card counts as a job but not as applied — the checklist step
+        // "apply to one job" must not tick off just from saving a posting.
+        JobApplication::factory()->for($user)->create(['status' => 'saved']);
         $user->createToken(ResumeFillProfile::TOKEN_NAME, [ResumeFillProfile::TOKEN_ABILITY]);
 
         $this->actingAs($user)
@@ -179,7 +182,7 @@ class DashboardNextUpTest extends TestCase
                 ->where('checklist.facts.has_starter_profile', false)
                 ->where('checklist.facts.resume_count', 1)
                 ->where('checklist.facts.extension_connected', true)
-                ->where('checklist.facts.job_count', 1)
+                ->where('checklist.facts.job_count', 2)
                 ->where('checklist.facts.applied_count', 1));
 
         $this->actingAs($user)->patch(route('checklist.dismiss'))->assertRedirect();

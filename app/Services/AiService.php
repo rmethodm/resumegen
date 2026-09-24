@@ -5,8 +5,14 @@ namespace App\Services;
 use App\Models\FakeAiResponse;
 use App\Models\StarterProfile;
 use App\Models\User;
+use OpenAI\Exceptions\ErrorException;
+use OpenAI\Exceptions\RateLimitException;
+use OpenAI\Exceptions\ServerException;
+use OpenAI\Exceptions\TransporterException;
 use OpenAI\Laravel\Facades\OpenAI;
+use OpenAI\Responses\Chat\CreateResponse;
 use RuntimeException;
+use Throwable;
 
 /**
  * Thin wrapper around the OpenAI chat completions API for the resume AI
@@ -54,7 +60,7 @@ class AiService
         $prompt = "Rewrite this resume summary to address the following feedback: {$detail}\n\n"
             ."Keep it factual, concise, and do not invent facts. Return only the rewritten summary.\n\n{$text}";
 
-        $response = OpenAI::chat()->create([
+        $response = $this->chat([
             'model' => self::MODEL,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt],
@@ -112,7 +118,7 @@ class AiService
             $promptTokens = 0;
             $completionTokens = 0;
         } else {
-            $response = OpenAI::chat()->create([
+            $response = $this->chat([
                 'model' => self::MODEL,
                 'messages' => [
                     ['role' => 'user', 'content' => $prompt],
@@ -183,7 +189,7 @@ class AiService
             $promptTokens = 0;
             $completionTokens = 0;
         } else {
-            $response = OpenAI::chat()->create([
+            $response = $this->chat([
                 'model' => self::REVIEW_MODEL,
                 'messages' => [
                     ['role' => 'user', 'content' => $this->buildReviewPrompt($resumeData, $effectiveJd, $preset)],
@@ -242,6 +248,20 @@ class AiService
             'completion_tokens' => $completionTokens,
             'ai_request_id' => $aiRequest->id,
         ];
+    }
+
+    /**
+     * One chat completion with a single retry on transient upstream errors
+     * (429, 5xx, connection failures). Non-transient errors throw at once.
+     *
+     * @param  array<string, mixed>  $parameters
+     */
+    private function chat(array $parameters): CreateResponse
+    {
+        return retry(2, fn () => OpenAI::chat()->create($parameters), 250, fn (Throwable $e): bool => $e instanceof RateLimitException
+            || $e instanceof ServerException
+            || $e instanceof TransporterException
+            || ($e instanceof ErrorException && ($e->getStatusCode() === 429 || $e->getStatusCode() >= 500)));
     }
 
     /**

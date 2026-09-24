@@ -8,6 +8,7 @@ use App\Models\Experience;
 use App\Models\Project;
 use App\Models\Resume;
 use App\Models\Skill;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -204,63 +205,80 @@ final class ResumeDocument
             $resume->certificates()->delete();
             $resume->skills()->delete();
 
-            foreach (array_values($data['experiences'] ?? []) as $index => $experience) {
-                $resume->experiences()->create([
-                    'position' => $index,
-                    'title' => $experience['title'] ?? '',
-                    'company' => $experience['company'] ?? '',
-                    'start_date' => $experience['start_date'] ?? '',
-                    // A current role has no end date to store, whatever the
-                    // form last had in that box.
-                    'end_date' => ($experience['is_current'] ?? false)
-                        ? ''
-                        : ($experience['end_date'] ?? ''),
-                    'is_current' => (bool) ($experience['is_current'] ?? false),
-                    'bullets' => self::lines($experience['bullets'] ?? []),
-                ]);
-            }
+            // One INSERT per section instead of one per row. Rows bypass
+            // Eloquent, so timestamps and the `array` casts (bullets,
+            // highlights) are applied here exactly as the casts would —
+            // none of these child models has observers or model events.
+            $now = $resume->freshTimestamp();
 
-            foreach (array_values($data['projects'] ?? []) as $index => $project) {
-                $resume->projects()->create([
-                    'position' => $index,
-                    'name' => $project['name'] ?? '',
-                    'url' => $project['url'] ?? '',
-                    'start_date' => $project['start_date'] ?? '',
-                    'end_date' => $project['end_date'] ?? '',
-                    'description' => $project['description'] ?? '',
-                    'highlights' => self::lines($project['highlights'] ?? []),
-                ]);
-            }
+            self::insertRows(Experience::class, $resume, $now, $data['experiences'] ?? [], fn (array $experience): array => [
+                'title' => $experience['title'] ?? '',
+                'company' => $experience['company'] ?? '',
+                'start_date' => $experience['start_date'] ?? '',
+                // A current role has no end date to store, whatever the
+                // form last had in that box.
+                'end_date' => ($experience['is_current'] ?? false)
+                    ? ''
+                    : ($experience['end_date'] ?? ''),
+                'is_current' => (bool) ($experience['is_current'] ?? false),
+                'bullets' => json_encode(self::lines($experience['bullets'] ?? [])),
+            ]);
 
-            foreach (array_values($data['education'] ?? []) as $index => $education) {
-                $resume->education()->create([
-                    'position' => $index,
-                    'school' => $education['school'] ?? '',
-                    'degree' => $education['degree'] ?? '',
-                    'field' => $education['field'] ?? '',
-                    'graduation_year' => $education['graduation_year'] ?? '',
-                ]);
-            }
+            self::insertRows(Project::class, $resume, $now, $data['projects'] ?? [], fn (array $project): array => [
+                'name' => $project['name'] ?? '',
+                'url' => $project['url'] ?? '',
+                'start_date' => $project['start_date'] ?? '',
+                'end_date' => $project['end_date'] ?? '',
+                'description' => $project['description'] ?? '',
+                'highlights' => json_encode(self::lines($project['highlights'] ?? [])),
+            ]);
 
-            foreach (array_values($data['certificates'] ?? []) as $index => $certificate) {
-                $resume->certificates()->create([
-                    'position' => $index,
-                    'name' => $certificate['name'] ?? '',
-                    'issuer' => $certificate['issuer'] ?? '',
-                    'obtained_at' => $certificate['obtained_at'] ?? '',
-                    'expires_at' => $certificate['expires_at'] ?? '',
-                    'credential_id' => $certificate['credential_id'] ?? '',
-                ]);
-            }
+            self::insertRows(Education::class, $resume, $now, $data['education'] ?? [], fn (array $education): array => [
+                'school' => $education['school'] ?? '',
+                'degree' => $education['degree'] ?? '',
+                'field' => $education['field'] ?? '',
+                'graduation_year' => $education['graduation_year'] ?? '',
+            ]);
 
-            foreach (array_values($data['skills'] ?? []) as $index => $skill) {
-                $resume->skills()->create([
-                    'position' => $index,
-                    'category' => $skill['category'] ?? '',
-                    'name' => $skill['name'],
-                ]);
-            }
+            self::insertRows(Certificate::class, $resume, $now, $data['certificates'] ?? [], fn (array $certificate): array => [
+                'name' => $certificate['name'] ?? '',
+                'issuer' => $certificate['issuer'] ?? '',
+                'obtained_at' => $certificate['obtained_at'] ?? '',
+                'expires_at' => $certificate['expires_at'] ?? '',
+                'credential_id' => $certificate['credential_id'] ?? '',
+            ]);
+
+            self::insertRows(Skill::class, $resume, $now, $data['skills'] ?? [], fn (array $skill): array => [
+                'category' => $skill['category'] ?? '',
+                'name' => $skill['name'],
+            ]);
         });
+    }
+
+    /**
+     * Bulk-insert one section's rows, keeping list order in `position`.
+     *
+     * @param  class-string<Model>  $model
+     * @param  array<mixed>  $items
+     * @param  callable(array<string, mixed>): array<string, mixed>  $columns
+     */
+    private static function insertRows(string $model, Resume $resume, mixed $now, array $items, callable $columns): void
+    {
+        $rows = [];
+
+        foreach (array_values($items) as $index => $item) {
+            $rows[] = [
+                'resume_id' => $resume->id,
+                'position' => $index,
+                ...$columns($item),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        if ($rows !== []) {
+            $model::query()->insert($rows);
+        }
     }
 
     /**

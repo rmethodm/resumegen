@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreResumeSnapshotRequest;
 use App\Models\Resume;
 use App\Models\ResumeSnapshot;
 use App\Support\ResumeDocument;
@@ -14,16 +15,10 @@ use Illuminate\Http\Request;
  */
 class ResumeSnapshotController extends Controller
 {
-    public function store(Request $request, Resume $resume): RedirectResponse
+    public function store(StoreResumeSnapshotRequest $request, Resume $resume): RedirectResponse
     {
-        abort_unless($resume->user_id === $request->user()->id, 404);
-
-        $validated = $request->validate([
-            'label' => ['nullable', 'string', 'max:120'],
-        ]);
-
         $resume->snapshots()->create([
-            'label' => $validated['label'] ?? null,
+            'label' => $request->validated('label'),
             'document' => ResumeDocument::toArray($resume),
         ]);
 

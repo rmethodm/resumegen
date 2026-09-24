@@ -11,14 +11,14 @@ use Illuminate\Http\RedirectResponse;
  */
 class DevResetController extends Controller
 {
-    public const TEST_ACCOUNT_EMAIL = 'rmethodm@outlook.com';
-
     public function __invoke(ResetTestAccount $reset): RedirectResponse
     {
         abort_unless(app()->isLocal(), 404);
 
-        $reset->handle(self::TEST_ACCOUNT_EMAIL);
+        $email = config('seeding.user_email');
 
-        return redirect('/dashboard')->with('success', 'Database reset to a fresh '.self::TEST_ACCOUNT_EMAIL.' account.');
+        $reset->handle($email);
+
+        return redirect('/dashboard')->with('success', 'Database reset to a fresh '.$email.' account.');
     }
 }

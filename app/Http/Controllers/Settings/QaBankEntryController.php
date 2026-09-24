@@ -12,6 +12,7 @@ use App\Services\AiUsageLimiter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Context;
 use Throwable;
 
 class QaBankEntryController extends Controller
@@ -56,21 +57,25 @@ class QaBankEntryController extends Controller
 
         $cost = (int) config('ai.costs.qa_bank_draft');
 
-        if ($status = $limiter->refusalStatus($user, $cost)) {
-            $message = $status === 429 ? 'AI access is blocked.' : 'Subscription or AI credits required.';
+        $debit = $limiter->reserve($user, $cost, 'qa_bank_draft');
 
-            return response()->json(['message' => $message], $status);
+        if (is_int($debit)) {
+            $message = $debit === 429 ? 'AI access is blocked.' : 'Subscription or AI credits required.';
+
+            return response()->json(['message' => $message], $debit);
         }
 
         try {
             $result = $ai->draftQaAnswer($user, $entry->question, $entry->starterProfile);
         } catch (Throwable $e) {
+            $credits->refund($debit);
+            Context::add(['ai_feature' => 'qa_bank_draft', 'ai_user_id' => $user->id]);
             report($e);
 
-            return response()->json(['message' => 'AI draft failed.'], 500);
+            return response()->json(['message' => 'AI draft failed.'], 502);
         }
 
-        $credits->spend($user, $cost, 'qa_bank_draft', $result['ai_request_id']);
+        $credits->attachRequest($debit, $result['ai_request_id']);
 
         // Never auto-saved: the draft is returned for the user to review and
         // explicitly accept (which then goes through the normal update route).

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Listeners\GrantAiStarterCredits;
+use App\Listeners\RequireTwoFactorChallengeOnLogin;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
@@ -46,5 +48,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(SocialiteWasCalled::class, MicrosoftExtendSocialite::class);
 
         Event::listen(WebhookReceived::class, GrantAiStarterCredits::class);
+
+        Event::listen(Login::class, RequireTwoFactorChallengeOnLogin::class);
     }
 }

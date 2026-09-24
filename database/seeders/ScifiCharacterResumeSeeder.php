@@ -17,10 +17,11 @@ class ScifiCharacterResumeSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::query()->where('email', 'rmethodm@outlook.com')->first();
+        $email = config('seeding.user_email');
+        $user = User::query()->where('email', $email)->first();
 
         if ($user === null) {
-            $this->command?->error('User rmethodm@outlook.com not found.');
+            $this->command?->error("User {$email} not found.");
 
             return;
         }

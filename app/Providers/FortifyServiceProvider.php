@@ -50,7 +50,14 @@ class FortifyServiceProvider extends ServiceProvider
                 ->where(Fortify::username(), $request->input(Fortify::username()))
                 ->first();
 
-            if ($user === null || ! Hash::check((string) $request->input('password'), $user->password)) {
+            // Always pay for one hash check, even for an unknown email, so
+            // response time doesn't reveal which addresses have accounts.
+            $passwordMatches = Hash::check(
+                (string) $request->input('password'),
+                $user?->password ?? self::dummyHash(),
+            );
+
+            if ($user === null || ! $passwordMatches) {
                 return null;
             }
 
@@ -62,6 +69,13 @@ class FortifyServiceProvider extends ServiceProvider
 
             return $user;
         });
+    }
+
+    private static function dummyHash(): string
+    {
+        static $hash = null;
+
+        return $hash ??= Hash::make('fortify-auth-timing-dummy');
     }
 
     private function configureViews(): void

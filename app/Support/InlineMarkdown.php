@@ -25,12 +25,19 @@ final class InlineMarkdown
             return '';
         }
 
-        // CommonMark leaves a trailing newline on inline renders — strip it so
-        // DOCX/plain text do not pick up an accidental break.
-        return rtrim(Str::inlineMarkdown($markdown, [
+        $html = Str::inlineMarkdown($markdown, [
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
-        ]));
+        ]);
+
+        // CommonMark renders `![alt](url)` as <img>, outside the strong/em/a
+        // vocabulary — and DomPDF would fetch the URL. Drop it entirely, the
+        // same as toRuns() and the client allowlist (bullet-markdown.ts) do.
+        $html = (string) preg_replace('/<img\b[^>]*>/i', '', $html);
+
+        // CommonMark leaves a trailing newline on inline renders — strip it so
+        // DOCX/plain text do not pick up an accidental break.
+        return rtrim($html);
     }
 
     /**

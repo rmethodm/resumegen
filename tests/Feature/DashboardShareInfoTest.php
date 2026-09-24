@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Resume;
 use App\Models\ResumeShareLink;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -85,27 +86,22 @@ class DashboardShareInfoTest extends TestCase
                     })));
     }
 
-    public function test_dashboard_renders_resumes_without_a_group(): void
+    /**
+     * Event-less inserts (seeders using WithoutModelEvents) skip the creating
+     * hook that assigns a ResumeGroup. group_id is NOT NULL since
+     * 2026_09_24_120338, so such an insert must fail loudly instead of leaving
+     * a resume the version UI cannot place.
+     */
+    public function test_a_resume_cannot_be_stored_without_a_group(): void
     {
         $user = User::factory()->create();
 
-        // Mimic seeders: WithoutModelEvents skips the creating hook that
-        // assigns a ResumeGroup, leaving group_id null.
-        $orphan = Resume::withoutEvents(fn () => Resume::factory()->for($user)->create([
+        $this->expectException(QueryException::class);
+
+        Resume::withoutEvents(fn () => Resume::factory()->for($user)->create([
             'title' => 'Orphan Seed Resume',
             'group_id' => null,
         ]));
-
-        $this->actingAs($user)
-            ->get(route('dashboard'))
-            ->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('Dashboard')
-                ->loadDeferredProps(fn ($reload) => $reload
-                    ->has('resumes', 1)
-                    ->where('resumes.0.id', $orphan->id)
-                    ->where('resumes.0.title', 'Orphan Seed Resume')
-                    ->where('resumes.0.group_id', null)));
     }
 
     public function test_dashboard_marks_expired_share_links(): void

@@ -13,19 +13,21 @@ class JobListingController extends Controller
     {
         $query = JobListing::query();
 
+        // whereLike is case-insensitive on every driver (ILIKE on PostgreSQL),
+        // matching what SQLite's LIKE does in tests.
         if ($q = $request->string('q')->trim()->toString()) {
             $query->where(function ($sub) use ($q) {
-                $sub->where('title', 'like', "%{$q}%")
-                    ->orWhere('description', 'like', "%{$q}%");
+                $sub->whereLike('title', "%{$q}%")
+                    ->orWhereLike('description', "%{$q}%");
             });
         }
 
         if ($location = $request->string('location')->trim()->toString()) {
-            $query->where('location', 'like', "%{$location}%");
+            $query->whereLike('location', "%{$location}%");
         }
 
         if ($company = $request->string('company')->trim()->toString()) {
-            $query->where('company', 'like', "%{$company}%");
+            $query->whereLike('company', "%{$company}%");
         }
 
         $listings = $query->latest('id')

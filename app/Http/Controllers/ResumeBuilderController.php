@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Data\ResumeRules;
 use App\Models\Resume;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,7 +13,7 @@ class ResumeBuilderController extends Controller
      * Legacy list UI — user resumes live on Dashboard; templates on resumes.index.
      * Keep the route so old bookmarks resolve.
      */
-    public function index(Request $request): RedirectResponse
+    public function index(): RedirectResponse
     {
         return redirect()->route('dashboard');
     }
@@ -23,7 +21,7 @@ class ResumeBuilderController extends Controller
     /**
      * Legacy create form — resume creation is on the Dashboard / resumes.store.
      */
-    public function create(Request $request): RedirectResponse
+    public function create(): RedirectResponse
     {
         return redirect()->route('dashboard');
     }
@@ -40,17 +38,6 @@ class ResumeBuilderController extends Controller
         return redirect()->route('resumes.workstation', $resume);
     }
 
-    public function update(Request $request, Resume $resume)
-    {
-        abort_unless($resume->user_id === $request->user()->id, 403);
-
-        $validated = $request->validate(ResumeRules::rules());
-
-        $resume->update($validated);
-
-        return back();
-    }
-
     public function shareUrl(Request $request, Resume $resume): JsonResponse
     {
         abort_unless($resume->user_id === $request->user()->id, 403);
@@ -63,54 +50,34 @@ class ResumeBuilderController extends Controller
         ]);
     }
 
-    public function destroy(Request $request, Resume $resume): RedirectResponse
-    {
-        abort_unless($resume->user_id === $request->user()->id, 403);
-        $resume->delete();
-
-        return redirect()->route('dashboard');
-    }
-
-    public function downloadPdf(Request $request, Resume $resume)
+    /**
+     * Legacy PDF download — bookmark redirect to the current export route.
+     */
+    public function downloadPdf(Request $request, Resume $resume): RedirectResponse
     {
         abort_unless($resume->user_id === $request->user()->id, 403);
 
-        return $this->buildPdf($resume)->download($resume->pdf_filename ?? ($resume->id.'.pdf'));
+        return redirect()->route('resumes.download', $resume);
     }
 
-    public function previewPdf(Request $request, Resume $resume)
+    /**
+     * Legacy PDF preview — bookmark redirect to the current inline preview.
+     */
+    public function previewPdf(Request $request, Resume $resume): RedirectResponse
     {
         abort_unless($resume->user_id === $request->user()->id, 403);
 
-        return $this->buildPdf($resume)->stream('preview.pdf');
+        return redirect()->route('resumes.preview', $resume);
     }
 
-    public function htmlPreview(Request $request, Resume $resume)
+    /**
+     * Legacy HTML preview — the old resume-pdf view is gone, so this lands
+     * on the same inline PDF preview.
+     */
+    public function htmlPreview(Request $request, Resume $resume): RedirectResponse
     {
         abort_unless($resume->user_id === $request->user()->id, 403);
 
-        return response(view('resume-pdf', ['resume' => $resume])->render())
-            ->header('Content-Type', 'text/html');
-    }
-
-    private function buildPdf(Resume $resume): \Barryvdh\DomPDF\PDF
-    {
-        return Pdf::loadView('resume-pdf', [
-            'resume' => $resume,
-            'watermark' => false,
-        ])->setPaper('letter', 'portrait');
-    }
-
-    public function beacon(Request $request, Resume $resume)
-    {
-        abort_unless($resume->user_id === $request->user()->id, 403);
-
-        $data = json_decode($request->getContent(), true) ?? [];
-
-        $validated = validator($data, ResumeRules::rules())->validate();
-
-        $resume->update($validated);
-
-        return response()->noContent();
+        return redirect()->route('resumes.preview', $resume);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateResumeGroupRequest;
 use App\Models\ResumeGroup;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ResumeGroupController extends Controller
 {
@@ -25,7 +26,8 @@ class ResumeGroupController extends Controller
      * 403, not the app's usual existence-hiding 404, mirroring
      * ResumeController::destroy's base-version guard: the card is visibly
      * there on the dashboard with the action disabled once it has siblings.
-     * Deleting the group cascades to its one Resume row via the FK.
+     * Resumes are deleted through Eloquent first so Resume::deleting logs
+     * resume_deletions for mobile sync — the FK cascade would skip it.
      */
     public function destroy(Request $request, ResumeGroup $resumeGroup): RedirectResponse
     {
@@ -33,7 +35,10 @@ class ResumeGroupController extends Controller
 
         abort_if($resumeGroup->resumes()->count() > 1, 403);
 
-        $resumeGroup->delete();
+        DB::transaction(function () use ($resumeGroup): void {
+            $resumeGroup->resumes()->get()->each->delete();
+            $resumeGroup->delete();
+        });
 
         return to_route('dashboard');
     }

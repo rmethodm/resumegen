@@ -19,8 +19,8 @@ class JobApplicationStatsController extends Controller
     {
         $userId = $request->user()->id;
 
-        $counts = DB::table('job_applications')
-            ->where('user_id', $userId)
+        $counts = $request->user()->jobApplications()
+            ->toBase()
             ->selectRaw('status, count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');

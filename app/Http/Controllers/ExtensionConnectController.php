@@ -26,10 +26,23 @@ class ExtensionConnectController extends Controller
 
     public function issueToken(Request $request): JsonResponse
     {
-        $newToken = $request->user()->createToken(
+        $user = $request->user();
+
+        $newToken = $user->createToken(
             ResumeFillProfile::TOKEN_NAME,
             [ResumeFillProfile::TOKEN_ABILITY]
         );
+
+        // Each connect/paste mints a token; keep the newest 5 extension
+        // tokens (a few browsers) so the table can't grow forever.
+        $user->tokens()
+            ->where('name', ResumeFillProfile::TOKEN_NAME)
+            ->orderByDesc('id')
+            ->skip(5)
+            ->take(PHP_INT_MAX)
+            ->get()
+            ->each
+            ->delete();
 
         return response()->json(['token' => $newToken->plainTextToken]);
     }

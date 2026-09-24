@@ -75,6 +75,42 @@ class SharesPageTest extends TestCase
             );
     }
 
+    /**
+     * Counts and the 7-day trend are aggregated in SQL across all links at once;
+     * a grouping mistake would bleed one link's traffic into another's sparkline
+     * or drop views that fall outside the trend window from the total.
+     */
+    public function test_index_trend_and_counts_are_per_link_and_per_day(): void
+    {
+        $this->travelTo(now()->setTime(12, 0));
+
+        $user = User::factory()->create();
+        $first = ResumeShareLink::factory()->for(Resume::factory()->for($user)->create())->create();
+        $second = ResumeShareLink::factory()->for(Resume::factory()->for($user)->create())->create(['created_at' => now()->subDay()]);
+
+        $at = fn (ResumeShareLink $link, ?string $email, int $daysAgo) => $link->views()->create(['email' => $email])
+            ->forceFill(['created_at' => now()->subDays($daysAgo)])->save();
+
+        $at($first, 'a@example.com', 0);
+        $at($first, null, 0);
+        $at($first, 'a@example.com', 2);
+        $at($first, 'b@example.com', 6);
+        $at($first, 'c@example.com', 10); // outside the trend window, still counted
+        $at($second, null, 1);
+
+        $this->actingAs($user)->get(route('shares.index'))
+            ->assertInertia(fn ($page) => $page
+                ->where('links.0.id', $first->id)
+                ->where('links.0.views', 5)
+                ->where('links.0.visitors', 3)
+                ->where('links.0.trend', [1, 0, 0, 0, 1, 0, 2])
+                ->where('links.1.id', $second->id)
+                ->where('links.1.views', 1)
+                ->where('links.1.visitors', 0)
+                ->where('links.1.trend', [0, 0, 0, 0, 0, 1, 0])
+            );
+    }
+
     public function test_index_excludes_other_users_links(): void
     {
         $user = User::factory()->create();
@@ -98,9 +134,46 @@ class SharesPageTest extends TestCase
 
         $this->actingAs($user)
             ->patch(route('share.update', [$resume, $link]), ['resume_id' => $strangersResume->id])
-            ->assertForbidden();
+            ->assertNotFound();
 
         $this->assertSame($resume->id, $link->fresh()->resume_id);
+    }
+
+    /**
+     * 404, not 403: a 403 would confirm the stranger's link exists.
+     */
+    public function test_a_strangers_link_cannot_be_edited_or_deleted_from_shares(): void
+    {
+        $stranger = User::factory()->create();
+        $resume = Resume::factory()->for($stranger)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create();
+
+        $this->actingAs(User::factory()->create())
+            ->patch(route('share.update', [$resume, $link]), ['allow_download' => false])
+            ->assertNotFound();
+
+        $this->actingAs(User::factory()->create())
+            ->delete(route('share.destroy', [$resume, $link]))
+            ->assertNotFound();
+
+        $this->assertModelExists($link);
+    }
+
+    /**
+     * Same password floor as the Workstation share modal — the /shares page
+     * must not be a side door to a weaker (4-char) link password.
+     */
+    public function test_shares_page_rejects_a_short_link_password(): void
+    {
+        $user = User::factory()->create();
+        $resume = Resume::factory()->for($user)->create();
+        $link = ResumeShareLink::factory()->for($resume)->create();
+
+        $this->actingAs($user)
+            ->patch(route('share.update', [$resume, $link]), ['password' => 'abcd'])
+            ->assertSessionHasErrors('password');
+
+        $this->assertFalse((bool) $link->fresh()->require_password);
     }
 
     public function test_a_link_can_be_reassigned_to_another_owned_resume(): void

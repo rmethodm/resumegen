@@ -93,6 +93,18 @@ class UrlCheckTest extends TestCase
             ->assertJsonPath('url', 'https://93.184.216.34/me');
     }
 
+    public function test_an_explicit_standard_port_is_allowed(): void
+    {
+        Http::fake([
+            '93.184.216.34*' => Http::response('ok', 200),
+        ]);
+
+        $this->actingAs($this->user())
+            ->postJson(route('urls.check'), ['url' => 'https://93.184.216.34:443/me'])
+            ->assertOk()
+            ->assertJsonPath('ok', true);
+    }
+
     #[DataProvider('privateUrls')]
     public function test_private_and_reserved_addresses_are_refused(string $url): void
     {
@@ -113,6 +125,11 @@ class UrlCheckTest extends TestCase
             'loopback v4' => ['http://127.0.0.1/admin'],
             'private range' => ['http://10.0.0.5/internal'],
             'non-http scheme' => ['file:///etc/passwd'],
+            // Internal services commonly listen on non-web ports of public hosts.
+            'non-web port' => ['https://93.184.216.34:8080/'],
+            'carrier-grade nat' => ['http://100.64.1.1/'],
+            // NAT64 prefix embedding 169.254.169.254 (cloud metadata).
+            'nat64 prefix' => ['http://[64:ff9b::a9fe:a9fe]/'],
         ];
     }
 

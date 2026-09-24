@@ -15,10 +15,10 @@ class TestAnalyticsDataSeeder extends Seeder
     public function run(): void
     {
         $user = User::firstOrCreate(
-            ['email' => 'rmethodm@outlook.com'],
+            ['email' => config('seeding.user_email')],
             [
                 'name' => 'Richard Method',
-                'password' => Hash::make('password'),
+                'password' => Hash::make(config('seeding.user_password')),
             ]
         );
 

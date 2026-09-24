@@ -4,12 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Concerns\GuardsMobileTokens;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreMobileResumeRequest;
 use App\Http\Requests\UpdateResumeRequest;
 use App\Models\Resume;
-use App\Support\PdfFonts;
+use App\Support\PdfExport;
 use App\Support\ResumeDocument;
-use App\Support\ResumeExport;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -62,18 +61,14 @@ class ResumeController extends Controller
         return response()->json($this->document($resume));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreMobileResumeRequest $request): JsonResponse
     {
         $this->ensureMobileToken($request);
         $user = $this->ensureNotDisabled($request);
 
-        $data = $request->validate([
-            'client_uuid' => ['nullable', 'uuid'],
-        ]);
-
         // Idempotent for offline retries: the same client_uuid returns the
         // resume the first attempt created instead of a duplicate.
-        $clientUuid = $data['client_uuid'] ?? null;
+        $clientUuid = $request->validated('client_uuid');
         if ($clientUuid !== null) {
             $existing = $user->resumes()->where('client_uuid', $clientUuid)->first();
             if ($existing !== null) {
@@ -163,15 +158,6 @@ class ResumeController extends Controller
         $user = $this->ensureNotDisabled($request);
         abort_unless($resume->user_id === $user->id, 404);
 
-        $doc = ResumeDocument::toArray($resume);
-        $filename = ResumeExport::filename($doc);
-        $pdfFont = PdfFonts::resolve($resume->font);
-        PdfFonts::ensureInstalled($pdfFont);
-
-        return Pdf::loadView('resumes.export.pdf', [
-            'view' => ResumeExport::build($doc),
-            'fontStack' => $pdfFont['stack'],
-            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
-        ])->setPaper('letter')->stream("{$filename}.pdf");
+        return PdfExport::for($resume)->stream();
     }
 }

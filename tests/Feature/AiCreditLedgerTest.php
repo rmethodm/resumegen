@@ -40,6 +40,7 @@ class AiCreditLedgerTest extends TestCase
             'data' => [
                 'object' => [
                     'customer' => 'cus_test_starter',
+                    'status' => 'active',
                 ],
             ],
         ]);

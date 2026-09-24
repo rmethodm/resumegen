@@ -4,17 +4,7 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    email_verified_at?: string;
-    disabled_at?: string | null;
-    two_factor_confirmed_at: string | null;
-    profile: {
-        full_name?: string;
-        email?: string;
-        phone?: string;
-        location?: string;
-        linkedin_url?: string;
-        website?: string;
-    } | null;
+    email_verified_at: string | null;
 }
 
 export interface SkillGroup {

@@ -32,18 +32,41 @@ class AiCreditService
         ]);
     }
 
-    public function spend(User $user, int $amount, string $feature, ?int $aiRequestId = null): void
+    public function spend(User $user, int $amount, string $feature, ?int $aiRequestId = null): AiCreditLedgerEntry
     {
         if ($amount <= 0) {
             throw new InvalidArgumentException('Spend amount must be greater than zero.');
         }
 
-        AiCreditLedgerEntry::create([
+        return AiCreditLedgerEntry::create([
             'user_id' => $user->id,
             'amount' => -$amount,
             'reason' => 'spend',
             'feature' => $feature,
             'ai_request_id' => $aiRequestId,
+        ]);
+    }
+
+    /**
+     * Link a reserved debit to the AI request it paid for. Only the
+     * `ai_request_id` metadata changes — the amount is never rewritten.
+     */
+    public function attachRequest(AiCreditLedgerEntry $debit, int $aiRequestId): void
+    {
+        $debit->forceFill(['ai_request_id' => $aiRequestId])->save();
+    }
+
+    /**
+     * Compensate a reserved debit whose model call failed. The ledger is
+     * append-only, so the debit stays and a matching positive entry is added.
+     */
+    public function refund(AiCreditLedgerEntry $debit): AiCreditLedgerEntry
+    {
+        return AiCreditLedgerEntry::create([
+            'user_id' => $debit->user_id,
+            'amount' => -$debit->amount,
+            'reason' => 'refund',
+            'feature' => $debit->feature,
         ]);
     }
 

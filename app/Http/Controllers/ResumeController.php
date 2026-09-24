@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateResume;
+use App\Http\Requests\AiReviewResumeRequest;
 use App\Http\Requests\StoreResumeRequest;
 use App\Http\Requests\UpdateResumeRequest;
 use App\Http\Requests\UpdateResumeTitleRequest;
@@ -9,21 +11,18 @@ use App\Models\JobApplication;
 use App\Models\LibrarySkill;
 use App\Models\Resume;
 use App\Models\ResumeNote;
-use App\Models\StarterProfile;
 use App\Services\AiCreditService;
 use App\Services\AiService;
 use App\Services\AiUsageLimiter;
 use App\Support\DocxExport;
-use App\Support\PdfFonts;
-use App\Support\PlainTextResumeParser;
+use App\Support\PdfExport;
 use App\Support\ResumeAnalysis;
 use App\Support\ResumeDocument;
 use App\Support\ResumeExport;
-use App\Support\RoleSamples;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -59,91 +58,9 @@ class ResumeController extends Controller
      * sibling of an existing one. Ownership isn't a concern: it is always
      * the acting user's own new resume.
      */
-    public function store(StoreResumeRequest $request): RedirectResponse
+    public function store(StoreResumeRequest $request, CreateResume $createResume): RedirectResponse
     {
-        $validated = $request->validated();
-        $sampleId = $validated['sample'] ?? null;
-        $plainText = isset($validated['plain_text']) ? trim((string) $validated['plain_text']) : '';
-
-        // Role sample or paste import: seed full document (contact from sample/parse).
-        if (is_string($sampleId) && $sampleId !== '') {
-            $sample = RoleSamples::find($sampleId);
-            abort_unless($sample !== null, 422);
-
-            $contact = $this->starterProfileContactFields($request);
-            $document = array_merge($sample['document'], [
-                'full_name' => $contact['full_name'] !== '' ? $contact['full_name'] : ($sample['document']['full_name'] ?? 'Your Name'),
-                'email' => $contact['email'] !== '' ? $contact['email'] : ($sample['document']['email'] ?? ''),
-                'phone' => $contact['phone'] !== '' ? $contact['phone'] : '',
-                'location' => $contact['location'] !== '' ? $contact['location'] : '',
-                'linkedin' => $contact['linkedin'] !== '' ? $contact['linkedin'] : '',
-                'website' => $contact['website'] !== '' ? $contact['website'] : '',
-                'template' => $validated['template'] ?? ($sample['document']['template'] ?? 'ats-plain'),
-                'font' => $validated['font'] ?? 'inter',
-            ]);
-
-            $resume = DB::transaction(function () use ($request, $document, $sample): Resume {
-                $resume = $request->user()->resumes()->create([
-                    'title' => $document['title'] ?? $sample['label'],
-                ]);
-                ResumeDocument::save($resume, $document);
-
-                return $resume;
-            });
-
-            return to_route('resumes.workstation', $resume->fresh());
-        }
-
-        if ($plainText !== '') {
-            $parsed = PlainTextResumeParser::parse($plainText);
-            $contact = $this->starterProfileContactFields($request);
-            $document = array_merge($parsed, [
-                'full_name' => ($parsed['full_name'] ?? '') !== ''
-                    ? $parsed['full_name']
-                    : $contact['full_name'],
-                'email' => ($parsed['email'] ?? '') !== ''
-                    ? $parsed['email']
-                    : $contact['email'],
-                'phone' => ($parsed['phone'] ?? '') !== ''
-                    ? $parsed['phone']
-                    : $contact['phone'],
-                'location' => ($parsed['location'] ?? '') !== ''
-                    ? $parsed['location']
-                    : $contact['location'],
-                'linkedin' => ($parsed['linkedin'] ?? '') !== ''
-                    ? $parsed['linkedin']
-                    : $contact['linkedin'],
-                'website' => ($parsed['website'] ?? '') !== ''
-                    ? $parsed['website']
-                    : $contact['website'],
-                'template' => $validated['template'] ?? 'ats-plain',
-                'font' => $validated['font'] ?? 'inter',
-            ]);
-
-            $resume = DB::transaction(function () use ($request, $document): Resume {
-                $resume = $request->user()->resumes()->create([
-                    'title' => $document['title'] ?? 'Imported resume',
-                ]);
-                ResumeDocument::save($resume, $document);
-
-                return $resume;
-            });
-
-            return to_route('resumes.workstation', $resume->fresh());
-        }
-
-        $resume = DB::transaction(function () use ($request, $validated): Resume {
-            $resume = $request->user()->resumes()->create(array_filter([
-                'title' => 'Untitled resume',
-                'template' => $validated['template'] ?? null,
-                'font' => $validated['font'] ?? null,
-                ...$this->starterProfileContactFields($request),
-            ], fn (mixed $value): bool => $value !== null));
-
-            $this->seedExperiencesAndSkills($resume, $request->user()->starterProfile);
-
-            return $resume;
-        });
+        $resume = $createResume->handle($request->user(), $request->validated());
 
         return to_route('resumes.workstation', $resume);
     }
@@ -201,16 +118,7 @@ class ResumeController extends Controller
     {
         abort_unless($resume->user_id === $request->user()->id, 404);
 
-        $doc = ResumeDocument::toArray($resume);
-        $filename = ResumeExport::filename($doc);
-        $pdfFont = PdfFonts::resolve($resume->font);
-        PdfFonts::ensureInstalled($pdfFont);
-
-        return Pdf::loadView('resumes.export.pdf', [
-            'view' => ResumeExport::build($doc),
-            'fontStack' => $pdfFont['stack'],
-            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
-        ])->setPaper('letter')->stream("{$filename}.pdf");
+        return PdfExport::for($resume)->stream();
     }
 
     /**
@@ -278,16 +186,7 @@ class ResumeController extends Controller
     {
         abort_unless($resume->user_id === $request->user()->id, 404);
 
-        $doc = ResumeDocument::toArray($resume);
-        $filename = ResumeExport::filename($doc);
-        $pdfFont = PdfFonts::resolve($resume->font);
-        PdfFonts::ensureInstalled($pdfFont);
-
-        return Pdf::loadView('resumes.export.pdf', [
-            'view' => ResumeExport::build($doc),
-            'fontStack' => $pdfFont['stack'],
-            'fontFaceCss' => PdfFonts::faceCss($pdfFont),
-        ])->setPaper('letter')->download("{$filename}.pdf");
+        return PdfExport::for($resume)->download();
     }
 
     /**
@@ -307,16 +206,13 @@ class ResumeController extends Controller
         ]);
     }
 
-    public function aiReview(Request $request, Resume $resume, AiService $ai, AiUsageLimiter $limiter, AiCreditService $credits): JsonResponse
+    public function aiReview(AiReviewResumeRequest $request, Resume $resume, AiService $ai, AiUsageLimiter $limiter, AiCreditService $credits): JsonResponse
     {
         $user = $request->user();
 
         abort_unless($resume->user_id === $user->id, 404);
 
-        $validated = $request->validate([
-            'preset' => 'required|string|in:general,tailor_jd,concise,leadership,quantify',
-        ]);
-        $preset = $validated['preset'];
+        $preset = $request->validated('preset');
 
         if ($preset === 'tailor_jd' && trim((string) $resume->target_job_description) === '') {
             return response()->json(['message' => 'Paste a job description first.'], 422);
@@ -324,21 +220,25 @@ class ResumeController extends Controller
 
         $cost = (int) config('ai.costs.resume_review');
 
-        if ($status = $limiter->refusalStatus($user, $cost)) {
-            $message = $status === 429 ? 'AI access is blocked.' : 'Subscription or AI credits required.';
+        $debit = $limiter->reserve($user, $cost, 'resume_review');
 
-            return response()->json(['message' => $message], $status);
+        if (is_int($debit)) {
+            $message = $debit === 429 ? 'AI access is blocked.' : 'Subscription or AI credits required.';
+
+            return response()->json(['message' => $message], $debit);
         }
 
         try {
             $result = $ai->reviewResume($user, ResumeDocument::toArray($resume), $resume->target_job_description, $preset);
         } catch (Throwable $e) {
+            $credits->refund($debit);
+            Context::add(['ai_feature' => 'resume_review', 'ai_user_id' => $user->id]);
             report($e);
 
-            return response()->json(['message' => 'AI review failed.'], 500);
+            return response()->json(['message' => 'AI review failed.'], 502);
         }
 
-        $credits->spend($user, $cost, 'resume_review', $result['ai_request_id']);
+        $credits->attachRequest($debit, $result['ai_request_id']);
 
         $resume->ai_review = $result['suggestions'];
         $resume->ai_review_generated_at = now();
@@ -359,15 +259,16 @@ class ResumeController extends Controller
 
         $resume->load([
             'notes',
-            'snapshots' => fn ($query) => $query->latest('id')->limit(20),
-            'shareLink.views' => fn ($query) => $query->latest('id')->limit(50),
+            'snapshots' => fn ($query) => $query->select(['id', 'resume_id', 'label', 'created_at'])->latest('id')->limit(20),
+            'shareLink' => fn ($query) => $query->withCount('views'),
+            // Filter in SQL: anonymous views would otherwise crowd email rows
+            // out of the 50-row window.
+            'shareLink.views' => fn ($query) => $query->whereNotNull('email')->latest('id')->limit(50),
             'group.resumes' => fn ($query) => $query->with(['experiences', 'skills'])->withCount('notes'),
         ]);
 
         $shareLink = $resume->shareLink;
-        $viewCount = $shareLink !== null
-            ? (int) $shareLink->views()->count()
-            : 0;
+        $viewCount = (int) ($shareLink?->views_count ?? 0);
 
         $document = ResumeDocument::toArray($resume);
         // Concurrency token for C11 — not part of the document schema.
@@ -447,8 +348,6 @@ class ResumeController extends Controller
                 // Email-gate unlocks only; anonymous ungated views count
                 // toward view_count but have no identity to list.
                 'views' => $shareLink->views
-                    ->whereNotNull('email')
-                    ->values()
                     ->map(fn ($view): array => [
                         'email' => $view->email,
                         'viewed_at' => $view->created_at?->toIso8601String() ?? '',
@@ -457,59 +356,5 @@ class ResumeController extends Controller
                 'view_count' => $viewCount,
             ] : null,
         ]);
-    }
-
-    /** @return array<string, string> */
-    private function starterProfileContactFields(Request $request): array
-    {
-        $profile = $request->user()->starterProfile;
-
-        return [
-            'full_name' => $profile?->full_name ?: $request->user()->name,
-            'headline' => $profile?->headline ?? '',
-            'email' => $profile?->email ?: $request->user()->email,
-            'phone' => $profile?->phone ?? '',
-            'location' => $profile?->location ?? '',
-            'target_role' => $profile?->target_role ?? '',
-            'linkedin' => $profile?->linkedin ?? '',
-            'website' => $profile?->website ?? '',
-        ];
-    }
-
-    /**
-     * With a profile, seed its experience snapshot and skills; without one,
-     * keep the old single empty experience row so the editor never opens on
-     * nothing. Shared by every path that creates a resume from scratch.
-     */
-    private function seedExperiencesAndSkills(Resume $resume, ?StarterProfile $profile): void
-    {
-        $experiences = $profile?->experience_snapshot ?? [];
-
-        if ($profile === null) {
-            $resume->experiences()->create(['position' => 0, 'bullets' => []]);
-        } else {
-            foreach (array_values($experiences) as $index => $experience) {
-                $resume->experiences()->create([
-                    'position' => $index,
-                    'title' => $experience['title'] ?? '',
-                    'company' => $experience['company'] ?? '',
-                    'start_date' => $experience['start_date'] ?? '',
-                    'end_date' => $experience['end_date'] ?? '',
-                    'is_current' => (bool) ($experience['is_current'] ?? false),
-                    'bullets' => array_values(array_filter(
-                        $experience['bullets'] ?? [],
-                        fn (mixed $line): bool => is_string($line) && trim($line) !== '',
-                    )),
-                ]);
-            }
-        }
-
-        foreach (array_values($profile?->skills ?? []) as $index => $skill) {
-            $resume->skills()->create([
-                'position' => $index,
-                'category' => $skill['category'] ?? '',
-                'name' => $skill['name'],
-            ]);
-        }
     }
 }

@@ -3,14 +3,14 @@
     <head>
         <script nonce="{{ Illuminate\Support\Facades\Vite::cspNonce() }}">
         (function() {
-            var stored = localStorage.getItem('theme');
             var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (stored === 'dark' || (!stored && prefersDark)) {
-                document.documentElement.classList.add('dark');
-            }
-            // Brand theme attribute kept for compatibility; CSS maps every
-            // variant to the DESIGN.md Social Proof accent (#0066FF).
             try {
+                var stored = localStorage.getItem('theme');
+                if (stored === 'dark' || (!stored && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                }
+                // Brand theme attribute kept for compatibility; CSS maps every
+                // variant to the DESIGN.md Social Proof accent (#0066FF).
                 var brand = localStorage.getItem('resumegen.brand-theme');
                 if (brand === 'navy' || brand === 'teal' || brand === 'copper' || brand === 'violet') {
                     document.documentElement.setAttribute('data-brand-theme', brand);
@@ -18,6 +18,10 @@
                     document.documentElement.setAttribute('data-brand-theme', 'violet');
                 }
             } catch (e) {
+                // Storage blocked: fall back to the OS preference.
+                if (prefersDark) {
+                    document.documentElement.classList.add('dark');
+                }
                 document.documentElement.setAttribute('data-brand-theme', 'violet');
             }
         })();
@@ -42,7 +46,8 @@
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Scripts -->
-        @routes(null, Illuminate\Support\Facades\Vite::cspNonce())
+        {{-- Admin route names stay out of the public map (config/ziggy.php). --}}
+        @routes(auth()->user()?->is_admin ? 'admin' : null, Illuminate\Support\Facades\Vite::cspNonce())
         @viteReactRefresh
         @vite('resources/js/app.tsx')
         @inertiaHead

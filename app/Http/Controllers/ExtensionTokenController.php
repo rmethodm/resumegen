@@ -22,6 +22,17 @@ class ExtensionTokenController extends Controller
             [ResumeFillProfile::TOKEN_ABILITY]
         );
 
+        // Each connect/paste mints a token; keep the newest 5 extension
+        // tokens (a few browsers) so the table can't grow forever.
+        $user->tokens()
+            ->where('name', ResumeFillProfile::TOKEN_NAME)
+            ->orderByDesc('id')
+            ->skip(5)
+            ->take(PHP_INT_MAX)
+            ->get()
+            ->each
+            ->delete();
+
         return redirect()
             ->route('profile.edit')
             ->with('extension_token_plain', $newToken->plainTextToken)
@@ -32,7 +43,9 @@ class ExtensionTokenController extends Controller
     {
         abort_unless(
             (int) $token->tokenable_id === (int) $request->user()->id
-            && $token->tokenable_type === $request->user()->getMorphClass(),
+            && $token->tokenable_type === $request->user()->getMorphClass()
+            // Only extension tokens are revocable here — mobile tokens have their own flow.
+            && $token->name === ResumeFillProfile::TOKEN_NAME,
             404
         );
 

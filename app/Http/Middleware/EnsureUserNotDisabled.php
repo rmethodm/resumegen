@@ -17,6 +17,11 @@ class EnsureUserNotDisabled
         $user = $request->user();
 
         if ($user !== null && $user->isDisabled()) {
+            // Token API: there is no session to log out of — refuse with JSON.
+            if ($request->is('api/*')) {
+                return response()->json(['message' => 'Account disabled.'], 403);
+            }
+
             Auth::logout();
 
             if ($request->hasSession()) {
